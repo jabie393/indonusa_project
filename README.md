@@ -59,3 +59,36 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Installation
+ 1. download the resources into your machine
+ 2. install `composer` & `node` dependencies
+
+    `composer install`  
+    `npm install`
+
+ 3. copy `.env.example` file to `.env` on the root folder.
+
+    `cp .env.example .env` or `copy .env.example .env`
+
+ 4. set your local database in `.env`  file
+
+    `DB_CONNECTION=mysql`  
+	`DB_HOST=127.0.0.1`  
+	`DB_PORT=3306`  
+	`DB_DATABASE= *DATABASE NAME*`  
+	`DB_USERNAME= *USERNAME*`  
+	`DB_PASSWORD= *PASSWORD*`
+
+6. generate key & migrate databse
+
+	`php artisan key:generate`  
+	`php artisan migrate`
+
+7. run the project locally
+
+    `php artisan serve`
+
+8. and lastly in another terminal tab run react locally
+
+   `npm run dev`
