@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'operator',
+            'email' => 'operator@example.com',
             'password' => Hash::make('password'),
             'role' => 'operator',
         ]);
@@ -34,21 +34,27 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin Supply',
             'email' => 'adminsupply@example.com',
             'password' => Hash::make('password'),
-            'role' => 'adminsupply',
+            'role' => 'admin_supply',
         ]);
 
         User::factory()->create([
             'name' => 'Admin Sales',
-            'email' => 'adminsales@example.com',
+            'email' => 'admin_sales@example.com',
             'password' => Hash::make('password'),
-            'role' => 'adminsales',
+            'role' => 'admin_sales',
         ]);
 
         User::factory()->create([
             'name' => 'Admin Warehouse',
-            'email' => 'adminwarehouse@example.com',
+            'email' => 'admin_warehouse@example.com',
             'password' => Hash::make('password'),
             'role' => 'admin_warehouse',
+        ]);
+        User::factory()->create([
+            'name' => 'Finance',
+            'email' => 'finance@example.com',
+            'password' => Hash::make('password'),
+            'role' => 'finance',
         ]);
     }
 }
