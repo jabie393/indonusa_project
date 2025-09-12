@@ -5,15 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('guest.welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/pagetwo', function () {
-    return view('pagetwo');
+    return view('admin.pagetwo');
 })->middleware(['auth', 'verified'])->name('pagetwo');
 
 Route::middleware('auth')->group(function () {
@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
-Route::resource('barang', BarangController::class);
+Route::get('/barang', [BarangController::class, function(){return view ('admin.barang.index');}])->name('barang.index');
+Route::resource('/barang', BarangController::class);
 
 require __DIR__ . '/auth.php';

@@ -10,6 +10,6 @@ class BarangController extends Controller
     public function index()
     {
         $barangs = Barang::all(); // ambil semua barang
-        return view('barang.index', compact('barangs'));
+        return view('admin.barang.index', compact('barangs'));
     }
 }
