@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,16 +15,17 @@
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
-            
         @endif
     </head>
+
     <body class="text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
         {{-- Header --}}
         @include('guest.layouts.header')
-        
-        {{-- Main Content --}}
-        <div class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
 
+        {{-- Main Content --}}
+        <div
+            class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
+            {{ $slot }}
         </div>
         <div class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 bg-white">
 
@@ -33,4 +35,5 @@
             <div class="h-14.5 hidden lg:block"></div>
         @endif
     </body>
+
 </html>
