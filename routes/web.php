@@ -1,12 +1,16 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\Guest\OrderController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('guest.welcome');
 });
+
+// Route khusus user untuk lihat daftar barang
+Route::get('/order', [OrderController::class, 'index'])->name('order');
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
