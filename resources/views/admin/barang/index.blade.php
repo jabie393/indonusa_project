@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
         <div class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
-            <div class="w-full md:w-1/2">
-                <h1 class="mb-4 text-lg font-semibold text-gray-900 whitespace-nowrap dark:text-white">Daftar Barang</h1>
+            <div>
+                <h2 class="mr-3 text-black font-semibold dark:text-white">Daftar barang</h2>
             </div>
             <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
                 <button type="button"

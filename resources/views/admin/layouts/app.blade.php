@@ -43,7 +43,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="p-4 md:ml-64 h-auto pt-20">
+            <main class="p-4 md:ml-64 h-auto pt-10">
                 @include('admin.layouts.sidebar')
                 <div id="main-content">
                     {{ $slot }}
