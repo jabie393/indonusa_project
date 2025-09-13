@@ -37,14 +37,14 @@
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{-- {{ $header }} --}}
 
-                    @include('layouts.header')
+                    @include('admin.layouts.header')
 
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main class="p-4 md:ml-64 h-auto pt-20">
-                @include('layouts.sidebar')
+            <main class="p-4 md:ml-64 h-auto pt-10">
+                @include('admin.layouts.sidebar')
                 <div id="main-content">
                     {{ $slot }}
                 </div>
