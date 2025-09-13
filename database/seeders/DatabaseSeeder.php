@@ -56,5 +56,7 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
             'role' => 'finance',
         ]);
+
+        $this->call(BarangSeeder::class);
     }
 }
