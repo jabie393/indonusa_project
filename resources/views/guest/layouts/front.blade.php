@@ -24,11 +24,8 @@
 
         {{-- Main Content --}}
         <div
-            class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
+            class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
             {{ $slot }}
-        </div>
-        <div class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0 bg-white">
-
         </div>
 
         @if (Route::has('login'))
