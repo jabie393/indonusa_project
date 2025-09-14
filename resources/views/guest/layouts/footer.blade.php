@@ -45,7 +45,7 @@
         </div>
         <hr class="my-6 border-gray-200 dark:border-gray-700 sm:mx-auto lg:my-8" />
         <div class="sm:flex sm:items-center sm:justify-between">
-            <span class="text-sm text-gray-500 dark:text-gray-400 sm:text-center">© 2022 <a href="https://flowbite.com" class="hover:underline">Indonusa Jaya Bersama™</a>. All Rights Reserved.
+            <span class="text-sm text-gray-500 dark:text-gray-400 sm:text-center">© 2025 <a href="#" class="hover:underline">Indonusa Jaya Bersama™</a>. All Rights Reserved.
             </span>
             <div class="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">
                 <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
