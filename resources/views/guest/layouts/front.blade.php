@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 
     <head>
         <meta charset="utf-8">
@@ -23,14 +23,14 @@
         @include('guest.layouts.header')
 
         {{-- Main Content --}}
-        <div
-            class="flex items-center justify-center w-full min-h-screen transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
-            {{ $slot }}
-        </div>
+        {{ $slot }}
 
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+        
+        @include('guest.layouts.footer')
     </body>
+
 
 </html>
