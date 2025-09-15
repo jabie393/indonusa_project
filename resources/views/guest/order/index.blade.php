@@ -11,11 +11,23 @@
                     @foreach ($barangs as $barang)
                         <div class="rounded-lg bg-white p-4 shadow">
                             <h2 class="text-lg font-semibold">{{ $barang->nama_barang }}</h2>
-                            <p class="text-gray-700">Stock: {{ $barang->stok }}</p>
                             <p class="font-bold text-gray-900">Rp {{ number_format($barang->harga, 0, ',', '.') }}</p>
-                            <a href="#" class="mt-2 inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                            <a
+                                href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}"
+                                target="_blank"
+                                class="mt-2 inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                            >
                                 Pesan
                             </a>
+                            <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $barang->id }}">
+                                <input type="hidden" name="nama" value="{{ $barang->nama_barang }}">
+                                <input type="hidden" name="harga" value="{{ $barang->harga }}">
+                                <button type="submit" class="mt-2 inline-block rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
+                                    +
+                                </button>
+                            </form>
                         </div>
                     @endforeach
                 </div>

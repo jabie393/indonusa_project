@@ -1,4 +1,8 @@
-        <header class="sticky left-0 top-0 z-50 w-full bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
+@php
+    $keranjang = session('keranjang', []);
+    $jumlahKeranjang = collect($keranjang)->sum('qty');
+@endphp
+<header class="sticky left-0 top-0 z-50 w-full bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
             <nav class="px-4 py-2.5 lg:px-6">
                 <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
                     <a href="/" class="flex items-center">
@@ -7,6 +11,14 @@
                     </a>
                     @if (Route::has('login'))
                         <div class="flex items-center lg:order-2">
+                            @if($jumlahKeranjang > 0)
+                                <a href="{{ route('keranjang.index') }}" class="relative mr-3">
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h6a1 1 0 011 1v7"></path>
+                                    </svg>
+                                    <span class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">{{ $jumlahKeranjang }}</span>
+                                </a>
+                            @endif
                             @auth
                                 <a href="{{ url('/dashboard') }}"
                                     class="inline-block rounded-sm border border-[#19140035] bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\Guest\OrderController;
+use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,6 +12,12 @@ Route::get('/', function () {
 
 // Route khusus user untuk lihat daftar barang
 Route::get('/order', [OrderController::class, 'index'])->name('order');
+
+Route::post('/keranjang/tambah', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
+Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])->name('keranjang.kurangi');
+Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
+Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
 
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
