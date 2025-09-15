@@ -34,11 +34,6 @@
                 event.preventDefault();
                 openWaAndRedirect();
             });
-
-            // Trik: Autoklik
-            setTimeout(() => {
-                waLink.click();
-            }, 100);
         });
     </script>
 </x-front-layout>
