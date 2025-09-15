@@ -57,22 +57,9 @@ class KeranjangController extends Controller
 
     public function checkout(Request $request)
     {
-        $keranjang = session('keranjang', []);
-        $total = 0;
-        $pesan = "Halo, saya ingin memesan:\n";
-        foreach ($keranjang as $item) {
-            $subtotal = $item['harga'] * $item['qty'];
-            $total += $subtotal;
-            $pesan .= "- {$item['nama']} (Qty: {$item['qty']}) @ Rp " . number_format($item['harga'], 0, ',', '.') . "\n";
-        }
-        $pesan .= "Total: Rp " . number_format($total, 0, ',', '.');
-        $waNumber = '6281234567890'; // WA admin
-        $waUrl = "https://wa.me/{$waNumber}?text=" . urlencode($pesan);
-
         // Reset keranjang
         session()->forget('keranjang');
-
-        // Tampilkan view sukses dan kirim url wa
-        return view('guest.order.checkout-success', compact('waUrl'));
+        // Redirect ke WhatsApp (tab baru sudah dihandle oleh target="_blank" di form)
+        return redirect($request->waUrl);
     }
 }
