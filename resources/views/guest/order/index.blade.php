@@ -1,37 +1,54 @@
 <x-front-layout>
-    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center bg-white opacity-100 transition-opacity lg:grow">
+    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center bg-[#D9D9D9] opacity-100 transition-opacity lg:grow">
 
-        <div class="mx-auto max-w-7xl p-6">
-            <h1 class="mb-4 text-2xl font-bold">Daftar Order</h1>
-
+        <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+            <div class="mb-4 items-end justify-between space-y-4 sm:flex sm:space-y-0 md:mb-8">
+                <div>
+                    <h2 class="mt-3 text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Daftar Order</h2>
+                </div>
+            </div>
             @if ($barangs->isEmpty())
                 <p class="text-gray-500">Belum ada barang yang bisa diorder.</p>
             @else
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
                     @foreach ($barangs as $barang)
-                        <div class="rounded-lg bg-white p-4 shadow">
-                            <h2 class="text-lg font-semibold">{{ $barang->nama_barang }}</h2>
-                            <p class="font-bold text-gray-900">Rp {{ number_format($barang->harga, 0, ',', '.') }}</p>
-                            <a
-                                href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}"
-                                target="_blank"
-                                class="mt-2 inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                            >
-                                Pesan
-                            </a>
-                            <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $barang->id }}">
-                                <input type="hidden" name="nama" value="{{ $barang->nama_barang }}">
-                                <input type="hidden" name="harga" value="{{ $barang->harga }}">
-                                <button type="submit" class="mt-2 inline-block rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
-                                    +
-                                </button>
-                            </form>
+                        <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                            <div class="h-56 w-full">
+                                <a href="#">
+                                    <img class="mx-auto h-full dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                    <img class="mx-auto hidden h-full dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="" />
+                                </a>
+                            </div>
+                            <div class="pt-6">
+
+                                <a href="#" class="text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{ $barang->nama_barang }}</a>
+                                <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">Rp {{ number_format($barang->harga, 0, ',', '.') }}</p>
+                                <div class="mt-4 flex items-center justify-start gap-4">
+                                    <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}"
+                                        target="_blank"
+                                        class="inline-flex items-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300">
+                                        Pesan
+                                    </a>
+                                    <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{ $barang->id }}">
+                                        <input type="hidden" name="nama" value="{{ $barang->nama_barang }}">
+                                        <input type="hidden" name="harga" value="{{ $barang->harga }}">
+                                        <button type="submit"
+                                            class="inline-flex items-center rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">
+                                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     @endforeach
                 </div>
             @endif
         </div>
     </div>
+
 </x-front-layout>

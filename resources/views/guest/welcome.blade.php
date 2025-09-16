@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-white opacity-100 transition-opacity lg:grow" id="about">
+    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-[#D9D9D9] opacity-100 transition-opacity lg:grow" id="about">
         <div class="mx-auto flex max-w-screen-xl flex-col items-center gap-4 px-4 md:flex-row md:gap-12">
             <div>
                 <img src="{{ asset('images/components.png') }}" alt="">
