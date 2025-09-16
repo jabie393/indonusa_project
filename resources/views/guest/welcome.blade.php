@@ -4,7 +4,7 @@
             <div class="content-cent er justify-self-start md:col-span-7 md:text-start">
                 <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">Get Your Items
                 </h1>
-                <p class="mb-3 mb-4 max-w-2xl text-zinc-100 dark:text-gray-400 md:mb-12 md:text-lg lg:mb-5 lg:text-xl">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus quos magni
+                <p class="mb-4 max-w-2xl text-zinc-100 dark:text-gray-400 md:mb-12 md:text-lg lg:mb-5 lg:text-xl">Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus quos magni
                     delectus nobis perspiciatis modi dolores. Itaque architecto commodi velit quod et accusamus eum eaque facere, voluptas placeat doloribus qui?
                 </p>
                 <h1 class="mb-5 text-2xl font-bold leading-none tracking-tight text-white md:max-w-2xl md:text-3xl xl:text-4xl">
