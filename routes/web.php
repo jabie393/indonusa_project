@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\BarangController;
+use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +13,16 @@ Route::get('/', function () {
 
 // Route user untuk lihat daftar barang
 Route::get('/order', [OrderController::class, 'index'])->name('order');
+
+Route::get('files/{path}', function ($path) {
+    $file = storage_path('app/public/' . $path);
+
+    if (!\Illuminate\Support\Facades\File::exists($file)) {
+        abort(404);
+    }
+
+    return response()->file($file);
+})->where('path', '.*');
 // End guest routes
 
 
@@ -21,20 +31,6 @@ Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang
 Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])->name('keranjang.kurangi');
 Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
 Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
-
-
-Route::get('storage/{filename}', function ($filename) {
-    $path = storage_path('app/public/' . $filename);
-
-    if (!File::exists($path)) {
-        abort(404);
-    }
-
-    $file = File::get($path);
-    $type = File::mimeType($path);
-
-    return Response::make($file, 200)->header("Content-Type", $type);
-});
 
 // Admin Routes
 Route::get('/dashboard', function () {
