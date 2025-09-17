@@ -47,7 +47,7 @@
     </div>
     <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-gradient-to-r from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow"
         id="layanan">
-        <div class="mx-auto flex min-h-[600px] max-w-screen-xl flex-col items-center px-4 lg:px-6">
+        <div class="mx-auto py-9 flex min-h-[600px] max-w-screen-xl flex-col items-center px-4 lg:px-6">
             <div class="mb-8 max-w-screen-md text-center lg:mb-16">
                 <h1 class="mb-4 text-4xl font-bold tracking-tight text-white md:text-6xl">Layanan Kami</h1>
                 <p class="font-light text-white sm:text-xl">
