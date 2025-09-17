@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('satuan');
             $table->string('lokasi')->nullable();
             $table->decimal('harga', 15, 2)->default(0);
+            $table->string('gambar')->nullable();
             $table->timestamps();
         });
     }

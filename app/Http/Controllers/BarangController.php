@@ -23,9 +23,17 @@ class BarangController extends Controller
             'satuan' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
             'harga' => 'required|numeric',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        Barang::create($validated);
+        $barang = Barang::create($validated);
+
+        if ($request->hasFile('gambar')) {
+            $folder = 'barang/' . $barang->id;
+            $path = $request->file('gambar')->store($folder, 'public');
+            $barang->gambar = $path;
+            $barang->save();
+        }
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
