@@ -11,7 +11,7 @@ Route::get('/', function () {
     return view('guest.welcome');
 });
 
-// Route khusus user untuk lihat daftar barang
+// Route user untuk lihat daftar barang
 Route::get('/order', [OrderController::class, 'index'])->name('order');
 // End guest routes
 
