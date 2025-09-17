@@ -7,7 +7,7 @@
         <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
             <a href="/" class="flex items-center">
                 <x-application-logo class="mr-3 h-6 sm:h-9"></x-application-logo>
-                <span class="self-center whitespace-nowrap text-sm font-semibold text-white md:text-xl">INDONUSA JAYA BERSAMA</span>
+                <span class="self-center hidden md:block whitespace-nowrap text-sm font-semibold text-white md:text-xl">INDONUSA JAYA BERSAMA</span>
             </a>
             @if (Route::has('login'))
                 <div class="flex items-center lg:order-2">

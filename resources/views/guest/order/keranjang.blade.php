@@ -27,14 +27,22 @@
                                             <img class="hidden h-20 w-20 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="imac image" />
                                         </a>
                                         <label for="counter-input" class="sr-only">Choose quantity:</label>
-                                        <div class="flex items-center justify-between md:order-3 md:justify-end">
+                                        <div class="flex flex-col items-center justify-between md:order-3 md:flex-row md:justify-end">
                                             <div class="flex items-center">
                                                 <form action="{{ route('keranjang.kurangi', $id) }}" method="POST" class="inline">
                                                     @csrf
                                                     <button type="submit"
                                                         class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">-</button>
                                                 </form>
-                                                <span class="mx-2">{{ $item['qty'] }}</span>
+                                                <form action="{{ route('keranjang.tambah') }}" method="POST" class="mx-2 inline">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $id }}">
+                                                    <input type="hidden" name="nama" value="{{ $item['nama'] }}">
+                                                    <input type="hidden" name="harga" value="{{ $item['harga'] }}">
+                                                    <input type="number" name="qty" value="{{ $item['qty'] }}" min="1"
+                                                        class="w-16 rounded border border-gray-300 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                                                        onchange="this.form.submit()">
+                                                </form>
                                                 <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $id }}">
@@ -44,7 +52,7 @@
                                                         class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">+</button>
                                                 </form>
                                             </div>
-                                            <div class="text-end md:order-4 md:w-32">
+                                            <div class="mt-5 text-end md:order-4 md:w-32">
                                                 <p class="text-base font-bold text-gray-900 dark:text-white">Rp {{ number_format($subtotal, 0, ',', '.') }}</p>
                                             </div>
                                         </div>
