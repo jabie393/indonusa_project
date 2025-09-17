@@ -2,13 +2,13 @@
     <div class="mx-auto max-w-screen-xl">
         <div class="md:flex md:justify-between">
             <div class="mb-6 md:mb-0">
-                <a href="https://flowbite.com" class="flex items-center">
+                <a href="/" class="flex items-center">
                     <x-application-logo class="mr-3 h-8" />
                     <span class="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
                         Indonusa Jaya Bersama
                         <br />
                         <span>
-                            <p class="font-normal text-sm lg:text-base text-gray-500 dark:text-gray-400">
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400 lg:text-base">
                                 Supplier of Building Materials & Hardware Tools
                             </p>
                         </span>
@@ -45,7 +45,7 @@
                         </span>
                     </h2>
                 </div>
-                <div class="mt-4 flex space-x-6 sm:mt-0 justify-end">
+                <div class="mt-4 flex justify-end space-x-6 sm:mt-0">
                     <a href="#" class="text-gray-500 hover:text-gray-900 dark:hover:text-white">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path fill-rule="evenodd"

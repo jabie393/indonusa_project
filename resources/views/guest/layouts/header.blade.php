@@ -7,7 +7,7 @@
         <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
             <a href="/" class="flex items-center">
                 <x-application-logo class="mr-3 h-6 sm:h-9"></x-application-logo>
-                <span class="self-center hidden md:block whitespace-nowrap text-sm font-semibold text-white md:text-xl">INDONUSA JAYA BERSAMA</span>
+                <span class="hidden self-center whitespace-nowrap text-sm font-semibold text-white md:block md:text-xl">INDONUSA JAYA BERSAMA</span>
             </a>
             @if (Route::has('login'))
                 <div class="flex items-center lg:order-2">
@@ -22,12 +22,12 @@
                     @endif
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="inline-block rounded-sm border border-[#19140035] bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                            class="hidden rounded-sm border border-[#19140035] bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b] lg:inline-block">
                             Dashboard
                         </a>
                     @else
                         <a href="{{ route('login') }}"
-                            class="inline-block rounded-sm border border-transparent bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
+                            class="hidden rounded-sm border border-transparent bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A] lg:inline-block">
                             Log in
                         </a>
                     @endauth
@@ -47,31 +47,44 @@
                         </svg>
                     </button>
                 </div>
-            @endif
-            <div class="hidden w-full items-center justify-between lg:order-1 lg:flex lg:w-auto lg:bg-transparent" id="mobile-menu-2">
-                <ul class="mt-4 flex flex-col rounded-lg bg-white font-medium lg:mt-0 lg:flex-row lg:space-x-8 lg:bg-transparent">
-                    <li>
-                        <a href="{{ url('/#') }}"
-                            class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
-                            aria-current="page">Home</a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/#about') }}"
-                            class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">About
-                            Us</a>
-                    </li>
-                    <li>
-                        <a href="{{ url('/#layanan') }}"
-                            class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Layanan</a>
-                    </li>
-                    <li>
-                        <a href="{{ route('order') }}"
-                            class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
-                    </li>
+                <div class="hidden w-full items-center justify-between lg:order-1 lg:flex lg:w-auto lg:bg-transparent" id="mobile-menu-2">
+                    <ul class="mt-4 flex flex-col rounded-lg bg-white font-medium lg:mt-0 lg:flex-row lg:space-x-8 lg:bg-transparent">
+                        <li>
+                            <a href="{{ url('/#') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                                aria-current="page">Home</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('/#about') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">About
+                                Us</a>
+                        </li>
+                        <li>
+                            <a href="{{ url('/#layanan') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Layanan</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('order') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
+                        </li>
+                        <li>
+                            @auth
+                                <a href="{{ url('/dashboard') }}"
+                                    class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:hidden lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
+                                    Dashboard
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}"
+                                    class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:hidden lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
+                                    Log in
+                                </a>
+                            @endauth
+                        </li>
 
-                </ul>
-            </div>
+                    </ul>
+                </div>
         </div>
+        @endif
 
     </nav>
 </header>
