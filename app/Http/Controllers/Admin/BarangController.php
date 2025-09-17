@@ -54,18 +54,21 @@ class BarangController extends Controller
         ]);
 
         $barang = Barang::findOrFail($id);
+        $oldGambar = $barang->gambar; // Simpan path gambar lama
+
         $barang->update($validated);
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($barang->gambar && \Storage::disk('public')->exists($barang->gambar)) {
-                \Storage::disk('public')->delete($barang->gambar);
-            }
             // Upload gambar baru
             $folder = 'barang/' . $barang->id;
             $path = $request->file('gambar')->store($folder, 'public');
             $barang->gambar = $path;
             $barang->save();
+
+            // Hapus gambar lama jika ada
+            if ($oldGambar && \Storage::disk('public')->exists($oldGambar)) {
+                \Storage::disk('public')->delete($oldGambar);
+            }
         }
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diupdate!');
