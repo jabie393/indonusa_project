@@ -43,9 +43,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/barang', [BarangController::class, function () {
-    return view('admin.barang.index');
-}])->name('barang.index');
 Route::resource('/barang', BarangController::class);
 // End Admin Routes
 

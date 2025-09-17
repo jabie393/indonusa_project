@@ -46,13 +46,15 @@
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="px-4 py-3 flex items-center justify-end">
-                                <a href="{{ route('barang.edit', $barang->id) }}" type="button"
-                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Edit</a>
+                                <a href="#" type="button"
+                                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                                    data-modal-target="editBarangModal" data-modal-toggle="editBarangModal"
+                                    onclick="openEditModal({{ $barang->id }}, '{{ addslashes($barang->status_listing) }}', '{{ addslashes($barang->kode_barang) }}', '{{ addslashes($barang->nama_barang) }}', '{{ addslashes($barang->kategori) }}', {{ $barang->stok }}, '{{ addslashes($barang->satuan) }}', '{{ addslashes($barang->lokasi) }}', {{ $barang->harga }})">Edit</a>
                                 <form action="{{ route('barang.destroy', $barang->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button"
+                                    <button type="submit"
                                         class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                         onclick="return confirm('Yakin hapus?')">Hapus</button>
                                 </form>
@@ -129,7 +131,8 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <form action="{{ route('barang.store') }}" method="POST" class="p-4 space-y-4" enctype="multipart/form-data">
+                <form action="{{ route('barang.store') }}" method="POST" class="p-4 space-y-4"
+                    enctype="multipart/form-data">
                     @csrf
                     <div>
                         <label for="status_listing"
@@ -204,4 +207,122 @@
         </div>
     </div>
     <!-- End Modal tambah barang -->
+
+    <!-- Modal Edit Barang -->
+    <div id="editBarangModal" tabindex="-1" aria-hidden="true"
+        class="hidden fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-auto overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black bg-opacity-40">
+        <div class="relative w-full max-w-md max-h-full mx-auto">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Edit Barang
+                    </h3>
+                    <button type="button"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="editBarangModal">
+                        <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <form id="editBarangForm" method="POST" class="p-4 space-y-4" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" id="edit_id">
+                    <div>
+                        <label for="edit_status_listing"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status Listing</label>
+                        <select name="status_listing" id="edit_status_listing"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                            <option value="listing">Listing</option>
+                            <option value="non listing">Non Listing</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="edit_kode_barang"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kode Barang</label>
+                        <input type="text" name="kode_barang" id="edit_kode_barang"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_nama_barang"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Barang</label>
+                        <input type="text" name="nama_barang" id="edit_nama_barang"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_kategori"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                        <input type="text" name="kategori" id="edit_kategori"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_stok"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                        <input type="number" name="stok" id="edit_stok"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_satuan"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
+                        <input type="text" name="satuan" id="edit_satuan"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_lokasi"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
+                        <input type="text" name="lokasi" id="edit_lokasi"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_harga"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Harga</label>
+                        <input type="number" name="harga" id="edit_harga"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            required>
+                    </div>
+                    <div>
+                        <label for="edit_gambar"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar
+                            Barang</label>
+                        <input type="file" name="gambar" id="edit_gambar"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            accept="image/*">
+                    </div>
+                    <button type="submit"
+                        class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal Edit Barang -->
+
+    <script>
+        function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, stok, satuan, lokasi, harga) {
+            document.getElementById('edit_id').value = id;
+            document.getElementById('edit_status_listing').value = status_listing;
+            document.getElementById('edit_kode_barang').value = kode_barang;
+            document.getElementById('edit_nama_barang').value = nama_barang;
+            document.getElementById('edit_kategori').value = kategori;
+            document.getElementById('edit_stok').value = stok;
+            document.getElementById('edit_satuan').value = satuan;
+            document.getElementById('edit_lokasi').value = lokasi;
+            document.getElementById('edit_harga').value = harga;
+
+            // Set form action
+            document.getElementById('editBarangForm').action = '/barang/' + id;
+            // Show modal (Flowbite)
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'editBarangModal' }));
+        }
+    </script>
 </x-app-layout>

@@ -18,5 +18,6 @@ class Barang extends Model
         'satuan',
         'lokasi',
         'harga',
+        'gambar',
     ];
 }
