@@ -34,7 +34,15 @@
                                                     <button type="submit"
                                                         class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-gray-300 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100">-</button>
                                                 </form>
-                                                <span class="mx-2">{{ $item['qty'] }}</span>
+                                                <form action="{{ route('keranjang.tambah') }}" method="POST" class="mx-2 inline">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $id }}">
+                                                    <input type="hidden" name="nama" value="{{ $item['nama'] }}">
+                                                    <input type="hidden" name="harga" value="{{ $item['harga'] }}">
+                                                    <input type="number" name="qty" value="{{ $item['qty'] }}" min="1"
+                                                        class="w-16 rounded border border-gray-300 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                                                        onchange="this.form.submit()">
+                                                </form>
                                                 <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $id }}">

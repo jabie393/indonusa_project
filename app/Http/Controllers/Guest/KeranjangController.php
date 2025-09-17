@@ -13,14 +13,20 @@ class KeranjangController extends Controller
         $id = $request->input('id');
         $nama = $request->input('nama');
         $harga = $request->input('harga');
+        $qty = $request->input('qty');
 
         if (isset($keranjang[$id])) {
-            $keranjang[$id]['qty'] += 1;
+            // If qty is present in the request, set it; otherwise, add 1
+            if ($qty !== null) {
+                $keranjang[$id]['qty'] = (int) $qty;
+            } else {
+                $keranjang[$id]['qty'] += 1;
+            }
         } else {
             $keranjang[$id] = [
                 'nama' => $nama,
                 'harga' => $harga,
-                'qty' => 1,
+                'qty' => $qty !== null ? (int) $qty : 1,
             ];
         }
 
