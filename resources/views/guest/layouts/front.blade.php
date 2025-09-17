@@ -7,6 +7,8 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -18,7 +20,7 @@
         @endif
     </head>
 
-    <body class="text-[#1b1b18] flex items-center lg:justify-center min-h-screen flex-col">
+    <body class="flex min-h-screen flex-col items-center text-[#1b1b18] lg:justify-center">
         {{-- Header --}}
         @include('guest.layouts.header')
 
@@ -28,7 +30,7 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
-        
+
         @include('guest.layouts.footer')
     </body>
 
