@@ -22,6 +22,20 @@ Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])-
 Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
 Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
 
+
+Route::get('storage/{filename}', function ($filename) {
+    $path = storage_path('app/public/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    return Response::make($file, 200)->header("Content-Type", $type);
+});
+
 // Admin Routes
 Route::get('/dashboard', function () {
     return view('admin.dashboard');

@@ -16,8 +16,8 @@
                             <div class="h-56 w-full">
                                 <a href="#">
                                     @if (!empty($barang->gambar))
-                                        <img class="mx-auto h-full dark:hidden" src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
-                                        <img class="mx-auto hidden h-16 dark:block" src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                        <img class="mx-auto h-full dark:hidden" src="{{ url('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                        <img class="mx-auto hidden h-16 dark:block" src="{{ url('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
                                     @else
                                         <img class="mx-auto h-full dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
                                         <img class="mx-auto hidden h-16 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="" />
