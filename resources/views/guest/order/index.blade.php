@@ -15,7 +15,13 @@
                         <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                             <div class="h-56 w-full">
                                 <a href="#">
-                                    <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                    @if (!empty($barang->gambar))
+                                        <img class="mx-auto h-full dark:hidden" src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                        <img class="mx-auto hidden h-16 dark:block" src="{{ asset('storage/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                    @else
+                                        <img class="mx-auto h-full dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                        <img class="mx-auto hidden h-16 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="" />
+                                    @endif
                                 </a>
                             </div>
                             <div class="pt-6">

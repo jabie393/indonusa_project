@@ -21,7 +21,7 @@
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                    <th scope="col" class="px-4 py-3">Status Listing</th>
+                        <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
                         <th scope="col" class="px-4 py-3">Kategori</th>
@@ -35,7 +35,7 @@
                 <tbody class="h-min-[300px]">
                     @forelse ($barangs as $barang)
                         <tr class="border-b dark:border-gray-700">
-                        <td class="px-4 py-3">{{ $barang->status_listing }}</td>
+                            <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row" class="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $barang->kode_barang }}
                             </td>
@@ -129,7 +129,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <form action="{{ route('barang.store') }}" method="POST" class="p-4 space-y-4">
+                <form action="{{ route('barang.store') }}" method="POST" class="p-4 space-y-4" enctype="multipart/form-data">
                     @csrf
                     <div>
                         <label for="status_listing"
@@ -189,6 +189,13 @@
                         <input type="number" name="harga" id="harga"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             required>
+                    </div>
+                    <div>
+                        <label for="gambar" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gambar
+                            Barang</label>
+                        <input type="file" name="gambar" id="gambar"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                            accept="image/*">
                     </div>
                     <button type="submit"
                         class="w-full text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Simpan</button>
