@@ -33,5 +33,5 @@ jobs:
           username: ${{ secrets.HOSTINGER_USER }}
           password: ${{ secrets.HOSTINGER_PASS }}
           local_path: './public/build'
-          remote_path: '/home/u189392667/domains/fahd.my.id/public_html/warehouse/public/build'
+          remote_path: '/home/u189392667/domains/fahd.my.id/public_html/warehouse/public/'
           delete_remote_files: true
