@@ -5,6 +5,8 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminPTController;
+
 
 // Guest Routes
 Route::get('/', function () {
@@ -52,5 +54,32 @@ Route::get('/barang', [BarangController::class, function () {
 }])->name('barang.index');
 Route::resource('/barang', BarangController::class);
 // End Admin Routes
+
+
+// Admin PT
+Route::middleware(['auth'])->group(function () {
+    Route::middleware(['role:admin_PT'])
+        ->prefix('admin')
+        ->name('admin.')
+        ->group(function () {
+            // Dashboard
+            Route::get('/dashboard', [AdminPTController::class, 'dashboard'])
+                ->name('dashboard');
+
+            // Orders
+            Route::get('/orders/incoming', [AdminPTController::class, 'incoming'])
+                ->name('orders.incoming');
+            Route::get('/orders/{id}', [AdminPTController::class, 'show'])
+                ->name('orders.show');
+            Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])
+                ->name('orders.approve');
+            Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])
+                ->name('orders.reject');
+            Route::get('/orders/history', [AdminPTController::class, 'history'])
+                ->name('orders.history');
+        });
+});
+
+
 
 require __DIR__ . '/auth.php';
