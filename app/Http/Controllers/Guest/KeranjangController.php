@@ -14,6 +14,7 @@ class KeranjangController extends Controller
         $nama = $request->input('nama');
         $harga = $request->input('harga');
         $qty = $request->input('qty');
+        $gambar = $request->input('gambar'); // Ambil gambar dari request
 
         if (isset($keranjang[$id])) {
             // If qty is present in the request, set it; otherwise, add 1
@@ -27,6 +28,7 @@ class KeranjangController extends Controller
                 'nama' => $nama,
                 'harga' => $harga,
                 'qty' => $qty !== null ? (int) $qty : 1,
+                'gambar' => $gambar, // add this line
             ];
         }
 
