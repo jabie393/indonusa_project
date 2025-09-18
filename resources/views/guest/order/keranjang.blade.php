@@ -24,11 +24,11 @@
                                     <div class="space-y-4 md:flex md:items-center md:gap-6 md:space-y-0">
                                         <a href="#" class="md:order-0 shrink-0">
                                             @if (!empty($barang->gambar))
-                                                <img class="mx-auto h-full dark:hidden" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
-                                                <img class="mx-auto hidden h-16 dark:block" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                                <img class="h-20 w-20 dark:hidden" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
+                                                <img class="hidden h-20 w-20 dark:block" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
                                             @else
-                                                <img class="mx-auto h-full dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
-                                                <img class="mx-auto hidden h-16 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="" />
+                                                <img class="h-20 w-20 dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
+                                                <img class="hidden h-20 w-20 dark:block" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front-dark.svg" alt="" />
                                             @endif
                                         </a>
                                         <div class="flex w-full justify-between">
