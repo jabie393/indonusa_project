@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminPTController extends Controller
 {
-    
+
     public function dashboard()
     {
         $pending = Order::where('status', 'pending')->count();
@@ -25,7 +25,7 @@ class AdminPTController extends Controller
         $orders = Order::where('status','pending')->with(['items.barang','sales'])->get();
         return view('admin.orders.incoming', compact('orders'));
 
-        
+
     }
 
     public function show($id)

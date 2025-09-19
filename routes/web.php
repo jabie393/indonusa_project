@@ -36,7 +36,7 @@ Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->na
 
 // Admin Routes
 Route::get('/dashboard', function () {
-    return view('admin.dashboard');
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -50,28 +50,20 @@ Route::resource('/barang', BarangController::class);
 
 
 // Admin PT
+// Dashboard untuk SEMUA admin (auth saja, tanpa filter role)
 Route::middleware(['auth'])->group(function () {
-    Route::middleware(['role:admin_PT'])
-        ->prefix('admin')
-        ->name('admin.')
-        ->group(function () {
-            // Dashboard
-            Route::get('/dashboard', [AdminPTController::class, 'dashboard'])
-                ->name('dashboard');
-
-            // Orders
-            Route::get('/orders/incoming', [AdminPTController::class, 'incoming'])
-                ->name('orders.incoming');
-            Route::get('/orders/{id}', [AdminPTController::class, 'show'])
-                ->name('orders.show');
-            Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])
-                ->name('orders.approve');
-            Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])
-                ->name('orders.reject');
-            Route::get('/orders/history', [AdminPTController::class, 'history'])
-                ->name('orders.history');
-        });
+    Route::get('/dashboard', [AdminPTController::class, 'dashboard'])->name('dashboard');
 });
+
+// Route lain khusus admin_PT
+Route::middleware(['auth', 'role:admin_PT'])->group(function () {
+    Route::get('/orders/incoming', [AdminPTController::class, 'incoming'])->name('orders.incoming');
+    Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
+    Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
+    Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
+});
+
 
 
 
