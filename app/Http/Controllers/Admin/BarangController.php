@@ -25,7 +25,13 @@ class BarangController extends Controller
             'lokasi' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'nullable|string', // validasi deskripsi
         ]);
+
+        // Set default deskripsi jika tidak diisi
+        if (empty($validated['deskripsi'])) {
+            $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
+        }
 
         $barang = Barang::create($validated);
 
@@ -51,7 +57,12 @@ class BarangController extends Controller
             'lokasi' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'nullable|string', // validasi deskripsi
         ]);
+
+        if (empty($validated['deskripsi'])) {
+            $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
+        }
 
         $barang = Barang::findOrFail($id);
         $oldGambar = $barang->gambar; // Simpan path gambar lama

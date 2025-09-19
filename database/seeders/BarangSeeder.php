@@ -22,6 +22,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak A1',
                 'status_listing' => 'listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
                 'kode_barang' => 'BRG002',
@@ -32,6 +33,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak B2',
                 'status_listing' => 'non listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
                 'kode_barang' => 'BRG003',
@@ -42,6 +44,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Rim',
                 'lokasi' => 'Rak C3',
                 'status_listing' => 'listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
                 'kode_barang' => 'BRG004',
@@ -52,6 +55,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak D4',
                 'status_listing' => 'non listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
                 'kode_barang' => 'BRG005',
@@ -62,6 +66,7 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Pcs',
                 'lokasi' => 'Rak E5',
                 'status_listing' => 'listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
         ];
 

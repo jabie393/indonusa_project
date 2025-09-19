@@ -46,7 +46,7 @@
                                 <a href="#" type="button"
                                     class="mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     data-modal-target="editBarangModal" data-modal-toggle="editBarangModal"
-                                    onclick="openEditModal({{ $barang->id }}, '{{ addslashes($barang->status_listing) }}', '{{ addslashes($barang->kode_barang) }}', '{{ addslashes($barang->nama_barang) }}', '{{ addslashes($barang->kategori) }}', {{ $barang->stok }}, '{{ addslashes($barang->satuan) }}', '{{ addslashes($barang->lokasi) }}', {{ $barang->harga }})">Edit</a>
+                                    onclick="openEditModal({{ $barang->id }}, '{{ addslashes($barang->status_listing) }}', '{{ addslashes($barang->kode_barang) }}', '{{ addslashes($barang->nama_barang) }}', '{{ addslashes($barang->kategori) }}', {{ $barang->stok }}, '{{ addslashes($barang->satuan) }}', '{{ addslashes($barang->lokasi) }}', {{ $barang->harga }}, '{{ addslashes($barang->deskripsi) }}')">Edit</a>
                                 <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -175,6 +175,12 @@
                                 required>
                         </div>
                         <div class="sm:col-span-2">
+                            <label for="deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                            <textarea name="deskripsi" id="deskripsi"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
+                        </div>
+                        <div class="sm:col-span-2">
                             <label for="gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                 Barang</label>
                             <input type="file" name="gambar" id="gambar"
@@ -268,6 +274,12 @@
                                 required>
                         </div>
                         <div class="sm:col-span-2">
+                            <label for="edit_deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                            <textarea name="deskripsi" id="edit_deskripsi"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
+                        </div>
+                        <div class="sm:col-span-2">
                             <label for="edit_gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                 Barang</label>
                             <input type="file" name="gambar" id="edit_gambar"
@@ -284,7 +296,7 @@
     <!-- End Modal Edit Barang -->
 
     <script>
-        function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, stok, satuan, lokasi, harga) {
+        function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, stok, satuan, lokasi, harga, deskripsi = '') {
             document.getElementById('edit_id').value = id;
             document.getElementById('edit_status_listing').value = status_listing;
             document.getElementById('edit_kode_barang').value = kode_barang;
@@ -294,6 +306,7 @@
             document.getElementById('edit_satuan').value = satuan;
             document.getElementById('edit_lokasi').value = lokasi;
             document.getElementById('edit_harga').value = harga;
+            document.getElementById('edit_deskripsi').value = deskripsi;
 
             // Set form action
             document.getElementById('editBarangForm').action = '/barang/' + id;
