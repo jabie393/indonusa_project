@@ -16,9 +16,9 @@
                                 </p>
                             </div>
                             <div class="space-x-2">
-                                <a href="{{ route('admin.orders.show',$order->id) }}"
+                                <a href="{{ route('orders.show',$order->id) }}"
                                    class="px-3 py-1 bg-blue-500 text-white rounded">Detail</a>
-                                <form action="{{ route('admin.orders.approve',$order->id) }}" method="POST" class="inline-block">
+                                <form action="{{ route('orders.approve',$order->id) }}" method="POST" class="inline-block">
                                     @csrf
                                     <button class="px-3 py-1 bg-green-600 text-white rounded">Approve</button>
                                 </form>
@@ -26,7 +26,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <form action="{{ route('admin.orders.reject',$order->id) }}" method="POST">
+                            <form action="{{ route('orders.reject',$order->id) }}" method="POST">
                                 @csrf
                                 <input type="text" name="reason" placeholder="Alasan penolakan"
                                        class="border rounded p-2 w-2/3 dark:bg-gray-700 dark:text-gray-200" required>
