@@ -106,5 +106,5 @@
     @include('components.barang-modal-edit')
 
     <!-- Js -->
-    <script src="{{ asset('js/admin/barang.js') }}"></script>
+    @vite(['resources/js/barang.js'])
 </x-app-layout>

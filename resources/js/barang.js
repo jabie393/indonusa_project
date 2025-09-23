@@ -17,3 +17,5 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
         detail: 'editBarangModal'
     }));
 }
+
+window.openEditModal = openEditModal;
