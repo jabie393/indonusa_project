@@ -14,7 +14,7 @@
                     @foreach ($barangs as $barang)
                         <div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                             <div class="h-56 w-full">
-                                <a href="#">
+                                <a href="{{ url('/product/' . $barang->id) }}">
                                     @if (!empty($barang->gambar))
                                         <img class="mx-auto h-full dark:hidden" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
                                         <img class="mx-auto hidden h-16 dark:block" src="{{ url('files/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" />
@@ -25,7 +25,6 @@
                                 </a>
                             </div>
                             <div class="pt-6">
-
                                 <a href="#" class="text-sm font-semibold leading-tight text-gray-900 hover:underline dark:text-white md:text-lg">{{ $barang->nama_barang }}</a>
                                 <p class="text-md font-extrabold leading-tight text-gray-900 dark:text-white md:text-2xl">Rp {{ number_format($barang->harga, 0, ',', '.') }}</p>
                                 <div class="mt-4 flex items-center justify-start gap-4">

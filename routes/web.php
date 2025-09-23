@@ -6,7 +6,7 @@ use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
-
+use App\Http\Controllers\Guest\ProductController;
 
 // Guest Routes
 Route::get('/', function () {
@@ -25,14 +25,18 @@ Route::get('files/{path}', function ($path) {
 
     return response()->file($file);
 })->where('path', '.*');
-// End guest routes
 
+// Route::get('/product', [ProductController::class, 'index'])->name('product');
+Route::get('/product/{id}', [ProductController::class, 'barang'])->name('product.barang');
 
 Route::post('/keranjang/tambah', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
 Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
 Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])->name('keranjang.kurangi');
 Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
 Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
+
+// End guest routes
+
 
 // Admin Routes
 Route::get('/dashboard', function () {
