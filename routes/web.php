@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::resource('/purchase-request', BarangController::class);
 Route::resource('/barang', BarangController::class);
 // End Admin Routes
 
