@@ -25,7 +25,8 @@
                                 </a>
                             </div>
                             <div class="pt-6">
-                                <a href="#" class="text-sm font-semibold leading-tight text-gray-900 hover:underline dark:text-white md:text-lg">{{ $barang->nama_barang }}</a>
+                                <a href="{{ url('/product/' . $barang->id) }}"
+                                    class="text-sm font-semibold leading-tight text-gray-900 hover:underline dark:text-white md:text-lg">{{ $barang->nama_barang }}</a>
                                 <p class="text-md font-extrabold leading-tight text-gray-900 dark:text-white md:text-2xl">Rp {{ number_format($barang->harga, 0, ',', '.') }}</p>
                                 <div class="mt-4 flex items-center justify-start gap-4">
                                     <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}"
