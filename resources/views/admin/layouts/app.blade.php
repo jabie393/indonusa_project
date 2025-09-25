@@ -28,15 +28,15 @@
         </script>
     </head>
 
-    
+
 
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             {{-- @include('layouts.navigation') --}}
 
             <!-- Page Heading -->
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <header class="bg-white shadow dark:bg-gray-800">
+                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
                     {{-- {{ $header }} --}}
 
                     @include('admin.layouts.header')
@@ -45,8 +45,10 @@
             </header>
 
             <!-- Page Content -->
-            <main class="p-4 md:ml-64 h-auto pt-10">
-                @include('admin.layouts.sidebar')
+            <main class="h-auto p-4 pt-10 md:ml-64">
+                <div id="sidebar">
+                    @include('admin.layouts.sidebar')
+                </div>
                 <div id="main-content">
                     {{ $slot }}
                 </div>
@@ -54,6 +56,8 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        @vite('node_modules/flowbite/dist/flowbite.min.js')
+        @vite('resources/js/ajax.js')
     </body>
 
 </html>
