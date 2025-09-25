@@ -43,7 +43,7 @@
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="flex items-center justify-end px-4 py-3">
-                                <a href="#"
+                                <a href="#" data-modal-target="editBarangModal" data-modal-toggle="editBarangModal"
                                     class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
                                     data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}" data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
