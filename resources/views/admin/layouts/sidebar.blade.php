@@ -61,19 +61,6 @@
                 </a>
             </li>
 
-            {{-- Barang --}}
-            <li>
-                <a href="{{ route('purchase-request.index') }}"
-                    class="{{ request()->routeIs('purchase-request.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg aria-hidden="true"
-                        class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M4 4h12v12H4z"></path>
-                    </svg>
-                    <span class="ml-3">Puchase Request</span>
-                </a>
-            </li>
-
             {{-- Incoming Orders --}}
             <li>
                 <a href="{{ route('orders.incoming') }}"
