@@ -10,7 +10,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::all(); // ambil semua barang
+        $barangs = Barang::where('status_barang', 'masuk')->get(); // hanya yang statusnya masuk
         return view('admin.barang.index', compact('barangs'));
     }
     public function store(Request $request)

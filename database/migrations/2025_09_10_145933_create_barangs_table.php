@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
+            $table->enum('status_barang', ['ditinjau', 'masuk'])->default('ditinjau');
             $table->string('status_listing')->default('listing');
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');

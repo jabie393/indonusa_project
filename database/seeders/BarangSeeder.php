@@ -15,6 +15,7 @@ class BarangSeeder extends Seeder
         $barangs = [
             [
                 'kode_barang' => 'BRG001',
+                'status_barang' => 'masuk',
                 'nama_barang' => 'Laptop Asus',
                 'kategori' => 'Elektronik',
                 'stok' => 10,
@@ -26,6 +27,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'kode_barang' => 'BRG002',
+                'status_barang' => 'masuk',
                 'nama_barang' => 'Printer Canon',
                 'kategori' => 'Elektronik',
                 'stok' => 5,
@@ -37,6 +39,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'kode_barang' => 'BRG003',
+                'status_barang' => 'masuk',
                 'nama_barang' => 'Kertas A4',
                 'kategori' => 'ATK',
                 'stok' => 100,
@@ -48,6 +51,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'kode_barang' => 'BRG004',
+                'status_barang' => 'masuk',
                 'nama_barang' => 'Mouse Logitech',
                 'kategori' => 'Elektronik',
                 'stok' => 20,
@@ -59,10 +63,23 @@ class BarangSeeder extends Seeder
             ],
             [
                 'kode_barang' => 'BRG005',
+                'status_barang' => 'masuk',
                 'nama_barang' => 'Pulpen Biru',
                 'kategori' => 'ATK',
                 'stok' => 200,
                 'harga' => 3500,
+                'satuan' => 'Pcs',
+                'lokasi' => 'Rak E5',
+                'status_listing' => 'listing',
+                'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
+            ],
+            [
+                'kode_barang' => 'BRG006',
+                'status_barang' => 'ditinjau',
+                'nama_barang' => 'pensil',
+                'kategori' => 'ATK',
+                'stok' => 210,
+                'harga' => 3000,
                 'satuan' => 'Pcs',
                 'lokasi' => 'Rak E5',
                 'status_listing' => 'listing',

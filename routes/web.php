@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PurchaseRequestController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
@@ -49,7 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('/purchase-request', BarangController::class);
+Route::resource('/purchase-request', PurchaseRequestController::class);
 Route::resource('/barang', BarangController::class);
 // End Admin Routes
 
