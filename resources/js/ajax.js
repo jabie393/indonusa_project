@@ -4,9 +4,10 @@ $(document).on('click', '.ajax-link', function (e) {
     var url = $(this).attr('href');
     $.get(url, function (data) {
         var html = $('<div>').html(data);
-        var newContent = html.find('#main-content').html();
-        $('#main-content').html(newContent ? newContent : data);
-        // Update the browser URL
+        var newMain = html.find('#main-content').html();
+        var newSidebar = html.find('#sidebar').html();
+        if (newMain) $('#main-content').html(newMain);
+        if (newSidebar) $('#sidebar').html(newSidebar);
         history.pushState({ url: url }, '', url);
     });
 });
@@ -16,8 +17,10 @@ window.onpopstate = function (event) {
     if (event.state && event.state.url) {
         $.get(event.state.url, function (data) {
             var html = $('<div>').html(data);
-            var newContent = html.find('#main-content').html();
-            $('#main-content').html(newContent ? newContent : data);
+            var newMain = html.find('#main-content').html();
+            var newSidebar = html.find('#sidebar').html();
+            if (newMain) $('#main-content').html(newMain);
+            if (newSidebar) $('#sidebar').html(newSidebar);
         });
     }
 };
