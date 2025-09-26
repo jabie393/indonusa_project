@@ -20,6 +20,7 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
 
 window.openEditModal = openEditModal;
 
+
 // Use delegated event handler for dynamically loaded content
 $(document).on('click', '.edit-barang-btn', function (e) {
     e.preventDefault();
