@@ -24,16 +24,29 @@ class PurchaseRequestController extends Controller
     // Simpan barang baru
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
+        $validated = $request->validate([
+            'status_listing' => 'required|in:listing,non listing',
+            'kode_barang' => 'required|string|max:255',
+            'nama_barang' => 'required|string|max:255',
+            'kategori' => 'required|string|max:255',
             'stok' => 'required|integer',
+            'satuan' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
             'harga' => 'required|numeric',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'deskripsi' => 'nullable|string',
         ]);
 
-        $validated = $request->all();
-        $validated['status_barang'] = 'ditinjau'; // Set status_barang ditinjau
+        $validated['status_barang'] = 'ditinjau';
 
-        Barang::create($validated);
+        $barang = Barang::create($validated);
+
+        if ($request->hasFile('gambar')) {
+            $folder = 'barang/' . $barang->id;
+            $path = $request->file('gambar')->store($folder, 'public');
+            $barang->gambar = $path;
+            $barang->save();
+        }
 
         return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil ditambahkan.');
     }
