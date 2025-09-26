@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 
-class BarangController extends Controller
+class AddStockController extends Controller
 {
     public function index()
     {
         $barangs = Barang::where('status_barang', 'masuk')->get(); // hanya yang statusnya masuk
-        return view('admin.barang.index', compact('barangs'));
+        return view('admin.add-stock.index', compact('barangs'));
     }
     public function store(Request $request)
     {
@@ -33,8 +33,6 @@ class BarangController extends Controller
             $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
         }
 
-        $validated['status_barang'] = 'masuk'; // Set status_barang masuk
-
         $barang = Barang::create($validated);
 
         if ($request->hasFile('gambar')) {
@@ -44,7 +42,7 @@ class BarangController extends Controller
             $barang->save();
         }
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
@@ -84,7 +82,7 @@ class BarangController extends Controller
             }
         }
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil diupdate!');
+        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil diupdate!');
     }
 
     public function destroy($id)
@@ -100,6 +98,6 @@ class BarangController extends Controller
         // Hapus data barang di database
         $barang->delete();
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
+        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil dihapus!');
     }
 }

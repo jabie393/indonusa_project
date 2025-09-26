@@ -45,7 +45,7 @@
                                     data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}">
                                     Edit
                                 </a>
-                                <form action="{{ route('barang.destroy', $barang->id) }}" method="POST"
+                                <form action="{{ route('item-status.destroy', $barang->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     @method('DELETE')

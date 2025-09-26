@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PurchaseRequestController;
+use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\ItemStatusController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Guest\OrderController;
@@ -52,7 +53,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('/purchase-request', PurchaseRequestController::class);
+Route::resource('/add-stock', AddStockController::class);
 Route::resource('/item-status', ItemStatusController::class);
+
 Route::resource('/barang', BarangController::class);
 // End Admin Routes
 

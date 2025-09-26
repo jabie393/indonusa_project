@@ -30,49 +30,11 @@ class PurchaseRequestController extends Controller
             'harga' => 'required|numeric',
         ]);
 
-        $data = $request->all();
-        $data['status_barang'] = 'ditinjau'; // Set status_barang ditinjau
+        $validated = $request->all();
+        $validated['status_barang'] = 'ditinjau'; // Set status_barang ditinjau
 
-        Barang::create($data);
+        Barang::create($validated);
 
         return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil ditambahkan.');
-    }
-
-    // Tampilkan detail barang
-    public function show($id)
-    {
-        $barang = Barang::findOrFail($id);
-        return view('admin.purchase-request.show', compact('barang'));
-    }
-
-    // Tampilkan form edit barang
-    public function edit($id)
-    {
-        $barang = Barang::findOrFail($id);
-        return view('admin.purchase-request.edit', compact('barang'));
-    }
-
-    // Update barang
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'stok' => 'required|integer',
-            'harga' => 'required|numeric',
-        ]);
-
-        $barang = Barang::findOrFail($id);
-        $barang->update($request->all());
-
-        return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil diupdate.');
-    }
-
-    // Hapus barang
-    public function destroy($id)
-    {
-        $barang = Barang::findOrFail($id);
-        $barang->delete();
-
-        return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil dihapus.');
     }
 }
