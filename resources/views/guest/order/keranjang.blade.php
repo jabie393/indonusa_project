@@ -1,7 +1,7 @@
 <x-front-layout>
     <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center bg-[#D9D9D9] opacity-100 transition-opacity lg:grow">
 
-        <div class="mx-auto w-full max-w-screen-xl px-4 2xl:px-0">
+        <div class="mx-auto w-full max-w-(--breakpoint-xl) px-4 2xl:px-0">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">Keranjang</h2>
             @if (empty($keranjang))
                 <p>Keranjang kosong.</p>

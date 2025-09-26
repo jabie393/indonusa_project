@@ -3,7 +3,7 @@
         @if (empty($barang))
             <p class="text-gray-500">Barang tidak ditemukan.</p>
         @else
-            <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+            <div class="mx-auto max-w-(--breakpoint-xl) px-4 2xl:px-0">
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
                     <div class="mx-auto max-w-md shrink-0 lg:max-w-lg">
                         @if (!empty($barang->gambar))
