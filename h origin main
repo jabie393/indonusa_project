@@ -1,0 +1,164 @@
+* [33m7187ef2[m[33m ([m[1;36mHEAD[m[33m)[m action test
+* [33mbde3fe4[m run
+* [33mcdc139d[m Enhance PurchaseRequestController validation and image upload; update package dependencies
+*   [33mb0a6e7b[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[32m|[m[33m\[m  
+[32m|[m * [33m175b9c6[m change tambah modal
+[32m|[m * [33mdaa8947[m update tailwind
+[32m|[m * [33m12ab517[m changes in tailwind config
+* [33m|[m [33m6bdf1ac[m Add AddStockController with CRUD operations and related views; update routes and sidebar navigation
+[33m|[m[33m/[m  
+* [33mb70d833[m Add ItemStatusController and related views; update PurchaseRequestController to set item status
+* [33m16e78e3[m removed ajax
+* [33ma6f8e6d[m Remove 'Purchase Request' link from sidebar navigation
+*   [33mcdd8b6e[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[34m|[m[35m\[m  
+[34m|[m * [33m5c4953c[m change js code for button
+[34m|[m * [33m628a40a[m Update Flowbite script source to use CDN and remove redundant local reference
+[34m|[m * [33m9dfedf2[m Add Flowbite library to Vite configuration for enhanced UI components
+[34m|[m * [33m1c91210[m Enhance AJAX functionality by updating sidebar and main content handling; add AJAX links to sidebar items and include ajax.js in Vite configuration.
+[34m|[m * [33m1622f5f[m Fix product link in order list to point to the correct product URL
+* [35m|[m [33mcf8d08e[m Refactor BarangController to filter items by status and add PurchaseRequestController with CRUD operations for purchase requests
+[35m|[m[35m/[m  
+* [33m588fbcc[m + js
+* [33mfb129c9[m purchase request
+* [33m7f50308[m Add product page
+* [33m5cf36ba[m refactoring
+* [33m2a6c6ca[m update routes
+* [33m1db254e[m refactoring barang source code
+* [33m674f051[m add desciption
+*   [33m9621137[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[36m|[m[1;31m\[m  
+[36m|[m *   [33med96466[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[36m|[m [1;32m|[m[1;33m\[m  
+[36m|[m * [1;33m|[m [33m45cb4d6[m modal update
+* [1;33m|[m [1;33m|[m [33mb69fb47[m update routes
+[1;33m|[m [1;33m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;33m|[m   
+* [1;33m|[m [33mc497ed1[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;34m|[m[1;33m\[m[1;33m|[m 
+[1;34m|[m * [33mfff2959[m add gambar field to keranjang and update image display logic
+[1;34m|[m * [33m1400418[m fix keranjang images
+[1;34m|[m * [33mbcc6526[m keranjang image
+[1;34m|[m * [33m2a24ec7[m fixed path edit
+[1;34m|[m * [33m9ab10c6[m CRUD Update
+[1;34m|[m * [33m47b98b0[m fix image routes
+* [1;35m|[m [33m6430e6d[m orders admin pt
+[1;35m|[m[1;35m/[m  
+* [33m3ffa8a4[m fix
+* [33mc0d680e[m deploy.yaml fix
+* [33m70737b2[m update lagi
+* [33ma77c35f[m deploy.yaml
+* [33m5ece14b[m Delete public/build directory
+* [33m76ef3c8[m p
+* [33m8fca5dc[m url img
+* [33mfba40e2[m build
+* [33mf2e084a[m buid
+* [33m3c46c5b[m responsive design
+*   [33mca3694d[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;36m|[m[31m\[m  
+[1;36m|[m *   [33m0e69e6c[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;36m|[m [32m|[m[33m\[m  
+[1;36m|[m * [33m|[m [33m14229e4[m Add auto deploy workflow
+[1;36m|[m * [33m|[m [33m4e71eea[m Add GitHub Actions workflow for auto deploy
+* [33m|[m [33m|[m [33me6e35ee[m fixess
+[33m|[m [33m|[m[33m/[m  
+[33m|[m[33m/[m[33m|[m   
+* [33m|[m [33mb1dd0c8[m order page
+* [33m|[m [33m0fb79e7[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[34m|[m[33m\[m[33m|[m 
+[34m|[m * [33m59716ef[m CRD Barang
+[34m|[m *   [33m467fdb7[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[34m|[m [36m|[m[1;31m\[m  
+[34m|[m * [1;31m|[m [33m37aca05[m CRD Barang
+* [1;31m|[m [1;31m|[m [33m53fc172[m update keranjang & header
+[1;31m|[m [1;31m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[1;31m|[m   
+* [1;31m|[m [33mdec6037[m update keranjang
+* [1;31m|[m [33mdb7b9ed[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33m1032c04[m edit
+[1;32m|[m * [33me19b7fc[m Rename Logo.png to logo.png
+[1;32m|[m * [33m09f96b5[m edit
+* [1;33m|[m [33m70ebaa6[m update quantity input
+* [1;33m|[m [33m7f17d84[m hide logo name
+[1;33m|[m[1;33m/[m  
+* [33m529cf6c[m header fix
+* [33mb7f705a[m keranjang
+* [33m8b45cb7[m order page changes
+*   [33mffc7ca1[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33m348db62[m update
+[1;34m|[m * [33mc73a684[m undo
+[1;34m|[m * [33m26c3d26[m move
+[1;34m|[m * [33m4f9ba34[m phar
+[1;34m|[m * [33mec000fe[m p
+[1;34m|[m * [33md186b65[m p
+[1;34m|[m * [33me8b67b7[m Checkout
+* [1;35m|[m [33mefca91f[m change footer
+[1;35m|[m[1;35m/[m  
+* [33mdc119b7[m changes
+*   [33m98419ac[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;36m|[m[31m\[m  
+[1;36m|[m * [33m9b97f83[m harga
+* [31m|[m [33mb9ade59[m front update
+[31m|[m[31m/[m  
+* [33mbdbea1a[m background front
+* [33m8073c66[m p
+* [33m142cada[m update
+* [33mbfc44d8[m added front layout
+* [33mc3c8c5a[m database seeder
+*   [33m27873b2[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[32m|[m[33m\[m  
+[32m|[m * [33mc322c30[m update
+[32m|[m *   [33m533301d[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[32m|[m [34m|[m[35m\[m  
+[32m|[m * [35m|[m [33m23dd990[m dshboard
+* [35m|[m [35m|[m [33mb6d5c03[m added layout folder for guest
+[35m|[m [35m|[m[35m/[m  
+[35m|[m[35m/[m[35m|[m   
+* [35m|[m [33m351b249[m change dir for profile
+* [35m|[m [33m2d404c0[m changes
+* [35m|[m [33m53bf54c[m d
+* [35m|[m [33me79c729[m changes
+* [35m|[m [33me9045aa[m major changes
+[35m|[m[35m/[m  
+*   [33m0ce60ca[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[36m|[m[1;31m\[m  
+[36m|[m *   [33ma2ae98a[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[36m|[m [1;32m|[m[1;33m\[m  
+[36m|[m * [1;33m|[m [33mfad62ce[m menambahkan 1 role
+* [1;33m|[m [1;33m|[m [33m1d58013[m barang
+[1;33m|[m [1;33m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;33m|[m   
+* [1;33m|[m   [33me6b1f08[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;34m|[m[1;35m\[m [1;33m\[m  
+[1;34m|[m * [1;33m\[m   [33m83a84c6[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[1;34m|[m [1;36m|[m[31m\[m [1;33m\[m  
+[1;34m|[m * [31m|[m [1;33m|[m [33m0aadc5f[m update
+* [31m|[m [31m|[m [1;33m|[m [33ma845200[m s
+[31m|[m [31m|[m[31m/[m [1;33m/[m  
+[31m|[m[31m/[m[31m|[m [1;33m|[m   
+* [31m|[m [1;33m|[m [33m4fb8099[m hilmi
+[31m|[m[31m/[m [1;33m/[m  
+* [1;33m/[m [33mfd622d1[m update login style
+[1;33m|[m[1;33m/[m  
+* [33mde5b7dd[m admin
+*   [33mc994f23[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[32m|[m[33m\[m  
+[32m|[m *   [33m4e9ab84[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m * [33mefb2d0d[m logo name
+[32m|[m * [35m|[m [33m22568ea[m menambahkan kolom role
+[32m|[m [35m|[m[35m/[m  
+[32m|[m * [33m68592bb[m added ajax
+[32m|[m * [33m0502354[m updated dashboard
+* [35m|[m [33mcee2d6c[m Your commit message
+[35m|[m[35m/[m  
+*   [33m6e6a669[m Merge branch 'main' of https://github.com/jabie393/indonusa_project
+[36m|[m[1;31m\[m  
+[36m|[m * [33m1409bc9[m tambah login, register, dashboard
+[36m|[m * [33m12c44cc[m Update README.md
+* [1;31m|[m [33md7c8e73[m add login user
+[1;31m|[m[1;31m/[m  
+* [33m2da0f9f[m first commit
