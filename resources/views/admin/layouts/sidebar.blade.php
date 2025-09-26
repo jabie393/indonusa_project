@@ -35,18 +35,34 @@
                 </a>
             </li>
 
-            {{-- Purchase Request --}}
-            <li>
-                <a href="{{ route('purchase-request.index') }}"
-                    class="{{ request()->routeIs('purchase-request.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg aria-hidden="true"
-                        class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M4 4h12v12H4z"></path>
-                    </svg>
-                    <span class="ml-3">Puchase Request</span>
-                </a>
-            </li>
+            {{-- Menu untuk admin_supply --}}
+            @if(in_array(auth()->user()->role, ['admin_supply']))
+                {{-- Purchase Request --}}
+                <li>
+                    <a href="{{ route('purchase-request.index') }}"
+                        class="{{ request()->routeIs('purchase-request.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg aria-hidden="true"
+                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 4h12v12H4z"></path>
+                        </svg>
+                        <span class="ml-3">Puchase Request</span>
+                    </a>
+                </li>
+
+                {{-- Item Status --}}
+                <li>
+                    <a href="{{ route('item-status.index') }}"
+                        class="{{ request()->routeIs('item-status.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <svg aria-hidden="true"
+                            class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 4h12v12H4z"></path>
+                        </svg>
+                        <span class="ml-3">Item Status</span>
+                    </a>
+                </li>
+            @endif
 
             {{-- Barang --}}
             <li>
@@ -61,34 +77,37 @@
                 </a>
             </li>
 
-            {{-- Incoming Orders --}}
-            <li>
-                <a href="{{ route('orders.incoming') }}"
-                    class="{{ request()->routeIs('admin.orders.incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg aria-hidden="true"
-                        class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
-                    </svg>
-                    <span class="ml-3">Incoming Orders</span>
-                </a>
-            </li>
+            {{-- Menu untuk admin_supply --}}
+            @if(in_array(auth()->user()->role, ['admin_PT']))
+                        {{-- Incoming Orders --}}
+                        <li>
+                            <a href="{{ route('orders.incoming') }}"
+                                class="{{ request()->routeIs('admin.orders.incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <svg aria-hidden="true"
+                                    class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
+                                </svg>
+                                <span class="ml-3">Incoming Orders</span>
+                            </a>
+                        </li>
 
 
-            {{-- History Orders --}}
-            <li>
-                <a href="{{ route('orders.history') }}"
-                    class="{{ request()->routeIs('admin.orders.history') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                    <svg aria-hidden="true"
-                        class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                        fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M5 4h10v2H5V4zM5 8h10v2H5V8zM5 12h6v2H5v-2z"></path>
-                    </svg>
-                    <span class="ml-3">History Orders</span>
-                </a>
-            </li>
-        </ul>
-    </div>
+                        {{-- History Orders --}}
+                        <li>
+                            <a href="{{ route('orders.history') }}"
+                                class="{{ request()->routeIs('admin.orders.history') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <svg aria-hidden="true"
+                                    class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M5 4h10v2H5V4zM5 8h10v2H5V8zM5 12h6v2H5v-2z"></path>
+                                </svg>
+                                <span class="ml-3">History Orders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            @endif
 
     <div
         class="hidden absolute bottom-0 left-0 justify-center p-4 space-x-4 w-full lg:flex bg-white dark:bg-gray-800 z-20">

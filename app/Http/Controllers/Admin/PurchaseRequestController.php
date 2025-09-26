@@ -30,7 +30,10 @@ class PurchaseRequestController extends Controller
             'harga' => 'required|numeric',
         ]);
 
-        Barang::create($request->all());
+        $data = $request->all();
+        $data['status_barang'] = 'ditinjau'; // Set status_barang ditinjau
+
+        Barang::create($data);
 
         return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil ditambahkan.');
     }
