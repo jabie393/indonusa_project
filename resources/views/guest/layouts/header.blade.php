@@ -2,9 +2,9 @@
     $keranjang = session('keranjang', []);
     $jumlahKeranjang = collect($keranjang)->sum('qty');
 @endphp
-<header class="sticky left-0 top-0 z-50 w-full bg-gradient-to-r from-[#225A97] to-[#0B1D31]">
+<header class="sticky left-0 top-0 z-50 w-full bg-linear-to-r from-[#225A97] to-[#0B1D31]">
     <nav class="px-4 py-2.5 lg:px-6">
-        <div class="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between">
+        <div class="mx-auto flex max-w-(--breakpoint-xl) flex-wrap items-center justify-between">
             <a href="/" class="flex items-center">
                 <x-application-logo class="mr-3 h-6 sm:h-9"></x-application-logo>
                 <span class="hidden self-center whitespace-nowrap text-sm font-semibold text-white md:block md:text-xl">INDONUSA JAYA BERSAMA</span>

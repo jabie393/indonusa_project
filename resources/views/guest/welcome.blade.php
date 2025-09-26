@@ -1,6 +1,6 @@
 <x-front-layout>
-    <div id="hero" class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center bg-gradient-to-r from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow">
-        <div class="mx-auto grid max-w-screen-xl px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
+    <div id="hero" class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center bg-linear-to-r from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow">
+        <div class="mx-auto grid max-w-(--breakpoint-xl) px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
             <div class="content-cent md:order-0 er order-1 justify-self-start md:col-span-7 md:text-start">
                 <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">Get Your Items
                 </h1>
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-[#D9D9D9] opacity-100 transition-opacity lg:grow" id="about">
-        <div class="mx-auto flex max-w-screen-xl flex-col items-center gap-4 px-4 md:flex-row md:gap-12">
+        <div class="mx-auto flex max-w-(--breakpoint-xl) flex-col items-center gap-4 px-4 md:flex-row md:gap-12">
             <div>
                 <img src="{{ asset('images/components.png') }}" alt="">
             </div>
@@ -45,28 +45,28 @@
             </div>
         </div>
     </div>
-    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-gradient-to-r from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow"
+    <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-linear-to-r from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow"
         id="layanan">
-        <div class="mx-auto flex min-h-[600px] max-w-screen-xl flex-col items-center px-4 py-9 lg:px-6">
-            <div class="mb-8 max-w-screen-md text-center lg:mb-16">
+        <div class="mx-auto flex min-h-[600px] max-w-(--breakpoint-xl) flex-col items-center px-4 py-9 lg:px-6">
+            <div class="mb-8 max-w-(--breakpoint-md) text-center lg:mb-16">
                 <h1 class="mb-4 text-4xl font-bold tracking-tight text-white md:text-6xl">Layanan Kami</h1>
                 <p class="font-light text-white sm:text-xl">
                     Antar barang kamu dengan cepat dan tepat
                 </p>
             </div>
             <div class="grid grid-cols-2 gap-12 space-y-0 lg:grid-cols-4">
-                <div class="flex max-h-72 max-w-72 items-center justify-center bg-gradient-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
+                <div class="flex max-h-72 max-w-72 items-center justify-center bg-linear-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
                     <img src="{{ asset('images/layanan/Fast_delivery.png') }}" alt="">
                 </div>
-                <div class="flex max-h-72 max-w-72 items-center justify-center bg-gradient-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
+                <div class="flex max-h-72 max-w-72 items-center justify-center bg-linear-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
                     <img src="{{ asset('images/layanan/Location.png') }}" alt="">
 
                 </div>
-                <div class="flex max-h-72 max-w-72 items-center justify-center bg-gradient-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
+                <div class="flex max-h-72 max-w-72 items-center justify-center bg-linear-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
                     <img src="{{ asset('images/layanan/parcel_delivery.png') }}" alt="">
 
                 </div>
-                <div class="flex max-h-72 max-w-72 items-center justify-center bg-gradient-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
+                <div class="flex max-h-72 max-w-72 items-center justify-center bg-linear-to-b from-[#FFFFFF] to-[#D9D9D9A6] p-10">
                     <img src="{{ asset('images/layanan/Transporation.png') }}" alt="">
 
                 </div>
