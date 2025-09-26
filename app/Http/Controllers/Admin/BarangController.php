@@ -25,7 +25,7 @@ class BarangController extends Controller
             'lokasi' => 'required|string|max:255',
             'harga' => 'required|numeric',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deskripsi' => 'nullable|string', // validasi deskripsi
+            'deskripsi' => 'nullable|string',
         ]);
 
         // Set default deskripsi jika tidak diisi
