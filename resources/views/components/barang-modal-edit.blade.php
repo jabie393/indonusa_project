@@ -22,7 +22,7 @@
                     </button>
                 </div>
                 <form :action="editFormAction" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
-                    <div class="mb-4 grid gap-4 overflow-auto sm:grid-cols-2">
+                    <div class="mb-4 grid h-full gap-4 overflow-auto sm:grid-cols-2">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="id" :value="editData.id">
