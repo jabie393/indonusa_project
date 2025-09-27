@@ -53,7 +53,7 @@ $(document).on('click', '.edit-barang-btn', function (e) {
     const lokasi = $(this).data('lokasi');
     const harga = $(this).data('harga');
     const deskripsi = $(this).data('deskripsi');
-    const gambar = $(this).data('gambar'); // Pastikan data-gambar dikirim
+    const gambar = $(this).data('gambar');
 
     openEditModal(id, status, kode, nama, kategori, stok, satuan, lokasi, harga, deskripsi, gambar);
 });
