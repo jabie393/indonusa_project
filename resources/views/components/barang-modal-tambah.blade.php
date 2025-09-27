@@ -5,7 +5,7 @@
         <!-- Modal -->
         <div x-show="tambahModalIsOpen" x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity" x-transition:enter-start="opacity-0 -translate-y-8"
             x-transition:enter-end="opacity-100 translate-y-0"
-            class="flex w-full max-w-3xl flex-col gap-4 overflow-hidden rounded-xl border border-neutral-300 bg-white text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
+            class="flex h-full w-full max-w-3xl flex-col gap-4 overflow-hidden rounded-xl border border-neutral-300 bg-white text-neutral-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300">
 
             <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -21,8 +21,8 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form action="{{ route('barang.store') }}" method="POST" class="space-y-4 p-4" enctype="multipart/form-data">
-                <div class="mb-4 grid gap-4 sm:grid-cols-2">
+            <form action="{{ route('barang.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+                <div class="mb-4 grid h-full gap-4 overflow-auto sm:grid-cols-2">
                     @csrf
                     <div>
                         <label for="status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status Listing</label>
