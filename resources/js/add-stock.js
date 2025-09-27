@@ -24,7 +24,7 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
 
     // Set value untuk form update stok
     document.getElementById('edit_id').value = id;
-    document.getElementById('edit_stok').value = stok ?? 0;
+    document.getElementById('edit_stok').value = '';
 
     // Set form action (jika perlu)
     console.log('Form action:', '/add-stock/' + id);
