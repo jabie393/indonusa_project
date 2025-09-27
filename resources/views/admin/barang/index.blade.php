@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+    <div x-data="editBarangModal()" class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h2 class="mr-3 font-semibold text-black dark:text-white">Daftar barang</h2>
@@ -46,13 +46,25 @@
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="flex items-center justify-end px-4 py-3">
-                                <a href="#" data-modal-target="editBarangModal" data-modal-toggle="editBarangModal"
-                                    class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                    data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                    data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}" data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                    data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}">
+                                <button type="button"
+                                    class="edit-barang-btn mb-2 me-2 flex items-center justify-center rounded-lg bg-primary-700 px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                    x-on:click="open(
+                                '{{ $barang->id }}',
+                                '{{ $barang->status_listing }}',
+                                '{{ $barang->kode_barang }}',
+                                '{{ $barang->nama_barang }}',
+                                '{{ $barang->kategori }}',
+                                '{{ $barang->stok }}',
+                                '{{ $barang->satuan }}',
+                                '{{ $barang->lokasi }}',
+                                '{{ $barang->harga }}',
+                                '{{ $barang->deskripsi }}'
+                            )"
+                                    <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                                    </svg>
                                     Edit
-                                </a>
+                                </button>
                                 <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -102,15 +114,7 @@
                 </li>
             </ul>
         </nav>
-    </div>
-    </div>
 
+        @include('components.barang-modal-edit')
     </div>
-
-    <!-- Modals -->
-    @include('components.barang-modal-edit')
-    {{-- @include('components.barang-modal-edit2') --}}
-
-    <!-- Js -->
-    @vite(['resources/js/barang.js'])
 </x-app-layout>
