@@ -33,6 +33,4 @@
     <!-- Modals -->
     @include('components.purchase-request-modal-tambah')
 
-    <!-- Js -->
-    @vite(['resources/js/barang.js'])
 </x-app-layout>
