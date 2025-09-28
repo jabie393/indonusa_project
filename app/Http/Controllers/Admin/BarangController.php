@@ -44,7 +44,7 @@ class BarangController extends Controller
             $barang->save();
         }
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!']);
     }
 
     public function update(Request $request, $id)
@@ -84,7 +84,7 @@ class BarangController extends Controller
             }
         }
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil diupdate!');
+        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diupdate!']);
     }
 
     public function destroy($id)
@@ -100,6 +100,6 @@ class BarangController extends Controller
         // Hapus data barang di database
         $barang->delete();
 
-        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
+        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus!']);
     }
 }

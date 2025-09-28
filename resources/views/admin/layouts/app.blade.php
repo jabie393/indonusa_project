@@ -11,7 +11,6 @@
         {{-- Flowbite --}}
         <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
 
-
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -22,11 +21,15 @@
         <!-- Alpine Core -->
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+        {{-- sweetalert --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <style>
             [x-cloak] {
                 display: none
             }
         </style>
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -68,10 +71,14 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.5.2/flowbite.min.js"></script> --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-
+        @vite(['resources/js/sweetalert.js'])
+        
+        <script>
+    window.sweetTitle = @json(session('title'));
+    window.sweetText = @json(session('text'));
+</script>
     </body>
 
 </html>

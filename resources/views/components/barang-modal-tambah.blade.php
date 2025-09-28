@@ -85,7 +85,7 @@
                         <label for="gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                             Barang</label>
                         <input type="file" name="gambar" id="gambar"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
                             accept="image/*">
                     </div>
                 </div>
