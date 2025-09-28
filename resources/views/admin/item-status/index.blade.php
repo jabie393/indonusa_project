@@ -111,6 +111,4 @@
     @include('components.barang-modal-tambah')
     @include('components.barang-modal-edit')
 
-    <!-- Js -->
-    @vite(['resources/js/barang.js'])
 </x-app-layout>
