@@ -20,15 +20,15 @@
 
         <!-- Alpine Core -->
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-        {{-- sweetalert --}}
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
         <style>
             [x-cloak] {
                 display: none
             }
         </style>
+
+        {{-- sweetalert --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
         <!-- Scripts -->
@@ -47,7 +47,6 @@
 
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            {{-- @include('layouts.navigation') --}}
 
             <!-- Page Heading -->
             <header class="bg-white shadow dark:bg-gray-800">
@@ -69,16 +68,17 @@
                 </div>
             </main>
         </div>
+        
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-        @vite(['resources/js/sweetalert.js'])
         
+        {{-- SweetAlert --}}
+        @vite(['resources/js/sweetalert.js'])
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-    window.sweetTitle = @json(session('title'));
-    window.sweetText = @json(session('text'));
-</script>
+            window.sweetTitle = @json(session('title'));
+            window.sweetText = @json(session('text'));
+        </script>
     </body>
 
 </html>
