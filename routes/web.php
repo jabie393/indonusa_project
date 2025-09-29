@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\PurchaseRequestController;
+use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\ItemStatusController;
 use App\Http\Controllers\Admin\BarangController;
@@ -52,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::resource('/purchase-request', PurchaseRequestController::class);
+Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
 Route::resource('/item-status', ItemStatusController::class);
 

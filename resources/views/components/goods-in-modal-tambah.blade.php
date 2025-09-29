@@ -18,7 +18,7 @@
                         <span class="sr-only">Close modal</span>
                     </button>
                 </div>
-                <form action="{{ route('purchase-request.store') }}" method="POST" class="space-y-4 p-4" enctype="multipart/form-data">
+                <form action="{{ route('goods-in.store') }}" method="POST" class="space-y-4 p-4" enctype="multipart/form-data">
                     <div class="mb-4 grid gap-4 sm:grid-cols-2">
                         @csrf
                         <div>

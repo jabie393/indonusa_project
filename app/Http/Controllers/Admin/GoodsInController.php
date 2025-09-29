@@ -6,19 +6,19 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 
-class PurchaseRequestController extends Controller
+class GoodsInController extends Controller
 {
     // Tampilkan daftar barang (purchase request)
     public function index()
     {
         $barangs = Barang::all();
-        return view('admin.purchase-request.index', compact('barangs'));
+        return view('admin.goods-in.index', compact('barangs'));
     }
 
     // Tampilkan form tambah barang
     public function create()
     {
-        return view('admin.purchase-request.create');
+        return view('admin.goods-in.create');
     }
 
     // Simpan barang baru
@@ -48,6 +48,6 @@ class PurchaseRequestController extends Controller
             $barang->save();
         }
 
-        return redirect()->route('purchase-request.index')->with('success', 'Barang berhasil ditambahkan.');
+        return redirect()->route('goods-in.index')->with('success', 'Barang berhasil ditambahkan.');
     }
 }

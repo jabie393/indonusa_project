@@ -35,13 +35,13 @@
             @if (in_array(auth()->user()->role, ['admin_supply']))
                 {{-- Purchase Request --}}
                 <li>
-                    <a href="{{ route('purchase-request.index') }}"
-                        class="{{ request()->routeIs('purchase-request.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                    <a href="{{ route('goods-in.index') }}"
+                        class="{{ request()->routeIs('goods-in.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
                             viewBox="0 0 20 20">
                             <path d="M4 4h12v12H4z"></path>
                         </svg>
-                        <span class="ml-3">Puchase Request</span>
+                        <span class="ml-3">Goods In</span>
                     </a>
                     {{-- Add Stock --}}
                     <ul>
@@ -63,7 +63,7 @@
                                     <span class="">Add Stock</span>
                                 </a>
                             </li>
-                        @endif  
+                        @endif
                     </ul>
 
 

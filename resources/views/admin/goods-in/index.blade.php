@@ -31,6 +31,6 @@
     </div>
 
     <!-- Modals -->
-    @include('components.purchase-request-modal-tambah')
+    @include('components.goods-in-modal-tambah')
 
 </x-app-layout>
