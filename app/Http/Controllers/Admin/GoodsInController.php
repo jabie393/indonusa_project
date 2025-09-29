@@ -38,6 +38,7 @@ class GoodsInController extends Controller
         ]);
 
         $validated['status_barang'] = 'ditinjau';
+        $validated['tipe_request'] = 'primary'; // Set tipe_request primary
 
         $barang = Barang::create($validated);
 

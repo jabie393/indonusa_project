@@ -57,6 +57,7 @@ class AddStockController extends Controller
         $copyData = $barang->replicate();
         $copyData->stok = $validated['stok'];
         $copyData->status_barang = 'ditinjau';
+        $copyData->tipe_request = 'new_stock'; // Set tipe_request ke new_stock
 
         // Generate kode_barang unik
         $originalKode = $barang->kode_barang;
