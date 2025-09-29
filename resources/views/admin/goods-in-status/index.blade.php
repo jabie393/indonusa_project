@@ -45,7 +45,7 @@
                                     data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}">
                                     Edit
                                 </a>
-                                <form action="{{ route('item-status.destroy', $barang->id) }}" method="POST"
+                                <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
                                     @method('DELETE')
@@ -108,7 +108,6 @@
     </div>
 
     <!-- Modals -->
-    @include('components.barang-modal-tambah')
-    @include('components.barang-modal-edit')
+    @include('components.goods-in-status-modal-edit')
 
 </x-app-layout>

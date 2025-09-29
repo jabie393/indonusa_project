@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
-use App\Http\Controllers\Admin\ItemStatusController;
+use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\BarangController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
-Route::resource('/item-status', ItemStatusController::class);
+Route::resource('/goods-in-status', GoodsInStatusController::class);
 
 Route::resource('/barang', BarangController::class);
 // End Admin Routes

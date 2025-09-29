@@ -6,33 +6,33 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 
-class ItemStatusController extends Controller
+class GoodsInStatusController extends Controller
 {
     // Tampilkan daftar barang (Item Status)
     public function index()
     {
         $barangs = Barang::where('status_barang', 'ditinjau')->get(); // hanya yang statusnya ditinjau
-        return view('admin.item-status.index', compact('barangs'));
+        return view('admin.goods-in-status.index', compact('barangs'));
     }
 
     // Tampilkan form tambah barang
     public function create()
     {
-        return view('admin.item-status.create');
+        return view('admin.goods-in-status.create');
     }
 
     // Tampilkan detail barang
     public function show($id)
     {
         $barang = Barang::findOrFail($id);
-        return view('admin.item-status.show', compact('barang'));
+        return view('admin.goods-in-status.show', compact('barang'));
     }
 
     // Tampilkan form edit barang
     public function edit($id)
     {
         $barang = Barang::findOrFail($id);
-        return view('admin.item-status.edit', compact('barang'));
+        return view('admin.goods-in-status.edit', compact('barang'));
     }
 
     // Update barang
@@ -47,7 +47,7 @@ class ItemStatusController extends Controller
         $barang = Barang::findOrFail($id);
         $barang->update($request->all());
 
-        return redirect()->route('item-status.index')->with('success', 'Barang berhasil diupdate.');
+        return redirect()->route('goods-in-status.index')->with('success', 'Barang berhasil diupdate.');
     }
 
     // Hapus barang
@@ -56,6 +56,6 @@ class ItemStatusController extends Controller
         $barang = Barang::findOrFail($id);
         $barang->delete();
 
-        return redirect()->route('item-status.index')->with('success', 'Barang berhasil dihapus.');
+        return redirect()->route('goods-in-status.index')->with('success', 'Barang berhasil dihapus.');
     }
 }
