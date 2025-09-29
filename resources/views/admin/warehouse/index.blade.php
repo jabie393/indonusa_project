@@ -15,6 +15,13 @@
                     </button>
                     @include('components.warehouse-modal-tambah')
                 </div>
+
+                <button class="btn" onclick="tambahBarang.showModal()">
+                    <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Tambah Barang
+                </button>
             </div>
         </div>
         <div class="overflow-x-auto">
@@ -113,7 +120,11 @@
             </ul>
         </nav>
 
+        {{-- Modal --}}
+        @include('components.warehouse-modal-tambah2')
         @include('components.warehouse-modal-edit')
+
+
 
     </div>
 </x-app-layout>

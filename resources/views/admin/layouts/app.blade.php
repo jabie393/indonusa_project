@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="[scrollbar-gutter:auto]">
 
     <head>
         <meta charset="utf-8">
@@ -29,6 +29,9 @@
         {{-- sweetalert --}}
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        {{-- DaisyUI --}}
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
 
         <!-- Scripts -->
@@ -68,10 +71,10 @@
                 </div>
             </main>
         </div>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        
+
         {{-- SweetAlert --}}
         @vite(['resources/js/sweetalert.js'])
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
