@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
-use App\Http\Controllers\Admin\BarangController;
+use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +56,7 @@ Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
 Route::resource('/goods-in-status', GoodsInStatusController::class);
 
-Route::resource('/barang', BarangController::class);
+Route::resource('/warehouse', WarehouseController::class);
 // End Admin Routes
 
 

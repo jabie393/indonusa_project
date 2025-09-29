@@ -21,7 +21,7 @@
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-            <form action="{{ route('barang.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+            <form action="{{ route('warehouse.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
                 <div class="mb-4 grid h-full gap-4 overflow-auto sm:grid-cols-2">
                     @csrf
                     <div>

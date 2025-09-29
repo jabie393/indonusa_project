@@ -13,7 +13,7 @@
                         </svg>
                         Tambah Barang
                     </button>
-                    @include('components.barang-modal-tambah')
+                    @include('components.warehouse-modal-tambah')
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                                         '{{ $barang->deskripsi }}')">
                                     Edit
                                 </button>
-                                <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="button"
@@ -113,7 +113,7 @@
             </ul>
         </nav>
 
-        @include('components.barang-modal-edit')
+        @include('components.warehouse-modal-edit')
 
     </div>
 </x-app-layout>

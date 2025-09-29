@@ -84,15 +84,15 @@
                 </li>
             @endif
 
-            {{-- Barang --}}
+            {{-- Warehouse --}}
             <li>
-                <a href="{{ route('barang.index') }}"
-                    class="{{ request()->routeIs('barang.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                <a href="{{ route('warehouse.index') }}"
+                    class="{{ request()->routeIs('warehouse.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                     <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
                         viewBox="0 0 20 20">
                         <path d="M4 4h12v12H4z"></path>
                     </svg>
-                    <span class="ml-3">Barang</span>
+                    <span class="ml-3">Warehouse</span>
                 </a>
             </li>
 

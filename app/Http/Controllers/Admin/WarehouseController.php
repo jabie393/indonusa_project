@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 
-class BarangController extends Controller
+class WarehouseController extends Controller
 {
     public function index()
     {
         $barangs = Barang::where('status_barang', 'masuk')->get(); // hanya yang statusnya masuk
-        return view('admin.barang.index', compact('barangs'));
+        return view('admin.warehouse.index', compact('barangs'));
     }
     public function store(Request $request)
     {
@@ -44,7 +44,7 @@ class BarangController extends Controller
             $barang->save();
         }
 
-        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!']);
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!']);
     }
 
     public function update(Request $request, $id)
@@ -84,7 +84,7 @@ class BarangController extends Controller
             }
         }
 
-        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diupdate!']);
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diupdate!']);
     }
 
     public function destroy($id)
@@ -100,6 +100,6 @@ class BarangController extends Controller
         // Hapus data barang di database
         $barang->delete();
 
-        return redirect()->route('barang.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus!']);
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus!']);
     }
 }
