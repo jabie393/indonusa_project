@@ -36,15 +36,17 @@
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="px-4 py-3">{{ $barang->status_barang }}</td>
                             <td class="flex items-center justify-end px-4 py-3">
-                                <a href="#" data-modal-target="editBarangModal" data-modal-toggle="editBarangModal"
-                                    class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                
+                                {{-- Edit barang modal --}}
+                                <button class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
                                     data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                     data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
                                     data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}"
                                     data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
                                     data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}">
                                     Edit
-                                </a>
+                                </button>
+                                
                                 <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
@@ -108,6 +110,6 @@
     </div>
 
     <!-- Modals -->
-    @include('components.goods-in-status-modal-edit')
+    {{-- @include('components.goods-in-status-modal-edit') --}}
 
 </x-app-layout>

@@ -27,13 +27,14 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
     document.getElementById('edit_stok').value = '';
 
     // Set form action (jika perlu)
-    console.log('Form action:', '/add-stock/' + id);
+    // console.log('Form action:', '/add-stock/' + id);
     document.getElementById('tambahStockForm').action = '/add-stock/' + id;
 
     // Show modal (Flowbite)
-    window.dispatchEvent(new CustomEvent('open-modal', {
-        detail: 'tambahStockModal'
-    }));
+    const modal = document.getElementById('editBarangModal');
+    if (modal && typeof modal.showModal === 'function') {
+        modal.showModal();
+    }
 }
 
 window.openEditModal = openEditModal;

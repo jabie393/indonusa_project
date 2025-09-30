@@ -1,6 +1,5 @@
 import Swal from 'sweetalert2'
 
-
 // Delete alert
 window.confirmDelete = function (callback) {
     Swal.fire({
