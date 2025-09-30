@@ -1,5 +1,5 @@
 <dialog id="editBarangModal" class="modal">
-    <div class="modal-box relative mx-auto max-h-full w-full max-w-3xl">
+    <div class="modal-box relative mx-auto max-h-full w-full max-w-3xl p-0">
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
             <!-- Header Modal -->
             <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600">
