@@ -36,17 +36,20 @@
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="px-4 py-3">{{ $barang->status_barang }}</td>
                             <td class="flex items-center justify-end px-4 py-3">
-                                
+
                                 {{-- Edit barang modal --}}
-                                <button class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
+                                <button
+                                    class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                     data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                     data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
                                     data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}"
                                     data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                    data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}">
+                                    data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
+                                    data-tipe_request="{{ $barang->tipe_request }}" {{-- tambahkan data-gambar jika ada
+                                    --}}>
                                     Edit
                                 </button>
-                                
+
                                 <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
@@ -110,6 +113,8 @@
     </div>
 
     <!-- Modals -->
-    {{-- @include('components.goods-in-status-modal-edit') --}}
+    @include('components.goods-in-status-modal-edit-primary')
+    @include('components.goods-in-status-modal-edit-new-stock')
+    @vite(['resources/js/goods-in-status.js'])
 
 </x-app-layout>
