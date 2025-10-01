@@ -25,11 +25,7 @@
                         <div class="mb-4">
                             <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                 Barang</label>
-                            <div id="edit_gambar_preview" class="mt-2 flex justify-center">
-                                <div class="flex h-48 w-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800">
-                                    <span class="text-gray-500 dark:text-gray-400">Gambar tidak tersedia</span>
-                                </div>
-                            </div>
+                            <div id="edit_gambar_preview_new_stock" class="mt-2 flex justify-center">...</div>
                         </div>
                     </div>
 
@@ -40,47 +36,40 @@
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kode
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kode_barang">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kode_barang_new_stock">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Nama
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_nama_barang">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_nama_barang_new_stock">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kategori</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kategori">
-                                        -</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kategori_new_stock">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Lokasi</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_lokasi">-
-                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_lokasi_new_stock">-</div>
                                 </div>
                             </div>
                             <div class="space-y-4">
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Status
                                         Listing</label>
-                                    <span id="edit_status_listing" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
-                                        <!-- Status akan ditampilkan dengan warna yang sesuai -->
-                                    </span>
+                                    <span id="edit_status_listing_new_stock" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"></span>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Harga</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_harga">-
-                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_harga_new_stock">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Satuan</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_satuan">-
-                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_satuan_new_stock">-</div>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Stok
+                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Request Stok
                                         Saat Ini</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="current_stok">-
-                                    </div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="current_stok_new_stock">-</div>
                                 </div>
                             </div>
                         </div>
@@ -88,23 +77,22 @@
                         <!-- Deskripsi Barang -->
                         <div class="mt-6">
                             <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Deskripsi</label>
-                            <div class="text-sm text-gray-900 dark:text-white" id="edit_deskripsi">-</div>
+                            <div class="text-sm text-gray-900 dark:text-white" id="edit_deskripsi_new_stock">-</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Edit Stok -->
                 <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800">
-                    <h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Update Stok Barang</h4>
                     <form id="tambahStockForm" method="POST" class="space-y-4" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" name="id" id="edit_id">
+                        <input type="hidden" name="id" id="edit_id_new_stock">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
-                                <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok
+                                <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Request Stok
                                     Baru</label>
-                                <input type="number" name="stok" id="edit_stok"
+                                <input type="number" name="stok" id="edit_stok_new_stock"
                                     class="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                     required min="0">
                             </div>

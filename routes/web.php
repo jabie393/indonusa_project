@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 
 Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
+
 Route::resource('/goods-in-status', GoodsInStatusController::class);
 
 Route::resource('/warehouse', WarehouseController::class);

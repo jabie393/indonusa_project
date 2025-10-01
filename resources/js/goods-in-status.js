@@ -15,22 +15,22 @@ function openEditModal(params) {
         document.getElementById('edit_lokasi').value = lokasi;
         document.getElementById('edit_harga').value = harga;
         document.getElementById('edit_deskripsi').value = deskripsi;
-        document.getElementById('editBarangForm').action = '/warehouse/' + id;
+        document.getElementById('editBarangForm').action = '/goods-in-status/' + id;
         const modal = document.getElementById('editBarangModalPrimary');
         if (modal && typeof modal.showModal === 'function') {
             modal.showModal();
         }
     } else if (tipe_request === 'new_stock') {
-        document.getElementById('edit_kode_barang').textContent = kode_barang ?? '-';
-        document.getElementById('edit_nama_barang').textContent = nama_barang ?? '-';
-        document.getElementById('edit_kategori').textContent = kategori ?? '-';
-        document.getElementById('edit_lokasi').textContent = lokasi ?? '-';
-        document.getElementById('edit_status_listing').textContent = status_listing ?? '-';
-        document.getElementById('edit_harga').textContent = harga ?? '-';
-        document.getElementById('edit_satuan').textContent = satuan ?? '-';
-        document.getElementById('current_stok').textContent = stok ?? '-';
-        document.getElementById('edit_deskripsi').textContent = deskripsi ?? '-';
-        const gambarPreview = document.getElementById('edit_gambar_preview');
+        document.getElementById('edit_kode_barang_new_stock').textContent = kode_barang ?? '-';
+        document.getElementById('edit_nama_barang_new_stock').textContent = nama_barang ?? '-';
+        document.getElementById('edit_kategori_new_stock').textContent = kategori ?? '-';
+        document.getElementById('edit_lokasi_new_stock').textContent = lokasi ?? '-';
+        document.getElementById('edit_status_listing_new_stock').textContent = status_listing ?? '-';
+        document.getElementById('edit_harga_new_stock').textContent = harga ?? '-';
+        document.getElementById('edit_satuan_new_stock').textContent = satuan ?? '-';
+        document.getElementById('current_stok_new_stock').textContent = stok ?? '-';
+        document.getElementById('edit_deskripsi_new_stock').textContent = deskripsi ?? '-';
+        const gambarPreview = document.getElementById('edit_gambar_preview_new_stock');
         if (gambar && gambar !== '') {
             gambarPreview.innerHTML = `<img src="/storage/${gambar}" alt="Gambar Barang" class="h-48 w-48 object-cover rounded-lg" />`;
         } else {
@@ -38,9 +38,9 @@ function openEditModal(params) {
                 <span class="text-gray-500 dark:text-gray-400">Gambar tidak tersedia</span>
             </div>`;
         }
-        document.getElementById('edit_id').value = id;
-        document.getElementById('edit_stok').value = '';
-        document.getElementById('tambahStockForm').action = '/add-stock/' + id;
+        document.getElementById('edit_id_new_stock').value = id;
+        document.getElementById('edit_stok_new_stock').value = (stok !== undefined && stok !== null && stok !== '' && stok !== '-') ? stok : '';
+        document.getElementById('tambahStockForm').action = '/goods-in-status/' + id;
         const modal = document.getElementById('editBarangModalNewStock');
         if (modal && typeof modal.showModal === 'function') {
             modal.showModal();
