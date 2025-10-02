@@ -11,7 +11,7 @@ class GoodsInStatusController extends Controller
     // Tampilkan daftar barang (Item Status)
     public function index()
     {
-        $barangs = Barang::where('status_barang', 'ditinjau')->get(); // hanya yang statusnya ditinjau
+        $barangs = Barang::whereIn('status_barang', ['ditinjau', 'ditolak'])->get(); // Hanya ambil barang dengan status 'ditinjau' atau 'ditolak'
         return view('admin.goods-in-status.index', compact('barangs'));
     }
 
@@ -63,7 +63,15 @@ class GoodsInStatusController extends Controller
             ]);
 
             $data = $request->only([
-                'status_listing', 'kode_barang', 'nama_barang', 'kategori', 'stok', 'satuan', 'lokasi', 'harga', 'deskripsi'
+                'status_listing',
+                'kode_barang',
+                'nama_barang',
+                'kategori',
+                'stok',
+                'satuan',
+                'lokasi',
+                'harga',
+                'deskripsi'
             ]);
 
             $oldGambar = $barang->gambar;
