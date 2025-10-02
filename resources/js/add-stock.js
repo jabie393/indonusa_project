@@ -18,7 +18,7 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
         gambarPreview.innerHTML = `<img src="/storage/${gambar}" alt="Gambar Barang" class="h-48 w-48 object-cover rounded-lg" />`;
     } else {
         gambarPreview.innerHTML = `<div class="h-48 w-48 rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 flex items-center justify-center dark:border-gray-600 dark:bg-gray-800">
-            <span class="text-gray-500 dark:text-gray-400">Gambar tidak tersedia</span>
+        <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
         </div>`;
     }
 
@@ -30,7 +30,7 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
     // console.log('Form action:', '/add-stock/' + id);
     document.getElementById('tambahStockForm').action = '/add-stock/' + id;
 
-    // Show modal (Flowbite)
+    // Show modal
     const modal = document.getElementById('editBarangModal');
     if (modal && typeof modal.showModal === 'function') {
         modal.showModal();
@@ -57,4 +57,5 @@ $(document).on('click', '.edit-barang-btn', function (e) {
     const gambar = $(this).data('gambar');
 
     openEditModal(id, status, kode, nama, kategori, stok, satuan, lokasi, harga, deskripsi, gambar);
+    
 });

@@ -1,6 +1,7 @@
 <dialog id="editBarangModal" class="modal">
     <div class="modal-box relative mx-auto max-h-full w-full max-w-3xl p-0">
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+            
             <!-- Header Modal -->
             <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -24,11 +25,10 @@
                     <div class="md:col-span-1">
                         <div class="mb-4">
                             <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
-                                Barang</label>
+                                Barang
+                            </label>
                             <div id="edit_gambar_preview" class="mt-2 flex justify-center">
-                                <div class="flex h-48 w-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-800">
-                                    <span class="text-gray-500 dark:text-gray-400">Gambar tidak tersedia</span>
-                                </div>
+                                <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
                             </div>
                         </div>
                     </div>
@@ -103,7 +103,8 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
                                 <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok
-                                    Baru</label>
+                                    Baru
+                                </label>
                                 <input type="number" name="stok" id="edit_stok"
                                     class="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                     required min="0">
@@ -111,7 +112,8 @@
                             <div class="flex items-end">
                                 <button type="submit"
                                     class="w-full rounded-lg bg-primary-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Update
-                                    Stok</button>
+                                    Stok
+                                </button>
                             </div>
                         </div>
                     </form>
