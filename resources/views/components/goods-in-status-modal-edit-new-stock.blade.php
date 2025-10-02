@@ -6,15 +6,18 @@
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Detail Barang
                 </h3>
-                <button type="button"
-                    class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                    <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="sr-only">Tutup modal</span>
-                </button>
+                <form method="dialog">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button
+                        class="btn ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </form>
             </div>
 
             <!-- Konten Detail Barang -->
@@ -36,61 +39,79 @@
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kode
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kode_barang_new_stock">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_kode_barang_new_stock">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Nama
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_nama_barang_new_stock">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_nama_barang_new_stock">-</div>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kategori</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kategori_new_stock">-</div>
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kategori</label>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_kategori_new_stock">-</div>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Lokasi</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_lokasi_new_stock">-</div>
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Lokasi</label>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_lokasi_new_stock">-</div>
                                 </div>
                             </div>
                             <div class="space-y-4">
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Status
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Status
                                         Listing</label>
-                                    <span id="edit_status_listing_new_stock" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"></span>
+                                    <span id="edit_status_listing_new_stock"
+                                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"></span>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Harga</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_harga_new_stock">-</div>
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Harga</label>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_harga_new_stock">-</div>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Satuan</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_satuan_new_stock">-</div>
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Satuan</label>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="edit_satuan_new_stock">-</div>
                                 </div>
                                 <div>
-                                    <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Request Stok
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Request
+                                        Stok
                                         Saat Ini</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="current_stok_new_stock">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white"
+                                        id="current_stok_new_stock">-</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Deskripsi Barang -->
                         <div class="mt-6">
-                            <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Deskripsi</label>
+                            <label
+                                class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Deskripsi</label>
                             <div class="text-sm text-gray-900 dark:text-white" id="edit_deskripsi_new_stock">-</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Edit Stok -->
-                <div class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800">
+                <div
+                    class="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800">
                     <form id="tambahStockForm" method="POST" class="space-y-4" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="id" id="edit_id_new_stock">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
-                                <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Request Stok
+                                <label for="edit_stok"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Request Stok
                                     Baru</label>
                                 <input type="number" name="stok" id="edit_stok_new_stock"
                                     class="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
