@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/js/add-stock.js',
                 'resources/js/sweetalert.js',
                 'resources/js/warehouse.js',
+                'resources/js/goods-in-status.js',
             ],
             refresh: true,
         }),

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\WarehouseController;
+use App\Http\Controllers\Admin\SupplyOrdersController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
@@ -52,11 +53,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Admin Supply
 Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
 Route::resource('/goods-in-status', GoodsInStatusController::class);
+// End of Admin Supply
 
 Route::resource('/warehouse', WarehouseController::class);
+
+// Admin Warehouse
+Route::resource('/supply-orders', SupplyOrdersController::class);
+Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
+// End of Admin Warehouse
+
 // End Admin Routes
 
 
