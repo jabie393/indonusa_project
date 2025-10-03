@@ -41,12 +41,14 @@ class SupplyOrdersController extends Controller
         return redirect()->route('supply-orders.index')->with('success', 'Barang berhasil diapprove.');
     }
 
-    // Reject/hapus barang
-    public function destroy($id)
+    // Reject barang dengan alasan (catatan)
+    public function reject($id)
     {
         $barang = Barang::findOrFail($id);
-        $barang->delete();
+        $barang->catatan = request('catatan');
+        $barang->status_barang = 'ditolak';
+        $barang->save();
 
-        return redirect()->route('supply-orders.index')->with('success', 'Barang berhasil dihapus.');
+        return response()->json(['success' => true]);
     }
 }

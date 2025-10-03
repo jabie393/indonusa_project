@@ -49,7 +49,8 @@
                                         data-tipe_request="{{ $barang->tipe_request }}">
                                         Edit
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -59,7 +60,8 @@
                                 @elseif($barang->status_barang == 'ditolak')
                                     {{-- Note modal --}}
                                     <button
-                                        class="note-btn mb-2 me-2 rounded-lg bg-yellow-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
+                                        class="note-btn mb-2 me-2 rounded-lg bg-yellow-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                        data-catatan="{{ $barang->catatan ?? '' }}">
                                         Note
                                     </button>
                                     {{-- Revise barang modal --}}
@@ -74,7 +76,8 @@
                                         data-tipe_request="{{ $barang->tipe_request }}">
                                         Revise
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -99,7 +102,8 @@
                                         data-tipe_request="{{ $barang->tipe_request }}">
                                         Edit
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
+                                        style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -164,6 +168,7 @@
     <!-- Modals -->
     @include('components.goods-in-status-modal-edit-primary')
     @include('components.goods-in-status-modal-edit-new-stock')
+    @include('components.goods-in-status-modal-show-note')
     @vite(['resources/js/goods-in-status.js'])
 
 </x-app-layout>

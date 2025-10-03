@@ -57,13 +57,14 @@
                                 </form>
 
                                 {{-- Reject barang --}}
-                                <form action="{{ route('orders.reject', $barang->id) }}" method="POST"
-                                    style="display:inline;">
-                                    @csrf
-                                    <button type="submit"
-                                        class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                        onclick="return confirm('Yakin reject?')">Reject</button>
-                                </form>
+                                <button
+                                    type="button"
+                                    class="reject-btn mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                    data-id="{{ $barang->id }}"
+                                    data-nama="{{ $barang->nama_barang }}"
+                                >
+                                    Reject
+                                </button>
                             </td>
                         </tr>
                     @empty
@@ -117,5 +118,9 @@
     </div>
 
     </div>
+
+        <!-- Modals -->
+        @include('components.supply-orders-modal-reject')
+        @vite(['resources/js/supply-orders.js'])
 
 </x-app-layout>

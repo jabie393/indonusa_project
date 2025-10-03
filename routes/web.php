@@ -64,6 +64,7 @@ Route::resource('/warehouse', WarehouseController::class);
 // Admin Warehouse
 Route::resource('/supply-orders', SupplyOrdersController::class);
 Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
+Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
 // End of Admin Warehouse
 
 // End Admin Routes
