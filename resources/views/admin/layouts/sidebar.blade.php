@@ -1,7 +1,6 @@
 <!-- Sidebar -->
-<aside class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full border-r border-gray-200 bg-[#225A97] pt-14 transition-transform dark:border-gray-700 dark:bg-gray-800 md:translate-x-0"
-    aria-label="Sidenav" id="drawer-navigation">
-    <div class="h-full overflow-y-auto bg-[#225A97] px-3 py-5 dark:bg-gray-800">
+<aside class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full pt-14 transition-transform dark:bg-[#0B1D31] md:translate-x-0" aria-label="Sidenav" id="drawer-navigation">
+    <div class="h-full overflow-y-auto bg-gradient-to-r from-[#225A97] to-[#1F5188] px-3 py-5 dark:bg-gradient-to-r dark:from-[#0B1D31] dark:to-[#0E243D]">
         <form action="#" method="GET" class="mb-2 md:hidden">
             <label for="sidebar-search" class="sr-only">Search</label>
             <div class="relative">
@@ -21,14 +20,15 @@
             {{-- Dashboard --}}
             <li>
                 <a href="{{ route('dashboard') }}"
-                    class="{{ request()->routeIs('dashboard') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                    class="{{ request()->routeIs('dashboard') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700">
                     <svg aria-hidden="true"
-                        class="{{ request()->routeIs('dashboard') ? 'text-black' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                        class="{{ request()->routeIs('dashboard') ? 'text-black dark:text-white' : 'text-white drak:text-black' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                         fill="currentColor" viewBox="0 0 20 20">
                         <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                         <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                     </svg>
-                    <span class="{{ request()->routeIs('dashboard') ? 'text-black' : 'text-white' }} ml-3 group-hover:text-black">Dashboard</span>
+                    <span
+                        class="{{ request()->routeIs('dashboard') ? 'text-black dark:text-white' : 'text-white drak:text-black' }} ml-3 group-hover:text-black dark:group-hover:text-white">Dashboard</span>
                 </a>
             </li>
 
@@ -37,21 +37,20 @@
                 {{-- Goods In --}}
                 <li>
                     <a href="{{ route('goods-in.index') }}"
-                        class="{{ request()->routeIs('goods-in.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        class="{{ request()->routeIs('goods-in.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <svg aria-hidden="true"
-                            class="{{ request()->routeIs('goods-in.*') ? 'text-black' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                            class="{{ request()->routeIs('goods-in.*') ? 'text-black dark:text-white' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4h12v12H4z"></path>
                         </svg>
-                        <span class="{{ request()->routeIs('goods-in.*') ? 'text-black' : 'text-white' }} ml-3 group-hover:text-black">Goods In</span>
+                        <span class="{{ request()->routeIs('goods-in.*') ? 'text-black dark:text-white' : 'text-white' }} ml-3 group-hover:text-black dark:group-hover:text-white">Goods In</span>
                     </a>
                     {{-- Add Stock --}}
                     <ul>
                         @if (request()->routeIs('add-stock.*'))
                             <li class="flex items-center justify-end">
-                                <svg width="64px"
-                                    class="text-white h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg width="64px" class="h-6 w-6 text-white transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" height="64px" viewBox="0 0 24 24"
+                                    fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                     <g id="SVGRepo_iconCarrier">
@@ -76,12 +75,15 @@
                 {{-- Goods In Status --}}
                 <li>
                     <a href="{{ route('goods-in-status.index') }}"
-                        class="{{ request()->routeIs('goods-in-status.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
-                            viewBox="0 0 20 20">
+                        class="{{ request()->routeIs('goods-in-status.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <svg aria-hidden="true"
+                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-black dark:text-white' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                            fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4h12v12H4z"></path>
                         </svg>
-                        <span class="ml-3">Goods In Status</span>
+                        <span
+                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-black dark:text-white' : 'text-white dark:text-black' }} ml-3 group-hover:text-black dark:text-white dark:group-hover:text-white">Goods
+                            In Status</span>
                     </a>
                 </li>
             @endif
@@ -91,12 +93,13 @@
                 {{-- Supply Orders --}}
                 <li>
                     <a href="{{ route('supply-orders.index') }}"
-                        class="{{ request()->routeIs('supply-orders.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
-                            viewBox="0 0 20 20">
+                        class="{{ request()->routeIs('supply-orders.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <svg aria-hidden="true"
+                            class="{{ request()->routeIs('supply-orders.*') ? 'text-black dark:text-white' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                            fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4h12v12H4z"></path>
                         </svg>
-                        <span class="ml-3">Supply Orders</span>
+                        <span class="{{ request()->routeIs('supply-orders.*') ? 'text-black dark:text-white' : 'text-white' }} ml-3 group-hover:text-black">Supply Orders</span>
                     </a>
                 </li>
             @endif
@@ -104,12 +107,13 @@
             {{-- Warehouse --}}
             <li>
                 <a href="{{ route('warehouse.index') }}"
-                    class="{{ request()->routeIs('warehouse.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                    <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
-                        viewBox="0 0 20 20">
+                    class="{{ request()->routeIs('warehouse.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                    <svg aria-hidden="true"
+                        class="{{ request()->routeIs('warehouse.*') ? 'text-black dark:text-white' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                        fill="currentColor" viewBox="0 0 20 20">
                         <path d="M4 4h12v12H4z"></path>
                     </svg>
-                    <span class="ml-3">Warehouse</span>
+                    <span class="{{ request()->routeIs('warehouse.*') ? 'text-black dark:text-white' : 'text-white' }} ml-3 group-hover:text-black dark:group-hover:text-white">Warehouse</span>
                 </a>
             </li>
 
@@ -118,12 +122,12 @@
                 {{-- Incoming Orders --}}
                 <li>
                     <a href="{{ route('orders.incoming') }}"
-                        class="{{ request()->routeIs('admin.orders.incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
+                        class="{{ request()->routeIs('orders.incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <svg aria-hidden="true" class="h-6 w-6 {{ request()->routeIs('orders.incoming') ? 'text-black dark:text-white' : 'text-white' }}  transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
                             viewBox="0 0 20 20">
                             <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
                         </svg>
-                        <span class="ml-3">Incoming Orders</span>
+                        <span class="ml-3 {{ request()->routeIs('orders.incoming') ? 'text-black dark:text-white' : 'text-white' }} group-hover:text-black dark:group-hover:text-white">Incoming Orders</span>
                     </a>
                 </li>
 
@@ -131,12 +135,12 @@
                 {{-- History Orders --}}
                 <li>
                     <a href="{{ route('orders.history') }}"
-                        class="{{ request()->routeIs('admin.orders.history') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg aria-hidden="true" class="h-6 w-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
+                        class="{{ request()->routeIs('admin.orders.history') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <svg aria-hidden="true" class="h-6 w-6 text-white transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" fill="currentColor"
                             viewBox="0 0 20 20">
                             <path d="M5 4h10v2H5V4zM5 8h10v2H5V8zM5 12h6v2H5v-2z"></path>
                         </svg>
-                        <span class="ml-3">History Orders</span>
+                        <span class="ml-3 ">History Orders</span>
                     </a>
                 </li>
         </ul>

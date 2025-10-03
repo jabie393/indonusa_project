@@ -1,9 +1,9 @@
 <div class="bg-gray-50 antialiased dark:bg-gray-900">
-    <nav class="fixed left-0 right-0 top-0 z-50 bg-gradient-to-r from-[#225A97] to-[#0B1D31] px-4 py-2.5 dark:border-gray-700 dark:bg-gray-800">
+    <nav class="fixed left-0 right-0 top-0 z-50 bg-gradient-to-r from-[#225A97] to-[#0B1D31] px-4 py-2.5 dark:bg-gradient-to-r dark:from-[#0B1D31] dark:to-[#225A97]">
         <div class="flex flex-wrap items-center justify-between">
             <div class="flex items-center justify-start">
                 <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                    class="mr-2 cursor-pointer rounded-lg p-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 md:hidden">
+                    class="mr-2 cursor-pointer rounded-lg p-2 text-white hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 md:hidden">
                     <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                             clip-rule="evenodd"></path>
@@ -60,7 +60,7 @@
                 </button>
                 <!-- Dropdown menu -->
 
-                <button type="button" class="mx-3 flex rounded-full bg-[#225A97] text-sm md:mr-0" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
+                <button type="button" class="mx-3 flex rounded-full bg-[#225A97] text-sm md:mr-0 hover:bg-[#1c4d81]" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                     <span class="sr-only">Open user menu</span>
                     <p class="inline-flex items-center px-4 py-2 text-white">
                         {{ Auth::user()->name }}
