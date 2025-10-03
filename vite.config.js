@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/sweetalert.js',
                 'resources/js/warehouse.js',
                 'resources/js/goods-in-status.js',
+                'resources/js/supply-orders.js',
             ],
             refresh: true,
         }),

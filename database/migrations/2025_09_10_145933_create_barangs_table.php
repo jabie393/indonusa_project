@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->decimal('harga', 15, 2)->default(0);
             $table->text('deskripsi');
             $table->string('gambar')->nullable();
+            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }

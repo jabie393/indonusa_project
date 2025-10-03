@@ -98,6 +98,14 @@ class GoodsInStatusController extends Controller
     public function destroy($id)
     {
         $barang = Barang::findOrFail($id);
+
+        // Hapus folder gambar barang beserta isinya jika ada
+        $folder = 'barang/' . $barang->id;
+        if (\Storage::disk('public')->exists($folder)) {
+            \Storage::disk('public')->deleteDirectory($folder);
+        }
+
+        // Hapus data barang di database
         $barang->delete();
 
         return redirect()->route('goods-in-status.index')->with('success', 'Barang berhasil dihapus.');

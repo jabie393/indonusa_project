@@ -73,3 +73,24 @@ $(document).on('click', '.edit-barang-btn', function (e) {
     openEditModal(params);
 });
 
+// Handler untuk tombol Note
+$(document).on('click', '.note-btn', function (e) {
+    e.preventDefault();
+    const catatan = $(this).data('catatan') || 'Tidak ada catatan';
+    $('#catatanContent').text(catatan);
+
+    const noteModal = document.getElementById('noteModal');
+    if (noteModal && typeof noteModal.showModal === 'function') {
+        noteModal.showModal();
+    }
+});
+
+// Handler untuk tombol tutup modal Note
+$(document).on('click', '#closeNoteModal', function (e) {
+    e.preventDefault();
+    const noteModal = document.getElementById('noteModal');
+    if (noteModal && typeof noteModal.close === 'function') {
+        noteModal.close();
+    }
+});
+
