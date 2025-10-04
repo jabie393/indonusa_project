@@ -39,6 +39,7 @@ class GoodsInController extends Controller
 
         $validated['status_barang'] = 'ditinjau';
         $validated['tipe_request'] = 'primary'; // Set tipe_request primary
+        $validated['deskripsi'] = $request->input('deskripsi', null); // pastikan null jika kosong
 
         $barang = Barang::create($validated);
 
@@ -48,6 +49,8 @@ class GoodsInController extends Controller
             $barang->gambar = $path;
             $barang->save();
         }
+
+        $barang->update($validated);
 
         return redirect()->route('goods-in.index')->with('success', 'Barang berhasil ditambahkan.');
     }

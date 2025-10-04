@@ -11,6 +11,7 @@ use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
+use App\Http\Controllers\Admin\HistoryController;
 
 // Guest Routes
 Route::get('/', function () {
@@ -85,7 +86,8 @@ Route::middleware(['auth', 'role:admin_PT'])->group(function () {
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
 });
 
-
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/history', [HistoryController::class, 'index'])->name('history.index');
+});
 
 require __DIR__ . '/auth.php';

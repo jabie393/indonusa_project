@@ -46,6 +46,8 @@ class GoodsInStatusController extends Controller
                 'stok' => 'required|integer',
             ]);
             $barang->stok = $request->stok;
+            $barang->status_barang = 'ditinjau'; // ubah status_barang
+            $barang->catatan = null; // kosongkan kolom catatan
             $barang->save();
         } else {
             // update full barang
@@ -73,6 +75,9 @@ class GoodsInStatusController extends Controller
                 'harga',
                 'deskripsi'
             ]);
+
+            $data['status_barang'] = 'ditinjau'; // ubah status_barang
+            $data['catatan'] = null; // kosongkan kolom catatan
 
             $oldGambar = $barang->gambar;
 
