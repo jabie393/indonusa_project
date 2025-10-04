@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
 Route::resource('/goods-in', GoodsInController::class);
 Route::resource('/add-stock', AddStockController::class);
 Route::resource('/goods-in-status', GoodsInStatusController::class);
+Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 // End of Admin Supply
 
 Route::resource('/warehouse', WarehouseController::class);
@@ -87,10 +88,6 @@ Route::middleware(['auth', 'role:admin_PT'])->group(function () {
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/history', [HistoryController::class, 'index'])->name('history.index');
 });
 
 require __DIR__ . '/auth.php';
