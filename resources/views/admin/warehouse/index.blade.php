@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
-        <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
+        <div class="flex bg-gradient-to-r from-[#225A97] to-[#0B1D31] flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
-                <h2 class="mr-3 font-semibold text-black dark:text-white">Daftar barang</h2>
+                <h2 class="mr-3 font-semibold text-white">Daftar barang</h2>
             </div>
             <div
                 class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
