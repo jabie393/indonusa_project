@@ -25,7 +25,8 @@
                 @method('PUT')
                 <input type="hidden" name="id" id="edit_id">
                 <div>
-                    <label for="edit_status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status Listing</label>
+                    <label for="edit_status_listing"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status Listing</label>
                     <select name="status_listing" id="edit_status_listing"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
@@ -34,49 +35,57 @@
                     </select>
                 </div>
                 <div>
-                    <label for="edit_kode_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode Barang</label>
+                    <label for="edit_kode_barang"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode Barang</label>
                     <input type="text" name="kode_barang" id="edit_kode_barang"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_nama_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama Barang</label>
+                    <label for="edit_nama_barang"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama Barang</label>
                     <input type="text" name="nama_barang" id="edit_nama_barang"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                    <label for="edit_kategori"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                     <input type="text" name="kategori" id="edit_kategori"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                    <label for="edit_stok"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
                     <input type="number" name="stok" id="edit_stok"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
+                    <label for="edit_satuan"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
                     <input type="text" name="satuan" id="edit_satuan"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_lokasi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
+                    <label for="edit_lokasi"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
                     <input type="text" name="lokasi" id="edit_lokasi"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div>
-                    <label for="edit_harga" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
+                    <label for="edit_harga"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
                     <input type="number" name="harga" id="edit_harga"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div class="sm:col-span-2">
-                    <label for="edit_deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                    <label for="edit_deskripsi"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
                     <textarea name="deskripsi" id="edit_deskripsi"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
@@ -97,3 +106,9 @@
         <button>close</button>
     </form>
 </dialog>
+
+<script>
+    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
+    window.CSRF_TOKEN = "{{ csrf_token() }}";
+</script>
+@vite(['resources/js/checker.js'])

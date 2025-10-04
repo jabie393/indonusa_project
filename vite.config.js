@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/goods-in-status.js',
                 'resources/js/supply-orders.js',
                 'resources/js/goods-in.js',
+                'resources/js/checker.js',
             ],
             refresh: true,
         }),

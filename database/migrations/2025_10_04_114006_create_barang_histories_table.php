@@ -40,8 +40,7 @@ return new class extends Migration {
 
             $table->timestamps();
 
-            // Foreign keys (optional biar fleksibel kalau data dihapus)
-            // $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('set null');
+            // Foreign keys (Biar fleksibel kalau data dihapus)
             $table->foreign('changed_by')->references('id')->on('users')->onDelete('set null');
         });
     }

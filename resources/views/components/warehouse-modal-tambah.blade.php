@@ -1,6 +1,8 @@
 <dialog id="tambahBarang" class="modal">
-    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 dark:border-gray-600">
+    <div
+        class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+        <div
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Barang
             </h3>
@@ -20,7 +22,8 @@
             </div>
         </div>
 
-        <form action="{{ route('warehouse.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+        <form action="{{ route('warehouse.store') }}" method="POST"
+            class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
             <div class="overflow-auto h-full">
                 <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
                     @csrf
@@ -29,20 +32,26 @@
                         <div class="md:col-span-1">
                             <div class="mb-4">
 
-                                <label for="gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
+                                <label for="gambar"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                     Barang
                                 </label>
                                 <input type="file" name="gambar" id="gambar" class="hidden" accept="image/*" />
 
-                                <div id="gambar_preview" class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
+                                <div id="gambar_preview"
+                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
                                     <input id="gambar" type="file" class="hidden" accept="image/*" />
                                     <label id="gambar_label" for="gambar" class="m-auto cursor-pointer">
-                                        <img class="mx-auto hidden h-full max-h-48 max-w-48" id="modified_image" src="" alt="" />
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700">
+                                        <img class="mx-auto hidden h-full max-h-48 max-w-48" id="modified_image" src=""
+                                            alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="mx-auto mb-4 h-8 w-8 text-gray-700">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                         </svg>
-                                        <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700">Upload picture</h5>
+                                        <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700">Upload picture
+                                        </h5>
                                     </label>
                                 </div>
                             </div>
@@ -50,7 +59,9 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="space-y-4">
                                 <div>
-                                    <label for="status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status Listing</label>
+                                    <label for="status_listing"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status
+                                        Listing</label>
                                     <select name="status_listing" id="status_listing"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
@@ -59,19 +70,24 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="kode_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode Barang</label>
+                                    <label for="kode_barang"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
+                                        Barang</label>
                                     <input type="text" name="kode_barang" id="kode_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="nama_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama Barang</label>
+                                    <label for="nama_barang"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
+                                        Barang</label>
                                     <input type="text" name="nama_barang" id="nama_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                                    <label for="kategori"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                                     <input type="text" name="kategori" id="kategori"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
@@ -81,25 +97,29 @@
                             <div class="space-y-4">
 
                                 <div>
-                                    <label for="stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                                    <label for="stok"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
                                     <input type="number" name="stok" id="stok"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
+                                    <label for="satuan"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
                                     <input type="text" name="satuan" id="satuan"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="lokasi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
+                                    <label for="lokasi"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
                                     <input type="text" name="lokasi" id="lokasi"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="harga" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
+                                    <label for="harga"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
                                     <input type="number" name="harga" id="harga"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
@@ -111,7 +131,8 @@
 
                     <div class="h-full sm:col-span-1">
 
-                        <label for="deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                        <label for="deskripsi"
+                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
                         <textarea name="deskripsi" id="deskripsi"
                             class="block h-[90%] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
@@ -131,3 +152,10 @@
         <button>close</button>
     </form>
 </dialog>
+
+<!-- Script cek kode barang sudah ada atau belum -->
+<script>
+    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
+    window.CSRF_TOKEN = "{{ csrf_token() }}";
+</script>
+@vite(['resources/js/checker.js'])
