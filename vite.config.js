@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/warehouse.js',
                 'resources/js/goods-in-status.js',
                 'resources/js/supply-orders.js',
+                'resources/js/goods-in.js',
             ],
             refresh: true,
         }),
