@@ -36,26 +36,24 @@
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="px-4 py-3">{{ $barang->status_barang }}</td>
                             <td class="flex items-center justify-end px-4 py-3">
-                                @if($barang->status_barang == 'ditinjau')
+                                @if ($barang->status_barang == 'ditinjau')
                                     {{-- Edit barang modal --}}
                                     <button
                                         class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                        data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                        data-kategori="{{ $barang->kategori }}"
-                                        data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                        data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                        data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
-                                        data-tipe_request="{{ $barang->tipe_request }}">
+                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
+                                        data-kategori="{{ $barang->kategori }}" data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}" data-satuan="{{ $barang->satuan }}"
+                                        data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
+                                        data-tipe_request="{{ $barang->tipe_request }}" data-gambar="{{ $barang->gambar }}">
                                         Edit
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                        style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
+                                        <button type="button"
                                             class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                            onclick="return confirm('Yakin hapus?')">Delete</button>
+                                            onclick="confirmDelete(() => this.closest('form').submit())">
+                                            Hapus
+                                        </button>
                                     </form>
                                 @elseif($barang->status_barang == 'ditolak')
                                     {{-- Note modal --}}
@@ -67,22 +65,20 @@
                                     {{-- Revise barang modal --}}
                                     <button
                                         class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                        data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                        data-kategori="{{ $barang->kategori }}"
-                                        data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                        data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                        data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
+                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
+                                        data-kategori="{{ $barang->kategori }}" data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}" data-satuan="{{ $barang->satuan }}"
+                                        data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}" data-gambar="{{ $barang->gambar }}"
                                         data-tipe_request="{{ $barang->tipe_request }}">
                                         Revise
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                        style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
+                                        <button type="button"
                                             class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                            onclick="return confirm('Yakin hapus?')">Delete</button>
+                                            onclick="confirmDelete(() => this.closest('form').submit())">
+                                            Hapus
+                                        </button>
                                     </form>
                                 @else
                                     {{-- Note modal --}}
@@ -93,17 +89,13 @@
                                     {{-- Edit barang modal --}}
                                     <button
                                         class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                        data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                        data-kategori="{{ $barang->kategori }}"
-                                        data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                        data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                        data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
-                                        data-tipe_request="{{ $barang->tipe_request }}">
+                                        data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
+                                        data-kategori="{{ $barang->kategori }}" data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}" data-satuan="{{ $barang->satuan }}"
+                                        data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
+                                        data-tipe_request="{{ $barang->tipe_request }}" data-gambar="{{ $barang->gambar }}">
                                         Edit
                                     </button>
-                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                        style="display:inline;">
+                                    <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -121,8 +113,7 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-            aria-label="Table navigation">
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
             <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                 Showing
                 <span class="font-semibold text-gray-900 dark:text-white">1-10</span>
@@ -134,11 +125,8 @@
                     <a href="#"
                         class="ml-0 flex h-full items-center justify-center rounded-l-lg border border-gray-300 bg-white px-3 py-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         <span class="sr-only">Previous</span>
-                        <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                clip-rule="evenodd" />
+                        <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                         </svg>
                     </a>
                 </li>
@@ -150,11 +138,8 @@
                     <a href="#"
                         class="flex h-full items-center justify-center rounded-r-lg border border-gray-300 bg-white px-3 py-1.5 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                         <span class="sr-only">Next</span>
-                        <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd" />
+                        <svg class="h-5 w-5" aria-hidden="true" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                         </svg>
                     </a>
                 </li>

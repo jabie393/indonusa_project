@@ -60,7 +60,7 @@
                                         data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
                                         data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}"
                                         data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                        data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"data-gambar="{{ $barang->gambar }}">
+                                        data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}" data-gambar="{{ $barang->gambar }}">
                                         Edit
                                     </button>
                                     <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST"
