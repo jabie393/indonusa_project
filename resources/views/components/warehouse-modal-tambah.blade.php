@@ -21,7 +21,7 @@
         </div>
 
         <form action="{{ route('warehouse.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
-            <div class="overflow-auto">
+            <div class="overflow-auto h-full">
                 <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
                     @csrf
                     <div class="md:col-span-2">

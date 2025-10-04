@@ -1,7 +1,7 @@
 <dialog id="editBarangModal" class="modal">
     <div class="modal-box relative mx-auto max-h-full w-full max-w-3xl p-0">
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-            
+
             <!-- Header Modal -->
             <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -30,7 +30,7 @@
                             <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                 Barang
                             </label>
-                            <div id="edit_gambar_preview" class="mt-2 flex justify-center">
+                            <div id="gambar_preview" class="mt-2 flex justify-center">
                                 <img class="mx-auto h-full" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg" alt="" />
                             </div>
                         </div>
@@ -43,21 +43,21 @@
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kode
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kode_barang">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="kode_barang">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Nama
                                         Barang</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_nama_barang">-</div>
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="nama_barang">-</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Kategori</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_kategori">
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="kategori">
                                         -</div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Lokasi</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_lokasi">-
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="lokasi">-
                                     </div>
                                 </div>
                             </div>
@@ -65,18 +65,18 @@
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Status
                                         Listing</label>
-                                    <span id="edit_status_listing" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
+                                    <span id="status_listing" class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
                                         <!-- Status akan ditampilkan dengan warna yang sesuai -->
                                     </span>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Harga</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_harga">-
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="harga">-
                                     </div>
                                 </div>
                                 <div>
                                     <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Satuan</label>
-                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_satuan">-
+                                    <div class="text-sm font-semibold text-gray-900 dark:text-white" id="satuan">-
                                     </div>
                                 </div>
                                 <div>
@@ -91,7 +91,7 @@
                         <!-- Deskripsi Barang -->
                         <div class="mt-6">
                             <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Deskripsi</label>
-                            <div class="text-sm text-gray-900 dark:text-white" id="edit_deskripsi">-</div>
+                            <div class="text-sm text-gray-900 dark:text-white" id="deskripsi">-</div>
                         </div>
                     </div>
                 </div>
@@ -102,13 +102,13 @@
                     <form id="tambahStockForm" method="POST" class="space-y-4" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
-                        <input type="hidden" name="id" id="edit_id">
+                        <input type="hidden" name="id" id="id">
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
-                                <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok
+                                <label for="stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok
                                     Baru
                                 </label>
-                                <input type="number" name="stok" id="edit_stok"
+                                <input type="number" name="stok" id="stok"
                                     class="block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                     required min="0">
                             </div>

@@ -82,7 +82,7 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
     if (gambar && gambar !== '') {
         gambarPreview.innerHTML = `<input id="edit_gambar" type="file" class="hidden" accept="image/*" />
             <label id="edit_gambar_label" for="edit_gambar" class="cursor-pointer">
-                <img src="/storage/${gambar}" alt="Gambar Barang" class="mx-auto relative z-2 h-full object-cover rounded-lg" />
+                <img src="files/${gambar}" alt="Gambar Barang" class="mx-auto relative z-2 h-full object-cover rounded-lg" />
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
