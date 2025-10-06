@@ -10,12 +10,14 @@ class OrderItem extends Model
     protected $fillable = [
         'order_id',
         'barang_id',
-        'quantity'
+        'quantity',
+        'delivered_quantity',
+        'status_item',
     ];
 
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(Order::class, 'order_id');
     }
 
     public function barang()
