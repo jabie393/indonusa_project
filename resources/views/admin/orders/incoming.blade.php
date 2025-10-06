@@ -3,7 +3,7 @@
     <div class="py-12 w-full">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Incoming Orders</h1>
-            <a href="{{ url()->previous() }}" class="mb-4 inline-block px-4 py-2 bg-gray-300 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded">Kembali</a>
+            
 
             @if($orders->count())
                 @foreach($orders as $order)

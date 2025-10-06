@@ -174,12 +174,27 @@
                 </a>
             </li>
 
+            {{-- Menu untuk admin_sales --}}
+                    @if(in_array(auth()->user()->role, ['admin_sales']))
+                        <li>
+                            <a href="{{ url('/requestorder') }}"
+                                class="{{ request()->routeIs('sales.requestorder') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <svg aria-hidden="true"
+                                        class="w-6 h-6 text-blue-500 transition duration-75 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M3 10a1 1 0 011-1h2V7a1 1 0 112 0v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2H4a1 1 0 01-1-1z" />
+                                    </svg>
+                                <span class="ml-3">Request Order</span>
+                            </a>
+                        </li>
+                    @endif
+
             {{-- Menu untuk admin_supply --}}
             @if (in_array(auth()->user()->role, ['admin_PT']))
                         {{-- Incoming Orders --}}
                         <li>
-                            <a href="{{ route('orders.incoming') }}"
-                                class="{{ request()->routeIs('orders.incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <a href="{{ url('/incoming') }}"
+                                class="{{ request()->is('incoming') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <svg aria-hidden="true"
                                     class="{{ request()->routeIs('orders.incoming') ? 'text-black dark:text-white' : 'text-white' }} h-6 w-6 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     fill="currentColor" viewBox="0 0 20 20">
