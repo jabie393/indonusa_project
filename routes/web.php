@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
+use App\Http\Controllers\Admin\DeliveryOrdersController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
@@ -70,6 +71,7 @@ route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
+    Route::resource('/delivery-orders', DeliveryOrdersController::class);
 });
 // End of Admin Warehouse
 
