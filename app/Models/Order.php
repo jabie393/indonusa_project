@@ -14,7 +14,11 @@ class Order extends Model
         'pt_id',
         'warehouse_id',
         'status',
-        'reason'
+        'reason',
+        'customer_name',
+        'customer_id',
+        'tanggal_kebutuhan',
+        'catatan_customer',
     ];
 
     public function items()

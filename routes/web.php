@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\HistoryController;
+use App\Http\Controllers\RequestOrderController;
+
 
 // === Guest Routes === //
 Route::get('/', function () {
@@ -76,11 +78,20 @@ route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
 // Admin PT
 // Route lain khusus admin_PT
 Route::middleware(['auth', 'role:admin_PT'])->group(function () {
-    Route::get('/orders/incoming', [AdminPTController::class, 'incoming'])->name('orders.incoming');
+    
+    Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
+});
+
+// Route khusus admin_sales
+Route::middleware(['auth', 'role:admin_sales'])->group(function () {
+    Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
+    Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
+    Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');
+    Route::get('/request-order/{order}', [RequestOrderController::class, 'show'])->name('requestorder.show');
 });
 // === End Admin Routes === //
 require __DIR__ . '/auth.php';
