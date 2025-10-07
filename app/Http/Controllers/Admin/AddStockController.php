@@ -8,9 +8,20 @@ use App\Models\Barang;
 
 class AddStockController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $barangs = Barang::where('status_barang', 'masuk')->get();
+        $query = $request->input('search');
+        $barangs = Barang::where('status_barang', 'masuk');
+
+        if ($query) {
+            $barangs = $barangs->where(function ($q) use ($query) {
+                $q->where('nama_barang', 'like', "%{$query}%")
+                    ->orWhere('kode_barang', 'like', "%{$query}%");
+            });
+        }
+
+        $barangs = $barangs->paginate(10); // <-- Use paginate here
+
         return view('admin.add-stock.index', compact('barangs'));
     }
 

@@ -9,9 +9,19 @@ use App\Models\Barang;
 class GoodsInStatusController extends Controller
 {
     // Tampilkan daftar barang (Item Status)
-    public function index()
+    public function index(Request $request)
     {
-        $barangs = Barang::whereIn('status_barang', ['ditinjau', 'ditolak'])->get(); // Hanya ambil barang dengan status 'ditinjau' atau 'ditolak'
+        $query = $request->input('search');
+        $barangs = Barang::where('status_barang', ['ditinjau', 'ditolak']);
+
+        if ($query) {
+            $barangs = $barangs->where(function ($q) use ($query) {
+                $q->where('nama_barang', 'like', "%{$query}%")
+                    ->orWhere('kode_barang', 'like', "%{$query}%")
+                    ->orWhere('kategori', 'like', "%{$query}%");
+            });
+        }
+        $barangs = $barangs->paginate(10); //
         return view('admin.goods-in-status.index', compact('barangs'));
     }
 

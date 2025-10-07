@@ -8,11 +8,23 @@ use App\Models\Barang;
 
 class WarehouseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $barangs = Barang::where('status_barang', 'masuk')->get(); // hanya yang statusnya masuk
+
+        $query = $request->input('search');
+        $barangs = Barang::where('status_barang', 'masuk');
+
+        if ($query) {
+            $barangs = $barangs->where(function ($q) use ($query) {
+                $q->where('nama_barang', 'like', "%{$query}%")
+                    ->orWhere('kode_barang', 'like', "%{$query}%")
+                    ->orWhere('kategori', 'like', "%{$query}%");
+            });
+        }
+        $barangs = $barangs->paginate(10); // paginate the filtered query
         return view('admin.warehouse.index', compact('barangs'));
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
