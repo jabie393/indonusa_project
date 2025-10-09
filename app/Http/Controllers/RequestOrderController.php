@@ -111,7 +111,7 @@ class RequestOrderController extends Controller
     public function show(Order $order)
     {
         // 🔐 pastikan hanya sales pemilik / admin PT / warehouse yang boleh lihat
-        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['admin_PT','admin_warehouse'])) {
+        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['admin_pt','admin_warehouse'])) {
             abort(403);
         }
 

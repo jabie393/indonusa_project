@@ -174,8 +174,8 @@
 @if(in_array(auth()->user()->role, ['admin_sales']))
     <li>
         <a href="{{ route('requestorder.create') }}"
-            class="{{ request()->routeIs('requestorder.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} 
-                   ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg 
+            class="{{ request()->routeIs('requestorder.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}
+                   ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg
                    dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
             <svg aria-hidden="true"
                 class="w-6 h-6 text-blue-500 transition duration-75 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"
@@ -190,7 +190,7 @@
 
 
             {{-- Menu untuk admin_supply --}}
-            @if (in_array(auth()->user()->role, ['admin_PT']))
+            @if (in_array(auth()->user()->role, ['admin_pt']))
                         {{-- Incoming Orders --}}
                         <li>
                             <a href="{{ url('/incoming') }}"

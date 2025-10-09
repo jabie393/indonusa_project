@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('order_number')->unique();
             $table->unsignedBigInteger('sales_id');      // id user yang membuat order (admin_sales)
-            $table->unsignedBigInteger('pt_id')->nullable(); // id admin_PT yang meninjau
+            $table->unsignedBigInteger('pt_id')->nullable(); // id admin_pt yang meninjau
             $table->unsignedBigInteger('warehouse_id')->nullable(); // id admin_warehouse
             $table->enum('status', [
                 'pending',
