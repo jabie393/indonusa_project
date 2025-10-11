@@ -25,8 +25,12 @@ class RequestOrderController extends Controller
 
     public function create()
     {
-        $barangs = Barang::where('status_barang', 'masuk')
-            ->where('status_listing', 'listing')
+        // 1) Semua barang
+        // $barangs = Barang::orderBy('nama_barang')->get();
+
+        // 2) Hanya barang yang listing dan stok > 0 (rekomendasi)
+        $barangs = Barang::where('tipe_request', 'primary')
+            ->where('stok', '>', 0)
             ->orderBy('nama_barang')
             ->get();
 
