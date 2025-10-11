@@ -48,13 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
         items.forEach(function (item) {
             const tr = document.createElement('tr');
 
-            const barangId = item.barang_id ?? (item.barang && (item.barang.id || item.barang.id === 0 ? item.barang.id : item.barang_id)) ?? '-';
+            // prefer kode_barang coming from related barang, then item.kode_barang, then fallback to barang_id
+            const kodeBarang = (item.barang && (item.barang.kode_barang ?? item.barang.kode)) ?? item.kode_barang ?? item.barang_id ?? '-';
             const namaBarang = (item.barang && (item.barang.nama || item.barang.name || item.barang.nama_barang)) || item.nama_barang || '-';
             const qty = item.quantity ?? '-';
             const delivered = item.delivered_quantity ?? '-';
             const status = item.status_item ?? item.status ?? '-';
 
-            const cells = [barangId, namaBarang, qty, delivered, status];
+            const cells = [kodeBarang, namaBarang, qty, delivered, status];
 
             cells.forEach(function (val) {
                 const td = document.createElement('td');
