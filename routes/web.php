@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
 // End of General
 
 // Admin Supply
-Route::middleware(['auth', 'role:admin_supply'])->group(function () {
+Route::middleware(['auth', 'role:Supply'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
@@ -67,7 +67,7 @@ Route::middleware(['auth', 'role:admin_supply'])->group(function () {
 // End of Admin Supply
 
 // Admin Warehouse
-route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
+route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
@@ -75,9 +75,9 @@ route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
 });
 // End of Admin Warehouse
 
-// Admin PT
-// Route lain khusus admin_pt
-Route::middleware(['auth', 'role:admin_pt'])->group(function () {
+// Supervisor
+// Route lain khusus Supervisor
+Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
     Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
@@ -86,8 +86,8 @@ Route::middleware(['auth', 'role:admin_pt'])->group(function () {
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
 });
 
-// Route khusus admin_sales
-Route::middleware(['auth', 'role:admin_sales'])->group(function () {
+// Route khusus Sales
+Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
     Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
     Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');

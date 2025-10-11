@@ -18,8 +18,8 @@
                 </a>
             </li>
 
-            {{-- Menu untuk admin_supply --}}
-            @if (in_array(auth()->user()->role, ['admin_supply']))
+            {{-- Menu untuk Supply --}}
+            @if (in_array(auth()->user()->role, ['Supply']))
                 {{-- Goods In --}}
                 <li>
                     <a href="{{ route('goods-in.index') }}"
@@ -102,8 +102,8 @@
                 </li>
             @endif
 
-            {{-- Menu untuk admin_warehouse --}}
-            @if (in_array(auth()->user()->role, ['admin_warehouse']))
+            {{-- Menu untuk Warehouse --}}
+            @if (in_array(auth()->user()->role, ['Warehouse']))
                 <details open class="">
                     <summary
                         class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700">
@@ -168,10 +168,10 @@
                 </a>
             </li>
 
-            {{-- Menu untuk admin_sales --}}
-                    {{-- Menu untuk admin_sales --}}
-                    {{-- Menu untuk admin_sales --}}
-@if(in_array(auth()->user()->role, ['admin_sales']))
+            {{-- Menu untuk Sales --}}
+                    {{-- Menu untuk Sales --}}
+                    {{-- Menu untuk Sales --}}
+@if(in_array(auth()->user()->role, ['Sales']))
     <li>
         <a href="{{ route('requestorder.create') }}"
             class="{{ request()->routeIs('requestorder.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}
@@ -189,8 +189,8 @@
 
 
 
-            {{-- Menu untuk admin_supply --}}
-            @if (in_array(auth()->user()->role, ['admin_pt']))
+            {{-- Menu untuk Supply --}}
+            @if (in_array(auth()->user()->role, ['Supervisor']))
                         {{-- Incoming Orders --}}
                         <li>
                             <a href="{{ url('/incoming') }}"

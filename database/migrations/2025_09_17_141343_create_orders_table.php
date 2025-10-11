@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique();
-            $table->unsignedBigInteger('sales_id');      // id user yang membuat order (admin_sales)
-            $table->unsignedBigInteger('pt_id')->nullable(); // id admin_pt yang meninjau
-            $table->unsignedBigInteger('warehouse_id')->nullable(); // id admin_warehouse
+            $table->unsignedBigInteger('sales_id');      // id user yang membuat order (Sales)
+            $table->unsignedBigInteger('pt_id')->nullable(); // id Supervisor yang meninjau
+            $table->unsignedBigInteger('warehouse_id')->nullable(); // id Warehouse
             $table->enum('status', [
                 'pending',
                 'approved_pt',

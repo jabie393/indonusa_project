@@ -10,7 +10,7 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">No. Order</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Admin PT</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Supervisor</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Dibuat</th>
                             <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>

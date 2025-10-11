@@ -20,41 +20,41 @@ class DatabaseSeeder extends Seeder
             'name' => 'Operator',
             'email' => 'operator@example.com',
             'password' => Hash::make('password'),
-            'role' => 'operator',
+            'role' => 'Operator',
         ]);
 
         User::factory()->create([
             'name' => 'Imam',
-            'email' => 'adminpt@example.com',
+            'email' => 'adminsupervisor@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_PT',
+            'role' => 'Supervisor',
         ]);
 
         User::factory()->create([
             'name' => 'Fahd',
             'email' => 'adminsupply@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_supply',
+            'role' => 'Supply',
         ]);
 
         User::factory()->create([
             'name' => 'Hilmi',
             'email' => 'adminsales@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_sales',
+            'role' => 'Sales',
         ]);
 
         User::factory()->create([
             'name' => 'Usman',
             'email' => 'adminwarehouse@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_warehouse',
+            'role' => 'Warehouse',
         ]);
         User::factory()->create([
             'name' => 'Finance',
             'email' => 'finance@example.com',
             'password' => Hash::make('password'),
-            'role' => 'finance',
+            'role' => 'Finance',
         ]);
 
         $this->call(BarangSeeder::class);

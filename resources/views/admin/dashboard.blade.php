@@ -10,7 +10,7 @@
                     <p class="mt-2">
                         Anda login sebagai
                         <span class="font-semibold">
-                            {{ Auth::user()->name ?? 'User' }}
+                            {{ Auth::user()->role ?? 'User' }}
                         </span>
                     </p>
 
