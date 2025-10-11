@@ -15,6 +15,8 @@ export default defineConfig({
                 'resources/js/supply-orders.js',
                 'resources/js/goods-in.js',
                 'resources/js/checker.js',
+                'resources/js/order-modal.js',
+                'resources/js/requestorder-modal.js',
             ],
             refresh: true,
         }),
