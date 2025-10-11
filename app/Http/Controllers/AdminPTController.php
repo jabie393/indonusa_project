@@ -10,16 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class AdminPTController extends Controller
 {
 
-    public function dashboard()
-    {
-        $pending = Order::where('status', 'pending')->count();
-        $sent = Order::where('status', 'sent_to_warehouse')->count();
-        $history = Order::where('status', '!=', 'pending')->count();
-        $orders = Order::latest()->take(5)->get();
-
-        return view('admin.dashboard', compact('pending','sent','history','orders'));
-    }
-
     public function incoming()
     {
         $orders = Order::where('status','pending')->with(['items.barang','sales'])->get();
