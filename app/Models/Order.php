@@ -11,7 +11,7 @@ class Order extends Model
     protected $fillable = [
         'order_number',
         'sales_id',
-        'pt_id',
+        'supervisor_id',
         'warehouse_id',
         'status',
         'reason',
@@ -31,9 +31,9 @@ class Order extends Model
         return $this->belongsTo(User::class, 'sales_id');
     }
 
-    public function pt()
+    public function supervisor()
     {
-        return $this->belongsTo(User::class, 'pt_id');
+        return $this->belongsTo(User::class, 'supervisor_id');
     }
 
     public function warehouse()

@@ -20,7 +20,7 @@
                         @foreach($orders as $order)
                         <tr>
                             <td class="px-4 py-2 whitespace-nowrap">{{ $order->order_number }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ optional($order->pt)->name ?? '-' }}</td>
+                            <td class="px-4 py-2 whitespace-nowrap">{{ optional($order->supervisor)->name ?? '-' }}</td>
                             <td class="px-4 py-2 whitespace-nowrap">{{ $order->status }}</td>
                             <td class="px-4 py-2 whitespace-nowrap">{{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
                             <td class="px-4 py-2 whitespace-nowrap">

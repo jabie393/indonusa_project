@@ -23,5 +23,18 @@ class OrderSeeder extends Seeder
             'barang_id' => 1,
             'quantity' => 5
         ]);
+
+        $order = Order::create([
+            'order_number' => 'ORD-' . strtoupper(Str::random(6)),
+            'sales_id' => 4,
+            'supervisor_id' => 2,
+            'status' => 'sent_to_warehouse'
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'barang_id' => 2,
+            'quantity' => 5
+        ]);
     }
 }
