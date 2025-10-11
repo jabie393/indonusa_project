@@ -27,9 +27,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (statusEl) statusEl.textContent = status;
         if (reasonEl) reasonEl.textContent = reason || '-';
 
-        // Clear items
+        // Clear items (table body)
         if (itemsEl) {
-            itemsEl.innerHTML = '';
+            const tbody = itemsEl.querySelector('tbody');
+            if (tbody) tbody.innerHTML = '';
             let items = [];
             try {
                 items = JSON.parse(itemsJson.replace(/&quot;/g, '"'));
@@ -43,9 +44,20 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             items.forEach(function (it) {
-                const li = document.createElement('li');
-                li.textContent = (it.nama || ('Barang ID ' + (it.barang_id || '')) ) + ' — qty: ' + (it.quantity || 0);
-                itemsEl.appendChild(li);
+                const tr = document.createElement('tr');
+                const tdKode = document.createElement('td');
+                const tdName = document.createElement('td');
+                const tdQty = document.createElement('td');
+
+                tdKode.textContent = it.kode || '-';
+                tdName.textContent = (it.nama || ('Barang ID ' + (it.barang_id || '')));
+                tdQty.textContent = (it.quantity || 0);
+
+                tr.appendChild(tdKode);
+                tr.appendChild(tdName);
+                tr.appendChild(tdQty);
+
+                if (tbody) tbody.appendChild(tr);
             });
         }
     }

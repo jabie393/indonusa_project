@@ -10,7 +10,18 @@
         <p class="text-sm text-gray-700 dark:text-gray-300"><strong>Reason:</strong> <span id="modal_reason">-</span></p>
 
         <h3 class="mt-4 font-semibold text-gray-900 dark:text-gray-100">Items</h3>
-        <ul id="modal_items" class="list-disc pl-6 text-sm text-gray-700 dark:text-gray-300"></ul>
+        <div class="overflow-x-auto mt-2">
+            <table id="modal_items" class="min-w-full text-sm text-gray-700 dark:text-gray-300">
+                <thead>
+                    <tr>
+                        <th class="text-left">Kode</th>
+                        <th class="text-left">Item</th>
+                        <th class="text-left">Qty</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
         <div class="mt-6 flex justify-end">
             <button id="modal_close_btn" class="px-3 py-1 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded">Close</button>

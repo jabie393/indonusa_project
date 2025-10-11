@@ -80,6 +80,7 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
 Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
     Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
+    Route::get('/approved-orders', [AdminPTController::class, 'approved'])->name('admin.approved');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');

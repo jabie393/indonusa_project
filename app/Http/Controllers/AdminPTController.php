@@ -12,6 +12,11 @@ class AdminPTController extends Controller
 
     public function dashboard()
     {
+        // Jika role adalah Supervisor, langsung arahkan ke halaman approved orders
+        if (Auth::check() && Auth::user() && Auth::user()->role === 'Supervisor') {
+            return redirect()->route('admin.approved');
+        }
+
         $pending = Order::where('status', 'pending')->count();
         $sent = Order::where('status', 'sent_to_warehouse')->count();
         $history = Order::where('status', '!=', 'pending')->count();
@@ -41,7 +46,8 @@ class AdminPTController extends Controller
         $order->pt_id = Auth::id();
         $order->save();
 
-        return redirect()->route('admin.incoming')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
+        // Setelah approve, arahkan ke halaman approved orders agar admin PT melihat daftar yang sudah dikirim ke warehouse
+        return redirect()->route('admin.approved')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
 
     public function reject(Request $request, $id)
@@ -57,6 +63,17 @@ class AdminPTController extends Controller
         $order->save();
 
         return redirect()->route('admin.incoming')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
+    }
+
+    public function approved()
+    {
+        // Orders that have been approved by PT and sent to warehouse
+        $orders = Order::where('status', 'sent_to_warehouse')
+            ->with(['items.barang', 'sales', 'pt', 'warehouse'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.approved-order.approved_orders', compact('orders'));
     }
 
     public function history()
