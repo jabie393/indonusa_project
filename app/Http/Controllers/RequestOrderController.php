@@ -23,6 +23,20 @@ class RequestOrderController extends Controller
         return view('admin.requestorder.index', compact('orders'));
     }
 
+    /**
+     * Sales-facing list (new Sales Order page).
+     * Shows the same data but renders the sales-specific view.
+     */
+    public function salesIndex()
+    {
+        $orders = Order::with('items.barang', 'sales')
+            ->where('sales_id', Auth::id())
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.sales.requestorder', compact('orders'));
+    }
+
     public function create()
     {
         // 1) Semua barang
@@ -104,7 +118,8 @@ class RequestOrderController extends Controller
                 $msg .= " Beberapa item stok kurang (pending_stock).";
             }
 
-            return redirect()->route('requestorder.index')->with('success', $msg);
+            // Redirect sales users to the new Sales Order page
+            return redirect()->route('sales.order')->with('success', $msg);
 
         } catch (\Throwable $e) {
             DB::rollBack();

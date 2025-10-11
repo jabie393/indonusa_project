@@ -91,6 +91,8 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
     Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
+    // Sales-facing list (Sales Order page)
+    Route::get('/sales-order', [RequestOrderController::class, 'salesIndex'])->name('sales.order');
     Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');
     Route::get('/request-order/{order}', [RequestOrderController::class, 'show'])->name('requestorder.show');
 });
