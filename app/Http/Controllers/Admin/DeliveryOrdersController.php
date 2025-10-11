@@ -3,14 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
+use App\Models\Order;
 
 class DeliveryOrdersController extends Controller
 {
-    // Tampilkan daftar barang yang statusnya 'ditinjau'
+    // Tampilkan daftar orders yang statusnya 'sent_to_warehouse'
     public function index()
     {
-        $barangs = collect();
-        return view('admin.delivery-orders.index', compact('barangs'));
+        // Ambil semua orders yang dikirim ke warehouse, eager-load relasi pt dan items
+        $orders = Order::with(['pt', 'items'])
+            ->where('status', 'sent_to_warehouse')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('admin.delivery-orders.index', compact('orders'));
     }
 }
