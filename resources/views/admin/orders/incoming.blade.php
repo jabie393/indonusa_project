@@ -16,8 +16,12 @@
                                 </p>
                             </div>
                             <div class="space-x-2">
-                                <a href="{{ route('orders.show',$order->id) }}"
-                                   class="px-3 py-1 bg-blue-500 text-white rounded">Detail</a>
+                <button data-id="{{ $order->id }}"
+                    data-order-number="{{ $order->order_number }}"
+                    data-status="{{ $order->status }}"
+                    data-reason="{{ $order->reason }}"
+                    data-items='@json($order->items->map(function($it){ return ["nama" => optional($it->barang)->nama_barang ?? "Barang ID $it->barang_id", "quantity" => $it->quantity]; }))'
+                    class="open-order-detail px-3 py-1 bg-blue-500 text-white rounded">Detail</button>
                                 <form action="{{ route('orders.approve',$order->id) }}" method="POST" class="inline-block">
                                     @csrf
                                     <button class="px-3 py-1 bg-green-600 text-white rounded">Approve</button>
@@ -53,6 +57,9 @@
                     </div>
                 </div>
             @endif
+        
+            {{-- Include modal component --}}
+            @include('components.order-detail-modal')
         </div>
     </div>
 </x-app-layout>
