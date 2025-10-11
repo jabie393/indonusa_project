@@ -12,7 +12,7 @@ class GoodsInStatusController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-        $barangs = Barang::where('status_barang', ['ditinjau', 'ditolak']);
+        $barangs = Barang::whereIn('status_barang', ['ditinjau', 'ditolak']);
 
         if ($query) {
             $barangs = $barangs->where(function ($q) use ($query) {
