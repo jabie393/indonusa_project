@@ -12,11 +12,6 @@ class AdminPTController extends Controller
 
     public function dashboard()
     {
-        // Jika role adalah Supervisor, langsung arahkan ke halaman approved orders
-        if (Auth::check() && Auth::user() && Auth::user()->role === 'Supervisor') {
-            return redirect()->route('admin.approved');
-        }
-
         $pending = Order::where('status', 'pending')->count();
         $sent = Order::where('status', 'sent_to_warehouse')->count();
         $history = Order::where('status', '!=', 'pending')->count();

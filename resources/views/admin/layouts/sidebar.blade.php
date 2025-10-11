@@ -205,6 +205,16 @@
                                     Orders</span>
                             </a>
                         </li>
+                        {{-- Approved Orders --}}
+                        <li>
+                            <a href="{{ route('admin.approved') }}"
+                                class="{{ request()->is('approved-orders') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg aria-hidden="true" class="h-6 w-6 text-white transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 2v6h10V7H5z"></path>
+                                </svg>
+                                <span class="ml-3">Approved Orders</span>
+                            </a>
+                        </li>
 
 
                 {{-- History Orders --}}
