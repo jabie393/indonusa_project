@@ -7,6 +7,10 @@ use App\Models\Barang;
 
 class GeneralController extends Controller
 {
+    public function dashboard()
+    {
+        return view('admin.dashboard');
+    }
     public function checkKodeBarang(Request $request)
     {
         $query = Barang::where('kode_barang', $request->kode_barang);

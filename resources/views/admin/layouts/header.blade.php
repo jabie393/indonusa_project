@@ -42,7 +42,7 @@
                 <button type="button" class="mx-3 flex rounded-full bg-[#225A97] text-sm md:mr-0 hover:bg-[#1c4d81]" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
                     <span class="sr-only">Open user menu</span>
                     <p class="inline-flex items-center px-4 py-2 text-white">
-                        {{ Auth::user()->name }}
+                        {{ Auth::user()->name }} ({{ Auth::user()->role }})
                         <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -57,7 +57,7 @@
                 <!-- Dropdown menu -->
                 <div class="z-50 my-4 hidden w-56 list-none divide-y divide-gray-100 rounded rounded-xl bg-white text-base shadow dark:divide-gray-600 dark:bg-gray-700" id="dropdown">
                     <div class="px-4 py-3">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }}</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }} ({{ Auth::user()->role }})</span>
                         <span class="block truncate text-sm text-gray-900 dark:text-white">{{ Auth::user()->email }}</span>
                     </div>
                     <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">

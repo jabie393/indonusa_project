@@ -11,7 +11,7 @@ class OrderSeeder extends Seeder
 {
     public function run()
     {
-        // Pastikan ada barang dengan id=1 di tabel barangs, dan user id 4 = admin_sales (lihat SQL dump)
+        // Pastikan ada barang dengan id=1 di tabel barangs, dan user id 4 = Sales (lihat SQL dump)
         $order = Order::create([
             'order_number' => 'ORD-' . strtoupper(Str::random(6)),
             'sales_id' => 4,
@@ -21,6 +21,19 @@ class OrderSeeder extends Seeder
         OrderItem::create([
             'order_id' => $order->id,
             'barang_id' => 1,
+            'quantity' => 5
+        ]);
+
+        $order = Order::create([
+            'order_number' => 'ORD-' . strtoupper(Str::random(6)),
+            'sales_id' => 4,
+            'supervisor_id' => 2,
+            'status' => 'sent_to_warehouse'
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'barang_id' => 2,
             'quantity' => 5
         ]);
     }

@@ -10,16 +10,6 @@ use Illuminate\Support\Facades\Auth;
 class AdminPTController extends Controller
 {
 
-    public function dashboard()
-    {
-        $pending = Order::where('status', 'pending')->count();
-        $sent = Order::where('status', 'sent_to_warehouse')->count();
-        $history = Order::where('status', '!=', 'pending')->count();
-        $orders = Order::latest()->take(5)->get();
-
-        return view('admin.dashboard', compact('pending','sent','history','orders'));
-    }
-
     public function incoming()
     {
         $orders = Order::where('status','pending')->with(['items.barang','sales'])->get();
@@ -38,10 +28,11 @@ class AdminPTController extends Controller
     {
         $order = Order::findOrFail($id);
         $order->status = 'sent_to_warehouse'; // diteruskan ke warehouse sesuai flowchart
-        $order->pt_id = Auth::id();
+        $order->supervisor_id = Auth::id();
         $order->save();
 
-        return redirect()->route('admin.incoming')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
+        // Setelah approve, arahkan ke halaman approved orders agar admin PT melihat daftar yang sudah dikirim ke warehouse
+        return redirect()->route('admin.approved')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
 
     public function reject(Request $request, $id)
@@ -51,17 +42,28 @@ class AdminPTController extends Controller
         ]);
 
         $order = Order::findOrFail($id);
-        $order->status = 'rejected_pt';
-        $order->pt_id = Auth::id();
+        $order->status = 'rejected_supervisor';
+        $order->supervisor_id = Auth::id();
         $order->reason = $request->reason;
         $order->save();
 
         return redirect()->route('admin.incoming')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
     }
 
+    public function approved()
+    {
+        // Orders that have been approved by PT and sent to warehouse
+        $orders = Order::where('status', 'sent_to_warehouse')
+            ->with(['items.barang', 'sales', 'supervisor', 'warehouse'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.approved-order.approved_orders', compact('orders'));
+    }
+
     public function history()
     {
-        $orders = Order::where('status', '!=', 'pending')->with(['items.barang','sales','pt','warehouse'])->latest()->paginate(10);
+        $orders = Order::where('status', '!=', 'pending')->with(['items.barang','sales','supervisor','warehouse'])->latest()->paginate(10);
         return view('admin.orders.history', compact('orders'));
     }
 }

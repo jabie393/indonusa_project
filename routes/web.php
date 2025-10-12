@@ -51,14 +51,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/dashboard', [AdminPTController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [GeneralController::class, 'dashboard'])->name('dashboard');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
 });
 // End of General
 
 // Admin Supply
-Route::middleware(['auth', 'role:admin_supply'])->group(function () {
+Route::middleware(['auth', 'role:Supply'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
@@ -67,7 +67,7 @@ Route::middleware(['auth', 'role:admin_supply'])->group(function () {
 // End of Admin Supply
 
 // Admin Warehouse
-route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
+route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
@@ -75,21 +75,24 @@ route::middleware(['auth', 'role:admin_warehouse'])->group(function () {
 });
 // End of Admin Warehouse
 
-// Admin PT
-// Route lain khusus admin_PT
-Route::middleware(['auth', 'role:admin_PT'])->group(function () {
-    
+// Supervisor
+// Route lain khusus Supervisor
+Route::middleware(['auth', 'role:Supervisor'])->group(function () {
+
     Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
+    Route::get('/approved-orders', [AdminPTController::class, 'approved'])->name('admin.approved');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
 });
 
-// Route khusus admin_sales
-Route::middleware(['auth', 'role:admin_sales'])->group(function () {
+// Route khusus Sales
+Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
     Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
+    // Sales-facing list (Sales Order page)
+    Route::get('/sales-order', [RequestOrderController::class, 'salesIndex'])->name('sales.order');
     Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');
     Route::get('/request-order/{order}', [RequestOrderController::class, 'show'])->name('requestorder.show');
 });

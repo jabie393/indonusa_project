@@ -30,10 +30,28 @@
               @endif
               <td>{{ $item->barang->nama_barang ?? '-' }}</td>
               <td>{{ $item->quantity }}</td>
-              @if($i==0)
+                @if($i==0)
                 <td rowspan="{{ $o->items->count() }}">{{ $o->status }}</td>
                 <td rowspan="{{ $o->items->count() }}">
-                  <a href="{{ route('requestorder.show',$o) }}" class="btn btn-info btn-sm">Detail</a>
+                  {{-- Render a button that opens the modal and passes the order data as JSON in data-order --}}
+                  @php
+                    // prepare a lightweight order payload for the modal
+                    $payload = [
+                      'order_number' => $o->order_number,
+                      'sales' => $o->sales ? ['name' => $o->sales->name] : null,
+                      'customer_name' => $o->customer_name,
+                      'status' => $o->status,
+                      'items' => $o->items->map(function($it){
+                        return [
+                          'barang' => $it->barang ? ['nama_barang' => $it->barang->nama_barang] : null,
+                          'quantity' => $it->quantity,
+                          'status_item' => $it->status_item ?? null,
+                        ];
+                      })->toArray(),
+                    ];
+                    $json = e(json_encode($payload));
+                  @endphp
+                  <button type="button" class="btn btn-info btn-sm open-request-modal" data-order="{!! $json !!}">Detail</button>
                 </td>
               @endif
             </tr>
@@ -47,3 +65,7 @@
     {{ $orders->links() }}
 </div>
 </x-app-layout>
+
+@include('components.request-order-modal')
+
+@vite(['resources/js/requestorder-modal.js'])

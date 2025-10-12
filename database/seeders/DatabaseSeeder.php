@@ -17,44 +17,44 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'operator',
+            'name' => 'Operator',
             'email' => 'operator@example.com',
             'password' => Hash::make('password'),
-            'role' => 'operator',
+            'role' => 'Operator',
         ]);
 
         User::factory()->create([
-            'name' => 'Admin PT',
-            'email' => 'adminpt@example.com',
+            'name' => 'Imam',
+            'email' => 'adminsupervisor@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_PT',
+            'role' => 'Supervisor',
         ]);
 
         User::factory()->create([
-            'name' => 'Admin Supply',
+            'name' => 'Fahd',
             'email' => 'adminsupply@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_supply',
+            'role' => 'Supply',
         ]);
 
         User::factory()->create([
-            'name' => 'Admin Sales',
-            'email' => 'admin_sales@example.com',
+            'name' => 'Hilmi',
+            'email' => 'adminsales@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_sales',
+            'role' => 'Sales',
         ]);
 
         User::factory()->create([
-            'name' => 'Admin Warehouse',
-            'email' => 'admin_warehouse@example.com',
+            'name' => 'Usman',
+            'email' => 'adminwarehouse@example.com',
             'password' => Hash::make('password'),
-            'role' => 'admin_warehouse',
+            'role' => 'Warehouse',
         ]);
         User::factory()->create([
             'name' => 'Finance',
             'email' => 'finance@example.com',
             'password' => Hash::make('password'),
-            'role' => 'finance',
+            'role' => 'Finance',
         ]);
 
         $this->call(BarangSeeder::class);

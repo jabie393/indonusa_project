@@ -18,8 +18,8 @@
                 </a>
             </li>
 
-            {{-- Menu untuk admin_supply --}}
-            @if (in_array(auth()->user()->role, ['admin_supply']))
+            {{-- Menu untuk Supply --}}
+            @if (in_array(auth()->user()->role, ['Supply']))
                 {{-- Goods In --}}
                 <li>
                     <a href="{{ route('goods-in.index') }}"
@@ -102,8 +102,8 @@
                 </li>
             @endif
 
-            {{-- Menu untuk admin_warehouse --}}
-            @if (in_array(auth()->user()->role, ['admin_warehouse']))
+            {{-- Menu untuk Warehouse --}}
+            @if (in_array(auth()->user()->role, ['Warehouse']))
                 <details {{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'open' : 'close' }} class="">
                     <summary
                         class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700">
@@ -168,14 +168,14 @@
                 </a>
             </li>
 
-            {{-- Menu untuk admin_sales --}}
-                    {{-- Menu untuk admin_sales --}}
-                    {{-- Menu untuk admin_sales --}}
-@if(in_array(auth()->user()->role, ['admin_sales']))
+            {{-- Menu untuk Sales --}}
+                    {{-- Menu untuk Sales --}}
+                    {{-- Menu untuk Sales --}}
+@if(in_array(auth()->user()->role, ['Sales']))
     <li>
         <a href="{{ route('requestorder.create') }}"
-            class="{{ request()->routeIs('requestorder.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} 
-                   ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg 
+            class="{{ request()->routeIs('requestorder.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }}
+                   ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg
                    dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
             <svg aria-hidden="true"
                 class="w-6 h-6 text-blue-500 transition duration-75 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300"
@@ -185,12 +185,21 @@
             <span class="ml-3">Request Order</span>
         </a>
     </li>
+    <li>
+        <a href="{{ route('sales.order') }}"
+            class="{{ request()->routeIs('sales.order') ? 'bg-gray-200 dark:bg-gray-700' : '' }} ajax-link flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+            <svg aria-hidden="true" class="w-6 h-6 text-green-500 transition duration-75 dark:text-green-400 group-hover:text-green-700 dark:group-hover:text-green-300" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
+            </svg>
+            <span class="ml-3">Sales Order</span>
+        </a>
+    </li>
 @endif
 
 
 
-            {{-- Menu untuk admin_supply --}}
-            @if (in_array(auth()->user()->role, ['admin_PT']))
+            {{-- Menu untuk Supply --}}
+            @if (in_array(auth()->user()->role, ['Supervisor']))
                         {{-- Incoming Orders --}}
                         <li>
                             <a href="{{ url('/incoming') }}"
@@ -203,6 +212,16 @@
                                 <span
                                     class="{{ request()->is('incoming') ? 'text-black dark:text-white' : 'text-white' }} ml-3 group-hover:text-black dark:group-hover:text-white">Incoming
                                     Orders</span>
+                            </a>
+                        </li>
+                        {{-- Approved Orders --}}
+                        <li>
+                            <a href="{{ route('admin.approved') }}"
+                                class="{{ request()->is('approved-orders') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex items-center rounded-lg p-2 text-base font-medium text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg aria-hidden="true" class="h-6 w-6 text-white transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 2v6h10V7H5z"></path>
+                                </svg>
+                                <span class="ml-3">Approved Orders</span>
                             </a>
                         </li>
 

@@ -14,19 +14,19 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique();
-            $table->unsignedBigInteger('sales_id');      // id user yang membuat order (admin_sales)
-            $table->unsignedBigInteger('pt_id')->nullable(); // id admin_PT yang meninjau
-            $table->unsignedBigInteger('warehouse_id')->nullable(); // id admin_warehouse
+            $table->unsignedBigInteger('sales_id');      // id user yang membuat order (Sales)
+            $table->unsignedBigInteger('supervisor_id')->nullable(); // id Supervisor yang meninjau
+            $table->unsignedBigInteger('warehouse_id')->nullable(); // id Warehouse
             $table->enum('status', [
                 'pending',
-                'approved_pt',
-                'rejected_pt',
+                'approved_supervisor',
+                'rejected_supervisor',
                 'sent_to_warehouse',
                 'approved_warehouse',
                 'rejected_warehouse',
                 'completed'
             ])->default('pending');
-            $table->text('reason')->nullable(); // alasan penolakan oleh PT atau Warehouse
+            $table->text('reason')->nullable(); // alasan penolakan oleh Supervisor atau Warehouse
             $table->timestamps();
         });
     }

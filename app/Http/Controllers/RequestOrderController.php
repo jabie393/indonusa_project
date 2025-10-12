@@ -23,10 +23,28 @@ class RequestOrderController extends Controller
         return view('admin.requestorder.index', compact('orders'));
     }
 
+    /**
+     * Sales-facing list (new Sales Order page).
+     * Shows the same data but renders the sales-specific view.
+     */
+    public function salesIndex()
+    {
+        $orders = Order::with('items.barang', 'sales')
+            ->where('sales_id', Auth::id())
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.sales.requestorder', compact('orders'));
+    }
+
     public function create()
     {
-        $barangs = Barang::where('status_barang', 'masuk')
-            ->where('status_listing', 'listing')
+        // 1) Semua barang
+        // $barangs = Barang::orderBy('nama_barang')->get();
+
+        // 2) Hanya barang yang listing dan stok > 0 (rekomendasi)
+        $barangs = Barang::where('tipe_request', 'primary')
+            ->where('stok', '>', 0)
             ->orderBy('nama_barang')
             ->get();
 
@@ -100,7 +118,8 @@ class RequestOrderController extends Controller
                 $msg .= " Beberapa item stok kurang (pending_stock).";
             }
 
-            return redirect()->route('requestorder.index')->with('success', $msg);
+            // Redirect sales users to the new Sales Order page
+            return redirect()->route('sales.order')->with('success', $msg);
 
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -110,8 +129,8 @@ class RequestOrderController extends Controller
 
     public function show(Order $order)
     {
-        // 🔐 pastikan hanya sales pemilik / admin PT / warehouse yang boleh lihat
-        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['admin_PT','admin_warehouse'])) {
+        // 🔐 pastikan hanya sales pemilik / Supervisor / warehouse yang boleh lihat
+        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['Supervisor','Warehouse'])) {
             abort(403);
         }
 
