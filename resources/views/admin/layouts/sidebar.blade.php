@@ -104,7 +104,7 @@
 
             {{-- Menu untuk admin_warehouse --}}
             @if (in_array(auth()->user()->role, ['admin_warehouse']))
-                <details open class="">
+                <details {{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'open' : 'close' }} class="">
                     <summary
                         class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gray-200 dark:bg-gray-700' : '' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700">
                         <svg width="28px" height="28px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="#000000"

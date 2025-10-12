@@ -10,7 +10,7 @@ class SupplyOrdersController extends Controller
     // Tampilkan daftar barang yang statusnya 'ditinjau'
     public function index()
     {
-        $barangs = Barang::where('status_barang', 'ditinjau')->get();
+        $barangs = Barang::where('status_barang', 'ditinjau')->paginate(10);
         return view('admin.supply-orders.index', compact('barangs'));
     }
 

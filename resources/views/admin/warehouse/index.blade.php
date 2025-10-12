@@ -1,11 +1,11 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 rounded-lg">
+    <div class="relative overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar barang</h2>
             </div>
-            <div class="flex w-full md:w-auto flex-col py-5 md:py-0 md:flex-row">
-                <div class="flex max-w-full mr-5 shrink-0 flex-col py-5 md:py-0 items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+            <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
+                <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
                     {{-- Search --}}
                     <form action="{{ route('warehouse.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
@@ -16,8 +16,8 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="text" name="search" id="topbar-search" value="{{ request('search') }}"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                            <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}"
+                                class="block dt-input w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                                 placeholder="Search" />
                         </div>
                     </form>
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="warehouseTable" class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
@@ -56,7 +56,7 @@
                 </thead>
                 <tbody class="h-min-[300px]">
                     @forelse ($barangs as $barang)
-                        <tr class="border-b dark:border-gray-700">
+                        <tr class="dark:border-gray-700">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
@@ -112,8 +112,7 @@
         {{-- Modal --}}
         @include('components.warehouse-modal-tambah')
         @include('components.warehouse-modal-edit')
-        @vite(['resources/js/warehouse.js'])
-
+        @vite(['resources/js/warehouse.js','resources/js/dataTable.js'])
 
     </div>
 </x-app-layout>

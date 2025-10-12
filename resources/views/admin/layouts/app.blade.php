@@ -22,6 +22,9 @@
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+        {{-- DataTable --}}
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
+        
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -71,6 +74,10 @@
             window.sweetTitle = @json(session('title'));
             window.sweetText = @json(session('text'));
         </script>
+
+        {{-- DataTable --}}
+        <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
     </body>
 
 </html>
