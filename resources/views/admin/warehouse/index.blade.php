@@ -17,7 +17,7 @@
                                 </svg>
                             </div>
                             <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}"
-                                class="block dt-input w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                                class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                                 placeholder="Search" />
                         </div>
                     </form>
@@ -98,12 +98,23 @@
             </table>
         </div>
         <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Showing
-                <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->firstItem() ?? 0 }}-{{ $barangs->lastItem() ?? 0 }}</span>
-                of
-                <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
-            </span>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->firstItem() ?? 0 }}-{{ $barangs->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
+                </span>
+                <form method="GET" action="{{ route('warehouse.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
+                        @foreach ([10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
+            </div>
             <div>
                 {{ $barangs->links() }}
             </div>
@@ -112,7 +123,7 @@
         {{-- Modal --}}
         @include('components.warehouse-modal-tambah')
         @include('components.warehouse-modal-edit')
-        @vite(['resources/js/warehouse.js','resources/js/dataTable.js'])
+        @vite(['resources/js/warehouse.js', 'resources/js/dataTable.js'])
 
     </div>
 </x-app-layout>

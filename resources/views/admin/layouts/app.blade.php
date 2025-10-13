@@ -24,7 +24,13 @@
 
         {{-- DataTable --}}
         <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
-        
+
+        <style>
+            div.dt-container div.dt-layout-row {
+                margin: 0;
+            }
+        </style>
+
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

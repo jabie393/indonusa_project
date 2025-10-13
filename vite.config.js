@@ -18,6 +18,7 @@ export default defineConfig({
                 'resources/js/checker.js',
                 'resources/js/order-modal.js',
                 'resources/js/requestorder-modal.js',
+                'resources/js/dataTable.js',
             ],
             refresh: true,
         }),
