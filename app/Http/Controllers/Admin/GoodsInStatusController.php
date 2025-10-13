@@ -11,6 +11,7 @@ class GoodsInStatusController extends Controller
     // Tampilkan daftar barang (Item Status)
     public function index(Request $request)
     {
+        $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
         $barangs = Barang::whereIn('status_barang', ['ditinjau', 'ditolak']);
 
@@ -21,7 +22,7 @@ class GoodsInStatusController extends Controller
                     ->orWhere('kategori', 'like', "%{$query}%");
             });
         }
-        $barangs = $barangs->paginate(10); //
+        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
         return view('admin.goods-in-status.index', compact('barangs'));
     }
 

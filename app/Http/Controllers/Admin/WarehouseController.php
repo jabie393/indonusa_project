@@ -10,7 +10,7 @@ class WarehouseController extends Controller
 {
     public function index(Request $request)
     {
-
+        $perPage = $request->input('perPage', 10); // Default to 10 if not set
         $query = $request->input('search');
         $barangs = Barang::where('status_barang', 'masuk');
 
@@ -21,7 +21,9 @@ class WarehouseController extends Controller
                     ->orWhere('kategori', 'like', "%{$query}%");
             });
         }
-        $barangs = $barangs->paginate(10); // paginate the filtered query
+
+        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
+
         return view('admin.warehouse.index', compact('barangs'));
     }
 

@@ -138,7 +138,15 @@
                 of
                 <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
             </span>
-            
+            <form method="GET" action="{{ route('goods-in-status.index') }}">
+                <input type="hidden" name="search" value="{{ request('search') }}">
+                <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
+                    @foreach ([10, 25, 50, 100] as $size)
+                        <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                    @endforeach
+                </select>
+            </form>
+            <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
             <div>
                 {{ $barangs->links() }}
             </div>

@@ -10,6 +10,7 @@ class AddStockController extends Controller
 {
     public function index(Request $request)
     {
+        $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
         $barangs = Barang::where('status_barang', 'masuk');
 
@@ -20,7 +21,7 @@ class AddStockController extends Controller
             });
         }
 
-        $barangs = $barangs->paginate(10); // <-- Use paginate here
+        $barangs = $barangs->paginate($perPage)->appends($request->except('page')); // <-- Use paginate here
 
         return view('admin.add-stock.index', compact('barangs'));
     }
