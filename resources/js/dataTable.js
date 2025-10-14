@@ -5,3 +5,10 @@ let table = new DataTable('#warehouseTable', {
     paging: false,
     info: false,
 });
+
+let datatable = new DataTable('#DataTable', {
+    responsive: true,
+    searching: false,
+    paging: false,
+    info: false,
+});

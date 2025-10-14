@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
@@ -71,21 +71,23 @@
             </table>
         </div>
         <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                Showing
-                <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->firstItem() ?? 0 }}-{{ $barangs->lastItem() ?? 0 }}</span>
-                of
-                <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
-            </span>
-            <form method="GET" action="{{ route('add-stock.index') }}">
-                <input type="hidden" name="search" value="{{ request('search') }}">
-                <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
-                    @foreach ([10, 25, 50, 100] as $size)
-                        <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
-                    @endforeach
-                </select>
-            </form>
-            <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->firstItem() ?? 0 }}-{{ $barangs->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
+                </span>
+                <form method="GET" action="{{ route('add-stock.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
+                        @foreach ([10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
+            </div>
             <div>
                 {{ $barangs->links() }}
             </div>
@@ -96,5 +98,5 @@
     @include('components.add-stock-edit')
 
     <!-- Js -->
-    @vite(['resources/js/add-stock.js'])
+    @vite(['resources/js/add-stock.js', 'resources/js/dataTable.js'])
 </x-app-layout>
