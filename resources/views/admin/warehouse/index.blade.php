@@ -67,8 +67,8 @@
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
-                            <td class="flex items-center justify-end px-4 py-3">
-                                @if (Auth::user() && Auth::user()->role === 'Warehouse')
+                            @if (Auth::user() && Auth::user()->role === 'Warehouse')
+                                <td class="flex items-center justify-end px-4 py-3">
                                     {{-- Edit barang modal --}}
                                     <button
                                         class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -86,8 +86,8 @@
                                             Hapus
                                         </button>
                                     </form>
-                                @endif
-                            </td>
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
