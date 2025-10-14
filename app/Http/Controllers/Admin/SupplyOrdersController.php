@@ -35,7 +35,11 @@ class SupplyOrdersController extends Controller
 
             $barang->status_barang = 'masuk';
             $barang->save();
-            $barang->delete();
+
+            // Hapus record new_stock tanpa memicu event model (agar tidak tercatat history delete)
+            Barang::withoutEvents(function () use ($barang) {
+                $barang->delete();
+            });
         }
 
         return redirect()->route('supply-orders.index')->with('success', 'Barang berhasil diapprove.');
