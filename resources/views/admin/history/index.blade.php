@@ -32,7 +32,7 @@
                             <td class="px-4 py-3">{{ $history->new_status }}</td>
                             <td class="px-4 py-3">
                                 @if ($history->user)
-                                    {{ $history->user->name }}
+                                    {{ $history->user->display_name }}
                                 @else
                                     {{ $history->changed_by }}
                                 @endif

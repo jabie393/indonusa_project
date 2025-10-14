@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Accessor to return name with role (e.g. "Fahd (Supervisor)")
+    public function getDisplayNameAttribute(): string
+    {
+        $rolePart = $this->role ? " ({$this->role})" : '';
+        return $this->name . $rolePart;
     }
 }
