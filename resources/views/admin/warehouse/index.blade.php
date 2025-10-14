@@ -50,7 +50,7 @@
                         <th scope="col" class="px-4 py-3">Lokasi</th>
                         <th scope="col" class="px-4 py-3">Harga</th>
                         @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                            <th scope="col" class="px-4 py-3">Aksi</th>
+                            <th scope="col" class="px-4 py-3 text-center">Aksi</th>
                         @endif
                     </tr>
                 </thead>

@@ -34,7 +34,7 @@
                         <th scope="col" class="px-4 py-3">Satuan</th>
                         <th scope="col" class="px-4 py-3">Lokasi</th>
                         <th scope="col" class="px-4 py-3">Harga</th>
-                        <th scope="col" class="px-4 py-3">Aksi</th>
+                        <th scope="col" class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="h-min-[300px]">

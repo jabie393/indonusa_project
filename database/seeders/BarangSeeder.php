@@ -93,7 +93,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG004-1',
                 'status_barang' => 'ditolak',
                 'nama_barang' => 'Mouse Logitech',
@@ -107,7 +107,7 @@ class BarangSeeder extends Seeder
                 'catatan' => 'Barang ini ditolak karena satuan bukan berupa pak.'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG06435-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -120,7 +120,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG5324-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -133,7 +133,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG2532-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -146,7 +146,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG6325-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -159,7 +159,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG6134-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -172,7 +172,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG234-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -185,7 +185,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG0643-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -198,7 +198,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG0025-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -211,7 +211,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG0053-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -224,7 +224,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG0021-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
@@ -237,7 +237,7 @@ class BarangSeeder extends Seeder
                 'deskripsi' => '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."'
             ],
             [
-                'tipe_request' => 'new_stock',
+                'tipe_request' => 'primary',
                 'kode_barang' => 'BRG0041-1',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pulpen Biru',
