@@ -3,14 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Barang;
 
 class SupplyOrdersController extends Controller
 {
-    // Tampilkan daftar barang yang statusnya 'ditinjau'
-    public function index()
+    // Tampilkan daftar barang yang statusnya 'ditinjau' dengan search dan pagination
+    public function index(Request $request)
     {
-        $barangs = Barang::where('status_barang', 'ditinjau')->paginate(10);
+        $perPage = $request->input('perPage', 10); // Default to 10
+        $query = $request->input('search');
+        $barangs = Barang::where('status_barang', 'ditinjau');
+
+        if ($query) {
+            $barangs = $barangs->where(function ($q) use ($query) {
+                $q->where('nama_barang', 'like', "%{$query}%")
+                    ->orWhere('kode_barang', 'like', "%{$query}%")
+                    ->orWhere('lokasi', 'like', "%{$query}%")
+                    ->orWhere('status_barang', 'like', "%{$query}%")
+                    ->orWhere('kategori', 'like', "%{$query}%");
+            });
+        }
+
+        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
         return view('admin.supply-orders.index', compact('barangs'));
     }
 
