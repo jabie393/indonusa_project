@@ -2,12 +2,12 @@
     $keranjang = session('keranjang', []);
     $jumlahKeranjang = collect($keranjang)->sum('qty');
 @endphp
-<header class="sticky left-0 top-0 z-50 w-full bg-linear-to-r from-[#225A97] to-[#0B1D31]">
+<header class="bg-linear-to-r sticky left-0 top-0 z-50 w-full bg-white">
     <nav class="px-4 py-2.5 lg:px-6">
-        <div class="mx-auto flex max-w-(--breakpoint-xl) flex-wrap items-center justify-between">
+        <div class="max-w-(--breakpoint-xl) mx-auto flex flex-wrap items-center justify-between">
             <a href="/" class="flex items-center">
                 <x-application-logo class="mr-3 h-6 sm:h-9"></x-application-logo>
-                <span class="hidden self-center whitespace-nowrap text-sm font-semibold text-white md:block md:text-xl">INDONUSA JAYA BERSAMA</span>
+                <span class="hidden self-center whitespace-nowrap text-sm font-semibold text-black md:block md:text-xl">INDONUSA JAYA BERSAMA</span>
             </a>
             @if (Route::has('login'))
                 <div class="flex items-center lg:order-2">
@@ -22,12 +22,12 @@
                     @endif
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="hidden rounded-sm border border-[#19140035] bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b] lg:inline-block">
+                            class="hidden rounded-sm border border-white bg-[#225A96] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b] lg:inline-block">
                             Dashboard
                         </a>
                     @else
                         <a href="{{ route('login') }}"
-                            class="hidden rounded-sm border border-transparent bg-white px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A] lg:inline-block">
+                            class="hidden rounded-sm border border-white bg-[#225A96] px-5 py-1.5 text-sm leading-normal text-white hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A] lg:inline-block">
                             Log in
                         </a>
                     @endauth
@@ -51,31 +51,31 @@
                     <ul class="mt-4 flex flex-col rounded-lg bg-white font-medium lg:mt-0 lg:flex-row lg:space-x-8 lg:bg-transparent">
                         <li>
                             <a href="{{ url('/#') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                                 aria-current="page">Home</a>
                         </li>
                         <li>
                             <a href="{{ url('/#about') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">About
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">About
                                 Us</a>
                         </li>
                         <li>
                             <a href="{{ url('/#layanan') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Layanan</a>
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Layanan</a>
                         </li>
                         <li>
                             <a href="{{ route('order') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
                         </li>
                         <li>
                             @auth
                                 <a href="{{ url('/dashboard') }}"
-                                    class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:hidden lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
+                                    class="lg:border-1 block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:hidden lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
                                     Dashboard
                                 </a>
                             @else
                                 <a href="{{ route('login') }}"
-                                    class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 dark:border-gray-700 lg:hidden lg:border-0 lg:p-0 lg:text-white lg:hover:bg-transparent lg:hover:text-primary-700 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
+                                    class="lg:border-1 block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:hidden lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">
                                     Log in
                                 </a>
                             @endauth
