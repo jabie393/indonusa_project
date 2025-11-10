@@ -12,8 +12,8 @@ jobs:
 
     env:
       PROJECT_NAME: "Warehouse Management"
-      DEPLOY_PATH_PROD: "/www/wwwroot/warehouse.my.id"
-      DEPLOY_PATH_STAGING: "/www/wwwroot/staging.warehouse.my.id"
+      DEPLOY_PATH_PROD: "/www/wwwroot/warehouse.fahd.my.id"
+      DEPLOY_PATH_STAGING: "/www/wwwroot/staging.warehouse.fahd.my.id"
       BACKUP_PATH: "/www/wwwroot/backups"
 
     steps:
@@ -51,10 +51,10 @@ jobs:
         run: |
           if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
             echo "target_path=${{ env.DEPLOY_PATH_PROD }}" >> $GITHUB_OUTPUT
-            echo "env_label=warehouse.my.id" >> $GITHUB_OUTPUT
+            echo "env_label=warehouse.fahd.my.id" >> $GITHUB_OUTPUT
           else
             echo "target_path=${{ env.DEPLOY_PATH_STAGING }}" >> $GITHUB_OUTPUT
-            echo "env_label=staging.warehouse.my.id" >> $GITHUB_OUTPUT
+            echo "env_label=staging.warehouse.fahd.my.id" >> $GITHUB_OUTPUT
           fi
           echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
@@ -95,7 +95,7 @@ jobs:
           use_insecure_cipher: true
           script: |
             sudo -u www mkdir -p /www/wwwroot/backups
-            cd /www/wwwroot/warehouse.my.id || exit 0
+            cd /www/wwwroot/warehouse.fahd.my.id || exit 0
             sudo -u www tar -czf /www/wwwroot/backups/warehouse_backup_$(date +'%Y%m%d_%H%M%S').tar.gz . || echo "Backup skipped"
 
       # 10️ Upload file ke server via SCP (to temp folder)
