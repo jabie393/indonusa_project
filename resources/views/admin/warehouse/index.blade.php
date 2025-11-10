@@ -90,9 +90,6 @@
                             @endif
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="7" class="text-center">Belum ada barang</td>
-                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -107,13 +104,13 @@
                 </span>
                 <form method="GET" action="{{ route('warehouse.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded  pl-2 pr-5 border-gray-300 p-1 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
                     </select>
                 </form>
-                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
             <div>
                 {{ $barangs->links() }}
@@ -124,6 +121,5 @@
         @include('components.warehouse-modal-tambah')
         @include('components.warehouse-modal-edit')
         @vite(['resources/js/warehouse.js', 'resources/js/dataTable.js'])
-
     </div>
 </x-app-layout>

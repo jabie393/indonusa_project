@@ -37,6 +37,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -49,3 +50,45 @@
 @layer utilities {
   /* @plugin "flowbite/plugin"; */
 }
+
+/* Marquee LOGOS */
+@keyframes moveBg {
+  from {
+    background-position: 0 50%;
+  }
+
+  to {
+    background-position: -1282px 50%;
+  }
+}
+
+.carousel {
+  --blur: 6px;
+  --contrast: 105%;
+  --speed: 15s;
+  height: 150px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+
+  .mask {
+    position: absolute;
+    inset: 0;
+    background: #0000;
+    backdrop-filter: blur(var(--blur)) contrast(var(--contrast));
+    -webkit-backdrop-filter: blur(var(--blur)) contrast(var(--contrast));
+    /* so it works on Safari */
+    -webkit-mask: linear-gradient(90deg, #000 50px, #0000 175px calc(100% - 175px), #fff calc(100% - 50px));
+    pointer-events: none;
+  }
+
+  .logos {
+    animation: moveBg var(--speed) linear infinite;
+    position: absolute;
+    inset: 0;
+    background: url("/public/images/Frame 6.png") 0 50% / 1282px repeat-x;
+    -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
+  }
+}
+
+/* Marquee LOGOS */
