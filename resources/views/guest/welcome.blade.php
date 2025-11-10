@@ -2,7 +2,7 @@
     <div id="hero" class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow">
         <div class="max-w-(--breakpoint-xl) mx-auto grid px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
             <div class="md:order-0 er order-1 content-center justify-self-start md:col-span-7 md:text-start">
-                <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">PT INDONUSA JAYA BERSAMA
+                <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">PT INDONUSA JAYA BERSAMA 👋
                 </h1>
                 <h1 class="mb-5 text-2xl font-bold leading-none tracking-tight text-white md:max-w-2xl md:text-3xl xl:text-4xl">
                     <span class="bg-black p-1 px-2">
