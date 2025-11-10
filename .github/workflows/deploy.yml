@@ -1,37 +1,230 @@
-name: Build & Deploy to Hostinger
+name: 🚀 Laravel + Vite Auto Deploy (Warehouse)
 
 on:
   push:
     branches:
       - main
+      - staging
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    env:
+      PROJECT_NAME: "Warehouse Management"
+      DEPLOY_PATH_PROD: "/www/wwwroot/warehouse.my.id"
+      DEPLOY_PATH_STAGING: "/www/wwwroot/staging.warehouse.my.id"
+      BACKUP_PATH: "/www/wwwroot/backups"
 
+    steps:
+      # 1️ Checkout kode dari GitHub
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️ Setup Node.js (untuk Vite build)
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Dependencies
-        run: npm ci
+      # 3️ Install & Build Frontend (Vite)
+      - name: Build Frontend (Vite)
+        run: |
+          npm ci
+          npm run build
 
-      - name: Build Vite
-        run: npm run build
-
-      # Upload hasil build ke Hostinger via SFTP/FTP
-      - name: Deploy to Hostinger
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      # 4️ Setup PHP (Laravel)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
-          server: ${{ secrets.HOSTINGER_HOST }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          username: ${{ secrets.HOSTINGER_USER }}
-          password: ${{ secrets.HOSTINGER_PASS }}
-          local_path: './public/build/*'
-          remote_path: '/home/u189392667/domains/fahd.my.id/public_html/warehouse/public/build'
-          delete_remote_files: true
+          php-version: 8.3
+          extensions: mbstring, bcmath, intl, zip, gd, pdo_mysql
+          coverage: none
+
+      # 5️ Install Composer dependencies
+      - name: Install Composer dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      # 6️ Tentukan target environment berdasarkan branch
+      - name: Set environment path
+        id: set-env
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            echo "target_path=${{ env.DEPLOY_PATH_PROD }}" >> $GITHUB_OUTPUT
+            echo "env_label=warehouse.my.id" >> $GITHUB_OUTPUT
+          else
+            echo "target_path=${{ env.DEPLOY_PATH_STAGING }}" >> $GITHUB_OUTPUT
+            echo "env_label=staging.warehouse.my.id" >> $GITHUB_OUTPUT
+          fi
+          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+
+      # 7️ Telegram Notification (Start)
+      - name: Telegram Notification (Start)
+        run: |
+          MSG=$(cat <<EOF
+          🚀 *Deploy Dimulai!*
+          🌐 Website: [${{ steps.set-env.outputs.env_label }}](https://${{ steps.set-env.outputs.env_label }})
+          🕒 $(TZ='Asia/Jakarta' date '+%d %b %Y, %H:%M:%S') WIB
+          👤 Oleh: *${{ github.actor }}*
+          💻 Repository: *${{ github.repository }}*
+          🧩 Branch: *${{ github.ref_name }}*
+          ⏳ Mohon tunggu...
+          EOF
+          )
+          for CHAT_ID in ${{ secrets.TELEGRAM_CHAT_IDS }}; do
+            curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+              -d chat_id=$CHAT_ID \
+              -d parse_mode="Markdown" \
+              -d text="$MSG"
+          done
+
+      # 8️ Disable host key checking biar SSH gak error
+      - name: Disable host key checking
+        run: |
+          mkdir -p ~/.ssh
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+          echo "UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+
+      # 9️ Backup versi sebelumnya sebelum upload
+      - name: Backup existing deployment
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          use_insecure_cipher: true
+          script: |
+            sudo -u www mkdir -p /www/wwwroot/backups
+            cd /www/wwwroot/warehouse.my.id || exit 0
+            sudo -u www tar -czf /www/wwwroot/backups/warehouse_backup_$(date +'%Y%m%d_%H%M%S').tar.gz . || echo "Backup skipped"
+
+      # 10️ Upload file ke server via SCP (to temp folder)
+      - name: Upload Files via SCP (to temp folder)
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "./"
+          target: "/tmp/warehouse_tmp"
+          strip_components: 0
+          overwrite: true
+          use_insecure_cipher: true
+          exclude: |
+            .env
+            node_modules/
+            storage/
+            tests/
+            deploy.log
+            .git/
+            .github/
+
+      # 11️ Pindahkan dari temp ke folder sebenarnya
+      - name: Move uploaded files to webroot
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            echo "Moving files from /tmp/warehouse_tmp to ${{ steps.set-env.outputs.target_path }} ..."
+            sudo rsync -a --delete --exclude=".env" /tmp/warehouse_tmp/ ${{ steps.set-env.outputs.target_path }}/
+            sudo rm -rf /tmp/warehouse_tmp
+            echo "Files moved successfully (env preserved)!"
+
+      # 12️ Jalankan artisan commands di server
+      - name: Run Laravel Commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          use_insecure_cipher: true
+          script: |
+            cd ${{ steps.set-env.outputs.target_path }}
+            php artisan down || true
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan up
+
+      # 13️ Fix File Permissions
+      - name: Fix File Permissions
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          use_insecure_cipher: true
+          script: |
+            echo "Fixing ownership and permissions..."
+            sudo chown -R www:www ${{ steps.set-env.outputs.target_path }} || true
+            sudo find ${{ steps.set-env.outputs.target_path }} -type f -exec chmod 644 {} \; || true
+            sudo find ${{ steps.set-env.outputs.target_path }} -type d -exec chmod 755 {} \; || true
+            sudo chmod -R 775 ${{ steps.set-env.outputs.target_path }}/storage || true
+            sudo chmod -R 775 ${{ steps.set-env.outputs.target_path }}/bootstrap/cache || true
+            echo "Permissions fixed!"
+
+      # 14️ Telegram Notification (Success)
+      - name: Telegram Notification (Success)
+        if: success()
+        run: |
+          MSG=$(cat <<EOF
+          ✅ *Deploy Berhasil!*
+          🌐 Website: [${{ steps.set-env.outputs.env_label }}](https://${{ steps.set-env.outputs.env_label }})
+          🕒 $(TZ='Asia/Jakarta' date '+%d %b %Y, %H:%M:%S') WIB
+          👤 Commit by: *${{ github.actor }}*
+          🧩 Branch: *${{ github.ref_name }}*
+          💻 Repository: *${{ github.repository }}*
+          🎉 Berhasil di-*deploy* tanpa error!
+          💬 Pesan Commit: _${{ steps.set-env.outputs.commit_message }}_
+          EOF
+          )
+          for CHAT_ID in ${{ secrets.TELEGRAM_CHAT_IDS }}; do
+            curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+              -d chat_id=$CHAT_ID \
+              -d parse_mode="Markdown" \
+              -d text="$MSG"
+          done
+
+      # 15️ Rollback otomatis jika gagal
+      - name: Rollback if failed
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          use_insecure_cipher: true
+          script: |
+            cd ${{ env.BACKUP_PATH }}
+            LATEST_BACKUP=$(ls -t warehouse_backup_*.tar.gz | head -n 1)
+            if [ -n "$LATEST_BACKUP" ]; then
+              echo "Rolling back from backup: $LATEST_BACKUP"
+              tar -xzf $LATEST_BACKUP -C ${{ steps.set-env.outputs.target_path }}
+            fi
+
+      # 16️ Telegram Notification (Failed)
+      - name: Telegram Notification (Failed)
+        if: failure()
+        run: |
+          MSG=$(cat <<EOF
+          ❌ *Deploy Gagal!*
+          🌐 Website: [${{ steps.set-env.outputs.env_label }}](https://${{ steps.set-env.outputs.env_label }})
+          🕒 $(TZ='Asia/Jakarta' date '+%d %b %Y, %H:%M:%S') WIB
+          👤 Commit by: *${{ github.actor }}*
+          🧩 Branch: *${{ github.ref_name }}*
+          💻 Repository: *${{ github.repository }}*
+          ⚙️ Deploy otomatis akan *rollback* ke versi terakhir.
+          🔍 Cek log GitHub Actions untuk detail error.
+          💬 Pesan Commit: _${{ steps.set-env.outputs.commit_message }}_
+          EOF
+          )
+          for CHAT_ID in ${{ secrets.TELEGRAM_CHAT_IDS }}; do
+            curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+              -d chat_id=$CHAT_ID \
+              -d parse_mode="Markdown" \
+              -d text="$MSG"
+          done
