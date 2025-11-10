@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
 
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
