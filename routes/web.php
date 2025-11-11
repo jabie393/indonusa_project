@@ -57,26 +57,25 @@ Route::middleware(['auth'])->group(function () {
 });
 // End of General
 
-// Admin Supply
-Route::middleware(['auth', 'role:Supply'])->group(function () {
+// General Affair
+Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
-// End of Admin Supply
+// End of General Affair
 
-// Admin Warehouse
+// Warehouse
 route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
     Route::resource('/delivery-orders', DeliveryOrdersController::class);
 });
-// End of Admin Warehouse
+// End of Warehouse
 
 // Supervisor
-// Route lain khusus Supervisor
 Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
     Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
@@ -86,8 +85,9 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
 });
+// End of Supervisor
 
-// Route khusus Sales
+// Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
     Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
@@ -96,5 +96,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');
     Route::get('/request-order/{order}', [RequestOrderController::class, 'show'])->name('requestorder.show');
 });
+// End of Sales
 // === End Admin Routes === //
 require __DIR__ . '/auth.php';
