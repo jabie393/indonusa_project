@@ -18,8 +18,8 @@
                 </a>
             </li>
 
-            {{-- Menu untuk Supply --}}
-            @if (in_array(auth()->user()->role, ['Supply']))
+            {{-- Menu untuk General Affair --}}
+            @if (in_array(auth()->user()->role, ['General Affair']))
                 {{-- Goods In --}}
                 <li>
                     <a href="{{ route('goods-in.index') }}"
@@ -199,7 +199,7 @@
 
 
 
-            {{-- Menu untuk Supply --}}
+            {{-- Menu untuk Supervisor --}}
             @if (in_array(auth()->user()->role, ['Supervisor']))
                 {{-- Incoming Orders --}}
                 <li>
