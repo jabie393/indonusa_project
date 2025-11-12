@@ -22,7 +22,7 @@
                     @endif
                     @auth
                         <a href="{{ url('/dashboard') }}"
-                            class="hidden rounded-sm border border-white bg-[#225A96] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b] lg:inline-block">
+                            class="hidden rounded-sm border border-white bg-[#225A96] px-5 py-1.5 text-sm leading-normal text-white hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A] lg:inline-block">
                             Dashboard
                         </a>
                     @else
