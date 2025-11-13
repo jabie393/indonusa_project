@@ -1,12 +1,13 @@
 <!-- Sidebar -->
-<aside class="mt-22 fixed left-0 top-0 z-40 h-full w-64 -translate-x-full rounded-xl transition-transform lg:relative lg:mt-0 lg:w-full lg:translate-x-0" aria-label="Sidenav" id="drawer-navigation">
-    <div class="h-full overflow-y-auto rounded-xl bg-white px-3 py-5 dark:bg-[#0B1D31]">
+<aside class="mt-22 fixed left-0 top-0 z-40 h-full w-64 -translate-x-full rounded-xl shadow-sm transition-transform lg:relative lg:mt-0 lg:w-full lg:translate-x-0" aria-label="Sidenav"
+    id="drawer-navigation">
+    <div class="h-full overflow-y-auto rounded-xl bg-white px-3 py-5 dark:bg-[#0D223A]">
 
         <ul class="space-y-2">
             {{-- Dashboard --}}
             <li>
                 <a href="{{ route('dashboard') }}"
-                    class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                    class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <svg aria-hidden="true" class="{{ request()->routeIs('dashboard') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                         fill="currentColor" viewBox="0 0 20 20">
                         <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
@@ -21,7 +22,7 @@
                 {{-- Goods In --}}
                 <li>
                     <a href="{{ route('goods-in.index') }}"
-                        class="{{ request()->routeIs('goods-in.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('goods-in.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none"
                             class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -46,7 +47,7 @@
                                     </g>
                                 </svg>
                                 <a href="{{ route('add-stock.index') }}"
-                                    class="group ml-2 flex w-[179px] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#1F5188] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group ml-2 flex w-[179px] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
 
                                     <span class="">Add Stock</span>
                                 </a>
@@ -60,7 +61,7 @@
                 {{-- Goods In Status --}}
                 <li>
                     <a href="{{ route('goods-in-status.index') }}"
-                        class="{{ request()->routeIs('goods-in-status.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('goods-in-status.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 28 29" fill="currentColor"
                             class="{{ request()->routeIs('goods-in-status.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                             <path d="M8.20312 13.0952H19.8187V14.4546H8.20312V13.0952ZM8.20312 19.0765H15.3125V20.4358H8.20312V19.0765Z" fill="currentColor" />
@@ -77,7 +78,7 @@
                 {{-- History --}}
                 <li>
                     <a href="{{ route('history.index') }}"
-                        class="{{ request()->routeIs('history.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('history.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg width="28px" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                             class="{{ request()->routeIs('history.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -100,7 +101,7 @@
             @if (in_array(auth()->user()->role, ['Warehouse']))
                 <details {{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'open' : 'close' }} class="">
                     <summary
-                        class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg width="28px" height="28px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="#000000"
                             class="{{ request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -118,7 +119,7 @@
                         {{-- Supply Orders --}}
                         <li class="w-[179px]">
                             <a href="{{ route('supply-orders.index') }}"
-                                class="{{ request()->routeIs('supply-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ request()->routeIs('supply-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg class="{{ request()->routeIs('supply-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                                     viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -134,7 +135,7 @@
                         {{-- Delivery Orders --}}
                         <li class="w-[179px]">
                             <a href="{{ route('delivery-orders.index') }}"
-                                class="{{ request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg class="{{ request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                                     viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -154,7 +155,7 @@
             {{-- Warehouse --}}
             <li>
                 <a href="{{ route('warehouse.index') }}"
-                    class="{{ request()->routeIs('warehouse.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                    class="{{ request()->routeIs('warehouse.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31" fill="none"
                         class="{{ request()->routeIs('warehouse.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                         <path
@@ -171,7 +172,7 @@
             @if (in_array(auth()->user()->role, ['Sales']))
                 <li>
                     <a href="{{ route('requestorder.create') }}"
-                        class="{{ request()->routeIs('requestorder.*') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('requestorder.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg aria-hidden="true" class="{{ request()->routeIs('requestorder.*') ? 'text-white' : 'text-blue-500 dark:text-white' }} h-6 w-6 group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M3 10a1 1 0 011-1h2V7a1 1 0 112 0v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2H4a1 1 0 01-1-1z" />
@@ -181,7 +182,7 @@
                 </li>
                 <li>
                     <a href="{{ route('sales.order') }}"
-                        class="{{ request()->routeIs('sales.order') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('sales.order') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg aria-hidden="true" class="{{ request()->routeIs('sales.order') ? 'text-white' : 'text-green-500 dark:text-white' }} h-6 w-6 group-hover:text-white" fill="currentColor"
                             viewBox="0 0 20 20">
                             <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
@@ -198,7 +199,7 @@
                 {{-- Incoming Orders --}}
                 <li>
                     <a href="{{ url('/incoming') }}"
-                        class="{{ request()->is('incoming') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->is('incoming') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg aria-hidden="true" class="{{ request()->is('incoming') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20">
                             <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
@@ -209,7 +210,7 @@
                 {{-- Approved Orders --}}
                 <li>
                     <a href="{{ route('admin.approved') }}"
-                        class="{{ request()->is('approved-orders') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->is('approved-orders') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg aria-hidden="true" class="{{ request()->is('approved-orders') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white" fill="currentColor"
                             viewBox="0 0 20 20">
                             <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 2v6h10V7H5z"></path>
@@ -221,7 +222,7 @@
                 {{-- History Orders --}}
                 <li>
                     <a href="{{ route('orders.history') }}"
-                        class="{{ request()->routeIs('admin.orders.history') ? 'bg-gradient-to-r from-[#225A97] to-[#1F5188] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#1F5188] hover:text-white dark:bg-[#0B1D31] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#1F5188]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('admin.orders.history') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <svg aria-hidden="true"
                             class="{{ request()->routeIs('admin.orders.history') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20">

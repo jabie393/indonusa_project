@@ -47,8 +47,8 @@
     <body class="font-sans antialiased">
         <div
             class="grid bg-[#E5E7EB] dark:bg-gray-900 max-h-screen min-h-screen grid-flow-row grid-cols-[1fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden p-4 lg:grid-cols-[0.75fr_1fr_1fr_1fr_1fr] lg:grid-rows-[64px_1fr_1fr_1fr_1fr]">
-            <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97]">
-                <div class="flex items-center h-full w-full lg:h-[unset] justify-center ">
+            <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
+                <div class="flex items-center h-full w-full lg:h-[unset] shadow-sm justify-center ">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
                         class=" cursor-pointer h-full w-full flex flex-wrap content-center justify-center text-center rounded-xl p-2 text-white hover:bg-gray-100 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden">
                         <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

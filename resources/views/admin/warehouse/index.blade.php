@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="relative overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 md:flex-row md:space-x-4 md:space-y-0">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar barang</h2>
             </div>
@@ -104,7 +104,7 @@
                 </span>
                 <form method="GET" action="{{ route('warehouse.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded  pl-2 pr-5 border-gray-300 p-1 text-sm">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach

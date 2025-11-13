@@ -1,4 +1,4 @@
-    <nav class="relative h-full z-50 justify-end flex flex-row items-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] dark:bg-gradient-to-r dark:from-[#0B1D31] dark:to-[#225A97]">
+    <nav class="relative shadow-sm h-full z-50 justify-end flex flex-row items-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:bg-gradient-to-r dark:from-[#0D223A] dark:to-[#225A97]">
         <div class="flex mr-5 items-center lg:order-2">
             <button id="theme-toggle" type="button" class="rounded-lg p-2.5 text-sm text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-700">
                 <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

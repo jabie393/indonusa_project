@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg h-full">
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 md:flex-row md:space-x-4 md:space-y-0">
+    <div class="relative h-full overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h2 class="mr-3 font-semibold text-white">Goods In</h2>
             </div>
@@ -9,7 +9,7 @@
             <div class="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                 <div x-data="{ tambahModalIsOpen: false }">
                     <button
-                        class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0B1D31] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         onclick="tambahBarang.showModal()">
                         <svg width="97" height="86" viewBox="0 0 56 55" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_412_16)">
@@ -41,7 +41,7 @@
                     </button>
                 </div>
                 <a href="{{ route('add-stock.index') }}"
-                    class="flex h-52 w-52 flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0B1D31] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    class="flex h-52 w-52 flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
 
                     <svg viewBox="0 0 50 48" fill="none" width="85" height="79" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_412_23)">

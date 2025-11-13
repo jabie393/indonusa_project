@@ -1,5 +1,5 @@
 <x-front-layout>
-    <div id="hero" class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow">
+    <div id="hero" class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow">
         <div class="max-w-(--breakpoint-xl) mx-auto grid px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
             <div class="md:order-0 er order-1 content-center justify-self-start md:col-span-7 md:text-start">
                 <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">PT INDONUSA JAYA BERSAMA
@@ -45,7 +45,7 @@
                         About Us
                     </span>
                 </h1>
-                <p class="mb-3 text-justify max-w-2xl text-black md:mb-12 md:text-lg lg:mb-5 lg:text-xl">
+                <p class="mb-3 max-w-2xl text-justify text-black md:mb-12 md:text-lg lg:mb-5 lg:text-xl">
                     PT Indonusa Jaya Bersama didirikan pada tahun 2020 dengan kantor pusat di Surabaya,Distribuutor yang mengkhususkan diri dalam menyediakan produk berkualitas
                     <br>
                     Mulai dari peralatan laboratorium, laboratorium biologi, Sistem Pengujian Material, Alat uji kualitas, Meubeller, MHE , Kimia dan Otomotif
@@ -55,7 +55,7 @@
             </div>
         </div>
     </div>
-    <div class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center gap-10 from-[#225A97] to-[#0B1D31] opacity-100 transition-opacity lg:grow"
+    <div class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center gap-10 from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow"
         id="layanan">
         <div class="max-w-(--breakpoint-xl) mx-auto flex min-h-[600px] flex-col items-center px-4 py-9 lg:px-6">
             <div class="max-w-(--breakpoint-md) mb-8 text-center lg:mb-16">

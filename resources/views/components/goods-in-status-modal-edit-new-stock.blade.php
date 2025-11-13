@@ -1,6 +1,6 @@
 <dialog id="editBarangModalNewStock" class="modal">
     <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-4 dark:border-gray-600">
+        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Detail Barang
             </h3>
@@ -60,7 +60,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -74,14 +74,14 @@
                                                     Barang</label>
                                                 <div class="text-sm font-semibold text-gray-900 dark:text-white" id="edit_nama_barang_new_stock">-</div>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15" fill="none">
                                                     <path
                                                         d="M12.58 5.8L11.82 9.4H14.58V11H11.48L10.62 15H8.88L9.74 11H5.54L4.68 15H2.94L3.8 11H0.66V9.4H4.14L4.9 5.8H1.8V4.2H5.24L6.1 0.2H7.84L6.98 4.2H11.18L12.04 0.2H13.78L12.92 4.2H15.7V5.8H12.58ZM10.84 5.8H6.64L5.88 9.4H10.08L10.84 5.8Z"
@@ -101,7 +101,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16" height="16" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g clip-path="url(#clip0_405_50)">
@@ -137,7 +137,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g clip-path="url(#clip0_405_55)">
@@ -167,7 +167,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 22 23" fill="none">
                                                     <path
                                                         d="M17.6138 1.53655H14.5947C14.4506 1.09048 14.0467 0.768299 13.572 0.768299H12.4506C12.1103 0.289791 11.5711 0 11 0C10.4289 0 9.88974 0.289791 9.54938 0.768254H8.42798C7.95326 0.768254 7.54944 1.09043 7.40532 1.53651H4.38621C3.58845 1.53651 2.93945 2.21505 2.93945 3.04903V21.4875C2.93945 22.3215 3.5885 23 4.38621 23H17.6138C18.4115 23 19.0605 22.3215 19.0605 21.4875V3.04907C19.0606 2.21505 18.4115 1.53655 17.6138 1.53655ZM8.03757 1.89759C8.03757 1.89728 8.03761 1.89696 8.03761 1.89669C8.03761 1.89656 8.03761 1.89642 8.03761 1.8962C8.03783 1.67136 8.21284 1.48853 8.42798 1.48853H9.7341C9.85674 1.48853 9.97013 1.42038 10.0318 1.30952C10.2373 0.940574 10.5992 0.720277 11 0.720277C11.4008 0.720277 11.7627 0.940574 11.9682 1.30952C12.0298 1.42034 12.1433 1.48853 12.2659 1.48853H13.572C13.7868 1.48853 13.9616 1.67087 13.9624 1.8953C13.9624 1.89579 13.9624 1.8962 13.9624 1.89669C13.9624 1.89763 13.9625 1.89858 13.9625 1.89948V3.07311H8.03757V1.89759ZM18.3716 21.4875C18.3716 21.9243 18.0316 22.2798 17.6138 22.2798H4.38621C3.96834 22.2798 3.62837 21.9243 3.62837 21.4875V3.04907C3.62837 2.61221 3.96834 2.25679 4.38621 2.25679H7.34865V3.4332C7.34865 3.63207 7.50286 3.79334 7.69313 3.79334H14.3069C14.4971 3.79334 14.6514 3.63211 14.6514 3.4332V2.25679H17.6138C18.0317 2.25679 18.3716 2.61221 18.3716 3.04907V21.4875H18.3716Z"
@@ -219,7 +219,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16px" height="16px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -246,7 +246,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16" height="16" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g clip-path="url(#clip0_405_104)">
@@ -273,7 +273,7 @@
                                 <div class="w-50 rounded-xl border">
                                     <div class="px-4 py-2">
                                         <div class="flex items-center space-x-2">
-                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-3">
+                                            <div class="max-h-40 max-w-40 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3">
 
                                                 <svg width="16" height="16" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <g clip-path="url(#clip0_407_106)">
@@ -323,13 +323,13 @@
                     <!-- Deskripsi Barang -->
                     <div class="mt-6">
                         <label class="mb-1 block text-xs font-medium text-gray-500 dark:text-gray-400">Deskripsi</label>
-                        <div class="text-sm text-gray-900 dark:text-white bg-[#6B728033] border border-black rounded-md p-5" id="edit_deskripsi_new_stock">-</div>
+                        <div class="rounded-md border border-black bg-[#6B728033] p-5 text-sm text-gray-900 dark:text-white" id="edit_deskripsi_new_stock">-</div>
                     </div>
                 </div>
             </div>
 
             <!-- Form Edit Stok -->
-            <div class="mt-6 rounded-lg border border-gray-200 bg-gradient-to-r from-[#225A97] to-[#0B1D31] p-5 text-white">
+            <div class="mt-6 rounded-lg border border-gray-200 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5 text-white">
                 <form id="tambahStockForm" method="POST" class="space-y-4" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
