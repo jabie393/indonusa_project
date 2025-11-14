@@ -9,7 +9,10 @@ window.confirmDelete = function (callback) {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
+        confirmButtonText: "Yes, delete it!",
+        customClass: {
+            popup: 'rounded-2xl!',
+        }
     }).then((result) => {
         if (result.isConfirmed) {
             callback();
@@ -27,6 +30,8 @@ if (window.sweetTitle && window.sweetText) {
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,
-
+        customClass: {
+            popup: 'rounded-2xl!',
+        }
     });
 }

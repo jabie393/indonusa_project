@@ -84,6 +84,6 @@
 
     <!-- Modals -->
     @include('components.delivery-orders-modal-show')
-    @vite(['resources/js/delivery-orders.js', 'resources/js/dataTable.js'])
+    @vite(['resources/js/delivery-orders.js'])
 
 </x-app-layout>

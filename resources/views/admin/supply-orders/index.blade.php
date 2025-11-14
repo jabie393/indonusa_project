@@ -117,6 +117,6 @@
 
     <!-- Modals -->
     @include('components.supply-orders-modal-reject')
-    @vite(['resources/js/supply-orders.js', 'resources/js/dataTable.js'])
+    @vite(['resources/js/supply-orders.js'])
 
 </x-app-layout>

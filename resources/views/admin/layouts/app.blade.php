@@ -85,7 +85,7 @@
 
 
         {{-- SweetAlert --}}
-        @vite(['resources/js/sweetalert.js'])
+        @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             window.sweetTitle = @json(session('title'));

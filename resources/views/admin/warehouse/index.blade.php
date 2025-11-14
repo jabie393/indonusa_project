@@ -120,6 +120,6 @@
         {{-- Modal --}}
         @include('components.warehouse-modal-tambah')
         @include('components.warehouse-modal-edit')
-        @vite(['resources/js/warehouse.js', 'resources/js/dataTable.js'])
+        @vite(['resources/js/warehouse.js'])
     </div>
 </x-app-layout>
