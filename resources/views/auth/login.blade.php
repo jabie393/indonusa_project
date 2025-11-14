@@ -64,12 +64,14 @@
                         html: data.html,
                         icon: data.icon,
                         showCancelButton: data.showCancelButton,
-                        confirmButtonColor: data.confirmButtonColor,
-                        cancelButtonColor: data.cancelButtonColor,
+                        confirmButtonColor: '#225A97',
                         confirmButtonText: data.confirmButtonText,
                         cancelButtonText: data.cancelButtonText,
                         allowOutsideClick: false,
                         allowEscapeKey: false,
+                        customClass: {
+                            popup: 'rounded-2xl!',
+                        }
                     }).then(result => {
                         if (result.isConfirmed) {
                             fetch('{{ route('auth.continue-session') }}', {

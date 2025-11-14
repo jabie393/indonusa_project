@@ -24,8 +24,6 @@ class ConfirmLoginController extends Controller
             'showCancelButton' => true,
             'confirmButtonText' => 'Lanjutkan',
             'cancelButtonText' => 'Tunggu',
-            'confirmButtonColor' => '#2563eb',
-            'cancelButtonColor' => '#e5e7eb',
         ]);
     }
 
