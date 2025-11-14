@@ -1,6 +1,8 @@
 <x-guest-layout>
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+    <!-- Dynamic notification placeholder (used for client-side messages like cancel) -->
+    <div id="page-notification" class="mb-4"></div>
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
@@ -90,9 +92,12 @@
                                 })
                                 .then(r => r.json())
                                 .then(json => {
-                                    window.location.href = json['redirect'] ?? '{{ route('login') }}';
+                                    const msg = json.message ?? 'Login dibatalkan.';
+                                    showNotification(msg);
                                 })
-                                .catch(() => window.location.href = '{{ route('login') }}');
+                                .catch(() => {
+                                    showNotification('Login dibatalkan.');
+                                });
                         }
                     });
                 })
@@ -100,5 +105,27 @@
                     // No pending login; nothing to do
                 });
         });
+
+        // Helper to inject a dismissible notification above the login form
+        function showNotification(message) {
+            const container = document.getElementById('page-notification');
+            if (!container) return;
+            // create alert
+            const alert = document.createElement('div');
+            alert.className = 'mx-auto w-full max-w-md rounded-md border border-gray-200 bg-green-50 p-3 text-green-800';
+            alert.innerHTML =
+                `<div class="flex items-center justify-between"><div class="text-sm">${message}</div><button type="button" aria-label="close" class="ml-3 text-sm font-medium">✕</button></div>`;
+            // remove existing
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            const btn = alert.querySelector('button');
+            btn.addEventListener('click', () => container.removeChild(alert));
+
+            // auto-dismiss after 6 seconds
+            setTimeout(() => {
+                if (container.contains(alert)) container.removeChild(alert);
+            }, 6000);
+        }
     </script>
 </x-guest-layout>
