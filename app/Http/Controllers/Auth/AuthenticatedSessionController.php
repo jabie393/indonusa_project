@@ -43,9 +43,9 @@ class AuthenticatedSessionController extends Controller
             // logout sementara
             Auth::logout();
 
-            return view('auth.confirm-login', [
-                'device' => $request->userAgent(),
-            ]);
+            // Redirect back to login page; the login view will fetch /confirm-login and
+            // show the SweetAlert modal when a pending login exists.
+            return redirect()->route('login');
         }
 
         // Jika tidak ada session lain maka login normal
@@ -122,5 +122,4 @@ class AuthenticatedSessionController extends Controller
         session()->regenerateToken();
         return redirect('/login');
     }
-
 }

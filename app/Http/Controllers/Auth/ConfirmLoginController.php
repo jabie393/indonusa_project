@@ -16,8 +16,17 @@ class ConfirmLoginController extends Controller
         if (!session('pending_login_user_id')) {
             return redirect('/login');
         }
-
-        return view('auth.confirm-login');
+        // Return modal config as JSON so the frontend can render a SweetAlert modal
+        return response()->json([
+            'title' => 'Sesi Aktif Ditemukan',
+            'html' => 'Akun kamu sudah login di perangkat lain.<br>Apakah kamu ingin melanjutkan dan menendang sesi lama?',
+            'icon' => 'warning',
+            'showCancelButton' => true,
+            'confirmButtonText' => 'Lanjutkan',
+            'cancelButtonText' => 'Tunggu',
+            'confirmButtonColor' => '#2563eb',
+            'cancelButtonColor' => '#e5e7eb',
+        ]);
     }
 
     public function continue(Request $request)
@@ -64,13 +73,21 @@ class ConfirmLoginController extends Controller
         session()->forget('pending_login_user_id');
         session()->forget('pending_login_device');
 
-        return redirect()->route('dashboard');
+        // Return JSON so the frontend can redirect without relying on a full-page
+        return response()->json([
+            'success' => true,
+            'redirect' => route('dashboard'),
+        ]);
     }
 
     public function cancel()
     {
         session()->forget('pending_login_user_id');
         session()->forget('pending_login_device');
-        return redirect('/login')->with('status', 'Login dibatalkan.');
+        return response()->json([
+            'success' => true,
+            'redirect' => route('login'),
+            'message' => 'Login dibatalkan.'
+        ]);
     }
 }
