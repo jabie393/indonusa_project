@@ -15,6 +15,9 @@ use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\RequestOrderController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ConfirmLoginController;
+
 
 
 // === Guest Routes === //
@@ -46,8 +49,30 @@ Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->na
 // === End guest routes === //
 
 // === Admin Routes === //
+// Session confirmation routes //
+Route::get('/confirm-login', [ConfirmLoginController::class, 'show'])->name('confirm.login');
+Route::post('/confirm-login/continue', [ConfirmLoginController::class, 'continue'])->name('auth.continue-session');
+Route::post('/confirm-login/cancel', [ConfirmLoginController::class, 'cancel'])->name('auth.cancel-login');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+Route::get('/session/check', function () {
+    if (!auth()->check()) {
+        return ['valid' => false];
+    }
+
+    $session = \App\Models\UserSession::where('user_id', auth()->id())->first();
+
+    return [
+        'valid' => $session && $session->session_id === session()->getId()
+    ];
+});
+// End of Session confirmation routes //
+
 // General (for all admin roles)
 Route::middleware(['auth'])->group(function () {
+
+    // routes existing
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
