@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="no-scrollbar">
 
     <head>
         <meta charset="utf-8">
@@ -17,8 +17,8 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
 
-    <body class="grid h-screen max-h-screen grid-flow-row-dense grid-cols-1 grid-rows-6 gap-4 p-5 font-sans text-gray-900 antialiased lg:grid-cols-5 lg:grid-rows-1">
-        <div class="rounded-4xl row-span-3 flex h-full w-full max-w-full flex-col justify-between bg-cover bg-center lg:col-span-2 lg:row-span-full"
+    <body class="grid overflow-y-scroll min-h-screen grid-cols-1 grid-rows-6 gap-4 p-5 font-sans text-gray-900 antialiased lg:grid-cols-5 lg:grid-rows-1">
+        <div class="rounded-4xl row-span-3 flex min-h-fit h-full w-full max-w-full flex-col justify-between bg-cover bg-center lg:col-span-2 lg:row-span-full"
             style="background-image: url('{{ asset('images/login_pic.png') }}')">
             <div class="rounded-4xl m-5 flex h-40 flex-row items-center justify-center gap-5 bg-black/30 backdrop-blur-sm">
                 <a href="/">
@@ -40,7 +40,7 @@
                 </p>
             </div>
         </div>
-        <div class="bg-linear-to-r rounded-4xl row-span-3 row-start-4 flex h-full flex-col items-center bg-[#E5E7EB] sm:justify-center lg:col-span-3 lg:col-start-3 lg:row-span-full">
+        <div class="bg-linear-to-r min-h-fit rounded-4xl row-span-3 row-start-4 flex h-full flex-col items-center bg-[#E5E7EB] sm:justify-center lg:col-span-3 lg:col-start-3 lg:row-span-full">
             <div class="w-full overflow-hidden px-6 py-4 sm:max-w-md sm:rounded-lg">
                 <div class="flex flex-col items-center justify-center">
                     <h1 class="text-center text-2xl font-bold">Login</h1>
