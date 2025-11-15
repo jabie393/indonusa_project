@@ -4,6 +4,12 @@ document.addEventListener('input', function (e) {
         return /[^a-zA-Z0-9]/.test(str);
     }
 
+    // Helper to check invalid email format
+    function isInvalidEmail(email) {
+        const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+        return !emailRegex.test(email);
+    }
+
     // Checker Barang Baru
     if (e.target && e.target.id === 'kode_barang') {
         const kode = e.target.value;
@@ -112,5 +118,156 @@ document.addEventListener('input', function (e) {
                     submitBtn.disabled = false;
                 }
             });
+    }
+
+    // Checker for new sales account email
+    if (e.target && e.target.id === 'createEmail') {
+        const email = e.target.value;
+        const submitBtn = document.querySelector('#createUserModal button[type="submit"]');
+        if (email.length === 0) {
+            document.getElementById('email-warning')?.remove();
+            document.getElementById('email-invalid-warning')?.remove();
+            submitBtn.disabled = false;
+            return;
+        }
+
+        // Check invalid email format
+        if (isInvalidEmail(email)) {
+            let invalidWarn = document.getElementById('email-invalid-warning');
+            if (!invalidWarn) {
+                invalidWarn = document.createElement('div');
+                invalidWarn.id = 'email-invalid-warning';
+                invalidWarn.className = 'text-red-600 text-sm mt-1';
+                invalidWarn.innerText = "Format email tidak valid.";
+                e.target.parentNode.appendChild(invalidWarn);
+            }
+            submitBtn.disabled = true;
+            return; // skip uniqueness check
+        } else {
+            document.getElementById('email-invalid-warning')?.remove();
+        }
+
+        fetch(window.CHECK_EMAIL_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": window.CSRF_TOKEN
+            },
+            body: JSON.stringify({ email: email })
+        })
+            .then(res => res.json())
+            .then(data => {
+                let warning = document.getElementById('email-warning');
+                if (data.exists) {
+                    if (!warning) {
+                        warning = document.createElement('div');
+                        warning.id = 'email-warning';
+                        warning.className = 'text-red-600 text-sm mt-1';
+                        warning.innerText = 'Email sudah terdaftar!';
+                        e.target.parentNode.appendChild(warning);
+                    }
+                    submitBtn.disabled = true;
+                } else {
+                    warning?.remove();
+                    submitBtn.disabled = false;
+                }
+            });
+    }
+
+    // Checker for editing sales account email
+    if (e.target && e.target.id === 'editEmail') {
+        const email = e.target.value;
+        const id = document.getElementById('editUserId').value;
+        const submitBtn = document.querySelector('#editUserModal button[type="submit"]');
+        if (email.length === 0) {
+            document.getElementById('edit-email-warning')?.remove();
+            document.getElementById('edit-email-invalid-warning')?.remove();
+            submitBtn.disabled = false;
+            return;
+        }
+
+        // Check invalid email format
+        if (isInvalidEmail(email)) {
+            let invalidWarn = document.getElementById('edit-email-invalid-warning');
+            if (!invalidWarn) {
+                invalidWarn = document.createElement('div');
+                invalidWarn.id = 'edit-email-invalid-warning';
+                invalidWarn.className = 'text-red-600 text-sm mt-1';
+                invalidWarn.innerText = "Format email tidak valid.";
+                e.target.parentNode.appendChild(invalidWarn);
+            }
+            submitBtn.disabled = true;
+            return; // skip uniqueness check
+        } else {
+            document.getElementById('edit-email-invalid-warning')?.remove();
+        }
+
+        fetch(window.CHECK_EMAIL_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": window.CSRF_TOKEN
+            },
+            body: JSON.stringify({ email: email, id: id })
+        })
+            .then(res => res.json())
+            .then(data => {
+                let warning = document.getElementById('edit-email-warning');
+                if (data.exists) {
+                    if (!warning) {
+                        warning = document.createElement('div');
+                        warning.id = 'edit-email-warning';
+                        warning.className = 'text-red-600 text-sm mt-1';
+                        warning.innerText = 'Email sudah terdaftar!';
+                        e.target.parentNode.appendChild(warning);
+                    }
+                    submitBtn.disabled = true;
+                } else {
+                    warning?.remove();
+                    submitBtn.disabled = false;
+                }
+            });
+    }
+
+    // Real-time password validation for create form
+    if (e.target && e.target.id === 'createPassword') {
+        const password = e.target.value;
+        const submitBtn = document.querySelector('#createUserModal button[type="submit"]');
+        let warning = document.getElementById('password-warning');
+
+        if (password.length < 6) {
+            if (!warning) {
+                warning = document.createElement('div');
+                warning.id = 'password-warning';
+                warning.className = 'text-red-600 text-sm mt-1';
+                warning.innerText = 'Password harus minimal 6 karakter.';
+                e.target.parentNode.appendChild(warning);
+            }
+            submitBtn.disabled = true;
+        } else {
+            warning?.remove();
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Real-time password validation for edit form
+    if (e.target && e.target.id === 'editPassword') {
+        const password = e.target.value;
+        const submitBtn = document.querySelector('#editUserModal button[type="submit"]');
+        let warning = document.getElementById('edit-password-warning');
+
+        if (password.length > 0 && password.length < 6) {
+            if (!warning) {
+                warning = document.createElement('div');
+                warning.id = 'edit-password-warning';
+                warning.className = 'text-red-600 text-sm mt-1';
+                warning.innerText = 'Password harus minimal 6 karakter.';
+                e.target.parentNode.appendChild(warning);
+            }
+            submitBtn.disabled = true;
+        } else {
+            warning?.remove();
+            submitBtn.disabled = false;
+        }
     }
 });
