@@ -53,4 +53,9 @@ class User extends Authenticatable
         $rolePart = $this->role ? " ({$this->role})" : '';
         return $this->name . $rolePart;
     }
+    // Add relationship to orders made by the user
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'sales_id');
+    }
 }

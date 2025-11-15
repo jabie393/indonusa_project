@@ -36,5 +36,41 @@ class OrderSeeder extends Seeder
             'barang_id' => 2,
             'quantity' => 5
         ]);
+
+        $order = Order::create([
+            'order_number' => 'ORD-' . strtoupper(Str::random(6)),
+            'sales_id' => 4,
+            'status' => 'completed'
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'barang_id' => 1,
+            'quantity' => 5
+        ]);
+
+        $order = Order::create([
+            'order_number' => 'ORD-' . strtoupper(Str::random(6)),
+            'sales_id' => 5,
+            'status' => 'completed'
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'barang_id' => 2,
+            'quantity' => 5
+        ]);
+
+        $order = Order::create([
+            'order_number' => 'ORD-' . strtoupper(Str::random(6)),
+            'sales_id' => 5,
+            'status' => 'completed'
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'barang_id' => 1,
+            'quantity' => 5
+        ]);
     }
 }

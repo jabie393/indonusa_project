@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\GeneralController;
 use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
+use App\Http\Controllers\Admin\AkunSalesController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
 use App\Http\Controllers\Admin\DeliveryOrdersController;
@@ -13,7 +16,6 @@ use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\RequestOrderController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
@@ -87,6 +89,8 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
+    Route::resource('/akun-sales', AkunSalesController::class);
+    Route::resource('/customer', CustomerController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 // End of General Affair
