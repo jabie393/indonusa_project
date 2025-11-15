@@ -46,7 +46,7 @@
 
     <body class="font-sans antialiased">
         <div
-            class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 lg:grid-cols-[0.75fr_1fr_1fr_1fr_1fr] lg:grid-rows-[64px_1fr_1fr_1fr_1fr]">
+            class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr]">
             <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
                 <div class="flex h-full w-full items-center justify-center shadow-sm lg:h-[unset]">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
