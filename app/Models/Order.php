@@ -40,4 +40,9 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'warehouse_id');
     }
+    // Add relationship to order items
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id');
+    }
 }
