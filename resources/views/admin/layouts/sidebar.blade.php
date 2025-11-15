@@ -117,7 +117,7 @@
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
                         {{-- Supply Orders --}}
-                        <li class="w-[179px]">
+                        <li class="w-[75%]">
                             <a href="{{ route('supply-orders.index') }}"
                                 class="{{ request()->routeIs('supply-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg class="{{ request()->routeIs('supply-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
@@ -133,7 +133,7 @@
                         </li>
 
                         {{-- Delivery Orders --}}
-                        <li class="w-[179px]">
+                        <li class="w-[75%]">
                             <a href="{{ route('delivery-orders.index') }}"
                                 class="{{ request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg class="{{ request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"

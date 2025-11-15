@@ -83,4 +83,23 @@
             </div>
         </div>
     </div>
+    <div class="duration-750 starting:opacity-0 flex min-h-[181px] w-full flex-col items-center justify-center bg-[#E5E7EB] opacity-100 transition-opacity lg:grow" id="about">
+        <div class="mt-7">
+            <h1 class="mb-4 text-2xl font-bold leading-none tracking-tight text-black md:max-w-2xl md:text-3xl xl:text-4xl">
+                OUR CLIENTS
+            </h1>
+        </div>
+        <div class="carousel w-full max-w-full">
+            <div class="logos2"></div>
+            <div class="mask"></div>
+        </div>
+        <div class="carousel w-full max-w-full">
+            <div class="logos3"></div>
+            <div class="mask"></div>
+        </div>
+        <div class="carousel w-full max-w-full">
+            <div class="logos4"></div>
+            <div class="mask"></div>
+        </div>
+    </div>
 </x-front-layout>
