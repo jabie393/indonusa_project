@@ -15,7 +15,7 @@
         </div>
         <div class="overflow-x-auto">
 
-            <table id="DataTable" class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th>#</th>

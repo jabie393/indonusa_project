@@ -11,7 +11,19 @@ class AkunSalesController extends Controller
 {
     public function index()
     {
-        $salesUsers = User::where('role', 'Sales')->get();
+        $perPage = (int) request('perPage', 10);
+        $search = request('search');
+
+        $query = User::where('role', 'Sales');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $salesUsers = $query->latest()->paginate($perPage)->appends(request()->except('page'));
         return view('admin.akun-sales.index', compact('salesUsers'));
     }
 

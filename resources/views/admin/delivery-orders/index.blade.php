@@ -29,7 +29,7 @@
             <div class="mt-4 text-sm text-gray-500">Belum ada delivery order dengan status <strong>sent_to_warehouse</strong>.</div>
         @else
             <div class="overflow-x-auto">
-                <table id="DataTable" class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase">No. Order</th>
