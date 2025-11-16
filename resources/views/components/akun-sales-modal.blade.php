@@ -87,7 +87,6 @@
                 <input type="password" id="editPassword" name="password" placeholder="Isi untuk mengubah password" autocomplete="new-password" class="w-full rounded border px-3 py-2">
             </div>
             <div class="flex justify-end">
-                <button type="button" id="closeEditModal" class="mr-2 rounded bg-gray-500 px-4 py-2 text-white">Batal</button>
                 <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
             </div>
         </form>
