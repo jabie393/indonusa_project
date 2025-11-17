@@ -18,6 +18,8 @@ use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\SalesOrderController;
+use App\Http\Controllers\Auth\ConfirmLoginController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 // === Guest Routes === //
