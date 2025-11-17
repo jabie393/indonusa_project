@@ -16,10 +16,8 @@ use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\SalesOrderController;
-use App\Http\Controllers\Admin\CustomerController;
 
 
 // === Guest Routes === //
