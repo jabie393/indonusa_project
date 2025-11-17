@@ -13,7 +13,7 @@ class SalesOrder extends Model
         'customer_name',
         'customer_id',
         'status', // pending, in_process, shipped, completed, cancelled
-        'reason', // alasan pembatalan
+        'reason', // alasan pembatalan barang
         'tanggal_kebutuhan',
         'catatan_customer',
         'supervisor_id',
