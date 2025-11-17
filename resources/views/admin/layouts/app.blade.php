@@ -80,7 +80,7 @@
                 {{ $slot }}
             </div>
         </div>
-
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 

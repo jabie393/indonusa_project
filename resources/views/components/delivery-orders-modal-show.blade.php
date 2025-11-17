@@ -1,5 +1,5 @@
 <dialog id="delivery-order-modal" class="modal">
-    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white p-0 shadow dark:bg-gray-800 sm:max-h-[90vh]">
+    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Detail Delivery Order - <span id="delivery-order-number" class="font-normal">#-</span>
@@ -26,7 +26,7 @@
             </div>
 
             <div class="w-full overflow-x-auto">
-                <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
+                <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"">
                         <tr>
                             <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Kode Barang</th>
