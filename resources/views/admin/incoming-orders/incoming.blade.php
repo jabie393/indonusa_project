@@ -27,7 +27,7 @@
                                         }))' class="open-order-detail cursor-pointer rounded bg-blue-500 px-3 py-1 text-white">Detail</button>
                                 <form action="{{ route('orders.approve', $order->id) }}" method="POST" class="inline-block">
                                     @csrf
-                                    <button class="cursor-pointer rounded bg-green-600 px-3 py-1 text-white flex items-center">
+                                    <button class="flex cursor-pointer items-center rounded bg-green-600 px-3 py-1 text-white">
                                         <svg class="pr-1" width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <circle cx="8.5" cy="8.5" r="8.5" fill="white" />
                                             <ellipse cx="8.5" cy="8.5" rx="7.5" ry="7.4375" fill="#37AF2F" />
@@ -58,7 +58,7 @@
             @endif
 
             <dialog id="reject" class="modal">
-                <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-white p-0 shadow dark:bg-gray-700">
+                <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700">
                     <div class="modal-action m-0">
                         <form method="dialog">
                             <!-- if there is a button in form, it will close the modal -->
@@ -93,7 +93,7 @@
 
             <script>
                 // Set reject modal form action from the clicked reject button's data-id
-                (function(){
+                (function() {
                     const form = document.getElementById('reject-form');
                     if (!form) return;
                     const template = form.dataset.template || form.action;
@@ -102,7 +102,7 @@
                     document.querySelectorAll('button[data-id]').forEach(btn => {
                         // only attach to buttons that visually are reject buttons by checking bg-red class
                         if (!btn.classList.contains('bg-red-600') && !btn.classList.contains('bg-red-500')) return;
-                        btn.addEventListener('click', function () {
+                        btn.addEventListener('click', function() {
                             const id = this.dataset.id;
                             if (!id) return;
                             form.action = template.replace('__ORDER_ID__', id);
