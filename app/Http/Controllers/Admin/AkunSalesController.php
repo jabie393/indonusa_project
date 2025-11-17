@@ -46,7 +46,7 @@ class AkunSalesController extends Controller
             return response()->json(['success' => 'Akun sales telah berhasil dibuat.']);
         }
 
-        return redirect()->route('akun-sales.index')->with('success', 'Akun sales telah berhasil dibuat.');
+        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil dibuat.']);
     }
 
     public function update(Request $request, $id)
@@ -72,7 +72,7 @@ class AkunSalesController extends Controller
 
         $user->save();
 
-        return redirect()->route('akun-sales.index')->with('success', 'Akun sales telah berhasil diperbarui.');
+        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil diperbarui.']);
     }
 
     public function destroy($id)
@@ -85,6 +85,6 @@ class AkunSalesController extends Controller
 
         $user->delete();
 
-        return redirect()->route('akun-sales.index')->with('success', 'Akun sales telah berhasil dihapus.');
+        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil dihapus.']);
     }
 }

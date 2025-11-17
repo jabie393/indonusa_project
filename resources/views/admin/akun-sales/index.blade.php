@@ -22,7 +22,7 @@
                         </div>
                     </form>
                 </div>
-                
+
                 <div class="p-4">
                     <button onclick="createUserModal.showModal()"
                         class="flex items-center justify-center rounded-lg bg-primary-700 px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
@@ -59,12 +59,13 @@
                                 {{ $user->orders()->where('status', 'completed')->withSum('orderItems', 'quantity')->get()->sum('order_items_sum_quantity') }}
                             </td>
                             <td class="px-4 py-2">
-                                <button onclick="editUserModal.showModal()" class="editUserButton rounded mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900" data-id="{{ $user->id }}" data-name="{{ $user->name }}"
-                                    data-email="{{ $user->email }}">Edit</button>
+                                <button onclick="editUserModal.showModal()"
+                                    class="editUserButton mb-2 me-2 rounded rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                                    data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">Edit</button>
                                 <form action="{{ route('akun-sales.destroy', $user) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
+                                    <button type="button" onclick="confirmDelete(() => this.closest('form').submit())"
                                         class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Hapus</button>
                                 </form>
                             </td>

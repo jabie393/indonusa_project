@@ -107,7 +107,7 @@ class GoodsInStatusController extends Controller
             }
         }
 
-        return redirect()->route('goods-in-status.index')->with('success', 'Barang berhasil diupdate.');
+        return redirect()->route('goods-in-status.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diupdate.']);
     }
 
     // Hapus barang
@@ -124,6 +124,6 @@ class GoodsInStatusController extends Controller
         // Hapus data barang di database
         $barang->delete();
 
-        return redirect()->route('goods-in-status.index')->with('success', 'Barang berhasil dihapus.');
+        return redirect()->route('goods-in-status.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus.']);
     }
 }

@@ -26,7 +26,7 @@
                     @csrf
                     <div class="mb-4">
                         <label for="createName" class="block text-sm font-medium">Nama</label>
-                        <input type="text" id="createName" name="name" placeholder="Nama" class="w-full rounded border px-3 py-2">
+                        <input type="text" id="createName" name="name" placeholder="Nama" class="w-full rounded border px-3 py-2" required>
                     </div>
                     <div class="mb-4">
                         <label for="createEmail" class="block text-sm font-medium">Email</label>

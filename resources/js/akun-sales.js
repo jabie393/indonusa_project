@@ -1,20 +1,4 @@
-const createBtn = document.getElementById('createUserButton');
-if (createBtn) {
-    createBtn.addEventListener('click', () => {
-        const modal = document.getElementById('createUserModal');
-        if (modal && typeof modal.showModal === 'function') modal.showModal();
-        else if (modal) modal.classList.remove('hidden');
-    });
-}
 
-// wire the header/backdrop close button inside the create dialog (form[method="dialog"])
-const createCloseBtn = document.querySelector('#createUserModal form[method="dialog"] button');
-if (createCloseBtn) {
-    createCloseBtn.addEventListener('click', () => {
-        const modal = document.getElementById('createUserModal');
-        if (modal) modal.classList.add('hidden');
-    });
-}
 
 document.querySelectorAll('.editUserButton').forEach(button => {
     // Populate form fields on pointerdown so values are set before any inline showModal() call
