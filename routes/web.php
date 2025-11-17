@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\AkunSalesController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\CustomerController2;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
@@ -114,7 +115,7 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
-    
+
     // Supervisor approval for Request Orders (from Sales)
     Route::post('/request-order/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.request-order.approve');
     Route::post('/request-order/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.request-order.reject');
@@ -124,14 +125,14 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Customer Routes
-    Route::get('/customer', [CustomerController::class, 'index'])->name('sales.customer.index');
-    Route::get('/customer/create', [CustomerController::class, 'create'])->name('sales.customer.create');
-    Route::post('/customer', [CustomerController::class, 'store'])->name('sales.customer.store');
-    Route::get('/customer/{customer}', [CustomerController::class, 'show'])->name('sales.customer.show');
-    Route::get('/customer/{customer}/edit', [CustomerController::class, 'edit'])->name('sales.customer.edit');
-    Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('sales.customer.update');
-    Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('sales.customer.destroy');
-    Route::get('/customer/api/search', [CustomerController::class, 'search'])->name('sales.customer.search');
+    Route::get('/customer2', [CustomerController2::class, 'index'])->name('sales.customer.index');
+    Route::get('/customer2/create', [CustomerController2::class, 'create'])->name('sales.customer.create');
+    Route::post('/customer2', [CustomerController2::class, 'store'])->name('sales.customer.store');
+    Route::get('/customer2/{customer}', [CustomerController2::class, 'show'])->name('sales.customer.show');
+    Route::get('/customer2/{customer}/edit', [CustomerController2::class, 'edit'])->name('sales.customer.edit');
+    Route::put('/customer2/{customer}', [CustomerController2::class, 'update'])->name('sales.customer.update');
+    Route::delete('/customer2/{customer}', [CustomerController2::class, 'destroy'])->name('sales.customer.destroy');
+    Route::get('/customer2/api/search', [CustomerController2::class, 'search'])->name('sales.customer.search');
 
     // Request Order Routes
     Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
