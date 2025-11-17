@@ -77,11 +77,21 @@ css
   }
 }
 
+@keyframes moveBgN {
+  from {
+    background-position: 0 50%;
+  }
+
+  to {
+    background-position: 1282px 50%;
+  }
+}
+
 .carousel {
   --blur: 6px;
   --contrast: 105%;
   --speed: 15s;
-  height: 150px;
+  height: 100px;
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -102,6 +112,28 @@ css
     position: absolute;
     inset: 0;
     background: url("/public/images/Frame 6.png") 0 50% / 1282px repeat-x;
+    -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
+  }
+
+  .logos2 {
+    animation: moveBg var(--speed) linear infinite;
+    position: absolute;
+    inset: 0;
+    background: url("/public/images/Logo2.png") 0 50% / 1282px repeat-x;
+    -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
+  }
+  .logos3 {
+    animation: moveBgN var(--speed) linear infinite;
+    position: absolute;
+    inset: 0;
+    background: url("/public/images/logo3.png") 0 50% / 1282px repeat-x;
+    -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
+  }
+  .logos4 {
+    animation: moveBg var(--speed) linear infinite;
+    position: absolute;
+    inset: 0;
+    background: url("/public/images/logo4.png") 0 50% / 1282px repeat-x;
     -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
   }
 }

@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\GeneralController;
 use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
+use App\Http\Controllers\Admin\AkunSalesController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
 use App\Http\Controllers\Admin\DeliveryOrdersController;
@@ -48,12 +51,35 @@ Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->na
 // === End guest routes === //
 
 // === Admin Routes === //
+// Session confirmation routes //
+Route::get('/confirm-login', [ConfirmLoginController::class, 'show'])->name('confirm.login');
+Route::post('/confirm-login/continue', [ConfirmLoginController::class, 'continue'])->name('auth.continue-session');
+Route::post('/confirm-login/cancel', [ConfirmLoginController::class, 'cancel'])->name('auth.cancel-login');
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+Route::get('/session/check', function () {
+    if (!auth()->check()) {
+        return ['valid' => false];
+    }
+
+    $session = \App\Models\UserSession::where('user_id', auth()->id())->first();
+
+    return [
+        'valid' => $session && $session->session_id === session()->getId()
+    ];
+});
+// End of Session confirmation routes //
+
 // General (for all admin roles)
 Route::middleware(['auth'])->group(function () {
+
+    // routes existing
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [GeneralController::class, 'dashboard'])->name('dashboard');
+    Route::post('/check-email', [GeneralController::class, 'checkEmail'])->name('check.email');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
 });
@@ -64,6 +90,8 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
+    Route::resource('/akun-sales', AkunSalesController::class);
+    Route::resource('/customer', CustomerController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 // End of General Affair

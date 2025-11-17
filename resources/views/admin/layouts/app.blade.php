@@ -46,11 +46,11 @@
 
     <body class="font-sans antialiased">
         <div
-            class="grid bg-[#E5E7EB] dark:bg-gray-900 max-h-screen min-h-screen grid-flow-row grid-cols-[1fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden p-4 lg:grid-cols-[0.75fr_1fr_1fr_1fr_1fr] lg:grid-rows-[64px_1fr_1fr_1fr_1fr]">
+            class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr] 2xl:grid-cols-[0.8fr_1fr_1fr_1fr_1fr] ">
             <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
-                <div class="flex items-center h-full w-full lg:h-[unset] shadow-sm justify-center ">
+                <div class="flex h-full w-full items-center justify-center lg:h-[unset]">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
-                        class=" cursor-pointer h-full w-full flex flex-wrap content-center justify-center text-center rounded-xl p-2 text-white hover:bg-gray-100 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-100 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden">
+                        class="flex h-full w-full cursor-pointer flex-wrap content-center justify-center rounded-xl p-2 text-center text-white hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden">
                         <svg aria-hidden="true" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
                                 clip-rule="evenodd"></path>
@@ -76,7 +76,7 @@
             <aside class="rounded-xl lg:col-span-1 lg:col-start-1 lg:row-span-4 lg:row-start-2">
                 @include('admin.layouts.sidebar')
             </aside>
-            <div class="col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll no-scrollbar rounded-xl lg:col-span-4 lg:col-start-2">
+            <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-4 lg:col-start-2">
                 {{ $slot }}
             </div>
         </div>
@@ -85,7 +85,7 @@
 
 
         {{-- SweetAlert --}}
-        @vite(['resources/js/sweetalert.js'])
+        @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             window.sweetTitle = @json(session('title'));
@@ -94,6 +94,45 @@
 
         {{-- DataTable --}}
         <script src="https://cdn.datatables.net/2.3.4/js/dataTables.min.js"></script>
+
+        <script>
+            // Polling session tiap 3 detik
+            const sessionCheckInterval = setInterval(() => {
+                fetch('/session/check')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.valid) {
+                            clearInterval(sessionCheckInterval); // hentikan polling
+
+                            Swal.fire({
+                                title: "Perhatian!",
+                                text: "Akun Anda digunakan di perangkat lain.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                allowEnterKey: false,
+                                confirmButtonColor: '#225A97',
+                                customClass: {
+                                    popup: 'rounded-2xl!',
+                                }
+                            }).then(() => {
+                                fetch("/logout", {
+                                    method: "POST",
+                                    headers: {
+                                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                        "Accept": "application/json",
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({})
+                                }).then(() => {
+                                    window.location.href = "/login"; // setelah logout, redirect manual
+                                });
+                            });
+                        }
+                    });
+            }, 3000);
+        </script>
 
     </body>
 

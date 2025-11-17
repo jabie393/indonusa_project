@@ -56,6 +56,6 @@ class GoodsInController extends Controller
 
         $barang->update($validated);
 
-        return redirect()->route('goods-in.index')->with('success', 'Barang berhasil ditambahkan.');
+        return redirect()->route('goods-in.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan.']);
     }
 }

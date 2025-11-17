@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
@@ -63,9 +63,6 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="7" class="text-center">Belum ada barang</td>
-                        </tr>
                     @endforelse
                 </tbody>
             </table>
@@ -80,7 +77,7 @@
                 </span>
                 <form method="GET" action="{{ route('add-stock.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 text-sm">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
@@ -98,5 +95,5 @@
     @include('components.add-stock-edit')
 
     <!-- Js -->
-    @vite(['resources/js/add-stock.js', 'resources/js/dataTable.js'])
+    @vite(['resources/js/add-stock.js'])
 </x-app-layout>

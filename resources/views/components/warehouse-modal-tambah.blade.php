@@ -111,8 +111,6 @@
                             </div>
                         </div>
                     </div>
-
-
                     <div class="h-full sm:col-span-1">
 
                         <label for="deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
@@ -122,7 +120,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="">
 
                 <button type="submit"

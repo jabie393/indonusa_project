@@ -29,24 +29,24 @@
             <div class="mt-4 text-sm text-gray-500">Belum ada delivery order dengan status <strong>sent_to_warehouse</strong>.</div>
         @else
             <div class="overflow-x-auto">
-                <table id="DataTable" class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
+                    <thead class="bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">No. Order</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Nama Supervisor</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Status</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Dibuat</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Detail</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase">No. Order</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase">Nama Supervisor</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase">Status</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase">Dibuat</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase">Detail</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
+                    <tbody class="h-min-[300px]">
                         @foreach ($orders as $order)
-                            <tr>
-                                <td class="whitespace-nowrap px-4 py-2">{{ $order->order_number }}</td>
-                                <td class="whitespace-nowrap px-4 py-2">{{ optional($order->supervisor)->name ?? '-' }}</td>
-                                <td class="whitespace-nowrap px-4 py-2">{{ $order->status }}</td>
-                                <td class="whitespace-nowrap px-4 py-2">{{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
-                                <td class="whitespace-nowrap px-4 py-2">
+                            <tr class="dark:border-gray-700">
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ $order->order_number }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ optional($order->supervisor)->name ?? '-' }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ $order->status }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                     <button type="button"
                                         class="js-show-order mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         data-order-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>Show</button>
@@ -84,6 +84,6 @@
 
     <!-- Modals -->
     @include('components.delivery-orders-modal-show')
-    @vite(['resources/js/delivery-orders.js', 'resources/js/dataTable.js'])
+    @vite(['resources/js/delivery-orders.js'])
 
 </x-app-layout>

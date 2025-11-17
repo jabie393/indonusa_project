@@ -54,7 +54,7 @@ class AddStockController extends Controller
             $barang->save();
         }
 
-        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil ditambahkan!');
+        return redirect()->route('add-stock.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!.']);
     }
 
     public function update(Request $request, $id)
@@ -83,7 +83,7 @@ class AddStockController extends Controller
 
         $copyData->save();
 
-        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil diajukan peninjauan!');
+        return redirect()->route('add-stock.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diajukan peninjauan!']);
     }
 
     public function destroy($id)
@@ -98,6 +98,6 @@ class AddStockController extends Controller
 
         $barang->delete();
 
-        return redirect()->route('add-stock.index')->with('success', 'Barang berhasil dihapus!');
+        return redirect()->route('add-stock.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus!.']);
     }
 }

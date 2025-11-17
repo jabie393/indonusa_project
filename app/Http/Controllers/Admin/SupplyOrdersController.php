@@ -57,7 +57,7 @@ class SupplyOrdersController extends Controller
             });
         }
 
-        return redirect()->route('supply-orders.index')->with('success', 'Barang berhasil diapprove.');
+        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diapprove.']);
     }
 
     // Reject barang dengan alasan (catatan)

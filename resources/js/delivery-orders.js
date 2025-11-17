@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.setAttribute('colspan', '5');
-            td.className = 'px-4 py-2 text-sm text-gray-500';
+            td.className = 'px-4 py-2 text-sm text-gray-900 dark:text-white';
             td.textContent = 'Tidak ada item pada order ini.';
             tr.appendChild(td);
             tbody.appendChild(tr);
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             cells.forEach(function (val) {
                 const td = document.createElement('td');
-                td.className = 'px-4 py-2 whitespace-nowrap text-sm text-gray-700';
+                td.className = 'px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-white';
                 td.textContent = val;
                 tr.appendChild(td);
             });

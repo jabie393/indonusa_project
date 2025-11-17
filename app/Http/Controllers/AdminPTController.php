@@ -13,7 +13,7 @@ class AdminPTController extends Controller
     public function incoming()
     {
         $orders = Order::where('status','pending')->with(['items.barang','sales'])->get();
-        return view('admin.orders.incoming', compact('orders'));
+        return view('admin.incoming-orders.incoming', compact('orders'));
 
 
     }
@@ -21,7 +21,7 @@ class AdminPTController extends Controller
     public function show($id)
     {
         $order = Order::with(['items.barang','sales'])->findOrFail($id);
-        return view('admin.orders.show', compact('order'));
+        return view('admin.incoming-orders.show', compact('order'));
     }
 
     public function approve($id)
@@ -64,6 +64,6 @@ class AdminPTController extends Controller
     public function history()
     {
         $orders = Order::where('status', '!=', 'pending')->with(['items.barang','sales','supervisor','warehouse'])->latest()->paginate(10);
-        return view('admin.orders.history', compact('orders'));
+        return view('admin.incoming-orders.history', compact('orders'));
     }
 }
