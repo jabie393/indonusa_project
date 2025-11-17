@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BarangHistory;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
 
 class Barang extends Model
 {
@@ -42,7 +44,7 @@ class Barang extends Model
                     'harga'       => $barang->harga,
                     'old_status'  => $barang->getOriginal('status_barang'),
                     'new_status'  => $barang->status_barang,
-                    'changed_by'  => auth()->id(),
+                    'changed_by'  => Auth::id(),
                     'note'        => $barang->catatan ?? null,
                 ]);
             }
@@ -60,7 +62,7 @@ class Barang extends Model
                 'harga'       => $barang->harga,
                 'old_status'  => $barang->status_barang,
                 'new_status'  => 'dihapus',
-                'changed_by'  => auth()->id(),
+                'changed_by'  => Auth::id(),
                 'note'        => $barang->catatan ?? null,
             ]);
         });

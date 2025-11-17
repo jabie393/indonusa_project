@@ -355,7 +355,7 @@ class RequestOrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Duplikasi items dari Request Order ke Sales Order
+            
             foreach ($requestOrder->items as $reqItem) {
                 SalesOrderItem::create([
                     'sales_order_id' => $salesOrder->id,

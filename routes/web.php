@@ -140,7 +140,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');
 
-    // Sales Order Routes
+    // Saless Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
     Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
     Route::put('/sales-order/{salesOrder}/status', [SalesOrderController::class, 'updateStatus'])->name('sales.sales-order.status');

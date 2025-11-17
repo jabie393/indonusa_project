@@ -16,7 +16,7 @@ class RequestOrder extends Model
         'customer_name',
         'customer_id',
         'status', // pending, approved, rejected, converted, expired
-        'reason', // alasan penolakan
+        'reason', 
         'tanggal_kebutuhan',
         'tanggal_berlaku',
         'expired_at',

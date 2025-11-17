@@ -1,11 +1,6 @@
 <x-app-layout>
     <div class="container-fluid px-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2>Sales Order (Pesanan Penjualan)</h2>
-                <p class="text-muted small">Kelola semua pesanan penjualan dari Request Order yang approved</p>
-            </div>
-        </div>
+        
 
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

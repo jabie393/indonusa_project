@@ -125,7 +125,7 @@
                         </div>
                     </div>
 
-                    <!-- Category Selection Section (REQUIRED FIRST) -->
+                  
                     <div class="card mb-4 bg-warning bg-opacity-10">
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0"><i class="fas fa-tag"></i> Kategori Barang <span class="badge bg-danger ms-2">WAJIB DIPILIH TERLEBIH DAHULU</span></h5>

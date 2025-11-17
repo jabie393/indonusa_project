@@ -1,10 +1,7 @@
 <x-app-layout>
     <div class="container-fluid px-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2>Request Order (Penawaran)</h2>
-                <p class="text-muted small">Kelola semua penawaran awal kepada pelanggan</p>
-            </div>
+            
             <a href="{{ route('sales.request-order.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Request Order Baru
             </a>

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('barangs', function (Blueprint $table) {
-            // Diskon sebagai persentase (mis. 10 = 10%)
+            // Diskon sebagai persentase (mis. 11 = 10%)
             $table->unsignedSmallInteger('diskon_percent')->default(0)->after('harga');
         });
     }

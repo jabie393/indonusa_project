@@ -590,7 +590,7 @@
                 });
             };
 
-            // Handle barang selection change
+            
             function handleBarangChange(select) {
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
