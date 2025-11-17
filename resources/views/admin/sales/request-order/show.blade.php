@@ -169,6 +169,7 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Barang</th>
+                                    <th width="100">Diskon (%)</th>
                                     <th width="100">Jumlah</th>
                                     <th width="120">Harga Satuan</th>
                                     <th width="120">Subtotal</th>
@@ -184,6 +185,7 @@
                                             <br>
                                             <small class="text-muted">Kode: {{ $item->barang->kode_barang ?? '-' }}</small>
                                         </td>
+                                        <td>{{ $item->barang->diskon_percent ?? 0 }}%</td>
                                         <td>{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
                                         <td>Rp {{ number_format($item->harga, 2, ',', '.') }}</td>
                                         <td><strong>Rp {{ number_format($item->subtotal, 2, ',', '.') }}</strong></td>
@@ -262,6 +264,46 @@
                                         {{ $requestOrder->salesOrder->sales_order_number }}
                                     </a>
                                 </small>
+                            </div>
+                        @endif
+
+                        {{-- Supervisor actions for pending approvals --}}
+                        @if(auth()->check() && auth()->user()->role === 'Supervisor' && $requestOrder->status === 'pending_approval')
+                            <form method="POST" action="{{ route('supervisor.request-order.approve', $requestOrder->id) }}" class="mb-2">
+                                @csrf
+                                <button type="submit" class="btn btn-success w-100" onclick="return confirm('Setujui Request Order ini?')">
+                                    <i class="fas fa-check"></i> Setujui Penawaran
+                                </button>
+                            </form>
+
+                            <!-- Reject with reason -->
+                            <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="fas fa-ban"></i> Tolak Penawaran
+                            </button>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade" id="rejectModal" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title">Tolak Request Order</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form method="POST" action="{{ route('supervisor.request-order.reject', $requestOrder->id) }}">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="reason" class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                                    <textarea name="reason" id="reason" class="form-control" rows="3" required></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-danger">Kirim Penolakan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         @endif
 

@@ -95,7 +95,7 @@ class RequestOrderController extends Controller
             return back()->withErrors('Tidak ada item valid.')->withInput();
         }
 
-        DB::beginTransaction();
+    DB::beginTransaction();
         try {
             // Generate nomor penawaran
             $nomorPenawaran = RequestOrder::generateNomorPenawaran();
@@ -124,6 +124,7 @@ class RequestOrderController extends Controller
                 'expired_at' => $tanggalBerlaku,
                 'catatan_customer' => $validated['catatan_customer'] ?? null,
                 'supporting_images' => !empty($supportingImages) ? $supportingImages : null,
+                // Determine status based on max diskon of selected items
                 'status' => 'pending',
             ]);
 
@@ -134,6 +135,27 @@ class RequestOrderController extends Controller
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
+                ]);
+            }
+
+            // Check discount rules: if any barang has diskon_percent >= 30 then require supervisor approval
+            $barangIds = array_column($items, 'barang_id');
+            $diskonMap = Barang::whereIn('id', $barangIds)->pluck('diskon_percent', 'id')->toArray();
+            $maxDiskon = 0;
+            foreach ($barangIds as $id) {
+                $d = isset($diskonMap[$id]) ? (int)$diskonMap[$id] : 0;
+                if ($d > $maxDiskon) $maxDiskon = $d;
+            }
+
+            if ($maxDiskon >= 30) {
+                // Mark as pending approval by supervisor
+                $requestOrder->update(['status' => 'pending_approval']);
+            } else {
+                // Auto-approve (sales can send directly)
+                $requestOrder->update([
+                    'status' => 'approved',
+                    'approved_by' => Auth::id(),
+                    'approved_at' => now(),
                 ]);
             }
 
@@ -273,6 +295,25 @@ class RequestOrderController extends Controller
                 ]);
             }
 
+            // Re-evaluate discount rule after update
+            $barangIds = array_column($items, 'barang_id');
+            $diskonMap = Barang::whereIn('id', $barangIds)->pluck('diskon_percent', 'id')->toArray();
+            $maxDiskon = 0;
+            foreach ($barangIds as $id) {
+                $d = isset($diskonMap[$id]) ? (int)$diskonMap[$id] : 0;
+                if ($d > $maxDiskon) $maxDiskon = $d;
+            }
+
+            if ($maxDiskon >= 30) {
+                $requestOrder->update(['status' => 'pending_approval']);
+            } else {
+                $requestOrder->update([
+                    'status' => 'approved',
+                    'approved_by' => Auth::id(),
+                    'approved_at' => now(),
+                ]);
+            }
+
             DB::commit();
 
             return redirect()->route('sales.request-order.show', $requestOrder->id)
@@ -339,5 +380,47 @@ class RequestOrderController extends Controller
             DB::rollBack();
             return back()->withErrors('Gagal membuat Sales Order: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Supervisor approves a Request Order that required approval
+     */
+    public function supervisorApprove(RequestOrder $requestOrder)
+    {
+        // Only supervisors should call this (route middleware enforces it)
+        if ($requestOrder->status !== 'pending_approval') {
+            return back()->withErrors('Request Order tidak memerlukan persetujuan atau sudah diproses.');
+        }
+
+        $requestOrder->update([
+            'status' => 'approved',
+            'approved_by' => Auth::id(),
+            'approved_at' => now(),
+        ]);
+
+        return back()->with('success', 'Request Order telah disetujui oleh Supervisor.');
+    }
+
+    /**
+     * Supervisor rejects a Request Order that required approval
+     */
+    public function supervisorReject(Request $request, RequestOrder $requestOrder)
+    {
+        if ($requestOrder->status !== 'pending_approval') {
+            return back()->withErrors('Request Order tidak dapat ditolak pada status ini.');
+        }
+
+        $request->validate([
+            'reason' => 'required|string|max:1000',
+        ]);
+
+        $requestOrder->update([
+            'status' => 'rejected',
+            'reason' => $request->input('reason'),
+            'approved_by' => Auth::id(),
+            'approved_at' => now(),
+        ]);
+
+        return back()->with('success', 'Request Order ditolak.');
     }
 }

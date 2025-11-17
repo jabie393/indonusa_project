@@ -93,6 +93,7 @@ class RequestOrder extends Model
     {
         $statuses = [
             'pending' => 'warning',
+            'pending_approval' => 'warning',
             'approved' => 'success',
             'rejected' => 'danger',
             'converted' => 'info',

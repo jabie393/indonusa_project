@@ -176,6 +176,7 @@
                                         <tr>
                                             <th>Kode Barang</th>
                                             <th>Nama Barang</th>
+                                            <th width="100">Diskon (%)</th>
                                             <th width="120">Jumlah</th>
                                             <th width="150">Harga Satuan</th>
                                             <th width="150">Subtotal</th>
@@ -188,7 +189,14 @@
                                                 <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
                                                     <option value="">-- Pilih Barang --</option>
                                                     @foreach($barangs as $b)
-                                                        <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" style="display: none;">
+                                                        <option value="{{ $b->id }}"
+                                                                data-kode="{{ $b->kode_barang }}"
+                                                                data-nama="{{ $b->nama_barang }}"
+                                                                data-kategori="{{ $b->kategori }}"
+                                                                data-stok="{{ $b->stok }}"
+                                                                data-harga="{{ $b->harga ?? 0 }}"
+                                                                data-diskon="{{ $b->diskon_percent ?? 0 }}"
+                                                                style="display: none;">
                                                             {{ $b->kode_barang }}
                                                         </option>
                                                     @endforeach
@@ -196,6 +204,9 @@
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;">
+                                            </td>
+                                            <td>
+                                                <input type="text" class="form-control diskon-display" readonly style="background-color: #f8f9fa;">
                                             </td>
                                             <td>
                                                 <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
@@ -535,11 +546,14 @@
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
+                const diskonDisplay = row.querySelector('.diskon-display');
                 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
+                    diskonDisplay.value = option.dataset.diskon || '0';
                 } else {
                     namaDisplay.value = '';
+                    diskonDisplay.value = '';
                 }
                 calculateTotals();
             }

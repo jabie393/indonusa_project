@@ -180,12 +180,13 @@
                                 <table class="table table-bordered" id="itemsTable">
                                     <thead class="table-light">
                                         <tr>
-                                            <th>Kode Barang</th>
-                                            <th>Nama Barang</th>
-                                            <th width="120">Jumlah</th>
-                                            <th width="150">Harga Satuan</th>
-                                            <th width="150">Subtotal</th>
-                                            <th width="80">Aksi</th>
+                                                <th>Kode Barang</th>
+                                                <th>Nama Barang</th>
+                                                <th width="100">Diskon (%)</th>
+                                                <th width="120">Jumlah</th>
+                                                <th width="150">Harga Satuan</th>
+                                                <th width="150">Subtotal</th>
+                                                <th width="80">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="itemRows">
@@ -195,16 +196,25 @@
                                                     <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Barang --</option>
                                                         @foreach($barangs as $b)
-                                                            <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}"
-                                                                @selected($item->barang_id === $b->id)>
-                                                                {{ $b->kode_barang }}
-                                                            </option>
+                                                                <option value="{{ $b->id }}"
+                                                                        data-kode="{{ $b->kode_barang }}"
+                                                                        data-nama="{{ $b->nama_barang }}"
+                                                                        data-kategori="{{ $b->kategori }}"
+                                                                        data-stok="{{ $b->stok }}"
+                                                                        data-harga="{{ $b->harga ?? 0 }}"
+                                                                        data-diskon="{{ $b->diskon_percent ?? 0 }}"
+                                                                        @selected($item->barang_id === $b->id)>
+                                                                    {{ $b->kode_barang }}
+                                                                </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;" value="{{ $item->barang->nama_barang ?? '' }}">
                                                 </td>
+                                                    <td>
+                                                        <input type="text" class="form-control diskon-display" readonly style="background-color: #f8f9fa;" value="{{ $item->barang->diskon_percent ?? 0 }}%">
+                                                    </td>
                                                 <td>
                                                     <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
                                                            min="1" value="{{ old('quantity', $item->quantity) }}" required>
@@ -585,11 +595,14 @@
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
+                const diskonDisplay = row.querySelector('.diskon-display');
                 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
+                    if (diskonDisplay) diskonDisplay.value = (option.dataset.diskon || '0') + '%';
                 } else {
                     namaDisplay.value = '';
+                    if (diskonDisplay) diskonDisplay.value = '';
                 }
                 calculateTotals();
             }
@@ -627,6 +640,9 @@
                     </td>
                     <td>
                         <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control diskon-display" readonly style="background-color: #f8f9fa;">
                     </td>
                     <td>
                         <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>

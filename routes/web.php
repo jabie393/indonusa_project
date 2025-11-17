@@ -16,10 +16,8 @@ use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\SalesOrderController;
-use App\Http\Controllers\Admin\CustomerController;
 
 
 // === Guest Routes === //
@@ -114,6 +112,10 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
+    
+    // Supervisor approval for Request Orders (from Sales)
+    Route::post('/request-order/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.request-order.approve');
+    Route::post('/request-order/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.request-order.reject');
 });
 // End of Supervisor
 
