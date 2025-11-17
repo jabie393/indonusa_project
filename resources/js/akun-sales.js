@@ -26,8 +26,3 @@ document.querySelectorAll('.editUserButton').forEach(button => {
         else if (modal) modal.classList.remove('hidden');
     });
 });
-
-document.getElementById('closeEditModal').addEventListener('click', () => {
-    const modal = document.getElementById('editUserModal');
-    if (modal) modal.classList.add('hidden');
-});
