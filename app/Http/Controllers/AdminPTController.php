@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use App\Events\OrderStatusUpdated;
 
 class AdminPTController extends Controller
 {
@@ -30,6 +31,9 @@ class AdminPTController extends Controller
         $order->status = 'sent_to_warehouse'; // diteruskan ke warehouse sesuai flowchart
         $order->supervisor_id = Auth::id();
         $order->save();
+
+        // Memancarkan event setelah status berubah
+        event(new OrderStatusUpdated($order->id));
 
         // Setelah approve, arahkan ke halaman approved orders agar admin PT melihat daftar yang sudah dikirim ke warehouse
         return redirect()->route('admin.approved')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');

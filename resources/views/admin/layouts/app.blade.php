@@ -31,7 +31,7 @@
 
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/real-time.js'])
         <script>
             // On page load or when changing themes, best to add inline in `head` to avoid FOUC
             if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -42,9 +42,12 @@
         </script>
     </head>
 
+    <!-- Mendeteksi & menyimpan role user yang login -->
+    @php
+        $userRole = auth()->user()->role ?? null;
+    @endphp
 
-
-    <body class="font-sans antialiased">
+    <body data-user-role="{{ $userRole }}" class="font-sans antialiased">
         <div
             class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr] 2xl:grid-cols-[0.8fr_1fr_1fr_1fr_1fr] ">
             <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
@@ -81,6 +84,10 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
+        <div id="notification-container" class="fixed top-4 right-4 z-50 hidden bg-blue-500 text-white text-sm font-medium rounded-lg px-4 py-2 shadow-lg">
+            <span id="notification-message">Notifikasi</span>
+        </div>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 

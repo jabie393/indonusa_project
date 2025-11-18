@@ -20,6 +20,7 @@ export default defineConfig({
                 'resources/js/order-modal.js',
                 'resources/js/requestorder-modal.js',
                 'resources/js/dataTable.js',
+                'resources/js/real-time.js',
             ],
             refresh: true,
         }),
