@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\AkunSalesController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\CustomerController2;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
@@ -16,10 +17,10 @@ use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\RequestOrderController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\RequestOrderController;
+use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
-
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 // === Guest Routes === //
@@ -114,17 +115,40 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
     Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
+
+    // Supervisor approval for Request Orders (from Sales)
+    Route::post('/request-order/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.request-order.approve');
+    Route::post('/request-order/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.request-order.reject');
 });
 // End of Supervisor
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
-    Route::get('/request-order', [RequestOrderController::class, 'create'])->name('requestorder.create');
-    Route::post('/request-order', [RequestOrderController::class, 'store'])->name('requestorder.store');
-    // Sales-facing list (Sales Order page)
-    Route::get('/sales-order', [RequestOrderController::class, 'salesIndex'])->name('sales.order');
-    Route::get('/request-order/list', [RequestOrderController::class, 'index'])->name('requestorder.index');
-    Route::get('/request-order/{order}', [RequestOrderController::class, 'show'])->name('requestorder.show');
+    // Customer Routes
+    Route::get('/customer2', [CustomerController2::class, 'index'])->name('sales.customer.index');
+    Route::get('/customer2/create', [CustomerController2::class, 'create'])->name('sales.customer.create');
+    Route::post('/customer2', [CustomerController2::class, 'store'])->name('sales.customer.store');
+    Route::get('/customer2/{customer}', [CustomerController2::class, 'show'])->name('sales.customer.show');
+    Route::get('/customer2/{customer}/edit', [CustomerController2::class, 'edit'])->name('sales.customer.edit');
+    Route::put('/customer2/{customer}', [CustomerController2::class, 'update'])->name('sales.customer.update');
+    Route::delete('/customer2/{customer}', [CustomerController2::class, 'destroy'])->name('sales.customer.destroy');
+    Route::get('/customer2/api/search', [CustomerController2::class, 'search'])->name('sales.customer.search');
+
+    // Request Order Routes
+    Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
+    Route::get('/request-order/create', [RequestOrderController::class, 'create'])->name('sales.request-order.create');
+    Route::post('/request-order', [RequestOrderController::class, 'store'])->name('sales.request-order.store');
+    Route::get('/request-order/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.request-order.show');
+    Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
+    Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
+    Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');
+
+    // Saless Order Routes
+    Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
+    Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
+    Route::put('/sales-order/{salesOrder}/status', [SalesOrderController::class, 'updateStatus'])->name('sales.sales-order.status');
+    Route::put('/sales-order-item/{item}/delivered', [SalesOrderController::class, 'updateDeliveredQty'])->name('sales.sales-order-item.delivered');
+    Route::post('/sales-order/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales.sales-order.cancel');
 });
 // End of Sales
 // === End Admin Routes === //

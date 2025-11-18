@@ -231,28 +231,60 @@
 
             {{-- Menu untuk Sales --}}
             @if (in_array(auth()->user()->role, ['Sales']))
-                <li>
-                    <a href="{{ route('requestorder.create') }}"
-                        class="{{ request()->routeIs('requestorder.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg aria-hidden="true" class="{{ request()->routeIs('requestorder.*') ? 'text-white' : 'text-blue-500 dark:text-white' }} h-6 w-6 group-hover:text-white"
+                <details {{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.sales-order.*') ? 'open' : 'close' }} class="">
+                    <summary
+                        class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <svg class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                             fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M3 10a1 1 0 011-1h2V7a1 1 0 112 0v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2H4a1 1 0 01-1-1z" />
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                            <path fill-rule="evenodd"
+                                d="M4 5a2 2 0 012-2 1 1 0 000-2H3a1 1 0 00-1 1v14a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1h-2a1 1 0 000 2 2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5z"
+                                clip-rule="evenodd"></path>
                         </svg>
-                        <span class="{{ request()->routeIs('requestorder.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Request
-                            Order</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('sales.order') }}"
-                        class="{{ request()->routeIs('sales.order') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} ajax-link group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg aria-hidden="true" class="{{ request()->routeIs('sales.order') ? 'text-white' : 'text-green-500 dark:text-white' }} h-6 w-6 group-hover:text-white" fill="currentColor"
-                            viewBox="0 0 20 20">
-                            <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
-                        </svg>
-                        <span class="{{ request()->routeIs('sales.order') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales
-                            Order</span>
-                    </a>
-                </li>
+                        <span class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
+                            Sales Module</span>
+                    </summary>
+
+                    <ul
+                        class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
+                        {{-- Request Order --}}
+                        <li class="w-[179px]">
+                            <a href="{{ route('sales.request-order.index') }}"
+                                class="{{ request()->routeIs('sales.request-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg class="{{ request()->routeIs('sales.request-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 10a1 1 0 011-1h2V7a1 1 0 112 0v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2H4a1 1 0 01-1-1z" />
+                                </svg>
+                                <span class="{{ request()->routeIs('sales.request-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Request Order (Penawaran)</span>
+                            </a>
+                        </li>
+
+                        {{-- Sales Order --}}
+                        <li class="w-[179px]">
+                            <a href="{{ route('sales.sales-order.index') }}"
+                                class="{{ request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
+                                </svg>
+                                <span class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales Order (Pesanan)</span>
+                            </a>
+                        </li>
+
+                        {{-- Customer Management --}}
+                        <li class="w-[179px]">
+                            <a href="{{ route('sales.customer.index') }}"
+                                class="{{ request()->routeIs('sales.customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg class="{{ request()->routeIs('sales.customer.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                    fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                                </svg>
+                                <span class="{{ request()->routeIs('sales.customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer Management</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </details>
             @endif
 
 

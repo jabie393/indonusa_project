@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         @if (session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
@@ -42,7 +42,7 @@
         </div>
         <div class="overflow-x-auto">
 
-            <table class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
+            <table class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th>No Order</th>

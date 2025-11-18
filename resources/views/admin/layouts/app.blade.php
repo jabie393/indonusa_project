@@ -80,7 +80,7 @@
                 {{ $slot }}
             </div>
         </div>
-
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
         <div id="notification-container" class="fixed top-4 right-4 z-50 hidden bg-blue-500 text-white text-sm font-medium rounded-lg px-4 py-2 shadow-lg">
             <span id="notification-message">Notifikasi</span>
         </div>
