@@ -11,15 +11,3 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 import './echo';
 
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('Laravel Echo initialized');
-    Echo.channel('orders')
-        .listen('OrderStatusUpdated', (e) => {
-            console.log('Event received:', e);
-            const notifBadge = document.getElementById('delivery-orders-notif-badge');
-            if (notifBadge) {
-                notifBadge.textContent = e.orderCount;
-                notifBadge.classList.remove('hidden');
-            }
-        });
-});
