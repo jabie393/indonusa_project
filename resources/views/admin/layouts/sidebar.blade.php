@@ -207,6 +207,7 @@
 
                                 <span class="{{ request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Delivery
                                     Orders</span>
+                                <span id="delivery-orders-notif-badge" class="hidden ml-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">0</span>
                             </a>
                         </li>
 
@@ -301,3 +302,19 @@
     </div>
     @endif
 </aside>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        Echo.channel('orders')
+    .listen('OrderStatusUpdated', (e) => {
+        console.log('Event received:', e);
+        const notifBadge = document.getElementById('delivery-orders-notif-badge');
+        if (notifBadge) {
+            notifBadge.textContent = parseInt(notifBadge.textContent || 0) + 1;
+            notifBadge.classList.remove('hidden');
+        } else {
+            console.error('Badge element not found');
+        }
+    });
+    });
+</script>

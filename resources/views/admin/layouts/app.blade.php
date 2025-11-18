@@ -81,6 +81,10 @@
             </div>
         </div>
 
+        <div id="notification-container" class="fixed top-4 right-4 z-50 hidden bg-blue-500 text-white text-sm font-medium rounded-lg px-4 py-2 shadow-lg">
+            <span id="notification-message">Notifikasi</span>
+        </div>
+
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
@@ -132,6 +136,33 @@
                         }
                     });
             }, 3000);
+        </script>
+
+        @php
+            $userRole = auth()->user()->role ?? null;
+        @endphp
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const userRole = @json($userRole);
+
+                if (userRole === 'Warehouse') {
+                    Echo.channel('orders')
+                        .listen('OrderStatusUpdated', (e) => {
+                            const notificationContainer = document.getElementById('notification-container');
+                            const notificationMessage = document.getElementById('notification-message');
+
+                            if (notificationContainer && notificationMessage) {
+                                notificationMessage.textContent = `Order ID ${e.orderId} telah dikirim ke warehouse. Total orders: ${e.orderCount}`;
+                                notificationContainer.classList.remove('hidden');
+
+                                setTimeout(() => {
+                                    notificationContainer.classList.add('hidden');
+                                }, 5000); // Sembunyikan notifikasi setelah 5 detik
+                            }
+                        });
+                }
+            });
         </script>
 
     </body>
