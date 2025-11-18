@@ -28,6 +28,10 @@ Route::get('/', function () {
     return view('guest.welcome');
 });
 
+Route::get('/penawaran', function () {
+    return view('admin.pdf.penawaran');
+});
+
 // Route user untuk lihat daftar barang
 Route::get('/order', [OrderController::class, 'index'])->name('order');
 
