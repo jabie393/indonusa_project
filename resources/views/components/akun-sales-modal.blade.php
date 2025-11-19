@@ -21,20 +21,20 @@
         </div>
         <form action="{{ route('akun-sales.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-1">
+                <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
                     @csrf
-                    <div class="mb-4">
-                        <label for="createName" class="block text-sm font-medium">Nama</label>
-                        <input type="text" id="createName" name="name" placeholder="Nama" class="w-full rounded border px-3 py-2" required>
+                    <div class="col-span-2 mb-4">
+                        <label for="createName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                        <input type="text" id="createName" name="name" placeholder="Nama" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
-                    <div class="mb-4">
-                        <label for="createEmail" class="block text-sm font-medium">Email</label>
-                        <input type="email" id="createEmail" name="email" placeholder="example@example.com" autocomplete="new-email" class="w-full rounded border px-3 py-2" required>
+                    <div class="col-span-2 mb-4">
+                        <label for="createEmail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <input type="email" id="createEmail" name="email" placeholder="example@example.com" autocomplete="new-email" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
-                    <div class="mb-4">
-                        <label for="createPassword" class="block text-sm font-medium">Password</label>
-                        <input type="password" id="createPassword" name="password" placeholder="Password" autocomplete="new-password" class="w-full rounded border px-3 py-2" required>
+                    <div class="col-span-2 mb-4">
+                        <label for="createPassword" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                        <input type="password" id="createPassword" name="password" placeholder="Password" autocomplete="new-password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
                 </div>
             </div>
@@ -76,15 +76,15 @@
             <input type="hidden" id="editUserId" name="id">
             <div class="mb-4">
                 <label for="editName" class="block text-sm font-medium">Nama</label>
-                <input type="text" id="editName" name="name" class="w-full rounded border px-3 py-2">
+                <input type="text" id="editName" name="name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
             </div>
             <div class="mb-4">
                 <label for="editEmail" class="block text-sm font-medium">Email</label>
-                <input type="email" id="editEmail" name="email" class="w-full rounded border px-3 py-2">
+                <input type="email" id="editEmail" name="email" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
             </div>
             <div class="mb-4">
                 <label for="editPassword" class="block text-sm font-medium">Password</label>
-                <input type="password" id="editPassword" name="password" placeholder="Isi untuk mengubah password" autocomplete="new-password" class="w-full rounded border px-3 py-2">
+                <input type="password" id="editPassword" name="password" placeholder="Isi untuk mengubah password" autocomplete="new-password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
             </div>
             <div class="flex justify-end">
                 <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>

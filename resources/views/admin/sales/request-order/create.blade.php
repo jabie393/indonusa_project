@@ -1,22 +1,27 @@
 <x-app-layout>
-    <div class="container-fluid px-4">
-        <div class="row mb-4">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div class="col">
-                <h2>Buat Request Order</h2>
-                <p class="text-muted">Buat penawaran awal kepada pelanggan</p>
+                <h2 class="text-3xl font-bold text-black">Buat Request Order</h2>
+                <p class="mt-1 text-gray-500">Buat penawaran awal kepada pelanggan</p>
             </div>
             <div class="col-auto">
-                <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                <a href="{{ route('sales.request-order.index') }}"
+                    class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg> Kembali
                 </a>
             </div>
         </div>
 
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i> <strong>Gagal:</strong>
                 <ul class="mb-0">
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
@@ -30,253 +35,262 @@
                     @csrf
 
                     <!-- Customer Info Section -->
-                    <div class="card mb-4 bg-light">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0"><i class="fas fa-user"></i> Informasi Customer</h5>
+                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
+                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg> Informasi Customer
+                            </h3>
                             <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                                <i class="fas fa-plus"></i> Tambah Customer Baru
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5v14"></path>
+                                </svg> Tambah Customer Baru
                             </button>
                         </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <div class="mb-3">
-                                        <label for="customer_id" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('customer_id') is-invalid @enderror" 
-                                                id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
-                                            <option value="">-- Pilih Customer --</option>
-                                            @foreach($customers as $c)
-                                                <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
-                                                    @selected(old('customer_id') == $c->id)>
-                                                    {{ $c->nama_customer }} 
-                                                    @if($c->email)
-                                                        ({{ $c->email }})
-                                                    @endif
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('customer_id')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <small class="text-muted">Pilih dari daftar customer yang sudah terdaftar</small>
-                                    </div>
-                                </div>
+
+                        <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
+
+                            <div class="col-span-2 flex flex-col">
+                                <label for="customer_id" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
+                                <select
+                                    class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
+                                    <option value="">-- Pilih Customer --</option>
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
+                                            @selected(old('customer_id') == $c->id)>
+                                            {{ $c->nama_customer }}
+                                            @if ($c->email)
+                                                ({{ $c->email }})
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('customer_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted mt-1">Pilih dari daftar customer yang sudah terdaftar</small>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="customer_name" class="form-label">Nama Customer</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
-                                        <small class="text-muted">Auto-filled dari customer yang dipilih</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="customer_email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" 
-                                               id="customer_email" readonly>
-                                    </div>
-                                </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_name" class="form-label">Nama Customer</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
+                                <small class="text-muted">Auto-filled dari customer yang dipilih</small>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="customer_telepon" class="form-label">Telepon</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_telepon" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="customer_kota" class="form-label">Kota</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_kota" readonly>
-                                    </div>
-                                </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_email" class="form-label">Email</label>
+                                <input type="email"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_email" readonly>
                             </div>
 
-                            <hr>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="tanggal_kebutuhan" class="form-label">Tanggal Kebutuhan</label>
-                                        <input type="date" class="form-control @error('tanggal_kebutuhan') is-invalid @enderror" 
-                                               id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
-                                        @error('tanggal_kebutuhan')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="catatan_customer" class="form-label">Catatan</label>
-                                        <textarea class="form-control @error('catatan_customer') is-invalid @enderror" 
-                                                  id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
-                                        @error('catatan_customer')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_telepon" class="form-label">Telepon</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_telepon" readonly>
                             </div>
-                        </div>
-                    </div>
-
-                  
-                    <div class="card mb-4 bg-warning bg-opacity-10">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0"><i class="fas fa-tag"></i> Kategori Barang <span class="badge bg-danger ms-2">WAJIB DIPILIH TERLEBIH DAHULU</span></h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="kategori_barang" class="form-label">Pilih Kategori Barang <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('kategori_barang') is-invalid @enderror" 
-                                                id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
-                                            <option value="">-- Pilih Kategori --</option>
-                                            @foreach($categories as $cat)
-                                                <option value="{{ $cat }}" @selected(old('kategori_barang') == $cat)>
-                                                    {{ $cat }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('kategori_barang')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                        <small class="text-muted">Kategori harus dipilih sebelum memilih barang</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label">Periode Berlaku Penawaran</label>
-                                        <div class="alert alert-info mb-0">
-                                            <strong>Mulai:</strong> <span id="tanggalMulai">{{ now()->format('d-m-Y') }}</span><br>
-                                            <strong>Berakhir:</strong> <span id="tanggalBerakhir">{{ now()->addDays(14)->format('d-m-Y') }}</span> (14 hari)<br>
-                                            <small>Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Items Section -->
-                    <div class="card mb-4" id="barangSection" style="display: none;">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive mb-3">
-                                <table class="table table-bordered" id="itemsTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Kode Barang</th>
-                                            <th>Nama Barang</th>
-                                            <th width="100">Diskon (%)</th>
-                                            <th width="120">Jumlah</th>
-                                            <th width="150">Harga Satuan</th>
-                                            <th width="150">Subtotal</th>
-                                            <th width="80">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="itemRows">
-                                        <tr class="item-row">
-                                            <td>
-                                                <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
-                                                    <option value="">-- Pilih Barang --</option>
-                                                    @foreach($barangs as $b)
-                                                        <option value="{{ $b->id }}"
-                                                                data-kode="{{ $b->kode_barang }}"
-                                                                data-nama="{{ $b->nama_barang }}"
-                                                                data-kategori="{{ $b->kategori }}"
-                                                                data-stok="{{ $b->stok }}"
-                                                                data-harga="{{ $b->harga ?? 0 }}"
-                                                                data-diskon="{{ $b->diskon_percent ?? 0 }}"
-                                                                style="display: none;">
-                                                            {{ $b->kode_barang }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control diskon-display" readonly style="background-color: #f8f9fa;">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
-                                                       min="1" value="1" required>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" 
-                                                       min="0" step="0.01" value="0">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-danger remove-row" style="display:none;">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="4" class="text-end">TOTAL:</th>
-                                            <th>
-                                                <strong id="totalAmount">Rp 0</strong>
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_kota" class="form-label">Kota</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_kota" readonly>
                             </div>
 
-                            <button type="button" id="addRow" class="btn btn-secondary" style="display: none;" id="addRowBtn">
-                                <i class="fas fa-plus"></i> Tambah Barang
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Supporting Images Section -->
-                    <div class="card mb-4" id="imagesSection" style="display: none;">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <label for="supporting_images" class="form-label">Unggah Gambar <span class="text-muted">(Foto barang, contoh produk, desain, dll)</span></label>
-                                <div class="input-group">
-                                    <input type="file" class="form-control @error('supporting_images.*') is-invalid @enderror" 
-                                           id="supporting_images" name="supporting_images[]" multiple accept="image/*">
-                                    <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
-                                </div>
-                                @error('supporting_images.*')
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="tanggal_kebutuhan" class="form-label">Tanggal Kebutuhan</label>
+                                <input type="date"
+                                    class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
+                                @error('tanggal_kebutuhan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <div id="imagePreview" class="row g-2">
-                                <!-- Preview images will be displayed here -->
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="catatan_customer" class="form-label">Catatan</label>
+                                <textarea
+                                    class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
+                                @error('catatan_customer')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
-                            <i class="fas fa-save"></i> Buat Request Order
-                        </button>
-                        <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Batal
-                        </a>
+                    <!-- Kategori Barang -->
+                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
+                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                                    <path d="M12 22V12"></path>
+                                    <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
+                                    <path d="m7.5 4.27 9 5.15"></path>
+                                </svg>
+                                Kategori Barang
+                                <p class="badge ms-2 border-none">WAJIB DIPILIH TERLEBIH DAHULU</p>
+                            </h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="kategori_barang" class="form-label">Pilih Kategori Barang <span class="text-danger">*</span></label>
+                                <select
+                                    class="@error('kategori_barang') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
+                                    <option value="">-- Pilih Kategori --</option>
+                                    @foreach ($categories as $cat)
+                                        <option value="{{ $cat }}" @selected(old('kategori_barang') == $cat)>
+                                            {{ $cat }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('kategori_barang')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Kategori harus dipilih sebelum memilih barang</small>
+                            </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label class="form-label">Periode Berlaku Penawaran</label>
+                                <div class="border-1 rounded-xl bg-blue-100 p-2">
+                                    <strong>Mulai:</strong> <span id="tanggalMulai">{{ now()->format('d-m-Y') }}</span><br>
+                                    <strong>Berakhir:</strong> <span id="tanggalBerakhir">{{ now()->addDays(14)->format('d-m-Y') }}</span> (14 hari)<br>
+                                    <small>Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </form>
+            </div>
+
+            <!-- Items Section -->
+            <div class="card card-body mb-4" id="barangSection" style="display: none;">
+                <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
+
+                    <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
+                        <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang</h5>
+                    </div>
+                    <div class="card-body overflow-x-auto">
+                        <div class="table-responsive mb-3">
+                            <table class="table-bordered table" id="itemsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Kode Barang</th>
+                                        <th>Nama Barang</th>
+                                        <th width="100">Diskon (%)</th>
+                                        <th width="100">Jumlah</th>
+                                        <th width="200">Harga Satuan</th>
+                                        <th width="200">Subtotal</th>
+                                        <th width="80">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemRows">
+                                    <tr class="item-row">
+                                        <td>
+                                            <select name="barang_id[]"
+                                                class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                required>
+                                                <option value="">Pilih Barang</option>
+                                                @foreach ($barangs as $b)
+                                                    <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}"
+                                                        data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" style="display: none;">
+                                                        {{ $b->kode_barang }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                readonly style="background-color: #f0f0f0;">
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                class="form-control diskon-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                readonly style="background-color: #f8f9fa;">
+                                        </td>
+                                        <td>
+                                            <input type="number" name="quantity[]"
+                                                class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                min="1" value="1" required>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="harga[]"
+                                                class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                min="0" step="0.01" value="0">
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                readonly style="background-color: #f0f0f0;">
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger remove-row" style="display:none;">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="4" class="text-end">TOTAL:</th>
+                                        <th>
+                                            <strong id="totalAmount">Rp 0</strong>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                        <button type="button" id="addRow" class="btn bg-[#225A97] hover:bg-[#1c4d81] text-white" style="display: none;" id="addRowBtn">
+                            <i class="fas fa-plus"></i> Tambah Barang
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Supporting Images Section -->
+                <div class="card mb-4" id="imagesSection" style="display: none;">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="supporting_images" class="form-label">Unggah Gambar <span class="text-muted">(Foto barang, contoh produk, desain, dll)</span></label>
+                            <div class="input-group">
+                                <input type="file" class="form-control @error('supporting_images.*') is-invalid @enderror" id="supporting_images" name="supporting_images[]" multiple
+                                    accept="image/*">
+                                <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
+                            </div>
+                            @error('supporting_images.*')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div id="imagePreview" class="row g-2">
+                            <!-- Preview images will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                        <i class="fas fa-save"></i> Buat Request Order
+                    </button>
+                    <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                </div>
                 </form>
             </div>
         </div>
@@ -296,7 +310,9 @@
                         <!-- Nama Customer -->
                         <div class="mb-3">
                             <label for="modalNamaCustomer" class="form-label">Nama Customer <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="modalNamaCustomer" name="nama_customer" required>
+                            <input type="text"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                id="modalNamaCustomer" name="nama_customer" required>
                             <small class="text-muted">Nama lengkap pelanggan</small>
                             <div class="invalid-feedback" id="error-nama_customer"></div>
                         </div>
@@ -306,14 +322,18 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="modalEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="modalEmail" name="email">
+                                    <input type="email"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="modalEmail" name="email">
                                     <div class="invalid-feedback" id="error-email"></div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="modalTelepon" class="form-label">Telepon</label>
-                                    <input type="tel" class="form-control" id="modalTelepon" name="telepon">
+                                    <input type="tel"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="modalTelepon" name="telepon">
                                     <div class="invalid-feedback" id="error-telepon"></div>
                                 </div>
                             </div>
@@ -348,7 +368,9 @@
                         <!-- Alamat -->
                         <div class="mb-3">
                             <label for="modalAlamat" class="form-label">Alamat</label>
-                            <textarea class="form-control" id="modalAlamat" name="alamat" rows="2"></textarea>
+                            <textarea
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                id="modalAlamat" name="alamat" rows="2"></textarea>
                             <div class="invalid-feedback" id="error-alamat"></div>
                         </div>
 
@@ -357,21 +379,27 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="modalKota" class="form-label">Kota</label>
-                                    <input type="text" class="form-control" id="modalKota" name="kota">
+                                    <input type="text"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="modalKota" name="kota">
                                     <div class="invalid-feedback" id="error-kota"></div>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="modalProvinsi" class="form-label">Provinsi</label>
-                                    <input type="text" class="form-control" id="modalProvinsi" name="provinsi">
+                                    <input type="text"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="modalProvinsi" name="provinsi">
                                     <div class="invalid-feedback" id="error-provinsi"></div>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="modalKodePos" class="form-label">Kode Pos</label>
-                                    <input type="text" class="form-control" id="modalKodePos" name="kode_pos">
+                                    <input type="text"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="modalKodePos" name="kode_pos">
                                     <div class="invalid-feedback" id="error-kode_pos"></div>
                                 </div>
                             </div>
@@ -393,7 +421,7 @@
         function populateCustomerData(customerId) {
             const customerSelect = document.getElementById('customer_id');
             const selectedOption = customerSelect.options[customerSelect.selectedIndex];
-            
+
             if (!customerId) {
                 document.getElementById('customer_name').value = '';
                 document.getElementById('customer_email').value = '';
@@ -401,7 +429,7 @@
                 document.getElementById('customer_kota').value = '';
                 return;
             }
-            
+
             document.getElementById('customer_name').value = selectedOption.textContent.split('(')[0].trim();
             document.getElementById('customer_email').value = selectedOption.dataset.email || '';
             document.getElementById('customer_telepon').value = selectedOption.dataset.telepon || '';
@@ -425,7 +453,7 @@
                 const formData = new FormData(this);
 
                 try {
-                    const response = await fetch('{{ route("sales.customer.store") }}', {
+                    const response = await fetch('{{ route('sales.customer.store') }}', {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -466,7 +494,7 @@
                         Object.keys(errors).forEach(field => {
                             const errorElement = document.getElementById('error-' + field);
                             const inputElement = document.getElementById('modal' + capitalizeFirst(field));
-                            
+
                             if (errorElement) {
                                 errorElement.textContent = errors[field][0];
                                 if (inputElement) {
@@ -547,7 +575,7 @@
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
                 const diskonDisplay = row.querySelector('.diskon-display');
-                
+
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
                     diskonDisplay.value = option.dataset.diskon || '0';
@@ -571,15 +599,21 @@
                     const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
                     const harga = parseFloat(row.querySelector('.harga-input').value) || 0;
                     const subtotal = qty * harga;
-                    
-                    row.querySelector('.subtotal-display').value = subtotal > 0 
-                        ? 'Rp ' + subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                        : '0';
-                    
+
+                    row.querySelector('.subtotal-display').value = subtotal > 0 ?
+                        'Rp ' + subtotal.toLocaleString('id-ID', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) :
+                        '0';
+
                     total += subtotal;
                 });
 
-                document.getElementById('totalAmount').textContent = 'Rp ' + total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalAmount').textContent = 'Rp ' + total.toLocaleString('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
             }
 
             // Add row
@@ -588,21 +622,26 @@
                 newRow.className = 'item-row';
                 newRow.innerHTML = `
                     <td>
-                        <select name="barang_id[]" class="form-control barang-select" required>
+                        <select name="barang_id[]" class="form-control barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                             ${getBarangOptionsHTML()}
                         </select>
                     </td>
                     <td>
-                        <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;">
+                        <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
                     </td>
                     <td>
-                        <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
+                        <input type="text"
+                            class="form-control diskon-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            readonly style="background-color: #f8f9fa;">
                     </td>
                     <td>
-                        <input type="number" name="harga[]" class="form-control harga-input" min="0" step="0.01" value="0">
+                        <input type="number" name="quantity[]" class="form-control quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                     </td>
                     <td>
-                        <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
+                        <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger remove-row">
@@ -688,6 +727,7 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
+
         .card-header {
             padding: 1rem;
         }
