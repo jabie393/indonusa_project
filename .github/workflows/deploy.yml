@@ -30,6 +30,11 @@ jobs:
       # 3️ Install & Build Frontend (Vite)
       - name: Build Frontend (Vite)
         run: |
+          echo "VITE_PUSHER_APP_KEY=${{ secrets.PUSHER_APP_KEY }}" >> .env
+          echo "VITE_PUSHER_APP_CLUSTER=${{ secrets.PUSHER_APP_CLUSTER }}" >> .env
+          echo "VITE_PUSHER_APP_FORCE_TLS=true" >> .env
+          echo "VITE_PUSHER_HOST=warehouse.fahd.my.id" >> .env
+          echo "VITE_PUSHER_PORT=443" >> .env
           npm ci
           npm run build
 
