@@ -8,33 +8,68 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class RequestOrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = (int) $request->input('perPage', 20);
+        $query = $request->input('search');
+
         $orders = Order::with('items.barang')
-            ->where('sales_id', Auth::id())
-            ->latest()
-            ->paginate(20);
+            ->where('sales_id', Auth::id());
+
+        if ($query) {
+            $orders = $orders->where(function ($q) use ($query) {
+                $q->where('order_number', 'like', "%{$query}%")
+                    ->orWhere('customer_name', 'like', "%{$query}%")
+                    ->orWhereHas('items.barang', function ($q2) use ($query) {
+                        $q2->where('nama_barang', 'like', "%{$query}%")
+                            ->orWhere('kode_barang', 'like', "%{$query}%");
+                    });
+            });
+        }
+
+        $orders = $orders->latest()->paginate($perPage)->appends($request->except('page'));
+
+        // keep compatibility with existing views that expect `$requestOrders`
+        $requestOrders = $orders;
 
         // 🟢 ubah lokasi view ke folder admin
-        return view('admin.requestorder.index', compact('orders'));
+        return view('admin.requestorder.index', compact('requestOrders'));
     }
 
     /**
      * Sales-facing list (new Sales Order page).
      * Shows the same data but renders the sales-specific view.
      */
-    public function salesIndex()
+    public function salesIndex(Request $request)
     {
-        $orders = Order::with('items.barang', 'sales')
-            ->where('sales_id', Auth::id())
-            ->latest()
-            ->paginate(20);
+        $perPage = (int) $request->input('perPage', 20);
+        $query = $request->input('search');
 
-        return view('admin.sales.requestorder', compact('orders'));
+        $orders = Order::with('items.barang', 'sales')
+            ->where('sales_id', Auth::id());
+
+        if ($query) {
+            $orders = $orders->where(function ($q) use ($query) {
+                $q->where('order_number', 'like', "%{$query}%")
+                    ->orWhere('customer_name', 'like', "%{$query}%")
+                    ->orWhereHas('items.barang', function ($q2) use ($query) {
+                        $q2->where('nama_barang', 'like', "%{$query}%")
+                            ->orWhere('kode_barang', 'like', "%{$query}%");
+                    });
+            });
+        }
+
+        $orders = $orders->latest()->paginate($perPage)->appends($request->except('page'));
+
+        // keep compatibility with existing views that expect `$requestOrders`
+        $requestOrders = $orders;
+
+        return view('admin.sales.requestorder', compact('requestOrders'));
     }
 
     public function create()
@@ -120,17 +155,16 @@ class RequestOrderController extends Controller
 
             // Redirect sales users to the new Sales Order page
             return redirect()->route('sales.order')->with('success', $msg);
-
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal membuat order: '.$e->getMessage())->withInput();
+            return back()->withErrors('Gagal membuat order: ' . $e->getMessage())->withInput();
         }
     }
 
     public function show(Order $order)
     {
         // 🔐 pastikan hanya sales pemilik / Supervisor / warehouse yang boleh lihat
-        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['Supervisor','Warehouse'])) {
+        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['Supervisor', 'Warehouse'])) {
             abort(403);
         }
 

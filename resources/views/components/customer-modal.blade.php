@@ -112,7 +112,7 @@
 </dialog>
 
 <!-- Edit Sales Account Modal -->
-<dialog id="editUserModal" class="modal">
+{{-- <dialog id="editUserModal" class="modal">
     <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">Edit Akun Sales</h3>
@@ -158,7 +158,7 @@
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
     </form>
-</dialog>
+</dialog> --}}
 
 <script>
     window.CHECK_EMAIL_URL = "{{ route('check.email') }}";
