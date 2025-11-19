@@ -52,29 +52,19 @@
                     </tr>
                 </thead>
                 <tbody class="h-min-[300px]">
-                    {{-- @foreach ($salesUsers as $user)
+                    @foreach ($customers as $customer)
                         <tr class="dark:border-gray-700">
-                            <td class="px-4 py-2">{{ $user->name }}</td>
-                            <td class="px-4 py-2">{{ $user->email }}</td>
-                            <td class="px-4 py-2">
-                                {{ $user->orders()->where('status', 'completed')->count() }}
-                            </td>
-                            <td class="px-4 py-2">
-                                {{ $user->orders()->where('status', 'completed')->withSum('orderItems', 'quantity')->get()->sum('order_items_sum_quantity') }}
-                            </td>
-                            <td class="px-4 py-2">
-                                <button onclick="editUserModal.showModal()"
-                                    class="editUserButton mb-2 me-2 rounded rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
-                                    data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">Edit</button>
-                                <form action="{{ route('akun-sales.destroy', $user) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="confirmDelete(() => this.closest('form').submit())"
-                                        class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Hapus</button>
-                                </form>
-                            </td>
+                            <td class="px-4 py-2">{{ $customer->nama_customer }}</td>
+                            <td class="px-4 py-2">{{ $customer->tipe_customer }}</td>
+                            <td class="px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $customer->term_of_payments ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $customer->pic ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $customer->divisi ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ $customer->telepon }}</td>
+                            <td class="px-4 py-2">{{ $customer->email }}</td>
                         </tr>
-                    @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
         </div>

@@ -11,22 +11,41 @@ class Customer extends Model
 
     protected $fillable = [
         'nama_customer',
+        'npwp',
+        'term_of_payments',
+        'kredit_limit',
+        'divisi',
         'email',
         'telepon',
         'alamat',
         'kota',
         'provinsi',
         'kode_pos',
-        'tipe_customer', // retail, wholesale, distributor
+        'pic',
+        'tipe_customer',
         'created_by',
         'updated_by',
-        'status', // active, inactive
+        'status',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($customer) {
+            $customer->created_by = auth()->id();
+            $customer->updated_by = auth()->id(); // Tambahkan ini untuk mengisi kolom updated_by saat creating
+        });
+
+        static::updating(function ($customer) {
+            $customer->updated_by = auth()->id();
+        });
+    }
 
     public function requestOrders()
     {
