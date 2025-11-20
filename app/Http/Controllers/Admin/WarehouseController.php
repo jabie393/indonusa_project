@@ -23,8 +23,12 @@ class WarehouseController extends Controller
         }
 
         $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
+        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
 
-        return view('admin.warehouse.index', compact('barangs'));
+        // Kirimkan barang pertama sebagai contoh (opsional)
+        $barang = $barangs->first();
+
+        return view('admin.warehouse.index', compact('barangs', 'kategoriList', 'barang'));
     }
 
     public function store(Request $request)

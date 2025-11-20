@@ -1,3 +1,4 @@
+<?php use App\Models\Barang; ?>
 <x-app-layout>
     <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -160,7 +161,7 @@
     </div>
 
     <!-- Modals -->
-    @include('components.goods-in-status-modal-edit-primary')
+    @include('components.goods-in-status-modal-edit-primary', ['kategoriList' => Barang::KATEGORI])
     @include('components.goods-in-status-modal-edit-new-stock')
     @include('components.goods-in-status-modal-show-note')
     @vite(['resources/js/goods-in-status.js'])

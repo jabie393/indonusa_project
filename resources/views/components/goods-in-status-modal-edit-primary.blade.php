@@ -70,9 +70,14 @@
                                 </div>
                                 <div>
                                     <label for="edit_kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                                    <input type="text" name="kategori" id="edit_kategori"
+                                    <select name="kategori" id="edit_kategori"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
+                                        <option value="" disabled>Pilih Kategori</option>
+                                        @foreach ($kategoriList as $kategori)
+                                            <option value="{{ $kategori }}" {{ $barang->kategori == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 

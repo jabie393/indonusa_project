@@ -80,7 +80,7 @@
 
 
     <!-- Modals -->
-    @include('components.goods-in-modal-tambah')
+    @include('components.goods-in-modal-tambah', ['kategoriList' => $kategoriList])
     @vite(['resources/js/goods-in.js'])
 
 
