@@ -12,13 +12,19 @@ class GoodsInController extends Controller
     public function index()
     {
         $barangs = Barang::all();
-        return view('admin.goods-in.index', compact('barangs'));
+        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
+
+        return view('admin.goods-in.index', compact('barangs', 'kategoriList'));
     }
 
     // Tampilkan form tambah barang
     public function create()
     {
-        return view('admin.goods-in.create');
+        // Ambil daftar kategori dari model Barang
+        $kategoriList = Barang::KATEGORI;
+
+        // Kirim daftar kategori ke view
+        return view('admin.goods-in.index', compact('kategoriList'));
     }
 
     // Simpan barang baru
@@ -28,7 +34,7 @@ class GoodsInController extends Controller
             'status_listing' => 'required|in:listing,non listing',
             'kode_barang' => 'required|string|max:255',
             'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|string|max:255',
+            'kategori' => 'required|in:' . implode(',', Barang::KATEGORI), // Validasi kategori
             'stok' => 'required|integer',
             'satuan' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
@@ -39,7 +45,7 @@ class GoodsInController extends Controller
 
         // Set default deskripsi jika tidak diisi
         if (empty($validated['deskripsi'])) {
-            $validated['deskripsi'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+            $validated['deskripsi'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
         }
 
         $validated['status_barang'] = 'ditinjau';
@@ -53,8 +59,6 @@ class GoodsInController extends Controller
             $barang->gambar = $path;
             $barang->save();
         }
-
-        $barang->update($validated);
 
         return redirect()->route('goods-in.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan.']);
     }

@@ -12,6 +12,38 @@ class Barang extends Model
 {
     use HasFactory;
 
+    // LIST KATEGORI
+    public const KATEGORI = [
+        'HANDTOOLS',
+        'ADHESIVE AND SEALANT',
+        'AUTOMOTIVE EQUIPMENT',
+        'CLEANING',
+        'COMPRESSOR',
+        'CONSTRUCTION',
+        'CUTTING TOOLS',
+        'LIGHTING',
+        'FASTENING',
+        'GENERATOR',
+        'HEALTH CARE EQUIPMENT',
+        'HOSPITALITY',
+        'HYDRAULIC TOOLS',
+        'MARKING MACHINE',
+        'MATERIAL HANDLING EQUIPMENT',
+        'MEASURING AND TESTING EQUIPMENT',
+        'METAL CUTTING MACHINERY',
+        'PACKAGING',
+        'PAINTING AND COATING',
+        'PNEUMATIC TOOLS',
+        'POWER TOOLS',
+        'SAFETY AND PROTECTION EQUIPMENT',
+        'SECURITY',
+        'SHEET METAL MACHINERY',
+        'STORAGE SYSTEM',
+        'WELDING EQUIPMENT',
+        'WOODWORKING EQUIPMENT',
+        'MISCELLANEOUS',
+    ];
+
     protected $fillable = [
         'tipe_request',
         'status_barang',
@@ -31,7 +63,6 @@ class Barang extends Model
     protected static function booted()
     {
         static::updated(function ($barang) {
-            // Cek apakah status_barang berubah
             if ($barang->isDirty('status_barang')) {
                 BarangHistory::create([
                     'barang_id'   => $barang->id,
@@ -72,8 +103,7 @@ class Barang extends Model
     {
         return $this->hasMany(OrderItem::class, 'barang_id');
     }
-    
-    // Relasi ke history
+
     public function histories()
     {
         return $this->hasMany(BarangHistory::class);

@@ -17,7 +17,36 @@ return new class extends Migration {
             $table->string('status_listing')->default('listing');
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');
-            $table->string('kategori')->nullable();
+            $table->enum('kategori', [
+                'HANDTOOLS',
+                'ADHESIVE AND SEALANT',
+                'AUTOMOTIVE EQUIPMENT',
+                'CLEANING',
+                'COMPRESSOR',
+                'CONSTRUCTION',
+                'CUTTING TOOLS',
+                'LIGHTING',
+                'FASTENING',
+                'GENERATOR',
+                'HEALTH CARE EQUIPMENT',
+                'HOSPITALITY',
+                'HYDRAULIC TOOLS',
+                'MARKING MACHINE',
+                'MATERIAL HANDLING EQUIPMENT',
+                'MEASURING AND TESTING EQUIPMENT',
+                'METAL CUTTING MACHINERY',
+                'PACKAGING',
+                'PAINTING AND COATING',
+                'PNEUMATIC TOOLS',
+                'POWER TOOLS',
+                'SAFETY AND PROTECTION EQUIPMENT',
+                'SECURITY',
+                'SHEET METAL MACHINERY',
+                'STORAGE SYSTEM',
+                'WELDING EQUIPMENT',
+                'WOODWORKING EQUIPMENT',
+                'MISCELLANEOUS'
+            ])->nullable();
             $table->integer('stok')->default(0);
             $table->string('satuan');
             $table->string('lokasi')->nullable();

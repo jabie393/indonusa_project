@@ -118,8 +118,8 @@
         </nav>
 
         {{-- Modal --}}
-        @include('components.warehouse-modal-tambah')
-        @include('components.warehouse-modal-edit')
+        @include('components.warehouse-modal-tambah', ['kategoriList' => $kategoriList])
+        @include('components.warehouse-modal-edit', ['kategoriList' => $kategoriList, 'barang' => $barang])
         @vite(['resources/js/warehouse.js'])
     </div>
 </x-app-layout>

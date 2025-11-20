@@ -43,7 +43,9 @@ class GoodsInStatusController extends Controller
     public function edit($id)
     {
         $barang = Barang::findOrFail($id);
-        return view('admin.goods-in-status.edit', compact('barang'));
+        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
+
+        return view('admin.goods-in-status.edit', compact('barang', 'kategoriList'));
     }
 
     // Update barang
