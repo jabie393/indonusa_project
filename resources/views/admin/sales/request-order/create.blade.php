@@ -234,8 +234,15 @@
                                                 readonly style="background-color: #f0f0f0;">
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-danger remove-row" style="display:none;">
-                                                <i class="fas fa-trash"></i>
+                                            <button type="button" class="btn remove-row rounded-md bg-red-500 text-white" style="display:none;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                                                    <path d="M3 6h18"></path>
+                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                                                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                                                </svg>
                                             </button>
                                         </td>
                                     </tr>
@@ -252,7 +259,7 @@
                             </table>
                         </div>
 
-                        <button type="button" id="addRow" class="btn bg-[#225A97] hover:bg-[#1c4d81] text-white" style="display: none;" id="addRowBtn">
+                        <button type="button" id="addRow" class="btn bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;" id="addRowBtn">
                             <i class="fas fa-plus"></i> Tambah Barang
                         </button>
                     </div>
@@ -644,8 +651,15 @@
                         <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
                     </td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-danger remove-row">
-                            <i class="fas fa-trash"></i>
+                        <button type="button" class="btn bg-red-500 remove-row rounded-md text-white" style="display:none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                <line x1="10" x2="10" y1="11" y2="17"></line>
+                                <line x1="14" x2="14" y1="11" y2="17"></line>
+                            </svg>
                         </button>
                     </td>
                 `;
