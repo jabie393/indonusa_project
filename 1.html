@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input PIC - Demo</title>
+
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Select2 CSS + JS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+        /* Styling biar mirip input biasa */
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            padding-top: 4px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            top: 6px;
+        }
+
+        body {
+            font-family: Arial;
+            padding: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .box {
+            width: 350px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Demo Field PIC (Search + Manual Input)</h2>
+
+    <div class="box">
+        <label for="pic">PIC (pilih dari daftar atau ketik manual)</label>
+        <select id="pic" class="form-control" style="width: 100%;"></select>
+    </div>
+
+    <br><br>
+    <button id="submitBtn">Submit</button>
+
+    <p id="result"></p>
+
+    <script>
+        // ---- MOCK API ----
+        // Ini hanya simulasi. Di project asli, Select2 akan hit ke backend kamu.
+        function mockSearch(keyword) {
+            const samplePIC = [
+                { id: 1, nama: "Budi Santoso" },
+                { id: 2, nama: "Rani Wika" },
+                { id: 3, nama: "Dewi Rahma" }
+            ];
+
+            return samplePIC.filter(item =>
+                item.nama.toLowerCase().includes(keyword.toLowerCase())
+            );
+        }
+
+        // ---- INIT SELECT2 ----
+        $('#pic').select2({
+            tags: true, // ← untuk input manual
+            placeholder: "Ketik untuk mencari PIC atau isi manual...",
+            allowClear: true,
+            minimumInputLength: 1,
+
+            ajax: {
+                transport: function (params, success, failure) {
+                    // Simulasi delay AJAX
+                    setTimeout(() => {
+                        const results = mockSearch(params.data.q);
+                        success(results);
+                    }, 300);
+                },
+
+                processResults: function (data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.nama
+                        }))
+                    };
+                }
+            },
+
+            createTag: function (params) {
+                let term = $.trim(params.term);
+
+                if (term === '') {
+                    return null;
+                }
+
+                return {
+                    id: term,
+                    text: term + " (baru)",
+                    newTag: true
+                };
+            }
+        });
+
+        // ---- Submit Example ----
+        document.getElementById("submitBtn").onclick = function () {
+            const picValue = $('#pic').val();
+            document.getElementById("result").innerHTML =
+                "<b>Value yang dikirim:</b> " + picValue;
+        };
+    </script>
+
+</body>
+</html>
