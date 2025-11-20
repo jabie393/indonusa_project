@@ -30,11 +30,23 @@ jobs:
       # 3️ Install & Build Frontend (Vite)
       - name: Build Frontend (Vite)
         run: |
+          # Inject Pusher Vite variables ke .env
           echo "VITE_PUSHER_APP_KEY=${{ secrets.PUSHER_APP_KEY }}" >> .env
           echo "VITE_PUSHER_APP_CLUSTER=${{ secrets.PUSHER_APP_CLUSTER }}" >> .env
           echo "VITE_PUSHER_APP_FORCE_TLS=true" >> .env
+
+          # Hapus build lama jika ada
+          if [ -d "public/build" ]; then
+            rm -rf public/build
+            echo "Old Vite build removed."
+          else
+            echo "No previous Vite build found."
+          fi
+
+          # Install deps & build baru
           npm ci
           npm run build
+
 
       # 4️ Setup PHP (Laravel)
       - name: Setup PHP
