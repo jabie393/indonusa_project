@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\AkunSalesController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\PicsController;
 use App\Http\Controllers\Admin\CustomerController2;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
@@ -97,6 +98,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/customer', CustomerController::class);
+    Route::resource('/pics', PicsController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 // End of General Affair

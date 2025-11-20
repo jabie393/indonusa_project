@@ -78,12 +78,12 @@
                     </a>
                 </li>
                 {{-- Manajemen Entitas (collapsible) --}}
-                <details {{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') ? 'open' : '' }} class="">
+                <details {{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'open' : '' }} class="">
                     <summary
-                        class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
                         <svg width="28px" height="28px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="#000000"
-                            class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                            class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
@@ -91,7 +91,7 @@
                                 </path>
                             </g>
                         </svg>
-                        <span class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Manajemen
+                        <span class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Manajemen
                             Entitas</span>
                     </summary>
 
@@ -130,6 +130,23 @@
                                 </svg>
 
                                 <span class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer</span>
+                            </a>
+                        </li>
+
+                        {{-- Pics --}}
+                        <li class="w-[75%]">
+                            <a href="{{ route('pics.index') }}"
+                                class="{{ request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                    <path d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M12.0002 14.5C6.99016 14.5 2.91016 17.86 2.91016 22C2.91016 22.28 3.13016 22.5 3.41016 22.5H20.5902C20.8702 22.5 21.0902 22.28 21.0902 22C21.0902 17.86 17.0102 14.5 12.0002 14.5Z"
+                                        fill="currentColor" />
+                                </svg>
+
+                                <span class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Pics</span>
                             </a>
                         </li>
                     </ul>
