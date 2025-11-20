@@ -31,53 +31,72 @@
                             required>
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. NPWP</label>
-                        <input type="number" id="123" name="123" placeholder="No. NPWP" autocomplete="123"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            required>
+                        <label for="npwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. NPWP</label>
+                        <input type="text" id="npwp" name="npwp" placeholder="No. NPWP"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
                     <div class="col-span-1 mb-4">
-                        <label for="status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                        <select name="status_listing" id="status_listing"
+                        <label for="tipe_customer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                        <select name="tipe_customer" id="tipe_customer"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             required>
-                            <option value="pridabi">PRIBADI</option>
+                            <option value="pribadi">Pribadi</option>
                             <option value="gov">GOV</option>
                             <option value="bumn">BUMN</option>
-                            <option value="swasta">SWASTA</option>
+                            <option value="swasta">Swasta</option>
                         </select>
                     </div>
                     <div class="col-span-1 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of payments</label>
-                        <input type="text" id="123" name="123" placeholder="Term of payments" autocomplete="123"
+                        <label for="term_of_payments" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of Payments</label>
+                        <input type="text" id="term_of_payments" name="term_of_payments" placeholder="Term of Payments"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kredit Limit</label>
-                        <input type="text" id="123" name="123" placeholder="Kredit Limit" autocomplete="Kredit Limit"
+                        <label for="kredit_limit" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kredit Limit</label>
+                        <input type="text" id="kredit_limit" name="kredit_limit" placeholder="Kredit Limit"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
-                        <input type="text" id="123" name="123" placeholder="PIC" autocomplete="123"
+                        <label for="alamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Alamat</label>
+                        <input type="text" id="alamat" name="alamat" placeholder="Alamat"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                    </div>
+                    <div class="col-span-1 mb-4">
+                        <label for="kota" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kota</label>
+                        <input type="text" id="kota" name="kota" placeholder="Kota"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                    </div>
+                    <div class="col-span-1 mb-4">
+                        <label for="provinsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Provinsi</label>
+                        <input type="text" id="provinsi" name="provinsi" placeholder="Provinsi"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                    </div>
+                    <div class="col-span-1 mb-4">
+                        <label for="kode_pos" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode Pos</label>
+                        <input type="text" id="kode_pos" name="kode_pos" placeholder="Kode Pos"
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                    </div>
+                    <div class="col-span-2 mb-4">
+                        <label for="pic" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
+                        <input type="text" id="pic" name="pic" placeholder="PIC"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             required>
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Divisi</label>
-                        <input type="text" id="123" name="123" placeholder="Divisi" autocomplete="123"
+                        <label for="divisi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Divisi</label>
+                        <input type="text" id="divisi" name="divisi" placeholder="Divisi"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             required>
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. HP</label>
-                        <input type="number" id="123" name="123" placeholder="08xxxxxxxxx" autocomplete="123"
+                        <label for="telepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. HP</label>
+                        <input type="text" id="telepon" name="telepon" placeholder="08xxxxxxxxx"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             required>
                     </div>
                     <div class="col-span-2 mb-4">
-                        <label for="123" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                        <input type="email" id="123" name="123" placeholder="example@example.com" autocomplete="123"
+                        <label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <input type="email" id="email" name="email" placeholder="example@example.com"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
                 </div>

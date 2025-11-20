@@ -14,20 +14,22 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('nama_customer');
-            $table->string('email')->nullable()->unique();
+            $table->string('npwp')->nullable();
+            $table->string('term_of_payments')->nullable();
+            $table->string('kredit_limit')->nullable();
+            $table->string('divisi')->nullable();
+            $table->string('email')->nullable();
             $table->string('telepon')->nullable();
             $table->text('alamat')->nullable();
             $table->string('kota')->nullable();
             $table->string('provinsi')->nullable();
             $table->string('kode_pos')->nullable();
-            $table->enum('tipe_customer', ['retail', 'wholesale', 'distributor'])->default('retail');
-            $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->unsignedBigInteger('created_by')->nullable();
+            $table->string('pic')->nullable();
+            $table->enum('tipe_customer', ['Pribadi', 'GOV', 'BUMN', 'Swasta']);
+            $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
-
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 
