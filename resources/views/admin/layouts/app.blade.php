@@ -23,6 +23,13 @@
         {{-- DataTable --}}
         <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css">
 
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        {{-- select2 --}}
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
         <style>
             div.dt-container div.dt-layout-row {
                 margin: 0;
@@ -49,7 +56,7 @@
 
     <body data-user-role="{{ $userRole }}" class="font-sans antialiased">
         <div
-            class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr] 2xl:grid-cols-[0.8fr_1fr_1fr_1fr_1fr] ">
+            class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr] 2xl:grid-cols-[0.8fr_1fr_1fr_1fr_1fr]">
             <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
                 <div class="flex h-full w-full items-center justify-center lg:h-[unset]">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
@@ -84,7 +91,7 @@
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-        <div id="notification-container" class="fixed top-4 right-4 z-50 hidden bg-blue-500 text-white text-sm font-medium rounded-lg px-4 py-2 shadow-lg">
+        <div id="notification-container" class="fixed right-4 top-4 z-50 hidden rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-lg">
             <span id="notification-message">Notifikasi</span>
         </div>
 

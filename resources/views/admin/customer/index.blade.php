@@ -49,6 +49,7 @@
                         <th class="px-4 py-2">Divisi</th>
                         <th class="px-4 py-2">No. HP</th>
                         <th class="px-4 py-2">Email</th>
+                        <th class="px-4 py-2">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="h-min-[300px]">
@@ -63,6 +64,21 @@
                             <td class="px-4 py-2">{{ $customer->divisi ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->telepon }}</td>
                             <td class="px-4 py-2">{{ $customer->email }}</td>
+                            <td class="px-4 py-2">
+                                <button
+                                    class="edit-barang-btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Edit
+                                </button>
+                                <form action="" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button"
+                                        class="mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                        onclick="confirmDelete(() => this.closest('form').submit())">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>

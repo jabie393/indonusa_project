@@ -76,12 +76,16 @@
                         <input type="text" id="kode_pos" name="kode_pos" placeholder="Kode Pos"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
+                    
                     <div class="col-span-2 mb-4">
-                        <label for="pic" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
-                        <input type="text" id="pic" name="pic" placeholder="PIC"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            required>
+                        <label for="pic " class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
+                        <select id="pic" name="pic" placeholder="PIC" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" multiple="multiple" required>
+                            <option>orange</option>
+                            <option>white</option>
+                            <option>purple</option>
+                        </select>
                     </div>
+
                     <div class="col-span-2 mb-4">
                         <label for="divisi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Divisi</label>
                         <input type="text" id="divisi" name="divisi" placeholder="Divisi"
@@ -163,6 +167,27 @@
 <script>
     window.CHECK_EMAIL_URL = "{{ route('check.email') }}";
     window.CSRF_TOKEN = "{{ csrf_token() }}";
+</script>
+<script>
+    $("#pic").select2({
+        tags: true,
+        placeholder: "Ketik untuk mencari PIC atau isi manual...",
+
+        
+        createTag: function (params) {
+                let term = $.trim(params.term);
+
+                if (term === '') {
+                    return null;
+                }
+
+                return {
+                    id: term,
+                    text: term + " (baru)",
+                    newTag: true
+                };
+            }
+    });
 </script>
 
 @vite(['resources/js/checker.js'])
