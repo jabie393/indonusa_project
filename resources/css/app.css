@@ -142,7 +142,7 @@ css
     animation: moveBgN var(--speed) linear infinite;
     position: absolute;
     inset: 0;
-    background: url("/public/images/logo3.png") 0 50% / 1282px repeat-x;
+    background: url("/public/images/Logo3.png") 0 50% / 1282px repeat-x;
     -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
   }
 
@@ -150,7 +150,7 @@ css
     animation: moveBg var(--speed) linear infinite;
     position: absolute;
     inset: 0;
-    background: url("/public/images/logo4.png") 0 50% / 1282px repeat-x;
+    background: url("/public/images/Logo4.png") 0 50% / 1282px repeat-x;
     -webkit-mask: linear-gradient(90deg, #0000 5px, #000 50px calc(100% - 50px), #0000 calc(100% - 5px));
   }
 }
