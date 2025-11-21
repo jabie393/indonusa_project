@@ -12,7 +12,7 @@ class BarangSeeder extends Seeder
         $barangs = [
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG001',
+                'kode_barang' => 'MSC-38274',
                 'status_barang' => 'masuk',
                 'nama_barang' => 'Laptop Asus',
                 'kategori' => 'MISCELLANEOUS',
@@ -25,7 +25,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG002',
+                'kode_barang' => 'MSC-43750',
                 'status_barang' => 'masuk',
                 'nama_barang' => 'Printer Canon',
                 'kategori' => 'MISCELLANEOUS',
@@ -38,7 +38,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG003',
+                'kode_barang' => 'PKG-32543',
                 'status_barang' => 'masuk',
                 'nama_barang' => 'Buble Wrap',
                 'kategori' => 'PACKAGING',
@@ -51,7 +51,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG004',
+                'kode_barang' => 'MSC-39241',
                 'status_barang' => 'masuk',
                 'nama_barang' => 'Mouse Logitech',
                 'kategori' => 'MISCELLANEOUS',
@@ -64,7 +64,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG005',
+                'kode_barang' => 'MSC-37281',
                 'status_barang' => 'ditolak',
                 'nama_barang' => 'Pulpen Biru',
                 'kategori' => 'MISCELLANEOUS',
@@ -78,7 +78,7 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'BRG006',
+                'kode_barang' => 'MSC-67254',
                 'status_barang' => 'ditinjau',
                 'nama_barang' => 'Pensil',
                 'kategori' => 'MISCELLANEOUS',
@@ -90,8 +90,21 @@ class BarangSeeder extends Seeder
                 'deskripsi' => 'Lorem ipsum dolor sit amet.'
             ],
             [
-                'tipe_request' => 'primary',
-                'kode_barang' => 'BRG004-1',
+                'tipe_request' => 'new_stock',
+                'kode_barang' => 'PKG-32543#1',
+                'status_barang' => 'ditinjau',
+                'nama_barang' => 'Buble Wrap',
+                'kategori' => 'PACKAGING',
+                'stok' => 10,
+                'harga' => 65000,
+                'satuan' => 'Rim',
+                'lokasi' => 'Rak C3',
+                'status_listing' => 'listing',
+                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+            ],
+            [
+                'tipe_request' => 'new_stock',
+                'kode_barang' => 'MSC-39241#1',
                 'status_barang' => 'ditolak',
                 'nama_barang' => 'Mouse Logitech',
                 'kategori' => 'MISCELLANEOUS',

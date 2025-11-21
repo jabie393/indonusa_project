@@ -230,22 +230,3 @@ document.getElementById("edit_gambar").onchange = function () {
     };
     reader.readAsDataURL(this.files[0]);
 };
-
-document.getElementById("gambar").onchange = function () {
-    const reader = new FileReader();
-    reader.onload = function () {
-        // Update the preview image src
-        const previewImg = document.querySelector('#gambar_preview img');
-        if (previewImg) {
-            previewImg.src = reader.result;
-        }
-        // Optionally set a hidden input for the modified image
-        const hiddenInput = document.getElementById("modified_image");
-        if (hiddenInput) {
-            hiddenInput.value = reader.result;
-        }
-        // Re-init overlay and hover for new image
-        initImagePreviewOverlay('gambar_preview', 'gambar_label');
-    };
-    reader.readAsDataURL(this.files[0]);
-};

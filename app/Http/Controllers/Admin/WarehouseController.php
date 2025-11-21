@@ -34,8 +34,7 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'status_listing' => 'required|in:listing,non listing',
-            'kode_barang' => 'required|string|max:255',
+            'kode_barang' => 'required|string|max:255|unique:barangs,kode_barang',
             'nama_barang' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
             'stok' => 'required|integer',
