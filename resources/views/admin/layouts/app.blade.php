@@ -92,7 +92,7 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
         <div id="notification-container" class="fixed right-4 top-4 z-50 hidden rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-lg">
-            <span id="notification-message">Notifikasi</span>
+            <span id="notification-message" >Notifikasi</span>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
