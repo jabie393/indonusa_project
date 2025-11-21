@@ -73,6 +73,9 @@ class RequestOrderController extends Controller
             'harga.*' => 'nullable|numeric|min:0',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
+            'item_images' => 'nullable|array',
+            'item_images.*' => 'nullable|array',
+            'item_images.*.*' => 'nullable|image|max:5120',
         ]);
 
         $items = [];
@@ -128,13 +131,24 @@ class RequestOrderController extends Controller
                 'status' => 'pending',
             ]);
 
-            foreach ($items as $item) {
+            foreach ($items as $i => $item) {
+                // handle per-item images
+                $itemImagePaths = [];
+                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
+                    foreach ($request->file('item_images')[$i] as $f) {
+                        if ($f) {
+                            $itemImagePaths[] = $f->store('request-order-item-images', 'public');
+                        }
+                    }
+                }
+
                 RequestOrderItem::create([
                     'request_order_id' => $requestOrder->id,
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
+                    'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ]);
             }
 
@@ -150,6 +164,11 @@ class RequestOrderController extends Controller
             if ($maxDiskon >= 30) {
                 // Mark as pending approval by supervisor
                 $requestOrder->update(['status' => 'pending_approval']);
+
+                DB::commit();
+
+                return redirect()->route('sales.request-order.index')
+                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat dan menunggu persetujuan.");
             } else {
                 // Auto-approve (sales can send directly)
                 $requestOrder->update([
@@ -157,12 +176,39 @@ class RequestOrderController extends Controller
                     'approved_by' => Auth::id(),
                     'approved_at' => now(),
                 ]);
+
+                // Create Sales Order immediately from approved Request Order
+                $salesOrder = SalesOrder::create([
+                    'sales_order_number' => 'SO-' . strtoupper(Str::random(8)),
+                    'request_order_id' => $requestOrder->id,
+                    'sales_id' => Auth::id(),
+                    'customer_name' => $requestOrder->customer_name,
+                    'customer_id' => $requestOrder->customer_id,
+                    'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                    'catatan_customer' => $requestOrder->catatan_customer,
+                    'status' => 'pending',
+                ]);
+
+                foreach ($requestOrder->items as $reqItem) {
+                    SalesOrderItem::create([
+                        'sales_order_id' => $salesOrder->id,
+                        'request_order_item_id' => $reqItem->id,
+                        'barang_id' => $reqItem->barang_id,
+                        'quantity' => $reqItem->quantity,
+                        'harga' => $reqItem->harga,
+                        'subtotal' => $reqItem->subtotal,
+                        'status_item' => 'pending',
+                    ]);
+                }
+
+                // Update status Request Order to converted
+                $requestOrder->update(['status' => 'converted']);
+
+                DB::commit();
+
+                return redirect()->route('sales.sales-order.show', $salesOrder->id)
+                    ->with('success', "Sales Order {$salesOrder->sales_order_number} berhasil dibuat dari Request Order.");
             }
-
-            DB::commit();
-
-            return redirect()->route('sales.request-order.index')
-                ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
 
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -239,6 +285,9 @@ class RequestOrderController extends Controller
             'harga.*' => 'nullable|numeric|min:0',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
+            'item_images' => 'nullable|array',
+            'item_images.*' => 'nullable|array',
+            'item_images.*.*' => 'nullable|image|max:5120',
         ]);
 
         $items = [];
@@ -285,13 +334,23 @@ class RequestOrderController extends Controller
             $requestOrder->items()->delete();
 
             // Tambah item baru
-            foreach ($items as $item) {
+            foreach ($items as $i => $item) {
+                $itemImagePaths = [];
+                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
+                    foreach ($request->file('item_images')[$i] as $f) {
+                        if ($f) {
+                            $itemImagePaths[] = $f->store('request-order-item-images', 'public');
+                        }
+                    }
+                }
+
                 RequestOrderItem::create([
                     'request_order_id' => $requestOrder->id,
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
+                    'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ]);
             }
 
