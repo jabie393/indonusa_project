@@ -1,10 +1,10 @@
 import Chart from 'chart.js/auto';
 
 document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('IMC');
+    const imc = document.getElementById('IMC');
 
-    if (ctx) {
-        new Chart(ctx, {
+    if (imc) {
+        new Chart(imc, {
             type: 'bar',
             data: {
                 labels: ['Januari', 'Februari', 'Mari', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'December'],
@@ -12,7 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     label: '# of Votes',
                     data: [12, 19, 3, 5, 2, 3],
                     borderWidth: 1,
-                    backgroundColor: '#225A97',
+                    backgroundColor: (context) => {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value < 0 ? '#000000' : '#225A97';
+                    },
+                    borderColor: (context) => {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value < 0 ? '#000000' : '#225A97';
+                    },
                     borderRadius: 100,
 
                 }]
@@ -26,21 +33,26 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-});
-document.addEventListener('DOMContentLoaded', function () {
-    const ctx = document.getElementById('SVC');
-    const NUMBER_CFG = { count: DATA_COUNT, min: -100, max: 100 };
 
-    if (ctx) {
-        new Chart(ctx, {
+    const svc = document.getElementById('SVC');
+
+    if (svc) {
+        new Chart(svc, {
             type: 'bar',
             data: {
                 labels: ['Januari', 'Februari', 'Mari', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'December'],
                 datasets: [{
                     label: '# of Votes',
-                    data: NUMBER_CFG,
+                    data: [12, 19, 53, 58, 27, 32, -64],
                     borderWidth: 1,
-                    backgroundColor: '#225A97',
+                    backgroundColor: (context) => {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value < 0 ? '#000000' : '#225A97';
+                    },
+                    borderColor: (context) => {
+                        const value = context.dataset.data[context.dataIndex];
+                        return value < 0 ? '#000000' : '#225A97';
+                    },
                     borderRadius: 100,
 
                 }]
@@ -48,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        min: -100,
+                        max: 100,
                     }
                 }
             }

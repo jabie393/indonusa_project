@@ -13,7 +13,7 @@
                 </p>
             </div>
             <div class="flex-end rounded-full bg-[#225A97] px-6 py-3">
-                <p class="inline-flex align-middle text-white">
+                <button class="inline-flex cursor-pointer align-middle text-white">
                     <svg width="22" height="22" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M7.07793 8.45801H4.93785C4.75611 8.45801 4.60901 8.59174 4.60901 8.75695V10.7025C4.60901 10.8675 4.75611 11.0014 4.93785 11.0014H7.07793C7.25967 11.0014 7.40677 10.8675 7.40677 10.7025V8.75695C7.40677 8.59194 7.25967 8.45801 7.07793 8.45801ZM6.74909 10.4035H5.26669V9.0559H6.74909V10.4035Z"
@@ -38,10 +38,10 @@
                             fill="white" />
                     </svg>
                     14 Aug 2025
-                </p>
+                </button>
             </div>
         </div>
-        <div class="grid grid-cols-4 auto-rows-max gap-6 p-6">
+        <div class="grid auto-rows-max grid-cols-4 gap-6 p-6">
 
             <div class="col-span-1 w-full rounded-2xl shadow-md">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
@@ -97,8 +97,13 @@
             </div>
 
             <div class="col-span-2 w-full rounded-2xl shadow-md">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                <div class="inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-2xl font-bold text-white">Inventory Movement Chart</h1>
+                    <button class="m-3 inline-flex cursor-pointer items-center justify-center rounded-full bg-[#225A97] px-5 py-2">
+                        <span class="text-white">
+                            Tahun Ini
+                        </span>
+                    </button>
                 </div>
                 <div class="flex flex-col items-center" style="width: max-content height: max-content;">
                     <canvas id="IMC" class="w-full"></canvas>
@@ -114,8 +119,80 @@
                 </div>
 
             </div>
-            
-
+            <div class="col-span-4 w-full rounded-2xl shadow-md">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-2xl font-bold text-white">Low Stock Items Table</h1>
+                </div>
+                <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Item</th>
+                            <th scope="col" class="px-4 py-3">Stock</th>
+                            <th scope="col" class="px-4 py-3">Minimum</th>
+                            <th scope="col" class="px-4 py-3">Status</th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="h-min-[300px]">
+                        <tr>
+                            <td class="px-4 py-3">Laptop</td>
+                            <td class="px-4 py-3">52</td>
+                            <td class="px-4 py-3">10</td>
+                            <td class="px-4 py-3">Pending</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-span-4 w-full rounded-2xl shadow-md">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-2xl font-bold text-white">Recent Inbound Items</h1>
+                </div>
+                <table id="DataTable2" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Date</th>
+                            <th scope="col" class="px-4 py-3">Item</th>
+                            <th scope="col" class="px-4 py-3">Qty</th>
+                            <th scope="col" class="px-4 py-3">Supplier</th>
+                            <th scope="col" class="px-4 py-3">Status</th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="h-min-[300px]">
+                        <tr>
+                            <td class="px-4 py-3">25 Nov 2025</td>
+                            <td class="px-4 py-3">Laptop</td>
+                            <td class="px-4 py-3">40</td>
+                            <td class="px-4 py-3">PT INDONUSA</td>
+                            <td class="px-4 py-3">Complete</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-span-4 w-full rounded-2xl shadow-md">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-2xl font-bold text-white">Recent Outbound Items</h1>
+                </div>
+                <table id="DataTable3" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Item</th>
+                            <th scope="col" class="px-4 py-3">Stock</th>
+                            <th scope="col" class="px-4 py-3">Minimum</th>
+                            <th scope="col" class="px-4 py-3">Status</th>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="h-min-[300px]">
+                        <tr>
+                            <td class="px-4 py-3">Laptop</td>
+                            <td class="px-4 py-3">52</td>
+                            <td class="px-4 py-3">10</td>
+                            <td class="px-4 py-3">Pending</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
