@@ -155,13 +155,24 @@
                                     <div class="mb-3">
                                         <label class="form-label">Informasi Periode Berlaku</label>
                                         <div class="alert alert-info mb-0">
-                                            <strong>Dimulai:</strong> <span>{{ $requestOrder->tanggal_berlaku?->format('d-m-Y') ?? '-' }}</span><br>
-                                            <strong>Berakhir:</strong> <span>{{ $requestOrder->expired_at?->format('d-m-Y') ?? '-' }}</span><br>
+                                            <strong>Dimulai:</strong> <span>{{ $requestOrder->tanggal_berlaku_formatted }}</span><br>
+                                            <strong>Berakhir:</strong> <span>{{ $requestOrder->expired_at_formatted }}</span><br>
                                             <strong>Status:</strong> 
-                                            @if($requestOrder->isExpired())
-                                                <span class="badge bg-danger">KADALUARSA</span>
+                                            @if($requestOrder->expired_at)
+                                                @if($requestOrder->isExpired())
+                                                    <span class="badge bg-danger">KADALUARSA</span>
+                                                @else
+                                                    <span class="badge bg-success">BERLAKU</span> 
+                                                    <small>
+                                                        @if(is_string($requestOrder->expired_at))
+                                                            ({{ \Carbon\Carbon::parse($requestOrder->expired_at)->diffForHumans() }})
+                                                        @else
+                                                            ({{ $requestOrder->expired_at->diffForHumans() }})
+                                                        @endif
+                                                    </small>
+                                                @endif
                                             @else
-                                                <span class="badge bg-success">BERLAKU</span> ({{ $requestOrder->expired_at?->diffForHumans() ?? '-' }})
+                                                <span class="badge bg-warning">TBD</span>
                                             @endif
                                         </div>
                                     </div>

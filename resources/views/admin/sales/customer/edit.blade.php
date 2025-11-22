@@ -75,9 +75,14 @@
                                             <div class="mb-3">
                                                 <label for="tipe_customer" class="form-label">Tipe Customer</label>
                                                 <select name="tipe_customer" id="tipe_customer" class="form-select @error('tipe_customer') is-invalid @enderror">
-                                                    <option value="retail" @selected(old('tipe_customer', $customer->tipe_customer) === 'retail')>Retail</option>
-                                                    <option value="wholesale" @selected(old('tipe_customer', $customer->tipe_customer) === 'wholesale')>Wholesale</option>
-                                                    <option value="distributor" @selected(old('tipe_customer', $customer->tipe_customer) === 'distributor')>Distributor</option>
+                                                    <option value="">-- Pilih Tipe Customer --</option>
+                                                    <option value="Pribadi" @selected(old('tipe_customer', $customer->tipe_customer) === 'Pribadi')>Pribadi</option>
+                                                    <option value="GOV" @selected(old('tipe_customer', $customer->tipe_customer) === 'GOV')>GOV (Pemerintah)</option>
+                                                    <option value="BUMN" @selected(old('tipe_customer', $customer->tipe_customer) === 'BUMN')>BUMN</option>
+                                                    <option value="Swasta" @selected(old('tipe_customer', $customer->tipe_customer) === 'Swasta')>Swasta</option>
+                                                    <option value="Retail" @selected(old('tipe_customer', $customer->tipe_customer) === 'Retail')>Retail</option>
+                                                    <option value="Wholesale" @selected(old('tipe_customer', $customer->tipe_customer) === 'Wholesale')>Wholesale</option>
+                                                    <option value="Distributor" @selected(old('tipe_customer', $customer->tipe_customer) === 'Distributor')>Distributor</option>
                                                 </select>
                                                 @error('tipe_customer')
                                                     <div class="invalid-feedback">{{ $message }}</div>

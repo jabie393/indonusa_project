@@ -81,13 +81,19 @@
                             </td>
                             <td>
                                 @if ($ro->expired_at)
-                                    {{ $ro->expired_at->format('d M Y') }}
+                                    {{ $ro->expired_at_formatted }}
                                     <br>
                                     <small>
                                         @if ($ro->isExpired())
                                             <span class="badge bg-danger">EXPIRED</span>
                                         @else
-                                            <span class="text-success">{{ $ro->expired_at->diffForHumans() }}</span>
+                                            <span class="text-success">
+                                                @if(is_string($ro->expired_at))
+                                                    {{ \Carbon\Carbon::parse($ro->expired_at)->diffForHumans() }}
+                                                @else
+                                                    {{ $ro->expired_at->diffForHumans() }}
+                                                @endif
+                                            </span>
                                         @endif
                                     </small>
                                 @else

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
+use App\Http\Controllers\Admin\CustomPenawaranController;
 use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -148,6 +149,16 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');
+
+    // Custom Penawaran Routes (Child of Request Order)
+    Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');
+    Route::get('/custom-penawaran/create', [CustomPenawaranController::class, 'create'])->name('sales.custom-penawaran.create');
+    Route::post('/custom-penawaran', [CustomPenawaranController::class, 'store'])->name('sales.custom-penawaran.store');
+    Route::get('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('sales.custom-penawaran.show');
+    Route::get('/custom-penawaran/{customPenawaran}/edit', [CustomPenawaranController::class, 'edit'])->name('sales.custom-penawaran.edit');
+    Route::put('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'update'])->name('sales.custom-penawaran.update');
+    Route::delete('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-penawaran.destroy');
+    Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
 
     // Saless Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');

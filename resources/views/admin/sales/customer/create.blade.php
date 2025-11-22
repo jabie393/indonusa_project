@@ -74,9 +74,14 @@
                                             <div class="mb-3">
                                                 <label for="tipe_customer" class="form-label">Tipe Customer</label>
                                                 <select name="tipe_customer" id="tipe_customer" class="form-select @error('tipe_customer') is-invalid @enderror">
-                                                    <option value="retail" @selected(old('tipe_customer') === 'retail')>Retail</option>
-                                                    <option value="wholesale" @selected(old('tipe_customer') === 'wholesale')>Wholesale</option>
-                                                    <option value="distributor" @selected(old('tipe_customer') === 'distributor')>Distributor</option>
+                                                    <option value="">-- Pilih Tipe Customer --</option>
+                                                    <option value="Pribadi" @selected(old('tipe_customer') === 'Pribadi')>Pribadi</option>
+                                                    <option value="GOV" @selected(old('tipe_customer') === 'GOV')>GOV (Pemerintah)</option>
+                                                    <option value="BUMN" @selected(old('tipe_customer') === 'BUMN')>BUMN</option>
+                                                    <option value="Swasta" @selected(old('tipe_customer') === 'Swasta')>Swasta</option>
+                                                    <option value="Retail" @selected(old('tipe_customer') === 'Retail')>Retail</option>
+                                                    <option value="Wholesale" @selected(old('tipe_customer') === 'Wholesale')>Wholesale</option>
+                                                    <option value="Distributor" @selected(old('tipe_customer') === 'Distributor')>Distributor</option>
                                                 </select>
                                                 @error('tipe_customer')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -173,9 +178,13 @@
                         <hr class="border-white border-opacity-25">
                         <p class="card-text small mb-0">
                             <strong>Tipe Customer:</strong>
+                            <br>• Pribadi - Perorangan
+                            <br>• GOV - Pemerintah
+                            <br>• BUMN - Badan Usaha Milik Negara
+                            <br>• Swasta - Perusahaan Swasta
                             <br>• Retail - Customer eceran
-                            <br>• Wholesale - Pembelian dalam jumlah besar
-                            <br>• Distributor - Distribusi ke wilayah
+                            <br>• Wholesale - Pembelian besar
+                            <br>• Distributor - Distribusi wilayah
                         </p>
                     </div>
                 </div>

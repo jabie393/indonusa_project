@@ -83,7 +83,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Tanggal Kebutuhan</label>
-                                <p>{{ $salesOrder->tanggal_kebutuhan ? $salesOrder->tanggal_kebutuhan->format('d M Y') : '-' }}</p>
+                                <p>{{ $salesOrder->tanggal_kebutuhan_formatted }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Status</label>

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('provinsi')->nullable();
             $table->string('kode_pos')->nullable();
             $table->string('pic')->nullable();
-            $table->enum('tipe_customer', ['Pribadi', 'GOV', 'BUMN', 'Swasta']);
+            $table->enum('tipe_customer', ['Pribadi', 'GOV', 'BUMN', 'Swasta', 'Retail', 'Wholesale', 'Distributor']);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('active');

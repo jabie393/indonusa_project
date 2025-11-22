@@ -75,7 +75,7 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Tanggal Kebutuhan</label>
-                                <p>{{ $requestOrder->tanggal_kebutuhan ? $requestOrder->tanggal_kebutuhan->format('d M Y') : '-' }}</p>
+                                <p>{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Status</label>
@@ -99,18 +99,24 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Masa Berlaku Mulai</label>
-                                <p>{{ $requestOrder->tanggal_berlaku ? $requestOrder->tanggal_berlaku->format('d M Y') : '-' }}</p>
+                                <p>{{ $requestOrder->tanggal_berlaku_formatted }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Masa Berlaku Berakhir</label>
                                 <p>
                                     @if($requestOrder->expired_at)
-                                        {{ $requestOrder->expired_at->format('d M Y') }}
+                                        {{ $requestOrder->expired_at_formatted }}
                                         <br>
                                         @if($requestOrder->isExpired())
                                             <small class="badge bg-danger">KADALUARSA</small>
                                         @else
-                                            <small class="badge bg-success">{{ $requestOrder->expired_at->diffForHumans() }}</small>
+                                            <small class="badge bg-success">
+                                                @if(is_string($requestOrder->expired_at))
+                                                    {{ \Carbon\Carbon::parse($requestOrder->expired_at)->diffForHumans() }}
+                                                @else
+                                                    {{ $requestOrder->expired_at->diffForHumans() }}
+                                                @endif
+                                            </small>
                                         @endif
                                     @else
                                         -

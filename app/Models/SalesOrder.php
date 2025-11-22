@@ -24,6 +24,7 @@ class SalesOrder extends Model
 
     protected $casts = [
         'approved_at' => 'datetime',
+        'tanggal_kebutuhan' => 'date',
     ];
 
     public function items()
@@ -54,5 +55,18 @@ class SalesOrder extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function getTanggalKebutuhanFormattedAttribute()
+    {
+        if (!$this->tanggal_kebutuhan) {
+            return '-';
+        }
+
+        if (is_string($this->tanggal_kebutuhan)) {
+            return \Carbon\Carbon::parse($this->tanggal_kebutuhan)->format('d M Y');
+        }
+
+        return $this->tanggal_kebutuhan->format('d M Y');
     }
 }

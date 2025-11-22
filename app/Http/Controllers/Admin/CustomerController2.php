@@ -48,7 +48,7 @@ class CustomerController2 extends Controller
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:10',
-            'tipe_customer' => 'nullable|in:retail,wholesale,distributor',
+            'tipe_customer' => 'required|in:Pribadi,GOV,BUMN,Swasta,Retail,Wholesale,Distributor',
             'status' => 'nullable|in:active,inactive',
         ]);
 
@@ -62,7 +62,7 @@ class CustomerController2 extends Controller
                 'kota' => $validated['kota'] ?? null,
                 'provinsi' => $validated['provinsi'] ?? null,
                 'kode_pos' => $validated['kode_pos'] ?? null,
-                'tipe_customer' => $validated['tipe_customer'] ?? 'retail',
+                'tipe_customer' => $validated['tipe_customer'],
                 'status' => $validated['status'] ?? 'active',
                 'created_by' => Auth::id(),
                 'updated_by' => Auth::id(),
@@ -118,7 +118,7 @@ class CustomerController2 extends Controller
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:10',
-            'tipe_customer' => 'nullable|in:retail,wholesale,distributor',
+            'tipe_customer' => 'required|in:Pribadi,GOV,BUMN,Swasta,Retail,Wholesale,Distributor',
             'status' => 'nullable|in:active,inactive',
         ]);
 
@@ -132,7 +132,7 @@ class CustomerController2 extends Controller
                 'kota' => $validated['kota'] ?? null,
                 'provinsi' => $validated['provinsi'] ?? null,
                 'kode_pos' => $validated['kode_pos'] ?? null,
-                'tipe_customer' => $validated['tipe_customer'] ?? 'retail',
+                'tipe_customer' => $validated['tipe_customer'],
                 'status' => $validated['status'] ?? 'active',
                 'updated_by' => Auth::id(),
             ]);
