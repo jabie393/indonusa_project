@@ -11,6 +11,18 @@ let datatable = new DataTable('#DataTable', {
     paging: false,
     info: false,
 });
+let datatable2 = new DataTable('#DataTable2', {
+    responsive: true,
+    searching: false,
+    paging: false,
+    info: false,
+});
+let datatable3 = new DataTable('#DataTable3', {
+    responsive: true,
+    searching: false,
+    paging: false,
+    info: false,
+});
 
 // Wait for DataTable to finish rendering
 table.on('draw', function () {
