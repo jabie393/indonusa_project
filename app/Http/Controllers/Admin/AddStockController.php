@@ -76,7 +76,7 @@ class AddStockController extends Controller
         $newKode = $originalKode;
         $i = 1;
         while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
-            $newKode = $originalKode . '-' . $i;
+            $newKode = $originalKode . '#' . $i;
             $i++;
         }
         $copyData->kode_barang = $newKode;

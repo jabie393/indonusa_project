@@ -14,12 +14,17 @@ class GeneralController extends Controller
     }
     public function checkKodeBarang(Request $request)
     {
-        $query = Barang::where('kode_barang', $request->kode_barang);
-        if ($request->filled('id')) {
-            $query->where('id', '!=', $request->id);
-        }
-        $exists = $query->exists();
-        return response()->json(['exists' => $exists]);
+        $request->validate([
+            'kode_barang' => 'required|string'
+        ]);
+
+        $kodeBarang = $request->input('kode_barang');
+        $exists = Barang::where('kode_barang', $kodeBarang)->exists();
+
+        return response()->json([
+            'valid' => !$exists,
+            'kode_barang' => $kodeBarang
+        ]);
     }
 
     public function checkEmail(Request $request)

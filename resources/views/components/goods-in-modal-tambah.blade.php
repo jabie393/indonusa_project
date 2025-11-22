@@ -83,10 +83,11 @@
                                         Barang</label>
                                     <input type="text" name="kode_barang" id="kode_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
+                                        readonly>
                                 </div>
                                 <div>
-                                    <label for="kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                                    <label for="kategori"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                                     <select name="kategori" id="kategori"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
@@ -157,9 +158,9 @@
     </form>
 </dialog>
 
-<!-- Script cek kode barang sudah ada atau belum -->
 <script>
-    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
     window.CSRF_TOKEN = "{{ csrf_token() }}";
+    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
 </script>
+
 @vite(['resources/js/checker.js'])

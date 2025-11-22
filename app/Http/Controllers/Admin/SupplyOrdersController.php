@@ -38,7 +38,7 @@ class SupplyOrdersController extends Controller
             $barang->status_barang = 'masuk';
             $barang->save();
         } elseif ($barang->tipe_request == 'new_stock') {
-            $kodeUtama = explode('-', $barang->kode_barang)[0];
+            $kodeUtama = explode('#', $barang->kode_barang)[0];
             $barangUtama = Barang::where('kode_barang', $kodeUtama)
                 ->where('tipe_request', 'primary')
                 ->first();

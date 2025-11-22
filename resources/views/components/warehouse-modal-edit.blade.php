@@ -61,12 +61,27 @@
                                     </select>
                                 </div>
                                 <div>
+                                    <label for="edit_kategori"
+                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                                    <select id="edit_kategori" name="kategori"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        data-initial-kategori="{{ $barang->kategori }}"
+                                        data-initial-kode="{{ $barang->kode_barang }}">
+                                        <option value="" disabled>Pilih Kategori</option>
+                                        @foreach ($kategoriList as $kategori)
+                                            <option value="{{ $kategori }}" {{ $barang->kategori === $kategori ? 'selected' : '' }}>
+                                                {{ $kategori }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
                                     <label for="edit_kode_barang"
                                         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
                                         Barang</label>
-                                    <input type="text" name="kode_barang" id="edit_kode_barang"
+                                    <input type="text" id="edit_kode_barang" name="kode_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
+                                        value="{{ $barang->kode_barang }}" readonly>
                                 </div>
                                 <div>
                                     <label for="edit_nama_barang"
@@ -75,18 +90,6 @@
                                     <input type="text" name="nama_barang" id="edit_nama_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
-                                </div>
-                                <div>
-                                    <label for="edit_kategori"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                                    <select name="kategori" id="edit_kategori"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                        <option value="" disabled>Pilih Kategori</option>
-                                        @foreach ($kategoriList as $kategori)
-                                            <option value="{{ $kategori }}" {{ isset($barang) && $barang->kategori == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
-                                        @endforeach
-                                    </select>
                                 </div>
                             </div>
                             <div class="space-y-4">
@@ -148,7 +151,8 @@
 </dialog>
 
 <script>
-    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
     window.CSRF_TOKEN = "{{ csrf_token() }}";
+    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
 </script>
+
 @vite(['resources/js/checker.js'])

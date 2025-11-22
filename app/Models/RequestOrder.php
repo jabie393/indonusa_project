@@ -60,7 +60,7 @@ class RequestOrder extends Model
     public static function generateNomorPenawaran()
     {
         $date = now()->format('Ymd');
-        $count = self::whereDate('created_at', now()->date())->count() + 1;
+        $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
         return 'PNW-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
     }
 

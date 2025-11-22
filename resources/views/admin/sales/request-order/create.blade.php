@@ -31,7 +31,7 @@
 
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="{{ route('sales.request-order.store') }}" id="requestOrderForm">
+                <form method="POST" action="{{ route('sales.request-order.store') }}" id="requestOrderForm" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Customer Info Section -->
@@ -169,7 +169,6 @@
                             </div>
                         </div>
                     </div>
-                </form>
             </div>
 
             <!-- Items Section -->
@@ -189,6 +188,7 @@
                                         <th width="100">Diskon (%)</th>
                                         <th width="100">Jumlah</th>
                                         <th width="200">Harga Satuan</th>
+                                        <th width="200">Gambar</th>
                                         <th width="200">Subtotal</th>
                                         <th width="80">Aksi</th>
                                     </tr>
@@ -229,6 +229,9 @@
                                                 min="0" step="0.01" value="0">
                                         </td>
                                         <td>
+                                            <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                                        </td>
+                                        <td>
                                             <input type="text"
                                                 class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 readonly style="background-color: #f0f0f0;">
@@ -259,7 +262,7 @@
                             </table>
                         </div>
 
-                        <button type="button" id="addRow" class="btn bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;" id="addRowBtn">
+                        <button type="button" id="addRow" class="btn bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
                             <i class="fas fa-plus"></i> Tambah Barang
                         </button>
                     </div>
@@ -563,18 +566,34 @@
                 });
 
                 // Show/hide sections based on kategori selection
+                // Determine visibility of addRowBtn based on visible options
+                function anyBarangOptionVisible() {
+                    const firstSelect = document.querySelector('.barang-select');
+                    if (!firstSelect) return false;
+                    return Array.from(firstSelect.options).some(opt => opt.value === '' || opt.style.display !== 'none');
+                }
+
                 if (kategoriValue) {
                     barangSection.style.display = 'block';
                     imagesSection.style.display = 'block';
-                    addRowBtn.style.display = 'inline-block';
-                    submitBtn.disabled = false;
                 } else {
-                    barangSection.style.display = 'none';
-                    imagesSection.style.display = 'none';
-                    addRowBtn.style.display = 'none';
-                    submitBtn.disabled = true;
+                    // if there are any visible barang options (e.g., no kategori list), keep sections visible
+                    const visible = anyBarangOptionVisible();
+                    barangSection.style.display = visible ? 'block' : 'none';
+                    imagesSection.style.display = visible ? 'block' : 'none';
                 }
+
+                addRowBtn.style.display = anyBarangOptionVisible() ? 'inline-block' : 'none';
+
+                updateSubmitState();
             };
+
+            // Update submit button state depending on kategori selection or any selected barang
+            function updateSubmitState() {
+                const hasKategori = kategoriSelect && kategoriSelect.value;
+                const anyBarangSelected = Array.from(document.querySelectorAll('.barang-select')).some(s => s.value && s.value !== '');
+                submitBtn.disabled = !(hasKategori || anyBarangSelected);
+            }
 
             // Handle barang selection change
             function handleBarangChange(select) {
@@ -625,6 +644,7 @@
 
             // Add row
             addRowBtn.addEventListener('click', function() {
+                const idx = document.querySelectorAll('.item-row').length;
                 const newRow = document.createElement('tr');
                 newRow.className = 'item-row';
                 newRow.innerHTML = `
@@ -646,6 +666,9 @@
                     </td>
                     <td>
                         <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0">
+                    </td>
+                    <td>
+                        <input type="file" name="item_images[${idx}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
                     </td>
                     <td>
                         <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
@@ -673,6 +696,11 @@
                 if (selectedKategori) {
                     filterBarangByCategory(selectedKategori);
                 }
+                // ensure file input names are sequential
+                document.querySelectorAll('.item-row').forEach((row, i) => {
+                    const fileInput = row.querySelector('.item-images-input');
+                    if (fileInput) fileInput.name = `item_images[${i}][]`;
+                });
             });
 
             // Attach events to row
@@ -680,6 +708,7 @@
                 const barangSelect = row.querySelector('.barang-select');
                 barangSelect.addEventListener('change', function() {
                     handleBarangChange(this);
+                    updateSubmitState();
                 });
                 row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
                 row.querySelector('.harga-input').addEventListener('change', calculateTotals);
@@ -687,6 +716,12 @@
                     row.remove();
                     updateRemoveButtons();
                     calculateTotals();
+                    // reindex file input names after removal
+                    document.querySelectorAll('.item-row').forEach((r, i) => {
+                        const fi = r.querySelector('.item-images-input');
+                        if (fi) fi.name = `item_images[${i}][]`;
+                    });
+                    updateSubmitState();
                 });
             }
 
@@ -733,6 +768,7 @@
             document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
             updateRemoveButtons();
             calculateTotals();
+            updateSubmitState();
         });
     </script>
 
