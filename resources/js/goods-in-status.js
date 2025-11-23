@@ -124,7 +124,7 @@ function openEditModal(params) {
         document.getElementById('edit_status_listing_new_stock').textContent = status_listing ?? '-';
         document.getElementById('edit_harga_new_stock').textContent = harga ?? '-';
         document.getElementById('edit_satuan_new_stock').textContent = satuan ?? '-';
-        document.getElementById('current_stok_new_stock').textContent = stok ?? '-';
+        document.getElementById('current_stok_new_stock').textContent = 'Memeriksa...';
         document.getElementById('edit_deskripsi_new_stock').textContent = deskripsi ?? '-';
         const gambarPreview = document.getElementById('edit_gambar_preview_new_stock');
         if (gambar && gambar !== '') {
