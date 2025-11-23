@@ -42,6 +42,7 @@ class Barang extends Model
         'WELDING EQUIPMENT',
         'WOODWORKING EQUIPMENT',
         'MISCELLANEOUS',
+        'OTHER CATEGORIES',
     ];
 
     protected $fillable = [

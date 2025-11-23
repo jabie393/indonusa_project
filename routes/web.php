@@ -86,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard', [GeneralController::class, 'dashboard'])->name('dashboard');
+    Route::get('/get-stock/{kode}', [GeneralController::class, 'getStock']);
     Route::post('/check-email', [GeneralController::class, 'checkEmail'])->name('check.email');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);

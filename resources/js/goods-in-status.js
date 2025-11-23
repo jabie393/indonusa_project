@@ -112,12 +112,10 @@ function openEditModal(params) {
                                     </label>`;
         }
 
-
         document.getElementById('editBarangForm').action = '/goods-in-status/' + id;
         const modal = document.getElementById('editBarangModalPrimary');
-        if (modal && typeof modal.showModal === 'function') {
-            modal.showModal();
-        }
+        if (modal?.showModal) modal.showModal();
+
     } else if (tipe_request === 'new_stock') {
         document.getElementById('edit_kode_barang_new_stock').textContent = kode_barang ?? '-';
         document.getElementById('edit_nama_barang_new_stock').textContent = nama_barang ?? '-';
@@ -155,12 +153,27 @@ function openEditModal(params) {
             </div>`;
         }
         document.getElementById('edit_id_new_stock').value = id;
-        document.getElementById('edit_stok_new_stock').value = (stok !== undefined && stok !== null && stok !== '' && stok !== '-') ? stok : '';
+        document.getElementById('edit_stok_new_stock').value =
+            stok && stok !== '-' ? stok : '';
+
+        // Ambil kode barang asli (tanpa # dan ekor angka)
+        const kodeBarangInduk = (kode_barang ?? '').split('#')[0];
+
+        // Ambil stok asli dari database melalui route Laravel
+        fetch('/get-stock/' + kodeBarangInduk)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('current_stok_new_stock').textContent =
+                    data.stok ?? '-';
+            })
+            .catch(() => {
+                document.getElementById('current_stok_new_stock').textContent = '-';
+            });
+
         document.getElementById('tambahStockForm').action = '/goods-in-status/' + id;
+
         const modal = document.getElementById('editBarangModalNewStock');
-        if (modal && typeof modal.showModal === 'function') {
-            modal.showModal();
-        }
+        if (modal?.showModal) modal.showModal();
     }
 }
 

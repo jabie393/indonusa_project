@@ -187,7 +187,8 @@ const kategoriSingkatan = {
     "STORAGE SYSTEM": "STS",
     "WELDING EQUIPMENT": "WLD",
     "WOODWORKING EQUIPMENT": "WWE",
-    "MISCELLANEOUS": "MSC"
+    "MISCELLANEOUS": "MSC",
+    "OTHER CATEGORIES": "OC",
 };
 
 // Fungsi untuk menghasilkan kode barang

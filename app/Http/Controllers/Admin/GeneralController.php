@@ -12,6 +12,16 @@ class GeneralController extends Controller
     {
         return view('admin.dashboard');
     }
+
+    // Cek stok barang berdasarkan kode barang
+    public function getStock($kode)
+    {
+        $barang = Barang::where('kode_barang', $kode)->first();
+
+        return response()->json([
+            'stok' => $barang ? $barang->stok : 0
+        ]);
+    }
     public function checkKodeBarang(Request $request)
     {
         $request->validate([
