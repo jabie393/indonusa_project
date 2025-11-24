@@ -41,87 +41,186 @@
                 </button>
             </div>
         </div>
-        <div class="grid auto-rows-max grid-cols-2 md:grid-cols-4 gap-6 p-6">
+        <div class="grid auto-rows-max grid-cols-6 gap-6 p-6 pt-0">
 
-            <div class="col-span-1 w-full rounded-2xl shadow-md">
+            <div class="col-span-6 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Jumlah Barang dalam stok</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Jumlah Barang dalam stok</h1>
                 </div>
-                <div class="flex flex-col items-center">
-                    <h1 class="text-bold text-6xl font-bold">
-                        12
-                    </h1>
+                <div class="flex flex-col justify-center">
+                    <div class="flex flex-col items-center">
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-6xl font-bold">
+                                12
+                            </h1>
+                            <span class="w-full text-lg text-gray-500">Total Barang</span>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700">
+                                12423
+                            </p>
+                            <span class="w-full text-sm text-gray-500">last month</span>
+                        </div>
+                        <div class="flex w-full flex-row items-end border-t-2">
+                            <h1 class="w-full text-end text-6xl font-bold font-bold">
+                                12423
+                            </h1>
+                            <span class="w-full text-lg text-gray-500">Total Stok</span>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700">
+                                12423
+                            </p>
+                            <span class="w-full text-sm text-gray-500">last month</span>
+                        </div>
+                    </div>
                 </div>
-                <p class="pl-6 text-gray-500">
-                    last month :
-                </p>
-            </div>
-            <div class="col-span-1 w-full rounded-2xl shadow-md">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Stok barang rendah</h1>
-                </div>
-                <div class="flex flex-col items-center">
-                    <h1 class="text-bold text-6xl font-bold">
-                        12
-                    </h1>
-                </div>
-                <p class="pl-6 text-gray-500">
-                    last month :
-                </p>
-            </div>
-            <div class="col-span-1 w-full rounded-2xl shadow-md">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Barang masuk hari ini</h1>
-                </div>
-                <div class="flex flex-col items-center">
-                    <h1 class="text-bold text-6xl font-bold">
-                        12
-                    </h1>
-                </div>
-                <p class="pl-6 text-gray-500">
-                    last month :
-                </p>
-            </div>
-            <div class="col-span-1 w-full rounded-2xl shadow-md">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Barang keluar hari ini</h1>
-                </div>
-                <div class="flex flex-col items-center">
-                    <h1 class="text-bold text-6xl font-bold">
-                        12
-                    </h1>
-                </div>
-                <p class="pl-6 text-gray-500">
-                    last month :
-                </p>
             </div>
 
-            <div class="col-span-2 w-full rounded-2xl shadow-md">
+            <div class="col-span-3 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Barang masuk hari ini</h1>
+                </div>
+                <div class="flex h-full flex-col justify-center">
+                    <div class="flex flex-col items-center justify-center">
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-6xl font-bold">
+                                12
+                            </h1>
+                            <span class="w-full text-lg text-gray-500">Barang</span>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700">
+                                234
+                            </p>
+                            <span class="w-full text-sm text-gray-500">last month</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-span-3 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Barang keluar hari ini</h1>
+                </div>
+                <div class="flex h-full flex-col justify-center">
+
+                    <div class="flex w-full flex-row items-end">
+                        <h1 class="w-full text-end text-6xl font-bold">
+                            12
+                        </h1>
+                        <span class="w-full text-lg text-gray-500">Barang</span>
+                    </div>
+                    <div class="flex w-full flex-row items-end">
+                        <p class="w-full pr-2 text-end text-lg font-bold text-gray-700">
+                            12423
+                        </p>
+                        <span class="w-full text-sm text-gray-500">last month</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-6 flex w-full flex-col rounded-2xl shadow-md">
+                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Stok barang rendah</h1>
+                </div>
+                <div class="grid h-full grid-cols-4 justify-center gap-5 divide-x">
+                    <div class="col-span-1 p-2 md:p-5">
+                        <div class="flex flex-col">
+                            <h1 class="font-bold">
+                                Laptop ASUS
+                            </h1>
+                            <h1>
+                                BR4214
+                            </h1>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-4xl md:text-6xl font-bold">
+                                63
+                            </h1>
+                            <span class="w-full text-sm text-gray-500">Stok</span>
+                        </div>
+                    </div>
+                    <div class="col-span-1 p-2 md:p-5">
+                        <div class="flex flex-col">
+                            <h1 class="font-bold">
+                                Laptop ASUS
+                            </h1>
+                            <h1>
+                                BR241
+                            </h1>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-4xl md:text-6xl font-bold">
+                                13
+                            </h1>
+                            <span class="w-full text-sm text-gray-500">Stok</span>
+                        </div>
+                    </div>
+                    <div class="col-span-1 p-2 md:p-5">
+                        <div class="flex flex-col">
+                            <h1 class="font-bold">
+                                Laptop ASUS
+                            </h1>
+                            <h1>
+                                BR2143
+                            </h1>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-4xl md:text-6xl font-bold">
+                                42
+                            </h1>
+                            <span class="w-full text-sm text-gray-500">Stok</span>
+                        </div>
+                    </div>
+                    <div class="col-span-1 p-2 md:p-5">
+                        <div class="flex flex-col">
+                            <h1 class="font-bold">
+                                Laptop ASUS
+                            </h1>
+                            <h1>
+                                BR4213
+                            </h1>
+                        </div>
+                        <div class="flex w-full flex-row items-end">
+                            <h1 class="w-full text-end text-4xl md:text-6xl font-bold">
+                                42
+                            </h1>
+                            <span class="w-full text-sm text-gray-500">Stok</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-6 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-3">
                 <div class="inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Inventory Movement Chart</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Inventory Movement Chart</h1>
                     <button class="m-3 inline-flex cursor-pointer items-center justify-center rounded-full bg-[#225A97] px-5 py-2">
                         <span class="text-white">
                             Tahun Ini
                         </span>
                     </button>
                 </div>
-                <div class="flex flex-col items-center" style="width: max-content height: max-content;">
-                    <canvas id="IMC" class="w-full"></canvas>
+                <div class="min-h-0 flex-1 overflow-hidden">
+                    <div class="h-full w-full">
+                        <canvas id="IMC" class="block h-full w-full"></canvas>
+                    </div>
                 </div>
 
             </div>
-            <div class="col-span-2 w-full rounded-2xl shadow-md">
+            <div class="col-span-6 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-3">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Stock Value Chart</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Stock Value Chart</h1>
                 </div>
-                <div class="flex flex-col items-center" style="width: max-content height: max-content;">
-                    <canvas id="SVC" class="w-full"></canvas>
+                <div class="min-h-0 flex-1 overflow-hidden">
+                    <div class="h-full w-full">
+                        <canvas id="SVC" class="block h-full w-full"></canvas>
+                    </div>
                 </div>
 
             </div>
-            <div class="col-span-2 md:col-span-4 w-full rounded-2xl shadow-md">
+            <div class="col-span-6 w-full rounded-2xl shadow-md">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Low Stock Items Table</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Low Stock Items Table</h1>
                 </div>
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -143,9 +242,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-span-2 md:col-span-4 w-full rounded-2xl shadow-md">
+            <div class="col-span-6 w-full rounded-2xl shadow-md">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Recent Inbound Items</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Recent Inbound Items</h1>
                 </div>
                 <table id="DataTable2" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -169,9 +268,9 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-span-2 md:col-span-4 w-full rounded-2xl shadow-md">
+            <div class="col-span-6 w-full rounded-2xl shadow-md">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg md:text-2xl font-bold text-white">Recent Outbound Items</h1>
+                    <h1 class="p-5 text-lg font-bold text-white md:text-2xl">Recent Outbound Items</h1>
                 </div>
                 <table id="DataTable3" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
             data: {
                 labels: ['Januari', 'Februari', 'Mari', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'December'],
                 datasets: [{
-                    label: '# of Votes',
+                    label: '# of Profit',
                     data: [12, 19, 3, 5, 2, 3],
                     borderWidth: 1,
                     backgroundColor: (context) => {
@@ -40,10 +40,10 @@ document.addEventListener('DOMContentLoaded', function () {
         new Chart(svc, {
             type: 'bar',
             data: {
-                labels: ['Januari', 'Februari', 'Mari', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'December'],
+                labels: ['Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang'],
                 datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 53, 58, 27, 32, -64],
+                    label: '# of Profit',
+                    data: [12, 19, 53, 58, 27, 32,],
                     borderWidth: 1,
                     backgroundColor: (context) => {
                         const value = context.dataset.data[context.dataIndex];
@@ -60,8 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
             options: {
                 scales: {
                     y: {
-                        min: -100,
-                        max: 100,
+                        beginAtZero: true
                     }
                 }
             }
