@@ -45,7 +45,8 @@ return new class extends Migration {
                 'STORAGE SYSTEM',
                 'WELDING EQUIPMENT',
                 'WOODWORKING EQUIPMENT',
-                'MISCELLANEOUS'
+                'MISCELLANEOUS',
+                'OTHER CATEGORIES'
             ])->nullable();
             $table->integer('stok')->default(0);
             $table->string('satuan');
