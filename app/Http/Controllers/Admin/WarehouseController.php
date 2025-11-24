@@ -71,7 +71,7 @@ class WarehouseController extends Controller
             'status_listing' => 'required|in:listing,non listing',
             'kode_barang' => 'required|string|max:255',
             'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|string|max:255',
+            'kategori' => 'required|in:' . implode(',', Barang::KATEGORI),
             'stok' => 'required|integer',
             'satuan' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',

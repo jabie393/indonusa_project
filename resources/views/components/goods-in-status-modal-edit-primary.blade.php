@@ -77,7 +77,7 @@
                                     <label for="edit_kode_barang"
                                         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
                                         Barang</label>
-                                    <input type="text" name="edit_kode_barang" id="edit_kode_barang"
+                                    <input type="text" name="kode_barang" id="edit_kode_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         readonly>
                                     <button type="button" id="editRefreshKodeBarang"

@@ -17,16 +17,6 @@ class GoodsInController extends Controller
         return view('admin.goods-in.index', compact('barangs', 'kategoriList'));
     }
 
-    // Tampilkan form tambah barang
-    public function create()
-    {
-        // Ambil daftar kategori dari model Barang
-        $kategoriList = Barang::KATEGORI;
-
-        // Kirim daftar kategori ke view
-        return view('admin.goods-in.index', compact('kategoriList'));
-    }
-
     // Simpan barang baru
     public function store(Request $request)
     {

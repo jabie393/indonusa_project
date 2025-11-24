@@ -346,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Validasi kode barang saat input untuk modal #tambahBarang
+// Validasi kode barang untuk modal #tambahBarang
 document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('input', function (e) {
         if (e.target.id === 'kode_barang') {
@@ -355,16 +355,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Validasi kode barang saat input untuk modal #editBarangModal
-document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('input', function (e) {
-        if (e.target.id === 'edit_kode_barang') {
-            validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
-        }
-    });
-});
-
-// Validasi kode barang saat input untuk modal #editBarangModalPrimary
+// Validasi kode barang untuk modal #editBarangModal dan #editBarangModalPrimary
 document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('input', function (e) {
         if (e.target.id === 'edit_kode_barang') {

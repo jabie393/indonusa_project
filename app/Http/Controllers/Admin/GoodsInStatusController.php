@@ -26,26 +26,11 @@ class GoodsInStatusController extends Controller
         return view('admin.goods-in-status.index', compact('barangs'));
     }
 
-    // Tampilkan form tambah barang
-    public function create()
-    {
-        return view('admin.goods-in-status.create');
-    }
-
     // Tampilkan detail barang
     public function show($id)
     {
         $barang = Barang::findOrFail($id);
         return view('admin.goods-in-status.show', compact('barang'));
-    }
-
-    // Tampilkan form edit barang
-    public function edit($id)
-    {
-        $barang = Barang::findOrFail($id);
-        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
-
-        return view('admin.goods-in-status.edit', compact('barang', 'kategoriList'));
     }
 
     // Update barang
@@ -68,7 +53,7 @@ class GoodsInStatusController extends Controller
                 'status_listing' => 'required|string',
                 'kode_barang' => 'required|string|max:255',
                 'nama_barang' => 'required|string|max:255',
-                'kategori' => 'required|string|max:255',
+                'kategori' => 'required|in:' . implode(',', Barang::KATEGORI),
                 'stok' => 'required|integer',
                 'satuan' => 'required|string|max:255',
                 'lokasi' => 'required|string|max:255',
