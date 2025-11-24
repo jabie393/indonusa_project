@@ -77,13 +77,22 @@
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
-                                <div>
+                                <div class="relative">
                                     <label for="kode_barang"
                                         class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
                                         Barang</label>
                                     <input type="text" name="kode_barang" id="kode_barang"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         readonly>
+                                    <button type="button" id="refreshKodeBarang"
+                                        class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor"
+                                            class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M4.5 19.5l3-3m0 0l3 3m-3-3v-6m12-3l-3 3m0 0l-3-3m3 3v6M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+                                        </svg>
+                                    </button>
                                 </div>
                                 <div>
                                     <label for="kategori"

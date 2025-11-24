@@ -197,28 +197,52 @@ function generateKodeBarang(kategori, kodeBarangElement) {
     const timestamp = Date.now().toString().slice(-5); // Ambil 5 digit terakhir dari timestamp
     const kodeBarang = `${singkatan}-${timestamp}`;
 
-    // Set nilai ke input kode_barang
     if (kodeBarangElement) {
         kodeBarangElement.value = kodeBarang;
 
-        // Validasi ke server untuk memastikan tidak duplikat
-        fetch(window.CHECK_KODE_BARANG_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': window.CSRF_TOKEN
-            },
-            body: JSON.stringify({ kode_barang: kodeBarang })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (!data.valid) {
-                    alert('Kode barang sudah ada, silakan coba lagi.');
-                    kodeBarangElement.value = '';
-                }
-            })
-            .catch(error => console.error('Error:', error));
+        // Panggil fungsi validateKodeBarang untuk validasi kode barang
+        validateKodeBarang(kodeBarangElement);
     }
+}
+
+// Fungsi untuk validasi kode barang yang Baru
+function validateKodeBarang(kodeBarangElement) {
+    const kodeBarang = kodeBarangElement.value;
+    const warningId = kodeBarangElement.id === 'kode_barang' ? 'kode-barang-warning' : 'edit-kode-barang-warning';
+    const submitButton = kodeBarangElement.id === 'kode_barang'
+        ? document.querySelector('#tambahBarang button[type="submit"]')
+        : kodeBarangElement.id === 'edit_kode_barang' && kodeBarangElement.closest('#editBarangModalPrimary')
+        ? document.querySelector('#editBarangModalPrimary button[type="submit"]')
+        : document.querySelector('#editBarangModal button[type="submit"]');
+
+    // Validasi kode barang ke server
+    fetch(window.CHECK_KODE_BARANG_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': window.CSRF_TOKEN
+        },
+        body: JSON.stringify({ kode_barang: kodeBarang })
+    })
+        .then(response => response.json())
+        .then(data => {
+            let warning = document.getElementById(warningId);
+
+            if (!data.valid) {
+                if (!warning) {
+                    warning = document.createElement('div');
+                    warning.id = warningId;
+                    warning.className = 'text-red-600 text-sm mt-1';
+                    warning.innerText = 'Kode barang sudah ada, silakan coba lagi.';
+                    kodeBarangElement.parentNode.appendChild(warning);
+                }
+                submitButton.disabled = true;
+            } else {
+                warning?.remove();
+                submitButton.disabled = false;
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Event listener untuk kategori
@@ -277,4 +301,74 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+});
+
+// Fungsi untuk menangani tombol refresh kode barang
+function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
+    const kategoriElement = document.getElementById(kategoriElementId);
+    const kodeBarangElement = document.getElementById(kodeBarangElementId);
+
+    if (!kategoriElement || !kodeBarangElement) return;
+
+    const kategori = kategoriElement.value;
+
+    if (!kategori) {
+        alert('Pilih kategori terlebih dahulu!');
+        return;
+    }
+
+    // Hapus warning jika ada
+    const warningId = kodeBarangElementId === 'kode_barang' ? 'kode-barang-warning' : 'edit-kode-barang-warning';
+    const warning = document.getElementById(warningId);
+    warning?.remove();
+
+    // Panggil fungsi untuk menghasilkan kode barang baru
+    generateKodeBarang(kategori, kodeBarangElement);
+
+    // Validasi ulang kode barang baru
+    validateKodeBarang(kodeBarangElement);
+}
+
+// Event Listener untuk tombol refresh kode_barang
+document.addEventListener('DOMContentLoaded', function () {
+    const refreshButtons = [
+        { buttonId: 'refreshKodeBarang', kategoriId: 'kategori', kodeBarangId: 'kode_barang' },
+        { buttonId: 'editRefreshKodeBarang', kategoriId: 'edit_kategori', kodeBarangId: 'edit_kode_barang' },
+    ];
+
+    refreshButtons.forEach(({ buttonId, kategoriId, kodeBarangId }) => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            button.addEventListener('click', function () {
+                handleRefreshKodeBarang(kategoriId, kodeBarangId);
+            });
+        }
+    });
+});
+
+// Validasi kode barang saat input untuk modal #tambahBarang
+document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('input', function (e) {
+        if (e.target.id === 'kode_barang') {
+            validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
+        }
+    });
+});
+
+// Validasi kode barang saat input untuk modal #editBarangModal
+document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('input', function (e) {
+        if (e.target.id === 'edit_kode_barang') {
+            validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
+        }
+    });
+});
+
+// Validasi kode barang saat input untuk modal #editBarangModalPrimary
+document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('input', function (e) {
+        if (e.target.id === 'edit_kode_barang') {
+            validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
+        }
+    });
 });
