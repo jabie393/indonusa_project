@@ -212,8 +212,8 @@ function validateKodeBarang(kodeBarangElement) {
     const submitButton = kodeBarangElement.id === 'kode_barang'
         ? document.querySelector('#tambahBarang button[type="submit"]')
         : kodeBarangElement.id === 'edit_kode_barang' && kodeBarangElement.closest('#editBarangModalPrimary')
-        ? document.querySelector('#editBarangModalPrimary button[type="submit"]')
-        : document.querySelector('#editBarangModal button[type="submit"]');
+            ? document.querySelector('#editBarangModalPrimary button[type="submit"]')
+            : document.querySelector('#editBarangModal button[type="submit"]');
 
     // Validasi kode barang ke server
     fetch(window.CHECK_KODE_BARANG_URL, {
@@ -253,6 +253,8 @@ document.addEventListener('DOMContentLoaded', function () {
     if (kategoriElement && kodeBarangElement) {
         kategoriElement.addEventListener('change', function () {
             generateKodeBarang(this.value, kodeBarangElement);
+            // remove any existing warning when user selects a category
+            document.getElementById('kategori-warning')?.remove();
         });
     }
 });
@@ -299,6 +301,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Generate kode barang baru berdasarkan kategori yang dipilih
                 generateKodeBarang(selectedKategori, editKodeBarangElement);
             }
+            // remove any warning shown for edit kategori when a value is selected
+            document.getElementById('edit-kategori-warning')?.remove();
         });
     }
 });
@@ -313,7 +317,19 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
     const kategori = kategoriElement.value;
 
     if (!kategori) {
-        alert('Pilih kategori terlebih dahulu!');
+        // show inline warning instead of alert
+        const warningId = kategoriElementId === 'kategori' ? 'kategori-warning' : 'edit-kategori-warning';
+        // remove previous warning if exists
+        document.getElementById(warningId)?.remove();
+
+        const warn = document.createElement('div');
+        warn.id = warningId;
+        warn.className = 'text-red-600 text-sm mt-1';
+        warn.innerText = 'Pilih kategori terlebih dahulu!';
+
+        // append next to the kategori input
+        kategoriElement.parentNode.appendChild(warn);
+        kategoriElement.focus();
         return;
     }
 
