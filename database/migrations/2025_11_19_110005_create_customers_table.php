@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('npwp')->nullable();
             $table->string('term_of_payments')->nullable();
             $table->string('kredit_limit')->nullable();
-            $table->string('divisi')->nullable();
             $table->string('email')->nullable();
             $table->string('telepon')->nullable();
             $table->text('alamat')->nullable();

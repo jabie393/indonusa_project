@@ -12,7 +12,10 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all(); // Mengambil semua data customer dari database
-        return view('admin.customer.index', compact('customers')); // Meneruskan data ke view
+        $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
+        $pics = \DB::table('pics')->get(); // Mengambil data dari tabel pics
+
+        return view('admin.customer.index', compact('customers', 'salesUsers', 'pics')); // Meneruskan data ke view
     }
 
     public function store(Request $request)
@@ -22,7 +25,6 @@ class CustomerController extends Controller
             'npwp' => 'nullable|string|max:50',
             'term_of_payments' => 'nullable|string|max:100',
             'kredit_limit' => 'nullable|string|max:100',
-            'divisi' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
             'alamat' => 'nullable|string|max:255',
@@ -40,7 +42,6 @@ class CustomerController extends Controller
         $customer->npwp = $validatedData['npwp'] ?? null;
         $customer->term_of_payments = $validatedData['term_of_payments'] ?? null;
         $customer->kredit_limit = $validatedData['kredit_limit'] ?? null;
-        $customer->divisi = $validatedData['divisi'] ?? null;
         $customer->email = $validatedData['email'] ?? null;
         $customer->telepon = $validatedData['telepon'] ?? null;
         $customer->alamat = $validatedData['alamat'] ?? null;
