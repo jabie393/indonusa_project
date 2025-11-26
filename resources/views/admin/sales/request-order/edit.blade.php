@@ -26,7 +26,7 @@
 
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="{{ route('sales.request-order.update', $requestOrder->id) }}" id="requestOrderForm">
+                <form method="POST" action="{{ route('sales.request-order.update', $requestOrder->id) }}" id="requestOrderForm" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -191,13 +191,14 @@
                                 <table class="table table-bordered" id="itemsTable">
                                     <thead class="table-light">
                                         <tr>
-                                                <th>Kode Barang</th>
-                                                <th>Nama Barang</th>
-                                                <th width="100">Diskon (%)</th>
-                                                <th width="120">Jumlah</th>
-                                                <th width="150">Harga Satuan</th>
-                                                <th width="150">Subtotal</th>
-                                                <th width="80">Aksi</th>
+                                                    <th>Kode Barang</th>
+                                                    <th>Nama Barang</th>
+                                                    <th width="100">Diskon (%)</th>
+                                                    <th width="120">Jumlah</th>
+                                                    <th width="150">Harga Satuan</th>
+                                                    <th width="150">Gambar</th>
+                                                    <th width="150">Subtotal</th>
+                                                    <th width="80">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="itemRows">
@@ -235,6 +236,20 @@
                                                            min="0" step="0.01" value="{{ old('harga', $item->harga) }}">
                                                 </td>
                                                 <td>
+                                                    <input type="file" name="item_images[{{ $loop->index }}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                                                    <div class="item-images-preview mt-2 row g-2">
+                                                        @if($item->item_images && count($item->item_images) > 0)
+                                                            @foreach($item->item_images as $img)
+                                                                <div class="col-auto">
+                                                                    <div class="card" style="width: 90px; height: 90px; overflow: hidden;">
+                                                                        <img src="{{ asset('storage/' . $img) }}" class="card-img-top" alt="Image" style="height: 100%; width: 100%; object-fit: cover;">
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                                <td>
                                                     <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
                                                 </td>
                                                 <td>
@@ -265,6 +280,10 @@
                                                 <td>
                                                     <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" 
                                                            min="0" step="0.01" value="0">
+                                                </td>
+                                                <td>
+                                                    <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                                                    <div class="item-images-preview mt-2 row g-2"></div>
                                                 </td>
                                                 <td>
                                                     <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
@@ -607,10 +626,15 @@
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
                 const diskonDisplay = row.querySelector('.diskon-display');
+                const hargaInput = row.querySelector('.harga-input');
                 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
                     if (diskonDisplay) diskonDisplay.value = (option.dataset.diskon || '0') + '%';
+                    // Set jual price = base price from Barang + 30%
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const hargaJual = +(baseHarga * 1.3).toFixed(2);
+                    if (hargaInput) hargaInput.value = hargaJual;
                 } else {
                     namaDisplay.value = '';
                     if (diskonDisplay) diskonDisplay.value = '';
@@ -662,6 +686,10 @@
                         <input type="number" name="harga[]" class="form-control harga-input" min="0" step="0.01" value="0">
                     </td>
                     <td>
+                        <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                        <div class="item-images-preview mt-2 row g-2"></div>
+                    </td>
+                    <td>
                         <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
                     </td>
                     <td>
@@ -674,6 +702,8 @@
                 attachRowEvents(newRow);
                 updateRemoveButtons();
                 calculateTotals();
+                // Reindex file input names after adding a row
+                reindexItemImageInputs();
 
                 // Re-apply kategori filter to new row
                 const selectedKategori = kategoriSelect.value;
@@ -693,6 +723,40 @@
                     row.remove();
                     updateRemoveButtons();
                     calculateTotals();
+                    reindexItemImageInputs();
+                });
+                // Setup preview handler
+                handleItemImagePreview(row);
+            }
+
+            // Preview handler for per-item images
+            function handleItemImagePreview(row) {
+                const fileInput = row.querySelector('.item-images-input');
+                const preview = row.querySelector('.item-images-preview');
+                if (!fileInput || !preview) return;
+
+                fileInput.addEventListener('change', function() {
+                    const newPreviewContainer = document.createElement('div');
+                    newPreviewContainer.className = 'space-y-1';
+
+                    Array.from(this.files).forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const col = document.createElement('div');
+                            col.className = 'col-auto';
+                            col.innerHTML = `
+                                <div class="card" style="width: 90px; height: 90px; overflow: hidden;">
+                                    <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 100%; width: 100%; object-fit: cover;">
+                                </div>
+                            `;
+                            newPreviewContainer.appendChild(col);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    if (this.files.length > 0) {
+                        preview.appendChild(newPreviewContainer);
+                    }
                 });
             }
 
@@ -700,6 +764,14 @@
                 const rows = document.querySelectorAll('.item-row');
                 rows.forEach((row, index) => {
                     row.querySelector('.remove-row').style.display = rows.length > 1 ? 'inline-block' : 'none';
+                });
+            }
+
+            // Reindex all item_images input names to maintain sequence
+            function reindexItemImageInputs() {
+                document.querySelectorAll('.item-row').forEach((row, i) => {
+                    const fileInput = row.querySelector('.item-images-input');
+                    if (fileInput) fileInput.name = `item_images[${i}][]`;
                 });
             }
 
@@ -741,6 +813,13 @@
             }
 
             document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
+            // Initialize harga for rows that have a selected barang
+            document.querySelectorAll('.item-row').forEach(row => {
+                const select = row.querySelector('.barang-select');
+                if (select && select.value) {
+                    handleBarangChange(select);
+                }
+            });
             updateRemoveButtons();
             calculateTotals();
         });

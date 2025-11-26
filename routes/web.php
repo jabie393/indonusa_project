@@ -147,6 +147,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/create', [RequestOrderController::class, 'create'])->name('sales.request-order.create');
     Route::post('/request-order', [RequestOrderController::class, 'store'])->name('sales.request-order.store');
     Route::get('/request-order/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.request-order.show');
+    Route::get('/request-order/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.request-order.pdf');
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');

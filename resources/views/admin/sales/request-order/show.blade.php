@@ -184,7 +184,12 @@
                             <tbody>
                                 @php $total = 0; @endphp
                                 @forelse($requestOrder->items as $item)
-                                    @php $total += $item->subtotal; @endphp
+                                                    @php
+                                                        // Compute jual price from Barang.harga + 30% if related barang exists
+                                                        $displayHarga = optional($item->barang)->harga_jual ?? $item->harga;
+                                                        $computedSubtotal = $displayHarga * $item->quantity;
+                                                        $total += $computedSubtotal;
+                                                    @endphp
                                     <tr>
                                         <td>
                                             <strong>{{ $item->barang->nama_barang ?? 'N/A' }}</strong>
@@ -193,8 +198,8 @@
                                         </td>
                                         <td>{{ $item->barang->diskon_percent ?? 0 }}%</td>
                                         <td>{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
-                                        <td>Rp {{ number_format($item->harga, 2, ',', '.') }}</td>
-                                        <td><strong>Rp {{ number_format($item->subtotal, 2, ',', '.') }}</strong></td>
+                                        <td>Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
+                                        <td><strong>Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</strong></td>
                                     </tr>
                                 @empty
                                     <tr>
@@ -251,6 +256,10 @@
                                 <i class="fas fa-edit"></i> Edit Request Order
                             </a>
                         @endif
+
+                        <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
+                            <i class="fas fa-download"></i> Download PDF
+                        </a>
 
                         @if($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
                             <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" style="display:inline;">

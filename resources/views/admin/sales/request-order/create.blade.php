@@ -230,6 +230,7 @@
                                         </td>
                                         <td>
                                             <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                                            <div class="item-images-preview mt-2 row g-2"></div>
                                         </td>
                                         <td>
                                             <input type="text"
@@ -596,15 +597,20 @@
             }
 
             // Handle barang selection change
-            function handleBarangChange(select) {
+                function handleBarangChange(select) {
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
                 const diskonDisplay = row.querySelector('.diskon-display');
+                    const hargaInput = row.querySelector('.harga-input');
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
                     diskonDisplay.value = option.dataset.diskon || '0';
+                    // Set jual price = base price from Barang + 30%
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const hargaJual = +(baseHarga * 1.3).toFixed(2);
+                    if (hargaInput) hargaInput.value = hargaJual;
                 } else {
                     namaDisplay.value = '';
                     diskonDisplay.value = '';
@@ -642,7 +648,36 @@
                 });
             }
 
-            // Add row
+                // Helper: preview for item images
+            function handleItemImagePreview(row) {
+                const fileInput = row.querySelector('.item-images-input');
+                const preview = row.querySelector('.item-images-preview');
+                if (!fileInput || !preview) return;
+
+                fileInput.addEventListener('change', function() {
+                    // Clear existing previews
+                    preview.innerHTML = '';
+                    const files = Array.from(this.files || []);
+                    if (files.length === 0) return;
+
+                    files.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const col = document.createElement('div');
+                            col.className = 'col-auto';
+                            col.innerHTML = `
+                                <div class="card" style="width: 90px; height: 90px; overflow: hidden;">
+                                    <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 100%; width: 100%; object-fit: cover;">
+                                </div>
+                            `;
+                            preview.appendChild(col);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
+            }
+
+                // Add row
             addRowBtn.addEventListener('click', function() {
                 const idx = document.querySelectorAll('.item-row').length;
                 const newRow = document.createElement('tr');
@@ -669,6 +704,7 @@
                     </td>
                     <td>
                         <input type="file" name="item_images[${idx}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
+                        <div class="item-images-preview mt-2 row g-2"></div>
                     </td>
                     <td>
                         <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
@@ -688,6 +724,8 @@
                 `;
                 itemRows.appendChild(newRow);
                 attachRowEvents(newRow);
+                // Attach preview handler for the new row
+                handleItemImagePreview(newRow);
                 updateRemoveButtons();
                 calculateTotals();
 
@@ -766,6 +804,15 @@
 
             // Initialize
             document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
+            // Initialize item image previews for existing rows
+            document.querySelectorAll('.item-row').forEach(row => handleItemImagePreview(row));
+            // If any rows already have a selected barang, set harga to barang.harga * 1.3
+            document.querySelectorAll('.item-row').forEach(row => {
+                const select = row.querySelector('.barang-select');
+                if (select && select.value) {
+                    handleBarangChange(select);
+                }
+            });
             updateRemoveButtons();
             calculateTotals();
             updateSubmitState();

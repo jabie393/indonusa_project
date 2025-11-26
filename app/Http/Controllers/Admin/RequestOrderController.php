@@ -79,11 +79,13 @@ class RequestOrderController extends Controller
         ]);
 
         $items = [];
-        foreach ($validated['barang_id'] as $i => $barangId) {
+            foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) continue;
 
-            $harga = isset($validated['harga'][$i]) ? (float) $validated['harga'][$i] : 0;
+            // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
+            $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
+            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : round($baseHarga * 1.3, 2);
             $subtotal = $qty * $harga;
 
             $items[] = [
@@ -232,6 +234,20 @@ class RequestOrderController extends Controller
     }
 
     /**
+     * View PDF for Request Order
+     */
+    public function pdf(RequestOrder $requestOrder)
+    {
+        // Authorization: Owner sales or Supervisor/Admin can view
+        if ($requestOrder->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
+            abort(403);
+        }
+
+        $requestOrder->load('items.barang', 'sales');
+        return view('admin.pdf.request-order-pdf', compact('requestOrder'));
+    }
+
+    /**
      * Form edit Request Order (hanya jika masih pending)
      */
     public function edit(RequestOrder $requestOrder)
@@ -291,11 +307,13 @@ class RequestOrderController extends Controller
         ]);
 
         $items = [];
-        foreach ($validated['barang_id'] as $i => $barangId) {
+            foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) continue;
 
-            $harga = isset($validated['harga'][$i]) ? (float) $validated['harga'][$i] : 0;
+            // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
+            $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
+            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : round($baseHarga * 1.3, 2);
             $subtotal = $qty * $harga;
 
             $items[] = [

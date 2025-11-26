@@ -109,4 +109,11 @@ class Barang extends Model
     {
         return $this->hasMany(BarangHistory::class);
     }
+
+    // Accessor for selling price (harga jual = harga + 30%)
+    public function getHargaJualAttribute()
+    {
+        $base = (float) ($this->attributes['harga'] ?? 0);
+        return round($base * 1.3, 2);
+    }
 }

@@ -100,9 +100,12 @@
                                     -
                                 @endif
                             </td>
-                            <td>
+                            <td class="flex gap-2">
                                 <a href="{{ route('sales.request-order.show', $ro->id) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                     <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('sales.request-order.pdf', $ro->id) }}" class="btn btn-sm btn-outline-secondary" title="Download PDF" target="_blank">
+                                    <i class="fas fa-download"></i>
                                 </a>
                                 @if ($ro->status === 'pending')
                                     <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
