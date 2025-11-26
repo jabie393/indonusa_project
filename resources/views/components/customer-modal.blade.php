@@ -172,7 +172,7 @@
     $("#pic").select2({
         tags: true,
         placeholder: "Ketik untuk mencari PIC atau isi manual...",
-
+        tokenSeparators: [',', ' '],
         
         createTag: function (params) {
                 let term = $.trim(params.term);
