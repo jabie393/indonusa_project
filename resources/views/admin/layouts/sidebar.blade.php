@@ -97,6 +97,7 @@
 
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
+
                         {{-- Akun Sales --}}
                         <li class="w-[75%]">
                             <a href="{{ route('akun-sales.index') }}"
@@ -116,23 +117,6 @@
                             </a>
                         </li>
 
-                        {{-- Customer --}}
-                        <li class="w-[75%]">
-                            <a href="{{ route('customer.index') }}"
-                                class="{{ request()->routeIs('customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
-                                    <path
-                                        d="M23.3027 21.9639C23.8066 21.3252 24.1084 20.5195 24.1084 19.6406C24.1084 17.5693 22.4297 15.8906 20.3584 15.8906C18.2871 15.8906 16.6084 17.5693 16.6084 19.6406C16.6084 20.5166 16.9102 21.3252 17.4141 21.9639C15.3457 23.0332 13.9307 25.1924 13.9307 27.6768H16.0723C16.0723 25.3125 17.9941 23.3906 20.3584 23.3906C22.7227 23.3906 24.6445 25.3125 24.6445 27.6768H26.7861C26.7861 25.1953 25.3682 23.0361 23.3027 21.9639ZM20.3584 18.0352C21.2432 18.0352 21.9668 18.7559 21.9668 19.6436C21.9668 20.5283 21.2461 21.252 20.3584 21.252C19.4736 21.252 18.75 20.5312 18.75 19.6436C18.75 18.7559 19.4707 18.0352 20.3584 18.0352Z"
-                                        fill="currentColor" />
-                                    <path d="M3.21387 2.1416V27.8584H12.8584V25.7139H5.3584V4.28613H24.6445V15H26.7861V2.1416H3.21387Z" fill="currentColor" />
-                                    <path d="M7.5 7.5H22.5V9.6416H7.5V7.5ZM7.5 11.7861H18.2139V13.9277H7.5V11.7861ZM7.5 16.0723H13.9277V18.2139H7.5V16.0723Z" fill="currentColor" />
-                                </svg>
-
-                                <span class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer</span>
-                            </a>
-                        </li>
-
                         {{-- Pics --}}
                         <li class="w-[75%]">
                             <a href="{{ route('pics.index') }}"
@@ -147,6 +131,23 @@
                                 </svg>
 
                                 <span class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Pics</span>
+                            </a>
+                        </li>
+
+                        {{-- Customer --}}
+                        <li class="w-[75%]">
+                            <a href="{{ route('customer.index') }}"
+                                class="{{ request()->routeIs('customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                    <path
+                                        d="M23.3027 21.9639C23.8066 21.3252 24.1084 20.5195 24.1084 19.6406C24.1084 17.5693 22.4297 15.8906 20.3584 15.8906C18.2871 15.8906 16.6084 17.5693 16.6084 19.6406C16.6084 20.5166 16.9102 21.3252 17.4141 21.9639C15.3457 23.0332 13.9307 25.1924 13.9307 27.6768H16.0723C16.0723 25.3125 17.9941 23.3906 20.3584 23.3906C22.7227 23.3906 24.6445 25.3125 24.6445 27.6768H26.7861C26.7861 25.1953 25.3682 23.0361 23.3027 21.9639ZM20.3584 18.0352C21.2432 18.0352 21.9668 18.7559 21.9668 19.6436C21.9668 20.5283 21.2461 21.252 20.3584 21.252C19.4736 21.252 18.75 20.5312 18.75 19.6436C18.75 18.7559 19.4707 18.0352 20.3584 18.0352Z"
+                                        fill="currentColor" />
+                                    <path d="M3.21387 2.1416V27.8584H12.8584V25.7139H5.3584V4.28613H24.6445V15H26.7861V2.1416H3.21387Z" fill="currentColor" />
+                                    <path d="M7.5 7.5H22.5V9.6416H7.5V7.5ZM7.5 11.7861H18.2139V13.9277H7.5V11.7861ZM7.5 16.0723H13.9277V18.2139H7.5V16.0723Z" fill="currentColor" />
+                                </svg>
+
+                                <span class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer</span>
                             </a>
                         </li>
                     </ul>
