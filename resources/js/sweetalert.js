@@ -35,3 +35,17 @@ if (window.sweetTitle && window.sweetText) {
         }
     });
 }
+
+// Error alert
+if (window.errorTitle && window.errorText) {
+    Swal.fire({
+        title: window.errorTitle,
+        text: window.errorText,
+        icon: 'error',
+        showConfirmButton: true,
+        confirmButtonColor: '#d33',
+        customClass: {
+            popup: 'rounded-2xl!',
+        }
+    });
+}

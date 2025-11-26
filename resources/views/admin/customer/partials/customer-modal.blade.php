@@ -93,7 +93,7 @@
                     <div class="col-span-2 mb-4">
                         <label for="telepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
                             HP</label>
-                        <input type="text" id="telepon" name="telepon" placeholder="08xxxxxxxxx"
+                        <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxx"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             required>
                     </div>
@@ -106,15 +106,17 @@
                     <div class="col-span-2 mb-4">
                         <label for="pic"
                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
-                        <select id="pic" name="pic"
+                        <select id="pic" name="pics[]"
                             class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             multiple="multiple" required>
                             <optgroup>
                                 @foreach($salesUsers as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }} (Sales)</option>
+                                    <option value="{{ json_encode(['id' => $user->id, 'type' => 'User']) }}">
+                                        {{ $user->name }} (Sales)</option>
                                 @endforeach
                                 @foreach($pics as $pic)
-                                    <option value="{{ $pic->id }}">{{ $pic->name }} ({{ $pic->position }})</option>
+                                    <option value="{{ json_encode(['id' => $pic->id, 'type' => 'Pic']) }}">{{ $pic->name }}
+                                        ({{ $pic->position }})</option>
                                 @endforeach
                             </optgroup>
                         </select>
@@ -190,24 +192,40 @@
     window.CSRF_TOKEN = "{{ csrf_token() }}";
 </script>
 <script>
-        $("#pic").select2({
-            tags: true,
-            placeholder: "Ketik untuk mencari PIC atau isi manual...",
-            dropdownParent: $("#createCustomerModal"), // Pastikan ID modal sesuai
-            createTag: function (params) {
-                let term = $.trim(params.term);
+    $("#pic").select2({
+        tags: true,
+        placeholder: "Ketik untuk mencari PIC atau isi manual...",
+        dropdownParent: $("#createCustomerModal"),
+        createTag: function (params) {
+            let term = $.trim(params.term);
 
-                if (term === '') {
-                    return null;
-                }
-
-                return {
-                    id: term,
-                    text: term + " (baru)",
-                    newTag: true
-                };
+            if (term === '') {
+                return null;
             }
-        });
+
+            return {
+                id: term,
+                text: term + " (baru)",
+                newTag: true
+            };
+        },
+        templateResult: function (data) {
+            if (data.newTag) {
+                return $('<span>' + data.text + '</span>');
+            }
+            return data.text;
+        },
+        templateSelection: function (data) {
+            if (data.newTag) {
+                return data.id;
+            }
+            return data.text;
+        }
+    });
+    $('#pic').on('change', function () {
+        const selectedOptions = $(this).val();
+        const parsedOptions = selectedOptions.map(option => JSON.parse(option));
+    });
 </script>
 
 @vite(['resources/js/checker.js'])

@@ -70,4 +70,16 @@ class Customer extends Model
     {
         return "{$this->alamat}, {$this->kota}, {$this->provinsi} {$this->kode_pos}";
     }
+
+    public function pics()
+    {
+        return $this->morphToMany(Pic::class, 'pic', 'customer_pics', 'customer_id', 'pic_id')
+                    ->withPivot('pic_type');
+    }
+
+    public function users()
+    {
+        return $this->morphToMany(User::class, 'pic', 'customer_pics', 'customer_id', 'pic_id')
+                    ->withPivot('pic_type');
+    }
 }

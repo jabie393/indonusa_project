@@ -58,4 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class, 'sales_id');
     }
+
+    public function customers()
+    {
+        return $this->morphedByMany(Customer::class, 'pic', 'customer_pics', 'pic_id', 'customer_id')
+                    ->withPivot('pic_type');
+    }
 }
