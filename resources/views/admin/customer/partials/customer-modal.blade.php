@@ -109,14 +109,12 @@
                         <select id="pic" name="pic"
                             class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             multiple="multiple" required>
-                            <optgroup label="Sales">
+                            <optgroup>
                                 @foreach($salesUsers as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    <option value="{{ $user->id }}">{{ $user->name }} (Sales)</option>
                                 @endforeach
-                            </optgroup>
-                            <optgroup label="PICs">
                                 @foreach($pics as $pic)
-                                    <option value="{{ $pic->id }}">{{ $pic->name }}</option>
+                                    <option value="{{ $pic->id }}">{{ $pic->name }} ({{ $pic->position }})</option>
                                 @endforeach
                             </optgroup>
                         </select>
@@ -192,7 +190,6 @@
     window.CSRF_TOKEN = "{{ csrf_token() }}";
 </script>
 <script>
-    $(document).ready(function () {
         $("#pic").select2({
             tags: true,
             placeholder: "Ketik untuk mencari PIC atau isi manual...",
@@ -211,7 +208,6 @@
                 };
             }
         });
-    });
 </script>
 
 @vite(['resources/js/checker.js'])
