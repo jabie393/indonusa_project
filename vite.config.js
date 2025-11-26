@@ -24,6 +24,7 @@ export default defineConfig({
                 'resources/js/chart-dashboard.js',
                 'resources/js/pics.js',
                 'resources/js/excel-upload.js',
+                'resources/js/customer.js',
             ],
             refresh: true,
         }),
