@@ -1,7 +1,9 @@
 <!-- Create PICS Modal -->
 <dialog id="createPicsModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+    <div
+        class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+        <div
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Pic </h3>
             <div class="modal-action m-0">
@@ -19,28 +21,32 @@
                 </form>
             </div>
         </div>
-        <form action="" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        <form action="{{ route('pics.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
                 @csrf
                 <div class="col-span-2 mb-4">
-                    <label for="createName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                    <input type="text" id="createName" name="name" placeholder="Nama"
+                    <label for="createName"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+                    <input type="text" id="createName" name="name" placeholder="Jhon Doe"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div class="col-span-2 mb-4">
-                    <label for="telepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. HP</label>
-                    <input type="text" id="telepon" name="telepon" placeholder="08xxxxxxxxx"
+                    <label for="telepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
+                        HP</label>
+                    <input type="tel" id="telepon" name="telepon" placeholder="08xxxxxxxxx"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                         required>
                 </div>
                 <div class="col-span-2 mb-4">
-                    <label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                    <label for="email"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
                     <input type="email" id="email" name="email" placeholder="example@example.com"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                 </div>
                 <div class="col-span-2 mb-4">
-                    <label for="position" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Posisi/Jabatan</label>
+                    <label for="position"
+                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Posisi/Jabatan</label>
                     <input type="text" id="position" name="position" placeholder="Posisi/Jabatan"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                 </div>
@@ -57,10 +63,12 @@
 </dialog>
 
 <!-- Edit Sales Account Modal -->
-{{-- <dialog id="editUserModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">Edit Akun Sales</h3>
+<dialog id="editPicsModal" class="modal">
+<div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+        <div
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-white">
+                Edit Pic </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -76,59 +84,37 @@
                 </form>
             </div>
         </div>
-        <form id="editUserForm" action="" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
-            @csrf
-            @method('PUT')
-            <input type="hidden" id="editUserId" name="id">
-            <div class="mb-4">
-                <label for="editName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
-                <input type="text" id="editName" name="name"
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-            </div>
-            <div class="mb-4">
-                <label for="editEmail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                <input type="email" id="editEmail" name="email"
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-            </div>
-            <div class="mb-4">
-                <label for="editPassword" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                <input type="password" id="editPassword" name="password" placeholder="Isi untuk mengubah password" autocomplete="new-password"
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
-        </form>
+    <form id="editPicsForm" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        @csrf
+        @method('PUT')
+        <input type="hidden" id="editPicsId" name="id">
+        <div class="mb-4">
+            <label for="editName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
+            <input type="text" id="editName" name="name" placeholder="Jhon Doe"
+                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+        <div class="col-span-2 mb-4">
+            <label for="editTelepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No. HP</label>
+            <input type="text" id="editTelepon" name="telepon" placeholder="08xxxxxxxxx"
+                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                required>
+        </div>
+        <div class="mb-4">
+            <label for="editEmail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
+            <input type="email" id="editEmail" name="email" placeholder="example@example.com"
+                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+        <div class="col-span-2 mb-4">
+            <label for="editPosition" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Posisi/Jabatan</label>
+            <input type="text" id="editPosition" name="position" placeholder="Posisi/Jabatan"
+                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+        </div>
+        <div class="flex justify-end">
+            <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
+        </div>
+    </form>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
     </form>
-</dialog> --}}
-
-<script>
-    window.CHECK_EMAIL_URL = "{{ route('check.email') }}";
-    window.CSRF_TOKEN = "{{ csrf_token() }}";
-</script>
-<script>
-    $("#pic").select2({
-        tags: true,
-        placeholder: "Ketik untuk mencari PIC atau isi manual...",
-
-
-        createTag: function(params) {
-            let term = $.trim(params.term);
-
-            if (term === '') {
-                return null;
-            }
-
-            return {
-                id: term,
-                text: term + " (baru)",
-                newTag: true
-            };
-        }
-    });
-</script>
-
-@vite(['resources/js/checker.js'])
+</dialog>
