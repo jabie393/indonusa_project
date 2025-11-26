@@ -20,6 +20,21 @@ class GoodsInController extends Controller
     // Simpan barang baru
     public function store(Request $request)
     {
+
+        // If an Excel file is uploaded via AJAX (field name `excel`), store it and return JSON.
+        if ($request->hasFile('excel')) {
+            $file = $request->file('excel');
+            // store in public disk under imports/ with automatic filename
+            $folder = 'imports';
+            $path = $file->store($folder, 'public');
+
+            return response()->json([
+                'message' => 'File uploaded',
+                'path' => $path,
+                'url' => asset('storage/' . $path),
+            ], 200);
+        }
+        
         $validated = $request->validate([
             'status_listing' => 'required|in:listing,non listing',
             'kode_barang' => 'required|string|max:255',
