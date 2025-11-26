@@ -46,7 +46,6 @@
                         <th class="px-4 py-2">Term Of Payment</th>
                         <th class="px-4 py-2">Kredit Limit</th>
                         <th class="px-4 py-2">PIC</th>
-                        <th class="px-4 py-2">Divisi</th>
                         <th class="px-4 py-2">No. HP</th>
                         <th class="px-4 py-2">Email</th>
                         <th class="px-4 py-2">Aksi</th>
@@ -61,7 +60,6 @@
                             <td class="px-4 py-2">{{ $customer->term_of_payments ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->pic ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $customer->divisi ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->telepon }}</td>
                             <td class="px-4 py-2">{{ $customer->email }}</td>
                             <td class="px-4 py-2">
@@ -110,6 +108,6 @@
     </div>
 
     <!-- Modals -->
-    @include('components.customer-modal')
-    {{-- @vite(['resources/js/customer.js']) --}}
+    @include('admin.customer.partials.customer-modal')
+    @vite(['resources/js/customer.js'])
 </x-app-layout>

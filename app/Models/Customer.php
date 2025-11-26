@@ -14,7 +14,6 @@ class Customer extends Model
         'npwp',
         'term_of_payments',
         'kredit_limit',
-        'divisi',
         'email',
         'telepon',
         'alamat',
