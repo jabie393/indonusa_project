@@ -71,6 +71,10 @@ class RequestOrderController extends Controller
             'quantity.*' => 'required|integer|min:1',
             'harga' => 'nullable|array',
             'harga.*' => 'nullable|numeric|min:0',
+            'diskon_percent' => 'nullable|array',
+            'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
+            'diskon_percent' => 'nullable|array',
+            'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
             'item_images' => 'nullable|array',
@@ -85,13 +89,19 @@ class RequestOrderController extends Controller
 
             // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
-            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : round($baseHarga * 1.3, 2);
+            // compute diskon percentage from input, fallback to 0
+            $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
+            // calculate harga based on baseHarga * 1.3 (jual) then apply discount
+            $computedHarga = round($baseHarga * 1.3 * (1 - ($diskon / 100)), 2);
+            // If harga provided explicitly, we keep it but prefer computedHarga to be consistent
+            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
             $subtotal = $qty * $harga;
 
             $items[] = [
                 'barang_id' => $barangId,
                 'quantity' => $qty,
                 'harga' => $harga,
+                'diskon_percent' => $diskon,
                 'subtotal' => $subtotal,
             ];
         }
@@ -149,21 +159,20 @@ class RequestOrderController extends Controller
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
+                    'diskon_percent' => $item['diskon_percent'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ]);
             }
 
-            // Check discount rules: if any barang has diskon_percent >= 30 then require supervisor approval
-            $barangIds = array_column($items, 'barang_id');
-            $diskonMap = Barang::whereIn('id', $barangIds)->pluck('diskon_percent', 'id')->toArray();
+            // Check discount rules: if any item has diskon_percent > 20 then require supervisor approval
             $maxDiskon = 0;
-            foreach ($barangIds as $id) {
-                $d = isset($diskonMap[$id]) ? (int)$diskonMap[$id] : 0;
+            foreach ($items as $it) {
+                $d = isset($it['diskon_percent']) ? (float)$it['diskon_percent'] : 0;
                 if ($d > $maxDiskon) $maxDiskon = $d;
             }
 
-            if ($maxDiskon >= 30) {
+            if ($maxDiskon > 20) {
                 // Mark as pending approval by supervisor
                 $requestOrder->update(['status' => 'pending_approval']);
 
@@ -313,13 +322,16 @@ class RequestOrderController extends Controller
 
             // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
-            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : round($baseHarga * 1.3, 2);
+            $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
+            $computedHarga = round($baseHarga * 1.3 * (1 - ($diskon / 100)), 2);
+            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
             $subtotal = $qty * $harga;
 
             $items[] = [
                 'barang_id' => $barangId,
                 'quantity' => $qty,
                 'harga' => $harga,
+                'diskon_percent' => $diskon,
                 'subtotal' => $subtotal,
             ];
         }
@@ -367,21 +379,20 @@ class RequestOrderController extends Controller
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
+                    'diskon_percent' => $item['diskon_percent'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ]);
             }
 
-            // Re-evaluate discount rule after update
-            $barangIds = array_column($items, 'barang_id');
-            $diskonMap = Barang::whereIn('id', $barangIds)->pluck('diskon_percent', 'id')->toArray();
+            // Re-evaluate discount rule after update based on provided diskon_percent
             $maxDiskon = 0;
-            foreach ($barangIds as $id) {
-                $d = isset($diskonMap[$id]) ? (int)$diskonMap[$id] : 0;
+            foreach ($items as $it) {
+                $d = isset($it['diskon_percent']) ? (float)$it['diskon_percent'] : 0;
                 if ($d > $maxDiskon) $maxDiskon = $d;
             }
 
-            if ($maxDiskon >= 30) {
+            if ($maxDiskon > 20) {
                 $requestOrder->update(['status' => 'pending_approval']);
             } else {
                 $requestOrder->update([

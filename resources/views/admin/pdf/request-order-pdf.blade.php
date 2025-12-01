@@ -153,6 +153,7 @@
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
                             <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
                             <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
+                            <th class="w-[30.15pt] border border-black px-2 py-1 text-center text-white">Diskon</th>
                             <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Satuan</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Harga</th>
                             <th class="w-[67.15pt] border border-black px-2 py-1 text-center text-white">Total</th>
@@ -163,8 +164,7 @@
                         @php $total = 0; @endphp
                         @forelse($requestOrder->items as $index => $item)
                             @php
-                                $baseHarga = optional($item->barang)->harga ?? $item->harga;
-                                $displayHarga = round($baseHarga * 1.3, 2);
+                                $displayHarga = $item->harga ?? round(optional($item->barang)->harga * 1.3, 2);
                                 $computedSubtotal = $displayHarga * $item->quantity;
                                 $total += $computedSubtotal;
                             @endphp
@@ -172,6 +172,7 @@
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                 <td class="border px-2 py-1">{{ optional($item->barang)->nama_barang ?? $item->barang->nama_barang ?? $item->barang_id }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
+                                <td class="border px-2 py-1 text-center">{{ $item->diskon_percent ?? 0 }}%</td>
                                 <td class="border px-2 py-1 text-center">{{ optional($item->barang)->satuan ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-right">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-right">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>

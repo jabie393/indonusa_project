@@ -12,6 +12,7 @@ class RequestOrderItem extends Model
         'quantity',
         'harga',
         'subtotal',
+        'diskon_percent',
         'item_images',
         'notes',
     ];
@@ -20,6 +21,7 @@ class RequestOrderItem extends Model
         'quantity' => 'integer',
         'harga' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'diskon_percent' => 'decimal:2',
         'item_images' => 'array',
     ];
 

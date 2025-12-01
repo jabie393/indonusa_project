@@ -185,8 +185,8 @@
                                 @php $total = 0; @endphp
                                 @forelse($requestOrder->items as $item)
                                                     @php
-                                                        // Compute jual price from Barang.harga + 30% if related barang exists
-                                                        $displayHarga = optional($item->barang)->harga_jual ?? $item->harga;
+                                                        // Show harga satuan directly from barang table (fallback to item's harga if barang missing)
+                                                            $displayHarga = optional($item->barang)->harga ?? $item->harga ?? 0;
                                                         $computedSubtotal = $displayHarga * $item->quantity;
                                                         $total += $computedSubtotal;
                                                     @endphp
@@ -196,7 +196,7 @@
                                             <br>
                                             <small class="text-muted">Kode: {{ $item->barang->kode_barang ?? '-' }}</small>
                                         </td>
-                                        <td>{{ $item->barang->diskon_percent ?? 0 }}%</td>
+                                        <td>{{ $item->diskon_percent ?? $item->barang->diskon_percent ?? 0 }}%</td>
                                         <td>{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
                                         <td>Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                         <td><strong>Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</strong></td>

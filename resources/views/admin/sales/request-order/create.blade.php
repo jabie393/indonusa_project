@@ -179,6 +179,9 @@
                         <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang</h5>
                     </div>
                     <div class="card-body overflow-x-auto">
+                        <div id="discountWarning" class="alert alert-warning" style="display:none;">
+                            Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan Supervisor.
+                        </div>
                         <div class="table-responsive mb-3">
                             <table class="table-bordered table" id="itemsTable">
                                 <thead class="table-light">
@@ -214,9 +217,9 @@
                                                 readonly style="background-color: #f0f0f0;">
                                         </td>
                                         <td>
-                                            <input type="text"
-                                                class="form-control diskon-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                readonly style="background-color: #f8f9fa;">
+                                            <input type="number" name="diskon_percent[]"
+                                                class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                min="0" max="100" step="0.01" value="0">
                                         </td>
                                         <td>
                                             <input type="number" name="quantity[]"
@@ -601,19 +604,34 @@
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
-                const diskonDisplay = row.querySelector('.diskon-display');
-                    const hargaInput = row.querySelector('.harga-input');
+                const diskonInput = row.querySelector('.diskon-input');
+                const hargaInput = row.querySelector('.harga-input');
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
-                    diskonDisplay.value = option.dataset.diskon || '0';
+                    const defaultDiskon = parseFloat(option.dataset.diskon || '0');
+                    let useDiskon = defaultDiskon;
+                    if (diskonInput) {
+                        const currentVal = parseFloat(diskonInput.value || '0') || 0;
+                        if (currentVal) {
+                            useDiskon = currentVal;
+                        } else {
+                            diskonInput.value = defaultDiskon;
+                        }
+                    }
+                    // calculate harga from baseHarga + 30% then apply the chosen diskon
+                    if (hargaInput) {
+                        const computedHarga = +(baseHarga * 1.3 * (1 - (useDiskon / 100))).toFixed(2);
+                        hargaInput.value = computedHarga;
+                    }
                     // Set jual price = base price from Barang + 30%
                     const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
                     if (hargaInput) hargaInput.value = hargaJual;
                 } else {
                     namaDisplay.value = '';
-                    diskonDisplay.value = '';
+                    if (diskonInput) diskonInput.value = 0;
+                    if (hargaInput) hargaInput.value = 0;
                 }
                 calculateTotals();
             }
@@ -692,15 +710,15 @@
                         <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
                     </td>
                     <td>
-                        <input type="text"
-                            class="form-control diskon-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            readonly style="background-color: #f8f9fa;">
+                        <input type="number" name="diskon_percent[]"
+                            class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            min="0" max="100" step="0.01" value="0">
                     </td>
                     <td>
                         <input type="number" name="quantity[]" class="form-control quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                     </td>
                     <td>
-                        <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0">
+                        <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
                     </td>
                     <td>
                         <input type="file" name="item_images[${idx}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
@@ -750,6 +768,23 @@
                 });
                 row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
                 row.querySelector('.harga-input').addEventListener('change', calculateTotals);
+                const diskonInput = row.querySelector('.diskon-input');
+                if (diskonInput) {
+                    diskonInput.addEventListener('change', function() {
+                        // Recompute harga based on selected barang baseHarga and discount
+                        const select = row.querySelector('.barang-select');
+                        if (select && select.value) {
+                            const option = select.options[select.selectedIndex];
+                            const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                            const d = parseFloat(this.value) || 0;
+                            const computedHarga = +(baseHarga * 1.3 * (1 - (d / 100))).toFixed(2);
+                            const hargaInput = row.querySelector('.harga-input');
+                            if (hargaInput) hargaInput.value = computedHarga;
+                        }
+                        calculateTotals();
+                        updateDiscountWarning();
+                    });
+                }
                 row.querySelector('.remove-row').addEventListener('click', function() {
                     row.remove();
                     updateRemoveButtons();
@@ -761,6 +796,19 @@
                     });
                     updateSubmitState();
                 });
+            }
+
+            function updateDiscountWarning() {
+                const warning = document.getElementById('discountWarning');
+                const anyHigh = Array.from(document.querySelectorAll('.diskon-input')).some(inp => {
+                    const v = parseFloat(inp.value) || 0;
+                    return v > 20;
+                });
+                if (anyHigh) {
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
             }
 
             // Update remove buttons visibility
@@ -816,6 +864,7 @@
             updateRemoveButtons();
             calculateTotals();
             updateSubmitState();
+            updateDiscountWarning();
         });
     </script>
 
