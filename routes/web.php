@@ -101,6 +101,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/customer', CustomerController::class);
     Route::resource('/pics', PicsController::class);
+    Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 // End of General Affair

@@ -73,8 +73,9 @@ class Customer extends Model
 
     public function pics()
     {
-        return $this->morphToMany(Pic::class, 'pic', 'customer_pics', 'customer_id', 'pic_id')
-                    ->withPivot('pic_type');
+        return $this->belongsToMany(Pic::class, 'customer_pics', 'customer_id', 'pic_id')
+                    ->withPivot('pic_type')
+                    ->withTimestamps();
     }
 
     public function users()
