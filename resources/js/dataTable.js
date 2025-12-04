@@ -1,27 +1,43 @@
 let table = new DataTable('#warehouseTable', {
-    responsive: true,
     searching: false,
     paging: false,
     info: false,
+    fixedHeader: true,
+    colReorder: true,
 });
 
 let datatable = new DataTable('#DataTable', {
-    responsive: true,
+    fixedHeader: true,
     searching: false,
     paging: false,
     info: false,
+    colReorder: true,
+
 });
 let datatable2 = new DataTable('#DataTable2', {
-    responsive: true,
+    fixedHeader: true,
     searching: false,
     paging: false,
     info: false,
+    colReorder: true,
+
 });
 let datatable3 = new DataTable('#DataTable3', {
-    responsive: true,
+    fixedHeader: true,
     searching: false,
     paging: false,
     info: false,
+    colReorder: true,
+
+});
+
+let datatableExcel = new DataTable('#DataTableExcel', {
+    fixedHeader: true,
+    scrollX: true,
+    searching: false,
+    paging: false,
+    info: true,
+    colReorder: true,
 });
 
 // Wait for DataTable to finish rendering
