@@ -20,11 +20,8 @@
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
         {{-- DataTable --}}
-        <link
-            href="https://cdn.datatables.net/v/bm/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.css"
-            rel="stylesheet" integrity="sha384-TKpViuvJGyPjYIMAvpUH8fDoqSX7wy6lb/2/tmFz01w+vUeyW8zzTFMOD7D21K+x" crossorigin="anonymous">
-
-
+        <link href="https://cdn.datatables.net/v/zf/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.css" rel="stylesheet" integrity="sha384-RtnchH+olPfoFh06ZUdy5mHOMxw9/roHRmRlLKBJVAiQzEtQSfiX1sWgMrrlXTIe" crossorigin="anonymous">
+ 
         {{-- select2 CSS (JS will load at end of body) --}}
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 

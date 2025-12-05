@@ -20,7 +20,7 @@ let datatable2 = new DataTable('#DataTable2', {
     paging: false,
     info: false,
     colReorder: true,
-
+    
 });
 let datatable3 = new DataTable('#DataTable3', {
     fixedHeader: true,
