@@ -40,17 +40,17 @@
                 <tbody class="h-min-[300px]">
                     @forelse ($barangs as $barang)
                         <tr class="border-b dark:border-gray-700">
-                            <td class="px-4 ">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4  font-medium text-gray-900 dark:text-white">
+                            <td class="px-4">{{ $barang->status_listing }}</td>
+                            <td scope="row" class="whitespace-nowrap px-4 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
                             </td>
-                            <td class="px-4 ">{{ $barang->nama_barang }}</td>
-                            <td class="px-4 ">{{ $barang->kategori }}</td>
-                            <td class="px-4 ">{{ $barang->stok }}</td>
-                            <td class="px-4 ">{{ $barang->satuan }}</td>
-                            <td class="px-4 ">{{ $barang->lokasi }}</td>
-                            <td class="px-4 ">{{ $barang->harga }}</td>
-                            <td class="flex items-center justify-end px-4 ">
+                            <td class="px-4">{{ $barang->nama_barang }}</td>
+                            <td class="px-4">{{ $barang->kategori }}</td>
+                            <td class="px-4">{{ $barang->stok }}</td>
+                            <td class="px-4">{{ $barang->satuan }}</td>
+                            <td class="px-4">{{ $barang->lokasi }}</td>
+                            <td class="px-4">{{ $barang->harga }}</td>
+                            <td class="flex items-center justify-end px-4">
 
                                 {{-- Edit barang modal --}}
                                 <button
