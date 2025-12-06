@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
 
 class BarangHistory extends Model
 {
@@ -22,6 +23,7 @@ class BarangHistory extends Model
         'new_status',
         'changed_by',
         'note',
+        'form',
         'changed_at',
     ];
 
@@ -42,5 +44,11 @@ class BarangHistory extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'changed_by');
+    }
+
+    // Relasi ke user yang meng-submit (kolom `form`)
+    public function formUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'form');
     }
 }

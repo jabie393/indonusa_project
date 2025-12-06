@@ -38,6 +38,7 @@ class BarangHistoriesSeeder extends Seeder
                 'old_status'   => $faker->randomElement($oldStatuses),
                 'new_status'   => $faker->randomElement($newStatuses),
                 'changed_by'   => !empty($userIds) ? $faker->randomElement($userIds) : null,
+                'form'   => !empty($userIds) ? $faker->randomElement($userIds) : null,
                 'note'         => $faker->sentence(),
                 'changed_at'   => Carbon::now()->subDays($faker->numberBetween(0, 365))->toDateTimeString(),
                 'created_at'   => now(),

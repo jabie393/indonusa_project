@@ -21,7 +21,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak A1',
                 'status_listing' => 'listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'primary',
@@ -34,7 +35,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak B2',
                 'status_listing' => 'non listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'primary',
@@ -47,7 +49,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Rim',
                 'lokasi' => 'Rak C3',
                 'status_listing' => 'listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'primary',
@@ -60,7 +63,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Unit',
                 'lokasi' => 'Rak D4',
                 'status_listing' => 'non listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'primary',
@@ -74,7 +78,8 @@ class BarangSeeder extends Seeder
                 'lokasi' => 'Rak E5',
                 'status_listing' => 'listing',
                 'deskripsi' => 'Lorem ipsum dolor sit amet.',
-                'catatan' => 'Barang ini ditolak karena stok tidak sesuai.'
+                'catatan' => 'Barang ini ditolak karena stok tidak sesuai.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'primary',
@@ -87,7 +92,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Pcs',
                 'lokasi' => 'Rak E5',
                 'status_listing' => 'listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'new_stock',
@@ -100,7 +106,8 @@ class BarangSeeder extends Seeder
                 'satuan' => 'Rim',
                 'lokasi' => 'Rak C3',
                 'status_listing' => 'listing',
-                'deskripsi' => 'Lorem ipsum dolor sit amet.'
+                'deskripsi' => 'Lorem ipsum dolor sit amet.',
+                'form' => '3'
             ],
             [
                 'tipe_request' => 'new_stock',
@@ -114,7 +121,8 @@ class BarangSeeder extends Seeder
                 'lokasi' => 'Rak D4',
                 'status_listing' => 'non listing',
                 'deskripsi' => 'Lorem ipsum dolor sit amet.',
-                'catatan' => 'Barang ini ditolak karena satuan bukan berupa pak.'
+                'catatan' => 'Barang ini ditolak karena satuan bukan berupa pak.',
+                'form' => '3'
             ],
         ];
 

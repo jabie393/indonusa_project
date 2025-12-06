@@ -266,7 +266,7 @@
                             <td class="px-4 py-3">{{ $in->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $in->nama_barang }}</td>
                             <td class="px-4 py-3">{{ $in->stok ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $in->supplier ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ optional($in->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
                             <td class="px-4 py-3">{{ $in->status ?? 'Complete' }}</td>
                         </tr>
                         @empty
@@ -301,7 +301,7 @@
                             <td class="px-4 py-3">{{ optional($out->changed_at)->format('d M Y') ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $out->nama_barang }}</td>
                             <td class="px-4 py-3">{{ $out->stok ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $out->supplier ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ optional($out->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
                             <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Keluar') }}</td>
                         </tr>
                         @empty

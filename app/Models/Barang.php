@@ -59,6 +59,7 @@ class Barang extends Model
         'deskripsi',
         'gambar',
         'catatan',
+        'form',
     ];
 
     protected static function booted()
@@ -76,6 +77,7 @@ class Barang extends Model
                     'harga'       => $barang->harga,
                     'old_status'  => $barang->getOriginal('status_barang'),
                     'new_status'  => $barang->status_barang,
+                    'form'        => $barang->form,
                     'changed_by'  => Auth::id(),
                     'note'        => $barang->catatan ?? null,
                 ]);

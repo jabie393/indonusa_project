@@ -54,14 +54,15 @@ class WarehouseDashboardController extends Controller
         }
         // jika ingin fallback periode (today/month/year) tambahkan logika di sini
 
-        $data['recentInbound'] = $recentQuery->latest('changed_at')->take(5)->get();
+        // eager load submitter (form)
+        $data['recentInbound'] = $recentQuery->with('formUser')->latest('changed_at')->take(5)->get();
 
         // recent outbound: ambil dari history dengan new_status 'keluar' (filter date range sama seperti inbound)
         $recentOutboundQuery = BarangHistory::where('new_status', 'keluar');
         if ($dateStart && $dateEnd) {
             $recentOutboundQuery->whereBetween('changed_at', [$dateStart, $dateEnd]);
         }
-        $data['recentOutbound'] = $recentOutboundQuery->latest('changed_at')->take(5)->get();
+        $data['recentOutbound'] = $recentOutboundQuery->with('formUser')->latest('changed_at')->take(5)->get();
 
         // barangMasukToday / atau jumlah masuk di rentang tanggal
         if ($dateStart && $dateEnd) {
