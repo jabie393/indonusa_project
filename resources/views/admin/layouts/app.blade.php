@@ -13,17 +13,24 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        {{-- sweetalert will be loaded at end of body --}}
+        {{-- sweetalert --}}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         {{-- DaisyUI --}}
         <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
         {{-- DataTable --}}
-        <link href="https://cdn.datatables.net/v/zf/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.css" rel="stylesheet" integrity="sha384-RtnchH+olPfoFh06ZUdy5mHOMxw9/roHRmRlLKBJVAiQzEtQSfiX1sWgMrrlXTIe" crossorigin="anonymous">
- 
-        {{-- select2 CSS (JS will load at end of body) --}}
+        <link
+            href="https://cdn.datatables.net/v/zf/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.css"
+            rel="stylesheet" integrity="sha384-RtnchH+olPfoFh06ZUdy5mHOMxw9/roHRmRlLKBJVAiQzEtQSfiX1sWgMrrlXTIe" crossorigin="anonymous">
+
+        <!-- JQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        {{-- select2 --}}
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
         <style>
             div.dt-container div.dt-layout-row {
@@ -96,7 +103,6 @@
         {{-- SweetAlert --}}
         @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
             window.sweetTitle = @json(session('title'));
             window.sweetText = @json(session('text'));
@@ -106,10 +112,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" integrity="sha384-VFQrHzqBh5qiJIU0uGU5CIW3+OWpdGGJM9LBnGbuIH2mkICcFZ7lPd/AAtI7SNf7" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" integrity="sha384-/RlQG9uf0M2vcTw3CX7fbqgbj/h8wKxw7C3zu9/GxcBPRKOEcESxaxufwRXqzq6n" crossorigin="anonymous"></script>
         <script
-            src="https://cdn.datatables.net/v/bm/jq-3.7.0/moment-2.29.4/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.js"
-            integrity="sha384-X1DpqCYKXrnX8j0qGfl6tI2ZBy26m4gXAlSM31Mri6z2GxOS+VENlKnPp6Z5hNMV" crossorigin="anonymous"></script>
-
-        @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])
+            src="https://cdn.datatables.net/v/zf/jszip-3.10.1/dt-2.3.5/af-2.7.1/b-3.2.5/b-colvis-3.2.5/b-html5-3.2.5/b-print-3.2.5/cr-2.1.2/cc-1.1.1/date-1.6.2/fc-5.0.5/fh-4.0.5/kt-2.12.2/r-3.0.7/rg-1.6.0/rr-1.5.0/sc-2.4.3/sb-1.8.4/sp-2.3.5/sl-3.1.3/sr-1.4.3/datatables.min.js"
+            integrity="sha384-Qqo2BXySTT0KiB7yPTOOsf2DPibBoanEFBmbYpif+dj/RI9uBph6NSTpfq1m1eDM" crossorigin="anonymous"></script>
         <script>
             // Polling session tiap 3 detik
             const sessionCheckInterval = setInterval(() => {
