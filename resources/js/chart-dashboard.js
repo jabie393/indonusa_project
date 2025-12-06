@@ -4,31 +4,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const imc = document.getElementById('IMC');
 
     if (imc) {
+        const labels = JSON.parse(imc.dataset.labels || '[]');
+        const masuk = JSON.parse(imc.dataset.masuk || '[]');
+        const keluar = JSON.parse(imc.dataset.keluar || '[]');
+
         new Chart(imc, {
             type: 'bar',
             data: {
-                labels: ['Januari', 'Februari', 'Mari', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'December'],
-                datasets: [{
-                    label: '# of Profit',
-                    data: [12, 19, 3, 5, 2, 3],
-                    borderWidth: 1,
-                    backgroundColor: (context) => {
-                        const value = context.dataset.data[context.dataIndex];
-                        return value < 0 ? '#000000' : '#225A97';
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Masuk',
+                        data: masuk,
+                        backgroundColor: '#225A97',
+                        borderColor: '#225A97',
+                        borderWidth: 1,
+                        borderRadius: 6
                     },
-                    borderColor: (context) => {
-                        const value = context.dataset.data[context.dataIndex];
-                        return value < 0 ? '#000000' : '#225A97';
-                    },
-                    borderRadius: 100,
-
-                }]
+                    {
+                        label: 'Keluar',
+                        data: keluar,
+                        backgroundColor: '#E53E3E',
+                        borderColor: '#E53E3E',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }
+                ]
             },
             options: {
+                responsive: true,
+                interaction: { mode: 'index', intersect: false },
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });
@@ -37,31 +44,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const svc = document.getElementById('SVC');
 
     if (svc) {
+        const labels = JSON.parse(svc.dataset.labels || '[]');
+        const values = JSON.parse(svc.dataset.values || '[]');
+
         new Chart(svc, {
             type: 'bar',
             data: {
-                labels: ['Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang', 'Barang'],
+                labels: labels,
                 datasets: [{
-                    label: '# of Profit',
-                    data: [12, 19, 53, 58, 27, 32,],
+                    label: 'Stock',
+                    data: values,
                     borderWidth: 1,
-                    backgroundColor: (context) => {
-                        const value = context.dataset.data[context.dataIndex];
-                        return value < 0 ? '#000000' : '#225A97';
-                    },
-                    borderColor: (context) => {
-                        const value = context.dataset.data[context.dataIndex];
-                        return value < 0 ? '#000000' : '#225A97';
-                    },
-                    borderRadius: 100,
-
+                    backgroundColor: '#225A97',
+                    borderColor: '#225A97',
+                    borderRadius: 6,
                 }]
             },
             options: {
+                responsive: true,
                 scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+                    y: { beginAtZero: true }
                 }
             }
         });

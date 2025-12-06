@@ -55,6 +55,7 @@ return new class extends Migration {
             $table->text('deskripsi');
             $table->string('gambar')->nullable();
             $table->text('catatan')->nullable();
+            $table->string('form')->nullable();
             $table->timestamps();
         });
     }

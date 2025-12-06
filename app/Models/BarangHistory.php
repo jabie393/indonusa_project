@@ -25,6 +25,19 @@ class BarangHistory extends Model
         'changed_at',
     ];
 
+    protected $guarded = [];
+    protected $dates = ['changed_at', 'created_at', 'updated_at'];
+
+    // pastikan changed_at di-cast jadi datetime sehingga ->format() tersedia
+    protected $casts = [
+        'changed_at' => 'datetime',
+    ];
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id');
+    }
+
     // Relasi ke user yang mengubah
     public function user(): BelongsTo
     {
