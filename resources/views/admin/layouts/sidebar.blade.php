@@ -55,6 +55,28 @@
                             </li>
                         @endif
                     </ul>
+                    <ul>
+                        @if (request()->routeIs('import-excel.*'))
+                            <li class="flex items-center justify-end">
+                                <svg width="64px" class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white" height="64px" viewBox="0 0 24 24"
+                                    fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <path
+                                            d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                            fill="black">
+                                        </path>
+                                    </g>
+                                </svg>
+                                <a href="{{ route('import-excel.index') }}"
+                                    class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+
+                                    <span class="">Import Excel</span>
+                                </a>
+                            </li>
+                        @endif
+                    </ul>
                 </li>
 
 

@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\CustomPenawaranController;
+use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -97,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
+    Route::resource('/import-excel', ImportExcelController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/customer', CustomerController::class);

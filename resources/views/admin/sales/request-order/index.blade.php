@@ -70,16 +70,16 @@
                             };
                         @endphp
                         <tr class="dark:border-gray-700">
-                            <td>{{ $ro->request_number }}</td>
-                            <td><span class="badge bg-info">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
-                            <td>{{ $ro->created_at->format('d M Y') }}</td>
-                            <td>{{ $ro->customer_name }}</td>
-                            <td>{{ $ro->items->count() }} item(s)</td>
-                            <td>Rp {{ number_format($total, 2, ',', '.') }}</td>
-                            <td>
+                            <td class="px-4 py-3">{{ $ro->request_number }}</td>
+                            <td class="px-4 py-3"><span class="badge bg-info">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
+                            <td class="px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
+                            <td class="px-4 py-3">{{ $ro->customer_name }}</td>
+                            <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
+                            <td class="px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
+                            <td class="px-4 py-3">
                                 <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
-                            <td>
+                            <td class="px-4 py-3">
                                 @if ($ro->expired_at)
                                     {{ $ro->expired_at_formatted }}
                                     <br>
@@ -100,7 +100,7 @@
                                     -
                                 @endif
                             </td>
-                            <td class="flex gap-2">
+                            <td class="flex gap-2 px-4 py-3" >
                                 <a href="{{ route('sales.request-order.show', $ro->id) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                     <i class="fas fa-eye"></i>
                                 </a>

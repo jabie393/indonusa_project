@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('#importExcel form');
+    const form = document.querySelector('form[action*="goods-in.store"]') || document.querySelector('form[enctype="multipart/form-data"]');
     const fileInput = document.getElementById('excel');
     const progressSection = document.getElementById('progress-section');
     const progressBar = document.getElementById('progress-bar');

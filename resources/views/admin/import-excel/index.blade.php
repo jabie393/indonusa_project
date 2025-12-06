@@ -1,23 +1,9 @@
-<dialog id="importExcel" class="modal">
-    <div class="modal-box relative flex h-fit w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+<x-app-layout>
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             <h3 class="text-lg font-semibold text-white">
                 Import Dari Excel
             </h3>
-            <div class="modal-action m-0">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button
-                        class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </form>
-            </div>
         </div>
 
         <form action="{{ route('goods-in.store') }}" method="POST" class="flex h-fit flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
@@ -162,22 +148,18 @@
                 </div>
             </div>
 
-            <div class="">
-
+            <div>
                 <button type="submit"
                     class="submit-btn relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Tambah
                 </button>
             </div>
         </form>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
-</dialog>
 
-<script>
-    window.CSRF_TOKEN = "{{ csrf_token() }}";
-    window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
-</script>
+    <script>
+        window.CSRF_TOKEN = "{{ csrf_token() }}";
+        window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
+    </script>
 
-@vite(['resources/js/checker.js', 'resources/js/excel-upload.js'])
+    @vite(['resources/js/checker.js', 'resources/js/excel-upload.js'])
+</x-app-layout>
