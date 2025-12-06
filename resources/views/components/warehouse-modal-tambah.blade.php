@@ -1,8 +1,6 @@
 <dialog id="tambahBarang" class="modal">
-    <div
-        class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Barang
             </h3>
@@ -22,8 +20,7 @@
             </div>
         </div>
 
-        <form action="{{ route('warehouse.store') }}" method="POST"
-            class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+        <form action="{{ route('warehouse.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
             <div class="h-full overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
                     @csrf
@@ -32,21 +29,16 @@
                         <div class="md:col-span-1">
                             <div class="mb-4">
 
-                                <label for="gambar"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
+                                <label for="gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                     Barang
                                 </label>
                                 <input type="file" name="gambar" id="gambar" class="hidden" accept="image/*" />
 
-                                <div id="gambar_preview"
-                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
+                                <div id="gambar_preview" class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
                                     <input id="gambar" type="file" class="hidden" accept="image/*" />
                                     <label id="gambar_label" for="gambar" class="m-auto cursor-pointer">
-                                        <img class="mx-auto hidden h-full max-h-48 max-w-48" id="modified_image" src=""
-                                            alt="" />
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor"
-                                            class="mx-auto mb-4 h-8 w-8 text-gray-700">
+                                        <img class="mx-auto hidden h-full max-h-48 max-w-48" id="modified_image" src="" alt="" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                         </svg>
@@ -59,8 +51,7 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="space-y-4">
                                 <div>
-                                    <label for="status_listing"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status
+                                    <label for="status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status
                                         Listing</label>
                                     <select name="status_listing" id="status_listing"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -70,33 +61,31 @@
                                     </select>
                                 </div>
                                 <div class="relative">
-                                    <label for="kode_barang"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
+                                    <label for="kode_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
                                         Barang</label>
-                                    <input type="text" name="kode_barang" id="kode_barang"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        readonly>
-                                    <button type="button" id="refreshKodeBarang"
-                                        class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor"
-                                            class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M4.5 19.5l3-3m0 0l3 3m-3-3v-6m12-3l-3 3m0 0l-3-3m3 3v6M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
-                                        </svg>
-                                    </button>
+                                    <div class="relative">
+                                        <input type="text" name="kode_barang" id="kode_barang"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                            readonly>
+                                        <button type="button" id="refreshKodeBarang" class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                            <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" viewBox="0 0 24 24" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16"
+                                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label for="nama_barang"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
+                                    <label for="nama_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
                                         Barang</label>
                                     <input type="text" name="nama_barang" id="nama_barang"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="kategori"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
+                                    <label for="kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                                     <select id="kategori" name="kategori"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                         <option value="" disabled selected>Pilih Kategori</option>
@@ -110,29 +99,25 @@
                             <div class="space-y-4">
 
                                 <div>
-                                    <label for="stok"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                                    <label for="stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
                                     <input type="number" name="stok" id="stok"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="satuan"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
+                                    <label for="satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
                                     <input type="text" name="satuan" id="satuan"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="lokasi"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
+                                    <label for="lokasi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
                                     <input type="text" name="lokasi" id="lokasi"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
                                 </div>
                                 <div>
-                                    <label for="harga"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
+                                    <label for="harga" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
                                     <input type="number" name="harga" id="harga"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         required>
@@ -142,8 +127,7 @@
                     </div>
                     <div class="h-full sm:col-span-1">
 
-                        <label for="deskripsi"
-                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
+                        <label for="deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
                         <textarea name="deskripsi" id="deskripsi"
                             class="block h-[90%] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             rows="3" placeholder="Deskripsi barang (opsional)"></textarea>

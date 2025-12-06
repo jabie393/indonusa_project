@@ -58,7 +58,7 @@
                             <td class="px-4 py-2">
                                 {{ $user->orders()->where('status', 'completed')->withSum('orderItems', 'quantity')->get()->sum('order_items_sum_quantity') }}
                             </td>
-                            <td class="px-4 py-2">
+                            <td class="flex items-center px-4">
                                 <button onclick="editUserModal.showModal()"
                                     class="editUserButton mb-2 me-2 rounded rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                                     data-id="{{ $user->id }}" data-name="{{ $user->name }}" data-email="{{ $user->email }}">Edit</button>

@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let uploadInProgress = false;
     let uploadCompleted = false;
-    const submitButton = form.querySelector('button[type="submit"], input[type="submit"]');
+    const submitButton = form.querySelector('.submit-btn');
 
     // Handle file selection
     fileInput.addEventListener('change', function (e) {
@@ -32,7 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const isMimeOk = allowedMime.includes(mime) || mime === '';
 
         if (!isExtOk || !isMimeOk) {
-            alert('File tidak valid. Harap pilih file Excel dengan ekstensi .xlsx atau .xls.');
+            Swal.fire({
+                icon: 'error',
+                title: 'File tidak valid',
+                text: 'Harap pilih file Excel dengan ekstensi .xlsx atau .xls.'
+            });
             // reset input and UI
             e.target.value = '';
             progressSection.classList.add('hidden');
@@ -122,7 +126,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 } catch (err) {
                     // fallback: show a simple alert if JSON parse fails
                     setTimeout(() => {
-                        alert('File Excel berhasil diupload! (response tidak dalam format JSON)');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'File Excel berhasil diupload!'
+                        });
                     }, 600);
                     return;
                 }
@@ -130,9 +138,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 progressSection.classList.add('hidden');
                 try {
                     const response = JSON.parse(xhr.responseText);
-                    alert('Error: ' + (response.message || 'Gagal mengupload file'));
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message || 'Gagal mengupload file'
+                    });
                 } catch (e) {
-                    alert('Error: Gagal mengupload file. Status: ' + xhr.status);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Gagal mengupload file. Status: ' + xhr.status
+                    });
                 }
                 uploadInProgress = false;
                 if (submitButton) submitButton.disabled = false;
@@ -141,14 +157,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         xhr.addEventListener('error', function () {
             progressSection.classList.add('hidden');
-            alert('Terjadi kesalahan saat mengupload file.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Terjadi kesalahan saat mengupload file.'
+            });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;
         });
 
         xhr.addEventListener('abort', function () {
             progressSection.classList.add('hidden');
-            alert('Upload dibatalkan.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Dibatalkan',
+                text: 'Upload dibatalkan.'
+            });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;
         });
@@ -159,25 +183,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Keep form submit as backup
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        if (uploadInProgress) {
-            alert('Upload sedang berlangsung. Tunggu hingga selesai.');
-            return;
-        }
-        if (uploadCompleted) {
-            // Prevent submitting form after upload
-            alert('File telah diupload melalui AJAX. Form tidak akan dikirim.');
-            return;
-        }
+    if (submitButton) {
+        submitButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            if (uploadInProgress) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Tunggu',
+                    text: 'Upload sedang berlangsung. Tunggu hingga selesai.'
+                });
+                return;
+            }
+            if (uploadCompleted) {
+                // Prevent submitting form after upload
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Informasi',
+                    text: 'File telah diupload melalui AJAX. Form tidak akan dikirim.'
+                });
+                return;
+            }
 
-        const file = fileInput.files[0];
-        if (file) {
-            startUpload(file);
-        } else {
-            // No file: allow falling back to normal submit if desired
-            // e.g., form.submit(); but here we prevent submission by default
-            alert('Tidak ada file yang dipilih.');
-        }
-    });
+            const file = fileInput.files[0];
+            if (file) {
+                startUpload(file);
+            } else {
+                // No file: allow falling back to normal submit if desired
+                // e.g., form.submit(); but here we prevent submission by default
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Tidak ada file yang dipilih.'
+                });
+            }
+        });
+    }
 });
