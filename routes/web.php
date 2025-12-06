@@ -90,6 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/check-email', [GeneralController::class, 'checkEmail'])->name('check.email');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
+    Route::resource('/customer', CustomerController::class);
+    Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
 });
 // End of General
 
@@ -99,9 +101,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
-    Route::resource('/customer', CustomerController::class);
     Route::resource('/pics', PicsController::class);
-    Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 });
 // End of General Affair
