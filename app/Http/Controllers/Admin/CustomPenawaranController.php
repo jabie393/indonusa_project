@@ -159,6 +159,8 @@ class CustomPenawaranController extends Controller
             'items.*.harga' => 'required|numeric|min:0',
             'items.*.images' => 'nullable|array',
             'items.*.images.*' => 'nullable|image|max:5120',
+            'items.*.existing_images' => 'nullable|array',
+            'items.*.existing_images.*' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
@@ -173,17 +175,26 @@ class CustomPenawaranController extends Controller
                 'tax' => $validated['tax'] ?? 0,
             ]);
 
+            // Get existing items before deleting so we have a reference
+            $existingItems = $customPenawaran->items()->get();
             $customPenawaran->items()->delete();
 
             $subtotal = 0;
             foreach ($validated['items'] as $i => $itemData) {
                 $itemImages = [];
+
+                // Check if new images were uploaded for this item
                 if ($request->hasFile("items.$i.images")) {
                     foreach ($request->file("items.$i.images") as $file) {
                         if ($file) {
                             $itemImages[] = $file->store('custom-penawaran-images', 'public');
                         }
                     }
+                }
+
+                // If no new images, use existing images from the validated data
+                if (empty($itemImages) && isset($validated['items'][$i]['existing_images']) && !empty($validated['items'][$i]['existing_images'])) {
+                    $itemImages = $validated['items'][$i]['existing_images'];
                 }
 
                 $itemSubtotal = $itemData['qty'] * $itemData['harga'];

@@ -175,16 +175,26 @@
             <div class="card card-body mb-4" id="barangSection" style="display: none;">
                 <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
 
-                    <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
-                        <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang</h5>
+                    <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+                        <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                                <path d="M12 22V12"></path>
+                                <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
+                                <path d="m7.5 4.27 9 5.15"></path>
+                            </svg>
+                            Detail Barang
+                        </h3>
                     </div>
-                    <div class="card-body overflow-x-auto">
+
+                    <div class="overflow-x-auto">
                         <div id="discountWarning" class="alert alert-warning" style="display:none;">
                             Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan Supervisor.
                         </div>
                         <div class="table-responsive mb-3">
                             <table class="table-bordered table" id="itemsTable">
-                                <thead class="table-light">
+                                <thead class="bg-gray-200">
                                     <tr>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
@@ -232,8 +242,14 @@
                                                 min="0" step="0.01" value="0">
                                         </td>
                                         <td>
-                                            <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
-                                            <div class="item-images-preview mt-2 row g-2"></div>
+                                            <div class="upload-btn-container relative">
+                                                <input type="file" name="item_images[0][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
+                                                    accept="image/*">
+                                                <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
+                                                    Upload
+                                                </button>
+                                            </div>
+                                            <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
                                         </td>
                                         <td>
                                             <input type="text"
@@ -266,10 +282,10 @@
                             </table>
                         </div>
 
-                        <button type="button" id="addRow" class="btn bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
-                            <i class="fas fa-plus"></i> Tambah Barang
-                        </button>
                     </div>
+                    <button type="button" id="addRow" class="btn m-5 bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
+                        Tambah Barang
+                    </button>
                 </div>
 
                 <!-- Supporting Images Section -->
@@ -281,8 +297,9 @@
                         <div class="mb-3">
                             <label for="supporting_images" class="form-label">Unggah Gambar <span class="text-muted">(Foto barang, contoh produk, desain, dll)</span></label>
                             <div class="input-group">
-                                <input type="file" class="form-control @error('supporting_images.*') is-invalid @enderror" id="supporting_images" name="supporting_images[]" multiple
-                                    accept="image/*">
+                                <input type="file"
+                                    class="form-control barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="supporting_images" name="supporting_images[]" multiple accept="image/*">
                                 <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
                             </div>
                             @error('supporting_images.*')
@@ -297,13 +314,13 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
-                        <i class="fas fa-save"></i> Buat Request Order
-                    </button>
-                    <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Batal
+                <div class="flex justify-end gap-4">
+                    <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#972222] text-white hover:bg-[#811c1c]">
+                        Batal
                     </a>
+                    <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" id="submitBtn" disabled>
+                        Buat Request Order
+                    </button>
                 </div>
                 </form>
             </div>
@@ -420,8 +437,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             <i class="fas fa-save"></i> Simpan Customer
                         </button>
                     </div>
@@ -600,7 +617,7 @@
             }
 
             // Handle barang selection change
-                function handleBarangChange(select) {
+            function handleBarangChange(select) {
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
@@ -666,36 +683,64 @@
                 });
             }
 
-                // Helper: preview for item images
+            // Helper: preview for item images
             function handleItemImagePreview(row) {
                 const fileInput = row.querySelector('.item-images-input');
                 const preview = row.querySelector('.item-images-preview');
+                const uploadBtn = row.querySelector('.upload-btn-container');
                 if (!fileInput || !preview) return;
 
                 fileInput.addEventListener('change', function() {
                     // Clear existing previews
                     preview.innerHTML = '';
+                    if (this.files.length > 0) {
+                        uploadBtn.style.display = 'none';
+                    } else {
+                        uploadBtn.style.display = 'block';
+                    }
+
                     const files = Array.from(this.files || []);
                     if (files.length === 0) return;
 
                     files.forEach((file, index) => {
                         const reader = new FileReader();
                         reader.onload = function(e) {
-                            const col = document.createElement('div');
-                            col.className = 'col-auto';
-                            col.innerHTML = `
-                                <div class="card" style="width: 90px; height: 90px; overflow: hidden;">
-                                    <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 100%; width: 100%; object-fit: cover;">
-                                </div>
+                            const imgContainer = document.createElement('div');
+                            imgContainer.className = 'relative inline-block';
+                            imgContainer.innerHTML = `
+                                <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
+                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
+                                    ✕
+                                </button>
                             `;
-                            preview.appendChild(col);
+                            preview.appendChild(imgContainer);
+
+                            // Add click handler to remove button
+                            const removeBtn = imgContainer.querySelector('.remove-image-btn');
+                            removeBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const removeIndex = parseInt(this.dataset.index);
+                                const dataTransfer = new DataTransfer();
+
+                                Array.from(fileInput.files).forEach((file, i) => {
+                                    if (i !== removeIndex) {
+                                        dataTransfer.items.add(file);
+                                    }
+                                });
+
+                                fileInput.files = dataTransfer.files;
+                                fileInput.dispatchEvent(new Event('change', {
+                                    bubbles: true
+                                }));
+                            });
                         };
                         reader.readAsDataURL(file);
                     });
                 });
             }
 
-                // Add row
+            // Add row
             addRowBtn.addEventListener('click', function() {
                 const idx = document.querySelectorAll('.item-row').length;
                 const newRow = document.createElement('tr');
@@ -721,8 +766,13 @@
                         <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
                     </td>
                     <td>
-                        <input type="file" name="item_images[${idx}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
-                        <div class="item-images-preview mt-2 row g-2"></div>
+                        <div class="relative upload-btn-container">
+                            <input type="file" name="item_images[${idx}][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
+                            <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
+                                 Upload
+                            </button>
+                        </div>
+                        <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
                     </td>
                     <td>
                         <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
