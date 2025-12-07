@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
 {
@@ -49,6 +50,9 @@ class WarehouseController extends Controller
         if (empty($validated['deskripsi'])) {
             $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
         }
+
+        // Simpan id user yang submit ke kolom 'form'
+        $validated['form'] = Auth::id();
 
         $validated['status_barang'] = 'masuk'; // Set status_barang masuk
         $validated['tipe_request'] = 'primary'; // Set tipe_request primary

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Auth;
 
 class GoodsInController extends Controller
 {
@@ -34,7 +35,7 @@ class GoodsInController extends Controller
                 'url' => asset('storage/' . $path),
             ], 200);
         }
-        
+
         $validated = $request->validate([
             'status_listing' => 'required|in:listing,non listing',
             'kode_barang' => 'required|string|max:255',
@@ -52,6 +53,9 @@ class GoodsInController extends Controller
         if (empty($validated['deskripsi'])) {
             $validated['deskripsi'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
         }
+
+        // Simpan id user yang submit ke kolom 'form'
+        $validated['form'] = Auth::id();
 
         $validated['status_barang'] = 'ditinjau';
         $validated['tipe_request'] = 'primary'; // Set tipe_request primary

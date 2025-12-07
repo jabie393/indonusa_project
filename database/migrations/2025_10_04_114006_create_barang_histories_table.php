@@ -27,10 +27,13 @@ return new class extends Migration {
 
             // Status sebelum dan sesudah perubahan
             $table->enum('old_status', ['ditinjau', 'masuk', 'ditolak'])->nullable();
-            $table->enum('new_status', ['ditinjau', 'masuk', 'ditolak', 'dihapus']);
+            $table->enum('new_status', ['ditinjau', 'masuk', 'ditolak', 'dihapus','keluar']);
 
             // Siapa yang mengubah (relasi ke users)
             $table->unsignedBigInteger('changed_by')->nullable();
+
+            // Yang request pertama kali
+            $table->string('form')->nullable();
 
             // Catatan tambahan
             $table->text('note')->nullable();

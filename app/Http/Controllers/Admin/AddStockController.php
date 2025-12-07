@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Auth;
 
 class AddStockController extends Controller
 {
@@ -26,36 +27,36 @@ class AddStockController extends Controller
         return view('admin.add-stock.index', compact('barangs'));
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'status_listing' => 'required|in:listing,non listing',
-            'kode_barang' => 'required|string|max:255',
-            'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|string|max:255',
-            'stok' => 'required|integer',
-            'satuan' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
-            'harga' => 'required|numeric',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deskripsi' => 'nullable|string',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'status_listing' => 'required|in:listing,non listing',
+    //         'kode_barang' => 'required|string|max:255',
+    //         'nama_barang' => 'required|string|max:255',
+    //         'kategori' => 'required|string|max:255',
+    //         'stok' => 'required|integer',
+    //         'satuan' => 'required|string|max:255',
+    //         'lokasi' => 'required|string|max:255',
+    //         'harga' => 'required|numeric',
+    //         'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    //         'deskripsi' => 'nullable|string',
+    //     ]);
 
-        if (empty($validated['deskripsi'])) {
-            $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
-        }
+    //     if (empty($validated['deskripsi'])) {
+    //         $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
+    //     }
 
-        $barang = Barang::create($validated);
+    //     $barang = Barang::create($validated);
 
-        if ($request->hasFile('gambar')) {
-            $folder = 'barang/' . $barang->id;
-            $path = $request->file('gambar')->store($folder, 'public');
-            $barang->gambar = $path;
-            $barang->save();
-        }
+    //     if ($request->hasFile('gambar')) {
+    //         $folder = 'barang/' . $barang->id;
+    //         $path = $request->file('gambar')->store($folder, 'public');
+    //         $barang->gambar = $path;
+    //         $barang->save();
+    //     }
 
-        return redirect()->route('add-stock.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!.']);
-    }
+    //     return redirect()->route('add-stock.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditambahkan!.']);
+    // }
 
     public function update(Request $request, $id)
     {
@@ -70,6 +71,9 @@ class AddStockController extends Controller
         $copyData->stok = $validated['stok'];
         $copyData->status_barang = 'ditinjau';
         $copyData->tipe_request = 'new_stock'; // Set tipe_request ke new_stock
+
+        // Simpan id user yang submit ke kolom 'form'
+        $copyData->form = Auth::id();
 
         // Generate kode_barang unik
         $originalKode = $barang->kode_barang;
