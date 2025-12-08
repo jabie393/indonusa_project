@@ -22,6 +22,7 @@ export default defineConfig({
                 'resources/js/dataTable.js',
                 'resources/js/real-time.js',
                 'resources/js/chart-dashboard.js',
+                'resources/js/chart-warehouse-dashboard.js',
                 'resources/js/pics.js',
                 'resources/js/excel-upload.js',
             ],
