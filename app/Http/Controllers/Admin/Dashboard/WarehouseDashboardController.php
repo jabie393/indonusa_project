@@ -86,6 +86,29 @@ class WarehouseDashboardController extends Controller
                 ->count();
         }
 
+        // Range bulan sekarang (full)
+        $currentStart = Carbon::now()->startOfMonth();
+        $currentEnd = Carbon::now()->endOfMonth();
+        // Range bulan lalu (full previous month)
+        $prevStart = Carbon::now()->subMonth()->startOfMonth();
+        $prevEnd = Carbon::now()->subMonth()->endOfMonth();
+
+        // counts untuk bulan ini (opsional, bisa dipakai di view)
+        $data['barangMasukThisMonth'] = BarangHistory::where('new_status', 'masuk')
+            ->whereBetween('changed_at', [$currentStart, $currentEnd])
+            ->count();
+        $data['barangKeluarThisMonth'] = BarangHistory::where('new_status', 'keluar')
+            ->whereBetween('changed_at', [$currentStart, $currentEnd])
+            ->count();
+
+        // last month (full previous month)
+        $data['barangMasukLastMonth'] = BarangHistory::where('new_status', 'masuk')
+            ->whereBetween('changed_at', [$prevStart, $prevEnd])
+            ->count();
+        $data['barangKeluarLastMonth'] = BarangHistory::where('new_status', 'keluar')
+            ->whereBetween('changed_at', [$prevStart, $prevEnd])
+            ->count();
+
         // prepare chart data
         // Inventory Movement Chart (IMC) - monthly counts (masuk / keluar) for selected year
         // baca year dari query parameter 'year' — ini terpisah dari date_start/date_end

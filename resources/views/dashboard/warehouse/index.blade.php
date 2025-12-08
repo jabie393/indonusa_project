@@ -56,19 +56,13 @@
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
                     <h1 class="p-5 text-lg font-bold text-white ">Jumlah Barang</h1>
                 </div>
-                <div class="flex flex-col justify-center">
+                <div class="flex flex-col h-full justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $totalBarang ?? 0 }}
                             </h1>
                             <span class="text-lg text-gray-500 dark:text-gray-400">Total Barang</span>
-                        </div>
-                        <div class="flex w-full flex-row items-end">
-                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                                12423
-                            </p>
-                            <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
                         </div>
                     </div>
                 </div>
@@ -77,7 +71,7 @@
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
                     <h1 class="p-5 text-lg font-bold text-white ">Jumlah Stok</h1>
                 </div>
-                <div class="flex flex-col justify-center">
+                <div class="flex flex-col h-full justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
@@ -85,13 +79,6 @@
                             </h1>
                             <span class="text-lg text-gray-500 dark:text-gray-400">Total Stok</span>
                         </div>
-                        <div class="flex w-full flex-row items-end">
-                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                                12423
-                            </p>
-                            <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -110,7 +97,7 @@
                         </div>
                         <div class="flex w-full flex-row items-end">
                             <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                                234
+                                {{ $barangMasukLastMonth ?? 0 }}
                             </p>
                             <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
                         </div>
@@ -131,8 +118,7 @@
                     </div>
                     <div class="flex w-full flex-row items-end">
                         <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                            {{-- optional: keep previous metric or remove --}}
-                            12423
+                            {{ $barangKeluarLastMonth ?? 0 }}
                         </p>
                         <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
                     </div>
