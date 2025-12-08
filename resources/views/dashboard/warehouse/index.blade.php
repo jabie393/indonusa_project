@@ -194,7 +194,7 @@
                         $selected = $selectedYear ?? $currentYear;
                         $years = $imc_years ?? [$currentYear];
                     @endphp
-                    <select id="imc-year-select" class="m-3 rounded-full px-4 py-2 border">
+                    <select id="imc-year-select" class="m-3 rounded-full pl-3 pr-7 py-1 border">
                         @foreach($years as $y)
                             <option value="{{ $y }}" {{ (int)$selected === (int)$y ? 'selected' : '' }}>
                                 {{ $y }}
