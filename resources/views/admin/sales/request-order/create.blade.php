@@ -239,7 +239,7 @@
                                         <td>
                                             <input type="number" name="harga[]"
                                                 class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                min="0" step="0.01" value="0">
+                                                min="0" step="0.01" value="0" readonly>
                                         </td>
                                         <td>
                                             <div class="upload-btn-container relative">
@@ -626,25 +626,25 @@
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
-                    const defaultDiskon = parseFloat(option.dataset.diskon || '0');
+                    // Base price from barang
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
+
+                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
                     let useDiskon = defaultDiskon;
                     if (diskonInput) {
-                        const currentVal = parseFloat(diskonInput.value || '0') || 0;
-                        if (currentVal) {
+                        const currentVal = parseFloat(diskonInput.value);
+                        if (!isNaN(currentVal) && currentVal !== 0) {
                             useDiskon = currentVal;
                         } else {
                             diskonInput.value = defaultDiskon;
                         }
                     }
-                    // calculate harga from baseHarga + 30% then apply the chosen diskon
-                    if (hargaInput) {
-                        const computedHarga = +(baseHarga * 1.3 * (1 - (useDiskon / 100))).toFixed(2);
-                        hargaInput.value = computedHarga;
-                    }
-                    // Set jual price = base price from Barang + 30%
-                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+
+                    // Compute jual price (base + 30%) then apply diskon if any
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                    if (hargaInput) hargaInput.value = hargaJual;
+                    const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
+                    if (hargaInput) hargaInput.value = finalHarga;
                 } else {
                     namaDisplay.value = '';
                     if (diskonInput) diskonInput.value = 0;

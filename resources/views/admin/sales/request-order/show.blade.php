@@ -203,13 +203,13 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-3">Tidak ada item</td>
+                                        <td colspan="5" class="text-center py-3">Tidak ada item</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                             <tfoot class="table-light fw-bold">
                                 <tr>
-                                    <td colspan="3" class="text-end">TOTAL:</td>
+                                    <td colspan="4" class="text-end">TOTAL:</td>
                                     <td>Rp {{ number_format($total, 2, ',', '.') }}</td>
                                 </tr>
                             </tfoot>

@@ -267,7 +267,7 @@
                                                     <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Barang --</option>
                                                         @foreach($barangs as $b)
-                                                            <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" style="display: none;">
+                                                            <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" style="display: none;">
                                                                 {{ $b->kode_barang }}
                                                             </option>
                                                         @endforeach
@@ -277,12 +277,15 @@
                                                     <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;">
                                                 </td>
                                                 <td>
+                                                    <input type="number" name="diskon_percent[]" class="form-control diskon-input" min="0" max="100" step="0.01" value="0">
+                                                </td>
+                                                <td>
                                                     <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
                                                            min="1" value="1" required>
                                                 </td>
                                                 <td>
                                                     <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" 
-                                                           min="0" step="0.01" value="0">
+                                                           min="0" step="0.01" value="0" readonly>
                                                 </td>
                                                 <td>
                                                     <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
@@ -633,24 +636,25 @@
                 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
-                    const defaultDiskon = parseFloat(option.dataset.diskon || '0');
+                    // Base price from barang
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
+
+                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
                     let useDiskon = defaultDiskon;
                     if (diskonInput) {
-                        const currentVal = parseFloat(diskonInput.value || '0') || 0;
-                        if (currentVal) {
+                        const currentVal = parseFloat(diskonInput.value);
+                        if (!isNaN(currentVal) && currentVal !== 0) {
                             useDiskon = currentVal;
                         } else {
                             diskonInput.value = defaultDiskon;
                         }
                     }
-                    if (hargaInput) {
-                        const computedHarga = +(baseHarga * 1.3 * (1 - (useDiskon / 100))).toFixed(2);
-                        hargaInput.value = computedHarga;
-                    }
-                    // Set jual price = base price from Barang + 30%
-                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+
+                    // Compute jual price (base + 30%) then apply diskon if any
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                    if (hargaInput) hargaInput.value = hargaJual;
+                    const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
+                    if (hargaInput) hargaInput.value = finalHarga;
                 } else {
                     namaDisplay.value = '';
                     if (diskonInput) diskonInput.value = 0;
@@ -700,7 +704,7 @@
                         <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
                     </td>
                     <td>
-                        <input type="number" name="harga[]" class="form-control harga-input" min="0" step="0.01" value="0">
+                        <input type="number" name="harga[]" class="form-control harga-input" min="0" step="0.01" value="0" readonly>
                     </td>
                     <td>
                         <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
