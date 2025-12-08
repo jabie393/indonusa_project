@@ -15,7 +15,7 @@
 
             <!-- FILTER FORM -->
             <div class="flex-end rounded-2xl p-5 shadow-md inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <form action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
+                <form id="filters-form" action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
                     <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Threshold stok</label>
                         <select name="threshold" class="rounded-xl border py-1 pr-9">
@@ -203,16 +203,27 @@
             <div class="col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
                 <div class="inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Inventory Movement Chart</h1>
-                    <button class="m-3 inline-flex cursor-pointer items-center justify-center rounded-full bg-[#225A97] px-5 py-2">
-                        <span class="text-white">
-                            Tahun Ini
-                        </span>
-                    </button>
+                    @php
+                        $currentYear = now()->year;
+                        $selected = $selectedYear ?? $currentYear;
+                        $years = $imc_years ?? [$currentYear];
+                    @endphp
+                    <select id="imc-year-select" class="m-3 rounded-full px-4 py-2 border">
+                        @foreach($years as $y)
+                            <option value="{{ $y }}" {{ (int)$selected === (int)$y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-full w-full">
-                        <canvas id="IMC" class="block h-full w-full" data-labels='@json($imc_labels)' data-masuk='@json($imc_masuk)'
-                            data-keluar='@json($imc_keluar)'></canvas>
+                        <canvas id="IMC" class="block h-full w-full"
+                            data-labels='@json($imc_labels)'
+                            data-masuk='@json($imc_masuk)'
+                            data-keluar='@json($imc_keluar)'
+                            data-endpoint='{{ route("dashboard.chart.data") }}'
+                        ></canvas>
                     </div>
                 </div>
             </div>

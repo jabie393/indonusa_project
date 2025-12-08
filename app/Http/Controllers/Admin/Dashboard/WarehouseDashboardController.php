@@ -88,7 +88,9 @@ class WarehouseDashboardController extends Controller
 
         // prepare chart data
         // Inventory Movement Chart (IMC) - monthly counts (masuk / keluar) for selected year
-        $year = $dateStart ? $dateStart->year : now()->year;
+        // baca year dari query parameter 'year' — ini terpisah dari date_start/date_end
+        $selectedYear = (int) $request->query('year', now()->year);
+        $year = $selectedYear;
         $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         $imcMasuk = [];
         $imcKeluar = [];
@@ -101,6 +103,17 @@ class WarehouseDashboardController extends Controller
                 ->whereYear('changed_at', $year)
                 ->whereMonth('changed_at', $m)
                 ->count();
+        }
+
+        // ambil semua tahun yang ada di history (descending). pastikan setidaknya ada tahun sekarang
+        $imcYears = BarangHistory::selectRaw('YEAR(changed_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn($y) => (int)$y)
+            ->toArray();
+        if (empty($imcYears)) {
+            $imcYears = [now()->year];
         }
 
         // Stock Value Chart (SVC) - top items by stock (hanya status 'masuk')
@@ -116,6 +129,9 @@ class WarehouseDashboardController extends Controller
         $data['imc_keluar'] = $imcKeluar;
         $data['svc_labels'] = $svcLabels;
         $data['svc_data'] = $svcData;
+        // kirim selectedYear agar view bisa menandai tombol aktif
+        $data['selectedYear'] = $selectedYear;
+        $data['imc_years'] = $imcYears;
 
         // kirim juga nilai filter supaya view bisa menandai selected option
         $data['selectedThreshold'] = $threshold;
@@ -123,5 +139,52 @@ class WarehouseDashboardController extends Controller
         $data['selectedDateEnd'] = $dateEndRaw;
 
         return view('dashboard.warehouse.index', $data);
+    }
+
+    public function chartData(Request $request)
+    {
+        $selectedYear = (int) $request->query('year', now()->year);
+
+        $months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+        $imcMasuk = [];
+        $imcKeluar = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $imcMasuk[] = BarangHistory::where('new_status', 'masuk')
+                ->whereYear('changed_at', $selectedYear)
+                ->whereMonth('changed_at', $m)
+                ->count();
+            $imcKeluar[] = BarangHistory::where('new_status', 'keluar')
+                ->whereYear('changed_at', $selectedYear)
+                ->whereMonth('changed_at', $m)
+                ->count();
+        }
+
+        $imcYears = BarangHistory::selectRaw('YEAR(changed_at) as year')
+            ->distinct()
+            ->orderByDesc('year')
+            ->pluck('year')
+            ->map(fn($y) => (int)$y)
+            ->toArray();
+        if (empty($imcYears)) {
+            $imcYears = [now()->year];
+        }
+
+        $topItems = Barang::where('status_barang', 'masuk')
+            ->orderByDesc('stok')
+            ->take(8)
+            ->get();
+        $svcLabels = $topItems->pluck('nama_barang')->map(fn($v) => $v ?? '-')->toArray();
+        $svcData = $topItems->pluck('stok')->toArray();
+
+        return response()->json([
+            'imc_labels' => $months,
+            'imc_masuk'  => $imcMasuk,
+            'imc_keluar' => $imcKeluar,
+            'svc_labels' => $svcLabels,
+            'svc_data'   => $svcData,
+            'imc_years'  => $imcYears,
+            'selectedYear' => $selectedYear,
+        ]);
     }
 }

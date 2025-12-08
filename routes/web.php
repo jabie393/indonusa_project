@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\GeneralController;
 use App\Http\Controllers\Admin\GoodsInController;
@@ -11,6 +10,7 @@ use App\Http\Controllers\Admin\PicsController;
 use App\Http\Controllers\Admin\CustomerController2;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
+use App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
 use App\Http\Controllers\Admin\DeliveryOrdersController;
 use App\Http\Controllers\Guest\OrderController;
@@ -24,7 +24,6 @@ use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
 
 // === Guest Routes === //
 Route::get('/', function () {
@@ -114,6 +113,8 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
     Route::resource('/delivery-orders', DeliveryOrdersController::class);
+    Route::get('/admin/dashboard/warehouse/data', [WarehouseDashboardController::class, 'chartData'])
+        ->name('dashboard.chart.data');
 });
 // End of Warehouse
 
@@ -173,5 +174,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/sales-order/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales.sales-order.cancel');
 });
 // End of Sales
+
 // === End Admin Routes === //
 require __DIR__ . '/auth.php';
