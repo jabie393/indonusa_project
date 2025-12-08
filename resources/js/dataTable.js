@@ -4,6 +4,8 @@ let table = new DataTable('#warehouseTable', {
     info: false,
     fixedHeader: true,
     colReorder: true,
+    scrollX: true,
+
 });
 
 let datatable = new DataTable('#DataTable', {
@@ -11,6 +13,7 @@ let datatable = new DataTable('#DataTable', {
     searching: false,
     paging: false,
     info: false,
+    scrollX: true,
     colReorder: true,
 
 });
@@ -20,7 +23,8 @@ let datatable2 = new DataTable('#DataTable2', {
     paging: false,
     info: false,
     colReorder: true,
-    
+    scrollX: true,
+
 });
 let datatable3 = new DataTable('#DataTable3', {
     fixedHeader: true,
@@ -28,6 +32,7 @@ let datatable3 = new DataTable('#DataTable3', {
     paging: false,
     info: false,
     colReorder: true,
+    scrollX: true,
 
 });
 
