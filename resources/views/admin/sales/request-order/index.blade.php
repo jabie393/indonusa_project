@@ -25,10 +25,11 @@
                 <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                     {{-- Tambah barang modal --}}
                     <a href="{{ route('sales.request-order.create') }}"
-                        class="flex items-center justify-center rounded-lg bg-primary-700 px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                        class="rounded-lg flex flex-row items-center justify-center bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
                         <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                        </svg> Request Order Baru
+                        </svg>
+                        Request Order Baru
                     </a>
                 </div>
             </div>
@@ -53,11 +54,11 @@
                         @php
                             $total = $ro->items->sum('subtotal');
                             $statusClass = match ($ro->status) {
-                                'pending' => 'warning',
-                                'approved' => 'success',
-                                'rejected' => 'danger',
-                                'converted' => 'info',
-                                'expired' => 'secondary',
+                                'pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                'converted' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
+                                'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
                                 default => 'secondary',
                             };
                             $statusLabel = match ($ro->status) {
@@ -69,15 +70,15 @@
                                 default => ucfirst($ro->status),
                             };
                         @endphp
-                        <tr class="dark:border-gray-700">
+                        <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->request_number }}</td>
-                            <td class="px-4 py-3"><span class="badge bg-info">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
+                            <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
                             <td class="px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
                             <td class="px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
                             <td class="px-4 py-3">
-                                <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
+                                <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 @if ($ro->expired_at)
@@ -88,7 +89,7 @@
                                             <span class="badge bg-danger">EXPIRED</span>
                                         @else
                                             <span class="text-success">
-                                                @if(is_string($ro->expired_at))
+                                                @if (is_string($ro->expired_at))
                                                     {{ \Carbon\Carbon::parse($ro->expired_at)->diffForHumans() }}
                                                 @else
                                                     {{ $ro->expired_at->diffForHumans() }}
@@ -100,18 +101,26 @@
                                     -
                                 @endif
                             </td>
-                            <td class="flex gap-2 px-4 py-3" >
-                                <a href="{{ route('sales.request-order.show', $ro->id) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('sales.request-order.pdf', $ro->id) }}" class="btn btn-sm btn-outline-secondary" title="Download PDF" target="_blank">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                                @if ($ro->status === 'pending')
-                                    <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                            <td>
+                                <div class="flex h-full items-center gap-2 px-4 py-3">
+                                    <a href="{{ route('sales.request-order.show', $ro->id) }}"
+                                        class="btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        title="Lihat Detail">
+                                        Detail
                                     </a>
-                                @endif
+                                    <a href="{{ route('sales.request-order.pdf', $ro->id) }}"
+                                        class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                        title="Download PDF" target="_blank">
+                                        PDF
+                                    </a>
+                                    @if ($ro->status === 'pending')
+                                        <a href="{{ route('sales.request-order.edit', $ro->id) }}"
+                                            class="btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            title="Edit">
+                                            Edit
+                                        </a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -14,12 +14,21 @@ class SalesOrderController extends Controller
     /**
      * List semua Sales Order milik Sales
      */
-    public function index()
+    public function index(Request $request)
     {
+        $query = $request->input('search');
         $salesOrders = SalesOrder::with('items.barang', 'sales', 'requestOrder')
-            ->where('sales_id', Auth::id())
-            ->latest()
-            ->paginate(20);
+            ->where('sales_id', Auth::id());
+
+        if ($query) {
+            $salesOrders = $salesOrders->where(function ($q) use ($query) {
+                $q->where('sales_order_number', 'like', "%{$query}%")
+                    ->orWhere('customer_name', 'like', "%{$query}%")
+                    ->orWhereHas('requestOrder', fn($subQ) => $subQ->where('request_number', 'like', "%{$query}%"));
+            });
+        }
+
+        $salesOrders = $salesOrders->latest()->paginate(20)->appends($request->except('page'));
 
         return view('admin.sales.sales-order.index', compact('salesOrders'));
     }
@@ -63,8 +72,7 @@ class SalesOrderController extends Controller
             DB::commit();
 
             return redirect()->back()
-                ->with('success', 'Status Sales Order berhasil diubah.');
-
+                ->with(['title' => 'Berhasil', 'text' => 'Status Sales Order berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal mengubah status: ' . $e->getMessage());
@@ -108,8 +116,7 @@ class SalesOrderController extends Controller
             DB::commit();
 
             return redirect()->back()
-                ->with('success', 'Delivered quantity berhasil diupdate.');
-
+                ->with(['title' => 'Berhasil', 'text' => 'Delivered quantity berhasil diupdate.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors($e->getMessage());
@@ -143,8 +150,7 @@ class SalesOrderController extends Controller
             DB::commit();
 
             return redirect()->back()
-                ->with('success', 'Sales Order berhasil dibatalkan.');
-
+                ->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil dibatalkan.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal membatalkan Sales Order: ' . $e->getMessage());
