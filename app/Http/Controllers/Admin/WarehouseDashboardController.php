@@ -36,15 +36,15 @@ class WarehouseDashboardController extends Controller
 
         // query dasar untuk barang stok rendah (status 'masuk' + stok < threshold)
         $baseLowQuery = Barang::where('status_barang', 'masuk')
-                             ->where('stok', '<', $threshold);
+            ->where('stok', '<', $threshold);
 
         $data = [
-            'totalBarang'     => Barang::count(),
-            'totalStok'       => Barang::sum('stok'),
+            'totalBarang' => Barang::count(),
+            'totalStok' => Barang::sum('stok'),
             // ambil 4 terendah untuk card
-            'lowStockItems'   => (clone $baseLowQuery)->orderBy('stok', 'asc')->take(4)->get(),
+            'lowStockItems' => (clone $baseLowQuery)->orderBy('stok', 'asc')->take(4)->get(),
             // semua untuk tabel
-            'allLowStockItems'=> (clone $baseLowQuery)->orderBy('stok', 'asc')->get(),
+            'allLowStockItems' => (clone $baseLowQuery)->orderBy('stok', 'asc')->get(),
         ];
 
         // recent inbound: prioritas date range jika ada, kalau tidak ambil semua (atau bisa pakai periode)
@@ -89,7 +89,7 @@ class WarehouseDashboardController extends Controller
         // prepare chart data
         // Inventory Movement Chart (IMC) - monthly counts (masuk / keluar) for selected year
         $year = $dateStart ? $dateStart->year : now()->year;
-        $months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
@@ -103,8 +103,11 @@ class WarehouseDashboardController extends Controller
                 ->count();
         }
 
-        // Stock Value Chart (SVC) - top items by stock
-        $topItems = Barang::orderByDesc('stok')->take(8)->get();
+        // Stock Value Chart (SVC) - top items by stock (hanya status 'masuk')
+        $topItems = Barang::where('status_barang', 'masuk')
+            ->orderByDesc('stok')
+            ->take(8)
+            ->get();
         $svcLabels = $topItems->pluck('nama_barang')->map(fn($v) => $v ?? '-')->toArray();
         $svcData = $topItems->pluck('stok')->toArray();
 
