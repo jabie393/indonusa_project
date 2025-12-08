@@ -18,16 +18,16 @@ class GeneralController extends Controller
         // jika pakai spatie/permission
         if (method_exists($user, 'hasRole')) {
             if ($user->hasRole('Sales')) {
-                return app(\App\Http\Controllers\Admin\SalesDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard();
             }
             if ($user->hasRole('Supervisor')) {
-                return app(\App\Http\Controllers\Admin\SupervisorDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
             }
             if ($user->hasRole('Warehouse')) {
-                return app(\App\Http\Controllers\Admin\WarehouseDashboardController::class)->dashboard(request());
+                return app(\App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController::class)->dashboard(request());
             }
             if ($user->hasRole('General Affair')) {
-                return app(\App\Http\Controllers\Admin\GeneralAffairDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\GeneralAffairDashboardController::class)->dashboard();
             }
         }
 
@@ -36,13 +36,13 @@ class GeneralController extends Controller
         $r = str_replace(' ', '', $role);
         switch ($r) {
             case 'sales':
-                return app(\App\Http\Controllers\Admin\SalesDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard();
             case 'supervisor':
-                return app(\App\Http\Controllers\Admin\SupervisorDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
             case 'warehouse':
-                return app(\App\Http\Controllers\Admin\WarehouseDashboardController::class)->dashboard(request());
+                return app(\App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController::class)->dashboard(request());
             case 'generalaffair':
-                return app(\App\Http\Controllers\Admin\GeneralAffairDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\GeneralAffairDashboardController::class)->dashboard();
         }
 
         return view('dashboard.anonymous.index');
