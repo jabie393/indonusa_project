@@ -58,11 +58,11 @@
                     <table class="table" id="DataTableExcel">
                         <thead>
                             <tr>
-                                <th class="min-w-[150px]">Kode Barang</th>
-                                <th class="min-w-[150px]">Nama Barang</th>
-                                <th class="min-w-[150px]">Kategori</th>
+                                <th class="min-w-[200px]">Kode Barang</th>
+                                <th class="min-w-[200px]">Nama Barang</th>
+                                <th class="min-w-[200px]">Kategori</th>
                                 <th class="min-w-[150px]">Stok</th>
-                                <th class="min-w-[150px]">Harga</th>
+                                <th class="min-w-[200px]">Harga</th>
                                 <th class="min-w-[150px]">Satuan</th>
                                 <th class="min-w-[150px]">Status Listing</th>
                                 <th>Aksi</th>

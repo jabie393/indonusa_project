@@ -57,6 +57,36 @@ document.addEventListener('DOMContentLoaded', function () {
         return map;
     }
 
+    // tambahkan map singkatan & helper generator (pakai window.kategoriSingkatan bila ada)
+    const kategoriSingkatanLocal = window.kategoriSingkatan || {
+        "HANDTOOLS": "HT","ADHESIVE AND SEALANT": "AS","AUTOMOTIVE EQUIPMENT": "AE","CLEANING": "CLN",
+        "COMPRESSOR": "CMP","CONSTRUCTION": "CST","CUTTING TOOLS": "CT","LIGHTING": "LTG",
+        "FASTENING": "FST","GENERATOR": "GEN","HEALTH CARE EQUIPMENT": "HCE","HOSPITALITY": "HSP",
+        "HYDRAULIC TOOLS": "HYD","MARKING MACHINE": "MM","MATERIAL HANDLING EQUIPMENT": "MHE",
+        "MEASURING AND TESTING EQUIPMENT": "MTE","METAL CUTTING MACHINERY": "MCM","PACKAGING": "PKG",
+        "PAINTING AND COATING": "PC","PNEUMATIC TOOLS": "PN","POWER TOOLS": "PT",
+        "SAFETY AND PROTECTION EQUIPMENT": "SPE","SECURITY": "SEC","SHEET METAL MACHINERY": "SMM",
+        "STORAGE SYSTEM": "STS","WELDING EQUIPMENT": "WLD","WOODWORKING EQUIPMENT": "WWE",
+        "MISCELLANEOUS": "MSC","OTHER CATEGORIES": "OC",
+    };
+
+    function generateKodeFromCategory(kategori, nama, rowIndex) {
+        // pakai singkatan kategori bila ada, jika tidak gunakan 2-3 huruf awal dari nama barang
+        let sing = (kategori && kategoriSingkatanLocal[kategori]) ? kategoriSingkatanLocal[kategori] : '';
+        if (!sing) {
+            if (nama) {
+                const parts = String(nama).trim().split(/\s+/);
+                sing = parts.map(p => p[0] || '').join('').slice(0,3).toUpperCase();
+            } else {
+                sing = 'UNK';
+            }
+            if (!sing) sing = 'UNK';
+        }
+        const timestamp = Date.now().toString().slice(-5); // 5 digit terakhir
+        const seq = String(rowIndex + 1).padStart(2, '0');
+        return `${sing}-${timestamp}${seq}`;
+    }
+
     // helper: inject hidden mapping inputs into form (overwrites previous)
     function injectMappingInputs(mapping) {
         // remove previous mapping inputs
@@ -137,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     tdKode.appendChild(inp);
                 }
                 inp.readOnly = true;
-                const kodeVal = getVal('kode_barang') || ('IMP' + (Date.now().toString().slice(-6)) + (rowIndex+1));
+                const kodeVal = getVal('kode_barang') || generateKodeFromCategory(getVal('kategori'), getVal('nama_barang'), rowIndex);
                 inp.value = kodeVal;
                 // add hidden input for kode_barang so it gets submitted as array
                 const hidden = document.createElement('input');
@@ -145,6 +175,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 hidden.name = `rows[${rowIndex}][kode_barang]`;
                 hidden.value = kodeVal;
                 tdKode.appendChild(hidden);
+                // Jika fungsi validateKodeBarang tersedia (didefinisikan di checker.js), panggil untuk cek unik
+                try { if (typeof validateKodeBarang === 'function') validateKodeBarang(inp); } catch (e) { /* ignore */ }
             }
 
             // 1: nama_barang
@@ -441,4 +473,56 @@ document.addEventListener('DOMContentLoaded', function () {
             // allow submit to proceed
         });
     }
+
+    // <-- ADD: event delegation for refresh buttons in DataTableExcel
+    (function attachTableRefreshHandler() {
+        const table = document.getElementById('DataTableExcel');
+        if (!table) return;
+
+        table.addEventListener('click', function (e) {
+            const btn = e.target.closest('button#refreshKodeBarang, button.refresh-kode, button[data-action="refresh-kode"]');
+            if (!btn) return;
+
+            const tr = btn.closest('tr');
+            if (!tr) return;
+
+            // find visible nama and kategori in the row
+            const namaEl = tr.children[1]?.querySelector('input, textarea, [name*="[nama_barang]"]');
+            const kategoriEl = tr.children[2]?.querySelector('select, input, [name*="[kategori]"]');
+
+            const nama = namaEl ? (namaEl.value || '').toString().trim() : '';
+            const kategori = kategoriEl ? (kategoriEl.value || '').toString().trim() : '';
+
+            // generate kode berdasarkan nama + kategori
+            // try to compute a rowIndex if possible (fallback 0)
+            let rowIndex = Array.prototype.indexOf.call(tr.parentNode.children, tr);
+            if (rowIndex < 0) rowIndex = 0;
+            const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
+
+            // update visible kode input (col 0)
+            const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
+            if (kodeVisible) {
+                kodeVisible.value = newKode;
+            }
+
+            // update or create hidden input rows[{i}][kode_barang]
+            let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
+            if (!hiddenKode) {
+                hiddenKode = document.createElement('input');
+                hiddenKode.type = 'hidden';
+                // try to reuse rowIndex in name; if existing rows used different naming fallback to generic rows[][kode_barang]
+                hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
+                tr.children[0].appendChild(hiddenKode);
+            }
+            hiddenKode.value = newKode;
+
+            // call server-side uniqueness check if available
+            try {
+                if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode);
+            } catch (err) {
+                // ignore validation errors here
+                // console.error(err);
+            }
+        });
+    })();
 });
