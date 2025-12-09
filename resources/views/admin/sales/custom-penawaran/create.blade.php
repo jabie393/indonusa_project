@@ -122,6 +122,8 @@
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Qty</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Satuan</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Keterangan</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Total (Rp)</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Gambar</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Aksi</th>
@@ -162,8 +164,8 @@
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
-                                        <td class="item-subtotal border text-black border-gray-300 px-4 py-2 text-right font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
-                                        <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold">0</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">
                                             <div class="upload-btn-container relative">
                                                 <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
                                                     accept="image/*">
@@ -225,6 +227,43 @@
                                 <input type="hidden" id="grand-total-value" name="grand_total" value="0">
                             </div>
                         </div>
+                        <script>
+                            (function(){
+                                function handleDiskonChange(el){
+                                    const row = el.closest('tr');
+                                    const diskonVal = parseFloat(el.value) || 0;
+                                    const keterangan = row.querySelector('.item-keterangan');
+                                    if(!keterangan) return;
+                                    if(diskonVal > 20){
+                                        keterangan.required = true;
+                                        keterangan.classList.add('border-red-500');
+                                    } else {
+                                        keterangan.required = false;
+                                        keterangan.classList.remove('border-red-500');
+                                    }
+                                }
+
+                                // Attach to existing rows
+                                document.querySelectorAll('.item-diskon').forEach(function(d){
+                                    d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                    // initial state
+                                    handleDiskonChange(d);
+                                });
+
+                                // When adding new rows, make sure handlers attach (if your add-row script triggers an event, adapt accordingly)
+                                document.getElementById('btn-add-item')?.addEventListener('click', function(){
+                                    setTimeout(function(){
+                                        document.querySelectorAll('.item-diskon').forEach(function(d){
+                                            if(!d.dataset._hasListener){
+                                                d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                                d.dataset._hasListener = '1';
+                                                handleDiskonChange(d);
+                                            }
+                                        });
+                                    }, 50);
+                                });
+                            })();
+                        </script>
                     </div>
 
                     <!-- Action Buttons -->

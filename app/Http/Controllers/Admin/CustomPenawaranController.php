@@ -17,6 +17,7 @@ class CustomPenawaranController extends Controller
     public function index()
     {
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
+            ->with('items')
             ->latest()
             ->paginate(20);
 
@@ -49,12 +50,24 @@ class CustomPenawaranController extends Controller
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|numeric|min:0',
+            'items.*.diskon' => 'required|integer|min:0|max:100',
+            'items.*.keterangan' => 'nullable|string|max:255',
             'items.*.images' => 'nullable|array',
             'items.*.images.*' => 'nullable|image|max:5120',
         ]);
 
         DB::beginTransaction();
         try {
+            $needApproval = false;
+            foreach ($validated['items'] as $i => $itemData) {
+                if ($itemData['diskon'] > 20) {
+                    $needApproval = true;
+                    if (empty($itemData['keterangan'])) {
+                        throw new \Exception('Keterangan wajib diisi jika diskon lebih dari 20%.');
+                    }
+                }
+            }
+
             $penawaran = CustomPenawaran::create([
                 'sales_id' => Auth::id(),
                 'penawaran_number' => CustomPenawaran::generatePenawaranNumber(),
@@ -66,7 +79,7 @@ class CustomPenawaranController extends Controller
                 'date' => $validated['date'],
                 'intro_text' => $validated['intro_text'] ?? null,
                 'tax' => $validated['tax'] ?? 0,
-                'status' => 'draft',
+                'status' => $needApproval ? 'sent' : 'draft',
             ]);
 
             $subtotal = 0;
@@ -80,7 +93,7 @@ class CustomPenawaranController extends Controller
                     }
                 }
 
-                $itemSubtotal = $itemData['qty'] * $itemData['harga'];
+                $itemSubtotal = $itemData['qty'] * $itemData['harga'] * (1 - ($itemData['diskon'] ?? 0) / 100);
                 $subtotal += $itemSubtotal;
 
                 CustomPenawaranItem::create([
@@ -90,6 +103,8 @@ class CustomPenawaranController extends Controller
                     'satuan' => $itemData['satuan'],
                     'harga' => $itemData['harga'],
                     'subtotal' => $itemSubtotal,
+                    'diskon' => $itemData['diskon'] ?? 0,
+                    'keterangan' => $itemData['keterangan'] ?? null,
                     'images' => !empty($itemImages) ? $itemImages : null,
                 ]);
             }
@@ -100,6 +115,9 @@ class CustomPenawaranController extends Controller
             ]);
 
             DB::commit();
+
+            // Simulasi permintaan approval ke Supervisor
+            // TODO: Implementasi notifikasi/approval Supervisor
 
             return redirect()->route('sales.custom-penawaran.show', $penawaran->id)
                 ->with('success', "Penawaran {$penawaran->penawaran_number} berhasil dibuat.");
@@ -157,6 +175,8 @@ class CustomPenawaranController extends Controller
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|numeric|min:0',
+            'items.*.diskon' => 'required|integer|min:0|max:100',
+            'items.*.keterangan' => 'nullable|string|max:255',
             'items.*.images' => 'nullable|array',
             'items.*.images.*' => 'nullable|image|max:5120',
             'items.*.existing_images' => 'nullable|array',
@@ -179,6 +199,16 @@ class CustomPenawaranController extends Controller
             $existingItems = $customPenawaran->items()->get();
             $customPenawaran->items()->delete();
 
+            $needApproval = false;
+            foreach ($validated['items'] as $i => $itemData) {
+                if ($itemData['diskon'] > 20) {
+                    $needApproval = true;
+                    if (empty($itemData['keterangan'])) {
+                        throw new \Exception('Keterangan wajib diisi jika diskon lebih dari 20%.');
+                    }
+                }
+            }
+
             $subtotal = 0;
             foreach ($validated['items'] as $i => $itemData) {
                 $itemImages = [];
@@ -197,7 +227,7 @@ class CustomPenawaranController extends Controller
                     $itemImages = $validated['items'][$i]['existing_images'];
                 }
 
-                $itemSubtotal = $itemData['qty'] * $itemData['harga'];
+                $itemSubtotal = $itemData['qty'] * $itemData['harga'] * (1 - ($itemData['diskon'] ?? 0) / 100);
                 $subtotal += $itemSubtotal;
 
                 CustomPenawaranItem::create([
@@ -207,6 +237,8 @@ class CustomPenawaranController extends Controller
                     'satuan' => $itemData['satuan'],
                     'harga' => $itemData['harga'],
                     'subtotal' => $itemSubtotal,
+                    'diskon' => $itemData['diskon'] ?? 0,
+                    'keterangan' => $itemData['keterangan'] ?? null,
                     'images' => !empty($itemImages) ? $itemImages : null,
                 ]);
             }
@@ -214,6 +246,7 @@ class CustomPenawaranController extends Controller
             $customPenawaran->update([
                 'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
+                'status' => $needApproval ? 'sent' : $customPenawaran->status,
             ]);
 
             DB::commit();
@@ -243,10 +276,45 @@ class CustomPenawaranController extends Controller
     /**
      * View PDF penawaran
      */
+    /**
+     * Supervisor approval/reject penawaran
+     */
+    public function approval(Request $request, CustomPenawaran $customPenawaran)
+    {
+        if (auth()->user()->role !== 'Supervisor') {
+            abort(403);
+        }
+        $action = $request->input('action');
+        if ($customPenawaran->status !== 'sent') {
+            return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
+        }
+        if ($action === 'approve') {
+            $customPenawaran->status = 'approved';
+            $customPenawaran->save();
+            return back()->with('success', 'Penawaran telah disetujui.');
+        } elseif ($action === 'reject') {
+            $customPenawaran->status = 'rejected';
+            $customPenawaran->save();
+            return back()->with('success', 'Penawaran telah ditolak.');
+        }
+        return back()->withErrors('Aksi tidak valid.');
+    }
     public function pdf(CustomPenawaran $customPenawaran)
     {
+        // Only owner (Sales) or Supervisor/Admin can view, but enforce approval rule:
         if ($customPenawaran->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
             abort(403);
+        }
+
+        // If there is any item with diskon > 20% and the penawaran is not approved,
+        // disallow PDF generation for Sales users (Supervisor/Admin can still view).
+        $hasHighDiscount = $customPenawaran->items()->where('diskon', '>', 20)->exists();
+        if ($hasHighDiscount && $customPenawaran->status !== 'approved') {
+            // If the current user is Supervisor or Admin allow viewing (they can inspect),
+            // otherwise deny/redirect back for Sales until approval.
+            if (!in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
+                return back()->withErrors('PDF hanya dapat di-generate setelah permintaan diskon disetujui oleh Supervisor.');
+            }
         }
 
         return view('admin.pdf.custom-penawaran-pdf', compact('customPenawaran'));

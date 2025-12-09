@@ -122,6 +122,8 @@
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Qty</th>
                                         <th class="border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Satuan</th>
                                         <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Harga (Rp)</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Diskon (%)</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Keterangan</th>
                                         <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Total (Rp)</th>
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Gambar</th>
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Aksi</th>
@@ -150,6 +152,12 @@
                                                 <input type="number" name="items[{{ $index }}][harga]"
                                                     class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     placeholder="0" value="{{ $item->harga }}" step="0.01" min="0" required>
+                                            </td>
+                                            <td class="border border-gray-300 px-4 py-2">
+                                                <input type="number" name="items[{{ $index }}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ $item->diskon ?? 0 }}" min="0" max="100" required>
+                                            </td>
+                                            <td class="border border-gray-300 px-4 py-2">
+                                                <input type="text" name="items[{{ $index }}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan diskon" value="{{ $item->keterangan ?? '' }}">
                                             </td>
                                             <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
                                             <td class="border border-gray-300 px-4 py-2 text-center">
@@ -257,6 +265,42 @@
                                 <input type="hidden" id="grand-total-value" name="grand_total" value="{{ $customPenawaran->grand_total }}">
                             </div>
                         </div>
+                        <script>
+                            (function(){
+                                function handleDiskonChange(el){
+                                    const row = el.closest('tr');
+                                    const diskonVal = parseFloat(el.value) || 0;
+                                    const keterangan = row.querySelector('.item-keterangan');
+                                    if(!keterangan) return;
+                                    if(diskonVal > 20){
+                                        keterangan.required = true;
+                                        keterangan.classList.add('border-red-500');
+                                    } else {
+                                        keterangan.required = false;
+                                        keterangan.classList.remove('border-red-500');
+                                    }
+                                }
+
+                                // Attach to existing rows
+                                document.querySelectorAll('.item-diskon').forEach(function(d){
+                                    d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                    // initial state
+                                    handleDiskonChange(d);
+                                });
+
+                                document.getElementById('btn-add-item')?.addEventListener('click', function(){
+                                    setTimeout(function(){
+                                        document.querySelectorAll('.item-diskon').forEach(function(d){
+                                            if(!d.dataset._hasListener){
+                                                d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                                d.dataset._hasListener = '1';
+                                                handleDiskonChange(d);
+                                            }
+                                        });
+                                    }, 50);
+                                });
+                            })();
+                        </script>
                     </div>
 
                     <!-- Action Buttons -->
