@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-6 md:flex-row md:space-x-4 md:space-y-0">
             <div class="px-6 text-gray-900 dark:text-gray-100">
                 <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -14,7 +14,7 @@
             </div>
 
             <!-- FILTER FORM -->
-            <div class="flex-end rounded-2xl p-5 shadow-md inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
                 <form id="filters-form" action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
                     <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Threshold stok</label>
@@ -35,7 +35,7 @@
                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter h-4 w-4">
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                 </svg> Filter</button>
-                            <a href="{{ route('dashboard') }}" class="ml-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 dark:text-gray-300 dark:hover:text-blue-950 hover:bg-blue-100">
+                            <a href="{{ route('dashboard') }}" class="ml-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950">
                                 <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw h-4 w-4">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
@@ -52,11 +52,11 @@
 
 
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
-            <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                    <h1 class="p-5 text-lg font-bold text-white ">Jumlah Barang</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white">Jumlah Barang</h1>
                 </div>
-                <div class="flex flex-col h-full justify-center">
+                <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
@@ -67,11 +67,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                    <h1 class="p-5 text-lg font-bold text-white ">Jumlah Stok</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white">Jumlah Stok</h1>
                 </div>
-                <div class="flex flex-col h-full justify-center">
+                <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
@@ -83,9 +83,9 @@
                 </div>
             </div>
 
-            <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                    <h1 class="p-5 text-lg font-bold text-white ">Barang masuk hari ini</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white">Barang masuk hari ini</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center justify-center">
@@ -104,9 +104,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                    <h1 class="p-5 text-lg font-bold text-white dark:text-white ">Barang keluar hari ini</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white dark:text-white">Barang keluar hari ini</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
 
@@ -125,8 +125,8 @@
                 </div>
             </div>
 
-            <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Stok barang rendah</h1>
                 </div>
 
@@ -156,8 +156,8 @@
                 </div>
             </div>
 
-            <div class="col-span-8 w-full rounded-2xl shadow-md dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Low Stock Items Table</h1>
                 </div>
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -186,17 +186,17 @@
                 </table>
             </div>
 
-            <div class="col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Inventory Movement Chart</h1>
                     @php
                         $currentYear = now()->year;
                         $selected = $selectedYear ?? $currentYear;
                         $years = $imc_years ?? [$currentYear];
                     @endphp
-                    <select id="imc-year-select" class="m-3 rounded-full pl-3 pr-7 py-1 border">
-                        @foreach($years as $y)
-                            <option value="{{ $y }}" {{ (int)$selected === (int)$y ? 'selected' : '' }}>
+                    <select id="imc-year-select" class="m-3 rounded-full border py-1 pl-3 pr-7">
+                        @foreach ($years as $y)
+                            <option value="{{ $y }}" {{ (int) $selected === (int) $y ? 'selected' : '' }}>
                                 {{ $y }}
                             </option>
                         @endforeach
@@ -204,18 +204,14 @@
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-full w-full">
-                        <canvas id="IMC" class="block h-full w-full"
-                            data-labels='@json($imc_labels)'
-                            data-masuk='@json($imc_masuk)'
-                            data-keluar='@json($imc_keluar)'
-                            data-endpoint='{{ route("dashboard.chart.data") }}'
-                        ></canvas>
+                        <canvas id="IMC" class="block h-full w-full" data-labels='@json($imc_labels)' data-masuk='@json($imc_masuk)'
+                            data-keluar='@json($imc_keluar)' data-endpoint='{{ route('dashboard.chart.data') }}'></canvas>
                     </div>
                 </div>
             </div>
 
-            <div class="col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4 dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Stock Value Chart</h1>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
@@ -225,8 +221,8 @@
                 </div>
 
             </div>
-            <div class="col-span-8 w-full rounded-2xl shadow-md dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Recent Inbound Items</h1>
                 </div>
                 <table id="DataTable2" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -260,8 +256,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-span-8 w-full rounded-2xl shadow-md dark:inset-shadow-gray-500 dark:inset-shadow-xs">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] dark:inset-shadow-gray-500 dark:inset-shadow-xs">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Recent Outbound Items</h1>
                 </div>
                 <table id="DataTable3" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
 
         @if (session('title'))
             <script>
@@ -14,7 +14,7 @@
             </script>
         @endif
 
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar Sales Order</h2>
             </div>
@@ -39,16 +39,16 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="table-hover mb-0 table">
-                <thead class="table-light">
+            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th>No. Sales Order</th>
-                        <th>Request Order</th>
-                        <th>Tanggal</th>
-                        <th>Nama Customer</th>
-                        <th>Jumlah Item</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
+                        <th class="px-4 py-3">No. Sales Order</th>
+                        <th class="px-4 py-3">Request Order</th>
+                        <th class="px-4 py-3">Tanggal</th>
+                        <th class="px-4 py-3">Nama Customer</th>
+                        <th class="px-4 py-3">Jumlah Item</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -71,10 +71,10 @@
                             };
                         @endphp
                         <tr>
-                            <td>
+                            <td class="px-4 py-3">
                                 <strong>{{ $so->sales_order_number }}</strong>
                             </td>
-                            <td>
+                            <td class="px-4 py-3">
                                 @if ($so->requestOrder)
                                     <a href="{{ route('sales.request-order.show', $so->requestOrder->id) }}" class="text-decoration-none">
                                         {{ $so->requestOrder->request_number }}
@@ -83,13 +83,13 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>{{ $so->created_at->format('d M Y') }}</td>
-                            <td>{{ $so->customer_name }}</td>
-                            <td>{{ $so->items->count() }} item(s)</td>
-                            <td>
+                            <td class="px-4 py-3">{{ $so->created_at->format('d M Y') }}</td>
+                            <td class="px-4 py-3">{{ $so->customer_name }}</td>
+                            <td class="px-4 py-3">{{ $so->items->count() }} item(s)</td>
+                            <td class="px-4 py-3">
                                 <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
-                            <td>
+                            <td class="px-4 py-3">
                                 <div class="flex h-full items-center gap-2 px-4 py-3">
                                     <a href="{{ route('sales.sales-order.show', $so->id) }}"
                                         class="btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

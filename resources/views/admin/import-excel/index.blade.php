@@ -6,7 +6,9 @@
             </h3>
         </div>
 
-        <form action="{{ route('goods-in.store') }}" method="POST" class="flex h-fit flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+        <form action="{{ route('import-excel.import') }}" method="POST" class="flex h-fit flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="import_file_path" id="import_file_path" value="">
             <div class="h-full overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div class="col-span-3">
@@ -49,9 +51,6 @@
                         <label for="" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                             Map
                         </label>
-                        <div>
-
-                        </div>
                     </div>
 
                 </div>
@@ -66,7 +65,6 @@
                                 <th class="min-w-[150px]">Harga</th>
                                 <th class="min-w-[150px]">Satuan</th>
                                 <th class="min-w-[150px]">Status Listing</th>
-                                <th class="min-w-[150px]">Lokasi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -126,11 +124,6 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input type="text" name="" id=""
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </td>
-                                <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
@@ -159,6 +152,7 @@
     <script>
         window.CSRF_TOKEN = "{{ csrf_token() }}";
         window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
+        window.IMPORT_EXCEL_STORE_URL = "{{ route('import-excel.store') }}";
     </script>
 
     @vite(['resources/js/checker.js', 'resources/js/excel-upload.js'])

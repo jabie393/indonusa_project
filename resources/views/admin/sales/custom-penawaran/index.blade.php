@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
 
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar Penawaran Kustom</h2>
@@ -17,17 +17,17 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table id="DataTable" class="w-full">
-                <thead class="border-b border-gray-300 bg-gray-100">
+            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">No Penawaran</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Kepada</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Subject</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Our Ref</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Total</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Status</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Tanggal</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                        <th class="px-4 py-3 ">No Penawaran</th>
+                        <th class="px-4 py-3 ">Kepada</th>
+                        <th class="px-4 py-3 ">Subject</th>
+                        <th class="px-4 py-3 ">Our Ref</th>
+                        <th class="px-4 py-3 ">Total</th>
+                        <th class="px-4 py-3 ">Status</th>
+                        <th class="px-4 py-3 ">Tanggal</th>
+                        <th class="px-4 py-3 ">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -130,6 +130,5 @@
                 {{ $customPenawarans->links('pagination::tailwind') }}
             </div>
         @endif
-    </div>
     </div>
 </x-app-layout>

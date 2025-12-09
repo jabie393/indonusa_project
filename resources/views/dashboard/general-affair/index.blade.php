@@ -14,7 +14,7 @@
             </div>
 
             <!-- FILTER FORM -->
-            <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-xs rounded-2xl p-5 shadow-md">
+            <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
                 <form action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
                     <div class="flex flex-col">
                         <label class="text-nowrap py-2 text-sm text-gray-700 dark:text-gray-300">Threshold stok</label>
@@ -50,8 +50,8 @@
         </div>
 
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white">Pending Orders</h1>
                 </div>
                 <div class="flex flex-col justify-center">
@@ -72,8 +72,8 @@
                 </div>
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white">Approved Orders</h1>
                 </div>
                 <div class="flex flex-col justify-center">
@@ -95,8 +95,8 @@
                 </div>
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white">Total Sales</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
@@ -117,8 +117,8 @@
                 </div>
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white dark:text-white">Customers</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
@@ -138,9 +138,9 @@
                 </div>
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Charts Section</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Sales Performance</h1>
                     <button class="m-3 inline-flex cursor-pointer items-center justify-center rounded-full bg-[#225A97] px-5 py-2">
                         <span class="text-white">
                             Tahun Ini
@@ -154,9 +154,9 @@
                 </div>
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Mid Section</h1>
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Sales By Item</h1>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-full w-full">
@@ -166,8 +166,8 @@
 
             </div>
 
-            <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs col-span-8 w-full rounded-2xl shadow-md">
-                <div class="dark:inset-shadow-gray-500 dark:inset-shadow-xs w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Pending Orders </h1>
                 </div>
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
