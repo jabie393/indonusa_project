@@ -15,7 +15,7 @@
                     </a>
                 @endif
                 @if($customPenawaran->status === 'sent' && auth()->user()->role === 'Supervisor')
-                    <form action="{{ route('sales.custom-penawaran.approval', $customPenawaran->id) }}" method="POST" class="inline">
+                    <form action="{{ url('/custom-penawaran/' . $customPenawaran->id . '/approval') }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" name="action" value="approve" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">Approve</button>
                         <button type="submit" name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold ml-2">Reject</button>

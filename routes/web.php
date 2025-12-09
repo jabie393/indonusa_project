@@ -122,8 +122,15 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
 // Supervisor
 Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
-    Route::get('/incoming', [AdminPTController::class, 'incoming'])->name('admin.incoming');
-    Route::get('/approved-orders', [AdminPTController::class, 'approved'])->name('admin.approved');
+    // Support old URLs/names: map approved-orders and diskon-approved to the sentPenawaran controller
+    Route::get('/approved-orders', [AdminPTController::class, 'sentPenawaran'])->name('admin.approved');
+    Route::get('/diskon-approved', [AdminPTController::class, 'sentPenawaran'])->name('admin.diskon_approved');
+
+    Route::get('/sent-penawaran', [AdminPTController::class, 'sentPenawaran'])->name('admin.sent_penawaran');
+    // Supervisor approval route for Custom Penawaran (allow Supervisor to POST approve/reject)
+    Route::post('/custom-penawaran/{customPenawaran}/approval', [\App\Http\Controllers\Admin\CustomPenawaranController::class, 'approval'])->name('admin.custom-penawaran.approval');
+    // Supervisor view detail for custom penawaran (so Supervisor can access without Sales role)
+    Route::get('/admin/custom-penawaran/{customPenawaran}', [\App\Http\Controllers\Admin\CustomPenawaranController::class, 'show'])->name('admin.custom-penawaran.show');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
