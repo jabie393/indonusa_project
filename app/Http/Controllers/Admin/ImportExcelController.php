@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Barang;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ImportExcelController extends Controller
 {
@@ -61,6 +63,68 @@ class ImportExcelController extends Controller
     // proses import ketika form submit: gunakan file yang sudah diupload + mapping dari user
     public function import(Request $request)
     {
+        // prefer rows[] yang dikirim dari form (di-inject oleh excel-upload.js)
+        $formRows = $request->input('rows', null);
+        $created = 0;
+        $errors = [];
+
+        if (is_array($formRows) && count($formRows) > 0) {
+            DB::beginTransaction();
+            try {
+                foreach ($formRows as $i => $r) {
+                    // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok, harga, satuan, status_listing, lokasi, gambar...
+                    $kode = $r['kode_barang'] ?? null;
+                    if (empty($kode)) {
+                        $kode = 'IMP' . substr(uniqid(), -6);
+                    }
+
+                    $hargaRaw = $r['harga'] ?? null;
+                    if ($hargaRaw !== null && $hargaRaw !== '') {
+                        $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
+                        $clean = str_replace(',', '.', $clean);
+                        $harga = floatval($clean);
+                    } else {
+                        $harga = 0;
+                    }
+
+                    $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
+
+                    $payload = [
+                        'tipe_request' => 'primary',
+                        'status_barang' => 'ditinjau',
+                        'status_listing' => $r['status_listing'] ?? 'listing',
+                        'kode_barang' => $kode,
+                        'nama_barang' => $r['nama_barang'] ?? 'Unnamed',
+                        'kategori' => $r['kategori'] ?? null,
+                        'stok' => $stok,
+                        'satuan' => $r['satuan'] ?? 'pcs',
+                        'harga' => $harga,
+                        'deskripsi' => $r['deskripsi'] ?? 'Deskripsi otomatis',
+                        'gambar' => $r['gambar'] ?? null,
+                        'form' => Auth::id(),
+                    ];
+
+                    Barang::create($payload);
+                    $created++;
+                }
+
+                DB::commit();
+
+                // optional: hapus file excel setelah import sukses (jika ada path)
+                $path = $request->input('import_file_path');
+                if (!empty($path) && Storage::disk('public')->exists($path)) {
+                    try { Storage::disk('public')->delete($path); } catch (\Throwable $e) { \Log::warning('Delete import file failed: '.$e->getMessage()); }
+                }
+
+                $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
+                return redirect()->route('import-excel.index')->with(['title' => 'Import Selesai', 'text' => $msg]);
+            } catch (\Throwable $e) {
+                DB::rollBack();
+                return back()->with(['title' => 'Error', 'text' => 'Import gagal: '.$e->getMessage()]);
+            }
+        }
+
+        // fallback: jika tidak ada rows[] di form, gunakan metode lama (baca dari file Excel + mapping indeks)
         $request->validate([
             'import_file_path' => 'required|string',
             'mapping' => 'required|array'
@@ -89,9 +153,7 @@ class ImportExcelController extends Controller
         for ($i = 1; $i < count($sheet); $i++) {
             $row = $sheet[$i];
 
-            // build atribut untuk Barang berdasarkan mapping (map memberi index kolom)
             $data = [];
-            // fields we expect (you can extend)
             $fields = ['kategori','nama_barang','deskripsi','stok','satuan','harga','gambar','status_listing'];
 
             foreach ($fields as $field) {
@@ -103,14 +165,11 @@ class ImportExcelController extends Controller
                 }
             }
 
-            // fallback / conversions
-            // generate kode_barang unik jika tidak disediakan
             $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
             if (empty($kode)) {
                 $kode = 'IMP' . uniqid();
             }
 
-            // parse numeric harga (hapus non-digit kecuali , atau .)
             $hargaRaw = $data['harga'] ?? null;
             if ($hargaRaw !== null) {
                 $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
@@ -122,7 +181,6 @@ class ImportExcelController extends Controller
 
             $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
 
-            // build model data
             $payload = [
                 'tipe_request' => 'primary',
                 'status_barang' => 'ditinjau',

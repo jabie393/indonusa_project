@@ -83,8 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!sing) sing = 'UNK';
         }
         const timestamp = Date.now().toString().slice(-5); // 5 digit terakhir
-        const seq = String(rowIndex + 1).padStart(2, '0');
-        return `${sing}-${timestamp}${seq}`;
+        return `${sing}-${timestamp}`;
     }
 
     // helper: inject hidden mapping inputs into form (overwrites previous)
@@ -523,6 +522,62 @@ document.addEventListener('DOMContentLoaded', function () {
                 // ignore validation errors here
                 // console.error(err);
             }
+        });
+    })();
+
+    // <-- ADD: update kode_barang when kategori select changes
+    (function attachKategoriChangeHandler() {
+        const table = document.getElementById('DataTableExcel');
+        if (!table) return;
+
+        table.addEventListener('change', function (e) {
+            const sel = e.target.closest('select');
+            if (!sel) return;
+
+            const td = sel.closest('td');
+            const tr = sel.closest('tr');
+            if (!tr || !td) return;
+
+            // only react when the select is in Kategori column (col index 2)
+            const colIndex = Array.prototype.indexOf.call(tr.children, td);
+            if (colIndex !== 2) return;
+
+            const kategori = (sel.value || '').toString().trim();
+            const namaEl = tr.children[1]?.querySelector('input, textarea, [name*="[nama_barang]"]');
+            const nama = namaEl ? (namaEl.value || '').toString().trim() : '';
+
+            // compute row index for naming hidden inputs
+            let rowIndex = Array.prototype.indexOf.call(tr.parentNode.children, tr);
+            if (rowIndex < 0) rowIndex = 0;
+
+            const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
+
+            // update visible kode input (col 0)
+            const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
+            if (kodeVisible) kodeVisible.value = newKode;
+
+            // update/create hidden input rows[{i}][kode_barang]
+            let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
+            if (!hiddenKode) {
+                hiddenKode = document.createElement('input');
+                hiddenKode.type = 'hidden';
+                hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
+                tr.children[0].appendChild(hiddenKode);
+            }
+            hiddenKode.value = newKode;
+
+            // ensure hidden kategori value also updated for submission
+            let hiddenKategori = tr.children[2]?.querySelector('input[type="hidden"][name*="[kategori]"]');
+            if (!hiddenKategori) {
+                hiddenKategori = document.createElement('input');
+                hiddenKategori.type = 'hidden';
+                hiddenKategori.name = `rows[${rowIndex}][kategori]`;
+                tr.children[2].appendChild(hiddenKategori);
+            }
+            hiddenKategori.value = kategori;
+
+            // trigger server-side uniqueness check if available
+            try { if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode); } catch (err) { /* ignore */ }
         });
     })();
 });
