@@ -6,40 +6,38 @@
             </div>
         </div>
         <div class="flex flex-col items-center justify-center space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div class="flex w-full flex-shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                <div x-data="{ tambahModalIsOpen: false }">
-                    <button
-                        class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                        onclick="tambahBarang.showModal()">
-                        <svg width="97" height="86" viewBox="0 0 56 55" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <g clip-path="url(#clip0_412_16)">
-                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                    d="M28 3.68945L49 15.5973V39.413L28 51.3209L7 39.413V15.5973L28 3.68945ZM20.9999 25.917L21 42.0594L25.6667 44.7057V28.5632L20.9999 25.917ZM11.6667 20.6249V36.7668L16.3333 39.4131V23.271L11.6667 20.6249ZM37.1865 14.1909L23.4514 22.0151L28 24.5943L41.7667 16.7881L37.1865 14.1909ZM28 8.98183L14.2333 16.7881L18.7901 19.3719L32.5253 11.5478L28 8.98183Z"
-                                    fill="#E5E7EB" />
-                                <mask id="path-2-outside-1_412_16" maskUnits="userSpaceOnUse" x="38.5" y="26" width="19" height="19" fill="black">
-                                    <rect fill="white" x="38.5" y="26" width="19" height="19" />
-                                    <path d="M55.57 37.81H50.35V43.15H45.49V37.81H40.27V33.22H45.49V27.85H50.35V33.22H55.57V37.81Z" />
-                                </mask>
-                                <path d="M55.57 37.81H50.35V43.15H45.49V37.81H40.27V33.22H45.49V27.85H50.35V33.22H55.57V37.81Z" fill="black" />
-                                <path
-                                    d="M55.57 37.81V38.81H56.57V37.81H55.57ZM50.35 37.81V36.81H49.35V37.81H50.35ZM50.35 43.15V44.15H51.35V43.15H50.35ZM45.49 43.15H44.49V44.15H45.49V43.15ZM45.49 37.81H46.49V36.81H45.49V37.81ZM40.27 37.81H39.27V38.81H40.27V37.81ZM40.27 33.22V32.22H39.27V33.22H40.27ZM45.49 33.22V34.22H46.49V33.22H45.49ZM45.49 27.85V26.85H44.49V27.85H45.49ZM50.35 27.85H51.35V26.85H50.35V27.85ZM50.35 33.22H49.35V34.22H50.35V33.22ZM55.57 33.22H56.57V32.22H55.57V33.22ZM55.57 37.81V36.81H50.35V37.81V38.81H55.57V37.81ZM50.35 37.81H49.35V43.15H50.35H51.35V37.81H50.35ZM50.35 43.15V42.15H45.49V43.15V44.15H50.35V43.15ZM45.49 43.15H46.49V37.81H45.49H44.49V43.15H45.49ZM45.49 37.81V36.81H40.27V37.81V38.81H45.49V37.81ZM40.27 37.81H41.27V33.22H40.27H39.27V37.81H40.27ZM40.27 33.22V34.22H45.49V33.22V32.22H40.27V33.22ZM45.49 33.22H46.49V27.85H45.49H44.49V33.22H45.49ZM45.49 27.85V28.85H50.35V27.85V26.85H45.49V27.85ZM50.35 27.85H49.35V33.22H50.35H51.35V27.85H50.35ZM50.35 33.22V34.22H55.57V33.22V32.22H50.35V33.22ZM55.57 33.22H54.57V37.81H55.57H56.57V33.22H55.57Z"
-                                    fill="#E5E7EB" mask="url(#path-2-outside-1_412_16)" />
-                            </g>
-                            <defs>
-                                <clipPath id="clip0_412_16">
-                                    <rect width="97" height="86" fill="white" />
-                                </clipPath>
-                            </defs>
-                        </svg>
+            <div class="flex w-full flex-shrink-0 flex-col items-center justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                <button
+                    class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    onclick="tambahBarang.showModal()">
+                    <svg width="97" height="86" viewBox="0 0 56 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_412_16)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M28 3.68945L49 15.5973V39.413L28 51.3209L7 39.413V15.5973L28 3.68945ZM20.9999 25.917L21 42.0594L25.6667 44.7057V28.5632L20.9999 25.917ZM11.6667 20.6249V36.7668L16.3333 39.4131V23.271L11.6667 20.6249ZM37.1865 14.1909L23.4514 22.0151L28 24.5943L41.7667 16.7881L37.1865 14.1909ZM28 8.98183L14.2333 16.7881L18.7901 19.3719L32.5253 11.5478L28 8.98183Z"
+                                fill="#E5E7EB" />
+                            <mask id="path-2-outside-1_412_16" maskUnits="userSpaceOnUse" x="38.5" y="26" width="19" height="19" fill="black">
+                                <rect fill="white" x="38.5" y="26" width="19" height="19" />
+                                <path d="M55.57 37.81H50.35V43.15H45.49V37.81H40.27V33.22H45.49V27.85H50.35V33.22H55.57V37.81Z" />
+                            </mask>
+                            <path d="M55.57 37.81H50.35V43.15H45.49V37.81H40.27V33.22H45.49V27.85H50.35V33.22H55.57V37.81Z" fill="black" />
+                            <path
+                                d="M55.57 37.81V38.81H56.57V37.81H55.57ZM50.35 37.81V36.81H49.35V37.81H50.35ZM50.35 43.15V44.15H51.35V43.15H50.35ZM45.49 43.15H44.49V44.15H45.49V43.15ZM45.49 37.81H46.49V36.81H45.49V37.81ZM40.27 37.81H39.27V38.81H40.27V37.81ZM40.27 33.22V32.22H39.27V33.22H40.27ZM45.49 33.22V34.22H46.49V33.22H45.49ZM45.49 27.85V26.85H44.49V27.85H45.49ZM50.35 27.85H51.35V26.85H50.35V27.85ZM50.35 33.22H49.35V34.22H50.35V33.22ZM55.57 33.22H56.57V32.22H55.57V33.22ZM55.57 37.81V36.81H50.35V37.81V38.81H55.57V37.81ZM50.35 37.81H49.35V43.15H50.35H51.35V37.81H50.35ZM50.35 43.15V42.15H45.49V43.15V44.15H50.35V43.15ZM45.49 43.15H46.49V37.81H45.49H44.49V43.15H45.49ZM45.49 37.81V36.81H40.27V37.81V38.81H45.49V37.81ZM40.27 37.81H41.27V33.22H40.27H39.27V37.81H40.27ZM40.27 33.22V34.22H45.49V33.22V32.22H40.27V33.22ZM45.49 33.22H46.49V27.85H45.49H44.49V33.22H45.49ZM45.49 27.85V28.85H50.35V27.85V26.85H45.49V27.85ZM50.35 27.85H49.35V33.22H50.35H51.35V27.85H50.35ZM50.35 33.22V34.22H55.57V33.22V32.22H50.35V33.22ZM55.57 33.22H54.57V37.81H55.57H56.57V33.22H55.57Z"
+                                fill="#E5E7EB" mask="url(#path-2-outside-1_412_16)" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_412_16">
+                                <rect width="97" height="86" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
 
-                        <div class="flex items-center">
-                            <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                            </svg>
-                            Tambah Barang
-                        </div>
-                    </button>
-                </div>
+                    <div class="flex items-center">
+                        <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        </svg>
+                        Tambah Barang
+                    </div>
+                </button>
                 <a href="{{ route('add-stock.index') }}"
                     class="flex h-52 w-52 flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
 
@@ -75,8 +73,7 @@
                     </div>
                 </a>
                 <a href="{{ route('import-excel.index') }}"
-                    class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                    onclick="importExcel.showModal()">
+                    class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
 
                     <svg width="97" height="86" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_1070_27)">
@@ -110,6 +107,31 @@
                             <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                         </svg>
                         Import Dari Excel
+                    </div>
+
+                </a>
+                <a href=""
+                    class="flex h-52 w-52 cursor-pointer flex-col items-center justify-evenly rounded-lg bg-gradient-to-b from-[#225A97] to-[#0D223A] px-4 py-2 text-sm font-medium text-white hover:bg-[#2868b3] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+
+
+                    <svg width="97" height="86" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10.3333 19.3748V7.74984C10.3333 6.3231 11.4899 5.1665 12.9167 5.1665H49.0833C50.5101 5.1665 51.6667 6.3231 51.6667 7.74984V54.2498C51.6667 55.6766 50.5101 56.8332 49.0833 56.8332H12.9167C11.4899 56.8332 10.3333 55.6766 10.3333 54.2498V42.6248"
+                            stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M40.0417 19.375H43.9167" stroke="white" stroke-width="4" stroke-linecap="round" />
+                        <path d="M36.1667 29.708H43.9167" stroke="white" stroke-width="4" stroke-linecap="round" />
+                        <path d="M36.1667 40.0415H43.9167" stroke="white" stroke-width="4" stroke-linecap="round" />
+                        <path d="M28.4167 19.375H5.16669V42.625H28.4167V19.375Z" fill="white" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M12.9167 27.125L20.6667 34.875" stroke="black" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M20.6667 27.125L12.9167 34.875" stroke="#151414" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                        <path
+                            d="M50 39.5C52.3427 39.5 54.1501 39.499 55.5527 39.6875C56.9698 39.878 58.0481 40.2707 58.8887 41.1113C59.7293 41.9519 60.122 43.0303 60.3125 44.4473C60.501 45.8499 60.5 47.6572 60.5 50C60.5 52.3427 60.5011 54.1501 60.3125 55.5527C60.122 56.9697 59.7293 58.0481 58.8887 58.8887C58.0481 59.7293 56.9697 60.122 55.5527 60.3125C54.1501 60.5011 52.3427 60.5 50 60.5C47.6572 60.5 45.8499 60.501 44.4473 60.3125C43.0303 60.122 41.9519 59.7293 41.1113 58.8887C40.2707 58.0481 39.878 56.9698 39.6875 55.5527C39.499 54.1501 39.5 52.3427 39.5 50C39.5 47.6572 39.499 45.8499 39.6875 44.4473C39.878 43.0303 40.2707 41.9519 41.1113 41.1113C41.9519 40.2707 43.0303 39.878 44.4473 39.6875C45.8499 39.499 47.6572 39.5 50 39.5ZM46 54.75C45.8619 54.75 45.75 54.8619 45.75 55C45.75 55.1381 45.8619 55.25 46 55.25H54C54.1381 55.25 54.25 55.1381 54.25 55C54.25 54.8619 54.1381 54.75 54 54.75H46ZM50 44.75C49.8619 44.75 49.75 44.8619 49.75 45V51.3965L47.1768 48.8232C47.0791 48.7256 46.9209 48.7256 46.8232 48.8232C46.7256 48.9209 46.7256 49.0791 46.8232 49.1768L49.8232 52.1768L49.8613 52.208C49.902 52.2352 49.9502 52.25 50 52.25C50.0663 52.25 50.13 52.2235 50.1768 52.1768L53.1768 49.1768C53.2744 49.0791 53.2744 48.9209 53.1768 48.8232C53.0791 48.7256 52.9209 48.7256 52.8232 48.8232L50.25 51.3965V45C50.25 44.8619 50.1381 44.75 50 44.75Z"
+                            fill="black" stroke="white" />
+                    </svg>
+
+
+                    <div class="flex items-center">
+                        Download Template Excel
                     </div>
 
                 </a>

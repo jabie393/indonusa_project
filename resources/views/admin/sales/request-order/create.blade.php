@@ -1,9 +1,9 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md  dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div class="col">
-                <h2 class="text-3xl font-bold text-black">Buat Request Order</h2>
-                <p class="mt-1 text-gray-500">Buat penawaran awal kepada pelanggan</p>
+                <h2 class="text-3xl font-bold text-black dark:text-white">Buat Request Order</h2>
+                <p class="mt-1 text-gray-500 dark:text-gray-400">Buat penawaran awal kepada pelanggan</p>
             </div>
             <div class="col-auto">
                 <a href="{{ route('sales.request-order.index') }}"
@@ -35,8 +35,8 @@
                     @csrf
 
                     <!-- Customer Info Section -->
-                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
-                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
+                    <div class="card bg-light bg-card mb-4 rounded-2xl shadow-md inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white ">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -56,7 +56,7 @@
                         <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
 
                             <div class="col-span-2 flex flex-col">
-                                <label for="customer_id" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
+                                <label for="customer_id" class="form-label dark:text-gray-300">Pilih Customer <span class="text-danger">*</span></label>
                                 <select
                                     class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
@@ -74,39 +74,39 @@
                                 @error('customer_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted mt-1">Pilih dari daftar customer yang sudah terdaftar</small>
+                                <small class="text-muted mt-1 dark:text-gray-400">Pilih dari daftar customer yang sudah terdaftar</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="customer_name" class="form-label">Nama Customer</label>
+                                <label for="customer_name" class="form-label dark:text-gray-300">Nama Customer</label>
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
-                                <small class="text-muted">Auto-filled dari customer yang dipilih</small>
+                                <small class="text-muted dark:text-gray-400">Auto-filled dari customer yang dipilih</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="customer_email" class="form-label">Email</label>
+                                <label for="customer_email" class="form-label dark:text-gray-300">Email</label>
                                 <input type="email"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_email" readonly>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="customer_telepon" class="form-label">Telepon</label>
+                                <label for="customer_telepon" class="form-label dark:text-gray-300">Telepon</label>
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_telepon" readonly>
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="customer_kota" class="form-label">Kota</label>
+                                <label for="customer_kota" class="form-label dark:text-gray-300">Kota</label>
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_kota" readonly>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="tanggal_kebutuhan" class="form-label">Tanggal Kebutuhan</label>
+                                <label for="tanggal_kebutuhan" class="form-label dark:text-gray-300">Tanggal Kebutuhan</label>
                                 <input type="date"
                                     class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
@@ -115,7 +115,7 @@
                                 @enderror
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="catatan_customer" class="form-label">Catatan</label>
+                                <label for="catatan_customer" class="form-label dark:text-gray-300">Catatan</label>
                                 <textarea
                                     class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
@@ -127,8 +127,8 @@
                     </div>
 
                     <!-- Kategori Barang -->
-                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
-                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] text-white">
+                    <div class="card bg-light bg-card mb-4 rounded-2xl shadow-sm inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round">
@@ -143,7 +143,7 @@
                         </div>
                         <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="kategori_barang" class="form-label">Pilih Kategori Barang <span class="text-danger">*</span></label>
+                                <label for="kategori_barang" class="form-label dark:text-gray-300">Pilih Kategori Barang <span class="text-danger">*</span></label>
                                 <select
                                     class="@error('kategori_barang') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
@@ -157,14 +157,14 @@
                                 @error('kategori_barang')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted">Kategori harus dipilih sebelum memilih barang</small>
+                                <small class="text-muted dark:text-gray-400">Kategori harus dipilih sebelum memilih barang</small>
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label class="form-label">Periode Berlaku Penawaran</label>
-                                <div class="border-1 rounded-xl bg-blue-100 p-2">
+                                <label class="form-label dark:text-gray-300">Periode Berlaku Penawaran</label>
+                                <div class="border-1 rounded-xl bg-blue-100 p-2 dark:bg-blue-900/50 dark:text-gray-300">
                                     <strong>Mulai:</strong> <span id="tanggalMulai">{{ now()->format('d-m-Y') }}</span><br>
                                     <strong>Berakhir:</strong> <span id="tanggalBerakhir">{{ now()->addDays(14)->format('d-m-Y') }}</span> (14 hari)<br>
-                                    <small>Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
+                                    <small class="dark:text-gray-400">Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
                                 </div>
                             </div>
                         </div>
@@ -173,7 +173,7 @@
 
             <!-- Items Section -->
             <div class="card card-body mb-4" id="barangSection" style="display: none;">
-                <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
+                <div class="card bg-light bg-card mb-4 rounded-2xl inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shadow-sm">
 
                     <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                         <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
@@ -194,14 +194,14 @@
                         </div>
                         <div class="table-responsive mb-3">
                             <table class="table-bordered table" id="itemsTable">
-                                <thead class="bg-gray-200">
+                                <thead class="bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
                                         <th width="100">Diskon (%)</th>
                                         <th width="100">Jumlah</th>
                                         <th width="200">Harga Satuan</th>
-                                        <th width="200">Gambar</th>
+                                        <th width="150">Gambar</th>
                                         <th width="200">Subtotal</th>
                                         <th width="80">Aksi</th>
                                     </tr>
@@ -224,7 +224,7 @@
                                         <td>
                                             <input type="text"
                                                 class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                readonly style="background-color: #f0f0f0;">
+                                                readonly>
                                         </td>
                                         <td>
                                             <input type="number" name="diskon_percent[]"
@@ -239,7 +239,7 @@
                                         <td>
                                             <input type="number" name="harga[]"
                                                 class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                min="0" step="0.01" value="0">
+                                                min="0" step="0.01" value="0" readonly>
                                         </td>
                                         <td>
                                             <div class="upload-btn-container relative">
@@ -254,7 +254,7 @@
                                         <td>
                                             <input type="text"
                                                 class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                readonly style="background-color: #f0f0f0;">
+                                                readonly>
                                         </td>
                                         <td>
                                             <button type="button" class="btn remove-row rounded-md bg-red-500 text-white" style="display:none;">
@@ -272,7 +272,7 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="4" class="text-end">TOTAL:</th>
+                                        <th colspan="6" class="text-end dark:text-gray-300">TOTAL:</th>
                                         <th>
                                             <strong id="totalAmount">Rp 0</strong>
                                         </th>
@@ -283,24 +283,25 @@
                         </div>
 
                     </div>
-                    <button type="button" id="addRow" class="btn m-5 bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
+                    <button type="button" id="addRow" class="btn m-5 border-none inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
                         Tambah Barang
                     </button>
                 </div>
 
                 <!-- Supporting Images Section -->
-                <div class="card mb-4" id="imagesSection" style="display: none;">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h5>
+                <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm" id="imagesSection" style="display: none;">
+                    <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
+                        <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h3>
                     </div>
-                    <div class="card-body">
+                    <div class="p-5">
                         <div class="mb-3">
-                            <label for="supporting_images" class="form-label">Unggah Gambar <span class="text-muted">(Foto barang, contoh produk, desain, dll)</span></label>
+                            <label for="supporting_images" class="form-label dark:text-gray-300">Unggah Gambar <span class="text-muted dark:text-gray-400">(Foto barang, contoh produk, desain,
+                                    dll)</span></label>
                             <div class="input-group">
                                 <input type="file"
                                     class="form-control barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="supporting_images" name="supporting_images[]" multiple accept="image/*">
-                                <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
+                                <small class="text-muted d-block mt-2 dark:text-gray-400">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
                             </div>
                             @error('supporting_images.*')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -340,11 +341,11 @@
                     <div class="modal-body">
                         <!-- Nama Customer -->
                         <div class="mb-3">
-                            <label for="modalNamaCustomer" class="form-label">Nama Customer <span class="text-danger">*</span></label>
+                            <label for="modalNamaCustomer" class="form-label dark:text-gray-300">Nama Customer <span class="text-danger">*</span></label>
                             <input type="text"
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 id="modalNamaCustomer" name="nama_customer" required>
-                            <small class="text-muted">Nama lengkap pelanggan</small>
+                            <small class="text-muted dark:text-gray-400">Nama lengkap pelanggan</small>
                             <div class="invalid-feedback" id="error-nama_customer"></div>
                         </div>
 
@@ -352,7 +353,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalEmail" class="form-label">Email</label>
+                                    <label for="modalEmail" class="form-label dark:text-gray-300">Email</label>
                                     <input type="email"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalEmail" name="email">
@@ -361,7 +362,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalTelepon" class="form-label">Telepon</label>
+                                    <label for="modalTelepon" class="form-label dark:text-gray-300">Telepon</label>
                                     <input type="tel"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalTelepon" name="telepon">
@@ -374,8 +375,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalTipeCustomer" class="form-label">Tipe Customer <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="modalTipeCustomer" name="tipe_customer" required>
+                                    <label for="modalTipeCustomer" class="form-label dark:text-gray-300">Tipe Customer <span class="text-danger">*</span></label>
+                                    <select class="form-select dark:border-gray-500 dark:bg-gray-600 dark:text-white" id="modalTipeCustomer" name="tipe_customer" required>
                                         <option value="">-- Pilih Tipe --</option>
                                         <option value="retail">Retail</option>
                                         <option value="wholesale">Wholesale</option>
@@ -386,8 +387,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalStatus" class="form-label">Status <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="modalStatus" name="status" required>
+                                    <label for="modalStatus" class="form-label dark:text-gray-300">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select dark:border-gray-500 dark:bg-gray-600 dark:text-white" id="modalStatus" name="status" required>
                                         <option value="active">Aktif</option>
                                         <option value="inactive">Nonaktif</option>
                                     </select>
@@ -398,7 +399,7 @@
 
                         <!-- Alamat -->
                         <div class="mb-3">
-                            <label for="modalAlamat" class="form-label">Alamat</label>
+                            <label for="modalAlamat" class="form-label dark:text-gray-300">Alamat</label>
                             <textarea
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 id="modalAlamat" name="alamat" rows="2"></textarea>
@@ -409,7 +410,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalKota" class="form-label">Kota</label>
+                                    <label for="modalKota" class="form-label dark:text-gray-300">Kota</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalKota" name="kota">
@@ -418,7 +419,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="modalProvinsi" class="form-label">Provinsi</label>
+                                    <label for="modalProvinsi" class="form-label dark:text-gray-300">Provinsi</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalProvinsi" name="provinsi">
@@ -427,7 +428,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="modalKodePos" class="form-label">Kode Pos</label>
+                                    <label for="modalKodePos" class="form-label dark:text-gray-300">Kode Pos</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalKodePos" name="kode_pos">
@@ -626,25 +627,25 @@
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
-                    const defaultDiskon = parseFloat(option.dataset.diskon || '0');
+                    // Base price from barang
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
+
+                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
                     let useDiskon = defaultDiskon;
                     if (diskonInput) {
-                        const currentVal = parseFloat(diskonInput.value || '0') || 0;
-                        if (currentVal) {
+                        const currentVal = parseFloat(diskonInput.value);
+                        if (!isNaN(currentVal) && currentVal !== 0) {
                             useDiskon = currentVal;
                         } else {
                             diskonInput.value = defaultDiskon;
                         }
                     }
-                    // calculate harga from baseHarga + 30% then apply the chosen diskon
-                    if (hargaInput) {
-                        const computedHarga = +(baseHarga * 1.3 * (1 - (useDiskon / 100))).toFixed(2);
-                        hargaInput.value = computedHarga;
-                    }
-                    // Set jual price = base price from Barang + 30%
-                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+
+                    // Compute jual price (base + 30%) then apply diskon if any
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                    if (hargaInput) hargaInput.value = hargaJual;
+                    const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
+                    if (hargaInput) hargaInput.value = finalHarga;
                 } else {
                     namaDisplay.value = '';
                     if (diskonInput) diskonInput.value = 0;
@@ -753,6 +754,7 @@
                     </td>
                     <td>
                         <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
+                        <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                     </td>
                     <td>
                         <input type="number" name="diskon_percent[]"
@@ -775,7 +777,7 @@
                         <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
                     </td>
                     <td>
-                        <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
+                        <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                     </td>
                     <td>
                         <button type="button" class="btn bg-red-500 remove-row rounded-md text-white" style="display:none;">
@@ -923,6 +925,11 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
+
+        .dark .form-label {
+            color: #d1d5db;
+        }
+
 
         .card-header {
             padding: 1rem;

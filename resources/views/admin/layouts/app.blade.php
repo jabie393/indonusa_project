@@ -59,7 +59,7 @@
     <body data-user-role="{{ $userRole }}" class="font-sans antialiased">
         <div
             class="grid max-h-screen min-h-screen grid-flow-row grid-cols-[1.3fr_1fr_1fr_1fr_1fr] grid-rows-[64px_1fr_1fr_1fr_1fr] gap-4 overflow-hidden bg-[#E5E7EB] p-4 dark:bg-gray-900 xl:grid-cols-[1fr_1fr_1fr_1fr_1fr] 2xl:grid-cols-[0.8fr_1fr_1fr_1fr_1fr]">
-            <div class="z-50 col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
+            <div class="z-50 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-1 col-start-1 row-span-1 row-start-1 flex items-center justify-center rounded-xl bg-[#225A97] dark:bg-[#0D223A]">
                 <div class="flex h-full w-full items-center justify-center lg:h-[unset]">
                     <button data-drawer-target="drawer-navigation" data-drawer-toggle="drawer-navigation" aria-controls="drawer-navigation"
                         class="flex h-full w-full cursor-pointer flex-wrap content-center justify-center rounded-xl p-2 text-center text-white hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:ring-2 focus:ring-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:bg-gray-700 dark:focus:ring-gray-700 lg:hidden">
@@ -82,15 +82,21 @@
                     </a>
                 </div>
             </div>
-            <nav class="col-span-4 col-start-2 row-span-1 row-start-1 rounded-xl">
+            <nav class="col-span-4 col-start-2 row-span-1 row-start-1 rounded-xl ">
                 @include('admin.layouts.header')
             </nav>
-            <aside class="rounded-xl lg:col-span-1 lg:col-start-1 lg:row-span-4 lg:row-start-2">
-                @include('admin.layouts.sidebar')
-            </aside>
-            <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-4 lg:col-start-2">
-                {{ $slot }}
-            </div>
+            @unless(isset($hideSidebar) && $hideSidebar)
+                <aside class="rounded-xl lg:col-span-1 lg:col-start-1 lg:row-span-4 lg:row-start-2">
+                    @include('admin.layouts.sidebar')
+                </aside>
+                <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-4 lg:col-start-2">
+                    {{ $slot }}
+                </div>
+            @else
+                <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-5 lg:col-start-1">
+                    {{ $slot }}
+                </div>
+            @endunless
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
         <div id="notification-container" class="fixed right-4 top-4 z-50 hidden rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-lg">

@@ -8,10 +8,19 @@
                     class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold">
                     Edit
                 </a>
-                <a href="{{ route('sales.custom-penawaran.pdf', $customPenawaran->id) }}" target="_blank"
-                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold">
-                    Download PDF
-                </a>
+                @if($customPenawaran->status === 'approved')
+                    <a href="{{ route('sales.custom-penawaran.pdf', $customPenawaran->id) }}" target="_blank"
+                        class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-semibold">
+                        Generate PDF
+                    </a>
+                @endif
+                @if($customPenawaran->status === 'sent' && auth()->user()->role === 'Supervisor')
+                    <form action="{{ route('sales.custom-penawaran.approval', $customPenawaran->id) }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" name="action" value="approve" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">Approve</button>
+                        <button type="submit" name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold ml-2">Reject</button>
+                    </form>
+                @endif
                 <a href="{{ route('sales.custom-penawaran.index') }}" 
                     class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-semibold">
                     Kembali

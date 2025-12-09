@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
 
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar Penawaran Kustom</h2>
@@ -17,17 +17,17 @@
         </div>
 
         <div class="overflow-x-auto">
-            <table id="DataTable" class="w-full">
-                <thead class="border-b border-gray-300 bg-gray-100">
+            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">No Penawaran</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Kepada</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Subject</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Our Ref</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Total</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Status</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Tanggal</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                        <th class="px-4 py-3 ">No Penawaran</th>
+                        <th class="px-4 py-3 ">Kepada</th>
+                        <th class="px-4 py-3 ">Subject</th>
+                        <th class="px-4 py-3 ">Our Ref</th>
+                        <th class="px-4 py-3 ">Total</th>
+                        <th class="px-4 py-3 ">Status</th>
+                        <th class="px-4 py-3 ">Tanggal</th>
+                        <th class="px-4 py-3 ">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,6 +44,7 @@
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
+                                    $hasHighDiscountStatus = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
                                     $statusClass =
                                         [
                                             'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
@@ -59,9 +60,14 @@
                                             'rejected' => 'Ditolak',
                                         ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
-                                <span class="{{ $statusClass }} badge">
-                                    {{ $statusLabel }}
-                                </span>
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $statusLabel }}
+                                    </span>
+                                    @if($penawaran->status === 'sent' && $hasHighDiscountStatus)
+                                        <span class="px-2 py-1 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded">Menunggu Approval</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-4 py-4 text-center text-gray-700">
                                 {{ \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') }}
@@ -78,11 +84,24 @@
                                         title="Edit">
                                         Edit
                                     </a>
-                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank"
-                                        class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                        title="Download PDF">
-                                        PDF
-                                    </a>
+                                    @php
+                                        // apakah ada item dengan diskon > 20%
+                                        $hasHighDiscount = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
+                                    @endphp
+                                    @if(!$hasHighDiscount || $penawaran->status === 'approved')
+                                        <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank"
+                                            class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                            title="Download PDF">
+                                            PDF
+                                        </a>
+                                    @else
+                                        <button type="button" title="Menunggu persetujuan Supervisor" disabled
+                                            class="btn mb-2 me-2 rounded-lg bg-gray-300 px-5 py-2.5 text-sm font-medium text-white cursor-not-allowed"
+                                            aria-disabled="true">
+                                            PDF
+                                        </button>
+                                        <span class="sr-only">Menunggu persetujuan Supervisor</span>
+                                    @endif
                                     <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" class="inline-block"
                                         onsubmit="return confirm('Yakin ingin menghapus?')">
                                         @csrf
@@ -111,6 +130,5 @@
                 {{ $customPenawarans->links('pagination::tailwind') }}
             </div>
         @endif
-    </div>
     </div>
 </x-app-layout>
