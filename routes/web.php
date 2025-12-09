@@ -100,6 +100,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/import-excel', ImportExcelController::class);
+    Route::post('/import-excel/import', [ImportExcelController::class, 'import'])->name('import-excel.import');
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/pics', PicsController::class);
