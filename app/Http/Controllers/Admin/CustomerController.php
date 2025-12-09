@@ -8,16 +8,23 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\Pic;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::with('pics')->get(); // Mengambil semua data customer dari database beserta relasi pics
-        $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
-        $pics = \DB::table('pics')->get(); // Mengambil data dari tabel pics
+        // If pivot table doesn't exist yet (migrations not run), avoid eager-loading to prevent SQL errors
+        if (Schema::hasTable('customer_pics')) {
+            $customers = Customer::with('pics')->get(); // Mengambil semua data customer dari database beserta relasi pics
+        } else {
+            $customers = Customer::all();
+        }
 
-        return view('admin.customer.index', compact('customers', 'salesUsers', 'pics')); // Meneruskan data ke view
+        $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
+        $pics = DB::table('pics')->get(); // Mengambil data dari tabel pics
+
+        return view('admin.customer.index', compact('customers', 'salesUsers', 'pics'));
     }
 
     public function store(Request $request)
@@ -181,6 +188,10 @@ class CustomerController extends Controller
     // Ambil langsung dari tabel customer_pics (mengembalikan array objek: id, name, position, pivot.pic_type, pivot.created_at)
     public function getPics($id)
     {
+        if (!Schema::hasTable('customer_pics')) {
+            return response()->json([]);
+        }
+
         $rows = DB::table('customer_pics')->where('customer_id', $id)->get();
 
         $result = $rows->map(function ($r) {

@@ -44,6 +44,7 @@
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
+                                    $hasHighDiscountStatus = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
                                     $statusClass =
                                         [
                                             'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
@@ -59,9 +60,14 @@
                                             'rejected' => 'Ditolak',
                                         ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
-                                <span class="{{ $statusClass }} badge">
-                                    {{ $statusLabel }}
-                                </span>
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $statusLabel }}
+                                    </span>
+                                    @if($penawaran->status === 'sent' && $hasHighDiscountStatus)
+                                        <span class="px-2 py-1 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded">Menunggu Approval</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-4 py-4 text-center text-gray-700">
                                 {{ \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') }}
@@ -78,11 +84,24 @@
                                         title="Edit">
                                         Edit
                                     </a>
-                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank"
-                                        class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                        title="Download PDF">
-                                        PDF
-                                    </a>
+                                    @php
+                                        // apakah ada item dengan diskon > 20%
+                                        $hasHighDiscount = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
+                                    @endphp
+                                    @if(!$hasHighDiscount || $penawaran->status === 'approved')
+                                        <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank"
+                                            class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                            title="Download PDF">
+                                            PDF
+                                        </a>
+                                    @else
+                                        <button type="button" title="Menunggu persetujuan Supervisor" disabled
+                                            class="btn mb-2 me-2 rounded-lg bg-gray-300 px-5 py-2.5 text-sm font-medium text-white cursor-not-allowed"
+                                            aria-disabled="true">
+                                            PDF
+                                        </button>
+                                        <span class="sr-only">Menunggu persetujuan Supervisor</span>
+                                    @endif
                                     <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" class="inline-block"
                                         onsubmit="return confirm('Yakin ingin menghapus?')">
                                         @csrf

@@ -400,7 +400,7 @@
                             </a>
                         </li>
 
-                        {{-- Customer Management --}}
+                        {{-- Customer Management
                         <li class="w-[75%]">
                             <a href="{{ route('sales.customer.index') }}"
                                 class="{{ request()->routeIs('sales.customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
@@ -412,7 +412,7 @@
                                     class="{{ request()->routeIs('sales.customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer
                                     Management</span>
                             </a>
-                        </li>
+                        </li> --}}
 
                         {{-- Customer --}}
                         <li class="w-[75%]">

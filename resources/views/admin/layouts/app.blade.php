@@ -85,12 +85,18 @@
             <nav class="col-span-4 col-start-2 row-span-1 row-start-1 rounded-xl">
                 @include('admin.layouts.header')
             </nav>
-            <aside class="rounded-xl lg:col-span-1 lg:col-start-1 lg:row-span-4 lg:row-start-2">
-                @include('admin.layouts.sidebar')
-            </aside>
-            <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-4 lg:col-start-2">
-                {{ $slot }}
-            </div>
+            @unless(isset($hideSidebar) && $hideSidebar)
+                <aside class="rounded-xl lg:col-span-1 lg:col-start-1 lg:row-span-4 lg:row-start-2">
+                    @include('admin.layouts.sidebar')
+                </aside>
+                <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-4 lg:col-start-2">
+                    {{ $slot }}
+                </div>
+            @else
+                <div class="no-scrollbar col-span-5 col-start-1 row-span-4 row-start-2 overflow-scroll rounded-xl lg:col-span-5 lg:col-start-1">
+                    {{ $slot }}
+                </div>
+            @endunless
         </div>
         <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
         <div id="notification-container" class="fixed right-4 top-4 z-50 hidden rounded-lg bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow-lg">

@@ -119,6 +119,8 @@
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Qty</th>
                                         <th class="border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Satuan</th>
                                         <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Harga (Rp)</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Diskon (%)</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Keterangan</th>
                                         <th class="border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Total (Rp)</th>
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Gambar</th>
                                         <th class="border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Aksi</th>
@@ -156,6 +158,18 @@
                                                 class="item-harga form-control  block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 placeholder="0" value="{{ old('items.0.harga') }}" step="0.01" min="0" required>
                                             @error('items.0.harga')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="number" name="items[0][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ old('items.0.diskon', 0) }}" min="0" max="100" required>
+                                            @error('items.0.diskon')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2">
+                                            <input type="text" name="items[0][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan diskon" value="{{ old('items.0.keterangan', '') }}">
+                                            @error('items.0.keterangan')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
@@ -218,6 +232,43 @@
                                 <input type="hidden" id="grand-total-value" name="grand_total" value="0">
                             </div>
                         </div>
+                        <script>
+                            (function(){
+                                function handleDiskonChange(el){
+                                    const row = el.closest('tr');
+                                    const diskonVal = parseFloat(el.value) || 0;
+                                    const keterangan = row.querySelector('.item-keterangan');
+                                    if(!keterangan) return;
+                                    if(diskonVal > 20){
+                                        keterangan.required = true;
+                                        keterangan.classList.add('border-red-500');
+                                    } else {
+                                        keterangan.required = false;
+                                        keterangan.classList.remove('border-red-500');
+                                    }
+                                }
+
+                                // Attach to existing rows
+                                document.querySelectorAll('.item-diskon').forEach(function(d){
+                                    d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                    // initial state
+                                    handleDiskonChange(d);
+                                });
+
+                                // When adding new rows, make sure handlers attach (if your add-row script triggers an event, adapt accordingly)
+                                document.getElementById('btn-add-item')?.addEventListener('click', function(){
+                                    setTimeout(function(){
+                                        document.querySelectorAll('.item-diskon').forEach(function(d){
+                                            if(!d.dataset._hasListener){
+                                                d.addEventListener('input', function(){ handleDiskonChange(d); });
+                                                d.dataset._hasListener = '1';
+                                                handleDiskonChange(d);
+                                            }
+                                        });
+                                    }, 50);
+                                });
+                            })();
+                        </script>
                     </div>
 
                     <!-- Action Buttons -->
