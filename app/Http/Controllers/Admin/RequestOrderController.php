@@ -11,6 +11,7 @@ use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -154,15 +155,20 @@ class RequestOrderController extends Controller
                     }
                 }
 
-                RequestOrderItem::create([
+                $itemData = [
                     'request_order_id' => $requestOrder->id,
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
-                    'diskon_percent' => $item['diskon_percent'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
-                ]);
+                ];
+
+                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
+                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
+                }
+
+                RequestOrderItem::create($itemData);
             }
 
             // Check discount rules: if any item has diskon_percent > 20 then require supervisor approval
@@ -374,15 +380,20 @@ class RequestOrderController extends Controller
                     }
                 }
 
-                RequestOrderItem::create([
+                $itemData = [
                     'request_order_id' => $requestOrder->id,
                     'barang_id' => $item['barang_id'],
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
-                    'diskon_percent' => $item['diskon_percent'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
-                ]);
+                ];
+
+                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
+                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
+                }
+
+                RequestOrderItem::create($itemData);
             }
 
             // Re-evaluate discount rule after update based on provided diskon_percent

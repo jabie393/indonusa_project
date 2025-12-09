@@ -299,5 +299,5 @@
     </div>
 
     {{-- Kelola data Chart ada di JS --}}
-    @vite(['resources/js/chart-dashboard.js'])
+    @vite(['resources/js/chart-warehouse-dashboard.js'])
 </x-app-layout>
