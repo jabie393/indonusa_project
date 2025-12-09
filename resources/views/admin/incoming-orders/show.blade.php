@@ -20,7 +20,7 @@
                 </ul>
 
                 <div class="mt-6">
-                    <a href="{{ route('admin.incoming') }}"
+                    <a href="{{ route('orders.history') }}"
                        class="px-3 py-1 bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded">Kembali</a>
                 </div>
             </div>

@@ -53,66 +53,12 @@
                 @endforeach
             @else
                 <div class="mb-6 rounded-lg bg-white p-6 shadow dark:bg-gray-800">
-                    <p>Tidak ada order masuk.</p>
-                </div>
-            @endif
-
-            <dialog id="reject" class="modal">
-                <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700">
-                    <div class="modal-action m-0">
-                        <form method="dialog">
+                    <x-app-layout>
+                        <div class="w-full py-12">
+                            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                                <h1 class="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Halaman Incoming Orders Telah Dihapus</h1>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Halaman daftar Incoming Orders untuk role Supervisor telah dihapus. Gunakan menu lain untuk melihat daftar order.</p>
+                            </div>
+                        </div>
+                    </x-app-layout>
                             <!-- if there is a button in form, it will close the modal -->
-                            <button
-                                class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                                <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </form>
-                    </div>
-                    <form action="{{ route('orders.reject', ['id' => '__ORDER_ID__']) }}" method="POST" id="reject-form" data-template="{{ route('orders.reject', ['id' => '__ORDER_ID__']) }}">
-                        @csrf
-                        <input type="text" name="reason" placeholder="Alasan penolakan" class="w-2/3 rounded border p-2 dark:bg-gray-700 dark:text-gray-200" required>
-                        <button class="rounded bg-red-500 px-3 py-1 text-white">
-                            <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <ellipse cx="8.5" cy="9" rx="8.5" ry="8" fill="white" />
-                                <ellipse cx="8.5" cy="9" rx="7.5" ry="7" fill="#FC0000" />
-                                <path d="M9.993 12L8.563 9.756L7.188 12H6.143L8.09 9.008L6.143 5.972H7.276L8.706 8.205L10.07 5.972H11.115L9.179 8.953L11.126 12H9.993Z" fill="white" />
-                            </svg>
-                            Reject
-                        </button>
-                    </form>
-                </div>
-                <form method="dialog" class="modal-backdrop">
-                    <button>close</button>
-                </form>
-            </dialog>
-
-            <script>
-                // Set reject modal form action from the clicked reject button's data-id
-                (function() {
-                    const form = document.getElementById('reject-form');
-                    if (!form) return;
-                    const template = form.dataset.template || form.action;
-
-                    // buttons that open the reject modal have data-id and call reject.showModal()
-                    document.querySelectorAll('button[data-id]').forEach(btn => {
-                        // only attach to buttons that visually are reject buttons by checking bg-red class
-                        if (!btn.classList.contains('bg-red-600') && !btn.classList.contains('bg-red-500')) return;
-                        btn.addEventListener('click', function() {
-                            const id = this.dataset.id;
-                            if (!id) return;
-                            form.action = template.replace('__ORDER_ID__', id);
-                        });
-                    });
-                })();
-            </script>
-
-            {{-- Include modal component --}}
-            @include('components.order-detail-modal')
-        </div>
-    </div>
-</x-app-layout>

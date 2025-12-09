@@ -5,24 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\CustomPenawaran;
 use Illuminate\Support\Facades\Auth;
 use App\Events\OrderStatusUpdated;
 
 class AdminPTController extends Controller
 {
 
-    public function incoming()
-    {
-        $orders = Order::where('status','pending')->with(['items.barang','sales'])->get();
-        return view('admin.incoming-orders.incoming', compact('orders'));
-
-
-    }
+    // incoming() removed — Incoming Orders page for Supervisor is no longer used.
 
     public function show($id)
     {
-        $order = Order::with(['items.barang','sales'])->findOrFail($id);
-        return view('admin.incoming-orders.show', compact('order'));
+        // The Incoming Orders "show" page has been removed for Supervisor.
+        // Redirect to orders history to avoid rendering a removed view.
+        return redirect()->route('orders.history')->with('info', 'Halaman detail Incoming Orders telah dihapus.');
     }
 
     public function approve($id)
@@ -35,8 +31,8 @@ class AdminPTController extends Controller
         // Memancarkan event setelah status berubah
         event(new OrderStatusUpdated($order->id));
 
-        // Setelah approve, arahkan ke halaman approved orders agar admin PT melihat daftar yang sudah dikirim ke warehouse
-        return redirect()->route('admin.approved')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
+        // Setelah approve, arahkan ke halaman sent penawaran/pengecekan diskon jika ada
+        return redirect()->route('admin.sent_penawaran')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
 
     public function reject(Request $request, $id)
@@ -51,18 +47,18 @@ class AdminPTController extends Controller
         $order->reason = $request->reason;
         $order->save();
 
-        return redirect()->route('admin.incoming')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
+        return redirect()->route('orders.history')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
     }
 
-    public function approved()
+    public function sentPenawaran()
     {
-        // Orders that have been approved by PT and sent to warehouse
-        $orders = Order::where('status', 'sent_to_warehouse')
-            ->with(['items.barang', 'sales', 'supervisor', 'warehouse'])
+        // List custom penawaran from Sales that were sent for supervisor approval (status = 'sent')
+        $penawarans = CustomPenawaran::where('status', 'sent')
+            ->with(['items', 'sales'])
             ->latest()
             ->paginate(10);
 
-        return view('admin.approved-order.approved_orders', compact('orders'));
+        return view('admin.sent-penawaran.sent_penawaran', compact('penawarans'));
     }
 
     public function history()

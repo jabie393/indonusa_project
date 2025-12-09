@@ -445,33 +445,19 @@
 
             {{-- Menu untuk Supervisor --}}
             @if (in_array(auth()->user()->role, ['Supervisor']))
-                        {{-- Incoming Orders --}}
+                        {{-- (Incoming Orders removed) --}}
+                        {{-- Sent Penawaran (needs approval) --}}
                         <li>
-                            <a href="{{ url('/incoming') }}"
-                                class="{{ request()->is('incoming') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                            <a href="{{ route('admin.sent_penawaran') }}"
+                                class="{{ request()->is('sent-penawaran') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg aria-hidden="true"
-                                    class="{{ request()->is('incoming') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
-                                    fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M3 3h14v2H3V3zm0 4h14v10H3V7z"></path>
-                                </svg>
-                                <span
-                                    class="{{ request()->is('incoming') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Incoming
-                                    Orders</span>
-                            </a>
-                        </li>
-                        {{-- Approved Orders --}}
-                        <li>
-                            <a href="{{ route('admin.approved') }}"
-                                class="{{ request()->is('approved-orders') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg aria-hidden="true"
-                                    class="{{ request()->is('approved-orders') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white"
+                                    class="{{ request()->is('sent-penawaran') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white"
                                     fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 2v6h10V7H5z">
                                     </path>
                                 </svg>
                                 <span
-                                    class="{{ request()->is('approved-orders') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Approved
-                                    Orders</span>
+                                    class="{{ request()->is('sent-penawaran') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sent Penawaran</span>
                             </a>
                         </li>
 

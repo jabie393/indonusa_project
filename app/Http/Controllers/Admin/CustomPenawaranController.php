@@ -132,7 +132,8 @@ class CustomPenawaranController extends Controller
      */
     public function show(CustomPenawaran $customPenawaran)
     {
-        if ($customPenawaran->sales_id !== Auth::id()) {
+        // Allow owner (Sales) or Supervisor/Admin to view the penawaran
+        if ($customPenawaran->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
             abort(403);
         }
 
