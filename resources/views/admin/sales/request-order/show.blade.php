@@ -174,6 +174,7 @@
                         <table class="table table-hover mb-0">
                             <thead class="table-light">
                                 <tr>
+                                    <th>Kategori Barang</th>
                                     <th>Barang</th>
                                     <th width="100">Diskon (%)</th>
                                     <th width="100">Jumlah</th>
@@ -191,6 +192,9 @@
                                                         $total += $computedSubtotal;
                                                     @endphp
                                     <tr>
+                                        <td>
+                                            <span class="badge bg-info">{{ $item->kategori_barang ?? $item->barang->kategori ?? '-' }}</span>
+                                        </td>
                                         <td>
                                             <strong>{{ $item->barang->nama_barang ?? 'N/A' }}</strong>
                                             <br>

@@ -126,53 +126,9 @@
                         </div>
                     </div>
 
-                    <!-- Kategori Barang -->
-                    <div class="card bg-light bg-card mb-4 rounded-2xl shadow-sm inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
-                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white">
-                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
-                                    <path d="M12 22V12"></path>
-                                    <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
-                                    <path d="m7.5 4.27 9 5.15"></path>
-                                </svg>
-                                Kategori Barang
-                                <p class="badge ms-2 border-none">WAJIB DIPILIH TERLEBIH DAHULU</p>
-                            </h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
-                            <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="kategori_barang" class="form-label dark:text-gray-300">Pilih Kategori Barang <span class="text-danger">*</span></label>
-                                <select
-                                    class="@error('kategori_barang') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
-                                    <option value="">-- Pilih Kategori --</option>
-                                    @foreach ($categories as $cat)
-                                        <option value="{{ $cat }}" @selected(old('kategori_barang') == $cat)>
-                                            {{ $cat }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('kategori_barang')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted dark:text-gray-400">Kategori harus dipilih sebelum memilih barang</small>
-                            </div>
-                            <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label class="form-label dark:text-gray-300">Periode Berlaku Penawaran</label>
-                                <div class="border-1 rounded-xl bg-blue-100 p-2 dark:bg-blue-900/50 dark:text-gray-300">
-                                    <strong>Mulai:</strong> <span id="tanggalMulai">{{ now()->format('d-m-Y') }}</span><br>
-                                    <strong>Berakhir:</strong> <span id="tanggalBerakhir">{{ now()->addDays(14)->format('d-m-Y') }}</span> (14 hari)<br>
-                                    <small class="dark:text-gray-400">Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
 
             <!-- Items Section -->
-            <div class="card card-body mb-4" id="barangSection" style="display: none;">
+            <div class="card card-body mb-4" id="barangSection" style="display: block;">
                 <div class="card bg-light bg-card mb-4 rounded-2xl inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shadow-sm">
 
                     <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
@@ -196,26 +152,35 @@
                             <table class="table-bordered table" id="itemsTable">
                                 <thead class="bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
+                                        <th>Kategori Barang</th>
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
                                         <th width="100">Diskon (%)</th>
                                         <th width="100">Jumlah</th>
                                         <th width="200">Harga Satuan</th>
                                         <th width="150">Gambar</th>
-                                        <th width="200">Subtotal</th>
+                                        <th width="400">Subtotal</th>
                                         <th width="80">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="itemRows">
                                     <tr class="item-row">
                                         <td>
+                                            <select name="kategori_barang[]" class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                                <option value="">Pilih Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    <option value="{{ $cat }}">{{ $cat }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td>
                                             <select name="barang_id[]"
                                                 class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                required>
+                                                required onchange="updateKategoriBarang(this)">
                                                 <option value="">Pilih Barang</option>
                                                 @foreach ($barangs as $b)
                                                     <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}"
-                                                        data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" style="display: none;">
+                                                        data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}">
                                                         {{ $b->kode_barang }}
                                                     </option>
                                                 @endforeach
@@ -253,11 +218,12 @@
                                         </td>
                                         <td>
                                             <input type="text"
-                                                class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                class="form-control subtotal-display @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 h-10"
+                                                style="min-width: 100px; font-size: 1rem; font-weight: 500;"
                                                 readonly>
                                         </td>
                                         <td>
-                                            <button type="button" class="btn remove-row rounded-md bg-red-500 text-white" style="display:none;">
+                                            <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                                                     <path d="M3 6h18"></path>
@@ -282,11 +248,10 @@
                             </table>
                         </div>
 
+                        <button type="button" id="addRow" class="btn m-5 border-none inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                            Tambah Barang
+                        </button>
                     </div>
-                    <button type="button" id="addRow" class="btn m-5 border-none inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm bg-[#225A97] text-white hover:bg-[#1c4d81]" style="display: none;">
-                        Tambah Barang
-                    </button>
-                </div>
 
                 <!-- Supporting Images Section -->
                 <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm" id="imagesSection" style="display: none;">
@@ -327,6 +292,69 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Filter barang berdasarkan kategori yang dipilih
+        function filterBarangByKategori(selectKategori) {
+            var tr = selectKategori.closest('tr');
+            var kategori = selectKategori.value;
+            var barangSelect = tr.querySelector('.barang-select');
+            
+            Array.from(barangSelect.options).forEach(function(opt) {
+                if (opt.value === '') {
+                    // Selalu tampilkan placeholder
+                    opt.style.display = '';
+                } else if (kategori && opt.getAttribute('data-kategori') === kategori) {
+                    // Tampilkan hanya barang yang sesuai kategori
+                    opt.style.display = '';
+                } else if (!kategori) {
+                    // Jika tidak ada kategori dipilih, tampilkan semua
+                    opt.style.display = '';
+                } else {
+                    // Sembunyikan yang tidak sesuai
+                    opt.style.display = 'none';
+                }
+            });
+            barangSelect.selectedIndex = 0;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attach event listener ke semua kategori select yang sudah ada
+            document.querySelectorAll('.kategori-barang-select').forEach(function(sel) {
+                sel.addEventListener('change', function() {
+                    filterBarangByKategori(this);
+                });
+            });
+        });
+        
+        // Observer untuk kategori select baru yang ditambahkan
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            const kategoriSelect = node.querySelector('.kategori-barang-select');
+                            if (kategoriSelect) {
+                                kategoriSelect.addEventListener('change', function() {
+                                    filterBarangByKategori(this);
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.getElementById('itemRows');
+            if (tbody) {
+                observer.observe(tbody, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
 
     <!-- Modal Tambah Customer Baru -->
     <div class="modal fade" id="addCustomerModal" tabindex="-1">
@@ -449,6 +477,12 @@
     </div>
 
     <script>
+                // Update kategori barang otomatis saat barang dipilih
+                function updateKategoriBarang(select) {
+                    var kategoriInput = select.closest('tr').querySelector('.kategori-barang-display');
+                    var selectedOption = select.options[select.selectedIndex];
+                    kategoriInput.value = selectedOption.getAttribute('data-kategori') || '';
+                }
         // Populate customer data from select dropdown
         function populateCustomerData(customerId) {
             const customerSelect = document.getElementById('customer_id');
@@ -622,11 +656,17 @@
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
+                const quantityInput = row.querySelector('.quantity-input');
                 const diskonInput = row.querySelector('.diskon-input');
                 const hargaInput = row.querySelector('.harga-input');
+                const subtotalDisplay = row.querySelector('.subtotal-display');
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
+                    
+                    // Set quantity to 1 otomatis
+                    if (quantityInput) quantityInput.value = 1;
+                    
                     // Base price from barang
                     const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
                     const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
@@ -646,10 +686,24 @@
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
                     const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
                     if (hargaInput) hargaInput.value = finalHarga;
+                    
+                    // Hitung subtotal otomatis (qty * harga)
+                    const qty = parseInt(quantityInput.value) || 1;
+                    const subtotal = qty * finalHarga;
+                    if (subtotalDisplay) {
+                        subtotalDisplay.value = subtotal > 0 ?
+                            'Rp ' + subtotal.toLocaleString('id-ID', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) :
+                            '0';
+                    }
                 } else {
                     namaDisplay.value = '';
+                    if (quantityInput) quantityInput.value = 1;
                     if (diskonInput) diskonInput.value = 0;
                     if (hargaInput) hargaInput.value = 0;
+                    if (subtotalDisplay) subtotalDisplay.value = '0';
                 }
                 calculateTotals();
             }
@@ -742,73 +796,40 @@
             }
 
             // Add row
-            addRowBtn.addEventListener('click', function() {
+            addRowBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tbody = document.getElementById('itemRows');
+                const firstRow = tbody.querySelector('tr');
+                const newRow = firstRow.cloneNode(true);
+                
+                // Reset all inputs dan selects di baris baru
+                newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
+                    inp.value = '';
+                });
+                
+                newRow.querySelectorAll('select').forEach(sel => {
+                    sel.selectedIndex = 0;
+                });
+                
+                // Hapus preview gambar
+                const preview = newRow.querySelector('.item-images-preview');
+                if (preview) preview.innerHTML = '';
+                
+                // Reset file input
+                const fileInput = newRow.querySelector('.item-images-input');
+                if (fileInput) fileInput.value = '';
+                
+                // Update index file input name
                 const idx = document.querySelectorAll('.item-row').length;
-                const newRow = document.createElement('tr');
-                newRow.className = 'item-row';
-                newRow.innerHTML = `
-                    <td>
-                        <select name="barang_id[]" class="form-control barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                            ${getBarangOptionsHTML()}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly style="background-color: #f0f0f0;">
-                        <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                    </td>
-                    <td>
-                        <input type="number" name="diskon_percent[]"
-                            class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            min="0" max="100" step="0.01" value="0">
-                    </td>
-                    <td>
-                        <input type="number" name="quantity[]" class="form-control quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
-                    </td>
-                    <td>
-                        <input type="number" name="harga[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
-                    </td>
-                    <td>
-                        <div class="relative upload-btn-container">
-                            <input type="file" name="item_images[${idx}][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
-                            <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
-                                 Upload
-                            </button>
-                        </div>
-                        <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                    </td>
-                    <td>
-                        <button type="button" class="btn bg-red-500 remove-row rounded-md text-white" style="display:none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
-                                <path d="M3 6h18"></path>
-                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                <line x1="10" x2="10" y1="11" y2="17"></line>
-                                <line x1="14" x2="14" y1="11" y2="17"></line>
-                            </svg>
-                        </button>
-                    </td>
-                `;
-                itemRows.appendChild(newRow);
+                if (fileInput) fileInput.name = `item_images[${idx}][]`;
+                
+                tbody.appendChild(newRow);
+                
+                // Attach events ke baris baru
                 attachRowEvents(newRow);
-                // Attach preview handler for the new row
                 handleItemImagePreview(newRow);
                 updateRemoveButtons();
                 calculateTotals();
-
-                // Re-apply kategori filter to new row
-                const selectedKategori = kategoriSelect.value;
-                if (selectedKategori) {
-                    filterBarangByCategory(selectedKategori);
-                }
-                // ensure file input names are sequential
-                document.querySelectorAll('.item-row').forEach((row, i) => {
-                    const fileInput = row.querySelector('.item-images-input');
-                    if (fileInput) fileInput.name = `item_images[${i}][]`;
-                });
             });
 
             // Attach events to row
@@ -818,7 +839,29 @@
                     handleBarangChange(this);
                     updateSubmitState();
                 });
-                row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
+                
+                // Event untuk quantity input - hitung subtotal saat quantity berubah
+                const quantityInput = row.querySelector('.quantity-input');
+                if (quantityInput) {
+                    quantityInput.addEventListener('change', function() {
+                        const qty = parseInt(this.value) || 1;
+                        const hargaInput = row.querySelector('.harga-input');
+                        const subtotalDisplay = row.querySelector('.subtotal-display');
+                        
+                        if (hargaInput && subtotalDisplay) {
+                            const harga = parseFloat(hargaInput.value) || 0;
+                            const subtotal = qty * harga;
+                            subtotalDisplay.value = subtotal > 0 ?
+                                'Rp ' + subtotal.toLocaleString('id-ID', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) :
+                                '0';
+                        }
+                        calculateTotals();
+                    });
+                }
+                
                 row.querySelector('.harga-input').addEventListener('change', calculateTotals);
                 const diskonInput = row.querySelector('.diskon-input');
                 if (diskonInput) {
@@ -863,11 +906,11 @@
                 }
             }
 
-            // Update remove buttons visibility
+            // Update remove buttons visibility - always show delete button
             function updateRemoveButtons() {
                 const rows = document.querySelectorAll('.item-row');
                 rows.forEach((row, index) => {
-                    row.querySelector('.remove-row').style.display = rows.length > 1 ? 'inline-block' : 'none';
+                    row.querySelector('.remove-row').style.display = 'inline-block';
                 });
             }
 
