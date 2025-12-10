@@ -282,9 +282,7 @@ class CustomPenawaranController extends Controller
      */
     public function approval(Request $request, CustomPenawaran $customPenawaran)
     {
-        if (auth()->user()->role !== 'Supervisor') {
-            abort(403);
-        }
+        // Role check is already done by route middleware 'role:Supervisor'
         $action = $request->input('action');
         if ($customPenawaran->status !== 'sent') {
             return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');

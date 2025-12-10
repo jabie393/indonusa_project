@@ -13,6 +13,8 @@ class CustomPenawaranItem extends Model
         'satuan',
         'harga',
         'subtotal',
+        'diskon',
+        'keterangan',
         'images',
     ];
 
@@ -20,6 +22,7 @@ class CustomPenawaranItem extends Model
         'qty' => 'integer',
         'harga' => 'decimal:2',
         'subtotal' => 'decimal:2',
+        'diskon' => 'integer',
         'images' => 'array',
     ];
 

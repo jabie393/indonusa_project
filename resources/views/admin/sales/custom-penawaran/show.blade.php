@@ -15,7 +15,7 @@
                     </a>
                 @endif
                 @if($customPenawaran->status === 'sent' && auth()->user()->role === 'Supervisor')
-                    <form action="{{ url('/custom-penawaran/' . $customPenawaran->id . '/approval') }}" method="POST" class="inline">
+                    <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit" name="action" value="approve" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold">Approve</button>
                         <button type="submit" name="action" value="reject" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold ml-2">Reject</button>
@@ -112,7 +112,9 @@
                                     <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Qty</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Satuan</th>
                                     <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700">Harga (Rp)</th>
-                                    <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700">Total (Rp)</th>
+                                    <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Diskon (%)</th>
+                                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Keterangan</th>
+                                    <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700">Total Setelah Diskon (Rp)</th>
                                     <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700">Gambar</th>
                                 </tr>
                             </thead>
@@ -124,7 +126,15 @@
                                         <td class="px-4 py-3 text-sm text-center text-gray-700">{{ $item->qty }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-700">{{ $item->satuan }}</td>
                                         <td class="px-4 py-3 text-sm text-right text-gray-700">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                        <td class="px-4 py-3 text-sm text-right font-semibold text-gray-900">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                        <td class="px-4 py-3 text-sm text-center text-gray-700">{{ $item->diskon ?? 0 }}%</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700">{{ $item->keterangan ?? '-' }}</td>
+                                        <td class="px-4 py-3 text-sm text-right font-semibold text-gray-900">
+                                            @php
+                                                $diskonPercent = $item->diskon ?? 0;
+                                                $totalSetelahDiskon = ($item->qty * $item->harga) * (1 - $diskonPercent / 100);
+                                            @endphp
+                                            Rp {{ number_format($totalSetelahDiskon, 0, ',', '.') }}
+                                        </td>
                                         <td class="px-4 py-3 text-center">
                                             @if($item->images && count($item->images) > 0)
                                                 <div class="flex gap-3 justify-center flex-wrap">
@@ -157,7 +167,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="px-4 py-6 text-center text-gray-500">Tidak ada barang</td>
+                                        <td colspan="9" class="px-4 py-6 text-center text-gray-500">Tidak ada barang</td>
                                     </tr>
                                 @endforelse
                             </tbody>

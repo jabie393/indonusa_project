@@ -128,9 +128,9 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
 
     Route::get('/sent-penawaran', [AdminPTController::class, 'sentPenawaran'])->name('admin.sent_penawaran');
     // Supervisor approval route for Custom Penawaran (allow Supervisor to POST approve/reject)
-    Route::post('/custom-penawaran/{customPenawaran}/approval', [\App\Http\Controllers\Admin\CustomPenawaranController::class, 'approval'])->name('admin.custom-penawaran.approval');
+    Route::post('/supervisor/custom-penawaran/{customPenawaran}/approval', [CustomPenawaranController::class, 'approval'])->name('admin.custom-penawaran.approval');
     // Supervisor view detail for custom penawaran (so Supervisor can access without Sales role)
-    Route::get('/admin/custom-penawaran/{customPenawaran}', [\App\Http\Controllers\Admin\CustomPenawaranController::class, 'show'])->name('admin.custom-penawaran.show');
+    Route::get('/supervisor/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('admin.custom-penawaran.show');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
@@ -173,7 +173,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::put('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'update'])->name('sales.custom-penawaran.update');
     Route::delete('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-penawaran.destroy');
     Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
-    Route::post('/custom-penawaran/{customPenawaran}/approval', [CustomPenawaranController::class, 'approval'])->name('sales.custom-penawaran.approval');
 
     // Saless Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');

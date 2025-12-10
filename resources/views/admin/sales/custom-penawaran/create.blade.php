@@ -124,7 +124,7 @@
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Keterangan</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Total (Rp)</th>
+                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Gambar</th>
                                         <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Aksi</th>
                                     </tr>
@@ -164,7 +164,23 @@
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold">0</td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number" name="items[0][diskon]"
+                                                class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                placeholder="0" value="{{ old('items.0.diskon', 0) }}" min="0" max="100" required>
+                                            @error('items.0.diskon')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text" name="items[0][keterangan]"
+                                                class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                placeholder="Keterangan jika diskon > 20%" value="{{ old('items.0.keterangan') }}">
+                                            @error('items.0.keterangan')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
                                         <td class="border border-gray-300 px-4 py-2 text-center">
                                             <div class="upload-btn-container relative">
                                                 <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
@@ -302,11 +318,15 @@
             function calculateItemSubtotal(row) {
                 const qtyInput = row.querySelector('.item-qty');
                 const hargaInput = row.querySelector('.item-harga');
+                const diskonInput = row.querySelector('.item-diskon');
                 const subtotalDisplay = row.querySelector('.item-subtotal');
 
                 const qty = parseInt(qtyInput.value) || 0;
                 const harga = parseFloat(hargaInput.value) || 0;
-                const subtotal = qty * harga;
+                const diskonPercent = parseFloat(diskonInput.value) || 0;
+                
+                // Hitung subtotal dengan diskon: (qty * harga) * (1 - diskon%)
+                const subtotal = (qty * harga) * (1 - diskonPercent / 100);
 
                 subtotalDisplay.textContent = formatCurrency(subtotal);
                 return subtotal;
@@ -404,6 +424,14 @@
                 <input type="number" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="0" step="0.01" min="0" required>
             </td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="number" name="items[${itemCount}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    placeholder="0" min="0" max="100" value="0" required>
+            </td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="text" name="items[${itemCount}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    placeholder="Keterangan jika diskon > 20%">
+            </td>
             <td class="border border-gray-300 px-4 py-2 text-black text-right item-subtotal font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                 <div class="relative upload-btn-container">
@@ -434,10 +462,23 @@
                 // Attach event listeners to new row
                 const qtyInput = newRow.querySelector('.item-qty');
                 const hargaInput = newRow.querySelector('.item-harga');
+                const diskonInput = newRow.querySelector('.item-diskon');
+                const keteranganInput = newRow.querySelector('.item-keterangan');
                 const removeBtn = newRow.querySelector('.btn-remove-item');
 
                 qtyInput.addEventListener('change', calculateTotals);
                 hargaInput.addEventListener('change', calculateTotals);
+                diskonInput.addEventListener('change', function() {
+                    const diskonVal = parseFloat(diskonInput.value) || 0;
+                    if(diskonVal > 20) {
+                        keteranganInput.required = true;
+                        keteranganInput.classList.add('border-red-500');
+                    } else {
+                        keteranganInput.required = false;
+                        keteranganInput.classList.remove('border-red-500');
+                    }
+                    calculateTotals();
+                });
                 removeBtn.addEventListener('click', function() {
                     newRow.remove();
                     reindexItems();
@@ -485,10 +526,23 @@
             document.querySelectorAll('.item-row').forEach(row => {
                 const qtyInput = row.querySelector('.item-qty');
                 const hargaInput = row.querySelector('.item-harga');
+                const diskonInput = row.querySelector('.item-diskon');
+                const keteranganInput = row.querySelector('.item-keterangan');
                 const removeBtn = row.querySelector('.btn-remove-item');
 
                 qtyInput.addEventListener('change', calculateTotals);
                 hargaInput.addEventListener('change', calculateTotals);
+                diskonInput.addEventListener('change', function() {
+                    const diskonVal = parseFloat(diskonInput.value) || 0;
+                    if(diskonVal > 20) {
+                        keteranganInput.required = true;
+                        keteranganInput.classList.add('border-red-500');
+                    } else {
+                        keteranganInput.required = false;
+                        keteranganInput.classList.remove('border-red-500');
+                    }
+                    calculateTotals();
+                });
                 removeBtn.addEventListener('click', function() {
                     if (document.querySelectorAll('.item-row').length > 1) {
                         row.remove();
