@@ -69,7 +69,7 @@
                             <!-- Our Ref Field (Auto-generated) -->
                             <div>
                                 <label for="our_ref" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref (Auto)</label>
-                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref') }}" readonly
+                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref') }}"
                                     class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-600 dark:text-gray-300" placeholder="Auto-generated">
                                 @error('our_ref')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -299,6 +299,22 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let itemCount = 1;
+
+            // Generate unique reference
+            function generateUniqueRef() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = 'REF-';
+                for (let i = 0; i < 8; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            // Set our_ref value on page load
+            const ourRefInput = document.getElementById('our_ref');
+            if (ourRefInput && !ourRefInput.value) {
+                ourRefInput.value = generateUniqueRef();
+            }
 
             // Format currency
             function formatCurrency(value) {

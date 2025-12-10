@@ -7,6 +7,7 @@ use App\Models\CustomPenawaran;
 use App\Models\CustomPenawaranItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class CustomPenawaranController extends Controller
@@ -16,10 +17,22 @@ class CustomPenawaranController extends Controller
      */
     public function index()
     {
+        // Log current user and items fetched for debugging
+        Log::info('Custom Penawaran Index accessed', ['auth_id' => Auth::id(), 'auth_email' => Auth::user()->email ?? null]);
+
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
             ->with('items')
             ->latest()
             ->paginate(20);
+
+        // Also log raw DB table count and sample rows for diagnosis
+        try {
+            $rawCount = DB::table('custom_penawarans')->count();
+            $sample = DB::table('custom_penawarans')->orderByDesc('id')->limit(5)->get();
+            Log::info('Custom Penawaran Index result', ['count' => $customPenawarans->count(), 'raw_count' => $rawCount, 'sample' => $sample]);
+        } catch (\Throwable $e) {
+            Log::error('Custom Penawaran Index DB read error', ['message' => $e->getMessage()]);
+        }
 
         return view('admin.sales.custom-penawaran.index', compact('customPenawarans'));
     }
@@ -37,11 +50,20 @@ class CustomPenawaranController extends Controller
      */
     public function store(Request $request)
     {
+        // Log incoming request for debugging (include authenticated user)
+        Log::info('Custom Penawaran Store Request Incoming', [
+            'auth_id' => Auth::id(),
+            'auth_email' => Auth::user()->email ?? null,
+            'request' => $request->all(),
+            'items_count' => count($request->input('items', []))
+        ]);
+
         $validated = $request->validate([
             'to' => 'required|string|max:255',
             'up' => 'nullable|string|max:255',
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
+            'our_ref' => 'nullable|string|max:255',
             'date' => 'required|date',
             'intro_text' => 'nullable|string',
             'tax' => 'nullable|numeric|min:0',
@@ -75,12 +97,15 @@ class CustomPenawaranController extends Controller
                 'up' => $validated['up'] ?? null,
                 'subject' => $validated['subject'],
                 'email' => $validated['email'],
-                'our_ref' => CustomPenawaran::generateUniqueRef(),
+                'our_ref' => $validated['our_ref'] ?? CustomPenawaran::generateUniqueRef(),
                 'date' => $validated['date'],
                 'intro_text' => $validated['intro_text'] ?? null,
                 'tax' => $validated['tax'] ?? 0,
                 'status' => $needApproval ? 'sent' : 'draft',
             ]);
+
+            // Log created penawaran id
+            Log::info('Custom Penawaran Created', ['id' => $penawaran->id, 'sales_id' => $penawaran->sales_id]);
 
             $subtotal = 0;
             foreach ($validated['items'] as $i => $itemData) {
@@ -116,13 +141,18 @@ class CustomPenawaranController extends Controller
 
             DB::commit();
 
+            // Log commit confirmation
+            Log::info('Custom Penawaran Commit Successful', ['id' => $penawaran->id]);
+
             // Simulasi permintaan approval ke Supervisor
             // TODO: Implementasi notifikasi/approval Supervisor
 
+            Log::info('Custom Penawaran Returning Redirect To Show', ['id' => $penawaran->id]);
             return redirect()->route('sales.custom-penawaran.show', $penawaran->id)
                 ->with('success', "Penawaran {$penawaran->penawaran_number} berhasil dibuat.");
         } catch (\Throwable $e) {
             DB::rollBack();
+            Log::error('Custom Penawaran Store Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
             return back()->withErrors('Gagal membuat penawaran: ' . $e->getMessage())->withInput();
         }
     }
