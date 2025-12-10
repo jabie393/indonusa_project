@@ -9,6 +9,7 @@ class RequestOrderItem extends Model
     protected $fillable = [
         'request_order_id',
         'barang_id',
+        'kategori_barang',
         'quantity',
         'harga',
         'subtotal',
@@ -23,6 +24,7 @@ class RequestOrderItem extends Model
         'subtotal' => 'decimal:2',
         'diskon_percent' => 'decimal:2',
         'item_images' => 'array',
+        'kategori_barang' => 'string',
     ];
 
     public function requestOrder()
