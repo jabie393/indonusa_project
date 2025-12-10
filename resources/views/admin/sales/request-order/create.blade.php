@@ -1,13 +1,13 @@
 <x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex flex-col items-center justify-between space-y-3 p-6 md:flex-row md:space-x-4 md:space-y-0">
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md  dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div class="col">
                 <h2 class="text-3xl font-bold text-black dark:text-white">Buat Request Order</h2>
                 <p class="mt-1 text-gray-500 dark:text-gray-400">Buat penawaran awal kepada pelanggan</p>
             </div>
             <div class="col-auto">
                 <a href="{{ route('sales.request-order.index') }}"
-                    class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300">
+                    class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
                         <path d="m12 19-7-7 7-7"></path>
@@ -29,114 +29,109 @@
             </div>
         @endif
 
-        <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
-            <form method="POST" action="{{ route('sales.request-order.store') }}" id="requestOrderForm" enctype="multipart/form-data">
-                @csrf
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ route('sales.request-order.store') }}" id="requestOrderForm" enctype="multipart/form-data">
+                    @csrf
 
-                <!-- Customer Info Section -->
-                <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md">
-                    <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white">
-                        <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg> Informasi Customer
-                        </h3>
-                        <button type="button" class="flex items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-700" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M5 12h14"></path>
-                                <path d="M12 5v14"></path>
-                            </svg> Tambah Customer Baru
-                        </button>
+                    <!-- Customer Info Section -->
+                    <div class="card bg-light bg-card mb-4 rounded-2xl shadow-md inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white ">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg> Informasi Customer
+                            </h3>
+                            <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5v14"></path>
+                                </svg> Tambah Customer Baru
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
+
+                            <div class="col-span-2 flex flex-col">
+                                <label for="customer_id" class="form-label dark:text-gray-300">Pilih Customer <span class="text-danger">*</span></label>
+                                <select
+                                    class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
+                                    <option value="">-- Pilih Customer --</option>
+                                    @foreach ($customers as $c)
+                                        <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
+                                            @selected(old('customer_id') == $c->id)>
+                                            {{ $c->nama_customer }}
+                                            @if ($c->email)
+                                                ({{ $c->email }})
+                                            @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('customer_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted mt-1 dark:text-gray-400">Pilih dari daftar customer yang sudah terdaftar</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_name" class="form-label dark:text-gray-300">Nama Customer</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
+                                <small class="text-muted dark:text-gray-400">Auto-filled dari customer yang dipilih</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_email" class="form-label dark:text-gray-300">Email</label>
+                                <input type="email"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_email" readonly>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_telepon" class="form-label dark:text-gray-300">Telepon</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_telepon" readonly>
+                            </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="customer_kota" class="form-label dark:text-gray-300">Kota</label>
+                                <input type="text"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_kota" readonly>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="tanggal_kebutuhan" class="form-label dark:text-gray-300">Tanggal Kebutuhan</label>
+                                <input type="date"
+                                    class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
+                                @error('tanggal_kebutuhan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="catatan_customer" class="form-label dark:text-gray-300">Catatan</label>
+                                <textarea
+                                    class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
+                                @error('catatan_customer')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
-<<<<<<< HEAD
 
             <!-- Items Section -->
             <div class="card card-body mb-4" id="barangSection" style="display: block;">
                 <div class="card bg-light bg-card mb-4 rounded-2xl inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shadow-sm">
 
                     <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-=======
-                    <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
-
-                        <div class="col-span-2 flex flex-col">
-                            <label for="customer_id" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Pilih Customer <span class="text-red-600 dark:text-red-500">*</span></label>
-                            <select
-                                class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
-                                <option value="">-- Pilih Customer --</option>
-                                @foreach ($customers as $c)
-                                    <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
-                                        @selected(old('customer_id') == $c->id)>
-                                        {{ $c->nama_customer }}
-                                        @if ($c->email)
-                                            ({{ $c->email }})
-                                        @endif
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('customer_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="mt-1 text-sm text-gray-500 dark:text-gray-400">Pilih dari daftar customer yang sudah terdaftar</small>
-                        </div>
-
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="customer_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama Customer</label>
-                            <input type="text"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="customer_name" name="customer_name" value="{{ old('customer_name') }}" readonly>
-                            <small class="text-sm text-gray-500 dark:text-gray-400">Auto-filled dari customer yang dipilih</small>
-                        </div>
-
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="customer_email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                            <input type="email"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="customer_email" readonly>
-                        </div>
-
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="customer_telepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Telepon</label>
-                            <input type="text"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="customer_telepon" readonly>
-                        </div>
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="customer_kota" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kota</label>
-                            <input type="text"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="customer_kota" readonly>
-                        </div>
-
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="tanggal_kebutuhan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tanggal Kebutuhan</label>
-                            <input type="date"
-                                class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
-                            @error('tanggal_kebutuhan')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="catatan_customer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Catatan</label>
-                            <textarea
-                                class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
-                            @error('catatan_customer')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kategori Barang -->
-                <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
-                    <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white">
->>>>>>> e9fb3ce328403a24c20f686f740bbba86f8687d9
                         <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
@@ -145,11 +140,9 @@
                                 <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
                                 <path d="m7.5 4.27 9 5.15"></path>
                             </svg>
-                            Kategori Barang
-                            <p class="badge ms-2 border-none">WAJIB DIPILIH TERLEBIH DAHULU</p>
+                            Detail Barang
                         </h3>
                     </div>
-<<<<<<< HEAD
 
                     <div class="overflow-x-auto">
                         <div id="discountWarning" class="alert alert-warning" style="display:none;">
@@ -276,192 +269,27 @@
                                 <small class="text-muted d-block mt-2 dark:text-gray-400">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
                             </div>
                             @error('supporting_images.*')
-=======
-                    <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label for="kategori_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Pilih Kategori Barang <span class="text-red-600 dark:text-red-500">*</span></label>
-                            <select
-                                class="@error('kategori_barang') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
-                                <option value="">-- Pilih Kategori --</option>
-                                @foreach ($categories as $cat)
-                                    <option value="{{ $cat }}" @selected(old('kategori_barang') == $cat)>
-                                        {{ $cat }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('kategori_barang')
->>>>>>> e9fb3ce328403a24c20f686f740bbba86f8687d9
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="text-sm text-gray-500 dark:text-gray-400">Kategori harus dipilih sebelum memilih barang</small>
                         </div>
-                        <div class="col-span-2 flex flex-col md:col-span-1">
-                            <label class="mb-2 block text-sm font-medium text-black dark:text-white">Periode Berlaku Penawaran</label>
-                            <div class="border-1 rounded-xl bg-blue-100 p-2 dark:bg-blue-900/50 text-black dark:text-white">
-                                <strong>Mulai:</strong> <span id="tanggalMulai">{{ now()->format('d-m-Y') }}</span><br>
-                                <strong>Berakhir:</strong> <span id="tanggalBerakhir">{{ now()->addDays(14)->format('d-m-Y') }}</span> (14 hari)<br>
-                                <small>Penawaran akan otomatis kadaluarsa setelah tanggal berakhir.</small>
-                            </div>
+
+                        <div id="imagePreview" class="row g-2">
+                            <!-- Preview images will be displayed here -->
                         </div>
                     </div>
                 </div>
-        </div>
 
-        <!-- Items Section -->
-        <div class="card card-body mb-4" id="barangSection" style="display: none;">
-            <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
-
-                <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-                    <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
-                            <path d="M12 22V12"></path>
-                            <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
-                            <path d="m7.5 4.27 9 5.15"></path>
-                        </svg>
-                        Detail Barang
-                    </h3>
+                <!-- Action Buttons -->
+                <div class="flex justify-end gap-4">
+                    <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#972222] text-white hover:bg-[#811c1c]">
+                        Batal
+                    </a>
+                    <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" id="submitBtn" disabled>
+                        Buat Request Order
+                    </button>
                 </div>
-
-                <div class="overflow-x-auto">
-                    <div id="discountWarning" class="alert alert-warning" style="display:none;">
-                        Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan Supervisor.
-                    </div>
-                    <div class="table-responsive mb-3">
-                        <table class="table-bordered table" id="itemsTable">
-                            <thead class="bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-                                <tr>
-                                    <th>Kode Barang</th>
-                                    <th>Nama Barang</th>
-                                    <th width="100">Diskon (%)</th>
-                                    <th width="100">Jumlah</th>
-                                    <th width="200">Harga Satuan</th>
-                                    <th width="150">Gambar</th>
-                                    <th width="200">Subtotal</th>
-                                    <th width="80">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemRows">
-                                <tr class="item-row">
-                                    <td>
-                                        <select name="barang_id[]"
-                                            class="barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            required>
-                                            <option value="">Pilih Barang</option>
-                                            @foreach ($barangs as $b)
-                                                <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}"
-                                                    data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" style="display: none;">
-                                                    {{ $b->kode_barang }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text"
-                                            class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            readonly>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="diskon_percent[]"
-                                            class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            min="0" max="100" step="0.01" value="0">
-                                    </td>
-                                    <td>
-                                        <input type="number" name="quantity[]"
-                                            class="quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            min="1" value="1" required>
-                                    </td>
-                                    <td>
-                                        <input type="number" name="harga[]"
-                                            class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            min="0" step="0.01" value="0" readonly>
-                                    </td>
-                                    <td>
-                                        <div class="upload-btn-container relative">
-                                            <input type="file" name="item_images[0][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
-                                                accept="image/*">
-                                            <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
-                                                Upload
-                                            </button>
-                                        </div>
-                                        <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
-                                    </td>
-                                    <td>
-                                        <input type="text"
-                                            class="subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            readonly>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn remove-row rounded-md bg-red-500 text-white" style="display:none;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
-                                                <path d="M3 6h18"></path>
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                <line x1="10" x2="10" y1="11" y2="17"></line>
-                                                <line x1="14" x2="14" y1="11" y2="17"></line>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th colspan="6" class="text-end dark:text-gray-300">TOTAL:</th>
-                                    <th>
-                                        <strong id="totalAmount">Rp 0</strong>
-                                    </th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-
-                </div>
-                <button type="button" id="addRow" class="btn inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm m-5 border-none bg-[#225A97] text-white hover:bg-[#1c4d81]"
-                    style="display: none;">
-                    Tambah Barang
-                </button>
+                </form>
             </div>
-
-            <!-- Supporting Images Section -->
-            <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm" id="imagesSection" style="display: none;">
-                <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
-                    <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h3>
-                </div>
-                <div class="p-5">
-                    <div class="mb-3">
-                        <label for="supporting_images" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Unggah Gambar <span class="text-sm text-gray-500 dark:text-gray-400">(Foto barang, contoh produk, desain,
-                                dll)</span></label>
-                        <div class="input-group">
-                            <input type="file"
-                                class="barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                id="supporting_images" name="supporting_images[]" multiple accept="image/*">
-                            <small class="mt-2 block text-sm text-gray-500 dark:text-gray-400">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
-                        </div>
-                        @error('supporting_images.*')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div id="imagePreview" class="row g-2">
-                        <!-- Preview images will be displayed here -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex justify-end gap-4">
-                <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#972222] text-white hover:bg-[#811c1c]">
-                    Batal
-                </a>
-                <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" id="submitBtn" disabled>
-                    Buat Request Order
-                </button>
-            </div>
-            </form>
         </div>
     </div>
 
@@ -532,7 +360,7 @@
     <div class="modal fade" id="addCustomerModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-[#225A97] text-white">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title"><i class="fas fa-user-plus"></i> Tambah Customer Baru</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -541,11 +369,11 @@
                     <div class="modal-body">
                         <!-- Nama Customer -->
                         <div class="mb-3">
-                            <label for="modalNamaCustomer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama Customer <span class="text-red-600 dark:text-red-500">*</span></label>
+                            <label for="modalNamaCustomer" class="form-label dark:text-gray-300">Nama Customer <span class="text-danger">*</span></label>
                             <input type="text"
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 id="modalNamaCustomer" name="nama_customer" required>
-                            <small class="text-sm text-gray-500 dark:text-gray-400">Nama lengkap pelanggan</small>
+                            <small class="text-muted dark:text-gray-400">Nama lengkap pelanggan</small>
                             <div class="invalid-feedback" id="error-nama_customer"></div>
                         </div>
 
@@ -553,7 +381,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalEmail" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                                    <label for="modalEmail" class="form-label dark:text-gray-300">Email</label>
                                     <input type="email"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalEmail" name="email">
@@ -562,7 +390,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalTelepon" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Telepon</label>
+                                    <label for="modalTelepon" class="form-label dark:text-gray-300">Telepon</label>
                                     <input type="tel"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalTelepon" name="telepon">
@@ -575,8 +403,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalTipeCustomer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Tipe Customer <span class="text-red-600 dark:text-red-500">*</span></label>
-                                    <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalTipeCustomer" name="tipe_customer" required>
+                                    <label for="modalTipeCustomer" class="form-label dark:text-gray-300">Tipe Customer <span class="text-danger">*</span></label>
+                                    <select class="form-select dark:border-gray-500 dark:bg-gray-600 dark:text-white" id="modalTipeCustomer" name="tipe_customer" required>
                                         <option value="">-- Pilih Tipe --</option>
                                         <option value="retail">Retail</option>
                                         <option value="wholesale">Wholesale</option>
@@ -587,8 +415,8 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalStatus" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status <span class="text-red-600 dark:text-red-500">*</span></label>
-                                    <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalStatus" name="status" required>
+                                    <label for="modalStatus" class="form-label dark:text-gray-300">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select dark:border-gray-500 dark:bg-gray-600 dark:text-white" id="modalStatus" name="status" required>
                                         <option value="active">Aktif</option>
                                         <option value="inactive">Nonaktif</option>
                                     </select>
@@ -599,7 +427,7 @@
 
                         <!-- Alamat -->
                         <div class="mb-3">
-                            <label for="modalAlamat" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Alamat</label>
+                            <label for="modalAlamat" class="form-label dark:text-gray-300">Alamat</label>
                             <textarea
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 id="modalAlamat" name="alamat" rows="2"></textarea>
@@ -610,7 +438,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="modalKota" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kota</label>
+                                    <label for="modalKota" class="form-label dark:text-gray-300">Kota</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalKota" name="kota">
@@ -619,7 +447,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="modalProvinsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Provinsi</label>
+                                    <label for="modalProvinsi" class="form-label dark:text-gray-300">Provinsi</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalProvinsi" name="provinsi">
@@ -628,7 +456,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="modalKodePos" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode Pos</label>
+                                    <label for="modalKodePos" class="form-label dark:text-gray-300">Kode Pos</label>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                         id="modalKodePos" name="kode_pos">
@@ -993,62 +821,11 @@
                 
                 // Update index file input name
                 const idx = document.querySelectorAll('.item-row').length;
-<<<<<<< HEAD
                 if (fileInput) fileInput.name = `item_images[${idx}][]`;
                 
                 tbody.appendChild(newRow);
                 
                 // Attach events ke baris baru
-=======
-                const newRow = document.createElement('tr');
-                newRow.className = 'item-row';
-                newRow.innerHTML = `
-                    <td>
-                        <select name="barang_id[]" class="barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                            ${getBarangOptionsHTML()}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                    </td>
-                    <td>
-                        <input type="number" name="diskon_percent[]"
-                            class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            min="0" max="100" step="0.01" value="0">
-                    </td>
-                    <td>
-                        <input type="number" name="quantity[]" class="quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
-                    </td>
-                    <td>
-                        <input type="number" name="harga[]" class="harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
-                    </td>
-                    <td>
-                        <div class="relative upload-btn-container">
-                            <input type="file" name="item_images[${idx}][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
-                            <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
-                                 Upload
-                            </button>
-                        </div>
-                        <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
-                    </td>
-                    <td>
-                        <input type="text" class="subtotal-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                    </td>
-                    <td>
-                        <button type="button" class="btn bg-red-500 remove-row rounded-md text-white" style="display:none;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
-                                <path d="M3 6h18"></path>
-                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                <line x1="10" x2="10" y1="11" y2="17"></line>
-                                <line x1="14" x2="14" y1="11" y2="17"></line>
-                            </svg>
-                        </button>
-                    </td>
-                `;
-                itemRows.appendChild(newRow);
->>>>>>> e9fb3ce328403a24c20f686f740bbba86f8687d9
                 attachRowEvents(newRow);
                 handleItemImagePreview(newRow);
                 updateRemoveButtons();
@@ -1157,7 +934,7 @@
                                 <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 150px; object-fit: cover;">
                                 <div class="card-body p-2">
                                     <small class="text-truncate d-block">${file.name}</small>
-                                    <small class="text-gray-500 dark:text-gray-400">${(file.size / 1024).toFixed(2)} KB</small>
+                                    <small class="text-muted">${(file.size / 1024).toFixed(2)} KB</small>
                                 </div>
                             </div>
                         `;
@@ -1186,5 +963,19 @@
         });
     </script>
 
+    <style>
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
 
+        .dark .form-label {
+            color: #d1d5db;
+        }
+
+
+        .card-header {
+            padding: 1rem;
+        }
+    </style>
 </x-app-layout>
