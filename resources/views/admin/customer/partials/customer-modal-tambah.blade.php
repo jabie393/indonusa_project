@@ -1,9 +1,9 @@
 <!-- Create Sales Account Modal -->
 <dialog id="createCustomerModal" class="modal">
     <div
-        class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+        class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh] inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Akun Sales </h3>
             <div class="modal-action m-0">
@@ -23,7 +23,7 @@
         </div>
         <form action="{{ route('customer.store') }}" method="POST"
             class="flex h-full flex-col space-y-4 overflow-hidden relative p-4">
-            <div class="h-full overflow-auto">
+            <div class="h-full relative overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
                     @csrf
@@ -133,6 +133,7 @@
         <button>close</button>
     </form>
 </dialog>
+
 
 <script>
     $("#pic").select2({
