@@ -34,12 +34,12 @@
                     @foreach ($customPenawarans as $penawaran)
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
                             <td class="px-4 py-4">
-                                <span class="font-semibold text-gray-900">{{ $penawaran->penawaran_number }}</span>
+                                <span class="font-semibold ">{{ $penawaran->penawaran_number }}</span>
                             </td>
-                            <td class="px-4 py-4 text-gray-700">{{ $penawaran->to }}</td>
-                            <td class="px-4 py-4 text-gray-700">{{ Str::limit($penawaran->subject, 30) }}</td>
-                            <td class="px-4 py-4 text-gray-700">{{ $penawaran->our_ref }}</td>
-                            <td class="px-4 py-4 text-right font-semibold text-gray-900">
+                            <td class="px-4 py-4">{{ $penawaran->to }}</td>
+                            <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
+                            <td class="px-4 py-4">{{ $penawaran->our_ref }}</td>
+                            <td class="px-4 py-4 text-right font-semibold">
                                 Rp {{ number_format($penawaran->grand_total, 0, ',', '.') }}
                             </td>
                             <td class="px-4 py-4 text-center">
@@ -69,7 +69,7 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-4 py-4 text-center text-gray-700">
+                            <td class="px-4 py-4 text-center">
                                 {{ \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') }}
                             </td>
                             <td class="px-4 py-4 text-center">

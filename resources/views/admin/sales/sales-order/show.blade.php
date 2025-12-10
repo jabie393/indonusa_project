@@ -1,29 +1,32 @@
 <x-app-layout>
-    <div class="container-fluid px-4">
-        <div class="row mb-4">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div class="col">
-                <h2>Detail Sales Order</h2>
-                <p class="text-muted">No. {{ $salesOrder->sales_order_number }}</p>
+                <h2 class="text-3xl font-bold text-black dark:text-white">Detail Sales Order</h2>
+                <p class="mt-1 text-gray-500 dark:text-gray-400">No. {{ $salesOrder->sales_order_number }}</p>
             </div>
             <div class="col-auto">
-                <a href="{{ route('sales.sales-order.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Kembali
+                <a href="{{ route('sales.sales-order.index') }}" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
+                        <path d="m12 19-7-7 7-7"></path>
+                        <path d="M19 12H5"></path>
+                    </svg> Kembali
                 </a>
             </div>
         </div>
 
-        @if(session('success'))
+        @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle"></i> {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
 
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i>
                 <ul class="mb-0">
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
@@ -47,7 +50,7 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Request Order</label>
                                 <p>
-                                    @if($salesOrder->requestOrder)
+                                    @if ($salesOrder->requestOrder)
                                         <a href="{{ route('sales.request-order.show', $salesOrder->requestOrder->id) }}">
                                             {{ $salesOrder->requestOrder->request_number }}
                                         </a>
@@ -89,20 +92,20 @@
                                 <label class="form-label fw-bold">Status</label>
                                 <p>
                                     @php
-                                        $statusClass = match($salesOrder->status) {
+                                        $statusClass = match ($salesOrder->status) {
                                             'pending' => 'warning',
                                             'in_process' => 'info',
                                             'shipped' => 'primary',
                                             'completed' => 'success',
                                             'cancelled' => 'danger',
-                                            default => 'secondary'
+                                            default => 'secondary',
                                         };
-                                        $statusLabel = match($salesOrder->status) {
+                                        $statusLabel = match ($salesOrder->status) {
                                             'in_process' => 'Dalam Proses',
                                             'shipped' => 'Dikirim',
                                             'completed' => 'Selesai',
                                             'cancelled' => 'Dibatalkan',
-                                            default => ucfirst(str_replace('_', ' ', $salesOrder->status))
+                                            default => ucfirst(str_replace('_', ' ', $salesOrder->status)),
                                         };
                                     @endphp
                                     <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
@@ -110,14 +113,14 @@
                             </div>
                         </div>
 
-                        @if($salesOrder->catatan_customer)
+                        @if ($salesOrder->catatan_customer)
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Catatan Customer</label>
                                 <p>{{ $salesOrder->catatan_customer }}</p>
                             </div>
                         @endif
 
-                        @if($salesOrder->reason)
+                        @if ($salesOrder->reason)
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Alasan Pembatalan</label>
                                 <p class="text-danger">{{ $salesOrder->reason }}</p>
@@ -132,7 +135,7 @@
                         <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang & Tracking Pengiriman</h5>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table-hover mb-0 table">
                             <thead class="table-light">
                                 <tr>
                                     <th>Barang</th>
@@ -147,7 +150,7 @@
                             <tbody>
                                 @php $total = 0; @endphp
                                 @forelse($salesOrder->items as $item)
-                                    @php 
+                                    @php
                                         $total += $item->subtotal;
                                         $remaining = $item->quantity - $item->delivered_quantity;
                                     @endphp
@@ -162,7 +165,7 @@
                                             <span class="badge bg-success">{{ $item->delivered_quantity }}</span>
                                         </td>
                                         <td>
-                                            @if($remaining > 0)
+                                            @if ($remaining > 0)
                                                 <span class="badge bg-warning">{{ $remaining }}</span>
                                             @else
                                                 <span class="badge bg-secondary">0</span>
@@ -172,17 +175,17 @@
                                         <td><strong>Rp {{ number_format($item->subtotal, 2, ',', '.') }}</strong></td>
                                         <td>
                                             @php
-                                                $itemStatusClass = match($item->status_item) {
+                                                $itemStatusClass = match ($item->status_item) {
                                                     'pending' => 'warning',
                                                     'partial' => 'info',
                                                     'completed' => 'success',
-                                                    default => 'secondary'
+                                                    default => 'secondary',
                                                 };
-                                                $itemStatusLabel = match($item->status_item) {
+                                                $itemStatusLabel = match ($item->status_item) {
                                                     'pending' => 'Menunggu',
                                                     'partial' => 'Sebagian',
                                                     'completed' => 'Selesai',
-                                                    default => ucfirst($item->status_item)
+                                                    default => ucfirst($item->status_item),
                                                 };
                                             @endphp
                                             <span class="badge bg-{{ $itemStatusClass }}">{{ $itemStatusLabel }}</span>
@@ -190,7 +193,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center py-3">Tidak ada item</td>
+                                        <td colspan="7" class="py-3 text-center">Tidak ada item</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -222,7 +225,7 @@
                                 </div>
                             </div>
 
-                            @if($salesOrder->approved_at)
+                            @if ($salesOrder->approved_at)
                                 <div class="timeline-item">
                                     <div class="timeline-marker bg-success">
                                         <i class="fas fa-check"></i>
@@ -234,7 +237,7 @@
                                 </div>
                             @endif
 
-                            @if($salesOrder->status === 'shipped')
+                            @if ($salesOrder->status === 'shipped')
                                 <div class="timeline-item">
                                     <div class="timeline-marker bg-primary">
                                         <i class="fas fa-truck"></i>
@@ -246,7 +249,7 @@
                                 </div>
                             @endif
 
-                            @if($salesOrder->status === 'completed')
+                            @if ($salesOrder->status === 'completed')
                                 <div class="timeline-item">
                                     <div class="timeline-marker bg-success">
                                         <i class="fas fa-flag-checkered"></i>
@@ -258,7 +261,7 @@
                                 </div>
                             @endif
 
-                            @if($salesOrder->status === 'cancelled')
+                            @if ($salesOrder->status === 'cancelled')
                                 <div class="timeline-item">
                                     <div class="timeline-marker bg-danger">
                                         <i class="fas fa-times"></i>
@@ -297,9 +300,7 @@
                         <div class="mb-3">
                             <label class="form-label small">Progress Pengiriman</label>
                             <div class="progress" style="height: 25px;">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                     style="width: {{ $progress }}%" 
-                                     aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $progress }}%" aria-valuenow="{{ $progress }}" aria-valuemin="0" aria-valuemax="100">
                                     {{ $progress }}%
                                 </div>
                             </div>
@@ -314,13 +315,13 @@
                         <h5 class="mb-0"><i class="fas fa-cogs"></i> Aksi</h5>
                     </div>
                     <div class="card-body">
-                        @if($salesOrder->status !== 'completed' && $salesOrder->status !== 'cancelled')
+                        @if ($salesOrder->status !== 'completed' && $salesOrder->status !== 'cancelled')
                             <!-- Update Status Modal Button -->
                             <button type="button" class="btn btn-primary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
                                 <i class="fas fa-sync-alt"></i> Update Status
                             </button>
 
-                            @if($salesOrder->status !== 'cancelled')
+                            @if ($salesOrder->status !== 'cancelled')
                                 <!-- Cancel Modal Button -->
                                 <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#cancelModal">
                                     <i class="fas fa-ban"></i> Batalkan Pesanan
@@ -329,7 +330,7 @@
                         @else
                             <div class="alert alert-info">
                                 <small>
-                                    @if($salesOrder->status === 'completed')
+                                    @if ($salesOrder->status === 'completed')
                                         ✓ Pesanan ini sudah selesai
                                     @else
                                         ✗ Pesanan ini sudah dibatalkan
@@ -421,8 +422,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="cancel_reason" class="form-label">Alasan Pembatalan <span class="text-danger">*</span></label>
-                            <textarea name="reason" id="cancel_reason" class="form-control" rows="4" 
-                                      placeholder="Jelaskan alasan pembatalan..." required></textarea>
+                            <textarea name="reason" id="cancel_reason" class="form-control" rows="4" placeholder="Jelaskan alasan pembatalan..." required></textarea>
                             <small class="text-muted">Minimal 10 karakter</small>
                         </div>
                     </div>
@@ -441,6 +441,7 @@
         .card-header {
             padding: 1rem;
         }
+
         .form-label {
             margin-bottom: 0.25rem;
             color: #666;
@@ -478,7 +479,7 @@
             color: white;
             flex-shrink: 0;
             margin-right: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .timeline-content h6 {
