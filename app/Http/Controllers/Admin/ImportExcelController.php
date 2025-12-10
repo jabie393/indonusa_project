@@ -24,40 +24,72 @@ class ImportExcelController extends Controller
     // saat file diupload via AJAX -> simpan file & kembalikan preview
     public function store(Request $request)
     {
-        if ($request->hasFile('excel')) {
-            $file = $request->file('excel');
-            $folder = 'imports';
-            $path = $file->store($folder, 'public');
-            $fullPath = storage_path('app/public/' . $path);
-
-            // baca sheet pertama sebagai array
-            $sheets = Excel::toArray(null, $fullPath);
-            $sheet = $sheets[0] ?? [];
-
-            $headers = [];
-            $sampleRows = [];
-
-            if (count($sheet) > 0) {
-                // pertama dianggap header
-                $headers = array_map(function($h){ return is_null($h) ? '' : trim((string)$h); }, $sheet[0]);
-
-                // ambil sample rows mulai dari index 1 (baris 2 excel) ke bawah
-                $maxPreview = min(count($sheet) - 1, 50); // batasi preview untuk performa
-                for ($i = 1; $i <= $maxPreview; $i++) {
-                    $sampleRows[] = $sheet[$i];
-                }
-            }
-
-            return response()->json([
-                'message' => 'File uploaded',
-                'path' => $path,
-                'url' => asset('storage/' . $path),
-                'headers' => $headers,
-                'rows' => $sampleRows,
-            ], 200);
+        if (! $request->hasFile('excel')) {
+            return response()->json(['message' => 'No file uploaded'], 422);
         }
 
-        return response()->json(['message' => 'No file uploaded'], 422);
+        $file = $request->file('excel');
+        if (! $file->isValid()) {
+            return response()->json(['message' => 'Uploaded file is invalid'], 422);
+        }
+
+        // gunakan nama asli klien, hindari karakter berbahaya
+        $originalName = preg_replace('/[^A-Za-z0-9\-\_\.\s()]/', '', $file->getClientOriginalName());
+        $originalName = trim($originalName);
+        if ($originalName === '') {
+            $originalName = 'import.xlsx';
+        }
+
+        $dir = 'imports';
+        $nameOnly = pathinfo($originalName, PATHINFO_FILENAME);
+        $ext = $file->getClientOriginalExtension() ?: 'xlsx';
+        $storedName = $nameOnly . '.' . $ext;
+
+        // HAPUS semua file yang ada di folder imports terlebih dahulu
+        try {
+            if (Storage::disk('public')->exists($dir)) {
+                $existingFiles = Storage::disk('public')->files($dir);
+                foreach ($existingFiles as $ef) {
+                    // jangan gagal keseluruhan jika satu file gagal dihapus
+                    try {
+                        Storage::disk('public')->delete($ef);
+                    } catch (\Throwable $ex) {
+                        \Log::warning("Failed to delete existing import file {$ef}: " . $ex->getMessage());
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            \Log::warning('Cleaning imports folder failed: '.$e->getMessage());
+            // lanjutkan saja, karena kita masih bisa mencoba menyimpan file baru
+        }
+
+        // simpan file baru menggunakan nama asli (sekarang folder kosong sehingga aman)
+        $storedPath = $file->storeAs($dir, $storedName, 'public'); // returns e.g. "imports/filename.xlsx"
+
+        // coba baca preview (headers + rows) menggunakan maatwebsite/excel
+        $fullPath = storage_path('app/public/' . $storedPath);
+        $headers = [];
+        $rows = [];
+
+        try {
+            $sheets = Excel::toArray(null, $fullPath);
+            $sheet = $sheets[0] ?? [];
+            if (count($sheet) > 0) {
+                $headers = array_map(function($h){ return is_null($h) ? '' : trim((string)$h); }, $sheet[0]);
+                $rows = array_slice($sheet, 1);
+            }
+        } catch (\Throwable $e) {
+            // jika gagal baca preview, tetap kirim path/url agar front-end tetap bekerja
+            \Log::warning('Preview read failed: '.$e->getMessage());
+        }
+
+        return response()->json([
+            'message' => 'Uploaded',
+            'path' => $storedPath,
+            'url'  => Storage::url($storedPath),
+            'headers' => $headers,
+            'rows' => $rows,
+        ], 201);
     }
 
     // proses import ketika form submit: gunakan file yang sudah diupload + mapping dari user
