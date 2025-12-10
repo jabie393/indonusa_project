@@ -155,3 +155,30 @@
 }
 
 /* Marquee LOGOS */
+
+/* PIC select */
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default .select2-selection--multiple {
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: #D1D5DB;
+  width: 100%;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  color: #111827;
+  background-color: #F9FAFB;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice,
+.select2-container--default .select2-search--inline .select2-search__field{
+  margin :0;
+  margin-left: 5px;
+  vertical-align:baseline;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice,
+.select2-container--default .select2-search--inline .select2-search__field{
+  vertical-align: bottom;
+}
+/* PIC select */
