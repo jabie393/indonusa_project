@@ -15,10 +15,14 @@ return new class extends Migration {
         }
     }
 
-    public function down()
+    public function down(): void
     {
-        Schema::table('request_order_items', function (Blueprint $table) {
-            $table->dropColumn('kategori_barang');
-        });
+        if (Schema::hasTable('request_order_items')) {
+            Schema::table('request_order_items', function (Blueprint $table) {
+                if (Schema::hasColumn('request_order_items', 'kategori_barang')) {
+                    $table->dropColumn('kategori_barang');
+                }
+            });
+        }
     }
 };

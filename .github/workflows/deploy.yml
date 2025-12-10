@@ -64,11 +64,7 @@ jobs:
             echo "target_path=${{ env.DEPLOY_PATH_STAGING }}" >> $GITHUB_OUTPUT
             echo "env_label=warehouse.fahd.my.id" >> $GITHUB_OUTPUT
           fi
-
-          # Safely write commit message (supports newlines)
-          echo "commit_message<<'EOF'" >> $GITHUB_OUTPUT
-          git log -1 --pretty=%B >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "commit_message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
       # 7️ Telegram Notification (Start)
       - name: Telegram Notification (Start)
