@@ -136,7 +136,30 @@ class ImportExcelController extends Controller
                         'form' => Auth::id(),
                     ];
 
-                    Barang::create($payload);
+                    // create barang first so we have id to store images under folder barang/{id}
+                    $barang = Barang::create($payload);
+
+                    // store any uploaded images for this row: input name expected rows[{$i}][images][]
+                    try {
+                        $savedPaths = [];
+                        $files = $request->file("rows.{$i}.images");
+                        if (is_array($files) && count($files) > 0) {
+                            foreach ($files as $f) {
+                                if ($f && $f->isValid()) {
+                                    $folder = 'barang/' . $barang->id;
+                                    $path = $f->store($folder, 'public');
+                                    $savedPaths[] = $path;
+                                }
+                            }
+                        }
+                        // if any images saved, set gambar to first file (same behavior as GoodsInController)
+                        if (!empty($savedPaths)) {
+                            $barang->gambar = $savedPaths[0];
+                            $barang->save();
+                        }
+                    } catch (\Throwable $ex) {
+                        \Log::warning("Failed storing images for imported row {$i}: ".$ex->getMessage());
+                    }
                     $created++;
                 }
 
@@ -229,7 +252,27 @@ class ImportExcelController extends Controller
             ];
 
             try {
-                Barang::create($payload);
+                $barang = Barang::create($payload);
+                // try store uploaded files for this row if any (name rows[{$i}][images][])
+                try {
+                    $savedPaths = [];
+                    $files = $request->file("rows.{$i}.images");
+                    if (is_array($files) && count($files) > 0) {
+                        foreach ($files as $f) {
+                            if ($f && $f->isValid()) {
+                                $folder = 'barang/' . $barang->id;
+                                $path = $f->store($folder, 'public');
+                                $savedPaths[] = $path;
+                            }
+                        }
+                    }
+                    if (!empty($savedPaths)) {
+                        $barang->gambar = $savedPaths[0];
+                        $barang->save();
+                    }
+                } catch (\Throwable $ex) {
+                    \Log::warning("Failed storing images for legacy-import row {$i}: ".$ex->getMessage());
+                }
                 $created++;
             } catch (\Exception $e) {
                 $errors[] = "Baris $i: " . $e->getMessage();
