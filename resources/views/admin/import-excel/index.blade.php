@@ -116,12 +116,10 @@
                                             Upload Gambar
                                         </button>
                                     </div>
-                                    </td>
-                                <td>
                                     <div class="item-images-preview mt-2 flex flex-wrap gap-2 space-y-2"></div>
-                                    <input type="text" name="" id=""
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
+                                </td>
+                                <td>
+                                    <input type="text" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                                 </td>
                                 <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
