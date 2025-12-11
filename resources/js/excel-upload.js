@@ -32,15 +32,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         };
 
-        map['kode_barang'] = pick(['kode', 'sku', 'code', 'id barang', 'kode barang']);
-        map['nama_barang'] = pick(['nama', 'product', 'barang', 'item', 'description']) ?? pick(['nama barang', 'nama_produk']);
-        map['kategori'] = pick(['kategori', 'category']);
-        map['deskripsi'] = pick(['deskripsi', 'description', 'keterangan', 'spesifikasi', 'note']);
-        map['stok'] = pick(['stok', 'quantity', 'qty', 'jumlah']);
-        map['satuan'] = pick(['satuan', 'unit']);
-        map['harga'] = pick(['harga', 'price', 'rp']);
-        map['gambar'] = pick(['gambar', 'image', 'photo', 'foto']);
-        map['status_listing'] = pick(['status', 'listing']);
+        map['kode_barang'] = pick(['kode','sku','code','id barang','kode barang']);
+        map['nama_barang'] = pick(['nama','product','barang','item','description'] ) ?? pick(['nama barang','nama_produk']);
+        map['kategori'] = pick(['kategori','category']);
+        map['deskripsi'] = pick(['deskripsi','description','keterangan','spesifikasi','note']);
+        map['stok'] = pick(['stok','quantity','qty','jumlah']);
+        map['satuan'] = pick(['satuan','unit']);
+        map['harga'] = pick(['harga','price','rp']);
+        map['gambar'] = pick(['gambar','image','photo','foto']);
+        map['status_listing'] = pick(['status','listing']);
 
         // ensure unique: if two fields picked same index keep first and clear later ones
         const used = {};
@@ -59,15 +59,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // tambahkan map singkatan & helper generator (pakai window.kategoriSingkatan bila ada)
     const kategoriSingkatanLocal = window.kategoriSingkatan || {
-        "HANDTOOLS": "HT", "ADHESIVE AND SEALANT": "AS", "AUTOMOTIVE EQUIPMENT": "AE", "CLEANING": "CLN",
-        "COMPRESSOR": "CMP", "CONSTRUCTION": "CST", "CUTTING TOOLS": "CT", "LIGHTING": "LTG",
-        "FASTENING": "FST", "GENERATOR": "GEN", "HEALTH CARE EQUIPMENT": "HCE", "HOSPITALITY": "HSP",
-        "HYDRAULIC TOOLS": "HYD", "MARKING MACHINE": "MM", "MATERIAL HANDLING EQUIPMENT": "MHE",
-        "MEASURING AND TESTING EQUIPMENT": "MTE", "METAL CUTTING MACHINERY": "MCM", "PACKAGING": "PKG",
-        "PAINTING AND COATING": "PC", "PNEUMATIC TOOLS": "PN", "POWER TOOLS": "PT",
-        "SAFETY AND PROTECTION EQUIPMENT": "SPE", "SECURITY": "SEC", "SHEET METAL MACHINERY": "SMM",
-        "STORAGE SYSTEM": "STS", "WELDING EQUIPMENT": "WLD", "WOODWORKING EQUIPMENT": "WWE",
-        "MISCELLANEOUS": "MSC", "OTHER CATEGORIES": "OC",
+        "HANDTOOLS": "HT","ADHESIVE AND SEALANT": "AS","AUTOMOTIVE EQUIPMENT": "AE","CLEANING": "CLN",
+        "COMPRESSOR": "CMP","CONSTRUCTION": "CST","CUTTING TOOLS": "CT","LIGHTING": "LTG",
+        "FASTENING": "FST","GENERATOR": "GEN","HEALTH CARE EQUIPMENT": "HCE","HOSPITALITY": "HSP",
+        "HYDRAULIC TOOLS": "HYD","MARKING MACHINE": "MM","MATERIAL HANDLING EQUIPMENT": "MHE",
+        "MEASURING AND TESTING EQUIPMENT": "MTE","METAL CUTTING MACHINERY": "MCM","PACKAGING": "PKG",
+        "PAINTING AND COATING": "PC","PNEUMATIC TOOLS": "PN","POWER TOOLS": "PT",
+        "SAFETY AND PROTECTION EQUIPMENT": "SPE","SECURITY": "SEC","SHEET METAL MACHINERY": "SMM",
+        "STORAGE SYSTEM": "STS","WELDING EQUIPMENT": "WLD","WOODWORKING EQUIPMENT": "WWE",
+        "MISCELLANEOUS": "MSC","OTHER CATEGORIES": "OC",
     };
 
     function generateKodeFromCategory(kategori, nama, rowIndex) {
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!sing) {
             if (nama) {
                 const parts = String(nama).trim().split(/\s+/);
-                sing = parts.map(p => p[0] || '').join('').slice(0, 3).toUpperCase();
+                sing = parts.map(p => p[0] || '').join('').slice(0,3).toUpperCase();
             } else {
                 sing = 'UNK';
             }
@@ -128,9 +128,9 @@ document.addEventListener('DOMContentLoaded', function () {
             baseRow = templateRow;
         } else {
             baseRow = document.createElement('tr');
-            for (let i = 0; i < 9; i++) {
+            for (let i = 0; i < 10; i++) {
                 const td = document.createElement('td');
-                if (i === 8) {
+                if (i === 9) {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'btn remove-row rounded-md bg-red-500 text-white';
@@ -168,8 +168,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 inp.readOnly = true;
                 const kodeVal = getVal('kode_barang') || generateKodeFromCategory(getVal('kategori'), getVal('nama_barang'), rowIndex);
                 inp.value = kodeVal;
-                // ensure visible input has name so edited value is submitted
-                inp.name = `rows[${rowIndex}][kode_barang]`;
+                // add hidden input for kode_barang so it gets submitted as array
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][kode_barang]`;
+                hidden.value = kodeVal;
+                tdKode.appendChild(hidden);
                 // Jika fungsi validateKodeBarang tersedia (didefinisikan di checker.js), panggil untuk cek unik
                 try { if (typeof validateKodeBarang === 'function') validateKodeBarang(inp); } catch (e) { /* ignore */ }
             }
@@ -183,8 +187,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 const v = getVal('nama_barang') || '';
                 inp.value = v;
-                // set name on visible input so changes are submitted
-                inp.name = `rows[${rowIndex}][nama_barang]`;
+                // hidden
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][nama_barang]`;
+                hidden.value = v;
+                tdNama.appendChild(hidden);
             }
 
             // 2: kategori (select exists in template). Try to set select or fallback hidden
@@ -207,12 +215,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                     }
-                    // set name on select so its value is submitted/updated by user
-                    sel.name = `rows[${rowIndex}][kategori]`;
+                    // hidden to submit value
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = `rows[${rowIndex}][kategori]`;
+                    hidden.value = sel.value || v;
+                    tdKategori.appendChild(hidden);
                 } else {
-                    // if template had no select (fallback input created earlier), set its name
-                    const inp = tdKategori.querySelector('input');
-                    if (inp) inp.name = `rows[${rowIndex}][kategori]`;
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = `rows[${rowIndex}][kategori]`;
+                    hidden.value = v;
+                    tdKategori.appendChild(hidden);
                 }
             }
 
@@ -223,7 +237,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!inp) { inp = document.createElement('input'); inp.type = 'number'; tdStok.appendChild(inp); }
                 const v = getVal('stok') || 0;
                 inp.value = v;
-                inp.name = `rows[${rowIndex}][stok]`;
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][stok]`;
+                hidden.value = v;
+                tdStok.appendChild(hidden);
             }
 
             // 4: harga
@@ -234,7 +252,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 let v = getVal('harga') || '';
                 if (typeof v === 'string') v = v.replace(/[^\d\.,-]/g, '').replace(',', '.');
                 inp.value = v;
-                inp.name = `rows[${rowIndex}][harga]`;
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][harga]`;
+                hidden.value = v;
+                tdHarga.appendChild(hidden);
             }
 
             // 5: satuan
@@ -244,7 +266,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!inp) { inp = document.createElement('input'); inp.type = 'text'; tdSatuan.appendChild(inp); }
                 const v = getVal('satuan') || '';
                 inp.value = v;
-                inp.name = `rows[${rowIndex}][satuan]`;
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][satuan]`;
+                hidden.value = v;
+                tdSatuan.appendChild(hidden);
             }
 
             // 6: status_listing
@@ -256,32 +282,57 @@ document.addEventListener('DOMContentLoaded', function () {
                     Array.from(sel.options).forEach(opt => {
                         if (opt.value.toLowerCase() === v) sel.value = opt.value;
                     });
-                    sel.name = `rows[${rowIndex}][status_listing]`;
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = `rows[${rowIndex}][status_listing]`;
+                    hidden.value = sel.value || v;
+                    tdStatus.appendChild(hidden);
                 } else {
-                    const inp = tdStatus.querySelector('input');
-                    if (inp) inp.name = `rows[${rowIndex}][status_listing]`;
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = `rows[${rowIndex}][status_listing]`;
+                    hidden.value = v;
+                    tdStatus.appendChild(hidden);
                 }
             }
 
-            // 7: deskripsi
-            const tdDeskripsi = newRow.children[7];
+            // 7: Gambar
+            const tdGambar = newRow.children[7];
+            if (tdGambar) {
+                const fileInput = tdGambar.querySelector('input[type="file"]');
+                if (fileInput) {
+                    fileInput.name = `rows[${rowIndex}][images][]`;
+                    fileInput.value = ''; // clear selection
+                    const preview = tdGambar.querySelector('.item-images-preview');
+                    if (preview) preview.innerHTML = '';
+                    const uploadBtn = tdGambar.querySelector('.upload-btn-container');
+                    if (uploadBtn) uploadBtn.style.display = 'block';
+                }
+            }
+
+            // 8: Deskripsi
+            const tdDeskripsi = newRow.children[8];
             if (tdDeskripsi) {
-                // prefer textarea if template has one, fallback to input
-                let inp = tdDeskripsi.querySelector('textarea, input');
-                if (!inp) {
-                    // use textarea for longer text
-                    inp = document.createElement('textarea');
-                    inp.className = 'block w-full';
-                    inp.rows = 2;
-                    tdDeskripsi.appendChild(inp);
+                let inp = tdDeskripsi.querySelector('input');
+                if (!inp) { 
+                    inp = document.createElement('input'); 
+                    inp.type = 'text'; 
+                    inp.className = 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400';
+                    tdDeskripsi.appendChild(inp); 
                 }
-                const vDes = getVal('deskripsi') || '';
-                inp.value = vDes;
-                inp.name = `rows[${rowIndex}][deskripsi]`;
+                const v = getVal('deskripsi') || '';
+                inp.value = v;
+                
+                // Hidden input for submission
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][deskripsi]`;
+                hidden.value = v;
+                tdDeskripsi.appendChild(hidden);
             }
 
-            // 8: aksi - keep remove button functional
-            const aksiTd = newRow.children[8];
+            // 9: aksi - keep remove button functional
+            const aksiTd = newRow.children[9];
             if (aksiTd) {
                 const removeBtn = aksiTd.querySelector('button.remove-row');
                 if (removeBtn) {
@@ -292,9 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             tbody.appendChild(newRow);
-            
-            // Re-attach image preview handler if available
-            if (typeof window.handleImagePreview === 'function' && newRow.querySelector('input[type="file"]')) {
+            if (window.handleImagePreview) {
                 window.handleImagePreview(newRow);
             }
         });
@@ -395,19 +444,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // show upload result
                     const uploadResult = document.getElementById('upload-result');
-                    const uploadFilename = document.getElementById('upload-filename');
+                    const uploadPath = document.getElementById('upload-path');
                     const uploadUrl = document.getElementById('upload-url');
-                    if (uploadResult && uploadUrl && uploadFilename) {
-                        const getBasename = (p) => {
-                            if (!p) return '';
-                            const parts = p.split('/');
-                            return parts[parts.length - 1] || '';
-                        };
-                        const filename = resp.path ? getBasename(resp.path) : (resp.url ? getBasename(resp.url) : '');
-                        uploadFilename.textContent = filename || '';
+                    if (uploadResult && uploadPath && uploadUrl) {
+                        uploadPath.textContent = resp.path || '';
                         if (resp.url) {
                             uploadUrl.href = resp.url;
-                            uploadUrl.textContent = 'Buka file';
+                            uploadUrl.textContent = resp.url;
                             uploadUrl.classList.remove('hidden');
                         } else {
                             uploadUrl.href = '#';
@@ -497,13 +540,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
             if (kodeVisible) {
                 kodeVisible.value = newKode;
-                // ensure name exists so this updated value is submitted
-                kodeVisible.name = kodeVisible.name || `rows[${rowIndex}][kode_barang]`;
             }
+
+            // update or create hidden input rows[{i}][kode_barang]
+            let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
+            if (!hiddenKode) {
+                hiddenKode = document.createElement('input');
+                hiddenKode.type = 'hidden';
+                // try to reuse rowIndex in name; if existing rows used different naming fallback to generic rows[][kode_barang]
+                hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
+                tr.children[0].appendChild(hiddenKode);
+            }
+            hiddenKode.value = newKode;
 
             // call server-side uniqueness check if available
             try {
-                if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible);
+                if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode);
             } catch (err) {
                 // ignore validation errors here
                 // console.error(err);

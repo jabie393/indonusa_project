@@ -1,9 +1,10 @@
 <x-app-layout>
-    <div class="container-fluid px-4">
-        <div class="row mb-4">
-            <div class="col">
-                <h2>Detail Request Order</h2>
-                <p class="text-muted">No. {{ $requestOrder->request_number }}</p>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-6 flex flex-col justify-between space-y-3 sm:flex-row sm:items-center sm:space-y-0">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail Request Order</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">No. {{ $requestOrder->request_number }}</p>
             </div>
             <div class="col-auto">
                 @php $isSupervisor = auth()->check() && (strtolower(auth()->user()->role) === 'supervisor' || auth()->user()->role === 'Supervisor'); @endphp
@@ -19,85 +20,90 @@
             </div>
         </div>
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        @if (session('success'))
+            <div class="mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300" role="alert">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+                <button type="button" class="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 p-1.5 text-green-500 hover:bg-green-200 focus:ring-2 focus:ring-green-400 dark:bg-green-800 dark:text-green-400 dark:hover:bg-green-700" data-bs-dismiss="alert" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                    <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                </button>
             </div>
         @endif
 
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i>
-                <ul class="mb-0">
-                    @foreach($errors->all() as $error)
+        @if ($errors->any())
+            <div class="mb-6 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
+                <div class="mb-2 flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span class="font-medium">Terdapat kesalahan:</span>
+                </div>
+                <ul class="ml-4 list-inside list-disc">
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="mt-2 text-sm underline hover:no-underline" data-bs-dismiss="alert" aria-label="Close">Tutup</button>
             </div>
         @endif
 
-        <div class="row">
-            <div class="col-lg-8">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <!-- Left Column -->
+            <div class="space-y-6 lg:col-span-2">
                 <!-- Main Details Card -->
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-file-alt"></i> Informasi Request Order</h5>
+                <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                    <div class="flex items-center justify-between bg-[#225A97] p-4 text-white">
+                        <h2 class="flex items-center gap-2 text-lg font-semibold">
+                            <i class="fas fa-file-alt"></i> Informasi Request Order
+                        </h2>
                     </div>
-                    <div class="card-body">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">No. Request</label>
-                                <p>{{ $requestOrder->request_number }}</p>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->request_number }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">No. Penawaran</label>
-                                <p><span class="badge bg-info">{{ $requestOrder->nomor_penawaran ?? '-' }}</span></p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</label>
+                                <p><span class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-200 dark:text-blue-800">{{ $requestOrder->nomor_penawaran ?? '-' }}</span></p>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Tanggal Dibuat</label>
-                                <p>{{ $requestOrder->created_at->format('d M Y H:i') }}</p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Dibuat</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->created_at->format('d M Y H:i') }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Kategori Barang</label>
-                                <p><span class="badge bg-secondary">{{ $requestOrder->kategori_barang ?? '-' }}</span></p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Kategori Barang</label>
+                                <p><span class="rounded bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-300">{{ $requestOrder->kategori_barang ?? '-' }}</span></p>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Nama Customer</label>
-                                <p>{{ $requestOrder->customer_name }}</p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Nama Customer</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->customer_name }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">ID Customer</label>
-                                <p>{{ $requestOrder->customer_id ?? '-' }}</p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">ID Customer</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->customer_id ?? '-' }}</p>
                             </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Tanggal Kebutuhan</label>
-                                <p>{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Kebutuhan</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Status</label>
-                                <p>
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Status</label>
+                                <div>
                                     @php
-                                        $statusClass = match($requestOrder->status) {
-                                                'open', 'converted' => 'primary',
+                                        $statusClass = match ($requestOrder->status) {
+                                            'open', 'converted' => 'primary',
                                                 'pending' => 'warning',
                                                 'approved' => 'success',
                                                 'rejected' => 'danger',
                                                 'expired' => 'secondary',
                                                 default => 'secondary'
-                                            };
+                                        };
                                     @endphp
-                                        @php
+                                    @php
                                             $statusLabel = match($requestOrder->status) {
                                                 'open', 'converted' => 'Open',
                                                 'pending' => 'Menunggu',
@@ -107,16 +113,13 @@
                                                 default => ucfirst($requestOrder->status),
                                             };
                                         @endphp
-                                        <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
-                                </p>
+                                    <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Validity Period -->
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Masa Berlaku Mulai</label>
-                                <p>{{ $requestOrder->tanggal_berlaku_formatted }}</p>
+                            <!-- Validity Period -->
+                            <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Masa Berlaku Mulai</label>
+                                <p class="text-gray-900 dark:text-white">{{ $requestOrder->tanggal_berlaku_formatted }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Masa Berlaku Berakhir</label>
@@ -124,10 +127,10 @@
                                     @if($requestOrder->expired_at)
                                         {{ $requestOrder->expired_at_formatted }}
                                         <br>
-                                            @if($requestOrder->isExpired())
-                                                <small class="badge bg-danger">KADALUARSA</small>
-                                            @else
-                                                @php
+                                        @if($requestOrder->isExpired())
+                                            <small class="badge bg-danger">KADALUARSA</small>
+                                        @else
+                                        @php
                                                     try {
                                                         $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
                                                         $daysLeft = $expiry->diffInDays(now());
@@ -135,7 +138,7 @@
                                                         $daysLeft = null;
                                                     }
                                                 @endphp
-                                                <small class="badge bg-success">
+                                            <small class="badge bg-success">
                                                     @if($daysLeft && $daysLeft > 0)
                                                         {{ $daysLeft }} hari dari sekarang
                                                     @else
@@ -144,45 +147,49 @@
                                                 </small>
                                             @endif
                                     @else
-                                        -
+                                        <span class="text-gray-500">-</span>
                                     @endif
-                                </p>
+                                </div>
                             </div>
+
+                            @if ($requestOrder->catatan_customer)
+                                <div class="md:col-span-2">
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Catatan Customer</label>
+                                    <div class="rounded-lg bg-gray-50 p-3 text-sm text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                        {{ $requestOrder->catatan_customer }}
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if ($requestOrder->reason)
+                                <div class="md:col-span-2">
+                                    <label class="mb-1 block text-sm font-semibold text-red-600 dark:text-red-400">Alasan Penolakan</label>
+                                    <div class="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
+                                        {{ $requestOrder->reason }}
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-
-                        @if($requestOrder->catatan_customer)
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Catatan Customer</label>
-                                <p>{{ $requestOrder->catatan_customer }}</p>
-                            </div>
-                        @endif
-
-                        @if($requestOrder->reason)
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Alasan Penolakan</label>
-                                <p class="text-danger">{{ $requestOrder->reason }}</p>
-                            </div>
-                        @endif
                     </div>
                 </div>
 
                 <!-- Supporting Images Card -->
-                @if($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0"><i class="fas fa-images"></i> Gambar Pendukung</h5>
+                @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
+                    <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                        <div class="flex items-center justify-between bg-green-600 p-4 text-white">
+                            <h2 class="flex items-center gap-2 text-lg font-semibold">
+                                <i class="fas fa-images"></i> Gambar Pendukung
+                            </h2>
                         </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                @foreach($requestOrder->supporting_images as $image)
-                                    <div class="col-md-4 col-sm-6">
-                                        <div class="card">
-                                            <a href="{{ asset('storage/' . $image) }}" target="_blank" data-bs-toggle="tooltip" title="Klik untuk memperbesar">
-                                                <img src="{{ asset('storage/' . $image) }}" class="card-img-top" alt="Supporting image" style="height: 200px; object-fit: cover; cursor: pointer;">
-                                            </a>
-                                            <div class="card-body p-2">
-                                                <small class="text-muted">{{ basename($image) }}</small>
-                                            </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                                @foreach ($requestOrder->supporting_images as $image)
+                                    <div class="group relative overflow-hidden rounded-lg border border-gray-200 shadow-sm transition hover:shadow-md dark:border-gray-700 dark:bg-gray-700">
+                                        <a href="{{ asset('storage/' . $image) }}" target="_blank" class="block aspect-square overflow-hidden bg-gray-100 dark:bg-gray-600">
+                                            <img src="{{ asset('storage/' . $image) }}" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" alt="Supporting image">
+                                        </a>
+                                        <div class="truncate p-2 text-center text-xs text-gray-500 dark:text-gray-400">
+                                            {{ basename($image) }}
                                         </div>
                                     </div>
                                 @endforeach
@@ -190,56 +197,60 @@
                         </div>
                     </div>
                 @endif
+
                 <!-- Items Card -->
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-box"></i> Detail Barang</h5>
+                <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                    <div class="flex items-center justify-between bg-[#225A97] p-4 text-white">
+                        <h2 class="flex items-center gap-2 text-lg font-semibold">
+                            <i class="fas fa-box"></i> Detail Barang
+                        </h2>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th>Kategori Barang</th>
-                                    <th>Barang</th>
-                                    <th width="100">Diskon (%)</th>
-                                    <th width="100">Jumlah</th>
-                                    <th width="120">Harga Satuan</th>
-                                    <th width="120">Subtotal</th>
+                                    <th scope="col" class="px-6 py-3">Kategori Barang</th>
+                                    <th scope="col" class="px-6 py-3">Barang</th>
+                                    <th scope="col" class="px-6 py-3">Diskon (%)</th>
+                                    <th scope="col" class="px-6 py-3">Jumlah</th>
+                                    <th scope="col" class="px-6 py-3">Harga Satuan</th>
+                                    <th scope="col" class="px-6 py-3">Subtotal</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-gray-200 border-b dark:divide-gray-700 dark:border-gray-700">
                                 @php $total = 0; @endphp
                                 @forelse($requestOrder->items as $item)
-                                                    @php
-                                                        // Show harga satuan directly from barang table (fallback to item's harga if barang missing)
-                                                            $displayHarga = optional($item->barang)->harga ?? $item->harga ?? 0;
-                                                        $computedSubtotal = $displayHarga * $item->quantity;
-                                                        $total += $computedSubtotal;
-                                                    @endphp
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-info">{{ $item->kategori_barang ?? $item->barang->kategori ?? '-' }}</span>
+                                    @php
+                                        // Show harga satuan directly from barang table (fallback to item's harga if barang missing)
+                                        $displayHarga = optional($item->barang)->harga ?? ($item->harga ?? 0);
+                                        $computedSubtotal = $displayHarga * $item->quantity;
+                                        $total += $computedSubtotal;
+                                    @endphp
+                                    <tr class="bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4">
+                                            <span class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                                {{ $item->kategori_barang ?? ($item->barang->kategori ?? '-') }}
+                                            </span>
                                         </td>
-                                        <td>
-                                            <strong>{{ $item->barang->nama_barang ?? 'N/A' }}</strong>
-                                            <br>
-                                            <small class="text-muted">Kode: {{ $item->barang->kode_barang ?? '-' }}</small>
+                                        <td class="px-6 py-4">
+                                            <div class="font-medium text-gray-900 dark:text-white">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">Kode: {{ $item->barang->kode_barang ?? '-' }}</div>
                                         </td>
-                                        <td>{{ $item->diskon_percent ?? $item->barang->diskon_percent ?? 0 }}%</td>
-                                        <td>{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
-                                        <td>Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
-                                        <td><strong>Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</strong></td>
+                                        <td class="px-6 py-4">{{ $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0) }}%</td>
+                                        <td class="px-6 py-4">{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
+                                        <td class="px-6 py-4">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
+                                        <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-3">Tidak ada item</td>
+                                        <td colspan="6" class="px-6 py-4 text-center">Tidak ada item</td>
                                     </tr>
                                 @endforelse
                             </tbody>
-                            <tfoot class="table-light fw-bold">
+                            <tfoot class="bg-gray-50 font-semibold text-gray-900 dark:bg-gray-700 dark:text-white">
                                 <tr>
-                                    <td colspan="4" class="text-end">TOTAL:</td>
-                                    <td>Rp {{ number_format($total, 2, ',', '.') }}</td>
+                                    <td colspan="5" class="px-6 py-4 text-right">TOTAL:</td>
+                                    <td class="px-6 py-4">Rp {{ number_format($total, 2, ',', '.') }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -248,41 +259,45 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4">
+            <div class="space-y-6 lg:col-span-1">
                 <!-- Status Card -->
-                <div class="card mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="fas fa-info-circle"></i> Info Status</h5>
+                <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                    <div class="flex items-center justify-between bg-cyan-600 p-4 text-white">
+                        <h2 class="flex items-center gap-2 text-lg font-semibold">
+                            <i class="fas fa-info-circle"></i> Info Status
+                        </h2>
                     </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <span class="badge bg-{{ $statusClass }} fs-6">
+                    <div class="p-6">
+                        <div class="mb-4">
+                            <span class="{{ $statusClass }} rounded px-2.5 py-1 text-sm font-semibold">
                                 {{ ucfirst($requestOrder->status) }}
                             </span>
                         </div>
-                            <p class="text-muted small">
-                            @if($requestOrder->status === 'pending')
-                                Request Order menunggu untuk disetujui
+                         <p class="text-muted small">
+                            @if ($requestOrder->status === 'pending')
+                                Request Order menunggu untuk disetujui.
                             @elseif($requestOrder->status === 'approved')
-                                Request Order telah disetujui dan siap untuk dikonversi
+                                Request Order telah disetujui dan siap untuk dikonversi.
                             @elseif($requestOrder->status === 'rejected')
-                                Request Order ditolak oleh supervisor
+                                Request Order ditolak oleh supervisor.
                             @elseif($requestOrder->salesOrder)
-                                Request Order telah dikonversi menjadi Sales Order
+                                Request Order telah dikonversi menjadi Sales Order.
                             @endif
                         </p>
                     </div>
                 </div>
 
-                
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-cogs"></i> Aksi</h5>
+                <!-- Actions Card -->
+                <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                    <div class="flex items-center justify-between bg-emerald-600 p-4 text-white">
+                        <h2 class="flex items-center gap-2 text-lg font-semibold">
+                            <i class="fas fa-cogs"></i> Aksi
+                        </h2>
                     </div>
-                    <div class="card-body">
-                        @if($requestOrder->status === 'pending')
-                            <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="btn btn-warning w-100 mb-2">
-                                <i class="fas fa-edit"></i> Edit Request Order
+                    <div class="flex flex-col gap-3 p-6">
+                        @if ($requestOrder->status === 'pending')
+                            <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="inline-flex w-full items-center justify-center rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:focus:ring-amber-900">
+                                <i class="fas fa-edit mr-2"></i> Edit Request Order
                             </a>
                         @endif
 
@@ -305,69 +320,45 @@
                             </button>
                         @endif
 
-                        @if($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
-                            <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" style="display:inline;">
+                        @if ($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
+                            <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" class="block w-full">
                                 @csrf
-                                <button type="submit" class="btn btn-success w-100 mb-2" 
-                                        onclick="return confirm('Konversi Request Order ke Sales Order?')">
-                                    <i class="fas fa-arrow-right"></i> Konversi ke Sales Order
+                                <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800" onclick="return confirm('Konversi Request Order ke Sales Order?')">
+                                    <i class="fas fa-arrow-right mr-2"></i> Konversi ke Sales Order
                                 </button>
                             </form>
                         @endif
 
-                        @if($requestOrder->salesOrder)
-                            <div class="alert alert-info">
-                                <small>
-                                    <strong>✓ Sudah dikonversi</strong><br>
-                                    Sales Order: <a href="{{ route('sales.sales-order.show', $requestOrder->salesOrder->id) }}">
+                        @if ($requestOrder->salesOrder)
+                            <div class="rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                <div class="mb-1 font-medium">
+                                    <i class="fas fa-check-circle mr-1"></i> Sudah dikonversi
+                                </div>
+                                <div>
+                                    Sales Order: <a href="{{ route('sales.sales-order.show', $requestOrder->salesOrder->id) }}" class="font-bold underline hover:no-underline">
                                         {{ $requestOrder->salesOrder->sales_order_number }}
                                     </a>
-                                </small>
-                            </div>
-                        @endif
-
-                        {{-- Supervisor actions for pending approvals --}}
-                        @if(auth()->check() && auth()->user()->role === 'Supervisor' && $requestOrder->status === 'pending_approval')
-                            <form method="POST" action="{{ route('supervisor.request-order.approve', $requestOrder->id) }}" class="mb-2">
-                                @csrf
-                                <button type="submit" class="btn btn-success w-100" onclick="return confirm('Setujui Request Order ini?')">
-                                    <i class="fas fa-check"></i> Setujui Penawaran
-                                </button>
-                            </form>
-
-                            <!-- Reject with reason -->
-                            <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                                <i class="fas fa-ban"></i> Tolak Penawaran
-                            </button>
-
-                            <!-- Reject Modal -->
-                            <div class="modal fade" id="rejectModal" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title">Tolak Request Order</h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <form method="POST" action="{{ route('supervisor.request-order.reject', $requestOrder->id) }}">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label for="reason" class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                    <textarea name="reason" id="reason" class="form-control" rows="3" required></textarea>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-danger">Kirim Penolakan</button>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         @endif
 
-                        <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary w-100">
-                            <i class="fas fa-list"></i> Kembali ke Daftar
+                        {{-- Supervisor actions for pending approvals --}}
+                        @if (auth()->check() && auth()->user()->role === 'Supervisor' && $requestOrder->status === 'pending_approval')
+                            <form method="POST" action="{{ route('supervisor.request-order.approve', $requestOrder->id) }}" class="block w-full">
+                                @csrf
+                                <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800" onclick="return confirm('Setujui Request Order ini?')">
+                                    <i class="fas fa-check mr-2"></i> Setujui Penawaran
+                                </button>
+                            </form>
+
+                            <!-- Reject with reason -->
+                            <button type="button" class="inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="fas fa-ban mr-2"></i> Tolak Penawaran
+                            </button>
+                        @endif
+
+                        <a href="{{ route('sales.request-order.index') }}" class="inline-flex w-full items-center justify-center rounded-lg bg-gray-500 px-4 py-2 text-sm font-medium text-white hover:bg-gray-600 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+                            <i class="fas fa-list mr-2"></i> Kembali ke Daftar
                         </a>
                     </div>
                 </div>
@@ -375,15 +366,7 @@
         </div>
     </div>
 
-    <style>
-        .card-header {
-            padding: 1rem;
-        }
-        .form-label {
-            margin-bottom: 0.25rem;
-            color: #666;
-        }
-    </style>
+    <!-- Reject Modal -->
     <script>
         function supervisorBack() {
             try {
@@ -419,4 +402,5 @@
             }
         }
     </script>
+    
 </x-app-layout>

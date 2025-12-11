@@ -26,7 +26,7 @@
                             <div>
                                 <label for="to" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Kepada (To)</label>
                                 <input type="text" id="to" name="to" value="{{ old('to') }}" required
-                                    class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                    class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                     placeholder="Nama customer">
                                 @error('to')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -37,7 +37,7 @@
                             <div>
                                 <label for="up" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Attn (Up)</label>
                                 <input type="text" id="up" name="up" value="{{ old('up') }}"
-                                    class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                    class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                     placeholder="Nama PIC">
                                 @error('up')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -48,7 +48,7 @@
                             <div class="lg:col-span-2">
                                 <label for="subject" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Subject</label>
                                 <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required
-                                    class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                    class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                     placeholder="Judul penawaran">
                                 @error('subject')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -59,7 +59,7 @@
                             <div>
                                 <label for="email" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
                                 <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                    class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                    class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                     placeholder="email@example.com">
                                 @error('email')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -70,7 +70,7 @@
                             <div>
                                 <label for="our_ref" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref (Auto)</label>
                                 <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref') }}"
-                                    class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-600 dark:text-gray-300" placeholder="Auto-generated">
+                                    class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-600 text-black dark:text-gray-300" placeholder="Auto-generated">
                                 @error('our_ref')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -80,7 +80,7 @@
                             <div>
                                 <label for="date" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal</label>
                                 <input type="date" id="date" name="date" value="{{ old('date', date('Y-m-d')) }}" required
-                                    class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
+                                    class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -90,7 +90,7 @@
                             <div class="lg:col-span-2">
                                 <label for="intro_text" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Teks Pembuka</label>
                                 <textarea id="intro_text" name="intro_text" rows="4"
-                                    class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                    class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                     placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text') }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
@@ -180,7 +180,7 @@
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
+                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
                                         <td class="border border-gray-300 px-4 py-2 text-center">
                                             <div class="upload-btn-container relative">
                                                 <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
