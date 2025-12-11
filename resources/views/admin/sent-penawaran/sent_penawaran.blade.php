@@ -80,11 +80,7 @@
                                             <input type="hidden" name="action" value="approve">
                                             <button class="px-2 py-1 bg-green-600 text-white rounded mr-1">Setujui</button>
                                         </form>
-                                        <form action="{{ route('admin.custom-penawaran.approval', $penawaran) }}" method="POST" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="reject">
-                                            <button class="px-2 py-1 bg-red-600 text-white rounded">Tolak</button>
-                                        </form>
+                                        <button type="button" class="px-2 py-1 bg-red-600 text-white rounded" onclick="submitReject('{{ route('admin.custom-penawaran.approval', $penawaran) }}', { action: 'reject' })">Tolak</button>
                                     @endif
                                 </td>
                             @else
@@ -134,10 +130,7 @@
                                             @csrf
                                             <button class="px-2 py-1 bg-green-600 text-white rounded mr-1">Setujui</button>
                                         </form>
-                                        <form action="{{ route('supervisor.request-order.reject', $penawaran->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button class="px-2 py-1 bg-red-600 text-white rounded">Tolak</button>
-                                        </form>
+                                        <button type="button" class="px-2 py-1 bg-red-600 text-white rounded" onclick="submitReject('{{ route('supervisor.request-order.reject', $penawaran->id) }}')">Tolak</button>
                                     @endif
                                 </td>
                             @endif
@@ -151,4 +144,58 @@
 
         {{ $penawarans->links() }}
     </div>
+
+    <script>
+        function submitReject(actionUrl, extra = {}) {
+            try {
+                var reason = prompt('Masukkan alasan penolakan:');
+                if (reason === null) return; // cancelled
+                reason = reason.trim();
+                if (!reason) {
+                    alert('Alasan penolakan diperlukan.');
+                    return;
+                }
+
+                // create form dynamically and submit
+                var form = document.createElement('form');
+                form.method = 'POST';
+                form.action = actionUrl;
+                form.style.display = 'none';
+
+                // CSRF token from meta tag (Laravel includes this in layout)
+                var token = document.querySelector('meta[name="csrf-token"]');
+                if (token) {
+                    var inputToken = document.createElement('input');
+                    inputToken.type = 'hidden';
+                    inputToken.name = '_token';
+                    inputToken.value = token.getAttribute('content');
+                    form.appendChild(inputToken);
+                }
+
+                // reason
+                var inReason = document.createElement('input');
+                inReason.type = 'hidden';
+                inReason.name = 'reason';
+                inReason.value = reason;
+                form.appendChild(inReason);
+
+                // extra fields (like action=reject)
+                for (var k in extra) {
+                    if (!extra.hasOwnProperty(k)) continue;
+                    var ei = document.createElement('input');
+                    ei.type = 'hidden';
+                    ei.name = k;
+                    ei.value = extra[k];
+                    form.appendChild(ei);
+                }
+
+                document.body.appendChild(form);
+                form.submit();
+            } catch (e) {
+                console.error('submitReject error', e);
+                alert('Terjadi kesalahan saat mengirim penolakan.');
+            }
+        }
+    </script>
+
 </x-app-layout>
