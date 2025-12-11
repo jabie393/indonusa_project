@@ -161,22 +161,30 @@
                                             <strong>Dimulai:</strong> <span>{{ $requestOrder->tanggal_berlaku_formatted }}</span><br>
                                             <strong>Berakhir:</strong> <span>{{ $requestOrder->expired_at_formatted }}</span><br>
                                             <strong>Status:</strong> 
-                                            @if($requestOrder->expired_at)
-                                                @if($requestOrder->isExpired())
-                                                    <span class="badge bg-danger">KADALUARSA</span>
+                                                @if($requestOrder->expired_at)
+                                                    @if($requestOrder->isExpired())
+                                                        <span class="badge bg-danger">KADALUARSA</span>
+                                                    @else
+                                                        <span class="badge bg-success">BERLAKU</span>
+                                                        @php
+                                                            try {
+                                                                $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
+                                                                $daysLeft = $expiry->diffInDays(now());
+                                                            } catch (\Throwable $e) {
+                                                                $daysLeft = null;
+                                                            }
+                                                        @endphp
+                                                        <small>
+                                                            @if($daysLeft && $daysLeft > 0)
+                                                                ({{ $daysLeft }} hari dari sekarang)
+                                                            @else
+                                                                (-)
+                                                            @endif
+                                                        </small>
+                                                    @endif
                                                 @else
-                                                    <span class="badge bg-success">BERLAKU</span> 
-                                                    <small>
-                                                        @if(is_string($requestOrder->expired_at))
-                                                            ({{ \Carbon\Carbon::parse($requestOrder->expired_at)->diffForHumans() }})
-                                                        @else
-                                                            ({{ $requestOrder->expired_at->diffForHumans() }})
-                                                        @endif
-                                                    </small>
+                                                    <span class="badge bg-warning">TBD</span>
                                                 @endif
-                                            @else
-                                                <span class="badge bg-warning">TBD</span>
-                                            @endif
                                         </div>
                                     </div>
                                 </div>

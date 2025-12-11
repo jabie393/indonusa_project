@@ -52,13 +52,37 @@ class AdminPTController extends Controller
 
     public function sentPenawaran()
     {
-        // List custom penawaran from Sales that were sent for supervisor approval (status = 'sent')
+        // List custom penawaran (status = 'sent') and RequestOrders that require supervisor approval
         $penawarans = CustomPenawaran::where('status', 'sent')
             ->with(['items', 'sales'])
-            ->latest()
-            ->paginate(10);
+            ->get();
 
-        return view('admin.sent-penawaran.sent_penawaran', compact('penawarans'));
+        $requestOrders = \App\Models\RequestOrder::where('status', 'pending_approval')
+            ->with(['items', 'sales'])
+            ->get();
+
+        // Tag each item with a type so view can differentiate
+        $penawarans->each(function($p) { $p->offer_type = 'custom'; });
+        $requestOrders->each(function($r) { $r->offer_type = 'request_order'; });
+
+        // Merge and sort by created_at desc
+        $all = $penawarans->concat($requestOrders)->sortByDesc('created_at')->values();
+
+        // Manual pagination
+        $perPage = 10;
+        $page = request()->get('page', 1);
+        $offset = ($page - 1) * $perPage;
+        $currentItems = $all->slice($offset, $perPage)->values();
+
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $all->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return view('admin.sent-penawaran.sent_penawaran', ['penawarans' => $paginator]);
     }
 
     public function history()

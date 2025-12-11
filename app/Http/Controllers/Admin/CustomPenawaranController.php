@@ -163,9 +163,11 @@ class CustomPenawaranController extends Controller
     public function show(CustomPenawaran $customPenawaran)
     {
         // Allow owner (Sales) or Supervisor/Admin to view the penawaran
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
-            abort(403);
-        }
+            $userRole = trim(strtolower(Auth::user()->role ?? ''));
+            $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
+            if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+                abort(403);
+            }
 
         $customPenawaran->load('items', 'sales');
         return view('admin.sales.custom-penawaran.show', compact('customPenawaran'));
@@ -314,9 +316,14 @@ class CustomPenawaranController extends Controller
     {
         // Role check is already done by route middleware 'role:Supervisor'
         $action = $request->input('action');
-        if ($customPenawaran->status !== 'sent') {
-            return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
-        }
+            if ($customPenawaran->status !== 'sent') {
+                return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
+            }
+            $userRole = trim(strtolower(Auth::user()->role ?? ''));
+            $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
+            if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+                abort(403);
+            }
         if ($action === 'approve') {
             $customPenawaran->status = 'approved';
             $customPenawaran->save();
@@ -331,7 +338,9 @@ class CustomPenawaranController extends Controller
     public function pdf(CustomPenawaran $customPenawaran)
     {
         // Only owner (Sales) or Supervisor/Admin can view, but enforce approval rule:
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
+        $userRole = trim(strtolower(Auth::user()->role ?? ''));
+        $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
+        if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 
@@ -341,7 +350,7 @@ class CustomPenawaranController extends Controller
         if ($hasHighDiscount && $customPenawaran->status !== 'approved') {
             // If the current user is Supervisor or Admin allow viewing (they can inspect),
             // otherwise deny/redirect back for Sales until approval.
-            if (!in_array(Auth::user()->role, ['Supervisor', 'Admin'])) {
+            if (!in_array($userRole, $allowed)) {
                 return back()->withErrors('PDF hanya dapat di-generate setelah permintaan diskon disetujui oleh Supervisor.');
             }
         }

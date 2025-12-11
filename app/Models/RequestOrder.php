@@ -15,7 +15,7 @@ class RequestOrder extends Model
         'sales_id',
         'customer_name',
         'customer_id',
-        'status', // pending, approved, rejected, converted, expired
+        'status', // pending, pending_approval, approved, rejected, open, expired
         'reason', 
         'tanggal_kebutuhan',
         'tanggal_berlaku',
@@ -124,7 +124,8 @@ class RequestOrder extends Model
             return;
         }
 
-        if (now() > $this->expired_at && $this->status === 'pending') {
+        // If expiry has passed and the request is still editable/pending (open or pending), mark expired
+        if (now() > $this->expired_at && in_array($this->status, ['pending', 'open'])) {
             $this->update(['status' => 'expired']);
         }
     }
@@ -139,7 +140,7 @@ class RequestOrder extends Model
             'pending_approval' => 'warning',
             'approved' => 'success',
             'rejected' => 'danger',
-            'converted' => 'info',
+            'open' => 'primary',
             'expired' => 'secondary',
         ];
 

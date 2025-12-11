@@ -24,8 +24,11 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // Cek apakah user memiliki salah satu role yang diizinkan
-        if (!in_array($user->role, $roles)) {
+        // Cek apakah user memiliki salah satu role yang diizinkan (case-insensitive, trimmed)
+        $userRole = trim(strtolower($user->role ?? ''));
+        $allowed = array_map(function($r) { return trim(strtolower($r)); }, $roles);
+
+        if (!in_array($userRole, $allowed)) {
             abort(403, 'Anda tidak memiliki hak untuk mengakses halaman ini!');
         }
 

@@ -119,8 +119,8 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
 });
 // End of Warehouse
 
-// Supervisor
-Route::middleware(['auth', 'role:Supervisor'])->group(function () {
+// Supervisor (use auth only; controllers perform case-insensitive role checks)
+Route::middleware(['auth'])->group(function () {
 
     // Support old URLs/names: map approved-orders and diskon-approved to the sentPenawaran controller
     Route::get('/approved-orders', [AdminPTController::class, 'sentPenawaran'])->name('admin.approved');
@@ -139,6 +139,8 @@ Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     // Supervisor approval for Request Orders (from Sales)
     Route::post('/request-order/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.request-order.approve');
     Route::post('/request-order/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.request-order.reject');
+    // Supervisor view for Request Order detail (so Supervisor can view without Sales role)
+    Route::get('/supervisor/request-order/{requestOrder}', [RequestOrderController::class, 'show'])->name('admin.request-order.show');
 });
 // End of Supervisor
 
@@ -163,6 +165,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');
+    Route::post('/request-order/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.request-order.status');
 
     // Custom Penawaran Routes (Child of Request Order)
     Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');

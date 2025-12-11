@@ -39,7 +39,9 @@ class SalesOrderController extends Controller
     public function show(SalesOrder $salesOrder)
     {
         // Pastikan hanya pemilik atau supervisor/warehouse yang bisa lihat
-        if ($salesOrder->sales_id !== Auth::id() && !in_array(Auth::user()->role, ['Supervisor', 'Warehouse', 'Admin'])) {
+        $userRole = trim(strtolower(Auth::user()->role ?? ''));
+        $allowed = array_map('strtolower', ['Supervisor', 'Warehouse', 'Admin']);
+        if ($salesOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 

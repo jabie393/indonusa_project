@@ -156,6 +156,7 @@
                                         <th>Kode Barang</th>
                                         <th>Nama Barang</th>
                                         <th width="100">Diskon (%)</th>
+                                        <th width="200">Keterangan</th>
                                         <th width="100">Jumlah</th>
                                         <th width="200">Harga Satuan</th>
                                         <th width="150">Gambar</th>
@@ -195,6 +196,11 @@
                                             <input type="number" name="diskon_percent[]"
                                                 class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 min="0" max="100" step="0.01" value="0">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="keterangan[]" maxlength="255"
+                                                class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                placeholder="Isi jika diskon > 20%" disabled>
                                         </td>
                                         <td>
                                             <input type="number" name="quantity[]"
@@ -705,6 +711,8 @@
                     if (hargaInput) hargaInput.value = 0;
                     if (subtotalDisplay) subtotalDisplay.value = '0';
                 }
+                // Update keterangan state based on current diskon value
+                updateKeteranganState(select.closest('tr'));
                 calculateTotals();
             }
 
@@ -806,6 +814,13 @@
                 newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
                     inp.value = '';
                 });
+                // Ensure keterangan input is cleared and disabled by default
+                const keteranganNew = newRow.querySelector('.keterangan-input');
+                if (keteranganNew) {
+                    keteranganNew.value = '';
+                    keteranganNew.disabled = true;
+                    keteranganNew.required = false;
+                }
                 
                 newRow.querySelectorAll('select').forEach(sel => {
                     sel.selectedIndex = 0;
@@ -878,6 +893,7 @@
                         }
                         calculateTotals();
                         updateDiscountWarning();
+                        updateKeteranganState(row);
                     });
                 }
                 row.querySelector('.remove-row').addEventListener('click', function() {
@@ -903,6 +919,23 @@
                     warning.style.display = 'block';
                 } else {
                     warning.style.display = 'none';
+                }
+            }
+
+            // Enable/disable and require keterangan input depending on diskon value for a specific row
+            function updateKeteranganState(row) {
+                if (!row) return;
+                const disk = row.querySelector('.diskon-input');
+                const ket = row.querySelector('.keterangan-input');
+                if (!disk || !ket) return;
+                const val = parseFloat(disk.value) || 0;
+                if (val > 20) {
+                    ket.disabled = false;
+                    ket.required = true;
+                } else {
+                    ket.disabled = true;
+                    ket.required = false;
+                    ket.value = '';
                 }
             }
 
@@ -956,6 +989,8 @@
                     handleBarangChange(select);
                 }
             });
+            // Ensure keterangan inputs reflect current diskon state on page load
+            document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
             updateRemoveButtons();
             calculateTotals();
             updateSubmitState();

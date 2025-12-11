@@ -36,8 +36,10 @@ class CustomerController2 extends Controller
     public function store(Request $request)
     {
         // Check if user has permission to create customer
-        if (!in_array(Auth::user()->role, ['Sales', 'Admin'])) {
-            return back()->withErrors('Anda tidak memiliki izin untuk membuat customer.');
+            $userRole = trim(strtolower(Auth::user()->role ?? ''));
+            $allowed = array_map('strtolower', ['Sales', 'Admin']);
+            if (! in_array($userRole, $allowed)) {
+                return back()->withErrors('Anda tidak memiliki izin untuk membuat customer.');
         }
 
         $validated = $request->validate([

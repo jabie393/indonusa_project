@@ -6,9 +6,16 @@
                 <p class="text-muted">No. {{ $requestOrder->request_number }}</p>
             </div>
             <div class="col-auto">
-                <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
+                @php $isSupervisor = auth()->check() && (strtolower(auth()->user()->role) === 'supervisor' || auth()->user()->role === 'Supervisor'); @endphp
+                @if($isSupervisor)
+                    <button type="button" id="backBtn" onclick="supervisorBack()" class="btn btn-secondary" data-fallback="{{ route('admin.sent_penawaran') }}">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                @else
+                    <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                @endif
             </div>
         </div>
 
@@ -82,15 +89,25 @@
                                 <p>
                                     @php
                                         $statusClass = match($requestOrder->status) {
-                                            'pending' => 'warning',
-                                            'approved' => 'success',
-                                            'rejected' => 'danger',
-                                            'converted' => 'info',
-                                            'expired' => 'secondary',
-                                            default => 'secondary'
-                                        };
+                                                'open', 'converted' => 'primary',
+                                                'pending' => 'warning',
+                                                'approved' => 'success',
+                                                'rejected' => 'danger',
+                                                'expired' => 'secondary',
+                                                default => 'secondary'
+                                            };
                                     @endphp
-                                    <span class="badge bg-{{ $statusClass }}">{{ ucfirst($requestOrder->status) }}</span>
+                                        @php
+                                            $statusLabel = match($requestOrder->status) {
+                                                'open', 'converted' => 'Open',
+                                                'pending' => 'Menunggu',
+                                                'approved' => 'Disetujui',
+                                                'rejected' => 'Ditolak',
+                                                'expired' => 'Kadaluarsa',
+                                                default => ucfirst($requestOrder->status),
+                                            };
+                                        @endphp
+                                        <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
                                 </p>
                             </div>
                         </div>
@@ -107,17 +124,25 @@
                                     @if($requestOrder->expired_at)
                                         {{ $requestOrder->expired_at_formatted }}
                                         <br>
-                                        @if($requestOrder->isExpired())
-                                            <small class="badge bg-danger">KADALUARSA</small>
-                                        @else
-                                            <small class="badge bg-success">
-                                                @if(is_string($requestOrder->expired_at))
-                                                    {{ \Carbon\Carbon::parse($requestOrder->expired_at)->diffForHumans() }}
-                                                @else
-                                                    {{ $requestOrder->expired_at->diffForHumans() }}
-                                                @endif
-                                            </small>
-                                        @endif
+                                            @if($requestOrder->isExpired())
+                                                <small class="badge bg-danger">KADALUARSA</small>
+                                            @else
+                                                @php
+                                                    try {
+                                                        $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
+                                                        $daysLeft = $expiry->diffInDays(now());
+                                                    } catch (\Throwable $e) {
+                                                        $daysLeft = null;
+                                                    }
+                                                @endphp
+                                                <small class="badge bg-success">
+                                                    @if($daysLeft && $daysLeft > 0)
+                                                        {{ $daysLeft }} hari dari sekarang
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </small>
+                                            @endif
                                     @else
                                         -
                                     @endif
@@ -235,14 +260,14 @@
                                 {{ ucfirst($requestOrder->status) }}
                             </span>
                         </div>
-                        <p class="text-muted small">
+                            <p class="text-muted small">
                             @if($requestOrder->status === 'pending')
                                 Request Order menunggu untuk disetujui
                             @elseif($requestOrder->status === 'approved')
                                 Request Order telah disetujui dan siap untuk dikonversi
                             @elseif($requestOrder->status === 'rejected')
                                 Request Order ditolak oleh supervisor
-                            @elseif($requestOrder->status === 'converted')
+                            @elseif($requestOrder->salesOrder)
                                 Request Order telah dikonversi menjadi Sales Order
                             @endif
                         </p>
@@ -261,9 +286,24 @@
                             </a>
                         @endif
 
-                        <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
-                            <i class="fas fa-download"></i> Download PDF
-                        </a>
+                        @php
+                            $canDownloadPdf = false;
+                            if (auth()->check() && in_array(auth()->user()->role, ['Supervisor', 'Admin'])) {
+                                $canDownloadPdf = true;
+                            } elseif (auth()->check() && auth()->id() === $requestOrder->sales_id) {
+                                $canDownloadPdf = !in_array($requestOrder->status, ['pending_approval', 'rejected']);
+                            }
+                        @endphp
+
+                        @if($canDownloadPdf)
+                            <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
+                                <i class="fas fa-download"></i> Download PDF
+                            </a>
+                        @else
+                            <button type="button" class="btn btn-secondary w-100 mb-2" disabled title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
+                                <i class="fas fa-download"></i> Download PDF
+                            </button>
+                        @endif
 
                         @if($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
                             <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" style="display:inline;">
@@ -344,4 +384,39 @@
             color: #666;
         }
     </style>
+    <script>
+        function supervisorBack() {
+            try {
+                var backBtn = document.getElementById('backBtn');
+                var fallback = backBtn ? backBtn.dataset.fallback : '/sent-penawaran';
+
+                // If referrer is the sent-penawaran page, just go back
+                if (document.referrer && document.referrer.indexOf('/sent-penawaran') !== -1) {
+                    history.back();
+                    return;
+                }
+
+                // If there's history, try history.back() and fallback if nothing changes
+                if (history.length > 1) {
+                    // attempt history.back(), but also set a fallback timer
+                    var navigated = false;
+                    var onPop = function() { navigated = true; window.removeEventListener('popstate', onPop); };
+                    window.addEventListener('popstate', onPop);
+                    history.back();
+                    setTimeout(function() {
+                        if (!navigated) {
+                            window.location.href = fallback;
+                        }
+                    }, 250);
+                    return;
+                }
+
+                // No useful history -> direct fallback
+                window.location.href = fallback;
+            } catch (e) {
+                // If any error, go to fallback
+                window.location.href = '{{ route('admin.sent_penawaran') }}';
+            }
+        }
+    </script>
 </x-app-layout>

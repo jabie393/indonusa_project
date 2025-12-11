@@ -164,7 +164,9 @@ class RequestOrderController extends Controller
     public function show(Order $order)
     {
         // 🔐 pastikan hanya sales pemilik / Supervisor / warehouse yang boleh lihat
-        if ($order->sales_id !== Auth::id() && ! in_array(Auth::user()->role, ['Supervisor', 'Warehouse'])) {
+        $userRole = trim(strtolower(Auth::user()->role ?? ''));
+        $allowed = array_map('strtolower', ['Supervisor', 'Warehouse']);
+        if ($order->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
             abort(403);
         }
 

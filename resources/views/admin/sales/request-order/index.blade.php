@@ -44,6 +44,7 @@
                         <th scope="col" class="px-4 py-3">Nama Customer</th>
                         <th scope="col" class="px-4 py-3">Jumlah Item</th>
                         <th scope="col" class="px-4 py-3">Total</th>
+                                <th scope="col" class="px-4 py-3">Diskon</th>
                         <th scope="col" class="px-4 py-3">Status</th>
                         <th scope="col" class="px-4 py-3">Berlaku Sampai</th>
                         <th scope="col" class="px-4 py-3">Aksi</th>
@@ -54,19 +55,19 @@
                         @php
                             $total = $ro->items->sum('subtotal');
                             $statusClass = match ($ro->status) {
+                                'open', 'converted' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
                                 'pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                 'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                 'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                'converted' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
                                 'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
                                 default => 'secondary',
                             };
                             $statusLabel = match ($ro->status) {
+                                'open', 'converted' => 'Open',
                                 'expired' => 'Kadaluarsa',
                                 'pending' => 'Menunggu',
                                 'approved' => 'Disetujui',
                                 'rejected' => 'Ditolak',
-                                'converted' => 'Dikonversi',
                                 default => ucfirst($ro->status),
                             };
                         @endphp
@@ -77,6 +78,26 @@
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
                             <td class="px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
+                            @php
+                                // Collect discounts per item, group by percentage and count occurrences
+                                $discountCounts = $ro->items->pluck('diskon_percent')->map(function($d){ return $d === null ? 0 : $d; })->groupBy(function($d){ return $d; })->map(function($g, $k){ return ['percent' => $k, 'count' => $g->count()]; })->values();
+                            @endphp
+                            <td class="px-4 py-3">
+                                @if($discountCounts->isEmpty())
+                                    <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                @else
+                                    @php $displayed = false; @endphp
+                                    @foreach($discountCounts as $dc)
+                                        @if((float)$dc['percent'] > 0)
+                                            <span class="badge bg-green-50 text-green-700 mr-1">{{ $dc['percent'] }}%{{ $dc['count'] > 1 ? ' x'.$dc['count'] : '' }}</span>
+                                            @php $displayed = true; @endphp
+                                        @endif
+                                    @endforeach
+                                    @if(!$displayed)
+                                        <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                    @endif
+                                @endif
+                            </td>
                             <td class="px-4 py-3">
                                 <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
@@ -86,13 +107,21 @@
                                     <br>
                                     <small>
                                         @if ($ro->isExpired())
-                                            <span class="badge bg-danger">EXPIRED</span>
+                                            <span class="badge bg-danger">KADALUARSA</span>
                                         @else
+                                            @php
+                                                try {
+                                                    $expiry = is_string($ro->expired_at) ? \Carbon\Carbon::parse($ro->expired_at) : $ro->expired_at;
+                                                    $daysLeft = $expiry->diffInDays(now());
+                                                } catch (\Throwable $e) {
+                                                    $daysLeft = null;
+                                                }
+                                            @endphp
                                             <span class="text-success">
-                                                @if (is_string($ro->expired_at))
-                                                    {{ \Carbon\Carbon::parse($ro->expired_at)->diffForHumans() }}
+                                                @if($daysLeft && $daysLeft > 0)
+                                                    {{ $daysLeft }} hari dari sekarang
                                                 @else
-                                                    {{ $ro->expired_at->diffForHumans() }}
+                                                    -
                                                 @endif
                                             </span>
                                         @endif
@@ -108,11 +137,25 @@
                                         title="Lihat Detail">
                                         Detail
                                     </a>
-                                    <a href="{{ route('sales.request-order.pdf', $ro->id) }}"
-                                        class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                        title="Download PDF" target="_blank">
-                                        PDF
-                                    </a>
+                                    @php
+                                        $canDownload = false;
+                                        if (auth()->check() && in_array(auth()->user()->role, ['Supervisor', 'Admin'])) {
+                                            $canDownload = true;
+                                        } elseif (auth()->check() && auth()->id() === $ro->sales_id) {
+                                            $canDownload = !in_array($ro->status, ['pending_approval', 'rejected']);
+                                        }
+                                    @endphp
+                                    @if($canDownload)
+                                        <a href="{{ route('sales.request-order.pdf', $ro->id) }}"
+                                            class="btn mb-2 me-2 rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                            title="Download PDF" target="_blank">
+                                            PDF
+                                        </a>
+                                    @else
+                                        <button type="button" class="btn mb-2 me-2 rounded-lg bg-gray-400 px-5 py-2.5 text-sm font-medium text-white" disabled title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
+                                            PDF
+                                        </button>
+                                    @endif
                                     @if ($ro->status === 'pending')
                                         <a href="{{ route('sales.request-order.edit', $ro->id) }}"
                                             class="btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
