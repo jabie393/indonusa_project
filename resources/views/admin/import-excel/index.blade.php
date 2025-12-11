@@ -40,9 +40,11 @@
                                 <div id="progress-bar" class="h-3 rounded-full bg-gradient-to-r from-[#225A97] to-[#0D223A] transition-all duration-300" style="width: 0%"></div>
                             </div>
                         </div>
-                        <!-- Upload result: show stored path and public URL -->
+                        <!-- File Name -->
                         <div id="upload-result" class="mt-3 hidden">
-                            <div class="text-sm text-gray-700 dark:text-gray-300">File tersimpan di: <span id="upload-path" class="font-mono text-xs text-gray-800 dark:text-gray-100"></span></div>
+                            <div class="text-sm text-gray-700 dark:text-gray-300">
+                                File: <span id="upload-filename" class="font-mono text-xs text-gray-800 dark:text-gray-100"></span>
+                            </div>
                             <div class="mt-1 text-sm"><a id="upload-url" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Buka file</a></div>
                         </div>
                     </div>
@@ -65,6 +67,7 @@
                                 <th class="min-w-[150px]">Satuan</th>
                                 <th class="min-w-[150px]">Status Listing</th>
                                 <th class="min-w-[150px]">Gambar</th>
+                                <th class="min-w-[200px]">Deskripsi</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -113,7 +116,12 @@
                                             Upload Gambar
                                         </button>
                                     </div>
+                                    </td>
+                                <td>
                                     <div class="item-images-preview mt-2 flex flex-wrap gap-2 space-y-2"></div>
+                                    <input type="text" name="" id=""
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        required>
                                 </td>
                                 <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
