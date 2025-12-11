@@ -308,6 +308,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             tbody.appendChild(newRow);
+            
+            // Re-attach image preview handler if available
+            if (typeof window.handleImagePreview === 'function' && newRow.querySelector('input[type="file"]')) {
+                window.handleImagePreview(newRow);
+            }
         });
     }
 
