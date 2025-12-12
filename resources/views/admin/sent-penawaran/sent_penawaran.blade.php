@@ -33,7 +33,7 @@
                     @forelse($penawarans as $penawaran)
                         <tr>
                             <td class="px-4 py-3">{{ $loop->iteration + ($penawarans->currentPage() - 1) * $penawarans->perPage() }}</td>
-                            @if(isset($penawaran->offer_type) && $penawaran->offer_type === 'custom')
+                            @if (isset($penawaran->offer_type) && $penawaran->offer_type === 'custom')
                                 <td class="px-4 py-3">{{ $penawaran->penawaran_number }}</td>
                                 <td class="px-4 py-3">{{ optional($penawaran->sales)->name ?? 'N/A' }}</td>
                                 <td class="px-4 py-3">{{ $penawaran->to }}</td>
@@ -44,19 +44,19 @@
                                         $itemsWithHighDiscount = $penawaran->items->where('diskon', '>', 20);
                                     @endphp
                                     {{ $maxDiskon }}%
-                                    @if($maxDiskon > 20)
-                                        <span class="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Perlu Approval</span>
+                                    @if ($maxDiskon > 20)
+                                        <span class="ml-2 rounded bg-red-100 px-2 py-1 text-xs text-red-800">Perlu Approval</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">
-                                    @if($itemsWithHighDiscount->isNotEmpty())
-                                        <div class="text-xs space-y-1">
-                                            @foreach($itemsWithHighDiscount as $item)
-                                                <div class="bg-yellow-50 border border-yellow-200 rounded p-2">
+                                    @if ($itemsWithHighDiscount->isNotEmpty())
+                                        <div class="space-y-1 text-xs">
+                                            @foreach ($itemsWithHighDiscount as $item)
+                                                <div class="rounded border border-yellow-200 bg-yellow-50 p-2">
                                                     <p class="font-semibold text-gray-800">{{ $item->nama_barang }}</p>
                                                     <p class="text-gray-700">Diskon: {{ $item->diskon }}%</p>
-                                                    @if(!empty($item->keterangan))
-                                                        <p class="text-gray-600 mt-1">{{ $item->keterangan }}</p>
+                                                    @if (!empty($item->keterangan))
+                                                        <p class="mt-1 text-gray-600">{{ $item->keterangan }}</p>
                                                     @endif
                                                 </div>
                                             @endforeach
@@ -67,21 +67,50 @@
                                 </td>
                                 <td class="px-4 py-3">{{ $penawaran->created_at ? $penawaran->created_at->format('Y-m-d H:i') : '-' }}</td>
                                 <td class="px-4 py-3">{{ ucfirst($penawaran->status) }}</td>
-                                <td class="px-4 py-3">
-                                    @if(auth()->user()->role === 'Supervisor')
-                                        <a href="{{ route('admin.custom-penawaran.show', $penawaran->id) }}" class="px-2 py-1 bg-gray-200 rounded mr-2">Lihat</a>
-                                    @else
-                                        <a href="{{ route('sales.custom-penawaran.show', $penawaran->id) }}" class="px-2 py-1 bg-gray-200 rounded mr-2">Lihat</a>
-                                    @endif
+                                <td class="w-fit px-4 py-3 text-right">
+                                    <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                        <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
+                                        <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                            @if (auth()->user()->role === 'Supervisor')
+                                                <a href="{{ route('admin.custom-penawaran.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('sales.custom-penawaran.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                                </a>
+                                            @endif
 
-                                    @if(auth()->user()->role === 'Supervisor' && $penawaran->status === 'sent')
-                                        <form action="{{ route('admin.custom-penawaran.approval', $penawaran) }}" method="POST" class="inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="approve">
-                                            <button class="px-2 py-1 bg-green-600 text-white rounded mr-1">Setujui</button>
-                                        </form>
-                                        <button type="button" class="px-2 py-1 bg-red-600 text-white rounded" onclick="submitReject('{{ route('admin.custom-penawaran.approval', $penawaran) }}', { action: 'reject' })">Tolak</button>
-                                    @endif
+                                            @if (auth()->user()->role === 'Supervisor' && $penawaran->status === 'sent')
+                                                <form action="{{ route('admin.custom-penawaran.approval', $penawaran) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <input type="hidden" name="action" value="approve">
+                                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4">
+                                                            <path d="M20 6 9 17l-5-5"></path>
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Setujui</span>
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="submitReject('{{ route('admin.custom-penawaran.approval', $penawaran) }}', { action: 'reject' })" title="Tolak">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <path d="m15 9-6 6"></path>
+                                                        <path d="m9 9 6 6"></path>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Tolak</span>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </td>
                             @else
                                 {{-- RequestOrder type --}}
@@ -95,19 +124,19 @@
                                         $itemsWithHighDiscount = $penawaran->items->where('diskon_percent', '>', 20);
                                     @endphp
                                     {{ $maxDiskon }}%
-                                    @if($maxDiskon > 20)
-                                        <span class="ml-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Perlu Approval</span>
+                                    @if ($maxDiskon > 20)
+                                        <span class="ml-2 rounded bg-red-100 px-2 py-1 text-xs text-red-800">Perlu Approval</span>
                                     @endif
                                 </td>
                                 <td class="px-4 py-3">
-                                    @if($itemsWithHighDiscount->isNotEmpty())
-                                        <div class="text-xs space-y-1">
-                                            @foreach($itemsWithHighDiscount as $item)
-                                                <div class="bg-yellow-50 border border-yellow-200 rounded p-2">
+                                    @if ($itemsWithHighDiscount->isNotEmpty())
+                                        <div class="space-y-1 text-xs">
+                                            @foreach ($itemsWithHighDiscount as $item)
+                                                <div class="rounded border border-yellow-200 bg-yellow-50 p-2">
                                                     <p class="font-semibold text-gray-800">{{ optional($item->barang)->nama_barang ?? 'N/A' }}</p>
                                                     <p class="text-gray-700">Diskon: {{ $item->diskon_percent }}%</p>
-                                                    @if(!empty($item->keterangan))
-                                                        <p class="text-gray-600 mt-1">{{ $item->keterangan }}</p>
+                                                    @if (!empty($item->keterangan))
+                                                        <p class="mt-1 text-gray-600">{{ $item->keterangan }}</p>
                                                     @endif
                                                 </div>
                                             @endforeach
@@ -118,20 +147,49 @@
                                 </td>
                                 <td class="px-4 py-3">{{ $penawaran->created_at ? $penawaran->created_at->format('Y-m-d H:i') : '-' }}</td>
                                 <td class="px-4 py-3">{{ ucfirst($penawaran->status) }}</td>
-                                <td class="px-4 py-3">
-                                    @if(auth()->user()->role === 'Supervisor')
-                                        <a href="{{ route('admin.request-order.show', $penawaran->id) }}" class="px-2 py-1 bg-gray-200 rounded mr-2">Lihat</a>
-                                    @else
-                                        <a href="{{ route('sales.request-order.show', $penawaran->id) }}" class="px-2 py-1 bg-gray-200 rounded mr-2">Lihat</a>
-                                    @endif
+                                <td class="w-fit px-4 py-3 text-right">
+                                    <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                        <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
+                                        <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                            @if (auth()->user()->role === 'Supervisor')
+                                                <a href="{{ route('admin.request-order.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                                </a>
+                                            @else
+                                                <a href="{{ route('sales.request-order.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                                </a>
+                                            @endif
 
-                                    @if(auth()->user()->role === 'Supervisor' && $penawaran->status === 'pending_approval')
-                                        <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button class="px-2 py-1 bg-green-600 text-white rounded mr-1">Setujui</button>
-                                        </form>
-                                        <button type="button" class="px-2 py-1 bg-red-600 text-white rounded" onclick="submitReject('{{ route('supervisor.request-order.reject', $penawaran->id) }}')">Tolak</button>
-                                    @endif
+                                            @if (auth()->user()->role === 'Supervisor' && $penawaran->status === 'pending_approval')
+                                                <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4">
+                                                            <path d="M20 6 9 17l-5-5"></path>
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Setujui</span>
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="submitReject('{{ route('supervisor.request-order.reject', $penawaran->id) }}')" title="Tolak">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
+                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                        <path d="m15 9-6 6"></path>
+                                                        <path d="m9 9 6 6"></path>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Tolak</span>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </td>
                             @endif
                         </tr>

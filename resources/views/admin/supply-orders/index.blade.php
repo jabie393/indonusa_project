@@ -16,9 +16,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}"
-                                class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                placeholder="Search" />
+                            <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search" />
                         </div>
                     </form>
                 </div>
@@ -64,23 +62,29 @@
                                     {{ $barang->tipe_request }}
                                 @endif
                             </td>
-                            <td class="flex items-center justify-end px-4 py-3">
-
-                                {{-- Approve barang --}}
-                                <form action="{{ route('supply-orders.approve', $barang->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    <button type="submit"
-                                        class="mb-2 me-2 rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                        Approve
-                                    </button>
-                                </form>
-
-                                {{-- Reject barang --}}
-                                <button type="button"
-                                    class="reject-btn mb-2 me-2 rounded-lg bg-red-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->nama_barang }}">
-                                    Reject
-                                </button>
+                            <td class="w-fit px-4 py-3">
+                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                    <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
+                                    <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        {{-- Approve barang --}}
+                                        <form action="{{ route('supply-orders.approve', $barang->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
+                                            </button>
+                                        </form>
+                                        {{-- Reject barang --}}
+                                        <button type="button" class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" data-id="{{ $barang->id }}" data-nama="{{ $barang->nama_barang }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Reject</span>
+                                        </button>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @empty

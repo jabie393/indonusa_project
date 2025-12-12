@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
 
         @if (session('title'))
             <script>
@@ -14,7 +14,7 @@
             </script>
         @endif
 
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h2 class="mr-3 font-semibold text-white">Daftar Sales Order</h2>
             </div>
@@ -30,9 +30,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}"
-                                class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                placeholder="Search" />
+                            <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search" />
                         </div>
                     </form>
                 </div>
@@ -89,13 +87,19 @@
                             <td class="px-4 py-3">
                                 <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="flex h-full items-center gap-2 px-4 py-3">
-                                    <a href="{{ route('sales.sales-order.show', $so->id) }}"
-                                        class="btn mb-2 me-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        title="Lihat Detail" title="Lihat Detail">
-                                        Detail
-                                    </a>
+                            <td class="w-fit px-4 py-3 text-right">
+                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                    <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
+                                    <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        {{-- Detail --}}
+                                        <a href="{{ route('sales.sales-order.show', $so->id) }}" class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat Detail">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
+                                                <circle cx="12" cy="12" r="3"></circle>
+                                            </svg>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
