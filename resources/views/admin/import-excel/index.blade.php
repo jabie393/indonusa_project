@@ -4,6 +4,20 @@
             <h3 class="text-lg font-semibold text-white">
                 Import Dari Excel
             </h3>
+            <div class="p-4">
+                <a href="" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
+                    <svg class="mr-2 h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g id="Interface / Download">
+                                <path id="Vector" d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </g>
+                        </g>
+                    </svg>
+                    Download Excel Template
+                </a>
+            </div>
         </div>
 
         <form action="{{ route('import-excel.import') }}" method="POST" class="flex h-fit flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
@@ -18,15 +32,15 @@
                             </label>
                             <input type="file" name="excel" id="excel" class="hidden" accept=".xlsx,.xls" />
 
-                            <div id="upload-area" class="mx-auto mb-4 flex h-48 w-full cursor-pointer items-center rounded-2xl border-2 border-dashed border-gray-400 bg-gray-100 text-center">
+                            <div id="upload-area" class="mx-auto mb-4 flex h-48 w-full cursor-pointer items-center rounded-2xl border-2 border-dashed border-gray-400 bg-gray-100 text-center transition-colors hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600">
                                 <label id="excel_label" for="excel" class="m-auto w-full cursor-pointer">
-                                    <div id="excel_filename" class="mx-auto hidden text-sm text-gray-700"></div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700">
+                                    <div id="excel_filename" class="mx-auto hidden text-sm text-gray-700 dark:text-gray-300"></div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700 dark:text-gray-300">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                     </svg>
-                                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700">Upload File
+                                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700 dark:text-white">Upload File
                                     </h5>
-                                    <p class="text-gray-500">Support Format .Excel</p>
+                                    <p class="text-gray-500 dark:text-gray-400">Support Format .Excel</p>
                                 </label>
                             </div>
                         </div>
@@ -45,7 +59,7 @@
                             <div class="text-sm text-gray-700 dark:text-gray-300">
                                 File: <span id="upload-filename" class="font-mono text-xs text-gray-800 dark:text-gray-100"></span>
                             </div>
-                            <div class="mt-1 text-sm"><a id="upload-url" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Buka file</a></div>
+                            <div class="mt-1 text-sm"><a id="upload-url" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank" rel="noopener">Buka file</a></div>
                         </div>
                     </div>
                     <div class="col-span-3">
@@ -56,19 +70,19 @@
 
                 </div>
                 <div class="mb-3">
-                    <table class="table" id="DataTableExcel">
-                        <thead>
+                    <table class="table w-full text-left text-sm text-gray-500 dark:text-gray-400" id="DataTableExcel">
+                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="min-w-[180px]">Kode Barang</th>
-                                <th class="min-w-[200px]">Nama Barang</th>
-                                <th class="min-w-[200px]">Kategori</th>
-                                <th class="min-w-[150px]">Stok</th>
-                                <th class="min-w-[200px]">Harga</th>
-                                <th class="min-w-[150px]">Satuan</th>
-                                <th class="min-w-[150px]">Status Listing</th>
-                                <th class="min-w-[150px]">Gambar</th>
-                                <th class="min-w-[200px]">Deskripsi</th>
-                                <th>Aksi</th>
+                                <th class="min-w-[180px] px-4 py-3">Kode Barang</th>
+                                <th class="min-w-[200px] px-4 py-3">Nama Barang</th>
+                                <th class="min-w-[200px] px-4 py-3">Kategori</th>
+                                <th class="min-w-[150px] px-4 py-3">Stok</th>
+                                <th class="min-w-[200px] px-4 py-3">Harga</th>
+                                <th class="min-w-[150px] px-4 py-3">Satuan</th>
+                                <th class="min-w-[150px] px-4 py-3">Status Listing</th>
+                                <th class="min-w-[150px] px-4 py-3">Gambar</th>
+                                <th class="min-w-[200px] px-4 py-3">Deskripsi</th>
+                                <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="overflow-x-scroll">
@@ -139,7 +153,7 @@
             </div>
 
             <div>
-                <button type="submit" class="submit-btn relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Tambah
+                <button type="submit" class="submit-btn relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Tambah
                 </button>
             </div>
         </form>
@@ -172,7 +186,7 @@
                         const imgContainer = document.createElement('div');
                         imgContainer.className = 'relative inline-block';
                         imgContainer.innerHTML = `
-                        <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
+                        <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border dark:border-gray-600" title="${file.name}">
                         <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
                             ✕
                         </button>

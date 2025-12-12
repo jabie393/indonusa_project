@@ -6,7 +6,7 @@
                 <p class="mt-1 text-gray-500 dark:text-gray-400">Buat penawaran awal kepada pelanggan</p>
             </div>
             <div class="col-auto">
-                <a href="{{ route('sales.request-order.index') }}" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
+                <a href="{{ route('sales.request-order.index') }}" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
                         <path d="m12 19-7-7 7-7"></path>
                         <path d="M19 12H5"></path>
@@ -169,10 +169,8 @@
                                                 <input type="number" name="diskon_percent[]" class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                                             </td>
                                             <td>
-                                            <input type="text" name="keterangan[]" maxlength="255"
-                                                class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="Isi jika diskon > 20%" disabled>
-                                        </td>
+                                                <input type="text" name="keterangan[]" maxlength="255" class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" disabled>
+                                            </td>
                                             <td>
                                                 <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                                             </td>
@@ -760,12 +758,12 @@
                         inp.value = '';
                     });
                     // Ensure keterangan input is cleared and disabled by default
-                const keteranganNew = newRow.querySelector('.keterangan-input');
-                if (keteranganNew) {
-                    keteranganNew.value = '';
-                    keteranganNew.disabled = true;
-                    keteranganNew.required = false;
-                }
+                    const keteranganNew = newRow.querySelector('.keterangan-input');
+                    if (keteranganNew) {
+                        keteranganNew.value = '';
+                        keteranganNew.disabled = true;
+                        keteranganNew.required = false;
+                    }
 
                     newRow.querySelectorAll('select').forEach(sel => {
                         sel.selectedIndex = 0;
@@ -867,21 +865,21 @@
                     }
                 }
                 // Enable/disable and require keterangan input depending on diskon value for a specific row
-            function updateKeteranganState(row) {
-                if (!row) return;
-                const disk = row.querySelector('.diskon-input');
-                const ket = row.querySelector('.keterangan-input');
-                if (!disk || !ket) return;
-                const val = parseFloat(disk.value) || 0;
-                if (val > 20) {
-                    ket.disabled = false;
-                    ket.required = true;
-                } else {
-                    ket.disabled = true;
-                    ket.required = false;
-                    ket.value = '';
+                function updateKeteranganState(row) {
+                    if (!row) return;
+                    const disk = row.querySelector('.diskon-input');
+                    const ket = row.querySelector('.keterangan-input');
+                    if (!disk || !ket) return;
+                    const val = parseFloat(disk.value) || 0;
+                    if (val > 20) {
+                        ket.disabled = false;
+                        ket.required = true;
+                    } else {
+                        ket.disabled = true;
+                        ket.required = false;
+                        ket.value = '';
+                    }
                 }
-            }
 
                 // Update remove buttons visibility - always show delete button
                 function updateRemoveButtons() {
@@ -934,7 +932,7 @@
                     }
                 });
                 // Ensure keterangan inputs reflect current diskon state on page load
-            document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
+                document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
                 updateRemoveButtons();
                 calculateTotals();
                 updateSubmitState();

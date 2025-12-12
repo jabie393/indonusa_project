@@ -15,7 +15,7 @@ let datatable = new DataTable('#DataTable', {
     info: false,
     scrollX: true,
     colReorder: true,
-
+    
 });
 let datatable2 = new DataTable('#DataTable2', {
     fixedHeader: true,
@@ -41,8 +41,12 @@ let datatableExcel = new DataTable('#DataTableExcel', {
     scrollX: true,
     searching: false,
     paging: false,
-    info: true,
+    info: false,
     colReorder: true,
+    fixedColumns: {
+        left: 0,
+        right: 1
+    },
 });
 
 // Wait for DataTable to finish rendering

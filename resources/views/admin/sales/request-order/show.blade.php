@@ -6,18 +6,6 @@
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Detail Request Order</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400">No. {{ $requestOrder->request_number }}</p>
             </div>
-            <div class="col-auto">
-                @php $isSupervisor = auth()->check() && (strtolower(auth()->user()->role) === 'supervisor' || auth()->user()->role === 'Supervisor'); @endphp
-                @if($isSupervisor)
-                    <button type="button" id="backBtn" onclick="supervisorBack()" class="btn btn-secondary" data-fallback="{{ route('admin.sent_penawaran') }}">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </button>
-                @else
-                    <a href="{{ route('sales.request-order.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                @endif
-            </div>
         </div>
 
         @if (session('success'))
@@ -96,23 +84,23 @@
                                     @php
                                         $statusClass = match ($requestOrder->status) {
                                             'open', 'converted' => 'primary',
-                                                'pending' => 'warning',
-                                                'approved' => 'success',
-                                                'rejected' => 'danger',
-                                                'expired' => 'secondary',
-                                                default => 'secondary'
+                                            'pending' => 'warning',
+                                            'approved' => 'success',
+                                            'rejected' => 'danger',
+                                            'expired' => 'secondary',
+                                            default => 'secondary',
                                         };
                                     @endphp
                                     @php
-                                            $statusLabel = match($requestOrder->status) {
-                                                'open', 'converted' => 'Open',
-                                                'pending' => 'Menunggu',
-                                                'approved' => 'Disetujui',
-                                                'rejected' => 'Ditolak',
-                                                'expired' => 'Kadaluarsa',
-                                                default => ucfirst($requestOrder->status),
-                                            };
-                                        @endphp
+                                        $statusLabel = match ($requestOrder->status) {
+                                            'open', 'converted' => 'Open',
+                                            'pending' => 'Menunggu',
+                                            'approved' => 'Disetujui',
+                                            'rejected' => 'Ditolak',
+                                            'expired' => 'Kadaluarsa',
+                                            default => ucfirst($requestOrder->status),
+                                        };
+                                    @endphp
                                     <span class="badge bg-{{ $statusClass }}">{{ $statusLabel }}</span>
                                 </div>
                             </div>
@@ -124,55 +112,53 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Masa Berlaku Berakhir</label>
                                 <p>
-                                    @if($requestOrder->expired_at)
+                                    @if ($requestOrder->expired_at)
                                         {{ $requestOrder->expired_at_formatted }}
                                         <br>
-                                        @if($requestOrder->isExpired())
+                                        @if ($requestOrder->isExpired())
                                             <small class="badge bg-danger">KADALUARSA</small>
                                         @else
-                                        @php
-                                                    try {
-                                                        $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
-                                                        $daysLeft = $expiry->diffInDays(now());
-                                                    } catch (\Throwable $e) {
-                                                        $daysLeft = null;
-                                                    }
-                                                @endphp
+                                            @php
+                                                try {
+                                                    $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
+                                                    $daysLeft = $expiry->diffInDays(now());
+                                                } catch (\Throwable $e) {
+                                                    $daysLeft = null;
+                                                }
+                                            @endphp
                                             <small class="badge bg-success">
-                                                    @if($daysLeft && $daysLeft > 0)
-                                                        {{ $daysLeft }} hari dari sekarang
-                                                    @else
-                                                        -
-                                                    @endif
-                                                </small>
-                                            @endif
+                                                @if ($daysLeft && $daysLeft > 0)
+                                                    {{ $daysLeft }} hari dari sekarang
+                                                @else
+                                                    -
+                                                @endif
+                                            </small>
+                                        @endif
                                     @else
                                         <span class="text-gray-500">-</span>
                                     @endif
+                            </div>
+                        </div>
+
+                        @if ($requestOrder->catatan_customer)
+                            <div class="md:col-span-2">
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Catatan Customer</label>
+                                <div class="rounded-lg bg-gray-50 p-3 text-sm text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+                                    {{ $requestOrder->catatan_customer }}
                                 </div>
                             </div>
+                        @endif
 
-                            @if ($requestOrder->catatan_customer)
-                                <div class="md:col-span-2">
-                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Catatan Customer</label>
-                                    <div class="rounded-lg bg-gray-50 p-3 text-sm text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-                                        {{ $requestOrder->catatan_customer }}
-                                    </div>
+                        @if ($requestOrder->reason)
+                            <div class="md:col-span-2">
+                                <label class="mb-1 block text-sm font-semibold text-red-600 dark:text-red-400">Alasan Penolakan</label>
+                                <div class="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
+                                    {{ $requestOrder->reason }}
                                 </div>
-                            @endif
-
-                            @if ($requestOrder->reason)
-                                <div class="md:col-span-2">
-                                    <label class="mb-1 block text-sm font-semibold text-red-600 dark:text-red-400">Alasan Penolakan</label>
-                                    <div class="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
-                                        {{ $requestOrder->reason }}
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
-
                 <!-- Supporting Images Card -->
                 @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
                     <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
@@ -257,7 +243,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Sidebar -->
             <div class="space-y-6 lg:col-span-1">
                 <!-- Status Card -->
@@ -273,7 +258,7 @@
                                 {{ ucfirst($requestOrder->status) }}
                             </span>
                         </div>
-                         <p class="text-muted small">
+                        <p class="text-muted small">
                             @if ($requestOrder->status === 'pending')
                                 Request Order menunggu untuk disetujui.
                             @elseif($requestOrder->status === 'approved')
@@ -285,6 +270,7 @@
                             @endif
                         </p>
                     </div>
+                    
                 </div>
 
                 <!-- Actions Card -->
@@ -310,7 +296,7 @@
                             }
                         @endphp
 
-                        @if($canDownloadPdf)
+                        @if ($canDownloadPdf)
                             <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
                                 <i class="fas fa-download"></i> Download PDF
                             </a>
@@ -364,6 +350,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- Reject Modal -->
@@ -383,7 +370,10 @@
                 if (history.length > 1) {
                     // attempt history.back(), but also set a fallback timer
                     var navigated = false;
-                    var onPop = function() { navigated = true; window.removeEventListener('popstate', onPop); };
+                    var onPop = function() {
+                        navigated = true;
+                        window.removeEventListener('popstate', onPop);
+                    };
                     window.addEventListener('popstate', onPop);
                     history.back();
                     setTimeout(function() {
@@ -402,5 +392,5 @@
             }
         }
     </script>
-    
+
 </x-app-layout>

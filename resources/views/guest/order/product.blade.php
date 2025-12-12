@@ -3,7 +3,7 @@
         @if (empty($barang))
             <p class="text-gray-500">Barang tidak ditemukan.</p>
         @else
-            <div class="mx-auto max-w-(--breakpoint-xl) px-4 2xl:px-0">
+            <div class="max-w-(--breakpoint-xl) mx-auto px-4 2xl:px-0">
                 <div class="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-16">
                     <div class="mx-auto max-w-md shrink-0 lg:max-w-lg">
                         @if (!empty($barang->gambar))
@@ -25,9 +25,7 @@
                         </div>
 
                         <div class="mt-6 sm:mt-8 sm:flex sm:items-center sm:gap-4">
-                            <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}"
-                                target="_blank"
-                                class="mt-4 flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 sm:mt-0">
+                            <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . ' dengan harga Rp ' . number_format($barang->harga, 0, ',', '.') . '. Apakah masih tersedia?') }}" target="_blank" class="mt-4 flex items-center justify-center rounded-lg bg-[#225A97] px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800 sm:mt-0">
                                 Pesan
                             </a>
                             <form action="{{ route('keranjang.tambah') }}" method="POST" class="inline">
@@ -36,11 +34,9 @@
                                 <input type="hidden" name="nama" value="{{ $barang->nama_barang }}">
                                 <input type="hidden" name="harga" value="{{ $barang->harga }}">
                                 <input type="hidden" name="gambar" value="{{ $barang->gambar }}">
-                                <button type="submit"
-                                    class="mt-4 flex items-center justify-center rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 sm:mt-0">
+                                <button type="submit" class="mt-4 flex items-center justify-center rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 sm:mt-0">
                                     <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h1.5L8 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm.75-3H7.5M11 7H6.312M17 4v6m-3-3h6" />
                                     </svg>
                                 </button>
                             </form>
