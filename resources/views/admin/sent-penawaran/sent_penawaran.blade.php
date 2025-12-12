@@ -136,7 +136,6 @@
                             @endif
                         </tr>
                     @empty
-                        <tr><td colspan="10" class="text-center px-4 py-3">Tidak ada penawaran yang menunggu persetujuan.</td></tr>
                     @endforelse
                 </tbody>
             </table>

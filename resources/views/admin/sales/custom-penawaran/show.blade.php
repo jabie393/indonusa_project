@@ -203,7 +203,7 @@
                     <div class="sticky top-10 rounded-lg">
 
                         <div class="flex justify-end gap-2">
-                            <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}" class="btn rounded-lg border-0 bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800">
+                            <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}" class="btn rounded-lg border-0 bg-[#225A97] px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800">
                                 Edit
                             </a>
                             @if ($customPenawaran->status === 'approved')
