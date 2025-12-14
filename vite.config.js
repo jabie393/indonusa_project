@@ -25,6 +25,7 @@ export default defineConfig({
                 'resources/js/chart-warehouse-dashboard.js',
                 'resources/js/pics.js',
                 'resources/js/excel-upload.js',
+                'resources/js/excel-stock-upload.js'
             ],
             refresh: true,
         }),
