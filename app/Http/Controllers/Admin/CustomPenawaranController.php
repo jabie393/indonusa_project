@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CustomPenawaran;
 use App\Models\CustomPenawaranItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +21,13 @@ class CustomPenawaranController extends Controller
     {
         // Log current user and items fetched for debugging
         Log::info('Custom Penawaran Index accessed', ['auth_id' => Auth::id(), 'auth_email' => Auth::user()->email ?? null]);
+
+        // Check and update expired penawarans
+        CustomPenawaran::whereIn('status', ['open', 'sent'])
+            ->whereNotNull('expired_at')
+            ->where('expired_at', '<', now())
+            ->where('sales_id', Auth::id())
+            ->update(['status' => 'expired']);
 
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
             ->with('items')
@@ -103,6 +112,9 @@ class CustomPenawaranController extends Controller
                 'tax' => $validated['tax'] ?? 0,
                 'status' => $needApproval ? 'sent' : 'open',
             ]);
+
+            // Set expired_at to 14 days from created_at
+            $penawaran->update(['expired_at' => $penawaran->created_at->addDays(14)]);
 
             // Log created penawaran id
             Log::info('Custom Penawaran Created', ['id' => $penawaran->id, 'sales_id' => $penawaran->sales_id]);
@@ -356,5 +368,60 @@ class CustomPenawaranController extends Controller
         }
 
         return view('admin.pdf.custom-penawaran-pdf', compact('customPenawaran'));
+    }
+
+    /**
+     * Sent Custom Penawaran to Warehouse (create Order with status sent_to_warehouse)
+     */
+    public function sentToWarehouse(CustomPenawaran $customPenawaran)
+    {
+        if ($customPenawaran->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (!in_array($customPenawaran->status, ['open', 'approved'])) {
+            return back()->withErrors('Hanya Custom Penawaran yang open atau approved dapat dikirim ke Warehouse.');
+        }
+
+        if ($customPenawaran->order) {
+            return back()->withErrors('Custom Penawaran ini sudah dikirim ke Warehouse.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $order = Order::create([
+                'order_number' => 'DO-' . strtoupper(Str::random(8)),
+                'sales_id' => Auth::id(),
+                'supervisor_id' => $customPenawaran->status === 'approved' ? Auth::id() : null, // assuming if approved, supervisor is current user or something
+                'custom_penawaran_id' => $customPenawaran->id,
+                'status' => 'sent_to_warehouse',
+                'customer_name' => $customPenawaran->to,
+                'customer_id' => null, // Custom Penawaran might not have customer_id
+                'tanggal_kebutuhan' => $customPenawaran->date,
+                'catatan_customer' => $customPenawaran->intro_text,
+            ]);
+
+            foreach ($customPenawaran->items as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'barang_id' => null, // Custom Penawaran items might not have barang_id
+                    'quantity' => $item->qty,
+                    'harga' => $item->harga,
+                    'subtotal' => $item->subtotal,
+                ]);
+            }
+
+            // Update Custom Penawaran status to sent_to_warehouse
+            $customPenawaran->update(['status' => 'sent_to_warehouse']);
+
+            DB::commit();
+
+            return redirect()->route('warehouse.delivery-orders.index')
+                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
+        }
     }
 }

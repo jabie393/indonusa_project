@@ -14,6 +14,7 @@ class Order extends Model
         'supervisor_id',
         'warehouse_id',
         'request_order_id',
+        'custom_penawaran_id',
         'status',
         'reason',
         'customer_name',
@@ -45,6 +46,11 @@ class Order extends Model
     public function requestOrder()
     {
         return $this->belongsTo(RequestOrder::class, 'request_order_id');
+    }
+
+    public function customPenawaran()
+    {
+        return $this->belongsTo(CustomPenawaran::class, 'custom_penawaran_id');
     }
 
     // Add relationship to order items
