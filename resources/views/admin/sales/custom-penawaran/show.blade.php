@@ -8,31 +8,29 @@
                         <h1 class="text-3xl font-bold text-black dark:text-white">Detail Penawaran</h1>
                     </div>
                     <!-- Header Info -->
-                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
+                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
-                            <div>
-                                <h2 class="mr-3 font-semibold text-white">Detail Penawaran</h2>
-                            </div>
+                            <h2 class="mr-3 font-semibold text-white">Detail Penawaran</h2>
                         </div>
                         <div class="p-6">
                             <div class="mb-6 grid grid-cols-2 gap-4">
                                 <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">No Penawaran</p>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">No Penawaran</label>
                                     <p class="text-xl font-bold text-gray-900 dark:text-white">
                                         {{ $customPenawaran->penawaran_number }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Our Ref</p>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Our Ref</label>
                                     <p class="text-lg font-semibold text-gray-900 dark:text-white">
                                         {{ $customPenawaran->our_ref }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Tanggal</p>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</label>
                                     <p class="text-lg font-semibold text-gray-900 dark:text-white">
                                         {{ \Carbon\Carbon::parse($customPenawaran->date)->format('d/m/Y') }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Status</p>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Status</label>
                                     @php
                                         $statusClass =
                                             [
@@ -59,20 +57,20 @@
 
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">Kepada (To)</p>
+                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Kepada (To)</label>
                                     <p class="font-semibold text-gray-900 dark:text-white">{{ $customPenawaran->to }}</p>
                                 </div>
                                 <div>
-                                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">Attn (Up)</p>
+                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Attn (Up)</label>
                                     <p class="font-semibold text-gray-900 dark:text-white">{{ $customPenawaran->up ?? '-' }}
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">Email</p>
+                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Email</label>
                                     <p class="font-semibold text-gray-900 dark:text-white">{{ $customPenawaran->email }}</p>
                                 </div>
                                 <div>
-                                    <p class="mb-2 text-sm text-gray-600 dark:text-gray-400">Subject</p>
+                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Subject</label>
                                     <p class="font-semibold text-gray-900 dark:text-white">{{ $customPenawaran->subject }}
                                     </p>
                                 </div>
@@ -82,7 +80,7 @@
 
                     <!-- Intro Text -->
                     @if ($customPenawaran->intro_text)
-                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
                                 <div>
                                     <h2 class="mr-3 font-semibold text-white">Teks Pembuka</h2>
@@ -94,7 +92,7 @@
                     @endif
 
                     <!-- Items Table -->
-                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
+                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
                             <div>
                                 <h2 class="mr-3 font-semibold text-white">Detail Barang</h2>
@@ -200,7 +198,7 @@
 
                 <!-- Sidebar Summary -->
                 <div class="gap-2 lg:col-span-1">
-                    <div class="sticky top-10 rounded-lg">
+                    <div class="sticky top-10">
 
                         <div class="flex justify-end gap-2">
                             <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}" class="btn rounded-lg border-0 bg-[#225A97] px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800">
@@ -226,7 +224,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm sticky top-24 overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800">
+                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm sticky top-24 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
                             <div>
                                 <h2 class="mr-3 font-semibold text-white">Ringkasan Penawaranan Kustom</h2>

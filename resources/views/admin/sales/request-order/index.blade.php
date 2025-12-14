@@ -57,6 +57,7 @@
                                 'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                 'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
                                 'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
+                                'sent_to_warehouse' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
                                 default => 'secondary',
                             };
                             $statusLabel = match ($ro->status) {
@@ -65,11 +66,12 @@
                                 'pending' => 'Menunggu',
                                 'approved' => 'Disetujui',
                                 'rejected' => 'Ditolak',
+                                'sent_to_warehouse' => 'Dikirim ke Gudang',
                                 default => ucfirst($ro->status),
                             };
                         @endphp
                         <tr class="max-h-16 dark:border-gray-700">
-                            <td class="px-4 py-3">{{ $ro->request_number }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->request_number }}</td>
                             <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
                             <td class="px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
@@ -107,7 +109,7 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
-                                <span class="badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                                <span class="badge text-nowrap {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
                             <td class="px-4 py-3">
                                 @if ($ro->expired_at)
@@ -200,7 +202,7 @@
                                             <form action="{{ route('sales.request-order.sent-to-warehouse', $ro->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('POST')
-                                                <button type="submit" class="group flex h-full items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
+                                                <button type="submit" class="group flex h-full items-center justify-center cursor-pointer bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck h-4 w-4">
                                                         <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
                                                         <path d="M15 18H9"></path>
@@ -208,7 +210,7 @@
                                                         <circle cx="17" cy="18" r="2"></circle>
                                                         <circle cx="7" cy="18" r="2"></circle>
                                                     </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
+                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
                                                 </button>
                                             </form>
                                         @endif

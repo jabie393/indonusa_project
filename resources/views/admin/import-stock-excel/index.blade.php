@@ -73,31 +73,24 @@
                     <table class="table w-full text-left text-sm text-gray-500 dark:text-gray-400" id="DataTableExcel">
                         <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="min-w-[180px] px-4 py-3">Kode Barang</th>
-                                <th class="min-w-[200px] px-4 py-3">Nama Barang</th>
-                                <th class="min-w-[200px] px-4 py-3">Kategori</th>
-                                <th class="min-w-[150px] px-4 py-3">Stok</th>
-                                <th class="px-4 py-3">Aksi</th>
+                                <th class="w-[15%] px-4 py-3">Kode Barang</th>
+                                <th class="w-[30%] px-4 py-3">Nama Barang</th>
+                                <th class="w-[20%] px-4 py-3">Kategori</th>
+                                <th class="w-[10%] px-4 py-3">Stok</th>
+                                <th class="w-[10%] px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="overflow-x-scroll">
                             <tr>
                                 <td>
-                                    <div class="relative">
-                                        <input type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                                        <button type="button" id="refreshKodeBarang" class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                                    <input type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                                 </td>
                                 <td>
-                                    <input type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
+                                    <input type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                                 </td>
                                 <td>
-                                    <select name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                        <option value="" disabled selected>Pilih Kategori</option>
+                                    <select name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" disabled>
+                                        <option value="" disabled selected readonly>Kategori</option>
                                         @foreach ($kategoriList as $kategori)
                                             <option value="{{ $kategori }}">{{ $kategori }}</option>
                                         @endforeach
@@ -106,7 +99,6 @@
                                 <td>
                                     <input type="number" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                                 </td>
-
                                 <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
