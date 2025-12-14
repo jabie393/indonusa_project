@@ -48,13 +48,15 @@
                                     $statusClass =
                                         [
                                             'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
                                             'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
                                             'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                             'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                        ][$penawaran->status] ?? 'bbg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
+                                        ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
                                     $statusLabel =
                                         [
                                             'draft' => 'Draft',
+                                            'open' => 'Open',
                                             'sent' => 'Terkirim',
                                             'approved' => 'Disetujui',
                                             'rejected' => 'Ditolak',

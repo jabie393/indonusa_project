@@ -97,6 +97,11 @@ class RequestOrder extends Model
         return $this->hasOne(SalesOrder::class, 'request_order_id');
     }
 
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'request_order_id');
+    }
+
     /**
      * Generate nomor penawaran (e.g., PNW-20251113-001)
      */

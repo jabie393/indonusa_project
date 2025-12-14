@@ -101,7 +101,7 @@ class CustomPenawaranController extends Controller
                 'date' => $validated['date'],
                 'intro_text' => $validated['intro_text'] ?? null,
                 'tax' => $validated['tax'] ?? 0,
-                'status' => $needApproval ? 'sent' : 'draft',
+                'status' => $needApproval ? 'sent' : 'open',
             ]);
 
             // Log created penawaran id

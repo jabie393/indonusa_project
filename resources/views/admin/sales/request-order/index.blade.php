@@ -194,6 +194,24 @@
                                                 <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </a>
                                         @endif
+
+                                        {{-- Sent to Warehouse --}}
+                                        @if (in_array($ro->status, ['open', 'approved']))
+                                            <form action="{{ route('sales.request-order.sent-to-warehouse', $ro->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="submit" class="group flex h-full items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck h-4 w-4">
+                                                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                                                        <path d="M15 18H9"></path>
+                                                        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
+                                                        <circle cx="17" cy="18" r="2"></circle>
+                                                        <circle cx="7" cy="18" r="2"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
