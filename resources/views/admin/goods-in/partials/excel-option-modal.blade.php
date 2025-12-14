@@ -100,7 +100,7 @@
                     <!-- Decorative corner accent -->
                     <div class="absolute -right-1 -top-1 h-8 w-8 rounded-full bg-[#225A97]/20 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"></div>
                 </a>
-                <a href="{{ route('import-excel.index') }}" class="group relative flex h-56 w-full max-w-[220px] flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                <a href="{{ route('import-stock-excel.index') }}" class="group relative flex h-56 w-full max-w-[220px] flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
                     <!-- Gradient overlay on hover -->
                     <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 

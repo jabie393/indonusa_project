@@ -21,6 +21,7 @@ use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\CustomPenawaranController;
 use App\Http\Controllers\Admin\ImportExcelController;
+use App\Http\Controllers\Admin\ImportStockExcelController;
 use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -101,6 +102,10 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/add-stock', AddStockController::class);
     Route::resource('/import-excel', ImportExcelController::class);
     Route::post('/import-excel/import', [ImportExcelController::class, 'import'])->name('import-excel.import');
+    Route::get('/import-stock-excel', [ImportStockExcelController::class, 'index'])->name('import-stock-excel.index');
+    Route::post('/import-stock-excel/store', [ImportStockExcelController::class, 'store'])->name('import-stock-excel.store');
+    Route::post('/import-stock-excel/import', [ImportStockExcelController::class, 'import'])->name('import-stock-excel.import');
+    Route::get('/import-stock-excel/export', [ImportStockExcelController::class, 'export'])->name('import-stock-excel.export');
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/pics', PicsController::class);

@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // helper: auto-map headers to fields using keywords
     function autoMapHeaders(headers) {
-        const lower = headers.map(h => (h || '').toString().toLowerCase());
+        const lower = headers.map(h => (h || '').toString().toLowerCase().replace(/\s+/g, ' ').trim());
         const map = {};
         const pick = (keywords) => {
             for (let i = 0; i < lower.length; i++) {
@@ -27,58 +27,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         };
 
-        map['kode_barang'] = pick(['kode','sku','code','id barang','kode barang']);
-        map['nama_barang'] = pick(['nama','product','barang','item','description'] ) ?? pick(['nama barang','nama_produk']);
-        map['kategori'] = pick(['kategori','category']);
-        map['deskripsi'] = pick(['deskripsi','description','keterangan','spesifikasi','note']);
-        map['stok'] = pick(['stok','quantity','qty','jumlah']);
-        map['satuan'] = pick(['satuan','unit']);
-        map['harga'] = pick(['harga','price','rp']);
-        map['gambar'] = pick(['gambar','image','photo','foto']);
-        map['status_listing'] = pick(['status','listing']);
+        // Hardcode mapping berdasarkan header standar: Kode Barang, Nama Barang, Kategori, Stok
+        map['kode_barang'] = 0;
+        map['nama_barang'] = 1;
+        map['kategori'] = 2;
+        map['stok'] = 3;
 
-        // ensure unique: if two fields picked same index keep first and clear later ones
-        const used = {};
-        for (const key of Object.keys(map)) {
-            const idx = map[key];
-            if (idx === null) continue;
-            if (used[idx]) {
-                map[key] = null;
-            } else {
-                used[idx] = key;
-            }
-        }
+        // Mapping sudah hardcode, skip ensure unique
 
         return map;
-    }
-
-    // tambahkan map singkatan & helper generator (pakai window.kategoriSingkatan bila ada)
-    const kategoriSingkatanLocal = window.kategoriSingkatan || {
-        "HANDTOOLS": "HT","ADHESIVE AND SEALANT": "AS","AUTOMOTIVE EQUIPMENT": "AE","CLEANING": "CLN",
-        "COMPRESSOR": "CMP","CONSTRUCTION": "CST","CUTTING TOOLS": "CT","LIGHTING": "LTG",
-        "FASTENING": "FST","GENERATOR": "GEN","HEALTH CARE EQUIPMENT": "HCE","HOSPITALITY": "HSP",
-        "HYDRAULIC TOOLS": "HYD","MARKING MACHINE": "MM","MATERIAL HANDLING EQUIPMENT": "MHE",
-        "MEASURING AND TESTING EQUIPMENT": "MTE","METAL CUTTING MACHINERY": "MCM","PACKAGING": "PKG",
-        "PAINTING AND COATING": "PC","PNEUMATIC TOOLS": "PN","POWER TOOLS": "PT",
-        "SAFETY AND PROTECTION EQUIPMENT": "SPE","SECURITY": "SEC","SHEET METAL MACHINERY": "SMM",
-        "STORAGE SYSTEM": "STS","WELDING EQUIPMENT": "WLD","WOODWORKING EQUIPMENT": "WWE",
-        "MISCELLANEOUS": "MSC","OTHER CATEGORIES": "OC",
-    };
-
-    function generateKodeFromCategory(kategori, nama, rowIndex) {
-        // pakai singkatan kategori bila ada, jika tidak gunakan 2-3 huruf awal dari nama barang
-        let sing = (kategori && kategoriSingkatanLocal[kategori]) ? kategoriSingkatanLocal[kategori] : '';
-        if (!sing) {
-            if (nama) {
-                const parts = String(nama).trim().split(/\s+/);
-                sing = parts.map(p => p[0] || '').join('').slice(0,3).toUpperCase();
-            } else {
-                sing = 'UNK';
-            }
-            if (!sing) sing = 'UNK';
-        }
-        const timestamp = Date.now().toString().slice(-5); // 5 digit terakhir
-        return `${sing}-${timestamp}`;
     }
 
     // helper: inject hidden mapping inputs into form (overwrites previous)
@@ -239,94 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tdStok.appendChild(hidden);
             }
 
-            // 4: harga
-            const tdHarga = newRow.children[4];
-            if (tdHarga) {
-                let inp = tdHarga.querySelector('input');
-                if (!inp) { inp = document.createElement('input'); inp.type = 'text'; tdHarga.appendChild(inp); }
-                let v = getVal('harga') || '';
-                if (typeof v === 'string') v = v.replace(/[^\d\.,-]/g, '').replace(',', '.');
-                inp.value = v;
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][harga]`;
-                hidden.value = v;
-                tdHarga.appendChild(hidden);
-            }
-
-            // 5: satuan
-            const tdSatuan = newRow.children[5];
-            if (tdSatuan) {
-                let inp = tdSatuan.querySelector('input');
-                if (!inp) { inp = document.createElement('input'); inp.type = 'text'; tdSatuan.appendChild(inp); }
-                const v = getVal('satuan') || '';
-                inp.value = v;
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][satuan]`;
-                hidden.value = v;
-                tdSatuan.appendChild(hidden);
-            }
-
-            // 6: status_listing
-            const tdStatus = newRow.children[6];
-            if (tdStatus) {
-                const sel = tdStatus.querySelector('select');
-                const v = (getVal('status_listing') || 'listing').toString().toLowerCase();
-                if (sel) {
-                    Array.from(sel.options).forEach(opt => {
-                        if (opt.value.toLowerCase() === v) sel.value = opt.value;
-                    });
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = `rows[${rowIndex}][status_listing]`;
-                    hidden.value = sel.value || v;
-                    tdStatus.appendChild(hidden);
-                } else {
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = `rows[${rowIndex}][status_listing]`;
-                    hidden.value = v;
-                    tdStatus.appendChild(hidden);
-                }
-            }
-
-            // 7: Gambar
-            const tdGambar = newRow.children[7];
-            if (tdGambar) {
-                const fileInput = tdGambar.querySelector('input[type="file"]');
-                if (fileInput) {
-                    fileInput.name = `rows[${rowIndex}][images][]`;
-                    fileInput.value = ''; // clear selection
-                    const preview = tdGambar.querySelector('.item-images-preview');
-                    if (preview) preview.innerHTML = '';
-                    const uploadBtn = tdGambar.querySelector('.upload-btn-container');
-                    if (uploadBtn) uploadBtn.style.display = 'block';
-                }
-            }
-
-            // 8: Deskripsi
-            const tdDeskripsi = newRow.children[8];
-            if (tdDeskripsi) {
-                let inp = tdDeskripsi.querySelector('input');
-                if (!inp) {
-                    inp = document.createElement('input');
-                    inp.type = 'text';
-                    inp.className = 'block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400';
-                    tdDeskripsi.appendChild(inp);
-                }
-                const v = getVal('deskripsi') || '';
-                inp.value = v;
-
-                // Hidden input for submission
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][deskripsi]`;
-                hidden.value = v;
-                tdDeskripsi.appendChild(hidden);
-            }
-
-            // 9: aksi - keep remove button functional
+            // 4: aksi - keep remove button functional
             const aksiTd = newRow.children[9];
             if (aksiTd) {
                 const removeBtn = aksiTd.querySelector('button.remove-row');
