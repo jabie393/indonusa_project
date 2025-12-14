@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('custom_penawaran_id')->nullable()->after('request_order_id');
+        Schema::table('request_orders', function (Blueprint $table) {
+            $table->string('sales_order_number')->nullable()->unique()->after('nomor_penawaran');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('custom_penawaran_id');
+        Schema::table('request_orders', function (Blueprint $table) {
+            $table->dropColumn('sales_order_number');
         });
     }
 };

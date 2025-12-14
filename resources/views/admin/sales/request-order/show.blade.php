@@ -59,6 +59,10 @@
                                 <p><span class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800 dark:bg-blue-200 dark:text-blue-800">{{ $requestOrder->nomor_penawaran ?? '-' }}</span></p>
                             </div>
                             <div>
+                                <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">No. Sales Order</label>
+                                <p><span class="rounded bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-800 dark:bg-green-200 dark:text-green-800">{{ $requestOrder->sales_order_number ?? '-' }}</span></p>
+                            </div>
+                            <div>
                                 <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Dibuat</label>
                                 <p class="text-gray-900 dark:text-white">{{ $requestOrder->created_at->format('d M Y H:i') }}</p>
                             </div>
@@ -322,7 +326,7 @@
                                 </div>
                                 <div>
                                     Sales Order: <a href="{{ route('sales.sales-order.show', $requestOrder->salesOrder->id) }}" class="font-bold underline hover:no-underline">
-                                        {{ $requestOrder->salesOrder->sales_order_number }}
+                                        {{ $requestOrder->sales_order_number }}
                                     </a>
                                 </div>
                             </div>
