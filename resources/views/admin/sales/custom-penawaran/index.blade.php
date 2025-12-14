@@ -24,9 +24,11 @@
                         <th class="px-4 py-3">Kepada</th>
                         <th class="px-4 py-3">Subject</th>
                         <th class="px-4 py-3">Our Ref</th>
+                        <th class="px-4 py-3">Diskon</th>
                         <th class="px-4 py-3">Total</th>
+                        <th class="px-4 py-3">Tanggal Dibuat</th>
+                        <th class="px-4 py-3">Berlaku Sampai</th>
                         <th class="px-4 py-3">Status</th>
-                        <th class="px-4 py-3">Tanggal</th>
                         <th class="px-4 py-3">Aksi</th>
                     </tr>
                 </thead>
@@ -39,8 +41,39 @@
                             <td class="px-4 py-4 text-nowrap">{{ $penawaran->to }}</td>
                             <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
                             <td class="px-4 py-4 text-nowrap">{{ $penawaran->our_ref }}</td>
+                            <td class="px-4 py-4">
+                                @php
+                                    $discounts = $penawaran->items->pluck('diskon')->unique()->sort()->values();
+                                @endphp
+                                @if ($discounts->isNotEmpty())
+                                    @foreach ($discounts as $index => $d)
+                                        <span class="badge bg-green-50 text-green-700">{{ $d }}%</span>
+                                        @if ($index < $discounts->count() - 1) , @endif
+                                    @endforeach
+                                @else
+                                    <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-4 text-right font-semibold text-nowrap">
                                 Rp {{ number_format($penawaran->grand_total, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                {{ \Carbon\Carbon::parse($penawaran->created_at)->format('d/m/Y') }}
+                            </td>
+                            <td class="px-4 py-4 text-center">
+                                @if ($penawaran->expired_at)
+                                    {{ \Carbon\Carbon::parse($penawaran->expired_at)->format('d/m/Y') }}
+                                    @if ($penawaran->isExpired())
+                                        <br><small class="text-danger">Kadaluarsa</small>
+                                    @else
+                                        @php
+                                            $daysLeft = (int) $penawaran->expired_at->diffInDays(now());
+                                        @endphp
+                                        <br><small class="text-success">Berlaku {{ $daysLeft }} hari lagi</small>
+                                    @endif
+                                @else
+                                    -
+                                @endif
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
@@ -52,14 +85,17 @@
                                             'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
                                             'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                             'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                            'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
                                         ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
                                     $statusLabel =
                                         [
                                             'draft' => 'Draft',
                                             'open' => 'Open',
                                             'sent' => 'Terkirim',
-                                            'approved' => 'Disetujui',
+                                            'approved' => 'Disetujui/Open',
                                             'rejected' => 'Ditolak',
+                                            'expired' => 'Kadaluarsa',
+                                            'sent_to_warehouse' => 'Dikirim ke Warehouse',
                                         ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
@@ -70,9 +106,6 @@
                                         <span class="badge bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700">Menunggu Approval</span>
                                     @endif
                                 </div>
-                            </td>
-                            <td class="px-4 py-4 text-center">
-                                {{ \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') }}
                             </td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
@@ -100,8 +133,9 @@
                                         @php
                                             // apakah ada item dengan diskon > 20%
                                             $hasHighDiscount = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
+                                            $isExpired = $penawaran->isExpired();
                                         @endphp
-                                        @if (!$hasHighDiscount || $penawaran->status === 'approved')
+                                        @if ((!$hasHighDiscount || $penawaran->status === 'approved') && !$isExpired)
                                             <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank" class="group flex h-full items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Download PDF">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
                                                     <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
@@ -113,7 +147,9 @@
                                                 <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
                                             </a>
                                         @else
-                                            <button type="button" disabled class="group flex h-full cursor-not-allowed items-center justify-center bg-gray-300 p-2 text-sm font-medium text-white" title="Menunggu persetujuan Supervisor">
+                                            <button type="button" disabled class="group flex h-full cursor-not-allowed items-center justify-center bg-gray-300 p-2 text-sm font-medium text-white" title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
+                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
                                                     <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
                                                     <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
@@ -123,6 +159,24 @@
                                                 </svg>
                                                 <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
                                             </button>
+                                        @endif
+
+                                        {{-- Sent to Warehouse --}}
+                                        @if (in_array($penawaran->status, ['open', 'approved']))
+                                            <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('POST')
+                                                <button type="submit" class="group flex h-full items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck h-4 w-4">
+                                                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                                                        <path d="M15 18H9"></path>
+                                                        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
+                                                        <circle cx="17" cy="18" r="2"></circle>
+                                                        <circle cx="7" cy="18" r="2"></circle>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
+                                                </button>
+                                            </form>
                                         @endif
 
                                         {{-- Delete --}}

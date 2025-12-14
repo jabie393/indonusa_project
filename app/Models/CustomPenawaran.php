@@ -16,6 +16,7 @@ class CustomPenawaran extends Model
         'email',
         'our_ref',
         'date',
+        'expired_at',
         'intro_text',
         'subtotal',
         'tax',
@@ -25,6 +26,7 @@ class CustomPenawaran extends Model
 
     protected $casts = [
         'date' => 'date',
+        'expired_at' => 'datetime',
         'subtotal' => 'decimal:2',
         'tax' => 'decimal:2',
         'grand_total' => 'decimal:2',
@@ -38,6 +40,11 @@ class CustomPenawaran extends Model
     public function items()
     {
         return $this->hasMany(CustomPenawaranItem::class);
+    }
+
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'custom_penawaran_id');
     }
 
     public static function generatePenawaranNumber()
@@ -59,5 +66,28 @@ class CustomPenawaran extends Model
         $this->subtotal = $subtotal;
         $this->grand_total = $subtotal + $tax;
         $this->save();
+    }
+
+    /**
+     * Check if penawaran is expired
+     */
+    public function isExpired()
+    {
+        return $this->expired_at && now() > $this->expired_at;
+    }
+
+    /**
+     * Auto-mark as expired if time has passed
+     */
+    public function checkAndUpdateExpiry()
+    {
+        if (!$this->expired_at) {
+            return;
+        }
+
+        // If expiry has passed and the penawaran is still open, mark expired
+        if (now() > $this->expired_at && in_array($this->status, ['open', 'sent'])) {
+            $this->update(['status' => 'expired']);
+        }
     }
 }
