@@ -42,7 +42,7 @@ class RequestOrderController extends Controller
             ->where('sales_id', Auth::id())
             ->update(['status' => 'expired']);
 
-        $requestOrders = RequestOrder::with('items.barang', 'sales')
+        $requestOrders = RequestOrder::with('items.barang', 'sales', 'salesOrder')
             ->where('sales_id', Auth::id())
             ->latest()
             ->paginate(20);
@@ -151,6 +151,7 @@ class RequestOrderController extends Controller
             $requestOrder = RequestOrder::create([
                 'request_number' => 'REQ-' . strtoupper(Str::random(8)),
                 'nomor_penawaran' => $nomorPenawaran,
+                'sales_order_number' => 'SO-' . strtoupper(Str::random(8)),
                 'sales_id' => Auth::id(),
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
@@ -484,8 +485,15 @@ class RequestOrderController extends Controller
 
         DB::beginTransaction();
         try {
+            $salesOrderNumber = $requestOrder->sales_order_number ?: 'SO-' . strtoupper(Str::random(8));
+
+            // Update Request Order with sales order number if not set
+            if (!$requestOrder->sales_order_number) {
+                $requestOrder->update(['sales_order_number' => $salesOrderNumber]);
+            }
+
             $salesOrder = SalesOrder::create([
-                'sales_order_number' => 'SO-' . strtoupper(Str::random(8)),
+                'sales_order_number' => $salesOrderNumber,
                 'request_order_id' => $requestOrder->id,
                 'sales_id' => Auth::id(),
                 'customer_name' => $requestOrder->customer_name,

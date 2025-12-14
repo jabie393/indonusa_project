@@ -37,6 +37,7 @@
                     <tr>
                         <th scope="col" class="px-4 py-3">No. Request</th>
                         <th scope="col" class="px-4 py-3">No. Penawaran</th>
+                        <th scope="col" class="px-4 py-3">No. Sales Order</th>
                         <th scope="col" class="px-4 py-3">Tanggal</th>
                         <th scope="col" class="px-4 py-3">Nama Customer</th>
                         <th scope="col" class="px-4 py-3">Jumlah Item</th>
@@ -73,6 +74,7 @@
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3 text-nowrap">{{ $ro->request_number }}</td>
                             <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
+                            <td class="px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
                             <td class="px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
@@ -219,6 +221,7 @@
                             </td>
                         </tr>
                     @empty
+                        <tr><td colspan="11">Belum ada request.</td></tr>
                     @endforelse
                 </tbody>
             </table>

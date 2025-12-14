@@ -12,6 +12,7 @@ class RequestOrder extends Model
     protected $fillable = [
         'request_number',
         'nomor_penawaran',
+        'sales_order_number',
         'sales_id',
         'customer_name',
         'customer_id',
