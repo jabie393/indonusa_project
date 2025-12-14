@@ -110,19 +110,10 @@ class ImportStockExcelController extends Controller
             DB::beginTransaction();
             try {
                 foreach ($formRows as $i => $r) {
-                    // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok, harga, satuan, status_listing, lokasi, gambar...
+                    // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok
                     $kode = $r['kode_barang'] ?? null;
                     if (empty($kode)) {
                         $kode = 'IMP' . substr(uniqid(), -6);
-                    }
-
-                    $hargaRaw = $r['harga'] ?? null;
-                    if ($hargaRaw !== null && $hargaRaw !== '') {
-                        $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
-                        $clean = str_replace(',', '.', $clean);
-                        $harga = floatval($clean);
-                    } else {
-                        $harga = 0;
                     }
 
                     $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
@@ -137,30 +128,9 @@ class ImportStockExcelController extends Controller
                         'form' => Auth::id(),
                     ];
 
-                    // create barang first so we have id to store images under folder barang/{id}
+                    // create barang
                     $barang = Barang::create($payload);
 
-                    // store any uploaded images for this row: input name expected rows[{$i}][images][]
-                    try {
-                        $savedPaths = [];
-                        $files = $request->file("rows.{$i}.images");
-                        if (is_array($files) && count($files) > 0) {
-                            foreach ($files as $f) {
-                                if ($f && $f->isValid()) {
-                                    $folder = 'barang/' . $barang->id;
-                                    $path = $f->store($folder, 'public');
-                                    $savedPaths[] = $path;
-                                }
-                            }
-                        }
-                        // if any images saved, set gambar to first file (same behavior as GoodsInController)
-                        if (!empty($savedPaths)) {
-                            $barang->gambar = $savedPaths[0];
-                            $barang->save();
-                        }
-                    } catch (\Throwable $ex) {
-                        \Log::warning("Failed storing images for imported row {$i}: ".$ex->getMessage());
-                    }
                     $created++;
                 }
 
@@ -180,103 +150,6 @@ class ImportStockExcelController extends Controller
             }
         }
 
-        // fallback: jika tidak ada rows[] di form, gunakan metode lama (baca dari file Excel + mapping indeks)
-        $request->validate([
-            'import_file_path' => 'required|string',
-            'mapping' => 'required|array'
-        ]);
-
-        $path = $request->input('import_file_path');
-        $fullPath = storage_path('app/public/' . $path);
-
-        if (!file_exists($fullPath)) {
-            return back()->with(['title' => 'Error', 'text' => 'File import tidak ditemukan.']);
-        }
-
-        $sheets = Excel::toArray(null, $fullPath);
-        $sheet = $sheets[0] ?? [];
-
-        if (count($sheet) <= 1) {
-            return back()->with(['title' => 'Error', 'text' => 'Tidak ada data untuk diimpor.']);
-        }
-
-        $headers = array_map(function($h){ return is_null($h) ? '' : trim((string)$h); }, $sheet[0]);
-        $mapping = $request->input('mapping'); // contoh: ['nama_barang' => 1, 'kategori' => 0, ...]
-
-        $created = 0;
-        $errors = [];
-
-        for ($i = 1; $i < count($sheet); $i++) {
-            $row = $sheet[$i];
-
-            $data = [];
-            $fields = ['kategori','nama_barang','stok'];
-
-            foreach ($fields as $field) {
-                if (isset($mapping[$field]) && $mapping[$field] !== '') {
-                    $colIndex = (int)$mapping[$field];
-                    $value = $row[$colIndex] ?? null;
-                    if (is_string($value)) $value = trim($value);
-                    $data[$field] = $value;
-                }
-            }
-
-            $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
-            if (empty($kode)) {
-                $kode = 'IMP' . uniqid();
-            }
-
-            $hargaRaw = $data['harga'] ?? null;
-            if ($hargaRaw !== null) {
-                $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
-                $clean = str_replace(',', '.', $clean);
-                $harga = floatval($clean);
-            } else {
-                $harga = 0;
-            }
-
-            $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
-
-            $payload = [
-                'tipe_request' => 'primary',
-                'status_barang' => 'ditinjau',
-                'kode_barang' => $kode,
-                'nama_barang' => $data['nama_barang'] ?? 'Unnamed',
-                'kategori' => $data['kategori'] ?? null,
-                'stok' => $stok,
-                'form' => Auth::id(),
-            ];
-
-            try {
-                $barang = Barang::create($payload);
-                // try store uploaded files for this row if any (name rows[{$i}][images][])
-                try {
-                    $savedPaths = [];
-                    $files = $request->file("rows.{$i}.images");
-                    if (is_array($files) && count($files) > 0) {
-                        foreach ($files as $f) {
-                            if ($f && $f->isValid()) {
-                                $folder = 'barang/' . $barang->id;
-                                $path = $f->store($folder, 'public');
-                                $savedPaths[] = $path;
-                            }
-                        }
-                    }
-                    if (!empty($savedPaths)) {
-                        $barang->gambar = $savedPaths[0];
-                        $barang->save();
-                    }
-                } catch (\Throwable $ex) {
-                    \Log::warning("Failed storing images for legacy-import row {$i}: ".$ex->getMessage());
-                }
-                $created++;
-            } catch (\Exception $e) {
-                $errors[] = "Baris $i: " . $e->getMessage();
-            }
-        }
-
-        $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
-
-        return redirect()->route('import-stock-excel.index')->with(['title' => 'Import Selesai', 'text' => $msg]);
+        return back()->with(['title' => 'Error', 'text' => 'Tidak ada data untuk diimpor.']);
     }
 }

@@ -147,39 +147,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 tdNama.appendChild(hidden);
             }
 
-            // 2: kategori (select exists in template). Try to set select or fallback hidden
+            // 2: kategori (input exists in template)
             const tdKategori = newRow.children[2];
             if (tdKategori) {
-                const sel = tdKategori.querySelector('select');
-                const v = (getVal('kategori') || '').toString().trim();
-                if (sel) {
-                    // try match option text or value
-                    let matched = false;
-                    Array.from(sel.options).forEach(opt => {
-                        if (!matched && opt.value && opt.value.toString().toLowerCase() === v.toLowerCase()) {
-                            sel.value = opt.value; matched = true;
-                        }
-                    });
-                    if (!matched) {
-                        Array.from(sel.options).forEach(opt => {
-                            if (!matched && opt.text && opt.text.toString().toLowerCase() === v.toLowerCase()) {
-                                sel.value = opt.value; matched = true;
-                            }
-                        });
-                    }
-                    // hidden to submit value
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = `rows[${rowIndex}][kategori]`;
-                    hidden.value = sel.value || v;
-                    tdKategori.appendChild(hidden);
-                } else {
-                    const hidden = document.createElement('input');
-                    hidden.type = 'hidden';
-                    hidden.name = `rows[${rowIndex}][kategori]`;
-                    hidden.value = v;
-                    tdKategori.appendChild(hidden);
+                let inp = tdKategori.querySelector('input');
+                if (!inp) {
+                    inp = document.createElement('input');
+                    inp.type = 'text';
+                    tdKategori.appendChild(inp);
                 }
+                const v = (getVal('kategori') || '').toString().trim();
+                inp.value = v;
+                // hidden
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = `rows[${rowIndex}][kategori]`;
+                hidden.value = v;
+                tdKategori.appendChild(hidden);
             }
 
             // 3: stok
@@ -428,62 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     })();
 
-    // <-- ADD: update kode_barang when kategori select changes
-    (function attachKategoriChangeHandler() {
-        const table = document.getElementById('DataTableExcel');
-        if (!table) return;
-
-        table.addEventListener('change', function (e) {
-            const sel = e.target.closest('select');
-            if (!sel) return;
-
-            const td = sel.closest('td');
-            const tr = sel.closest('tr');
-            if (!tr || !td) return;
-
-            // only react when the select is in Kategori column (col index 2)
-            const colIndex = Array.prototype.indexOf.call(tr.children, td);
-            if (colIndex !== 2) return;
-
-            const kategori = (sel.value || '').toString().trim();
-            const namaEl = tr.children[1]?.querySelector('input, textarea, [name*="[nama_barang]"]');
-            const nama = namaEl ? (namaEl.value || '').toString().trim() : '';
-
-            // compute row index for naming hidden inputs
-            let rowIndex = Array.prototype.indexOf.call(tr.parentNode.children, tr);
-            if (rowIndex < 0) rowIndex = 0;
-
-            const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
-
-            // update visible kode input (col 0)
-            const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
-            if (kodeVisible) kodeVisible.value = newKode;
-
-            // update/create hidden input rows[{i}][kode_barang]
-            let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
-            if (!hiddenKode) {
-                hiddenKode = document.createElement('input');
-                hiddenKode.type = 'hidden';
-                hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
-                tr.children[0].appendChild(hiddenKode);
-            }
-            hiddenKode.value = newKode;
-
-            // ensure hidden kategori value also updated for submission
-            let hiddenKategori = tr.children[2]?.querySelector('input[type="hidden"][name*="[kategori]"]');
-            if (!hiddenKategori) {
-                hiddenKategori = document.createElement('input');
-                hiddenKategori.type = 'hidden';
-                hiddenKategori.name = `rows[${rowIndex}][kategori]`;
-                tr.children[2].appendChild(hiddenKategori);
-            }
-            hiddenKategori.value = kategori;
-
-            // trigger server-side uniqueness check if available
-            try { if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode); } catch (err) { /* ignore */ }
-        });
-    })();
-        // <-- ADD: update hidden inputs when visible inputs change
+    // <-- ADD: update hidden inputs when visible inputs change
     (function attachInputChangeHandler() {
         const table = document.getElementById('DataTableExcel');
         if (!table) return;
@@ -504,11 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 1: fieldName = 'nama_barang'; break;
                 case 2: fieldName = 'kategori'; break;
                 case 3: fieldName = 'stok'; break;
-                case 4: fieldName = 'harga'; break;
-                case 5: fieldName = 'satuan'; break;
-                case 6: fieldName = 'status_listing'; break;
-                case 8: fieldName = 'deskripsi'; break;
-                default: return; // skip kode_barang (0), gambar (7), aksi (9)
+                default: return; // skip kode_barang (0), aksi (4)
             }
 
             const value = (inp.value || '').toString().trim();
