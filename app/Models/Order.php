@@ -13,6 +13,7 @@ class Order extends Model
         'sales_id',
         'supervisor_id',
         'warehouse_id',
+        'request_order_id',
         'status',
         'reason',
         'customer_name',
@@ -40,6 +41,12 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'warehouse_id');
     }
+
+    public function requestOrder()
+    {
+        return $this->belongsTo(RequestOrder::class, 'request_order_id');
+    }
+
     // Add relationship to order items
     public function orderItems()
     {

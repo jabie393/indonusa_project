@@ -9,6 +9,8 @@ use App\Models\RequestOrder;
 use App\Models\RequestOrderItem;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -580,5 +582,60 @@ class RequestOrderController extends Controller
         $requestOrder->update(['status' => $validated['status']]);
 
         return back()->with('success', 'Status Request Order diperbarui.');
+    }
+
+    /**
+     * Sent Request Order to Warehouse (create Order with status sent_to_warehouse)
+     */
+    public function sentToWarehouse(RequestOrder $requestOrder)
+    {
+        if ($requestOrder->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (!in_array($requestOrder->status, ['open', 'approved'])) {
+            return back()->withErrors('Hanya Request Order yang open atau approved dapat dikirim ke Warehouse.');
+        }
+
+        if ($requestOrder->order) {
+            return back()->withErrors('Request Order ini sudah dikirim ke Warehouse.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $order = Order::create([
+                'order_number' => 'DO-' . strtoupper(Str::random(8)),
+                'sales_id' => Auth::id(),
+                'supervisor_id' => $requestOrder->approved_by, // assuming approved_by is supervisor
+                'request_order_id' => $requestOrder->id,
+                'status' => 'sent_to_warehouse',
+                'customer_name' => $requestOrder->customer_name,
+                'customer_id' => $requestOrder->customer_id,
+                'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                'catatan_customer' => $requestOrder->catatan_customer,
+            ]);
+
+            foreach ($requestOrder->items as $reqItem) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'barang_id' => $reqItem->barang_id,
+                    'quantity' => $reqItem->quantity,
+                    'harga' => $reqItem->harga,
+                    'subtotal' => $reqItem->subtotal,
+                ]);
+            }
+
+            // Update Request Order status to sent_to_warehouse or keep approved
+            $requestOrder->update(['status' => 'sent_to_warehouse']);
+
+            DB::commit();
+
+            return redirect()->route('warehouse.delivery-orders.index')
+                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
+        }
     }
 }
