@@ -67,7 +67,7 @@
                                         {{ $statusLabel }}
                                     </span>
                                     @if ($penawaran->status === 'sent' && $hasHighDiscountStatus)
-                                        <span class="rounded bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-800">Menunggu Approval</span>
+                                        <span class="badge bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700">Menunggu Approval</span>
                                     @endif
                                 </div>
                             </td>
