@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
     const uploadArea = document.getElementById('upload-area');
+    const uploadLabel = document.getElementById('upload-label');
+    const uploadResult = document.getElementById('upload-result');
     const importFilePathInput = document.getElementById('import_file_path');
 
     if (!form || !fileInput) return;
@@ -224,29 +226,27 @@ document.addEventListener('DOMContentLoaded', function () {
                 text: 'Harap pilih file Excel dengan ekstensi .xlsx atau .xls.'
             });
             e.target.value = '';
+            progressBar.style.width = '0%';
             progressSection.classList.add('hidden');
-            const filenameElReset = document.getElementById('excel_filename');
-            if (filenameElReset) {
-                filenameElReset.textContent = '';
-                filenameElReset.classList.add('hidden');
-            }
-            const svg = document.querySelector('#excel_label svg');
-            if (svg) svg.classList.remove('hidden');
+            if(uploadLabel) uploadLabel.classList.remove('hidden');
             return;
         }
 
         if (file) {
+            // Reset and show progress
+            if(uploadLabel) uploadLabel.classList.add('hidden');
+            if(uploadResult) uploadResult.classList.add('hidden');
             progressSection.classList.remove('hidden');
             progressBar.style.width = '0%';
             progressText.textContent = '0%';
+            const statusText = document.getElementById('upload-status-text');
+            if(statusText) statusText.textContent = 'Uploading...';
 
             const filenameEl = document.getElementById('excel_filename');
             if (filenameEl) {
                 filenameEl.textContent = file.name;
-                filenameEl.classList.remove('hidden');
+                // filenameEl.classList.remove('hidden'); 
             }
-            const svg = document.querySelector('#excel_label svg');
-            if (svg) svg.classList.add('hidden');
 
             setTimeout(() => { startUpload(file); }, 300);
         }
@@ -291,27 +291,33 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (submitButton) submitButton.disabled = false;
                     }
 
-                    // show upload result
-                    const uploadResult = document.getElementById('upload-result');
-                    const uploadPath = document.getElementById('upload-path');
-                    const uploadUrl = document.getElementById('upload-url');
-                    if (uploadResult && uploadPath && uploadUrl) {
-                        uploadPath.textContent = resp.path || '';
-                        if (resp.url) {
-                            uploadUrl.href = resp.url;
-                            uploadUrl.textContent = resp.url;
-                            uploadUrl.classList.remove('hidden');
-                        } else {
-                            uploadUrl.href = '#';
-                            uploadUrl.textContent = 'Tidak tersedia';
-                        }
-                        uploadResult.classList.remove('hidden');
-                    }
+                     // show upload result and hide progress
+                     progressSection.classList.add('hidden');
+                     if (uploadResult) {
+                         const uploadPath = document.getElementById('upload-path'); // hidden
+                         const uploadUrl = document.getElementById('upload-url');
+                         const uploadFilename = document.getElementById('upload-filename');
+ 
+                         if(uploadFilename) uploadFilename.textContent = file.name; // Use file.name from closure
+                         if(uploadPath) uploadPath.textContent = resp.path || '';
+                         
+                         if (resp.url) {
+                             if(uploadUrl) {
+                                 uploadUrl.href = resp.url;
+                                 uploadUrl.textContent = 'Lihat File';
+                                 uploadUrl.classList.remove('hidden');
+                             }
+                         } else {
+                             if(uploadUrl) uploadUrl.classList.add('hidden');
+                         }
+                         uploadResult.classList.remove('hidden');
+                     }
                 } catch (err) {
                     Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal memproses preview.' });
                 }
             } else {
                 progressSection.classList.add('hidden');
+                if(uploadLabel) uploadLabel.classList.remove('hidden');
                 try {
                     const response = JSON.parse(xhr.responseText);
                     Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'Gagal mengupload file' });
@@ -324,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         xhr.addEventListener('error', function () {
             progressSection.classList.add('hidden');
+            if(uploadLabel) uploadLabel.classList.remove('hidden');
             Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan saat mengupload file.' });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;
@@ -331,6 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         xhr.addEventListener('abort', function () {
             progressSection.classList.add('hidden');
+            if(uploadLabel) uploadLabel.classList.remove('hidden');
             Swal.fire({ icon: 'warning', title: 'Dibatalkan', text: 'Upload dibatalkan.' });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;

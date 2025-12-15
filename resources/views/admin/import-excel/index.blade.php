@@ -32,34 +32,51 @@
                             </label>
                             <input type="file" name="excel" id="excel" class="hidden" accept=".xlsx,.xls" />
 
-                            <div id="upload-area" class="mx-auto mb-4 flex h-48 w-full cursor-pointer items-center rounded-2xl border-2 border-dashed border-gray-400 bg-gray-100 text-center transition-colors hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600">
-                                <label id="excel_label" for="excel" class="m-auto w-full cursor-pointer">
-                                    <div id="excel_filename" class="mx-auto hidden text-sm text-gray-700 dark:text-gray-300"></div>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-700 dark:text-gray-300">
+                            <div id="upload-area" class="relative mx-auto mb-4 flex h-48 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-gray-400 bg-gray-100 text-center transition-colors hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600">
+                                <!-- 1. Initial State: Label/Dropzone -->
+                                <label id="upload-label" for="excel" class="m-auto flex w-full cursor-pointer flex-col items-center justify-center p-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mb-4 h-8 w-8 text-gray-700 dark:text-gray-300">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                                     </svg>
-                                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700 dark:text-white">Upload File
-                                    </h5>
+                                    <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700 dark:text-white">Upload File</h5>
                                     <p class="text-gray-500 dark:text-gray-400">Support Format .Excel</p>
+                                    <!-- Hidden filename placeholder for JS compatibility if needed by old logic, though we will rewrite logic -->
+                                    <div id="excel_filename" class="hidden"></div>
                                 </label>
+
+                                <!-- 2. Progress State -->
+                                <div id="progress-section" class="hidden w-full max-w-md p-6">
+                                    <div class="mb-2 flex items-center justify-between">
+                                        <span id="upload-status-text" class="text-sm font-medium text-gray-700 dark:text-gray-300">Uploading...</span>
+                                        <span id="progress-text" class="text-sm font-medium text-gray-700 dark:text-gray-300">0%</span>
+                                    </div>
+                                    <div class="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+                                        <div id="progress-bar" class="h-3 rounded-full bg-gradient-to-r from-[#225A97] to-[#0D223A] transition-all duration-300" style="width: 0%"></div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Success State -->
+                                <div id="upload-result" class="hidden w-full cursor-default p-6">
+                                    <div class="flex flex-col items-center justify-center space-y-2">
+                                        <div class="rounded-full bg-green-100 p-2 dark:bg-green-900">
+                                            <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </div>
+                                        <h5 class="text-lg font-bold text-gray-700 dark:text-white">Upload Berhasil!</h5>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                                            File: <span id="upload-filename" class="font-medium text-gray-900 dark:text-gray-100"></span>
+                                        </div>
+                                        <div class="mt-2 flex items-center gap-4">
+                                            <a id="upload-url" href="#" target="_blank" class="hidden text-sm text-blue-600 hover:underline dark:text-blue-400">Lihat File</a>
+                                            <span class="text-gray-300">|</span>
+                                            <label for="excel" class="cursor-pointer text-sm text-gray-500 underline hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">Ganti File</label>
+                                        </div>
+                                        <!-- Hidden placeholder to satisfy any JS searching for this ID if strictly needed outside logic, but mainly we use upload-filename span now -->
+                                        <span id="upload-path" class="hidden"></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Progress bar section - hidden by default -->
-                        <div id="progress-section" class="mb-4 hidden">
-                            <div class="mb-2 flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Uploading...</span>
-                                <span id="progress-text" class="text-sm font-medium text-gray-700 dark:text-gray-300">0%</span>
-                            </div>
-                            <div class="h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-                                <div id="progress-bar" class="h-3 rounded-full bg-gradient-to-r from-[#225A97] to-[#0D223A] transition-all duration-300" style="width: 0%"></div>
-                            </div>
-                        </div>
-                        <!-- File Name -->
-                        <div id="upload-result" class="mt-3 hidden">
-                            <div class="text-sm text-gray-700 dark:text-gray-300">
-                                File: <span id="upload-filename" class="font-mono text-xs text-gray-800 dark:text-gray-100"></span>
-                            </div>
-                            <div class="mt-1 text-sm"><a id="upload-url" class="text-blue-600 hover:underline dark:text-blue-400" target="_blank" rel="noopener">Buka file</a></div>
                         </div>
                     </div>
                     <div class="col-span-3">
