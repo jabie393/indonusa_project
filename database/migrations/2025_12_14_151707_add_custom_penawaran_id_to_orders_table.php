@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            $table->unsignedBigInteger('custom_penawaran_id')->nullable()->after('warehouse_id');
+            $table->foreign('custom_penawaran_id')->references('id')->on('custom_penawarans')->onDelete('cascade');
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            //
+            $table->dropForeign(['custom_penawaran_id']);
+            $table->dropColumn('custom_penawaran_id');
         });
     }
 };

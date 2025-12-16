@@ -638,7 +638,7 @@ class RequestOrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('warehouse.delivery-orders.index')
+            return redirect()->route('sales.request-order.index')
                 ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
 
         } catch (\Throwable $e) {
