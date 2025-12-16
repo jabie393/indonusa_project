@@ -14,8 +14,7 @@ let datatable = new DataTable('#DataTable', {
     paging: false,
     info: false,
     scrollX: true,
-    columns: [null, null, null, null, null, null, null, null, null, null, null]
-    
+    colReorder: true,
 });
 let datatable2 = new DataTable('#DataTable2', {
     fixedHeader: true,
