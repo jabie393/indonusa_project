@@ -48,9 +48,9 @@
                             <td class="px-4 py-4">
                                 <span class="font-semibold">{{ $penawaran->penawaran_number }}</span>
                             </td>
-                            <td class="px-4 py-4 text-nowrap">{{ $penawaran->to }}</td>
+                            <td class="text-nowrap px-4 py-4">{{ $penawaran->to }}</td>
                             <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
-                            <td class="px-4 py-4 text-nowrap">{{ $penawaran->our_ref }}</td>
+                            <td class="text-nowrap px-4 py-4">{{ $penawaran->our_ref }}</td>
                             <td class="px-4 py-4">
                                 @php
                                     $discounts = $penawaran->items->pluck('diskon')->unique()->sort()->values();
@@ -58,13 +58,15 @@
                                 @if ($discounts->isNotEmpty())
                                     @foreach ($discounts as $index => $d)
                                         <span class="badge bg-green-50 text-green-700">{{ $d }}%</span>
-                                        @if ($index < $discounts->count() - 1) , @endif
+                                        @if ($index < $discounts->count() - 1)
+                                            ,
+                                        @endif
                                     @endforeach
                                 @else
                                     <span class="badge bg-gray-50 text-gray-700">0%</span>
                                 @endif
                             </td>
-                            <td class="px-4 py-4 text-right font-semibold text-nowrap">
+                            <td class="text-nowrap px-4 py-4 text-right font-semibold">
                                 Rp {{ number_format($penawaran->grand_total, 0, ',', '.') }}
                             </td>
                             <td class="px-4 py-4 text-center">
@@ -113,7 +115,7 @@
                                         {{ $statusLabel }}
                                     </span>
                                     @if ($penawaran->status === 'sent' && $hasHighDiscountStatus)
-                                        <span class="badge bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700">Menunggu Approval</span>
+                                        <span class="badge inset-ring inset-ring-blue-700 bg-blue-50 text-blue-700">Menunggu Approval</span>
                                     @endif
                                 </div>
                             </td>
@@ -160,14 +162,14 @@
                                             <button type="button" disabled class="group flex h-full cursor-not-allowed items-center justify-center bg-gray-300 p-2 text-sm font-medium text-white" title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
                                                     <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
-                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                    <path d="M10 9H8"></path>
-                                                    <path d="M16 13H8"></path>
-                                                    <path d="M16 17H8"></path>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
+                                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                        <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                        <path d="M10 9H8"></path>
+                                                        <path d="M16 13H8"></path>
+                                                        <path d="M16 17H8"></path>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
                                             </button>
                                         @endif
 
@@ -176,7 +178,7 @@
                                             <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('POST')
-                                                <button type="submit" class="group flex cursor-pointer h-full items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
+                                                <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck h-4 w-4">
                                                         <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
                                                         <path d="M15 18H9"></path>
@@ -184,16 +186,16 @@
                                                         <circle cx="17" cy="18" r="2"></circle>
                                                         <circle cx="7" cy="18" r="2"></circle>
                                                     </svg>
-                                                    <span class="max-w-0 text-nowrap  overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
+                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
                                                 </button>
                                             </form>
                                         @endif
 
                                         {{-- Delete --}}
-                                        <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus?')">
+                                        <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" class="inline-block">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" title="Hapus">
+                                            <button type="button" onclick="confirmDelete(() => this.closest('form').submit())" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" title="Hapus">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
                                                     <path d="M10 11v6"></path>
                                                     <path d="M14 11v6"></path>

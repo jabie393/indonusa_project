@@ -162,7 +162,7 @@ class CustomPenawaranController extends Controller
 
             Log::info('Custom Penawaran Returning Redirect To Show', ['id' => $penawaran->id]);
             return redirect()->route('sales.custom-penawaran.show', $penawaran->id)
-                ->with('success', "Penawaran {$penawaran->penawaran_number} berhasil dibuat.");
+                ->with(['title' => 'Berhasil', 'text' => "Penawaran {$penawaran->penawaran_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Custom Penawaran Store Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
@@ -298,7 +298,7 @@ class CustomPenawaranController extends Controller
             DB::commit();
 
             return redirect()->route('sales.custom-penawaran.show', $customPenawaran->id)
-                ->with('success', 'Penawaran berhasil diubah.');
+                ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             return back()->withErrors('Gagal mengubah penawaran: ' . $e->getMessage())->withInput();
@@ -316,7 +316,7 @@ class CustomPenawaranController extends Controller
 
         $customPenawaran->delete();
         return redirect()->route('sales.custom-penawaran.index')
-            ->with('success', 'Penawaran berhasil dihapus.');
+            ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil dihapus.']);
     }
 
     /**
@@ -340,11 +340,11 @@ class CustomPenawaranController extends Controller
         if ($action === 'approve') {
             $customPenawaran->status = 'approved';
             $customPenawaran->save();
-            return back()->with('success', 'Penawaran telah disetujui.');
+            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
         } elseif ($action === 'reject') {
             $customPenawaran->status = 'rejected';
             $customPenawaran->save();
-            return back()->with('success', 'Penawaran telah ditolak.');
+            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
         }
         return back()->withErrors('Aksi tidak valid.');
     }
@@ -437,7 +437,7 @@ class CustomPenawaranController extends Controller
             \Log::info('Transaction committed');
 
             return redirect()->route('sales.custom-penawaran.index')
-                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
+                ->with(['title' => 'Berhasil', 'text' => "Order {$order->order_number} berhasil dikirim ke Warehouse."]);
 
         } catch (\Throwable $e) {
             DB::rollBack();
