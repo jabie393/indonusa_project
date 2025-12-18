@@ -76,6 +76,17 @@ document.addEventListener('DOMContentLoaded', function () {
                         audplay.play();
                     }
                 });
+                
+                // Update badge for supply orders if it exists
+                const supplyBadge = document.getElementById('supply-orders-notif-badge');
+                if (supplyBadge) {
+                    supplyBadge.textContent = e.barangCount;
+                    if (e.barangCount > 0) {
+                        supplyBadge.classList.remove('hidden');
+                    } else {
+                        supplyBadge.classList.add('hidden');
+                    }
+                }
             });
     }
 });

@@ -204,6 +204,10 @@
 
                                 <span class="{{ request()->routeIs('supply-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Supply
                                     Orders</span>
+                                @php
+                                    $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
+                                @endphp
+                                <span id="supply-orders-notif-badge" class="{{ $supplyOrderCount > 0 ? '' : 'hidden' }} ml-2 rounded-full bg-red-500 px-2 py-1 text-xs text-white">{{ $supplyOrderCount }}</span>
                             </a>
                         </li>
 
