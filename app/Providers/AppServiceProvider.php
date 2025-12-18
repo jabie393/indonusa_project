@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Order;
+use App\Models\Barang;
 use App\Observers\OrderObserver;
+use App\Observers\BarangObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,5 +24,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Order::observe(OrderObserver::class);
+        Barang::observe(BarangObserver::class);
     }
 }
