@@ -113,23 +113,54 @@ class ImportStockExcelController extends Controller
                     // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok
                     $kode = $r['kode_barang'] ?? null;
                     if (empty($kode)) {
+                        // Jika kode kosong di excel, generate baru (kasus item baru tanpa kode)
                         $kode = 'IMP' . substr(uniqid(), -6);
                     }
 
                     $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
 
-                    $payload = [
-                        'tipe_request' => 'primary',
-                        'status_barang' => 'ditinjau',
-                        'kode_barang' => $kode,
-                        'nama_barang' => $r['nama_barang'] ?? 'Unnamed',
-                        'kategori' => $r['kategori'] ?? null,
-                        'stok' => $stok,
-                        'form' => Auth::id(),
-                    ];
+                    // Cek apakah barang dengan kode tersebut sudah ada
+                    $existingBarang = Barang::where('kode_barang', $kode)->first();
 
-                    // create barang
-                    $barang = Barang::create($payload);
+                    if ($existingBarang) {
+                        // --- LOGIKA ADD STOCK (Replicate) ---
+                        // Copy data baru dengan stok baru dan status_barang 'ditinjau'
+                        $copyData = $existingBarang->replicate();
+                        $copyData->stok = $stok;
+                        $copyData->status_barang = 'ditinjau';
+                        $copyData->tipe_request = 'new_stock';
+                        $copyData->form = Auth::id();
+
+                        // Generate kode_barang unik untuk request ini (Code#1, Code#2, dst)
+                        $originalKode = $existingBarang->kode_barang;
+                        $newKode = $originalKode;
+                        $idx = 1;
+                        while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
+                            $newKode = $originalKode . '#' . $idx;
+                            $idx++;
+                        }
+                        $copyData->kode_barang = $newKode;
+                        $copyData->save();
+
+                    } else {
+                        // --- LOGIKA NEW ITEM (Primary) ---
+                        // Barang benar-benar baru, belum ada di database
+                        $payload = [
+                            'tipe_request'  => 'primary', // Item induk baru
+                            'status_barang' => 'ditinjau',
+                            'kode_barang'   => $kode,
+                            'nama_barang'   => $r['nama_barang'] ?? 'Unnamed',
+                            'kategori'      => $r['kategori'] ?? null,
+                            'stok'          => $stok,
+                            'satuan'        => $r['satuan'] ?? 'Unit',
+                            'deskripsi'     => $r['deskripsi'] ?? '-',
+                            'harga'         => isset($r['harga']) ? (float)$r['harga'] : 0,
+                            'lokasi'        => $r['lokasi'] ?? '-',
+                            'form'          => Auth::id(),
+                        ];
+
+                        Barang::create($payload);
+                    }
 
                     $created++;
                 }
