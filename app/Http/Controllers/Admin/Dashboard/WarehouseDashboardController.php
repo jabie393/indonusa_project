@@ -39,8 +39,8 @@ class WarehouseDashboardController extends Controller
             ->where('stok', '<', $threshold);
 
         $data = [
-            'totalBarang' => Barang::count(),
-            'totalStok' => Barang::sum('stok'),
+            'totalBarang' => Barang::where('status_barang', 'masuk')->count(),
+            'totalStok' => Barang::where('status_barang', 'masuk')->sum('stok'),
             // ambil 4 terendah untuk card
             'lowStockItems' => (clone $baseLowQuery)->orderBy('stok', 'asc')->take(4)->get(),
             // semua untuk tabel
