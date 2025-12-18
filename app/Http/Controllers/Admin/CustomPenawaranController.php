@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
@@ -375,7 +376,8 @@ class CustomPenawaranController extends Controller
      */
     public function sentToWarehouse(CustomPenawaran $customPenawaran)
     {
-        if ($customPenawaran->sales_id !== Auth::id()) {
+        // Allow if user is admin or the sales who created it
+        if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }
 
@@ -387,8 +389,14 @@ class CustomPenawaranController extends Controller
             return back()->withErrors('Custom Penawaran ini sudah dikirim ke Warehouse.');
         }
 
+        if ($customPenawaran->items->isEmpty()) {
+            return back()->withErrors('Custom Penawaran tidak memiliki item.');
+        }
+
         DB::beginTransaction();
         try {
+            \Log::info('Starting sentToWarehouse for custom penawaran ID: ' . $customPenawaran->id);
+
             $order = Order::create([
                 'order_number' => 'DO-' . strtoupper(Str::random(8)),
                 'sales_id' => Auth::id(),
@@ -401,7 +409,13 @@ class CustomPenawaranController extends Controller
                 'catatan_customer' => $customPenawaran->intro_text,
             ]);
 
+            \Log::info('Order created with ID: ' . $order->id);
+
             foreach ($customPenawaran->items as $item) {
+                if (is_null($item->harga) || is_null($item->subtotal) || $item->qty <= 0) {
+                    throw new \Exception('Item data invalid: harga, subtotal, or qty is invalid for item ID ' . $item->id);
+                }
+                \Log::info('Creating OrderItem for item ID: ' . $item->id . ', qty: ' . $item->qty . ', harga: ' . $item->harga . ', subtotal: ' . $item->subtotal);
                 OrderItem::create([
                     'order_id' => $order->id,
                     'barang_id' => null, // Custom Penawaran items might not have barang_id
@@ -411,16 +425,23 @@ class CustomPenawaranController extends Controller
                 ]);
             }
 
+            \Log::info('OrderItems created');
+
             // Update Custom Penawaran status to sent_to_warehouse
             $customPenawaran->update(['status' => 'sent_to_warehouse']);
 
+            \Log::info('Custom penawaran status updated');
+
             DB::commit();
 
-            return redirect()->route('warehouse.delivery-orders.index')
+            \Log::info('Transaction committed');
+
+            return redirect()->route('sales.custom-penawaran.index')
                 ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
 
         } catch (\Throwable $e) {
             DB::rollBack();
+            \Log::error('Error in sentToWarehouse: ' . $e->getMessage());
             return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
         }
     }

@@ -76,15 +76,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // clear existing
         tbody.innerHTML = '';
 
-        // if no template row, build one minimal for 9 columns
+        // if no template row, build one minimal for 5 columns
         let baseRow;
         if (templateRow) {
             baseRow = templateRow;
         } else {
             baseRow = document.createElement('tr');
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 5; i++) {
                 const td = document.createElement('td');
-                if (i === 9) {
+                if (i === 4) {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'btn remove-row rounded-md bg-red-500 text-white';
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // 4: aksi - keep remove button functional
-            const aksiTd = newRow.children[9];
+            const aksiTd = newRow.children[4];
             if (aksiTd) {
                 const removeBtn = aksiTd.querySelector('button.remove-row');
                 if (removeBtn) {
