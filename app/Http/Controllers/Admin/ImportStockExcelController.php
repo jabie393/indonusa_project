@@ -169,8 +169,7 @@ class ImportStockExcelController extends Controller
                     } else {
                         // --- SKIP NEW ITEMS ---
                         // Item tidak ada di database, abaikan sesuai request
-                        // Bisa catat ke errors array jika ingin laporan detail
-                        // $errors[] = "Kode $kode tidak ditemukan.";
+                        // $errors[] = "Kode $kode tidak ditemukan - Skipped.";
                     }
                 }
 
@@ -179,14 +178,18 @@ class ImportStockExcelController extends Controller
                 // optional: hapus file excel setelah import sukses (jika ada path)
                 $path = $request->input('import_file_path');
                 if (!empty($path) && Storage::disk('public')->exists($path)) {
-                    try { Storage::disk('public')->delete($path); } catch (\Throwable $e) { \Log::warning('Delete import file failed: '.$e->getMessage()); }
+                    try {
+                        Storage::disk('public')->delete($path);
+                    } catch (\Throwable $e) {
+                        \Log::warning('Delete import file failed: ' . $e->getMessage());
+                    }
                 }
 
                 $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
                 return redirect()->route('import-stock-excel.index')->with(['title' => 'Import Selesai', 'text' => $msg]);
             } catch (\Throwable $e) {
                 DB::rollBack();
-                return back()->with(['title' => 'Error', 'text' => 'Import gagal: '.$e->getMessage()]);
+                return back()->with(['title' => 'Error', 'text' => 'Import gagal: ' . $e->getMessage()]);
             }
         }
 

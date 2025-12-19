@@ -60,6 +60,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Strict Header Validation
+    function validateHeaders(headers) {
+        if (!Array.isArray(headers))
+            return { valid: false, missing: [], extra: [] };
+
+        const required = ["KODE BARANG", "NAMA BARANG", "KATEGORI", "STOK"];
+
+        const upperHeaders = headers.map((h) => String(h).trim().toUpperCase());
+
+        // 1. Check Missing
+        const missing = required.filter((req) => !upperHeaders.includes(req));
+
+        // 2. Check Extra (Unknown columns)
+        // Any header in upperHeaders that is NOT in required list is an extra
+        const extra = upperHeaders.filter(
+            (h) => h !== "" && !required.includes(h)
+        );
+
+        return {
+            valid: missing.length === 0 && extra.length === 0,
+            missing: missing,
+            extra: extra,
+        };
+    }
+
     // helper: remove completely empty rows and trim each row to headers length
     // helper: remove completely empty rows and trim each row to headers length
     function cleanRows(rows, headers) {
@@ -426,6 +451,38 @@ document.addEventListener("DOMContentLoaded", function () {
                         importFilePathInput.value = resp.path || "";
 
                     if (resp.headers && Array.isArray(resp.headers)) {
+                        // STRICT VALIDATION
+                        const valResult = validateHeaders(resp.headers);
+                        if (!valResult.valid) {
+                            let errorHtml = `File Excel harus MEMILIKI kolom PERSIS berikut:<br><b>KODE BARANG, NAMA BARANG, KATEGORI, STOK</b>.<br><br>`;
+
+                            if (valResult.missing.length > 0) {
+                                errorHtml += `Kolom yang hilang: <span class="text-red-500 font-bold">${valResult.missing.join(
+                                    ", "
+                                )}</span><br>`;
+                            }
+
+                            if (valResult.extra && valResult.extra.length > 0) {
+                                errorHtml += `Kolom tidak dikenal (harus dihapus): <span class="text-red-500 font-bold">${valResult.extra.join(
+                                    ", "
+                                )}</span>`;
+                            }
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Format Header Tidak Sesuai",
+                                html: errorHtml,
+                            });
+                            // Reset UI
+                            progressBar.style.width = "0%";
+                            progressSection.classList.add("hidden");
+                            if (uploadLabel)
+                                uploadLabel.classList.remove("hidden");
+                            fileInput.value = ""; // clear file
+                            if (submitButton) submitButton.disabled = false;
+                            return; // STOP
+                        }
+
                         // no preview UI: keep import path, auto-map and populate main table
                         const cleanedRows = cleanRows(
                             resp.rows || [],
