@@ -353,9 +353,9 @@
                             @endphp
 
                             @if ($canDownloadPdf)
-                                <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
+                                <button type="button" class="btn btn-secondary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#pdfNoteModal">
                                     <i class="fas fa-download"></i> Download PDF
-                                </a>
+                                </button>
                             @else
                                 <button type="button" class="btn btn-secondary w-100 mb-2" disabled title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
                                     <i class="fas fa-download"></i> Download PDF
@@ -391,6 +391,33 @@
     </div>
 
     <!-- Reject Modal -->
+    <!-- PDF Note Modal -->
+    <div class="modal fade" id="pdfNoteModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Catatan untuk PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="GET" action="{{ route('sales.request-order.pdf', $requestOrder->id) }}" target="_blank">
+                    <div class="modal-body">
+                        @php
+                            $defaultPdfNote = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
+                        @endphp
+                        <div class="mb-3">
+                            <label for="pdf_note" class="form-label">Catatan yang akan muncul di PDF</label>
+                            <textarea id="pdf_note" name="pdf_note" rows="8" class="form-control">{{ old('pdf_note', $requestOrder->catatan_customer ?? $defaultPdfNote) }}</textarea>
+                            <small class="text-muted">Teks ini akan dimasukkan ke bagian pembuka PDF. Anda dapat mengeditnya sebelum mengunduh.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Generate &amp; Download PDF</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         function supervisorBack() {
             try {

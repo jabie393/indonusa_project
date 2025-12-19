@@ -288,7 +288,11 @@ class RequestOrderController extends Controller
         $requestOrder->checkAndUpdateExpiry();
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales');
-        return view('admin.pdf.request-order-pdf', compact('requestOrder'));
+
+        // Allow overriding the PDF opening note via a query param (editable modal)
+        $pdfNote = request()->query('pdf_note', $requestOrder->catatan_customer ?? null);
+
+        return view('admin.pdf.request-order-pdf', compact('requestOrder', 'pdfNote'));
     }
 
     /**
