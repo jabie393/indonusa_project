@@ -349,10 +349,17 @@ class CustomPenawaranController extends Controller
             }
         if ($action === 'approve') {
             $customPenawaran->status = 'approved';
+            // clear any previous reason on approval
+            $customPenawaran->reason = null;
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
         } elseif ($action === 'reject') {
+            $validated = $request->validate([
+                'reason' => 'required|string|max:2000',
+            ]);
+
             $customPenawaran->status = 'rejected';
+            $customPenawaran->reason = $validated['reason'];
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
         }

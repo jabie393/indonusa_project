@@ -22,6 +22,7 @@ class CustomPenawaran extends Model
         'tax',
         'grand_total',
         'status',
+        'reason',
     ];
 
     protected $casts = [
