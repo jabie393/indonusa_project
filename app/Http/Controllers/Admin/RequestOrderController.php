@@ -72,7 +72,12 @@ class RequestOrderController extends Controller
             ->sort()
             ->values();
 
-        return view('admin.sales.request-order.create', compact('barangs', 'customers', 'categories'));
+        // Get sales users
+        $salesUsers = \App\Models\User::where('role', 'Sales')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.sales.request-order.create', compact('barangs', 'customers', 'categories', 'salesUsers'));
     }
 
     /**
@@ -83,6 +88,7 @@ class RequestOrderController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
+            'pic_id' => 'required|integer|exists:users,id',
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
@@ -152,7 +158,7 @@ class RequestOrderController extends Controller
                 'request_number' => 'REQ-' . strtoupper(Str::random(8)),
                 'nomor_penawaran' => $nomorPenawaran,
                 'sales_order_number' => 'SO-' . strtoupper(Str::random(8)),
-                'sales_id' => Auth::id(),
+                'sales_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
@@ -323,7 +329,12 @@ class RequestOrderController extends Controller
 
         $categories = Barang::distinct()->whereNotNull('kategori')->where('kategori', '!=', '')->pluck('kategori')->sort()->values();
 
-        return view('admin.sales.request-order.edit', compact('requestOrder', 'barangs', 'customers', 'categories'));
+        // Get sales users
+        $salesUsers = \App\Models\User::where('role', 'Sales')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.sales.request-order.edit', compact('requestOrder', 'barangs', 'customers', 'categories', 'salesUsers'));
     }
 
     /**
@@ -343,6 +354,7 @@ class RequestOrderController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
+            'pic_id' => 'required|integer|exists:users,id',
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
@@ -400,6 +412,7 @@ class RequestOrderController extends Controller
             }
 
             $requestOrder->update([
+                'sales_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,

@@ -193,6 +193,7 @@
             if ($.fn.select2) {
                 const $el = $('#editPic');
                 let vals = $el.val() || [];
+                console.log('Submitting PIC values:', vals);
                 vals = vals.map(function (v) {
                     try {
                         return v.replace(/\s*\(baru\)$/, '');
@@ -201,6 +202,7 @@
                     }
                 });
                 $el.val(vals);
+                console.log('Cleaned PIC values:', vals);
             }
         });
     });
@@ -237,6 +239,7 @@
                 return response.json();
             })
             .then(customerPics => {
+                console.log('Customer PICs loaded:', customerPics);
                 // Render daftar customer_pics ke div #customerPicsList
                 (function renderCustomerPicsList(picsList) {
                     const container = document.getElementById('customerPicsList');
@@ -274,7 +277,7 @@
 
                 // Sales Users
                 salesUsersData.forEach(user => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(user.id) && (cp.pivot?.pic_type === 'User' || cp.pic_type === 'User'));
+                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(user.id) && cp.pivot && cp.pivot.pic_type === 'User');
                     const optionValue = JSON.stringify({ id: user.id, type: 'User' });
                     const optionText = `${user.name} (Sales)`;
                     if (isSelected) selectedValues.push(optionValue);
@@ -283,7 +286,7 @@
 
                 // PICs (master list from picsData)
                 picsData.forEach(pic => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(pic.id) && (cp.pivot?.pic_type === 'Pic' || cp.pic_type === 'Pic'));
+                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(pic.id) && cp.pivot && cp.pivot.pic_type === 'Pic');
                     const position = pic.position || 'Tanpa jabatan';
                     const optionValue = JSON.stringify({ id: pic.id, type: 'Pic' });
                     const optionText = `${pic.name} (${position})`;
@@ -301,6 +304,7 @@
                             initSelect2();
                         }
 
+                        console.log('Setting selected values:', selectedValues);
                         if (selectedValues.length > 0) {
                             editPicDropdown.val(selectedValues).trigger('change');
                         } else {

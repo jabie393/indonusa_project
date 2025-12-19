@@ -16,7 +16,7 @@ class CustomerController extends Controller
     {
         // If pivot table doesn't exist yet (migrations not run), avoid eager-loading to prevent SQL errors
         if (Schema::hasTable('customer_pics')) {
-            $customers = Customer::with('pics')->get(); // Mengambil semua data customer dari database beserta relasi pics
+            $customers = Customer::with('pics', 'users')->get(); // Mengambil semua data customer dari database beserta relasi pics dan users
         } else {
             $customers = Customer::all();
         }
@@ -124,7 +124,7 @@ class CustomerController extends Controller
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
-            'pics' => 'required|array',
+            'pics' => 'nullable|array',
             'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
         ]);
 
@@ -148,37 +148,44 @@ class CustomerController extends Controller
 
         // Sinkronisasi PICs
         $customer->pics()->detach(); // Hapus semua hubungan PIC sebelumnya
-        foreach ($validatedData['pics'] as $pic) {
-            if (is_string($pic)) {
-                $decodedPic = json_decode($pic, true);
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $pic = $decodedPic;
-                } else {
-                    $newPic = Pic::create(['name' => $pic]);
-                    $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
-                    continue;
-                }
-            }
 
-            if (isset($pic['id']) && isset($pic['type'])) {
-                if ($pic['type'] === 'Pic') {
-                    $existingPic = Pic::find($pic['id']);
-                    if ($existingPic) {
-                        $customer->pics()->attach($pic['id'], ['pic_type' => 'Pic']);
-                        continue;
+        if (!empty($validatedData['pics'])) {
+            foreach ($validatedData['pics'] as $pic) {
+                try {
+                    if (is_string($pic)) {
+                        $decodedPic = json_decode($pic, true);
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $pic = $decodedPic;
+                        } else {
+                            $newPic = Pic::create(['name' => $pic]);
+                            $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
+                            continue;
+                        }
                     }
-                } elseif ($pic['type'] === 'User') {
-                    $existingUser = User::find($pic['id']);
-                    if ($existingUser) {
-                        $customer->pics()->attach($pic['id'], ['pic_type' => 'User']);
-                        continue;
-                    }
-                }
-            }
 
-            if (isset($pic['newTag']) && $pic['newTag'] === true) {
-                $newPic = Pic::create(['name' => $pic['id']]);
-                $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
+                    if (isset($pic['id']) && isset($pic['type'])) {
+                        if ($pic['type'] === 'Pic') {
+                            $existingPic = Pic::find($pic['id']);
+                            if ($existingPic) {
+                                $customer->pics()->attach($pic['id'], ['pic_type' => 'Pic']);
+                                continue;
+                            }
+                        } elseif ($pic['type'] === 'User') {
+                            $existingUser = User::find($pic['id']);
+                            if ($existingUser) {
+                                $customer->pics()->attach($pic['id'], ['pic_type' => 'User']);
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (isset($pic['newTag']) && $pic['newTag'] === true) {
+                        $newPic = Pic::create(['name' => $pic['id']]);
+                        $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Error processing PIC: ' . $e->getMessage(), ['pic' => $pic]);
+                }
             }
         }
 
