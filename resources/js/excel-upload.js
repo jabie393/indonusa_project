@@ -31,13 +31,15 @@ document.addEventListener("DOMContentLoaded", function () {
             return null;
         };
 
-        map["kode_barang"] = pick([
-            "kode",
-            "sku",
-            "code",
-            "id barang",
-            "kode barang",
-        ]);
+        // map["kode_barang"] = pick([
+        //     "kode",
+        //     "sku",
+        //     "code",
+        //     "id barang",
+        //     "kode barang",
+        // ]);
+        // FORCE NULL so it is always generated
+        map["kode_barang"] = null;
         map["nama_barang"] =
             pick(["nama", "product", "barang", "item", "description"]) ??
             pick(["nama barang", "nama_produk"]);
@@ -46,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
             "deskripsi",
             "description",
             "keterangan",
-            "spesifikasi",
             "note",
         ]);
         map["stok"] = pick(["stok", "quantity", "qty", "jumlah"]);
@@ -103,6 +104,11 @@ document.addEventListener("DOMContentLoaded", function () {
         "OTHER CATEGORIES": "OC",
     };
 
+    // Prepare Existing Codes Set for fast lookup
+    const existingCodesSet = new Set(
+        (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
+    );
+
     function generateKodeFromCategory(kategori, nama, rowIndex) {
         // pakai singkatan kategori bila ada, jika tidak gunakan 2-3 huruf awal dari nama barang
         let sing =
@@ -122,8 +128,67 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             if (!sing) sing = "UNK";
         }
-        const timestamp = Date.now().toString().slice(-5); // 5 digit terakhir
-        return `${sing}-${timestamp}`;
+
+        // Base logic: SING-TIMESTAMP
+        // Using increment strategy for collisions as requested (no suffix)
+
+        // Initial seed from time
+        let seed = parseInt(Date.now().toString().slice(-5), 10);
+        let candidate = ``;
+
+        let attempt = 0;
+        // Try creating a code. If taken, increment seed and try again.
+        while (attempt < 2000) {
+            candidate = `${sing}-${seed.toString().padStart(5, "0")}`;
+
+            if (!existingCodesSet.has(candidate)) {
+                // Found a free slot
+                existingCodesSet.add(candidate);
+                return candidate;
+            }
+
+            // Collision -> Increment seed
+            seed++;
+            if (seed > 99999) seed = 0; // Wrap around
+            attempt++;
+        }
+
+        // Fallback (extremely unlikely) - if wrapped 2000 times and all taken?
+        // Just return the last candidate or maybe fallback to original random logic if critical failure
+        return candidate;
+    }
+
+    // Strict Header Validation
+    // Strict Header Validation
+    function validateHeaders(headers) {
+        if (!Array.isArray(headers))
+            return { valid: false, missing: [], extra: [] };
+
+        const required = [
+            "KATEGORI",
+            "NAMA BARANG",
+            "DESKRIPSI",
+            "STOK",
+            "SATUAN",
+            "HARGA",
+        ];
+
+        const upperHeaders = headers.map((h) => String(h).trim().toUpperCase());
+
+        // 1. Check Missing
+        const missing = required.filter((req) => !upperHeaders.includes(req));
+
+        // 2. Check Extra (Unknown columns)
+        // Any header in upperHeaders that is NOT in required list is an extra
+        const extra = upperHeaders.filter(
+            (h) => h !== "" && !required.includes(h)
+        );
+
+        return {
+            valid: missing.length === 0 && extra.length === 0,
+            missing: missing,
+            extra: extra,
+        };
     }
 
     // helper: inject hidden mapping inputs into form (overwrites previous)
@@ -527,6 +592,38 @@ document.addEventListener("DOMContentLoaded", function () {
                         importFilePathInput.value = resp.path || "";
 
                     if (resp.headers && Array.isArray(resp.headers)) {
+                        // STRICT VALIDATION
+                        const valResult = validateHeaders(resp.headers);
+                        if (!valResult.valid) {
+                            let errorHtml = `File Excel harus MEMILIKI kolom PERSIS berikut:<br><b>KATEGORI, NAMA BARANG, DESKRIPSI, STOK, SATUAN, HARGA</b>.<br><br>`;
+
+                            if (valResult.missing.length > 0) {
+                                errorHtml += `Kolom yang hilang: <span class="text-red-500 font-bold">${valResult.missing.join(
+                                    ", "
+                                )}</span><br>`;
+                            }
+
+                            if (valResult.extra && valResult.extra.length > 0) {
+                                errorHtml += `Kolom tidak dikenal (harus dihapus): <span class="text-red-500 font-bold">${valResult.extra.join(
+                                    ", "
+                                )}</span>`;
+                            }
+
+                            Swal.fire({
+                                icon: "error",
+                                title: "Format Header Tidak Sesuai",
+                                html: errorHtml,
+                            });
+                            // Reset UI
+                            progressBar.style.width = "0%";
+                            progressSection.classList.add("hidden");
+                            if (uploadLabel)
+                                uploadLabel.classList.remove("hidden");
+                            fileInput.value = ""; // clear file
+                            if (submitButton) submitButton.disabled = false;
+                            return; // STOP
+                        }
+
                         // no preview UI: keep import path, auto-map and populate main table
                         const cleanedRows = cleanRows(
                             resp.rows || [],
