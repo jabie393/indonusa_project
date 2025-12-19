@@ -1,23 +1,27 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form[action*="import-excel.import"], form[enctype="multipart/form-data"]');
-    const fileInput = document.getElementById('excel');
-    const progressSection = document.getElementById('progress-section');
-    const progressBar = document.getElementById('progress-bar');
-    const progressText = document.getElementById('progress-text');
-    const uploadArea = document.getElementById('upload-area');
-    const uploadLabel = document.getElementById('upload-label');
-    const uploadResult = document.getElementById('upload-result');
-    const importFilePathInput = document.getElementById('import_file_path');
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(
+        'form[action*="import-excel.import"], form[enctype="multipart/form-data"]'
+    );
+    const fileInput = document.getElementById("excel");
+    const progressSection = document.getElementById("progress-section");
+    const progressBar = document.getElementById("progress-bar");
+    const progressText = document.getElementById("progress-text");
+    const uploadArea = document.getElementById("upload-area");
+    const uploadLabel = document.getElementById("upload-label");
+    const uploadResult = document.getElementById("upload-result");
+    const importFilePathInput = document.getElementById("import_file_path");
 
     if (!form || !fileInput) return;
 
     let uploadInProgress = false;
     let uploadCompleted = false;
-    const submitButton = form.querySelector('.submit-btn');
+    const submitButton = form.querySelector(".submit-btn");
 
     // helper: auto-map headers to fields using keywords
     function autoMapHeaders(headers) {
-        const lower = headers.map(h => (h || '').toString().toLowerCase().replace(/\s+/g, ' ').trim());
+        const lower = headers.map((h) =>
+            (h || "").toString().toLowerCase().replace(/\s+/g, " ").trim()
+        );
         const map = {};
         const pick = (keywords) => {
             for (let i = 0; i < lower.length; i++) {
@@ -30,10 +34,10 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Hardcode mapping berdasarkan header standar: Kode Barang, Nama Barang, Kategori, Stok
-        map['kode_barang'] = 0;
-        map['nama_barang'] = 1;
-        map['kategori'] = 2;
-        map['stok'] = 3;
+        map["kode_barang"] = 0;
+        map["nama_barang"] = 1;
+        map["kategori"] = 2;
+        map["stok"] = 3;
 
         // Mapping sudah hardcode, skip ensure unique
 
@@ -43,151 +47,288 @@ document.addEventListener('DOMContentLoaded', function () {
     // helper: inject hidden mapping inputs into form (overwrites previous)
     function injectMappingInputs(mapping) {
         // remove previous mapping inputs
-        form.querySelectorAll('input[name^="mapping["]').forEach(i => i.remove());
+        form.querySelectorAll('input[name^="mapping["]').forEach((i) =>
+            i.remove()
+        );
         for (const field in mapping) {
             const val = mapping[field];
-            const input = document.createElement('input');
-            input.type = 'hidden';
+            const input = document.createElement("input");
+            input.type = "hidden";
             input.name = `mapping[${field}]`;
-            input.value = (val === null || val === undefined) ? '' : String(val);
+            input.value = val === null || val === undefined ? "" : String(val);
             form.appendChild(input);
         }
     }
 
     // helper: remove completely empty rows and trim each row to headers length
+    // helper: remove completely empty rows and trim each row to headers length
     function cleanRows(rows, headers) {
         if (!Array.isArray(rows)) return [];
         const hlen = Array.isArray(headers) ? headers.length : null;
+
         return rows
-            .map(r => Array.isArray(r) ? r : [])
-            .map(r => (hlen ? r.slice(0, hlen) : r))
-            .map(r => r.map(c => (c === null || c === undefined) ? '' : String(c).trim()))
-            .filter(r => r.some(c => c !== '')); // keep rows that have at least one non-empty cell
+            .map((r) => {
+                // Check if row is our new object structure { data: [...], is_known: ... }
+                if (
+                    r &&
+                    typeof r === "object" &&
+                    !Array.isArray(r) &&
+                    Array.isArray(r.data)
+                ) {
+                    // Return new object with cleaned data
+                    let cleanedData = r.data;
+                    if (hlen) cleanedData = cleanedData.slice(0, hlen);
+                    cleanedData = cleanedData.map((c) =>
+                        c === null || c === undefined ? "" : String(c).trim()
+                    );
+                    return { ...r, data: cleanedData };
+                }
+                // Fallback for old array-of-arrays structure
+                if (Array.isArray(r)) {
+                    let cleaned = r;
+                    if (hlen) cleaned = cleaned.slice(0, hlen);
+                    return cleaned.map((c) =>
+                        c === null || c === undefined ? "" : String(c).trim()
+                    );
+                }
+                return [];
+            })
+            .filter((r) => {
+                // Filter out empty rows
+                const dataToCheck =
+                    r && !Array.isArray(r) && r.data
+                        ? r.data
+                        : Array.isArray(r)
+                        ? r
+                        : [];
+                // Keep if check has at least one non-empty cell
+                return dataToCheck.some((c) => c !== "");
+            });
     }
 
     // render DataTableExcel from rows (rows are array-of-arrays, headers not included)
     function renderDataTableFromPreviewAll(rows, mapping, headers) {
-        const table = document.getElementById('DataTableExcel');
+        const table = document.getElementById("DataTableExcel");
         if (!table) return;
-        const tbody = table.querySelector('tbody');
+        const tbody = table.querySelector("tbody");
         if (!tbody) return;
 
-        const templateRow = tbody.querySelector('tr');
+        const templateRow = tbody.querySelector("tr");
         // clear existing
-        tbody.innerHTML = '';
+        tbody.innerHTML = "";
 
         // if no template row, build one minimal for 5 columns
         let baseRow;
         if (templateRow) {
             baseRow = templateRow;
         } else {
-            baseRow = document.createElement('tr');
+            // fallback template
+            baseRow = document.createElement("tr");
             for (let i = 0; i < 5; i++) {
-                const td = document.createElement('td');
+                const td = document.createElement("td");
                 if (i === 4) {
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = 'btn remove-row rounded-md bg-red-500 text-white';
-                    btn.innerText = 'Hapus';
+                    const btn = document.createElement("button");
+                    btn.type = "button";
+                    btn.className =
+                        "btn remove-row rounded-md bg-red-500 text-white";
+                    btn.innerText = "Hapus";
                     td.appendChild(btn);
                 } else {
-                    const inp = document.createElement('input');
-                    inp.type = 'text';
-                    inp.className = 'block w-full';
+                    const inp = document.createElement("input");
+                    inp.type = "text";
+                    inp.className = "block w-full";
                     td.appendChild(inp);
                 }
                 baseRow.appendChild(td);
             }
         }
 
-        rows.forEach((r, rowIndex) => {
+        rows.forEach((rowObj, rowIndex) => {
+            // Handle rowObj structure: it might be raw array (old) or { data: [], is_known: bool } (new)
+            let r = rowObj;
+            let isKnown = true;
+            if (
+                rowObj &&
+                typeof rowObj === "object" &&
+                !Array.isArray(rowObj) &&
+                rowObj.data
+            ) {
+                r = rowObj.data;
+                isKnown = rowObj.is_known; // bool from server
+            }
+
             const newRow = baseRow.cloneNode(true);
+
+            // Styling jika item tidak known
+            if (!isKnown) {
+                newRow.classList.add("bg-red-50", "dark:bg-red-900/20");
+            }
 
             const getVal = (field) => {
                 const col = mapping[field];
-                if (col === null || col === undefined || col === '') return '';
-                return r[col] !== undefined && r[col] !== null ? r[col] : '';
+                if (col === null || col === undefined || col === "") return "";
+                return r[col] !== undefined && r[col] !== null ? r[col] : "";
             };
 
             // columns mapping based on table columns in blade:
             // 0: kode_barang (readonly input)
             const tdKode = newRow.children[0];
             if (tdKode) {
-                let inp = tdKode.querySelector('input');
+                let inp = tdKode.querySelector("input");
                 if (!inp) {
-                    inp = document.createElement('input');
-                    inp.type = 'text';
+                    inp = document.createElement("input");
+                    inp.type = "text";
                     tdKode.appendChild(inp);
                 }
                 inp.readOnly = true;
-                const kodeVal = getVal('kode_barang') || generateKodeFromCategory(getVal('kategori'), getVal('nama_barang'), rowIndex);
+                const kodeVal =
+                    getVal("kode_barang") ||
+                    generateKodeFromCategory(
+                        getVal("kategori"),
+                        getVal("nama_barang"),
+                        rowIndex
+                    );
                 inp.value = kodeVal;
-                // add hidden input for kode_barang so it gets submitted as array
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][kode_barang]`;
-                hidden.value = kodeVal;
-                tdKode.appendChild(hidden);
-                // Jika fungsi validateKodeBarang tersedia (didefinisikan di checker.js), panggil untuk cek unik
-                try { if (typeof validateKodeBarang === 'function') validateKodeBarang(inp); } catch (e) { /* ignore */ }
+
+                // add hidden input ONLY IF KNOWN
+                if (isKnown) {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = `rows[${rowIndex}][kode_barang]`;
+                    hidden.value = kodeVal;
+                    tdKode.appendChild(hidden);
+
+                    // Call check unik if code seems valid
+                    try {
+                        if (typeof validateKodeBarang === "function")
+                            validateKodeBarang(inp);
+                    } catch (e) {}
+                } else {
+                    // Visual indicator for unknown
+                    // Fix: Add focus styles to keep it red on click
+                    inp.classList.add(
+                        "border-red-500",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "cursor-not-allowed",
+                        "bg-gray-100",
+                        "dark:bg-gray-700",
+                        "text-gray-500"
+                    );
+                    inp.title = "Barang belum terdaftar";
+                    const span = document.createElement("span");
+                    span.className = "text-xs text-red-500 block";
+                    tdKode.appendChild(span);
+                }
             }
 
             // 1: nama_barang
             const tdNama = newRow.children[1];
             if (tdNama) {
-                let inp = tdNama.querySelector('input');
+                let inp = tdNama.querySelector("input");
                 if (!inp) {
-                    inp = document.createElement('input'); inp.type = 'text'; tdNama.appendChild(inp);
+                    inp = document.createElement("input");
+                    inp.type = "text";
+                    tdNama.appendChild(inp);
                 }
-                const v = getVal('nama_barang') || '';
+                const v = getVal("nama_barang") || "";
                 inp.value = v;
-                // hidden
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][nama_barang]`;
-                hidden.value = v;
-                tdNama.appendChild(hidden);
+
+                if (isKnown) {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = `rows[${rowIndex}][nama_barang]`;
+                    hidden.value = v;
+                    tdNama.appendChild(hidden);
+                } else {
+                    inp.readOnly = true;
+                    // Apply style: border red & cursor not allowed
+                    inp.classList.add(
+                        "border-red-500",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "cursor-not-allowed",
+                        "bg-gray-100",
+                        "dark:bg-gray-700",
+                        "text-gray-500"
+                    );
+                    inp.title = "Barang belum terdaftar";
+                }
             }
 
-            // 2: kategori (input exists in template)
+            // 2: kategori
             const tdKategori = newRow.children[2];
             if (tdKategori) {
-                let inp = tdKategori.querySelector('input');
+                let inp = tdKategori.querySelector("input");
                 if (!inp) {
-                    inp = document.createElement('input');
-                    inp.type = 'text';
+                    inp = document.createElement("input");
+                    inp.type = "text";
                     tdKategori.appendChild(inp);
                 }
-                const v = (getVal('kategori') || '').toString().trim();
+                const v = (getVal("kategori") || "").toString().trim();
                 inp.value = v;
-                // hidden
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][kategori]`;
-                hidden.value = v;
-                tdKategori.appendChild(hidden);
+
+                if (isKnown) {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = `rows[${rowIndex}][kategori]`;
+                    hidden.value = v;
+                    tdKategori.appendChild(hidden);
+                } else {
+                    inp.readOnly = true;
+                    // Apply style: border red & cursor not allowed
+                    inp.classList.add(
+                        "border-red-500",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "cursor-not-allowed",
+                        "bg-gray-100",
+                        "dark:bg-gray-700",
+                        "text-gray-500"
+                    );
+                    inp.title = "Barang belum terdaftar";
+                }
             }
 
             // 3: stok
             const tdStok = newRow.children[3];
             if (tdStok) {
-                let inp = tdStok.querySelector('input');
-                if (!inp) { inp = document.createElement('input'); inp.type = 'number'; tdStok.appendChild(inp); }
-                const v = getVal('stok') || 0;
+                let inp = tdStok.querySelector("input");
+                if (!inp) {
+                    inp = document.createElement("input");
+                    inp.type = "number";
+                    tdStok.appendChild(inp);
+                }
+                const v = getVal("stok") || 0;
                 inp.value = v;
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = `rows[${rowIndex}][stok]`;
-                hidden.value = v;
-                tdStok.appendChild(hidden);
+
+                if (isKnown) {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = `rows[${rowIndex}][stok]`;
+                    hidden.value = v;
+                    tdStok.appendChild(hidden);
+                } else {
+                    inp.readOnly = true;
+                    inp.classList.add(
+                        "border-red-500",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "cursor-not-allowed",
+                        "bg-gray-100",
+                        "dark:bg-gray-700",
+                        "text-gray-500"
+                    );
+                    inp.title = "Barang belum terdaftar";
+                }
             }
 
-            // 4: aksi - keep remove button functional
+            // 4: aksi
             const aksiTd = newRow.children[4];
             if (aksiTd) {
-                const removeBtn = aksiTd.querySelector('button.remove-row');
+                const removeBtn = aksiTd.querySelector("button.remove-row");
                 if (removeBtn) {
-                    removeBtn.addEventListener('click', () => {
+                    removeBtn.addEventListener("click", () => {
                         newRow.remove();
                     });
                 }
@@ -201,54 +342,56 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Handle file selection
-    fileInput.addEventListener('change', function (e) {
+    fileInput.addEventListener("change", function (e) {
         const file = e.target.files[0];
         // Validate file extension and MIME type before proceeding
-        const allowedExt = ['xlsx', 'xls'];
+        const allowedExt = ["xlsx", "xls"];
         const allowedMime = [
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel',
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-excel",
         ];
 
         if (!file) return;
 
-        const nameParts = file.name.split('.');
-        const ext = nameParts.length > 1 ? nameParts.pop().toLowerCase() : '';
+        const nameParts = file.name.split(".");
+        const ext = nameParts.length > 1 ? nameParts.pop().toLowerCase() : "";
         const mime = file.type;
 
         const isExtOk = allowedExt.includes(ext);
-        const isMimeOk = allowedMime.includes(mime) || mime === '';
+        const isMimeOk = allowedMime.includes(mime) || mime === "";
 
         if (!isExtOk || !isMimeOk) {
             Swal.fire({
-                icon: 'error',
-                title: 'File tidak valid',
-                text: 'Harap pilih file Excel dengan ekstensi .xlsx atau .xls.'
+                icon: "error",
+                title: "File tidak valid",
+                text: "Harap pilih file Excel dengan ekstensi .xlsx atau .xls.",
             });
-            e.target.value = '';
-            progressBar.style.width = '0%';
-            progressSection.classList.add('hidden');
-            if(uploadLabel) uploadLabel.classList.remove('hidden');
+            e.target.value = "";
+            progressBar.style.width = "0%";
+            progressSection.classList.add("hidden");
+            if (uploadLabel) uploadLabel.classList.remove("hidden");
             return;
         }
 
         if (file) {
             // Reset and show progress
-            if(uploadLabel) uploadLabel.classList.add('hidden');
-            if(uploadResult) uploadResult.classList.add('hidden');
-            progressSection.classList.remove('hidden');
-            progressBar.style.width = '0%';
-            progressText.textContent = '0%';
-            const statusText = document.getElementById('upload-status-text');
-            if(statusText) statusText.textContent = 'Uploading...';
+            if (uploadLabel) uploadLabel.classList.add("hidden");
+            if (uploadResult) uploadResult.classList.add("hidden");
+            progressSection.classList.remove("hidden");
+            progressBar.style.width = "0%";
+            progressText.textContent = "0%";
+            const statusText = document.getElementById("upload-status-text");
+            if (statusText) statusText.textContent = "Uploading...";
 
-            const filenameEl = document.getElementById('excel_filename');
+            const filenameEl = document.getElementById("excel_filename");
             if (filenameEl) {
                 filenameEl.textContent = file.name;
-                // filenameEl.classList.remove('hidden'); 
+                // filenameEl.classList.remove('hidden');
             }
 
-            setTimeout(() => { startUpload(file); }, 300);
+            setTimeout(() => {
+                startUpload(file);
+            }, 300);
         }
     });
 
@@ -258,110 +401,152 @@ document.addEventListener('DOMContentLoaded', function () {
         if (submitButton) submitButton.disabled = true;
 
         const formData = new FormData();
-        formData.append('excel', file);
-        formData.append('_token', window.CSRF_TOKEN);
+        formData.append("excel", file);
+        formData.append("_token", window.CSRF_TOKEN);
 
         const xhr = new XMLHttpRequest();
 
-        xhr.upload.addEventListener('progress', function (e) {
+        xhr.upload.addEventListener("progress", function (e) {
             if (e.lengthComputable) {
                 const percentComplete = (e.loaded / e.total) * 100;
-                progressBar.style.width = percentComplete + '%';
-                progressText.textContent = Math.round(percentComplete) + '%';
+                progressBar.style.width = percentComplete + "%";
+                progressText.textContent = Math.round(percentComplete) + "%";
             }
         });
 
-        xhr.addEventListener('load', function () {
+        xhr.addEventListener("load", function () {
             uploadInProgress = false;
             if (xhr.status === 200 || xhr.status === 201) {
                 try {
                     const resp = JSON.parse(xhr.responseText);
-                    progressBar.style.width = '100%';
-                    progressText.textContent = '100%';
+                    progressBar.style.width = "100%";
+                    progressText.textContent = "100%";
 
-                    if (importFilePathInput) importFilePathInput.value = resp.path || '';
+                    if (importFilePathInput)
+                        importFilePathInput.value = resp.path || "";
 
                     if (resp.headers && Array.isArray(resp.headers)) {
                         // no preview UI: keep import path, auto-map and populate main table
-                        const cleanedRows = cleanRows(resp.rows || [], resp.headers || []);
-                        if (importFilePathInput) importFilePathInput.value = resp.path || '';
+                        const cleanedRows = cleanRows(
+                            resp.rows || [],
+                            resp.headers || []
+                        );
+                        if (importFilePathInput)
+                            importFilePathInput.value = resp.path || "";
                         const mapping = autoMapHeaders(resp.headers || []);
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
-                        renderDataTableFromPreviewAll(cleanedRows, mapping, resp.headers || []);
+                        renderDataTableFromPreviewAll(
+                            cleanedRows,
+                            mapping,
+                            resp.headers || []
+                        );
                         if (submitButton) submitButton.disabled = false;
                     }
 
-                     // show upload result and hide progress
-                     progressSection.classList.add('hidden');
-                     if (uploadResult) {
-                         const uploadPath = document.getElementById('upload-path'); // hidden
-                         const uploadUrl = document.getElementById('upload-url');
-                         const uploadFilename = document.getElementById('upload-filename');
- 
-                         if(uploadFilename) uploadFilename.textContent = file.name; // Use file.name from closure
-                         if(uploadPath) uploadPath.textContent = resp.path || '';
-                         
-                         if (resp.url) {
-                             if(uploadUrl) {
-                                 uploadUrl.href = resp.url;
-                                 uploadUrl.textContent = 'Lihat File';
-                                 uploadUrl.classList.remove('hidden');
-                             }
-                         } else {
-                             if(uploadUrl) uploadUrl.classList.add('hidden');
-                         }
-                         uploadResult.classList.remove('hidden');
-                     }
+                    // show upload result and hide progress
+                    progressSection.classList.add("hidden");
+                    if (uploadResult) {
+                        const uploadPath =
+                            document.getElementById("upload-path"); // hidden
+                        const uploadUrl = document.getElementById("upload-url");
+                        const uploadFilename =
+                            document.getElementById("upload-filename");
+
+                        if (uploadFilename)
+                            uploadFilename.textContent = file.name; // Use file.name from closure
+                        if (uploadPath)
+                            uploadPath.textContent = resp.path || "";
+
+                        if (resp.url) {
+                            if (uploadUrl) {
+                                uploadUrl.href = resp.url;
+                                uploadUrl.textContent = "Lihat File";
+                                uploadUrl.classList.remove("hidden");
+                            }
+                        } else {
+                            if (uploadUrl) uploadUrl.classList.add("hidden");
+                        }
+                        uploadResult.classList.remove("hidden");
+                    }
                 } catch (err) {
-                    Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal memproses preview.' });
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Gagal memproses preview.",
+                    });
                 }
             } else {
-                progressSection.classList.add('hidden');
-                if(uploadLabel) uploadLabel.classList.remove('hidden');
+                progressSection.classList.add("hidden");
+                if (uploadLabel) uploadLabel.classList.remove("hidden");
                 try {
                     const response = JSON.parse(xhr.responseText);
-                    Swal.fire({ icon: 'error', title: 'Error', text: response.message || 'Gagal mengupload file' });
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: response.message || "Gagal mengupload file",
+                    });
                 } catch (e) {
-                    Swal.fire({ icon: 'error', title: 'Error', text: 'Gagal mengupload file. Status: ' + xhr.status });
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Gagal mengupload file. Status: " + xhr.status,
+                    });
                 }
                 if (submitButton) submitButton.disabled = false;
             }
         });
 
-        xhr.addEventListener('error', function () {
-            progressSection.classList.add('hidden');
-            if(uploadLabel) uploadLabel.classList.remove('hidden');
-            Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan saat mengupload file.' });
+        xhr.addEventListener("error", function () {
+            progressSection.classList.add("hidden");
+            if (uploadLabel) uploadLabel.classList.remove("hidden");
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Terjadi kesalahan saat mengupload file.",
+            });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;
         });
 
-        xhr.addEventListener('abort', function () {
-            progressSection.classList.add('hidden');
-            if(uploadLabel) uploadLabel.classList.remove('hidden');
-            Swal.fire({ icon: 'warning', title: 'Dibatalkan', text: 'Upload dibatalkan.' });
+        xhr.addEventListener("abort", function () {
+            progressSection.classList.add("hidden");
+            if (uploadLabel) uploadLabel.classList.remove("hidden");
+            Swal.fire({
+                icon: "warning",
+                title: "Dibatalkan",
+                text: "Upload dibatalkan.",
+            });
             uploadInProgress = false;
             if (submitButton) submitButton.disabled = false;
         });
 
-        const uploadUrl = window.IMPORT_EXCEL_STORE_URL || form.action.replace('/import', '');
-        xhr.open('POST', uploadUrl);
-        xhr.setRequestHeader('X-CSRF-TOKEN', window.CSRF_TOKEN);
+        const uploadUrl =
+            window.IMPORT_EXCEL_STORE_URL || form.action.replace("/import", "");
+        xhr.open("POST", uploadUrl);
+        xhr.setRequestHeader("X-CSRF-TOKEN", window.CSRF_TOKEN);
         xhr.send(formData);
     }
 
     // Keep form submit as backup
     if (submitButton) {
-        submitButton.addEventListener('click', function (e) {
+        submitButton.addEventListener("click", function (e) {
             if (uploadInProgress) {
                 e.preventDefault();
-                Swal.fire({ icon: 'info', title: 'Tunggu', text: 'Upload sedang berlangsung. Tunggu hingga selesai.' });
+                Swal.fire({
+                    icon: "info",
+                    title: "Tunggu",
+                    text: "Upload sedang berlangsung. Tunggu hingga selesai.",
+                });
                 return;
             }
             // ensure file uploaded
             if (!importFilePathInput || !importFilePathInput.value) {
                 e.preventDefault();
-                Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan unggah file Excel sebelum submit.' });
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian",
+                    text: "Silakan unggah file Excel sebelum submit.",
+                });
                 return;
             }
             // allow submit to proceed
@@ -370,40 +555,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // <-- ADD: event delegation for refresh buttons in DataTableExcel
     (function attachTableRefreshHandler() {
-        const table = document.getElementById('DataTableExcel');
+        const table = document.getElementById("DataTableExcel");
         if (!table) return;
 
-        table.addEventListener('click', function (e) {
-            const btn = e.target.closest('button#refreshKodeBarang, button.refresh-kode, button[data-action="refresh-kode"]');
+        table.addEventListener("click", function (e) {
+            const btn = e.target.closest(
+                'button#refreshKodeBarang, button.refresh-kode, button[data-action="refresh-kode"]'
+            );
             if (!btn) return;
 
-            const tr = btn.closest('tr');
+            const tr = btn.closest("tr");
             if (!tr) return;
 
             // find visible nama and kategori in the row
-            const namaEl = tr.children[1]?.querySelector('input, textarea, [name*="[nama_barang]"]');
-            const kategoriEl = tr.children[2]?.querySelector('select, input, [name*="[kategori]"]');
+            const namaEl = tr.children[1]?.querySelector(
+                'input, textarea, [name*="[nama_barang]"]'
+            );
+            const kategoriEl = tr.children[2]?.querySelector(
+                'select, input, [name*="[kategori]"]'
+            );
 
-            const nama = namaEl ? (namaEl.value || '').toString().trim() : '';
-            const kategori = kategoriEl ? (kategoriEl.value || '').toString().trim() : '';
+            const nama = namaEl ? (namaEl.value || "").toString().trim() : "";
+            const kategori = kategoriEl
+                ? (kategoriEl.value || "").toString().trim()
+                : "";
 
             // generate kode berdasarkan nama + kategori
             // try to compute a rowIndex if possible (fallback 0)
-            let rowIndex = Array.prototype.indexOf.call(tr.parentNode.children, tr);
+            let rowIndex = Array.prototype.indexOf.call(
+                tr.parentNode.children,
+                tr
+            );
             if (rowIndex < 0) rowIndex = 0;
             const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
 
             // update visible kode input (col 0)
-            const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
+            const kodeVisible = tr.children[0]?.querySelector(
+                'input[type="text"], input'
+            );
             if (kodeVisible) {
                 kodeVisible.value = newKode;
             }
 
             // update or create hidden input rows[{i}][kode_barang]
-            let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
+            let hiddenKode = tr.children[0]?.querySelector(
+                'input[type="hidden"][name*="[kode_barang]"]'
+            );
             if (!hiddenKode) {
-                hiddenKode = document.createElement('input');
-                hiddenKode.type = 'hidden';
+                hiddenKode = document.createElement("input");
+                hiddenKode.type = "hidden";
                 // try to reuse rowIndex in name; if existing rows used different naming fallback to generic rows[][kode_barang]
                 hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
                 tr.children[0].appendChild(hiddenKode);
@@ -412,7 +612,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // call server-side uniqueness check if available
             try {
-                if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode);
+                if (typeof validateKodeBarang === "function")
+                    validateKodeBarang(kodeVisible || hiddenKode);
             } catch (err) {
                 // ignore validation errors here
                 // console.error(err);
@@ -422,66 +623,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // <-- ADD: update hidden inputs when visible inputs change
     (function attachInputChangeHandler() {
-        const table = document.getElementById('DataTableExcel');
+        const table = document.getElementById("DataTableExcel");
         if (!table) return;
 
-        table.addEventListener('change', function (e) {
-            const inp = e.target.closest('input, select, textarea');
+        table.addEventListener("change", function (e) {
+            const inp = e.target.closest("input, select, textarea");
             if (!inp) return;
 
-            const td = inp.closest('td');
-            const tr = inp.closest('tr');
+            const td = inp.closest("td");
+            const tr = inp.closest("tr");
             if (!tr || !td) return;
 
             const colIndex = Array.prototype.indexOf.call(tr.children, td);
-            let fieldName = '';
+            let fieldName = "";
 
             // Map column index to field name
             switch (colIndex) {
-                case 1: fieldName = 'nama_barang'; break;
-                case 2: fieldName = 'kategori'; break;
-                case 3: fieldName = 'stok'; break;
-                default: return; // skip kode_barang (0), aksi (4)
+                case 1:
+                    fieldName = "nama_barang";
+                    break;
+                case 2:
+                    fieldName = "kategori";
+                    break;
+                case 3:
+                    fieldName = "stok";
+                    break;
+                default:
+                    return; // skip kode_barang (0), aksi (4)
             }
 
-            const value = (inp.value || '').toString().trim();
+            const value = (inp.value || "").toString().trim();
 
             // compute row index
-            let rowIndex = Array.prototype.indexOf.call(tr.parentNode.children, tr);
+            let rowIndex = Array.prototype.indexOf.call(
+                tr.parentNode.children,
+                tr
+            );
             if (rowIndex < 0) rowIndex = 0;
 
             // update/create hidden input
-            let hidden = td.querySelector(`input[type="hidden"][name*="[${fieldName}]"]`);
+            let hidden = td.querySelector(
+                `input[type="hidden"][name*="[${fieldName}]"]`
+            );
             if (!hidden) {
-                hidden = document.createElement('input');
-                hidden.type = 'hidden';
+                hidden = document.createElement("input");
+                hidden.type = "hidden";
                 hidden.name = `rows[${rowIndex}][${fieldName}]`;
                 td.appendChild(hidden);
             }
             hidden.value = value;
 
             // Special handling for kategori change (to update kode_barang)
-            if (fieldName === 'kategori') {
-                const namaEl = tr.children[1]?.querySelector('input, textarea, [name*="[nama_barang]"]');
-                const nama = namaEl ? (namaEl.value || '').toString().trim() : '';
+            if (fieldName === "kategori") {
+                const namaEl = tr.children[1]?.querySelector(
+                    'input, textarea, [name*="[nama_barang]"]'
+                );
+                const nama = namaEl
+                    ? (namaEl.value || "").toString().trim()
+                    : "";
                 const newKode = generateKodeFromCategory(value, nama, rowIndex);
 
                 // update visible kode
-                const kodeVisible = tr.children[0]?.querySelector('input[type="text"], input');
+                const kodeVisible = tr.children[0]?.querySelector(
+                    'input[type="text"], input'
+                );
                 if (kodeVisible) kodeVisible.value = newKode;
 
                 // update hidden kode
-                let hiddenKode = tr.children[0]?.querySelector('input[type="hidden"][name*="[kode_barang]"]');
+                let hiddenKode = tr.children[0]?.querySelector(
+                    'input[type="hidden"][name*="[kode_barang]"]'
+                );
                 if (!hiddenKode) {
-                    hiddenKode = document.createElement('input');
-                    hiddenKode.type = 'hidden';
+                    hiddenKode = document.createElement("input");
+                    hiddenKode.type = "hidden";
                     hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
                     tr.children[0].appendChild(hiddenKode);
                 }
                 hiddenKode.value = newKode;
 
                 // trigger uniqueness check
-                try { if (typeof validateKodeBarang === 'function') validateKodeBarang(kodeVisible || hiddenKode); } catch (err) { /* ignore */ }
+                try {
+                    if (typeof validateKodeBarang === "function")
+                        validateKodeBarang(kodeVisible || hiddenKode);
+                } catch (err) {
+                    /* ignore */
+                }
             }
         });
     })();

@@ -82,7 +82,30 @@ class ImportStockExcelController extends Controller
             $sheet = $sheets[0] ?? [];
             if (count($sheet) > 0) {
                 $headers = array_map(function($h){ return is_null($h) ? '' : trim((string)$h); }, $sheet[0]);
-                $rows = array_slice($sheet, 1);
+                $rowsRaw = array_slice($sheet, 1);
+                
+                // Pre-process rows to check existence
+                foreach ($rowsRaw as $r) {
+                    // Asumsi urutan kolom: 0=Kode, 1=Nama, 2=Kategori, 3=Stok
+                    // Perlu mapping dinamis atau asumsi. Sesuai JS: Hardcode map['kode_barang'] = 0
+                    $kode = isset($r[0]) ? trim((string)$r[0]) : '';
+                    $isKnown = false;
+                    
+                    if (!empty($kode)) {
+                        $isKnown = Barang::where('kode_barang', $kode)->exists();
+                    }
+                    
+                    // Append flag to row data (as extra column or property if object)
+                    // Since Excel::toArray returns array of arrays, we handle it carefully.
+                    // Client JS expects simple array. We can pass separate metadata or append to row.
+                    // Let's modify row structure sent to JSON.
+                    
+                    // Kita kirim structure baru untuk 'rows' agar lebih robust
+                    $rows[] = [
+                        'data' => $r,
+                        'is_known' => $isKnown
+                    ];
+                }
             }
         } catch (\Throwable $e) {
             // jika gagal baca preview, tetap kirim path/url agar front-end tetap bekerja
@@ -142,27 +165,13 @@ class ImportStockExcelController extends Controller
                         $copyData->kode_barang = $newKode;
                         $copyData->save();
 
+                        $created++;
                     } else {
-                        // --- LOGIKA NEW ITEM (Primary) ---
-                        // Barang benar-benar baru, belum ada di database
-                        $payload = [
-                            'tipe_request'  => 'primary', // Item induk baru
-                            'status_barang' => 'ditinjau',
-                            'kode_barang'   => $kode,
-                            'nama_barang'   => $r['nama_barang'] ?? 'Unnamed',
-                            'kategori'      => $r['kategori'] ?? null,
-                            'stok'          => $stok,
-                            'satuan'        => $r['satuan'] ?? 'Unit',
-                            'deskripsi'     => $r['deskripsi'] ?? '-',
-                            'harga'         => isset($r['harga']) ? (float)$r['harga'] : 0,
-                            'lokasi'        => $r['lokasi'] ?? '-',
-                            'form'          => Auth::id(),
-                        ];
-
-                        Barang::create($payload);
+                        // --- SKIP NEW ITEMS ---
+                        // Item tidak ada di database, abaikan sesuai request
+                        // Bisa catat ke errors array jika ingin laporan detail
+                        // $errors[] = "Kode $kode tidak ditemukan.";
                     }
-
-                    $created++;
                 }
 
                 DB::commit();
