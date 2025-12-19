@@ -56,7 +56,22 @@
                             <td class="px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->term_of_payments ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
-                            <td class="px-4 py-2">{{ $customer->pic ?? '-' }}</td>
+                            <td class="px-4 py-2">
+                                @if(($customer->pics && $customer->pics->count() > 0) || ($customer->users && $customer->users->count() > 0))
+                                    @foreach($customer->pics as $pic)
+                                        <div class="mb-1">
+                                            {{ $pic->name }} (PIC)
+                                        </div>
+                                    @endforeach
+                                    @foreach($customer->users as $user)
+                                        <div class="mb-1">
+                                            {{ $user->name }} ({{ $user->pivot->pic_type }})
+                                        </div>
+                                    @endforeach
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="px-4 py-2">No. Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}</td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">

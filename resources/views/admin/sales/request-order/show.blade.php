@@ -78,6 +78,14 @@
                                     <p class="text-gray-900 dark:text-white">{{ $requestOrder->customer_id ?? '-' }}</p>
                                 </div>
                                 <div>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">PIC (Sales)</label>
+                                    <p class="text-gray-900 dark:text-white">{{ $requestOrder->sales->name ?? '-' }}</p>
+                                </div>
+                                <div>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</label>
+                                    <p class="text-gray-900 dark:text-white">{{ $requestOrder->subject ?? '-' }}</p>
+                                </div>
+                                <div>
                                     <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Kebutuhan</label>
                                     <p class="text-gray-900 dark:text-white">{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
                                 </div>
@@ -315,8 +323,6 @@
                                     Request Order telah disetujui dan siap untuk dikonversi.
                                 @elseif($requestOrder->status === 'rejected')
                                     Request Order ditolak oleh supervisor.
-                                @elseif($requestOrder->salesOrder)
-                                    Request Order telah dikonversi menjadi Sales Order.
                                 @endif
                             </p>
                         </div>
@@ -347,36 +353,16 @@
                             @endphp
 
                             @if ($canDownloadPdf)
-                                <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" class="btn btn-secondary w-100 mb-2" target="_blank">
+                                <button type="button" class="btn btn-secondary w-100 mb-2" data-bs-toggle="modal" data-bs-target="#pdfNoteModal">
                                     <i class="fas fa-download"></i> Download PDF
-                                </a>
+                                </button>
                             @else
                                 <button type="button" class="btn btn-secondary w-100 mb-2" disabled title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
                                     <i class="fas fa-download"></i> Download PDF
                                 </button>
                             @endif
 
-                            @if ($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
-                                <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" class="block w-full">
-                                    @csrf
-                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800" onclick="return confirm('Konversi Request Order ke Sales Order?')">
-                                        <i class="fas fa-arrow-right mr-2"></i> Konversi ke Sales Order
-                                    </button>
-                                </form>
-                            @endif
 
-                            @if ($requestOrder->salesOrder)
-                                <div class="rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                    <div class="mb-1 font-medium">
-                                        <i class="fas fa-check-circle mr-1"></i> Sudah dikonversi
-                                    </div>
-                                    <div>
-                                        Sales Order: <a href="{{ route('sales.sales-order.show', $requestOrder->salesOrder->id) }}" class="font-bold underline hover:no-underline">
-                                            {{ $requestOrder->salesOrder->sales_order_number }}
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
 
                             {{-- Supervisor actions for pending approvals --}}
                             @if (auth()->check() && auth()->user()->role === 'Supervisor' && $requestOrder->status === 'pending_approval')
@@ -405,6 +391,33 @@
     </div>
 
     <!-- Reject Modal -->
+    <!-- PDF Note Modal -->
+    <div class="modal fade" id="pdfNoteModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Catatan untuk PDF</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="GET" action="{{ route('sales.request-order.pdf', $requestOrder->id) }}" target="_blank">
+                    <div class="modal-body">
+                        @php
+                            $defaultPdfNote = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
+                        @endphp
+                        <div class="mb-3">
+                            <label for="pdf_note" class="form-label">Catatan yang akan muncul di PDF</label>
+                            <textarea id="pdf_note" name="pdf_note" rows="8" class="form-control">{{ old('pdf_note', $requestOrder->catatan_customer ?? $defaultPdfNote) }}</textarea>
+                            <small class="text-muted">Teks ini akan dimasukkan ke bagian pembuka PDF. Anda dapat mengeditnya sebelum mengunduh.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Generate &amp; Download PDF</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         function supervisorBack() {
             try {

@@ -51,11 +51,6 @@ class Customer extends Model
         return $this->hasMany(RequestOrder::class, 'customer_id');
     }
 
-    public function salesOrders()
-    {
-        return $this->hasMany(SalesOrder::class, 'customer_id');
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -80,7 +75,9 @@ class Customer extends Model
 
     public function users()
     {
-        return $this->morphToMany(User::class, 'pic', 'customer_pics', 'customer_id', 'pic_id')
-                    ->withPivot('pic_type');
+        return $this->belongsToMany(User::class, 'customer_pics', 'customer_id', 'pic_id')
+                    ->wherePivot('pic_type', 'User')
+                    ->withPivot('pic_type')
+                    ->withTimestamps();
     }
 }

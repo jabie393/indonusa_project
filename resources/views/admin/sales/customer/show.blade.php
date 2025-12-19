@@ -150,10 +150,6 @@
                             <label class="form-label fw-bold">Request Order</label>
                             <p class="h4">{{ $customer->requestOrders->count() }}</p>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Sales Order</label>
-                            <p class="h4">{{ $customer->salesOrders->count() }}</p>
-                        </div>
                     </div>
                 </div>
 
@@ -162,7 +158,7 @@
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-info-circle"></i> Info</h5>
                         <p class="card-text small">
-                            Customer ini memiliki {{ $customer->requestOrders->count() }} Request Order dan {{ $customer->salesOrders->count() }} Sales Order.
+                            Customer ini memiliki {{ $customer->requestOrders->count() }} Request Order.
                         </p>
                     </div>
                 </div>

@@ -102,6 +102,39 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="pic_id" class="form-label">PIC (Sales) <span class="text-danger">*</span></label>
+                                        <select class="form-select @error('pic_id') is-invalid @enderror" id="pic_id" name="pic_id" required>
+                                            <option value="">-- Pilih PIC Sales --</option>
+                                            @foreach ($salesUsers as $sales)
+                                                <option value="{{ $sales->id }}" @selected(old('pic_id', $requestOrder->sales_id) == $sales->id)>
+                                                    {{ $sales->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('pic_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Pilih sales yang menangani request order ini</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" value="{{ old('subject', $requestOrder->subject) }}" placeholder="Masukkan subject untuk penawaran" required>
+                                        @error('subject')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Subject yang akan muncul di PDF penawaran</small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr>
 
                             <div class="row">

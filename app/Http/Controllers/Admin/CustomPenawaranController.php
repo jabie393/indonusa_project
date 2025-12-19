@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\CustomPenawaran;
 use App\Models\CustomPenawaranItem;
 use App\Models\Order;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CustomPenawaranController extends Controller
 {
@@ -52,7 +54,9 @@ class CustomPenawaranController extends Controller
      */
     public function create()
     {
-        return view('admin.sales.custom-penawaran.create');
+        $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
+        $currentUserName = Auth::user()->name;
+        return view('admin.sales.custom-penawaran.create', compact('salesUsers', 'currentUserName'));
     }
 
     /**
@@ -68,9 +72,11 @@ class CustomPenawaranController extends Controller
             'items_count' => count($request->input('items', []))
         ]);
 
+        $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
+
         $validated = $request->validate([
             'to' => 'required|string|max:255',
-            'up' => 'nullable|string|max:255',
+            'up' => ['required', 'string', 'max:255', Rule::in($salesNames)],
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
             'our_ref' => 'nullable|string|max:255',
@@ -104,7 +110,7 @@ class CustomPenawaranController extends Controller
                 'sales_id' => Auth::id(),
                 'penawaran_number' => CustomPenawaran::generatePenawaranNumber(),
                 'to' => $validated['to'],
-                'up' => $validated['up'] ?? null,
+                'up' => $validated['up'],
                 'subject' => $validated['subject'],
                 'email' => $validated['email'],
                 'our_ref' => $validated['our_ref'] ?? CustomPenawaran::generateUniqueRef(),
@@ -196,7 +202,9 @@ class CustomPenawaranController extends Controller
         }
 
         $customPenawaran->load('items');
-        return view('admin.sales.custom-penawaran.edit', compact('customPenawaran'));
+        $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
+        $currentUserName = Auth::user()->name;
+        return view('admin.sales.custom-penawaran.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
     }
 
     /**
@@ -208,9 +216,11 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
+        $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
+
         $validated = $request->validate([
             'to' => 'required|string|max:255',
-            'up' => 'nullable|string|max:255',
+            'up' => ['required', 'string', 'max:255', Rule::in($salesNames)],
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
             'date' => 'required|date',
@@ -233,7 +243,7 @@ class CustomPenawaranController extends Controller
         try {
             $customPenawaran->update([
                 'to' => $validated['to'],
-                'up' => $validated['up'] ?? null,
+                'up' => $validated['up'],
                 'subject' => $validated['subject'],
                 'email' => $validated['email'],
                 'date' => $validated['date'],
@@ -339,10 +349,17 @@ class CustomPenawaranController extends Controller
             }
         if ($action === 'approve') {
             $customPenawaran->status = 'approved';
+            // clear any previous reason on approval
+            $customPenawaran->reason = null;
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
         } elseif ($action === 'reject') {
+            $validated = $request->validate([
+                'reason' => 'required|string|max:2000',
+            ]);
+
             $customPenawaran->status = 'rejected';
+            $customPenawaran->reason = $validated['reason'];
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
         }

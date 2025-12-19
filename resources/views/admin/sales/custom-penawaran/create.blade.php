@@ -36,9 +36,15 @@
                             <!-- Up Field -->
                             <div>
                                 <label for="up" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Attn (Up)</label>
-                                <input type="text" id="up" name="up" value="{{ old('up') }}"
-                                    class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="Nama PIC">
+                                <select id="up" name="up" required
+                                    class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
+                                    <option value="">Pilih Sales</option>
+                                    @foreach($salesUsers as $name => $displayName)
+                                        <option value="{{ $name }}" {{ old('up', $currentUserName ?? '') == $name ? 'selected' : '' }}>
+                                            {{ $displayName }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('up')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -91,7 +97,7 @@
                                 <label for="intro_text" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Teks Pembuka</label>
                                 <textarea id="intro_text" name="intro_text" rows="4"
                                     class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text') }}</textarea>
+                                    placeholder="Masukkan teks pembuka penawaran...">untuk memenuhi kebutuhan {{ old('intro_text', '') }}, bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror

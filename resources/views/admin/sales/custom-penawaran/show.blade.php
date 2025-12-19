@@ -91,6 +91,27 @@
                         </div>
                     @endif
 
+                    <!-- Rejection reason (visible when rejected and high discount items present) -->
+                    @php
+                        $hasHighDiscount = $customPenawaran->items->where('diskon', '>', 20)->isNotEmpty();
+                    @endphp
+                    @if ($customPenawaran->status === 'rejected' && $hasHighDiscount)
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-red-600 p-4 md:flex-row md:space-x-4 md:space-y-0">
+                                <div>
+                                    <h2 class="mr-3 font-semibold text-white">Alasan Penolakan</h2>
+                                </div>
+                            </div>
+                            <div class="p-6 text-red-700 dark:text-red-300">
+                                @if($customPenawaran->reason)
+                                    {!! nl2br(e($customPenawaran->reason)) !!}
+                                @else
+                                    <em>Alasan penolakan belum dicatat.</em>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Items Table -->
                     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -208,11 +229,37 @@
                             </div>
                             <div class="flex flex-col items-end gap-4 p-6">
                                 @if ($customPenawaran->status === 'sent' && auth()->user()->role === 'Supervisor')
-                                    <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}" method="POST" class="inline" id="approvalForm">
                                         @csrf
                                         <button type="submit" name="action" value="approve" class="rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700">Approve</button>
-                                        <button type="submit" name="action" value="reject" class="ml-2 rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700">Reject</button>
+                                        <button type="button" class="ml-2 rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700" data-bs-toggle="modal" data-bs-target="#rejectReasonModal">Reject</button>
                                     </form>
+
+                                    <!-- Reject Reason Modal -->
+                                    <div class="modal fade" id="rejectReasonModal" tabindex="-1">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="action" value="reject">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Alasan Penolakan</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="reason" class="form-label">Masukkan alasan penolakan (wajib)</label>
+                                                            <textarea name="reason" id="reason" rows="6" class="form-control" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-danger">Tolak Penawaran</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 @endif
 
                                 <div class="flex w-full flex-wrap justify-end gap-2">

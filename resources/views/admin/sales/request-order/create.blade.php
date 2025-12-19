@@ -91,6 +91,31 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="pic_id" class="form-label dark:text-gray-300">PIC (Sales) <span class="text-danger">*</span></label>
+                                <select class="@error('pic_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="pic_id" name="pic_id" required>
+                                    <option value="">-- Pilih PIC Sales --</option>
+                                    @foreach ($salesUsers as $sales)
+                                        <option value="{{ $sales->id }}" @selected(old('pic_id') == $sales->id)>
+                                            {{ $sales->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('pic_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani request order ini</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col">
+                                <label for="subject" class="form-label dark:text-gray-300">Subject <span class="text-danger">*</span></label>
+                                <input type="text" class="@error('subject') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan subject untuk penawaran" required>
+                                @error('subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted dark:text-gray-400">Subject yang akan muncul di PDF penawaran</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="tanggal_kebutuhan" class="form-label dark:text-gray-300">Tanggal Kebutuhan</label>
                                 <input type="date" class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
                                 @error('tanggal_kebutuhan')
@@ -99,7 +124,10 @@
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="catatan_customer" class="form-label dark:text-gray-300">Catatan</label>
-                                <textarea class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer') }}</textarea>
+                                @php
+                                    $pdfDefault = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
+                                @endphp
+                                <textarea class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', $pdfDefault) }}</textarea>
                                 @error('catatan_customer')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -138,7 +166,8 @@
                                             <th width="100">Jumlah</th>
                                             <th width="200">Harga Satuan</th>
                                             <th width="150">Gambar</th>
-                                            <th width="400">Subtotal</th>
+                                            <th width="200">Harga Setelah Diskon</th>
+                                            <th width="100">PPN (%)</th>
                                             <th width="80">Aksi</th>
                                         </tr>
                                     </thead>
@@ -187,7 +216,10 @@
                                                 <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
                                             </td>
                                             <td>
-                                                <input type="text" class="form-control subtotal-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
+                                                <input type="text" class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
                                             </td>
                                             <td>
                                                 <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
@@ -204,10 +236,11 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="6" class="text-end text-black dark:text-gray-300">TOTAL:</th>
+                                            <th colspan="8" class="text-end text-black dark:text-gray-300">TOTAL:</th>
                                             <th class="text-black dark:text-gray-300">
                                                 <strong id="totalAmount">Rp 0</strong>
                                             </th>
+                                            <th></th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
@@ -218,6 +251,56 @@
                         <button type="button" id="addRow" class="btn inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm m-5 border-none bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Tambah Barang
                         </button>
+
+                        <!-- Summary Section -->
+                        <div class="card bg-light bg-card mt-4 rounded-2xl border shadow-sm">
+                            <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
+                                <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                            </div>
+                            <div class="p-5">
+                                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Sub Total</p>
+                                                <p class="text-2xl font-bold text-gray-900 dark:text-white" id="summarySubtotal">Rp 0</p>
+                                            </div>
+                                            <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <svg class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">PPN (11%)</p>
+                                                <p class="text-2xl font-bold text-gray-900 dark:text-white" id="summaryPPN">Rp 0</p>
+                                            </div>
+                                            <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
+                                                <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-6 0l6 6m-6-6v12"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand Total</p>
+                                                <p class="text-3xl font-bold text-green-600 dark:text-green-400" id="summaryGrandTotal">Rp 0</p>
+                                            </div>
+                                            <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
+                                                <svg class="h-6 w-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Supporting Images Section -->
                         <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm" id="imagesSection" style="display: none;">
@@ -609,7 +692,7 @@
                     const quantityInput = row.querySelector('.quantity-input');
                     const diskonInput = row.querySelector('.diskon-input');
                     const hargaInput = row.querySelector('.harga-input');
-                    const subtotalDisplay = row.querySelector('.subtotal-display');
+                    const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
 
                     if (option.value) {
                         namaDisplay.value = option.dataset.nama || '';
@@ -637,12 +720,12 @@
                         const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
                         if (hargaInput) hargaInput.value = finalHarga;
 
-                        // Hitung subtotal otomatis (qty * harga)
+                        // Hitung harga setelah diskon otomatis (qty * harga setelah diskon)
                         const qty = parseInt(quantityInput.value) || 1;
-                        const subtotal = qty * finalHarga;
-                        if (subtotalDisplay) {
-                            subtotalDisplay.value = subtotal > 0 ?
-                                'Rp ' + subtotal.toLocaleString('id-ID', {
+                        const hargaSetelahDiskon = qty * finalHarga;
+                        if (hargaSetelahDiskonDisplay) {
+                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2
                                 }) :
@@ -653,7 +736,7 @@
                         if (quantityInput) quantityInput.value = 1;
                         if (diskonInput) diskonInput.value = 0;
                         if (hargaInput) hargaInput.value = 0;
-                        if (subtotalDisplay) subtotalDisplay.value = '0';
+                        if (hargaSetelahDiskonDisplay) hargaSetelahDiskonDisplay.value = '0';
                     }
                     updateKeteranganState(select.closest('tr'));
                     calculateTotals();
@@ -665,25 +748,58 @@
                     return firstSelect.innerHTML;
                 }
 
-                // Calculate subtotal and total
+                // Calculate harga setelah diskon, PPN, and totals
                 function calculateTotals() {
-                    let total = 0;
+                    let subTotal = 0;
+                    let totalPPN = 0;
+                    let grandTotal = 0;
+
                     document.querySelectorAll('.item-row').forEach(row => {
                         const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
                         const harga = parseFloat(row.querySelector('.harga-input').value) || 0;
-                        const subtotal = qty * harga;
+                        const ppnPercent = parseFloat(row.querySelector('.ppn-input').value) || 0;
 
-                        row.querySelector('.subtotal-display').value = subtotal > 0 ?
-                            'Rp ' + subtotal.toLocaleString('id-ID', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2
-                            }) :
-                            '0';
+                        // Harga setelah diskon (sudah termasuk diskon)
+                        const hargaSetelahDiskon = qty * harga;
 
-                        total += subtotal;
+                        // Hitung PPN untuk item ini
+                        const ppnAmount = hargaSetelahDiskon * (ppnPercent / 100);
+
+                        // Update display harga setelah diskon
+                        const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+                        if (hargaSetelahDiskonDisplay) {
+                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) :
+                                '0';
+                        }
+
+                        subTotal += hargaSetelahDiskon;
+                        totalPPN += ppnAmount;
                     });
 
-                    document.getElementById('totalAmount').textContent = 'Rp ' + total.toLocaleString('id-ID', {
+                    grandTotal = subTotal + totalPPN;
+
+                    // Update table total (harga setelah diskon total)
+                    document.getElementById('totalAmount').textContent = 'Rp ' + subTotal.toLocaleString('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                    // Update summary section
+                    document.getElementById('summarySubtotal').textContent = 'Rp ' + subTotal.toLocaleString('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                    document.getElementById('summaryPPN').textContent = 'Rp ' + totalPPN.toLocaleString('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                    document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID', {
                         minimumFractionDigits: 2,
                         maximumFractionDigits: 2
                     });
@@ -798,19 +914,19 @@
                         updateSubmitState();
                     });
 
-                    // Event untuk quantity input - hitung subtotal saat quantity berubah
+                    // Event untuk quantity input - hitung harga setelah diskon saat quantity berubah
                     const quantityInput = row.querySelector('.quantity-input');
                     if (quantityInput) {
                         quantityInput.addEventListener('change', function() {
                             const qty = parseInt(this.value) || 1;
                             const hargaInput = row.querySelector('.harga-input');
-                            const subtotalDisplay = row.querySelector('.subtotal-display');
+                            const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
 
-                            if (hargaInput && subtotalDisplay) {
+                            if (hargaInput && hargaSetelahDiskonDisplay) {
                                 const harga = parseFloat(hargaInput.value) || 0;
-                                const subtotal = qty * harga;
-                                subtotalDisplay.value = subtotal > 0 ?
-                                    'Rp ' + subtotal.toLocaleString('id-ID', {
+                                const hargaSetelahDiskon = qty * harga;
+                                hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                    'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2
                                     }) :
@@ -818,6 +934,12 @@
                             }
                             calculateTotals();
                         });
+                    }
+
+                    // Event untuk PPN input
+                    const ppnInput = row.querySelector('.ppn-input');
+                    if (ppnInput) {
+                        ppnInput.addEventListener('change', calculateTotals);
                     }
 
                     row.querySelector('.harga-input').addEventListener('change', calculateTotals);
