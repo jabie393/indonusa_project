@@ -22,7 +22,6 @@ use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\CustomPenawaranController;
 use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\ImportStockExcelController;
-use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
@@ -169,7 +168,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.request-order.pdf');
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
-    Route::post('/request-order/{requestOrder}/convert', [RequestOrderController::class, 'convertToSalesOrder'])->name('sales.request-order.convert');
     Route::post('/request-order/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.request-order.status');
     Route::post('/request-order/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.request-order.sent-to-warehouse');
 
@@ -183,13 +181,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-penawaran.destroy');
     Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
     Route::post('/custom-penawaran/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-penawaran.sent-to-warehouse');
-
-    // Saless Order Routes
-    Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
-    Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
-    Route::put('/sales-order/{salesOrder}/status', [SalesOrderController::class, 'updateStatus'])->name('sales.sales-order.status');
-    Route::put('/sales-order-item/{item}/delivered', [SalesOrderController::class, 'updateDeliveredQty'])->name('sales.sales-order-item.delivered');
-    Route::post('/sales-order/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])->name('sales.sales-order.cancel');
 });
 // End of Sales
 

@@ -184,24 +184,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- @forelse($salesOrders as $so)
-                        @php
-                            $statusClass = match ($so->status) {
-                                'pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                'in_process' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                'shipped' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
-                                'completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-700',
-                                'cancelled' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                default => 'secondary',
-                            };
-                            $statusLabel = match ($so->status) {
-                                'in_process' => 'Dalam Proses',
-                                'shipped' => 'Dikirim',
-                                'completed' => 'Selesai',
-                                'cancelled' => 'Dibatalkan',
-                                default => ucfirst(str_replace('_', ' ', $so->status)),
-                            };
-                        @endphp --}}
                         <tr>
                             <td class="px-4 py-3">
                                 <strong>ROP-4215</strong>
@@ -227,8 +209,6 @@
                                 </div>
                             </td>
                         </tr>
-                        {{-- @empty
-                    @endforelse --}}
                     </tbody>
                 </table>
             </div>

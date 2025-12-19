@@ -7,8 +7,6 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\RequestOrder;
 use App\Models\RequestOrderItem;
-use App\Models\SalesOrder;
-use App\Models\SalesOrderItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +40,7 @@ class RequestOrderController extends Controller
             ->where('sales_id', Auth::id())
             ->update(['status' => 'expired']);
 
-        $requestOrders = RequestOrder::with('items.barang', 'sales', 'salesOrder')
+        $requestOrders = RequestOrder::with('items.barang', 'sales')
             ->where('sales_id', Auth::id())
             ->latest()
             ->paginate(20);
@@ -486,67 +484,6 @@ class RequestOrderController extends Controller
     /**
      * Konversi Request Order ke Sales Order
      */
-    public function convertToSalesOrder(RequestOrder $requestOrder)
-    {
-        if ($requestOrder->sales_id !== Auth::id()) {
-            abort(403);
-        }
-
-        if ($requestOrder->status !== 'approved') {
-            return back()->withErrors('Hanya Request Order yang approved dapat dikonversi ke Sales Order.');
-        }
-
-        if ($requestOrder->salesOrder) {
-            return back()->withErrors('Request Order ini sudah dikonversi ke Sales Order.');
-        }
-
-        DB::beginTransaction();
-        try {
-            $salesOrderNumber = $requestOrder->sales_order_number ?: 'SO-' . strtoupper(Str::random(8));
-
-            // Update Request Order with sales order number if not set
-            if (!$requestOrder->sales_order_number) {
-                $requestOrder->update(['sales_order_number' => $salesOrderNumber]);
-            }
-
-            $salesOrder = SalesOrder::create([
-                'sales_order_number' => $salesOrderNumber,
-                'request_order_id' => $requestOrder->id,
-                'sales_id' => Auth::id(),
-                'customer_name' => $requestOrder->customer_name,
-                'customer_id' => $requestOrder->customer_id,
-                'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                'catatan_customer' => $requestOrder->catatan_customer,
-                'status' => 'pending',
-            ]);
-
-            
-            foreach ($requestOrder->items as $reqItem) {
-                SalesOrderItem::create([
-                    'sales_order_id' => $salesOrder->id,
-                    'request_order_item_id' => $reqItem->id,
-                    'barang_id' => $reqItem->barang_id,
-                    'quantity' => $reqItem->quantity,
-                    'harga' => $reqItem->harga,
-                    'subtotal' => $reqItem->subtotal,
-                    'status_item' => 'pending',
-                ]);
-            }
-
-            // Update status Request Order - mark as open after conversion per request
-            $requestOrder->update(['status' => 'open']);
-
-            DB::commit();
-
-            return redirect()->route('sales.sales-order.show', $salesOrder->id)
-                ->with('success', "Sales Order {$salesOrder->sales_order_number} berhasil dibuat dari Request Order.");
-
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->withErrors('Gagal membuat Sales Order: ' . $e->getMessage());
-        }
-    }
-
     /**
      * Supervisor approves a Request Order that required approval
      */

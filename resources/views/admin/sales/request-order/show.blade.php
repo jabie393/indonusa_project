@@ -323,8 +323,6 @@
                                     Request Order telah disetujui dan siap untuk dikonversi.
                                 @elseif($requestOrder->status === 'rejected')
                                     Request Order ditolak oleh supervisor.
-                                @elseif($requestOrder->salesOrder)
-                                    Request Order telah dikonversi menjadi Sales Order.
                                 @endif
                             </p>
                         </div>
@@ -364,27 +362,7 @@
                                 </button>
                             @endif
 
-                            @if ($requestOrder->status === 'approved' && !$requestOrder->salesOrder)
-                                <form method="POST" action="{{ route('sales.request-order.convert', $requestOrder->id) }}" class="block w-full">
-                                    @csrf
-                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800" onclick="return confirm('Konversi Request Order ke Sales Order?')">
-                                        <i class="fas fa-arrow-right mr-2"></i> Konversi ke Sales Order
-                                    </button>
-                                </form>
-                            @endif
 
-                            @if ($requestOrder->salesOrder)
-                                <div class="rounded-lg bg-blue-50 p-4 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                    <div class="mb-1 font-medium">
-                                        <i class="fas fa-check-circle mr-1"></i> Sudah dikonversi
-                                    </div>
-                                    <div>
-                                        Sales Order: <a href="{{ route('sales.sales-order.show', $requestOrder->salesOrder->id) }}" class="font-bold underline hover:no-underline">
-                                            {{ $requestOrder->salesOrder->sales_order_number }}
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
 
                             {{-- Supervisor actions for pending approvals --}}
                             @if (auth()->check() && auth()->user()->role === 'Supervisor' && $requestOrder->status === 'pending_approval')

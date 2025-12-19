@@ -94,7 +94,7 @@ class CustomerController2 extends Controller
      */
     public function show(Customer $customer)
     {
-        $customer->load('createdBy', 'updatedBy', 'requestOrders', 'salesOrders');
+        $customer->load('createdBy', 'updatedBy', 'requestOrders');
 
         return view('admin.sales.customer.show', compact('customer'));
     }
@@ -155,7 +155,7 @@ class CustomerController2 extends Controller
     public function destroy(Customer $customer)
     {
         // Check if customer has orders
-        if ($customer->requestOrders()->exists() || $customer->salesOrders()->exists()) {
+        if ($customer->requestOrders()->exists()) {
             return back()->withErrors('Customer tidak dapat dihapus karena memiliki data pesanan/penawaran.');
         }
 

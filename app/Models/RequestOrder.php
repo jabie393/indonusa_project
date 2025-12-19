@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\RequestOrderItem;
-use App\Models\SalesOrder;
 
 class RequestOrder extends Model
 {
@@ -92,11 +91,6 @@ class RequestOrder extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'approved_by');
-    }
-
-    public function salesOrder()
-    {
-        return $this->hasOne(SalesOrder::class, 'request_order_id');
     }
 
     public function order()

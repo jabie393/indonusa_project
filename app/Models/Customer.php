@@ -51,11 +51,6 @@ class Customer extends Model
         return $this->hasMany(RequestOrder::class, 'customer_id');
     }
 
-    public function salesOrders()
-    {
-        return $this->hasMany(SalesOrder::class, 'customer_id');
-    }
-
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
