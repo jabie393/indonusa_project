@@ -82,6 +82,10 @@
                                     <p class="text-gray-900 dark:text-white">{{ $requestOrder->sales->name ?? '-' }}</p>
                                 </div>
                                 <div>
+                                    <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</label>
+                                    <p class="text-gray-900 dark:text-white">{{ $requestOrder->subject ?? '-' }}</p>
+                                </div>
+                                <div>
                                     <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Kebutuhan</label>
                                     <p class="text-gray-900 dark:text-white">{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
                                 </div>

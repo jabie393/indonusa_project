@@ -122,6 +122,19 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label for="subject" class="form-label">Subject <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control @error('subject') is-invalid @enderror" id="subject" name="subject" value="{{ old('subject', $requestOrder->subject) }}" placeholder="Masukkan subject untuk penawaran" required>
+                                        @error('subject')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                        <small class="text-muted">Subject yang akan muncul di PDF penawaran</small>
+                                    </div>
+                                </div>
+                            </div>
+
                             <hr>
 
                             <div class="row">

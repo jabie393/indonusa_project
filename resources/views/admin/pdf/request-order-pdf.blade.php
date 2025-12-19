@@ -35,12 +35,55 @@
         <!-- INNER MARGINS (1.27 cm) -->
         <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]" style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
 
+            @php
+                // Helper function to get base64 encoded image from public/images
+                function getPublicImageBase64($filename) {
+                    try {
+                        $path = public_path('images/' . $filename);
+                        if (file_exists($path) && is_readable($path)) {
+                            $mime = mime_content_type($path);
+                            $data = base64_encode(file_get_contents($path));
+                            return 'data:' . $mime . ';base64,' . $data;
+                        }
+                    } catch (\Exception $e) {
+                        // Log error if needed
+                    }
+                    return '';
+                }
+
+                // Helper function to get base64 encoded image from storage
+                function getStorageImageBase64($imagePath) {
+                    try {
+                        if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
+                            return $imagePath;
+                        }
+
+                        $fullPath = str_starts_with($imagePath, 'public/')
+                            ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
+                            : storage_path('app/public/' . ltrim($imagePath, '/'));
+
+                        if (file_exists($fullPath) && is_readable($fullPath)) {
+                            $mime = mime_content_type($fullPath);
+                            $data = base64_encode(file_get_contents($fullPath));
+                            return 'data:' . $mime . ';base64,' . $data;
+                        }
+                    } catch (\Exception $e) {
+                        // Log error if needed
+                    }
+                    return '';
+                }
+            @endphp
+
             <!-- WATERMARK IMAGE (OPTIONAL) -->
-            <img src="{{ asset('images/LogoText_transparent.png') }}" alt="" class="pointer-events-none absolute right-30 top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @if(getPublicImageBase64('LogoText_transparent.png'))
+                <img src="{{ getPublicImageBase64('LogoText_transparent.png') }}" alt="" class="pointer-events-none absolute right-30 top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @endif
 
             <!-- COMPANY INFO -->
             <div class="flex text-[9pt]">
-                <img src="{{ asset('images/Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
+                @if(getPublicImageBase64('Logo_transparent.png'))
+                    <img src="{{ getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
+                @endif
 
                 <div class="">
                     <div class="px-2 py-1">
@@ -102,7 +145,7 @@
 
                         <tr>
                             <td class="border-r border-black px-2"><strong>Subject</strong></td>
-                            <td class="border-r border-black px-2">Request Order - {{ $requestOrder->request_number }}</td>
+                            <td class="border-r border-black px-2">{{ $requestOrder->subject ?? 'Request Order - ' . $requestOrder->request_number }}</td>
                             <td class="border-r border-black px-2"><strong>Date</strong></td>
                             <td class="border-black px-2">{{ $requestOrder->created_at->format('d/m/Y') }}</td>
                         </tr>
@@ -125,19 +168,11 @@
                     <div class="flex gap-2 justify-start flex-wrap mt-2">
                         @foreach($requestOrder->supporting_images as $image)
                             @php
-                                if (is_null($image) || $image === '') {
-                                    $imgUrl = null;
-                                } elseif (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
-                                    $imgUrl = $image;
-                                } elseif (str_starts_with($image, 'public/')) {
-                                    $imgUrl = asset('storage/' . ltrim(substr($image, 7), '/'));
-                                } else {
-                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                }
+                                $imgSrc = getStorageImageBase64($image);
                             @endphp
-                            @if($imgUrl)
+                            @if($imgSrc)
                                 <div class="w-[90px] h-[90px] overflow-hidden border border-gray-300">
-                                    <img src="{{ $imgUrl }}" alt="Gambar Pendukung" class="w-full h-full object-cover" />
+                                    <img src="{{ $imgSrc }}" alt="Gambar Pendukung" class="w-full h-full object-cover" />
                                 </div>
                             @endif
                         @endforeach
@@ -181,19 +216,11 @@
                                         <div class="flex gap-2 justify-center flex-wrap">
                                             @foreach($item->item_images as $image)
                                                 @php
-                                                    if (is_null($image) || $image === '') {
-                                                        $imgUrl = null;
-                                                    } elseif (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
-                                                        $imgUrl = $image;
-                                                    } elseif (str_starts_with($image, 'public/')) {
-                                                        $imgUrl = asset('storage/' . ltrim(substr($image, 7), '/'));
-                                                    } else {
-                                                        $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                    }
+                                                    $imgSrc = getStorageImageBase64($image);
                                                 @endphp
 
-                                                @if($imgUrl)
-                                                    <img src="{{ $imgUrl }}" alt="Gambar" class="w-20 h-20 object-contain border border-gray-300">
+                                                @if($imgSrc)
+                                                    <img src="{{ $imgSrc }}" alt="Gambar" class="w-20 h-20 object-contain border border-gray-300">
                                                 @else
                                                     <span>-</span>
                                                 @endif

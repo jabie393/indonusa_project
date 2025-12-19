@@ -106,6 +106,15 @@
                                 <small class="text-muted dark:text-gray-400">Pilih sales yang menangani request order ini</small>
                             </div>
 
+                            <div class="col-span-2 flex flex-col">
+                                <label for="subject" class="form-label dark:text-gray-300">Subject <span class="text-danger">*</span></label>
+                                <input type="text" class="@error('subject') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan subject untuk penawaran" required>
+                                @error('subject')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted dark:text-gray-400">Subject yang akan muncul di PDF penawaran</small>
+                            </div>
+
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="tanggal_kebutuhan" class="form-label dark:text-gray-300">Tanggal Kebutuhan</label>
                                 <input type="date" class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
