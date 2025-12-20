@@ -170,7 +170,7 @@
                                         </button>
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $ro->id }}" style="position-anchor:--anchor-{{ $ro->id }}">
                                             {{-- Edit --}}
-                                            @if ($ro->status === 'pending')
+                                            @if ($ro->status === 'pending_approval')
                                                 <li>
                                                     <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
