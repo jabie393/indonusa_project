@@ -1,11 +1,11 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div class="col">
-                <h2 class="text-3xl font-bold text-black dark:text-white">Buat Request Order</h2>
-                <p class="mt-1 text-gray-500 dark:text-gray-400">Buat penawaran awal kepada pelanggan</p>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Buat Request Order</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Buat penawaran awal kepada pelanggan</p>
             </div>
-            <div class="col-auto">
+            <div>
                 <a href="{{ route('sales.request-order.index') }}" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
                         <path d="m12 19-7-7 7-7"></path>
@@ -33,8 +33,8 @@
                     @csrf
 
                     <!-- Customer Info Section -->
-                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md">
-                        <div class="card-header flex items-center justify-between rounded-t-2xl bg-[#225A97] p-4 text-white">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
+                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
@@ -49,7 +49,7 @@
                             </button>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-6 p-5 md:grid-cols-2">
+                        <div class="mb-8 grid grid-cols-1 gap-6 p-5 lg:grid-cols-2">
 
                             <div class="col-span-2 flex flex-col">
                                 <label for="customer_id" class="form-label dark:text-gray-300">Pilih Customer <span class="text-danger">*</span></label>
@@ -138,7 +138,7 @@
 
                     <!-- Items Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm" id="barangSection" style="display: flex;">
-                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
@@ -151,110 +151,108 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <div id="discountWarning" class="alert alert-warning" style="display:none;">
+                            <div id="discountWarning" class="alert alert-warning m-4" style="display:none;">
                                 Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan Supervisor.
                             </div>
-                            <div class="table-responsive mb-3">
-                                <table class="table-bordered table" id="itemsTable">
-                                    <thead class="bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
-                                        <tr>
-                                            <th>Kategori Barang</th>
-                                            <th>Kode Barang</th>
-                                            <th>Nama Barang</th>
-                                            <th width="100">Diskon (%)</th>
-                                            <th width="200">Keterangan</th>
-                                            <th width="100">Jumlah</th>
-                                            <th width="200">Harga Satuan</th>
-                                            <th width="150">Gambar</th>
-                                            <th width="200">Harga Setelah Diskon</th>
-                                            <th width="100">PPN (%)</th>
-                                            <th width="80">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="itemRows">
-                                        <tr class="item-row">
-                                            <td>
-                                                <select name="kategori_barang[]" class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                                                    <option value="">Pilih Kategori</option>
-                                                    @foreach ($categories as $cat)
-                                                        <option value="{{ $cat }}">{{ $cat }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required onchange="updateKategoriBarang(this)">
-                                                    <option value="">Pilih Barang</option>
-                                                    @foreach ($barangs as $b)
-                                                        <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}">
-                                                            {{ $b->kode_barang }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="diskon_percent[]" class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="keterangan[]" maxlength="255" class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" disabled>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
-                                            </td>
-                                            <td>
-                                                <div class="upload-btn-container relative">
-                                                    <input type="file" name="item_images[0][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
-                                                    <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
-                                                        Upload
-                                                    </button>
-                                                </div>
-                                                <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
-                                                        <path d="M3 6h18"></path>
-                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                        <line x1="10" x2="10" y1="11" y2="17"></line>
-                                                        <line x1="14" x2="14" y1="11" y2="17"></line>
-                                                    </svg>
+                            <table class="h-full w-full border-collapse" id="itemsTable">
+                                <thead>
+                                    <tr class="bg-gray-200 dark:bg-gray-700">
+                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Kategori Barang</th>
+                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Kode Barang</th>
+                                        <th class="min-w-[250px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="min-w-[200px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Jumlah</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga Satuan</th>
+                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga Setelah Diskon</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">PPN (%)</th>
+                                        <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemRows">
+                                    <tr class="item-row">
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <select name="kategori_barang[]" class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                                <option value="">Pilih Kategori</option>
+                                                @foreach ($categories as $cat)
+                                                    <option value="{{ $cat }}">{{ $cat }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required onchange="updateKategoriBarang(this)">
+                                                <option value="">Pilih Barang</option>
+                                                @foreach ($barangs as $b)
+                                                    <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}">
+                                                        {{ $b->kode_barang }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text" class="form-control barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number" name="diskon_percent[]" class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text" name="keterangan[]" maxlength="255" class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" disabled>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <div class="upload-btn-container relative">
+                                                <input type="file" name="item_images[0][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
+                                                <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
+                                                    Upload
                                                 </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="8" class="text-end text-black dark:text-gray-300">TOTAL:</th>
-                                            <th class="text-black dark:text-gray-300">
-                                                <strong id="totalAmount">Rp 0</strong>
-                                            </th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
+                                            </div>
+                                            <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text" class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                                                    <path d="M3 6h18"></path>
+                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                                                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="8" class="border border-gray-300 px-4 py-2 text-end text-black dark:border-gray-600 dark:text-gray-300">TOTAL:</th>
+                                        <th class="border border-gray-300 px-4 py-2 text-black dark:border-gray-600 dark:text-gray-300">
+                                            <strong id="totalAmount">Rp 0</strong>
+                                        </th>
+                                        <th class="border border-gray-300 px-4 py-2 dark:border-gray-600"></th>
+                                        <th class="border border-gray-300 px-4 py-2 dark:border-gray-600"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
                         <button type="button" id="addRow" class="btn inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm m-5 border-none bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Tambah Barang
                         </button>
 
+
                         <!-- Summary Section -->
-                        <div class="card bg-light bg-card mt-4 rounded-2xl border shadow-sm">
-                            <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
+                        <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
+                            <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                                 <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
                             </div>
                             <div class="p-5">
@@ -289,7 +287,7 @@
                                         <div class="flex items-center justify-between">
                                             <div>
                                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand Total</p>
-                                                <p class="text-3xl font-bold text-green-600 dark:text-green-400" id="summaryGrandTotal">Rp 0</p>
+                                                <p class="text-2xl font-bold text-green-600 dark:text-green-400" id="summaryGrandTotal">Rp 0</p>
                                             </div>
                                             <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
                                                 <svg class="h-6 w-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -303,7 +301,7 @@
                         </div>
 
                         <!-- Supporting Images Section -->
-                        <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm" id="imagesSection" style="display: none;">
+                        <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md" id="imagesSection" style="display: none;">
                             <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
                                 <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h3>
                             </div>
@@ -329,7 +327,7 @@
                     </div>
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4">
-                        <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#972222] text-white hover:bg-[#811c1c]">
+                        <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Batal
                         </a>
                         <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" id="submitBtn" disabled>
@@ -1007,7 +1005,12 @@
                 function updateRemoveButtons() {
                     const rows = document.querySelectorAll('.item-row');
                     rows.forEach((row, index) => {
-                        row.querySelector('.remove-row').style.display = 'inline-block';
+                        const btn = row.querySelector('.remove-row');
+                        if (index === 0) {
+                            btn.style.display = 'none';
+                        } else {
+                            btn.style.display = 'inline-block';
+                        }
                     });
                 }
 

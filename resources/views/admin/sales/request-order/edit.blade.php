@@ -12,11 +12,11 @@
             </div>
         </div>
 
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle"></i> <strong>Gagal:</strong>
                 <ul class="mb-0">
-                    @foreach($errors->all() as $error)
+                    @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
@@ -31,8 +31,8 @@
                     @method('PUT')
 
                     <!-- Customer Info Section -->
-                    <div class="card mb-4 bg-light">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div class="card bg-light mb-4">
+                        <div class="card-header bg-primary d-flex justify-content-between align-items-center text-white">
                             <h5 class="mb-0"><i class="fas fa-user"></i> Informasi Customer</h5>
                             <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
                                 <i class="fas fa-plus"></i> Tambah Customer Baru
@@ -46,14 +46,12 @@
                                 <div class="col-md-12">
                                     <div class="mb-3">
                                         <label for="customer_id" class="form-label">Pilih Customer <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('customer_id') is-invalid @enderror" 
-                                                id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
+                                        <select class="@error('customer_id') is-invalid @enderror form-select" id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
                                             <option value="">-- Pilih Customer --</option>
-                                            @foreach($customers as $c)
-                                                <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
-                                                    @selected(old('customer_id', $requestOrder->customer_id) == $c->id)>
-                                                    {{ $c->nama_customer }} 
-                                                    @if($c->email)
+                                            @foreach ($customers as $c)
+                                                <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}" @selected(old('customer_id', $requestOrder->customer_id) == $c->id)>
+                                                    {{ $c->nama_customer }}
+                                                    @if ($c->email)
                                                         ({{ $c->email }})
                                                     @endif
                                                 </option>
@@ -71,16 +69,14 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="customer_name" class="form-label">Nama Customer</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_name" name="customer_name" value="{{ old('customer_name', $requestOrder->customer_name) }}" readonly>
+                                        <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ old('customer_name', $requestOrder->customer_name) }}" readonly>
                                         <small class="text-muted">Auto-filled dari customer yang dipilih</small>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="customer_email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" 
-                                               id="customer_email" readonly>
+                                        <input type="email" class="form-control" id="customer_email" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -89,15 +85,13 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="customer_telepon" class="form-label">Telepon</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_telepon" readonly>
+                                        <input type="text" class="form-control" id="customer_telepon" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="customer_kota" class="form-label">Kota</label>
-                                        <input type="text" class="form-control" 
-                                               id="customer_kota" readonly>
+                                        <input type="text" class="form-control" id="customer_kota" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -106,7 +100,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="pic_id" class="form-label">PIC (Sales) <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('pic_id') is-invalid @enderror" id="pic_id" name="pic_id" required>
+                                        <select class="@error('pic_id') is-invalid @enderror form-select" id="pic_id" name="pic_id" required>
                                             <option value="">-- Pilih PIC Sales --</option>
                                             @foreach ($salesUsers as $sales)
                                                 <option value="{{ $sales->id }}" @selected(old('pic_id', $requestOrder->sales_id) == $sales->id)>
@@ -141,8 +135,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="tanggal_kebutuhan" class="form-label">Tanggal Kebutuhan</label>
-                                        <input type="date" class="form-control @error('tanggal_kebutuhan') is-invalid @enderror" 
-                                               id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan', $requestOrder->tanggal_kebutuhan) }}">
+                                        <input type="date" class="form-control @error('tanggal_kebutuhan') is-invalid @enderror" id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan', $requestOrder->tanggal_kebutuhan) }}">
                                         @error('tanggal_kebutuhan')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -151,8 +144,7 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="catatan_customer" class="form-label">Catatan</label>
-                                        <textarea class="form-control @error('catatan_customer') is-invalid @enderror" 
-                                                  id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer', $requestOrder->catatan_customer) }}</textarea>
+                                        <textarea class="form-control @error('catatan_customer') is-invalid @enderror" id="catatan_customer" name="catatan_customer" rows="1">{{ old('catatan_customer', $requestOrder->catatan_customer) }}</textarea>
                                         @error('catatan_customer')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -163,7 +155,7 @@
                     </div>
 
                     <!-- Category Selection Section (REQUIRED FIRST) -->
-                    <div class="card mb-4 bg-warning bg-opacity-10">
+                    <div class="card bg-warning mb-4 bg-opacity-10">
                         <div class="card-header bg-warning text-dark">
                             <h5 class="mb-0"><i class="fas fa-tag"></i> Kategori Barang <span class="badge bg-danger ms-2">WAJIB DIPILIH TERLEBIH DAHULU</span></h5>
                         </div>
@@ -172,10 +164,9 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="kategori_barang" class="form-label">Pilih Kategori Barang <span class="text-danger">*</span></label>
-                                        <select class="form-select @error('kategori_barang') is-invalid @enderror" 
-                                                id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
+                                        <select class="@error('kategori_barang') is-invalid @enderror form-select" id="kategori_barang" name="kategori_barang" required onchange="filterBarangByCategory(this.value)">
                                             <option value="">-- Pilih Kategori --</option>
-                                            @foreach($categories as $cat)
+                                            @foreach ($categories as $cat)
                                                 <option value="{{ $cat }}" @selected(old('kategori_barang', $requestOrder->kategori_barang) == $cat)>
                                                     {{ $cat }}
                                                 </option>
@@ -193,31 +184,31 @@
                                         <div class="alert alert-info mb-0">
                                             <strong>Dimulai:</strong> <span>{{ $requestOrder->tanggal_berlaku_formatted }}</span><br>
                                             <strong>Berakhir:</strong> <span>{{ $requestOrder->expired_at_formatted }}</span><br>
-                                            <strong>Status:</strong> 
-                                                @if($requestOrder->expired_at)
-                                                    @if($requestOrder->isExpired())
-                                                        <span class="badge bg-danger">KADALUARSA</span>
-                                                    @else
-                                                        <span class="badge bg-success">BERLAKU</span>
-                                                        @php
-                                                            try {
-                                                                $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
-                                                                $daysLeft = $expiry->diffInDays(now());
-                                                            } catch (\Throwable $e) {
-                                                                $daysLeft = null;
-                                                            }
-                                                        @endphp
-                                                        <small>
-                                                            @if($daysLeft && $daysLeft > 0)
-                                                                ({{ $daysLeft }} hari dari sekarang)
-                                                            @else
-                                                                (-)
-                                                            @endif
-                                                        </small>
-                                                    @endif
+                                            <strong>Status:</strong>
+                                            @if ($requestOrder->expired_at)
+                                                @if ($requestOrder->isExpired())
+                                                    <span class="badge bg-danger">KADALUARSA</span>
                                                 @else
-                                                    <span class="badge bg-warning">TBD</span>
+                                                    <span class="badge bg-success">BERLAKU</span>
+                                                    @php
+                                                        try {
+                                                            $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
+                                                            $daysLeft = $expiry->diffInDays(now());
+                                                        } catch (\Throwable $e) {
+                                                            $daysLeft = null;
+                                                        }
+                                                    @endphp
+                                                    <small>
+                                                        @if ($daysLeft && $daysLeft > 0)
+                                                            ({{ $daysLeft }} hari dari sekarang)
+                                                        @else
+                                                            (-)
+                                                        @endif
+                                                    </small>
                                                 @endif
+                                            @else
+                                                <span class="badge bg-warning">TBD</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -232,17 +223,17 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive mb-3">
-                                <table class="table table-bordered" id="itemsTable">
+                                <table class="table-bordered table" id="itemsTable">
                                     <thead class="table-light">
                                         <tr>
-                                                    <th>Kode Barang</th>
-                                                    <th>Nama Barang</th>
-                                                    <th width="100">Diskon (%)</th>
-                                                    <th width="120">Jumlah</th>
-                                                    <th width="150">Harga Satuan</th>
-                                                    <th width="150">Gambar</th>
-                                                    <th width="150">Subtotal</th>
-                                                    <th width="80">Aksi</th>
+                                            <th>Kode Barang</th>
+                                            <th>Nama Barang</th>
+                                            <th width="100">Diskon (%)</th>
+                                            <th width="120">Jumlah</th>
+                                            <th width="150">Harga Satuan</th>
+                                            <th width="150">Gambar</th>
+                                            <th width="150">Subtotal</th>
+                                            <th width="80">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody id="itemRows">
@@ -251,39 +242,30 @@
                                                 <td>
                                                     <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Barang --</option>
-                                                        @foreach($barangs as $b)
-                                                                <option value="{{ $b->id }}"
-                                                                        data-kode="{{ $b->kode_barang }}"
-                                                                        data-nama="{{ $b->nama_barang }}"
-                                                                        data-kategori="{{ $b->kategori }}"
-                                                                        data-stok="{{ $b->stok }}"
-                                                                        data-harga="{{ $b->harga ?? 0 }}"
-                                                                        data-diskon="{{ $b->diskon_percent ?? 0 }}"
-                                                                        @selected($item->barang_id === $b->id)>
-                                                                    {{ $b->kode_barang }}
-                                                                </option>
+                                                        @foreach ($barangs as $b)
+                                                            <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" @selected($item->barang_id === $b->id)>
+                                                                {{ $b->kode_barang }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <input type="text" class="form-control barang-nama-display" readonly style="background-color: #f0f0f0;" value="{{ $item->barang->nama_barang ?? '' }}">
                                                 </td>
-                                                    <td>
-                                                        <input type="number" name="diskon_percent[]" class="form-control diskon-input" min="0" max="100" step="0.01" value="{{ $item->diskon_percent ?? $item->barang->diskon_percent ?? 0 }}">
-                                                    </td>
                                                 <td>
-                                                    <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
-                                                           min="1" value="{{ old('quantity', $item->quantity) }}" required>
+                                                    <input type="number" name="diskon_percent[]" class="form-control diskon-input" min="0" max="100" step="0.01" value="{{ $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0) }}">
                                                 </td>
-                                                        <td>
-                                                            <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" 
-                                                               min="0" step="0.01" value="{{ old('harga', $item->harga) }}" readonly>
+                                                <td>
+                                                    <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" min="1" value="{{ old('quantity', $item->quantity) }}" required>
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" min="0" step="0.01" value="{{ old('harga', $item->harga) }}" readonly>
                                                 </td>
                                                 <td>
                                                     <input type="file" name="item_images[{{ $loop->index }}][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
-                                                    <div class="item-images-preview mt-2 row g-2">
-                                                        @if($item->item_images && count($item->item_images) > 0)
-                                                            @foreach($item->item_images as $img)
+                                                    <div class="item-images-preview row g-2 mt-2">
+                                                        @if ($item->item_images && count($item->item_images) > 0)
+                                                            @foreach ($item->item_images as $img)
                                                                 <div class="col-auto">
                                                                     <div class="card" style="width: 90px; height: 90px; overflow: hidden;">
                                                                         <img src="{{ asset('storage/' . $img) }}" class="card-img-top" alt="Image" style="height: 100%; width: 100%; object-fit: cover;">
@@ -307,7 +289,7 @@
                                                 <td>
                                                     <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Barang --</option>
-                                                        @foreach($barangs as $b)
+                                                        @foreach ($barangs as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->kode_barang }}" data-nama="{{ $b->nama_barang }}" data-kategori="{{ $b->kategori }}" data-stok="{{ $b->stok }}" data-harga="{{ $b->harga ?? 0 }}" data-diskon="{{ $b->diskon_percent ?? 0 }}" style="display: none;">
                                                                 {{ $b->kode_barang }}
                                                             </option>
@@ -321,16 +303,14 @@
                                                     <input type="number" name="diskon_percent[]" class="form-control diskon-input" min="0" max="100" step="0.01" value="0">
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" 
-                                                           min="1" value="1" required>
+                                                    <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror" min="1" value="1" required>
                                                 </td>
                                                 <td>
-                                                    <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" 
-                                                           min="0" step="0.01" value="0" readonly>
+                                                    <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror" min="0" step="0.01" value="0" readonly>
                                                 </td>
                                                 <td>
                                                     <input type="file" name="item_images[0][]" class="item-images-input block w-full rounded-lg" multiple accept="image/*">
-                                                    <div class="item-images-preview mt-2 row g-2"></div>
+                                                    <div class="item-images-preview row g-2 mt-2"></div>
                                                 </td>
                                                 <td>
                                                     <input type="text" class="form-control subtotal-display" readonly style="background-color: #f0f0f0;">
@@ -367,11 +347,11 @@
                             <h5 class="mb-0"><i class="fas fa-images"></i> Gambar Pendukung Penawaran</h5>
                         </div>
                         <div class="card-body">
-                            @if($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
+                            @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
                                 <div class="mb-4">
                                     <h6>Gambar Saat Ini</h6>
                                     <div class="row g-2">
-                                        @foreach($requestOrder->supporting_images as $image)
+                                        @foreach ($requestOrder->supporting_images as $image)
                                             <div class="col-md-3 col-sm-4 col-6">
                                                 <div class="card">
                                                     <img src="{{ asset('storage/' . $image) }}" class="card-img-top" alt="Existing image" style="height: 150px; object-fit: cover;">
@@ -389,8 +369,7 @@
                             <div class="mb-3">
                                 <label for="supporting_images" class="form-label">Unggah Gambar Baru <span class="text-muted">(Foto barang, contoh produk, desain, dll)</span></label>
                                 <div class="input-group">
-                                    <input type="file" class="form-control @error('supporting_images.*') is-invalid @enderror" 
-                                           id="supporting_images" name="supporting_images[]" multiple accept="image/*">
+                                    <input type="file" class="form-control @error('supporting_images.*') is-invalid @enderror" id="supporting_images" name="supporting_images[]" multiple accept="image/*">
                                     <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF | Ukuran maksimal: 5MB per gambar</small>
                                 </div>
                                 @error('supporting_images.*')
@@ -529,7 +508,7 @@
         function populateCustomerData(customerId) {
             const customerSelect = document.getElementById('customer_id');
             const selectedOption = customerSelect.options[customerSelect.selectedIndex];
-            
+
             if (!customerId) {
                 document.getElementById('customer_name').value = '';
                 document.getElementById('customer_email').value = '';
@@ -537,7 +516,7 @@
                 document.getElementById('customer_kota').value = '';
                 return;
             }
-            
+
             document.getElementById('customer_name').value = selectedOption.textContent.split('(')[0].trim();
             document.getElementById('customer_email').value = selectedOption.dataset.email || '';
             document.getElementById('customer_telepon').value = selectedOption.dataset.telepon || '';
@@ -567,7 +546,7 @@
                 const formData = new FormData(this);
 
                 try {
-                    const response = await fetch('{{ route("sales.customer.store") }}', {
+                    const response = await fetch('{{ route('sales.customer.store') }}', {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -608,7 +587,7 @@
                         Object.keys(errors).forEach(field => {
                             const errorElement = document.getElementById('error-' + field);
                             const inputElement = document.getElementById('modal' + capitalizeFirst(field));
-                            
+
                             if (errorElement) {
                                 errorElement.textContent = errors[field][0];
                                 if (inputElement) {
@@ -667,14 +646,14 @@
                 });
             };
 
-            
+
             function handleBarangChange(select) {
                 const option = select.options[select.selectedIndex];
                 const row = select.closest('.item-row');
                 const namaDisplay = row.querySelector('.barang-nama-display');
                 const diskonInput = row.querySelector('.diskon-input');
                 const hargaInput = row.querySelector('.harga-input');
-                
+
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
                     // Base price from barang
@@ -715,15 +694,21 @@
                     const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
                     const harga = parseFloat(row.querySelector('.harga-input').value) || 0;
                     const subtotal = qty * harga;
-                    
-                    row.querySelector('.subtotal-display').value = subtotal > 0 
-                        ? 'Rp ' + subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                        : '0';
-                    
+
+                    row.querySelector('.subtotal-display').value = subtotal > 0 ?
+                        'Rp ' + subtotal.toLocaleString('id-ID', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        }) :
+                        '0';
+
                     total += subtotal;
                 });
 
-                document.getElementById('totalAmount').textContent = 'Rp ' + total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalAmount').textContent = 'Rp ' + total.toLocaleString('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
             }
 
             addRowBtn.addEventListener('click', function() {
@@ -923,6 +908,7 @@
             font-weight: 500;
             margin-bottom: 0.5rem;
         }
+
         .card-header {
             padding: 1rem;
         }

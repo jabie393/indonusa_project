@@ -51,7 +51,7 @@
                     @foreach ($customers as $customer)
                         <tr class="dark:border-gray-700">
 
-                            <td class="px-4 py-2">{{ $customer->nama_customer }}</td>
+                            <td class="px-4 py-2 text-nowrap">{{ $customer->nama_customer }}</td>
                             <td class="px-4 py-2">{{ $customer->tipe_customer }}</td>
                             <td class="px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->term_of_payments ?? '-' }}</td>
