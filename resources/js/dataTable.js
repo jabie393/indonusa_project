@@ -41,7 +41,6 @@ let datatableExcel = new DataTable('#DataTableExcel', {
     searching: false,
     paging: false,
     info: false,
-    colReorder: true,
     fixedColumns: {
         left: 0,
         right: 1

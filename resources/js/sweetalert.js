@@ -1,15 +1,17 @@
 import Swal from 'sweetalert2'
 
+window.Swal = Swal;
+
 // Delete alert
 window.confirmDelete = function (callback) {
     Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Apakah Anda yakin?",
+        text: "Anda tidak akan dapat mengembalikan ini!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Ya, hapus!",
         customClass: {
             popup: 'rounded-2xl!',
         }
@@ -22,30 +24,39 @@ window.confirmDelete = function (callback) {
 };
 
 // Success alert
-if (window.sweetTitle && window.sweetText) {
-    Swal.fire({
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("SweetAlert check:", {
         title: window.sweetTitle,
         text: window.sweetText,
-        icon: 'success',
-        showConfirmButton: false,
-        timer: 3500,
-        timerProgressBar: true,
-        customClass: {
-            popup: 'rounded-2xl!',
-        }
+        errorTitle: window.errorTitle,
+        errorText: window.errorText,
     });
-}
 
-// Error alert
-if (window.errorTitle && window.errorText) {
-    Swal.fire({
-        title: window.errorTitle,
-        text: window.errorText,
-        icon: 'error',
-        showConfirmButton: true,
-        confirmButtonColor: '#d33',
-        customClass: {
-            popup: 'rounded-2xl!',
-        }
-    });
-}
+    if (window.sweetTitle || window.sweetText) {
+        Swal.fire({
+            title: window.sweetTitle || "Berhasil!",
+            text: window.sweetText || "",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 3500,
+            timerProgressBar: true,
+            customClass: {
+                popup: "rounded-2xl!",
+            },
+        });
+    }
+
+    // Error alert
+    if (window.errorTitle || window.errorText) {
+        Swal.fire({
+            title: window.errorTitle || "Error",
+            text: window.errorText || "Terjadi kesalahan.",
+            icon: "error",
+            showConfirmButton: true,
+            confirmButtonColor: "#d33",
+            customClass: {
+                popup: "rounded-2xl!",
+            },
+        });
+    }
+});

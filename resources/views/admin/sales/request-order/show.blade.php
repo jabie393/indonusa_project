@@ -230,13 +230,13 @@
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <div class="font-medium text-gray-900 text-nowrap dark:text-white">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
-                                                <div class="text-xs text-gray-500 text-nowrap dark:text-gray-400">Kode: {{ $item->barang->kode_barang ?? '-' }}</div>
+                                                <div class="text-nowrap font-medium text-gray-900 dark:text-white">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
+                                                <div class="text-nowrap text-xs text-gray-500 dark:text-gray-400">Kode: {{ $item->barang->kode_barang ?? '-' }}</div>
                                             </td>
                                             <td class="px-6 py-4">{{ $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0) }}%</td>
                                             <td class="px-6 py-4">{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
-                                            <td class="px-6 py-4 text-nowrap">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
-                                            <td class="px-6 py-4 font-semibold text-gray-900 text-nowrap dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
+                                            <td class="text-nowrap px-6 py-4">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
+                                            <td class="text-nowrap px-6 py-4 font-semibold text-gray-900 dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -350,7 +350,7 @@
                                             </button>
                                         </form>
                                     @endif
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -439,7 +439,7 @@
         </div>
     </div>
     <!-- Image modal (lightbox) -->
-    <div id="image-modal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-70">
+    <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-70">
         <button id="image-modal-close" class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
         <img id="image-modal-img" src="" alt="Gambar" class="max-h-[90%] max-w-[95%] rounded shadow-lg">
     </div>
