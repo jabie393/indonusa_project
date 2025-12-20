@@ -1,9 +1,9 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Edit Penawaran Kustom</h1>
-                <p class="mt-2 text-gray-600">Ubah detail penawaran</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Penawaran Kustom</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Ubah detail penawaran</p>
             </div>
         </div>
         <div class="card">
@@ -11,7 +11,7 @@
                 <form action="{{ route('sales.custom-penawaran.update', $customPenawaran->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -23,8 +23,8 @@
                         <div class="mb-8 grid grid-cols-1 gap-6 p-5 lg:grid-cols-2">
                             <!-- To Field -->
                             <div>
-                                <label for="to" class="mb-2 block text-sm font-medium text-gray-700">Kepada (To)</label>
-                                <input type="text" id="to" name="to" value="{{ old('to', $customPenawaran->to) }}" required class="@error('to') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Nama customer">
+                                <label for="to" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Kepada (To)</label>
+                                <input type="text" id="to" name="to" value="{{ old('to', $customPenawaran->to) }}" required class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Nama customer">
                                 @error('to')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -32,8 +32,8 @@
 
                             <!-- Up Field -->
                             <div>
-                                <label for="up" class="mb-2 block text-sm font-medium text-gray-700">Attn (Up)</label>
-                                <select id="up" name="up" required class="@error('up') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500">
+                                <label for="up" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Attn (Up)</label>
+                                <select id="up" name="up" required class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                     <option value="">Pilih Sales</option>
                                     @foreach ($salesUsers as $name => $displayName)
                                         <option value="{{ $name }}" {{ old('up', $customPenawaran->up ?: $currentUserName) == $name ? 'selected' : '' }}>
@@ -48,8 +48,8 @@
 
                             <!-- Subject Field -->
                             <div class="lg:col-span-2">
-                                <label for="subject" class="mb-2 block text-sm font-medium text-gray-700">Subject</label>
-                                <input type="text" id="subject" name="subject" value="{{ old('subject', $customPenawaran->subject) }}" required class="@error('subject') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Judul penawaran">
+                                <label for="subject" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Subject</label>
+                                <input type="text" id="subject" name="subject" value="{{ old('subject', $customPenawaran->subject) }}" required class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Judul penawaran">
                                 @error('subject')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -57,8 +57,8 @@
 
                             <!-- Email Field -->
                             <div>
-                                <label for="email" class="mb-2 block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" id="email" name="email" value="{{ old('email', $customPenawaran->email) }}" required class="@error('email') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="email@example.com">
+                                <label for="email" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                <input type="email" id="email" name="email" value="{{ old('email', $customPenawaran->email) }}" required class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="email@example.com">
                                 @error('email')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -66,8 +66,8 @@
 
                             <!-- Our Ref Field -->
                             <div>
-                                <label for="our_ref" class="mb-2 block text-sm font-medium text-gray-700">Our Ref</label>
-                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref', $customPenawaran->our_ref) }}" readonly class="@error('our_ref') border-red-500 @enderror w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2">
+                                <label for="our_ref" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref</label>
+                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref', $customPenawaran->our_ref) }}" readonly class="@error('our_ref') border-red-500 @enderror w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-black dark:bg-gray-600 dark:text-gray-300">
                                 @error('our_ref')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -75,8 +75,8 @@
 
                             <!-- Date Field -->
                             <div>
-                                <label for="date" class="mb-2 block text-sm font-medium text-gray-700">Tanggal</label>
-                                <input type="date" id="date" name="date" value="{{ old('date', $customPenawaran->date) }}" required class="@error('date') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500">
+                                <label for="date" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal</label>
+                                <input type="date" id="date" name="date" value="{{ old('date', $customPenawaran->date) }}" required class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -84,8 +84,8 @@
 
                             <!-- Intro Text -->
                             <div class="lg:col-span-2">
-                                <label for="intro_text" class="mb-2 block text-sm font-medium text-gray-700">Teks Pembuka</label>
-                                <textarea id="intro_text" name="intro_text" rows="4" class="@error('intro_text') border-red-500 @enderror w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', $customPenawaran->intro_text) }}</textarea>
+                                <label for="intro_text" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Teks Pembuka</label>
+                                <textarea id="intro_text" name="intro_text" rows="4" class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', $customPenawaran->intro_text) }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -94,8 +94,8 @@
                     </div>
 
                     <!-- Items Table -->
-                    <div class="card bg-light bg-card mb-4 rounded-2xl border shadow-sm">
-                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
@@ -107,45 +107,45 @@
                             </h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full border-collapse">
+                            <table class="h-full w-full border-collapse">
                                 <thead>
-                                    <tr class="bg-gray-200">
-                                        <th class="min-w-[50px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold">No</th>
-                                        <th class="min-w-[250px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Nama Barang</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Qty</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Satuan</th>
-                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Harga (Rp)</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Diskon (%)</th>
-                                        <th class="min-w-[200px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold">Keterangan</th>
-                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold">Total (Rp)</th>
-                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Gambar</th>
-                                        <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold">Aksi</th>
+                                    <tr class="bg-gray-200 dark:bg-gray-700">
+                                        <th class="min-w-[50px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">No</th>
+                                        <th class="min-w-[250px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Qty</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Satuan</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="min-w-[200px] border border-gray-300 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
+                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
+                                        <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
                                     @forelse($customPenawaran->items as $index => $item)
                                         <tr class="item-row" data-index="{{ $index }}">
-                                            <td class="item-no border border-gray-300 px-4 py-2 text-center">{{ $index + 1 }}</td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">{{ $index + 1 }}</td>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="items[{{ $index }}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Nama barang" value="{{ $item->nama_barang }}" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="items[{{ $index }}][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ $item->qty }}" min="1" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="items[{{ $index }}][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Unit" value="{{ $item->satuan }}" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="items[{{ $index }}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ $item->harga }}" step="0.01" min="0" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="items[{{ $index }}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ $item->diskon ?? 0 }}" min="0" max="100" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="items[{{ $index }}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan diskon" value="{{ $item->keterangan ?? '' }}">
                                             </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center">
+                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
                                                     <input type="file" name="items[{{ $index }}][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
                                                     <button type="button" class="upload-button rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600" style="{{ $item->images && count($item->images) > 0 ? 'display: none;' : '' }}">
@@ -171,8 +171,8 @@
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center">
-                                                <button type="button" class="btn btn-remove-item rounded-lg bg-red-500 text-white hover:bg-red-600">
+                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                                <button type="button" class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                                                         <path d="M3 6h18"></path>
                                                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
@@ -185,27 +185,44 @@
                                         </tr>
                                     @empty
                                         <tr class="item-row" data-index="0">
-                                            <td class="item-no border border-gray-300 px-4 py-2 text-center">1</td>
-                                            <td class="border border-gray-300 px-4 py-2">
-                                                <input type="text" name="items[0][nama_barang]" class="w-full rounded border border-gray-300 px-2 py-1" placeholder="Nama barang" required>
+                                            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">1</td>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="text" name="items[0][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Nama barang" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
-                                                <input type="number" name="items[0][qty]" class="item-qty w-full rounded border border-gray-300 px-2 py-1" placeholder="0" value="1" min="1" required>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="number" name="items[0][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="1" min="1" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
-                                                <input type="text" name="items[0][satuan]" class="w-full rounded border border-gray-300 px-2 py-1" placeholder="Unit" required>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="text" name="items[0][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Unit" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2">
-                                                <input type="number" name="items[0][harga]" class="item-harga w-full rounded border border-gray-300 px-2 py-1" placeholder="0" step="0.01" min="0" required>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="number" name="items[0][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" step="0.01" min="0" required>
                                             </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold">0</td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center">
-                                                <input type="file" name="items[0][images][]" class="item-images-input w-full text-xs" multiple accept="image/*">
-                                                <div class="item-images-preview mt-2 space-y-1" style="max-height: 100px; overflow-y: auto;"></div>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="number" name="items[0][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="0" min="0" max="100" required>
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center">
-                                                <button type="button" class="btn-remove-item rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
-                                                    Hapus
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                <input type="text" name="items[0][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan diskon">
+                                            </td>
+                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
+                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                                <div class="upload-btn-container relative">
+                                                    <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
+                                                    <button type="button" class="upload-button rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
+                                                        Upload Gambar
+                                                    </button>
+                                                </div>
+                                                <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
+                                            </td>
+                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                                <button type="button" class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                        <line x1="10" x2="10" y1="11" y2="17"></line>
+                                                        <line x1="14" x2="14" y1="11" y2="17"></line>
+                                                    </svg>
                                                 </button>
                                             </td>
                                         </tr>
@@ -323,11 +340,11 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex justify-end gap-4">
-                        <a href="{{ route('sales.custom-penawaran.index') }}" class="rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-50">
+                    <div class="mt-4 flex justify-end gap-4">
+                        <a href="{{ route('sales.custom-penawaran.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Batal
                         </a>
-                        <button type="submit" class="rounded-lg bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700">
+                        <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Simpan Perubahan
                         </button>
                     </div>
@@ -479,33 +496,33 @@
                 newRow.className = 'item-row';
                 newRow.dataset.index = itemCount;
                 newRow.innerHTML = `
-            <td class="item-no border border-gray-300 px-4 py-2 text-cente">${itemCount + 1}</td>
-            <td class="border border-gray-300 px-4 py-2">
-                <input type="text" name="items[${itemCount}][nama_barang]" class="form-control  block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">${itemCount + 1}</td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="text" name="items[${itemCount}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Nama barang" required>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
-                <input type="number" name="items[${itemCount}][qty]" class="item-qty form-control  block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="number" name="items[${itemCount}][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="0" value="1" min="1" required>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
-                <input type="text" name="items[${itemCount}][satuan]" class="form-control  block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="text" name="items[${itemCount}][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Unit" required>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="number" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="0" step="0.01" min="0" required>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="number" name="items[${itemCount}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="0" min="0" max="100" value="0" required>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="text" name="items[${itemCount}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Keterangan jika diskon > 20%">
             </td>
-            <td class="border border-gray-300 px-4 py-2 text-right item-subtotal font-semibold">0</td>
-            <td class="border border-gray-300 px-4 py-2 text-center">
+            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
+            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                 <div class="relative upload-btn-container">
                     <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" 
                         multiple accept="image/*">
@@ -515,8 +532,8 @@
                 </div>
                 <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
             </td>
-            <td class="border border-gray-300 px-4 py-2">
-                <button type="button" class="btn btn-remove-item rounded-lg bg-red-500 text-white hover:bg-red-600">
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <button type="button" class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                         <path d="M3 6h18"></path>

@@ -223,7 +223,7 @@
                                         <div class="w-full">
                                             <div class="mb-1 flex items-center justify-start">
                                                 <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600" style="width: fit-content;">
-                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300 w-fit">Pajak/PPN</p>
+                                                    <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">Pajak/PPN</p>
                                                     <input type="number" id="tax_rate" value="11" class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white" min="0" max="100">
                                                     <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
                                                 </div>
@@ -256,6 +256,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-4 mt-4">
+                        <a href="{{ route('sales.custom-penawaran.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                            Batal
+                        </a>
+                        <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                            Simpan Penawaran
+                        </button>
                     </div>
                     <script>
                         (function() {
@@ -300,15 +309,7 @@
                     </script>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-end gap-4">
-                <a href="{{ route('sales.custom-penawaran.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                    Batal
-                </a>
-                <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                    Simpan Penawaran
-                </button>
-            </div>
+
             </form>
         </div>
     </div>
