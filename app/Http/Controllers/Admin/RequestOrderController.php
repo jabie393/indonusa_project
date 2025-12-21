@@ -75,7 +75,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.create', compact('barangs', 'customers', 'categories', 'salesUsers'));
+        return view('admin.sales.request-order.create', compact('barangs', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
     }
 
     /**
@@ -223,12 +223,12 @@ class RequestOrderController extends Controller
                 DB::commit();
 
                 return redirect()->route('sales.request-order.show', $requestOrder->id)
-                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
+                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.")->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
             }
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal membuat Request Order: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Gagal membuat Request Order: ' . $e->getMessage())->withInput()->with(['title' => 'Gagal', 'text' => 'Gagal membuat Request Order!']);
         }
     }
 
@@ -338,7 +338,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.edit', compact('requestOrder', 'barangs', 'customers', 'categories', 'salesUsers'));
+        return view('admin.sales.request-order.edit', compact('requestOrder', 'barangs', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
     /**
@@ -477,11 +477,11 @@ class RequestOrderController extends Controller
             DB::commit();
 
             return redirect()->route('sales.request-order.show', $requestOrder->id)
-                ->with('success', 'Request Order berhasil diubah.');
+                ->with('success', 'Request Order berhasil diubah.')->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diubah!']);
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal mengubah Request Order: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Gagal mengubah Request Order: ' . $e->getMessage())->withInput()->with(['title' => 'Gagal', 'text' => 'Gagal mengubah Request Order!']);
         }
     }
 
@@ -504,7 +504,7 @@ class RequestOrderController extends Controller
             'approved_at' => now(),
         ]);
 
-        return back()->with('success', 'Request Order telah disetujui oleh Supervisor.');
+        return back()->with('success', 'Request Order telah disetujui oleh Supervisor.')->with(['title' => 'Berhasil', 'text' => 'Request Order telah disetujui oleh Supervisor!']);
     }
 
     /**
@@ -527,7 +527,7 @@ class RequestOrderController extends Controller
             'approved_at' => now(),
         ]);
 
-        return back()->with('success', 'Request Order ditolak.');
+        return back()->with('success', 'Request Order ditolak.')->with(['title' => 'Berhasil', 'text' => 'Request Order ditolak!']);
     }
 
     /**
@@ -547,7 +547,7 @@ class RequestOrderController extends Controller
         // Update status
         $requestOrder->update(['status' => $validated['status']]);
 
-        return back()->with('success', 'Status Request Order diperbarui.');
+        return back()->with('success', 'Status Request Order diperbarui.')->with(['title' => 'Berhasil', 'text' => 'Status Request Order diperbarui!']);
     }
 
     /**
@@ -597,11 +597,11 @@ class RequestOrderController extends Controller
             DB::commit();
 
             return redirect()->route('sales.request-order.index')
-                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.");
+                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.")->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
+            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage())->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
         }
     }
 }
