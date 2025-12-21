@@ -31,6 +31,8 @@ let datatableExcel = new DataTable('#DataTableExcel', {
         left: 0,
         right: 1
     },
+    select: false,
+    columnDefs:false,
 });
 
 // Wait for DataTable to finish rendering

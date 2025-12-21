@@ -112,7 +112,6 @@
                     <table class="table w-full text-left text-sm text-gray-500 dark:text-gray-400" id="DataTableExcel">
                         <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="w-[15%] px-4 py-3"></th>
                                 <th class="w-[15%] px-4 py-3">Kode Barang</th>
                                 <th class="w-[30%] px-4 py-3">Nama Barang</th>
                                 <th class="w-[20%] px-4 py-3">Kategori</th>
@@ -122,7 +121,6 @@
                         </thead>
                         <tbody class="overflow-x-scroll">
                             <tr>
-                                <td></td>
                                 <td>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
