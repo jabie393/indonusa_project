@@ -28,9 +28,6 @@ class AdminPTController extends Controller
         $order->supervisor_id = Auth::id();
         $order->save();
 
-        // Memancarkan event setelah status berubah
-        event(new OrderStatusUpdated($order->id));
-
         // Setelah approve, arahkan ke halaman sent penawaran/pengecekan diskon jika ada
         return redirect()->route('admin.sent_penawaran')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
