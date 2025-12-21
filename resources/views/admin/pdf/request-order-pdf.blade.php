@@ -54,7 +54,7 @@
                 };
 
                 // Helper function to get base64 encoded image from storage
-                $getStorageImageBase64 = function ($imagePath) use (&$getStorageImageBase64) {
+                $getStorageImageBase64 = function ($imagePath) {
                     try {
                         if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
                             return $imagePath;
@@ -181,7 +181,7 @@
                     <div class="mt-2 flex flex-wrap justify-start gap-2">
                         @foreach ($requestOrder->supporting_images as $image)
                             @php
-                                $imgSrc = getStorageImageBase64($image);
+                                $imgSrc = $getStorageImageBase64($image);
                             @endphp
                             @if ($imgSrc)
                                 <div class="h-[90px] w-[90px] overflow-hidden border border-gray-300">
@@ -244,7 +244,7 @@
                                         <div class="flex flex-wrap justify-center gap-2">
                                             @foreach ($item->item_images as $image)
                                                 @php
-                                                    $imgSrc = getStorageImageBase64($image);
+                                                    $imgSrc = $getStorageImageBase64($image);
                                                 @endphp
 
                                                 @if ($imgSrc)
@@ -313,7 +313,10 @@
                 <p>Indonusa Jaya Bersama</p>
 
                 <div class="mt-2">
-                    <img src="{{ asset('images/ttd.png') }}" alt="Tanda tangan" class="mx-auto h-20 object-contain" />
+                    @if ($getPublicImageBase64('ttd.png'))
+                        <img src="{{ $getPublicImageBase64('ttd.png') }}" alt="Tanda tangan"
+                            class="mx-auto h-20 object-contain" />
+                    @endif
                 </div>
 
                 <p class="mt-1">Alimul Imam S.AP</p>

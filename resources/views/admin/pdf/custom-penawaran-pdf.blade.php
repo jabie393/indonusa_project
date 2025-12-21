@@ -267,7 +267,10 @@
                 <p>Indonusa Jaya Bersama</p>
 
                 <div class="mt-2">
-                    <img src="{{ asset('images/ttd.png') }}" alt="Tanda tangan" class="mx-auto h-20 object-contain" />
+                    @if ($getPublicImageBase64('ttd.png'))
+                        <img src="{{ $getPublicImageBase64('ttd.png') }}" alt="Tanda tangan"
+                            class="mx-auto h-20 object-contain" />
+                    @endif
                 </div>
 
                 <p class="mt-1">Alimul Imam S.AP</p>
