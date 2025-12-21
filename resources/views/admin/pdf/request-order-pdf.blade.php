@@ -199,12 +199,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $total = 0; @endphp
+                        @php $total = 0; $totalPPN = 0; @endphp
                         @forelse($requestOrder->items as $index => $item)
                             @php
                                 $displayHarga = $item->harga ?? round(optional($item->barang)->harga * 1.3, 2);
-                                $computedSubtotal = $displayHarga * $item->quantity;
+                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - (($item->diskon_percent ?? 0) / 100)), 2);
+                                $ppnAmount = round($computedSubtotal * (($item->ppn_percent ?? 0) / 100), 2);
                                 $total += $computedSubtotal;
+                                $totalPPN += $ppnAmount;
                             @endphp
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
@@ -236,7 +238,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="border px-2 py-1 text-center">Tidak ada barang</td>
+                                <td colspan="8" class="border px-2 py-1 text-center">Tidak ada barang</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -253,11 +255,11 @@
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Tax</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($requestOrder->tax ?? 0, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($totalPPN, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Grand Total</td>
-                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($total + (($requestOrder->tax) ?? 0), 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($total + $totalPPN, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>

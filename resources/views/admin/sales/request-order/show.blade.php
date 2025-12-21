@@ -221,8 +221,7 @@
                                         @php
                                             $displayHarga = $item->harga ?? 0;
                                             $diskonPercent = $item->diskon_percent ?? 0;
-                                            $hargaSetelahDiskon = round($displayHarga * (1 - ($diskonPercent / 100)), 2);
-                                            $computedSubtotal = $item->subtotal ?? ($hargaSetelahDiskon * $item->quantity);
+                                            $computedSubtotal = $item->subtotal ?? 0;
                                             $total += $computedSubtotal;
                                         @endphp
                                         <tr class="bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700">

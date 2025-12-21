@@ -123,7 +123,7 @@ class RequestOrderController extends Controller
             // If harga provided explicitly, we keep it but prefer computedHargaSatuan to be consistent
             $hargaSatuan = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHargaSatuan;
             // compute ppn percentage from input, fallback to 0
-            $ppnPercent = isset($validated['ppn_percent'][$i]) && $validated['ppn_percent'][$i] !== '' ? (float) $validated['ppn_percent'][$i] : 0;
+            $ppnPercent = (float) ($request->input('ppn_percent.' . $i, 0) ?: 0);
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
@@ -402,7 +402,7 @@ class RequestOrderController extends Controller
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
             $computedHarga = round($baseHarga * 1.3, 2);
             $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
-            $ppnPercent = isset($validated['ppn_percent'][$i]) && $validated['ppn_percent'][$i] !== '' ? (float) $validated['ppn_percent'][$i] : 0;
+            $ppnPercent = (float) ($request->input('ppn_percent.' . $i, 0) ?: 0);
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [

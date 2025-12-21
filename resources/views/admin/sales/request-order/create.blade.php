@@ -218,7 +218,7 @@
                                             <input type="text" class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="">
+                                            <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
@@ -880,10 +880,10 @@
                         keteranganNew.required = false;
                     }
 
-                    // Set default PPN to empty for new rows
+                    // Set default PPN to 0 for new rows
                     const ppnNew = newRow.querySelector('.ppn-input');
                     if (ppnNew) {
-                        ppnNew.value = '';
+                        ppnNew.value = '0';
                     }
 
                     newRow.querySelectorAll('select').forEach(sel => {
