@@ -778,6 +778,9 @@
                                 '0';
                         }
 
+                        // Add to subtotal
+                        subTotal += hargaSetelahDiskon;
+
                     });
 
                     const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
@@ -958,6 +961,7 @@
                     }
 
                     row.querySelector('.harga-input').addEventListener('change', calculateTotals);
+                    row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
                     const diskonInput = row.querySelector('.diskon-input');
                     if (diskonInput) {
                         const updateHargaFromDiskon = function() {

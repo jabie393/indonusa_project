@@ -390,6 +390,7 @@
                             $subtotal = $requestOrder->subtotal ?? $requestOrder->items->sum('subtotal');
                             $totalPPN = $requestOrder->tax ?? 0;
                             $grandTotal = $requestOrder->grand_total ?? round($subtotal + $totalPPN, 2);
+                            $ppnRate = $subtotal > 0 ? round(($totalPPN / $subtotal) * 100, 2) : 0;
                         @endphp
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -405,7 +406,7 @@
                                             {{ number_format($subtotal, 0, ',', '.') }}</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-600 dark:text-gray-400">Pajak/PPN</span>
+                                        <span class="text-gray-600 dark:text-gray-400">Pajak/PPN ({{ $ppnRate }}%)</span>
                                         <span class="font-semibold text-gray-900 dark:text-white">Rp
                                             {{ number_format($totalPPN, 0, ',', '.') }}</span>
                                     </div>
