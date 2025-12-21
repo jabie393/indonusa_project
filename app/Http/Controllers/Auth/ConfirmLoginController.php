@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Events\UserForceLogoutEvent;
+use App\Events\UserLoggedInElsewhere;
 use App\Models\UserSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +19,11 @@ class ConfirmLoginController extends Controller
         // Return modal config as JSON so the frontend can render a SweetAlert modal
         return response()->json([
             'title' => 'Sesi Aktif Ditemukan',
-            'html' => 'Akun kamu sudah login di perangkat lain.<br>Apakah kamu ingin melanjutkan dan menendang sesi lama?',
+            'html' => 'Akun kamu sedang login di perangkat lain.<br>Keluarkan sesi di perangkat lain dan login di sini?',
             'icon' => 'warning',
             'showCancelButton' => true,
-            'confirmButtonText' => 'Lanjutkan',
-            'cancelButtonText' => 'Tunggu',
+            'confirmButtonText' => 'Ya, Lanjutkan',
+            'cancelButtonText' => 'Batal',
         ]);
     }
 
@@ -32,21 +32,14 @@ class ConfirmLoginController extends Controller
         $userId = session('pending_login_user_id');
 
         if (!$userId) {
-            return redirect('/login');
+            return response()->json(['success' => false, 'redirect' => route('login')], 403);
         }
-
-        // Ambil session lama sebelum dihapus
-        $oldSessions = DB::table('sessions')
-            ->where('user_id', $userId)
-            ->pluck('id')
-            ->toArray();
 
         // Trigger event supaya device lama logout realtime
-        foreach ($oldSessions as $oldSessionId) {
-            broadcast(new UserForceLogoutEvent($oldSessionId));
-        }
+        // Ini dipanggil saat Device B klik "Ya, Lanjutkan"
+        broadcast(new UserLoggedInElsewhere($userId, $request->userAgent()));
 
-        // Hapus semua session lama
+        // Hapus SEMUA session lama user ini di database (Device A otomatis tertendang secara teknis)
         DB::table('sessions')->where('user_id', $userId)->delete();
 
         // Login user di perangkat baru
