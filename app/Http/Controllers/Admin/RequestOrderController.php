@@ -124,6 +124,7 @@ class RequestOrderController extends Controller
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
+                'original_index' => $i,
                 'barang_id' => $barangId,
                 'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
                 'quantity' => $qty,
@@ -183,11 +184,12 @@ class RequestOrderController extends Controller
                 'status' => 'open',
             ]);
 
-            foreach ($items as $i => $item) {
+            foreach ($items as $item) {
+                $origIdx = $item['original_index'];
                 // handle per-item images
                 $itemImagePaths = [];
-                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
-                    foreach ($request->file('item_images')[$i] as $f) {
+                if ($request->hasFile("item_images.{$origIdx}")) {
+                    foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
@@ -413,6 +415,7 @@ class RequestOrderController extends Controller
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
+                'original_index' => $i,
                 'barang_id' => $barangId,
                 'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
                 'quantity' => $qty,
@@ -463,10 +466,11 @@ class RequestOrderController extends Controller
             $requestOrder->items()->delete();
 
             // Tambah item baru
-            foreach ($items as $i => $item) {
+            foreach ($items as $item) {
+                $origIdx = $item['original_index'];
                 $itemImagePaths = [];
-                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
-                    foreach ($request->file('item_images')[$i] as $f) {
+                if ($request->hasFile("item_images.{$origIdx}")) {
+                    foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
