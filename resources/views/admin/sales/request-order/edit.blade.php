@@ -169,7 +169,6 @@
                                         <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga Satuan</th>
                                         <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
                                         <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga Setelah Diskon</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">PPN (%)</th>
                                         <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
@@ -228,9 +227,6 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="{{ 'Rp ' . number_format($item->quantity * $item->harga * (1 - ($item->diskon_percent ?? 0) / 100), 2, ',', '.') }}" readonly>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="{{ $item->ppn_percent ?? 0 }}">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
@@ -292,9 +288,6 @@
                                                 <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                                                         <path d="M3 6h18"></path>
@@ -310,11 +303,10 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="8" class="border border-gray-300 px-4 py-2 text-end text-black dark:border-gray-600 dark:text-gray-300">TOTAL:</th>
+                                        <th colspan="7" class="border border-gray-300 px-4 py-2 text-end text-black dark:border-gray-600 dark:text-gray-300">TOTAL:</th>
                                         <th class="border border-gray-300 px-4 py-2 text-black dark:border-gray-600 dark:text-gray-300">
                                             <strong id="totalAmount">Rp 0</strong>
                                         </th>
-                                        <th class="border border-gray-300 px-4 py-2 dark:border-gray-600"></th>
                                         <th class="border border-gray-300 px-4 py-2 dark:border-gray-600"></th>
                                     </tr>
                                 </tfoot>
@@ -351,8 +343,17 @@
                                     <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
                                         <div class="flex items-center justify-between">
                                             <div>
-                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Total PPN</p>
-                                                <p class="text-2xl font-bold text-gray-900 dark:text-white" id="summaryPPN">Rp 0</p>
+                                                <div class="mb-1 flex items-center justify-start">
+                                                    <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600" style="width: fit-content;">
+                                                        <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">Pajak/PPN</p>
+                                                        @php
+                                                            $initialTaxRate = $requestOrder->subtotal > 0 ? ($requestOrder->tax / $requestOrder->subtotal) * 100 : 0;
+                                                        @endphp
+                                                        <input type="number" id="tax_rate" name="tax_rate" value="{{ round($initialTaxRate, 2) }}" class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white" min="0" max="100">
+                                                        <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                                                    </div>
+                                                </div>
+                                                <p class="text-2xl font-bold text-gray-900 dark:text-white" id="summaryPPN">Rp {{ number_format($requestOrder->tax, 0, ',', '.') }}</p>
                                             </div>
                                             <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
                                                 <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -380,6 +381,11 @@
                     </div>
 
 
+
+                    <!-- Hidden Financial Totals -->
+                    <input type="hidden" name="subtotal" id="hiddenSubtotal" value="{{ $requestOrder->subtotal ?? 0 }}">
+                    <input type="hidden" name="tax" id="hiddenTax" value="{{ $requestOrder->tax ?? 0 }}">
+                    <input type="hidden" name="grand_total" id="hiddenGrandTotal" value="{{ $requestOrder->grand_total ?? 0 }}">
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4">
@@ -716,11 +722,9 @@
                     const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
                     const markupHarga = parseFloat(row.querySelector('.harga-input').value) || 0;
                     const diskonPercent = parseFloat(row.querySelector('.diskon-input').value) || 0;
-                    const ppnPercent = parseFloat(row.querySelector('.ppn-input').value) || 0;
 
                     const hargaSetelahDiskon = +(markupHarga * (1 - (diskonPercent / 100))).toFixed(2);
                     const itemSubtotal = +(qty * hargaSetelahDiskon).toFixed(2);
-                    const itemPPN = +(itemSubtotal * (ppnPercent / 100)).toFixed(2);
 
                     row.querySelector('.harga-setelah-diskon-display').value = 'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
                         minimumFractionDigits: 2,
@@ -728,9 +732,10 @@
                     });
 
                     subtotal += itemSubtotal;
-                    totalPPN += itemPPN;
                 });
 
+                const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
+                totalPPN = +(subtotal * (taxRate / 100)).toFixed(2);
                 grandTotal = subtotal + totalPPN;
 
                 document.getElementById('totalAmount').textContent = 'Rp ' + grandTotal.toLocaleString('id-ID', {
@@ -751,6 +756,11 @@
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
                 });
+
+                // Update hidden inputs for submission
+                document.getElementById('hiddenSubtotal').value = subtotal.toFixed(2);
+                document.getElementById('hiddenTax').value = totalPPN.toFixed(2);
+                document.getElementById('hiddenGrandTotal').value = grandTotal.toFixed(2);
 
                 updateDiscountWarning();
             }
@@ -800,9 +810,6 @@
                         <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
-                    </td>
-                    <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                         <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                                 <path d="M3 6h18"></path>
@@ -835,7 +842,7 @@
                 }
 
                 row.querySelector('.quantity-input').addEventListener('input', calculateTotals);
-                row.querySelector('.ppn-input').addEventListener('input', calculateTotals);
+                row.querySelector('.harga-input').addEventListener('input', calculateTotals);
 
                 const diskonInput = row.querySelector('.diskon-input');
                 const keteranganInput = row.querySelector('.keterangan-input');
@@ -986,6 +993,7 @@
             });
 
             updateRemoveButtons();
+            document.getElementById('tax_rate').addEventListener('input', calculateTotals);
             calculateTotals();
             updateDiscountWarning();
         });

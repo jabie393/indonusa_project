@@ -212,7 +212,7 @@
                                         <th scope="col" class="px-6 py-3">Jumlah</th>
                                         <th scope="col" class="px-6 py-3">Harga Satuan</th>
                                         <th scope="col" class="px-6 py-3">Harga Setelah Diskon</th>
-                                        <th scope="col" class="px-6 py-3">PPN (%)</th>
+                                        <th scope="col" class="px-6 py-3">Gambar</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 border-b dark:divide-gray-700 dark:border-gray-700">
@@ -224,6 +224,7 @@
                                             $computedSubtotal = $item->subtotal ?? 0;
                                             $total += $computedSubtotal;
                                         @endphp
+
                                         <tr class="bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700">
                                             <td class="px-6 py-4">
                                                 <span class="rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
@@ -238,7 +239,35 @@
                                             <td class="px-6 py-4">{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
                                             <td class="text-nowrap px-6 py-4">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                             <td class="text-nowrap px-6 py-4 font-semibold text-gray-900 dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
-                                            <td class="text-nowrap px-6 py-4">{{ $item->ppn_percent ?? 0 }}%</td>
+                                            <td class="px-4 py-3 text-center">
+                                                @if ($item->images && count($item->images) > 0)
+                                                    <div class="flex flex-wrap justify-center gap-3">
+                                                        @foreach ($item->images as $image)
+                                                            @php
+                                                                if (is_null($image) || $image === '') {
+                                                                    $imgUrl = null;
+                                                                } elseif (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                                                                    $imgUrl = $image;
+                                                                } elseif (str_starts_with($image, 'public/')) {
+                                                                    $imgUrl = asset('storage/' . ltrim(substr($image, 7), '/'));
+                                                                } else {
+                                                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
+                                                                }
+                                                            @endphp
+
+                                                            @if ($imgUrl)
+                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}" aria-label="Lihat gambar">
+                                                                    <img src="{{ $imgUrl }}" alt="Gambar" class="h-20 w-20 rounded border border-gray-300 object-cover transition hover:shadow-lg sm:h-28 sm:w-28">
+                                                                </button>
+                                                            @else
+                                                                <span class="text-sm text-gray-400">-</span>
+                                                            @endif
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <span class="text-sm text-gray-400">-</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -358,11 +387,9 @@
                         </div>
 
                         @php
-                            $subtotal = $requestOrder->items->sum('subtotal');
-                            $totalPPN = $requestOrder->items->sum(function ($item) {
-                                return round($item->subtotal * (($item->ppn_percent ?? 0) / 100), 2);
-                            });
-                            $grandTotal = round($subtotal + $totalPPN, 2);
+                            $subtotal = $requestOrder->subtotal ?? $requestOrder->items->sum('subtotal');
+                            $totalPPN = $requestOrder->tax ?? 0;
+                            $grandTotal = $requestOrder->grand_total ?? round($subtotal + $totalPPN, 2);
                         @endphp
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">

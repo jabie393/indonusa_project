@@ -37,7 +37,8 @@
 
             @php
                 // Helper function to get base64 encoded image from public/images
-                function getPublicImageBase64($filename) {
+                function getPublicImageBase64($filename)
+                {
                     try {
                         $path = public_path('images/' . $filename);
                         if (file_exists($path) && is_readable($path)) {
@@ -52,15 +53,14 @@
                 }
 
                 // Helper function to get base64 encoded image from storage
-                function getStorageImageBase64($imagePath) {
+                function getStorageImageBase64($imagePath)
+                {
                     try {
                         if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
                             return $imagePath;
                         }
 
-                        $fullPath = str_starts_with($imagePath, 'public/')
-                            ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
-                            : storage_path('app/public/' . ltrim($imagePath, '/'));
+                        $fullPath = str_starts_with($imagePath, 'public/') ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/')) : storage_path('app/public/' . ltrim($imagePath, '/'));
 
                         if (file_exists($fullPath) && is_readable($fullPath)) {
                             $mime = mime_content_type($fullPath);
@@ -75,13 +75,13 @@
             @endphp
 
             <!-- WATERMARK IMAGE (OPTIONAL) -->
-            @if(getPublicImageBase64('LogoText_transparent.png'))
-                <img src="{{ getPublicImageBase64('LogoText_transparent.png') }}" alt="" class="pointer-events-none absolute right-30 top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @if (getPublicImageBase64('LogoText_transparent.png'))
+                <img src="{{ getPublicImageBase64('LogoText_transparent.png') }}" alt="" class="right-30 pointer-events-none absolute top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
             @endif
 
             <!-- COMPANY INFO -->
             <div class="flex text-[9pt]">
-                @if(getPublicImageBase64('Logo_transparent.png'))
+                @if (getPublicImageBase64('Logo_transparent.png'))
                     <img src="{{ getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
                 @endif
 
@@ -159,23 +159,23 @@
                 <p class="border-b border-black pb-1">Dengan Hormat,</p>
                 <p class="mt-1">&nbsp;</p>
                 @php
-                    $noteToShow = $pdfNote ?? $requestOrder->catatan_customer ?? 'Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:';
+                    $noteToShow = $pdfNote ?? ($requestOrder->catatan_customer ?? 'Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:');
                 @endphp
                 <p>{!! nl2br(e($noteToShow)) !!}</p>
             </div>
 
             <!-- SUPPORTING IMAGES -->
-            @if($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
+            @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
                 <div class="mt-3 text-[9pt]">
                     <h4 class="font-bold">Gambar Pendukung</h4>
-                    <div class="flex gap-2 justify-start flex-wrap mt-2">
-                        @foreach($requestOrder->supporting_images as $image)
+                    <div class="mt-2 flex flex-wrap justify-start gap-2">
+                        @foreach ($requestOrder->supporting_images as $image)
                             @php
                                 $imgSrc = getStorageImageBase64($image);
                             @endphp
-                            @if($imgSrc)
-                                <div class="w-[90px] h-[90px] overflow-hidden border border-gray-300">
-                                    <img src="{{ $imgSrc }}" alt="Gambar Pendukung" class="w-full h-full object-cover" />
+                            @if ($imgSrc)
+                                <div class="h-[90px] w-[90px] overflow-hidden border border-gray-300">
+                                    <img src="{{ $imgSrc }}" alt="Gambar Pendukung" class="h-full w-full object-cover" />
                                 </div>
                             @endif
                         @endforeach
@@ -199,33 +199,36 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @php $total = 0; $totalPPN = 0; @endphp
+                        @php
+                            $total = 0;
+                            $totalPPN = 0;
+                        @endphp
                         @forelse($requestOrder->items as $index => $item)
                             @php
                                 $displayHarga = $item->harga ?? round(optional($item->barang)->harga * 1.3, 2);
-                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - (($item->diskon_percent ?? 0) / 100)), 2);
+                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - ($item->diskon_percent ?? 0) / 100), 2);
                                 $ppnAmount = round($computedSubtotal * (($item->ppn_percent ?? 0) / 100), 2);
                                 $total += $computedSubtotal;
                                 $totalPPN += $ppnAmount;
                             @endphp
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
-                                <td class="border px-2 py-1">{{ optional($item->barang)->nama_barang ?? $item->barang->nama_barang ?? $item->barang_id }}</td>
+                                <td class="border px-2 py-1">{{ optional($item->barang)->nama_barang ?? ($item->barang->nama_barang ?? $item->barang_id) }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->diskon_percent ?? 0 }}%</td>
                                 <td class="border px-2 py-1 text-center">{{ optional($item->barang)->satuan ?? '-' }}</td>
                                 <td class="border px-2 py-1 text-right">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-right">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-center">
-                                    @if($item->item_images && count($item->item_images) > 0)
-                                        <div class="flex gap-2 justify-center flex-wrap">
-                                            @foreach($item->item_images as $image)
+                                    @if ($item->item_images && count($item->item_images) > 0)
+                                        <div class="flex flex-wrap justify-center gap-2">
+                                            @foreach ($item->item_images as $image)
                                                 @php
                                                     $imgSrc = getStorageImageBase64($image);
                                                 @endphp
 
-                                                @if($imgSrc)
-                                                    <img src="{{ $imgSrc }}" alt="Gambar" class="w-20 h-20 object-contain border border-gray-300">
+                                                @if ($imgSrc)
+                                                    <img src="{{ $imgSrc }}" alt="Gambar" class="h-20 w-20 border border-gray-300 object-contain">
                                                 @else
                                                     <span>-</span>
                                                 @endif
@@ -249,17 +252,22 @@
             <div class="ml-auto mt-3 w-[177.9pt] text-[9pt]">
                 <table class="w-full border-collapse border border-black">
                     <tbody>
+                        @php
+                            $finalSubtotal = $requestOrder->subtotal ?? $total;
+                            $finalTax = $requestOrder->tax ?? $totalPPN;
+                            $finalGrandTotal = $requestOrder->grand_total ?? $total + $totalPPN;
+                        @endphp
                         <tr>
                             <td class="border-b border-r border-black px-2">Sub Total</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($total, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($finalSubtotal, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Tax</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($totalPPN, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($finalTax, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Grand Total</td>
-                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($total + $totalPPN, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -24,6 +24,9 @@ class RequestOrder extends Model
         'catatan_customer',
         'kategori_barang',
         'supporting_images',
+        'subtotal',
+        'tax',
+        'grand_total',
         'approved_by',
         'approved_at',
     ];
@@ -34,6 +37,9 @@ class RequestOrder extends Model
         'tanggal_berlaku' => 'datetime',
         'expired_at' => 'datetime',
         'supporting_images' => 'array',
+        'subtotal' => 'decimal:2',
+        'tax' => 'decimal:2',
+        'grand_total' => 'decimal:2',
     ];
 
     /**
