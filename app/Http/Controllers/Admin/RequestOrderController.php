@@ -577,6 +577,26 @@ class RequestOrderController extends Controller
     }
 
     /**
+     * Hapus Request Order
+     */
+    public function destroy(RequestOrder $requestOrder)
+    {
+        if ($requestOrder->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        try {
+            DB::transaction(function () use ($requestOrder) {
+                $requestOrder->items()->delete();
+                $requestOrder->delete();
+            });
+            return back()->with('success', 'Request Order berhasil dihapus.');
+        } catch (\Throwable $e) {
+            return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Bulk Delete Request Orders
      */
     public function bulkDelete(Request $request)
@@ -606,9 +626,9 @@ class RequestOrderController extends Controller
     }
 
     /**
-     * Bulk Sent to Warehouse
+     * Bulk Send to Warehouse
      */
-    public function bulkSentToWarehouse(Request $request)
+    public function bulkSendToWarehouse(Request $request)
     {
         $ids = $request->input('ids', []);
         if (empty($ids)) {

@@ -7,9 +7,12 @@
             </div>
             <div class="flex items-center space-x-4">
                 {{-- Bulk Actions --}}
-                <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.custom-penawaran.bulk-delete') }}">
+                <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.custom-penawaran.bulk-delete') }}" data-sent-url="{{ route('sales.custom-penawaran.bulk-send-to-warehouse') }}">
                     <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
                         Delete Selected (<span id="selected-count">0</span>)
+                    </button>
+                    <button id="bulk-send" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                        Send to Warehouse
                     </button>
                 </div>
                 <a href="{{ route('sales.custom-penawaran.create') }}" class="rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">

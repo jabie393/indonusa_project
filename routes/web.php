@@ -172,8 +172,9 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.request-order.status');
+    Route::delete('/request-order/{requestOrder}', [RequestOrderController::class, 'destroy'])->name('sales.request-order.destroy');
     Route::post('/request-order/bulk/delete', [RequestOrderController::class, 'bulkDelete'])->name('sales.request-order.bulk-delete');
-    Route::post('/request-order/bulk/sent-to-warehouse', [RequestOrderController::class, 'bulkSentToWarehouse'])->name('sales.request-order.bulk-sent-to-warehouse');
+    Route::post('/request-order/bulk/send-to-warehouse', [RequestOrderController::class, 'bulkSendToWarehouse'])->name('sales.request-order.bulk-send-to-warehouse');
     Route::post('/request-order/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.request-order.sent-to-warehouse');
 
     // Custom Penawaran Routes (Child of Request Order)
@@ -181,6 +182,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/custom-penawaran/create', [CustomPenawaranController::class, 'create'])->name('sales.custom-penawaran.create');
     Route::post('/custom-penawaran', [CustomPenawaranController::class, 'store'])->name('sales.custom-penawaran.store');
     Route::post('/custom-penawaran/bulk/delete', [CustomPenawaranController::class, 'bulkDelete'])->name('sales.custom-penawaran.bulk-delete');
+    Route::post('/custom-penawaran/bulk/send-to-warehouse', [CustomPenawaranController::class, 'bulkSendToWarehouse'])->name('sales.custom-penawaran.bulk-send-to-warehouse');
     Route::get('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('sales.custom-penawaran.show');
     Route::get('/custom-penawaran/{customPenawaran}/edit', [CustomPenawaranController::class, 'edit'])->name('sales.custom-penawaran.edit');
     Route::put('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'update'])->name('sales.custom-penawaran.update');

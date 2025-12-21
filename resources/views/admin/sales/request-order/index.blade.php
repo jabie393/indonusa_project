@@ -7,12 +7,12 @@
             <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
                 <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
                     {{-- Bulk Actions --}}
-                    <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-sent-to-warehouse') }}">
+                    <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-send-to-warehouse') }}">
                         <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
                             Delete Selected (<span id="selected-count">0</span>)
                         </button>
-                        <button id="bulk-sent" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                            Sent to Warehouse
+                        <button id="bulk-send" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                            Send to Warehouse
                         </button>
                     </div>
 
@@ -228,6 +228,24 @@
                                                     </button>
                                                 @endif
                                             </li>
+
+                                            {{-- Delete --}}
+                                            <form action="{{ route('sales.request-order.destroy', $ro->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <li>
+                                                    <button type="button" onclick="confirmDelete(() => this.closest('form').submit())" class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2">
+                                                            <path d="M10 11v6"></path>
+                                                            <path d="M14 11v6"></path>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                            <path d="M3 6h18"></path>
+                                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        </svg>
+                                                        Hapus
+                                                    </button>
+                                                </li>
+                                            </form>
 
                                             {{-- Sent to Warehouse --}}
                                             @if (in_array($ro->status, ['open', 'approved']))

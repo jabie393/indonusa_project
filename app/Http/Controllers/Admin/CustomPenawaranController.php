@@ -324,9 +324,16 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
-        $customPenawaran->delete();
-        return redirect()->route('sales.custom-penawaran.index')
-            ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil dihapus.']);
+        try {
+            DB::transaction(function () use ($customPenawaran) {
+                $customPenawaran->items()->delete();
+                $customPenawaran->delete();
+            });
+            return redirect()->route('sales.custom-penawaran.index')
+                ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil dihapus.']);
+        } catch (\Throwable $e) {
+            return back()->withErrors('Gagal menghapus penawaran: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -491,5 +498,67 @@ class CustomPenawaranController extends Controller
             Log::error('Custom Penawaran Bulk Delete Error', ['message' => $e->getMessage()]);
             return response()->json(['success' => false, 'message' => 'Gagal menghapus penawaran: ' . $e->getMessage()]);
         }
+    }
+    /**
+     * Bulk Send to Warehouse for Custom Penawarans
+     */
+    public function bulkSendToWarehouse(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        $successCount = 0;
+        foreach ($ids as $id) {
+            try {
+                $penawaran = CustomPenawaran::where('id', $id)
+                    ->where('sales_id', Auth::id())
+                    ->first();
+
+                if ($penawaran && in_array($penawaran->status, ['open', 'approved']) && !$penawaran->order) {
+                    // For Custom Penawaran, we don't have a processSentToWarehouse method yet, 
+                    // we'll use the logic from sentToWarehouse but adapted or just call it if it was refactored.
+                    // Instead of refactoring now, I'll just check if I can reuse sentToWarehouse logic.
+                    // Actually, let's just do it simply.
+                    
+                    // Logic from sentToWarehouse (line 391)
+                    if ($penawaran->items->isNotEmpty()) {
+                        DB::transaction(function() use ($penawaran) {
+                            $order = Order::create([
+                                'order_number' => 'DO-' . strtoupper(Str::random(8)),
+                                'sales_id' => Auth::id(),
+                                'supervisor_id' => $penawaran->status === 'approved' ? Auth::id() : null,
+                                'custom_penawaran_id' => $penawaran->id,
+                                'status' => 'sent_to_warehouse',
+                                'customer_name' => $penawaran->to,
+                                'customer_id' => null,
+                                'tanggal_kebutuhan' => $penawaran->date,
+                                'catatan_customer' => $penawaran->intro_text,
+                            ]);
+
+                            foreach ($penawaran->items as $item) {
+                                OrderItem::create([
+                                    'order_id' => $order->id,
+                                    'barang_id' => null,
+                                    'quantity' => $item->qty,
+                                    'harga' => $item->harga,
+                                    'subtotal' => $item->subtotal,
+                                ]);
+                            }
+                            $penawaran->update(['status' => 'sent_to_warehouse']);
+                        });
+                        $successCount++;
+                    }
+                }
+            } catch (\Throwable $e) {
+                Log::error('Custom Penawaran Bulk Send Error', ['id' => $id, 'message' => $e->getMessage()]);
+            }
+        }
+
+        if ($successCount > 0) {
+            return response()->json(['success' => true, 'count' => $successCount]);
+        }
+        return response()->json(['success' => false, 'message' => 'No items were processed.']);
     }
 }

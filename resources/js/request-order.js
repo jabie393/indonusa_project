@@ -46,12 +46,12 @@ $(document).ready(function() {
         });
     });
 
-    // Bulk Sent to Warehouse
-    $('#bulk-sent').on('click', function() {
+    // Bulk Send to Warehouse
+    $('#bulk-send').on('click', function() {
         const selectedIds = table.rows({ selected: true }).data().toArray().map(row => row[0]);
 
         Swal.fire({
-            title: 'Bulk Sent to Warehouse',
+            title: 'Bulk Send to Warehouse',
             text: `Send ${selectedIds.length} request orders to Warehouse? Only 'Open' or 'Approved' items will be processed.`,
             icon: 'question',
             showCancelButton: true,
