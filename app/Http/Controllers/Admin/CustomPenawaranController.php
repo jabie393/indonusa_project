@@ -9,9 +9,9 @@ use App\Models\CustomPenawaranItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -460,6 +460,36 @@ class CustomPenawaranController extends Controller
             DB::rollBack();
             \Log::error('Error in sentToWarehouse: ' . $e->getMessage());
             return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
+        }
+    }
+    /**
+     * Bulk Hapus Custom Penawarans
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $penawarans = CustomPenawaran::whereIn('id', $ids)
+                ->where('sales_id', Auth::id())
+                ->get();
+
+            foreach ($penawarans as $penawaran) {
+                // Delete associated items first
+                $penawaran->items()->delete();
+                $penawaran->delete();
+            }
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Custom Penawaran Bulk Delete Error', ['message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus penawaran: ' . $e->getMessage()]);
         }
     }
 }

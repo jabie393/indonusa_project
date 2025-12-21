@@ -6,6 +6,16 @@
             </div>
             <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
                 <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
+                    {{-- Bulk Actions --}}
+                    <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-sent-to-warehouse') }}">
+                        <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
+                            Delete Selected (<span id="selected-count">0</span>)
+                        </button>
+                        <button id="bulk-sent" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                            Sent to Warehouse
+                        </button>
+                    </div>
+
                     {{-- Search --}}
                     <form action="{{ route('sales.request-order.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
@@ -32,9 +42,10 @@
             </div>
         </div>
         <div class="overflow-x-auto">
-            <table class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">No. Request</th>
                         <th scope="col" class="px-4 py-3">No. Penawaran</th>
                         <th scope="col" class="px-4 py-3">No. Sales Order</th>
@@ -59,6 +70,7 @@
                                 'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
                                 'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
                                 'sent_to_warehouse' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
+                                'pending_approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                 default => 'secondary',
                             };
                             $statusLabel = match ($ro->status) {
@@ -67,18 +79,20 @@
                                 'pending' => 'Menunggu',
                                 'approved' => 'Disetujui',
                                 'rejected' => 'Ditolak',
+                                'pending_approval' => 'Menunggu Approval',
                                 'sent_to_warehouse' => 'Dikirim ke Gudang',
                                 default => ucfirst($ro->status),
                             };
                         @endphp
                         <tr class="max-h-16 dark:border-gray-700">
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->request_number }}</td>
+                            <td class="px-4 py-3">{{ $ro->id }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
                             <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
-                            <td class="px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
-                            <td class="px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
+                            <td class="text-nowrap px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
                             @php
                                 // Collect discounts per item, group by percentage and count occurrences
                                 $discountCounts = $ro->items
@@ -111,9 +125,9 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
-                                <span class="badge text-nowrap {{ $statusClass }}">{{ $statusLabel }}</span>
+                                <span class="badge {{ $statusClass }} text-nowrap">{{ $statusLabel }}</span>
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="text-nowrap px-4 py-3">
                                 @if ($ro->expired_at)
                                     {{ $ro->expired_at_formatted }}
                                     <br>
@@ -155,73 +169,91 @@
                                             <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                         </a>
 
-                                        {{-- PDF --}}
-                                        @php
-                                            $canDownload = false;
-                                            if (auth()->check() && in_array(auth()->user()->role, ['Supervisor', 'Admin'])) {
-                                                $canDownload = true;
-                                            } elseif (auth()->check() && auth()->id() === $ro->sales_id) {
-                                                $canDownload = !in_array($ro->status, ['pending_approval', 'rejected']);
-                                            }
-                                        @endphp
-                                        @if ($canDownload)
-                                            <a href="{{ route('sales.request-order.pdf', $ro->id) }}" class="group flex h-full items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Download PDF" target="_blank">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
-                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                    <path d="M10 9H8"></path>
-                                                    <path d="M16 13H8"></path>
-                                                    <path d="M16 17H8"></path>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
-                                            </a>
-                                        @else
-                                            <button type="button" disabled class="group flex h-full cursor-not-allowed items-center justify-center bg-gray-400 p-2 text-sm font-medium text-white" title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
-                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                    <path d="M10 9H8"></path>
-                                                    <path d="M16 13H8"></path>
-                                                    <path d="M16 17H8"></path>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
-                                            </button>
-                                        @endif
+                                        {{-- Action Dropdown --}}
+                                        <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" popovertarget="popover-{{ $ro->id }}" style="anchor-name:--anchor-{{ $ro->id }}">
+                                            <svg width="24px" height="24px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-three-dots-vertical h-4 w-4">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                <g id="SVGRepo_iconCarrier">
+                                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path>
+                                                </g>
+                                            </svg>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Aksi</span>
+                                        </button>
+                                        <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $ro->id }}" style="position-anchor:--anchor-{{ $ro->id }}">
+                                            {{-- Edit --}}
+                                            @if ($ro->status === 'pending_approval')
+                                                <li>
+                                                    <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
+                                                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+                                                            <path d="m15 5 4 4"></path>
+                                                        </svg>
+                                                        Edit
+                                                    </a>
+                                                </li>
+                                            @endif
 
-                                        {{-- Edit --}}
-                                        @if ($ro->status === 'pending')
-                                            <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="group flex h-full items-center justify-center bg-yellow-500 p-2 text-sm font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600 dark:focus:ring-yellow-800" title="Edit">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4">
-                                                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                                                    <path d="m15 5 4 4"></path>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
-                                            </a>
-                                        @endif
+                                            <li>
+                                                {{-- PDF --}}
+                                                @php
+                                                    $canDownload = false;
+                                                    if (auth()->check() && in_array(auth()->user()->role, ['Supervisor', 'Admin'])) {
+                                                        $canDownload = true;
+                                                    } elseif (auth()->check() && auth()->id() === $ro->sales_id) {
+                                                        $canDownload = !in_array($ro->status, ['pending_approval', 'rejected']);
+                                                    }
+                                                @endphp
+                                                @if ($canDownload)
+                                                    <a href="{{ route('sales.request-order.pdf', $ro->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50" target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
+                                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                            <path d="M10 9H8"></path>
+                                                            <path d="M16 13H8"></path>
+                                                            <path d="M16 17H8"></path>
+                                                        </svg>
+                                                        PDF
+                                                    </a>
+                                                @else
+                                                    <button type="button" disabled class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400" title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
+                                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                            <path d="M10 9H8"></path>
+                                                            <path d="M16 13H8"></path>
+                                                            <path d="M16 17H8"></path>
+                                                        </svg>
+                                                        PDF
+                                                    </button>
+                                                @endif
+                                            </li>
 
-                                        {{-- Sent to Warehouse --}}
-                                        @if (in_array($ro->status, ['open', 'approved']))
-                                            <form action="{{ route('sales.request-order.sent-to-warehouse', $ro->id) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('POST')
-                                                <button type="submit" class="group flex h-full items-center justify-center cursor-pointer bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Kirim ke Warehouse">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck h-4 w-4">
-                                                        <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
-                                                        <path d="M15 18H9"></path>
-                                                        <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
-                                                        <circle cx="17" cy="18" r="2"></circle>
-                                                        <circle cx="7" cy="18" r="2"></circle>
-                                                    </svg>
-                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Kirim ke Warehouse</span>
-                                                </button>
-                                            </form>
-                                        @endif
+                                            {{-- Sent to Warehouse --}}
+                                            @if (in_array($ro->status, ['open', 'approved']))
+                                                <form action="{{ route('sales.request-order.sent-to-warehouse', $ro->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('POST')
+                                                    <li>
+                                                        <button type="submit" class="flex w-full items-center gap-2 text-blue-600 hover:bg-blue-50" title="Kirim ke Warehouse">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck">
+                                                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path>
+                                                                <path d="M15 18H9"></path>
+                                                                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path>
+                                                                <circle cx="17" cy="18" r="2"></circle>
+                                                                <circle cx="7" cy="18" r="2"></circle>
+                                                            </svg>
+                                                            Kirim ke Warehouse
+                                                        </button>
+                                                    </li>
+                                                </form>
+                                            @endif
+                                        </ul>
                                     </div>
                                 </div>
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="11">Belum ada request.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -249,4 +281,5 @@
             </div>
         </nav>
     </div>
+    @vite(['resources/js/request-order.js'])
 </x-app-layout>

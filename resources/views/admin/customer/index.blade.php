@@ -9,7 +9,7 @@
                     {{-- Search --}}
                     <form action="{{ route('customer.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
+                        <div class="relative md:w-96">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
@@ -37,6 +37,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th class="px-4 py-2"></th>
                         <th class="px-4 py-2">Nama</th>
                         <th class="px-4 py-2">Kategori</th>
                         <th class="px-4 py-2">No. NPWP</th>
@@ -51,19 +52,20 @@
                     @foreach ($customers as $customer)
                         <tr class="dark:border-gray-700">
 
-                            <td class="px-4 py-2">{{ $customer->nama_customer }}</td>
+                            <td class="px-4 py-2">{{ $customer->id }}</td>
+                            <td class="text-nowrap px-4 py-2">{{ $customer->nama_customer }}</td>
                             <td class="px-4 py-2">{{ $customer->tipe_customer }}</td>
                             <td class="px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->term_of_payments ?? '-' }}</td>
                             <td class="px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
                             <td class="px-4 py-2">
-                                @if(($customer->pics && $customer->pics->count() > 0) || ($customer->users && $customer->users->count() > 0))
-                                    @foreach($customer->pics as $pic)
+                                @if (($customer->pics && $customer->pics->count() > 0) || ($customer->users && $customer->users->count() > 0))
+                                    @foreach ($customer->pics as $pic)
                                         <div class="mb-1">
                                             {{ $pic->name }} (PIC)
                                         </div>
                                     @endforeach
-                                    @foreach($customer->users as $user)
+                                    @foreach ($customer->users as $user)
                                         <div class="mb-1">
                                             {{ $user->name }} ({{ $user->pivot->pic_type }})
                                         </div>

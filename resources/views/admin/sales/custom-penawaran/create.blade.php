@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Buat Penawaran Kustom</h1>
@@ -11,11 +11,10 @@
                 <form action="{{ route('sales.custom-penawaran.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="card bg-light bg-card mb-4 rounded-2xl inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shadow-sm">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg> Informasi Customer
@@ -25,9 +24,7 @@
                             <!-- To Field -->
                             <div>
                                 <label for="to" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Kepada (To)</label>
-                                <input type="text" id="to" name="to" value="{{ old('to') }}" required
-                                    class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="Nama customer">
+                                <input type="text" id="to" name="to" value="{{ old('to') }}" required class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Nama customer">
                                 @error('to')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -36,10 +33,9 @@
                             <!-- Up Field -->
                             <div>
                                 <label for="up" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Attn (Up)</label>
-                                <select id="up" name="up" required
-                                    class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
+                                <select id="up" name="up" required class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                     <option value="">Pilih Sales</option>
-                                    @foreach($salesUsers as $name => $displayName)
+                                    @foreach ($salesUsers as $name => $displayName)
                                         <option value="{{ $name }}" {{ old('up', $currentUserName ?? '') == $name ? 'selected' : '' }}>
                                             {{ $displayName }}
                                         </option>
@@ -53,9 +49,7 @@
                             <!-- Subject Field -->
                             <div class="lg:col-span-2">
                                 <label for="subject" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Subject</label>
-                                <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required
-                                    class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="Judul penawaran">
+                                <input type="text" id="subject" name="subject" value="{{ old('subject') }}" required class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Judul penawaran">
                                 @error('subject')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -64,9 +58,7 @@
                             <!-- Email Field -->
                             <div>
                                 <label for="email" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                                <input type="email" id="email" name="email" value="{{ old('email') }}" required
-                                    class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="email@example.com">
+                                <input type="email" id="email" name="email" value="{{ old('email') }}" required class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="email@example.com">
                                 @error('email')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -75,8 +67,7 @@
                             <!-- Our Ref Field (Auto-generated) -->
                             <div>
                                 <label for="our_ref" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref (Auto)</label>
-                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref') }}"
-                                    class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-600 text-black dark:text-gray-300" placeholder="Auto-generated">
+                                <input type="text" id="our_ref" name="our_ref" value="{{ old('our_ref') }}" class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 text-black dark:bg-gray-600 dark:text-gray-300" placeholder="Auto-generated">
                                 @error('our_ref')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -85,8 +76,7 @@
                             <!-- Date Field -->
                             <div>
                                 <label for="date" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal</label>
-                                <input type="date" id="date" name="date" value="{{ old('date', date('Y-m-d')) }}" required
-                                    class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
+                                <input type="date" id="date" name="date" value="{{ old('date', date('Y-m-d')) }}" required class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -95,9 +85,7 @@
                             <!-- Intro Text -->
                             <div class="lg:col-span-2">
                                 <label for="intro_text" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Teks Pembuka</label>
-                                <textarea id="intro_text" name="intro_text" rows="4"
-                                    class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border text-black bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                    placeholder="Masukkan teks pembuka penawaran...">untuk memenuhi kebutuhan {{ old('intro_text', '') }}, bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut</textarea>
+                                <textarea id="intro_text" name="intro_text" rows="4" class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white" placeholder="Masukkan teks pembuka penawaran...">untuk memenuhi kebutuhan {{ old('intro_text', '') }}, bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -106,11 +94,10 @@
                     </div>
 
                     <!-- Items Table -->
-                    <div class="card bg-light bg-card mb-4 rounded-2xl inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shadow-sm">
-                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
                                     <path d="M12 22V12"></path>
                                     <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
@@ -123,74 +110,61 @@
                             <table id="" class="h-full w-full border-collapse">
                                 <thead>
                                     <tr class="bg-gray-200 dark:bg-gray-700">
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">No</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Qty</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Satuan</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Keterangan</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Gambar</th>
-                                        <th class="border text-black border-gray-300 px-4 py-2 text-sm font-semibold dark:border-gray-600 dark:text-gray-100">Aksi</th>
+                                        <th class="min-w-[50px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">No</th>
+                                        <th class="min-w-[250px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Qty</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Satuan</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="min-w-[200px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
+                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
+                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
+                                        <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
                                     <tr class="item-row" data-index="0">
-                                        <td class="item-no border text-black border-gray-300 px-4 py-2 text-center dark:border-gray-600 dark:text-gray-100">1</td>
+                                        <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">1</td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text" name="items[0][nama_barang]"
-                                                class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="Nama barang" value="{{ old('items.0.nama_barang') }}" required>
+                                            <input type="text" name="items[0][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Nama barang" value="{{ old('items.0.nama_barang') }}" required>
                                             @error('items.0.nama_barang')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="items[0][qty]"
-                                                class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="0" value="{{ old('items.0.qty', 1) }}" min="1" required>
+                                            <input type="number" name="items[0][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ old('items.0.qty', 1) }}" min="1" required>
                                             @error('items.0.qty')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text" name="items[0][satuan]"
-                                                class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="Unit" value="{{ old('items.0.satuan') }}" required>
+                                            <input type="text" name="items[0][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Unit" value="{{ old('items.0.satuan') }}" required>
                                             @error('items.0.satuan')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="items[0][harga]"
-                                                class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="0" value="{{ old('items.0.harga') }}" step="0.01" min="0" required>
+                                            <input type="number" name="items[0][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ old('items.0.harga') }}" step="0.01" min="0" required>
                                             @error('items.0.harga')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="items[0][diskon]"
-                                                class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="0" value="{{ old('items.0.diskon', 0) }}" min="0" max="100" required>
+                                            <input type="number" name="items[0][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="0" value="{{ old('items.0.diskon', 0) }}" min="0" max="100" required>
                                             @error('items.0.diskon')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text" name="items[0][keterangan]"
-                                                class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="Keterangan jika diskon > 20%" value="{{ old('items.0.keterangan') }}">
+                                            <input type="text" name="items[0][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan jika diskon > 20%" value="{{ old('items.0.keterangan') }}">
                                             @error('items.0.keterangan')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2 item-subtotal text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
+                                        <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
                                         <td class="border border-gray-300 px-4 py-2 text-center">
                                             <div class="upload-btn-container relative">
-                                                <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple
-                                                    accept="image/*">
+                                                <input type="file" name="items[0][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
                                                 <button type="button" class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
                                                     Upload Gambar
                                                 </button>
@@ -198,9 +172,8 @@
                                             <div class="item-images-preview mt-2 flex flex-wrap gap-2 space-y-2"></div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <button type="button" class="btn btn-remove-item border-none rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+                                            <button type="button" class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                                                     <path d="M3 6h18"></path>
                                                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
                                                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
@@ -222,74 +195,70 @@
                     </div>
 
                     <!-- Summary Section -->
-                    <div class="mb-8 rounded-lg bg-gray-50 p-6 dark:bg-gray-700 shadow-md inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                            <!-- Subtotal -->
-                            <div>
-                                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Sub Total (Rp)</label>
-                                <input type="text" id="subtotal-display" readonly class="w-full text-black rounded-lg bg-gray-100 px-4 py-2 text-right font-semibold dark:bg-gray-600 dark:text-gray-100"
-                                    value="0">
-                                <input type="hidden" id="subtotal-value" name="subtotal" value="0">
-                            </div>
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                <!-- Subtotal -->
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div class="w-full">
+                                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Sub Total</p>
+                                            <input type="text" id="subtotal-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp 0">
+                                            <input type="hidden" id="subtotal-value" name="subtotal" value="0">
+                                        </div>
+                                        <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                            <svg class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Tax -->
-                            <div>
-                                <label for="tax" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Pajak/PPN (Rp)</label>
-                                <input type="number" id="tax" name="tax" value="{{ old('tax', 0) }}" step="0.01" min="0"
-                                    class="w-full rounded-lg border text-black border-gray-300 bg-gray-50 px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-white"
-                                    placeholder="0">
-        
-                            </div>
+                                <!-- Tax -->
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div class="w-full">
+                                            <div class="mb-1 flex items-center justify-start">
+                                                <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600" style="width: fit-content;">
+                                                    <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">Pajak/PPN</p>
+                                                    <input type="number" id="tax_rate" value="11" class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white" min="0" max="100">
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="tax" name="tax" value="{{ old('tax', 0) }}">
+                                            <input type="text" id="tax_display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp 0">
+                                        </div>
+                                        <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
+                                            <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-6 0l6 6m-6-6v12"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Grand Total -->
-                            <div>
-                                <label class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Grand Total (Rp)</label>
-                                <input type="text" id="grand-total-display" readonly
-                                    class="w-full rounded-lg bg-blue-50 px-4 py-2 text-right text-lg font-bold text-blue-600 dark:bg-blue-900 dark:text-blue-200" value="0">
-                                <input type="hidden" id="grand-total-value" name="grand_total" value="0">
+                                <!-- Grand Total -->
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div class="w-full">
+                                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand Total</p>
+                                            <input type="text" id="grand-total-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-green-600 focus:ring-0 dark:text-green-400" value="Rp 0">
+                                            <input type="hidden" id="grand-total-value" name="grand_total" value="0">
+                                        </div>
+                                        <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
+                                            <svg class="h-6 w-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <script>
-                            (function(){
-                                function handleDiskonChange(el){
-                                    const row = el.closest('tr');
-                                    const diskonVal = parseFloat(el.value) || 0;
-                                    const keterangan = row.querySelector('.item-keterangan');
-                                    if(!keterangan) return;
-                                    if(diskonVal > 20){
-                                        keterangan.required = true;
-                                        keterangan.classList.add('border-red-500');
-                                    } else {
-                                        keterangan.required = false;
-                                        keterangan.classList.remove('border-red-500');
-                                    }
-                                }
-
-                                // Attach to existing rows
-                                document.querySelectorAll('.item-diskon').forEach(function(d){
-                                    d.addEventListener('input', function(){ handleDiskonChange(d); });
-                                    // initial state
-                                    handleDiskonChange(d);
-                                });
-
-                                // When adding new rows, make sure handlers attach (if your add-row script triggers an event, adapt accordingly)
-                                document.getElementById('btn-add-item')?.addEventListener('click', function(){
-                                    setTimeout(function(){
-                                        document.querySelectorAll('.item-diskon').forEach(function(d){
-                                            if(!d.dataset._hasListener){
-                                                d.addEventListener('input', function(){ handleDiskonChange(d); });
-                                                d.dataset._hasListener = '1';
-                                                handleDiskonChange(d);
-                                            }
-                                        });
-                                    }, 50);
-                                });
-                            })();
-                        </script>
                     </div>
-
                     <!-- Action Buttons -->
-                    <div class="flex justify-end gap-4">
+                    <div class="flex justify-end gap-4 mt-4">
                         <a href="{{ route('sales.custom-penawaran.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Batal
                         </a>
@@ -297,9 +266,53 @@
                             Simpan Penawaran
                         </button>
                     </div>
-                </form>
+                    <script>
+                        (function() {
+                            function handleDiskonChange(el) {
+                                const row = el.closest('tr');
+                                const diskonVal = parseFloat(el.value) || 0;
+                                const keterangan = row.querySelector('.item-keterangan');
+                                if (!keterangan) return;
+                                if (diskonVal > 20) {
+                                    keterangan.required = true;
+                                    keterangan.classList.add('border-red-500');
+                                } else {
+                                    keterangan.required = false;
+                                    keterangan.classList.remove('border-red-500');
+                                }
+                            }
+
+                            // Attach to existing rows
+                            document.querySelectorAll('.item-diskon').forEach(function(d) {
+                                d.addEventListener('input', function() {
+                                    handleDiskonChange(d);
+                                });
+                                // initial state
+                                handleDiskonChange(d);
+                            });
+
+                            // When adding new rows, make sure handlers attach (if your add-row script triggers an event, adapt accordingly)
+                            document.getElementById('btn-add-item')?.addEventListener('click', function() {
+                                setTimeout(function() {
+                                    document.querySelectorAll('.item-diskon').forEach(function(d) {
+                                        if (!d.dataset._hasListener) {
+                                            d.addEventListener('input', function() {
+                                                handleDiskonChange(d);
+                                            });
+                                            d.dataset._hasListener = '1';
+                                            handleDiskonChange(d);
+                                        }
+                                    });
+                                }, 50);
+                            });
+                        })();
+                    </script>
             </div>
+
+
+            </form>
         </div>
+    </div>
     </div>
 
     <script>
@@ -346,7 +359,7 @@
                 const qty = parseInt(qtyInput.value) || 0;
                 const harga = parseFloat(hargaInput.value) || 0;
                 const diskonPercent = parseFloat(diskonInput.value) || 0;
-                
+
                 // Hitung subtotal dengan diskon: (qty * harga) * (1 - diskon%)
                 const subtotal = (qty * harga) * (1 - diskonPercent / 100);
 
@@ -361,7 +374,14 @@
                     subtotal += calculateItemSubtotal(row);
                 });
 
-                const tax = parseFloat(document.getElementById('tax').value) || 0;
+                const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
+                const tax = Math.round(subtotal * (taxRate / 100));
+
+                // Update tax inputs (hidden value and display text)
+                document.getElementById('tax').value = tax;
+                const taxDisplay = document.getElementById('tax_display');
+                if (taxDisplay) taxDisplay.value = formatCurrency(tax);
+
                 const grandTotal = subtotal + tax;
 
                 document.getElementById('subtotal-display').value = formatCurrency(subtotal);
@@ -369,6 +389,9 @@
                 document.getElementById('grand-total-display').value = formatCurrency(grandTotal);
                 document.getElementById('grand-total-value').value = grandTotal;
             }
+
+            // Listen for tax rate changes
+            document.getElementById('tax_rate').addEventListener('input', calculateTotals);
 
             // Handle image preview
             function handleImagePreview(row) {
@@ -492,7 +515,7 @@
                 hargaInput.addEventListener('change', calculateTotals);
                 diskonInput.addEventListener('change', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
-                    if(diskonVal > 20) {
+                    if (diskonVal > 20) {
                         keteranganInput.required = true;
                         keteranganInput.classList.add('border-red-500');
                     } else {
@@ -556,7 +579,7 @@
                 hargaInput.addEventListener('change', calculateTotals);
                 diskonInput.addEventListener('change', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
-                    if(diskonVal > 20) {
+                    if (diskonVal > 20) {
                         keteranganInput.required = true;
                         keteranganInput.classList.add('border-red-500');
                     } else {

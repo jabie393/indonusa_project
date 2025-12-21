@@ -37,6 +37,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th class="px-4 py-2"></th>
                         <th class="px-4 py-2">Nama</th>
                         <th class="px-4 py-2">Email</th>
                         <th class="px-4 py-2">Penjualan Sukses</th>
@@ -47,6 +48,7 @@
                 <tbody class="h-min-[300px]">
                     @foreach ($salesUsers as $user)
                         <tr class="dark:border-gray-700">
+                            <td class="px-4 py-2"></td>
                             <td class="px-4 py-2">{{ $user->name }}</td>
                             <td class="px-4 py-2">{{ $user->email }}</td>
                             <td class="px-4 py-2">

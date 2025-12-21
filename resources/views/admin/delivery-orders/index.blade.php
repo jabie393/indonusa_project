@@ -30,6 +30,7 @@
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium uppercase"></th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase">No. Order</th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase">Nama Supervisor</th>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase">Status</th>
@@ -40,6 +41,7 @@
                     <tbody class="h-min-[300px]">
                         @foreach ($orders as $order)
                             <tr class="dark:border-gray-700">
+                                <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white"></td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ $order->order_number }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ optional($order->supervisor)->name ?? '-' }}</td>
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ $order->status }}</td>

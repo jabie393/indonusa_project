@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ImportExcelController extends Controller
 {
@@ -174,7 +175,10 @@ class ImportExcelController extends Controller
                 }
 
                 $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
-                return redirect()->route('import-excel.index')->with(['title' => 'Import Selesai', 'text' => $msg]);
+                return redirect()->route('import-excel.index')
+                    ->with('title', 'Import Selesai')
+                    ->with('text', $msg)
+                    ->with('success', $msg);
             } catch (\Throwable $e) {
                 DB::rollBack();
                 return back()->with(['title' => 'Error', 'text' => 'Import gagal: '.$e->getMessage()]);
@@ -283,6 +287,9 @@ class ImportExcelController extends Controller
 
         $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
 
-        return redirect()->route('import-excel.index')->with(['title' => 'Import Selesai', 'text' => $msg]);
+        return redirect()->route('import-excel.index')
+            ->with('title', 'Import Selesai')
+            ->with('text', $msg)
+            ->with('success', $msg);
     }
 }

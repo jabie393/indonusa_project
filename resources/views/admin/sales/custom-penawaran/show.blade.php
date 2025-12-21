@@ -219,7 +219,7 @@
 
                 <!-- Sidebar Summary -->
                 <div class="gap-2 lg:col-span-1">
-                    <div class="sticky top-21 space-y-6">
+                    <div class="sticky top-5 space-y-6">
                         <!-- Action Card -->
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">

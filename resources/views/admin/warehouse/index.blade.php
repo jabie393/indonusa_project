@@ -9,7 +9,7 @@
                     {{-- Search --}}
                     <form action="{{ route('warehouse.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
+                        <div class="relative md:w-96">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
@@ -38,6 +38,7 @@
             <table id="warehouseTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
@@ -47,13 +48,14 @@
                         <th scope="col" class="px-4 py-3">Lokasi</th>
                         <th scope="col" class="px-4 py-3">Harga</th>
                         @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                            <th scope="col" class="px-4 py-3 w-fit">Aksi</th>
+                            <th scope="col" class="w-fit px-4 py-3">Aksi</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody class="h-min-[300px]">
                     @forelse ($barangs as $barang)
                         <tr class="dark:border-gray-700">
+                            <td class="px-4 py-3"></td>
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
@@ -65,9 +67,9 @@
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
                             @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                                <td class="px-4 py-3 w-fit">
+                                <td class="w-fit px-4 py-3">
                                     <div class="relative flex min-h-[40px] w-fit items-center justify-start">
-                                        <div class="pointer-events-none invisible h-9 w-15 opacity-0">Placeholder</div>
+                                        <div class="w-15 pointer-events-none invisible h-9 opacity-0">Placeholder</div>
                                         <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                             <button class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}" data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}" data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}" data-gambar="{{ $barang->gambar }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4" aria-hidden="true">

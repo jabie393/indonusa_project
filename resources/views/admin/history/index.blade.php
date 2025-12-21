@@ -28,6 +28,7 @@
             <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th class="px-4 py-3"></th>
                         <th class="px-4 py-3">Tanggal</th>
                         <th class="px-4 py-3">Kode Barang</th>
                         <th class="px-4 py-3">Nama Barang</th>
@@ -42,6 +43,7 @@
                 <tbody>
                     @forelse ($histories as $history)
                         <tr class="border-b dark:border-gray-700">
+                            <td class="px-4 py-3"></td>
                             <td class="px-4 py-3">{{ $history->changed_at ?? $history->created_at }}</td>
                             <td class="px-4 py-3">{{ $history->kode_barang }}</td>
                             <td class="px-4 py-3">{{ $history->nama_barang }}</td>

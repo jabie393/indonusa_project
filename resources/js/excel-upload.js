@@ -224,19 +224,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // render DataTableExcel from rows (rows are array-of-arrays, headers not included)
     function renderDataTableFromPreviewAll(rows, mapping, headers) {
-        const table = document.getElementById("DataTableExcel");
-        if (!table) return;
-        const tbody = table.querySelector("tbody");
+        const tableEl = document.getElementById("DataTableExcel");
+        if (!tableEl) return;
+
+        // Get DataTable instance safely (handle both DT 1.x and 2.x)
+        let dt;
+        try {
+            dt = new DataTable("#DataTableExcel");
+        } catch (e) {
+            console.warn("DataTable re-init attempt managed:", e);
+            return; // Exit if initialization fails to avoid blocking
+        }
+
+        const tbody = tableEl.querySelector("tbody");
         if (!tbody) return;
 
         const templateRow = tbody.querySelector("tr");
-        // clear existing
-        tbody.innerHTML = "";
 
-        // if no template row, build one minimal for 9 columns
+        // if no template row, build one minimal for 10 columns
         let baseRow;
         if (templateRow) {
-            baseRow = templateRow;
+            baseRow = templateRow.cloneNode(true);
         } else {
             baseRow = document.createElement("tr");
             for (let i = 0; i < 10; i++) {
@@ -258,7 +266,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        rows.forEach((r, rowIndex) => {
+        // clear existing rows using DataTable API
+        dt.clear();
+
+        const newRows = rows.map((r, rowIndex) => {
             const newRow = baseRow.cloneNode(true);
 
             const getVal = (field) => {
@@ -500,16 +511,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            tbody.appendChild(newRow);
             if (window.handleImagePreview) {
                 window.handleImagePreview(newRow);
             }
-        });
-    }
 
+            return newRow;
+        });
+        // Add all rows using the requested API and add the 'new' class
+        dt.rows
+            .add(newRows)
+            .draw()
+            .nodes()
+            .to$()
+            .addClass("new");
+
+        // Add SweetAlert Toast for AJAX Success
+        if (window.Swal) {
+            window.Swal.fire({
+                icon: "success",
+                title: "File Berhasil Diproses",
+                text: `Ditemukan ${rows.length} baris data untuk di-preview.`,
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        }
+    }
     // Handle file selection
     fileInput.addEventListener("change", function (e) {
         const file = e.target.files[0];
+
+        // FULL UI RESET for repeat uploads
+        if (progressSection) progressSection.classList.add("hidden");
+        if (uploadResult) uploadResult.classList.add("hidden");
+        if (uploadLabel) uploadLabel.classList.remove("hidden");
+        if (progressBar) progressBar.style.width = "0%";
+        if (progressText) progressText.textContent = "0%";
+        if (importFilePathInput) importFilePathInput.value = "";
+
         // Validate file extension and MIME type before proceeding
         const allowedExt = ["xlsx", "xls"];
         const allowedMime = [

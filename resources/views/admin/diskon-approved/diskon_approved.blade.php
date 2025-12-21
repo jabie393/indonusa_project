@@ -18,6 +18,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th class="px-4 py-3"></th>
                         <th class="px-4 py-3">#</th>
                         <th class="px-4 py-3">Order Number</th>
                         <th class="px-4 py-3">Kode Barang</th>
@@ -35,6 +36,8 @@
                         @if ($order->items && $order->items->count())
                             @foreach ($order->items as $item)
                                 <tr>
+                                    <td class="px-4 py-3"></td>
+
                                     @if ($loop->first)
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ $loop->parent->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ $order->order_number }}</td>

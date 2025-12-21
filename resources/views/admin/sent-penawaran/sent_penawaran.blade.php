@@ -17,6 +17,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th class="px-4 py-3"></th>
                         <th class="px-4 py-3">#</th>
                         <th class="px-4 py-3">No. Penawaran</th>
                         <th class="px-4 py-3">Sales</th>
@@ -32,6 +33,7 @@
                 <tbody>
                     @forelse($penawarans as $penawaran)
                         <tr>
+                            <td class="px-4 py-3"></td>
                             <td class="px-4 py-3">{{ $loop->iteration + ($penawarans->currentPage() - 1) * $penawarans->perPage() }}</td>
                             @if (isset($penawaran->offer_type) && $penawaran->offer_type === 'custom')
                                 <td class="px-4 py-3">{{ $penawaran->penawaran_number }}</td>

@@ -6,10 +6,20 @@
             </div>
             <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
                 <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
+                    {{-- Bulk Actions --}}
+                    <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-approve-url="{{ route('supply-orders.bulk-approve') }}" data-reject-url="{{ route('supply-orders.bulk-reject') }}">
+                        <button id="bulk-approve" class="flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">
+                            Approve Selected (<span id="selected-count">0</span>)
+                        </button>
+                        <button id="bulk-reject" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
+                            Reject Selected
+                        </button>
+                    </div>
+
                     {{-- Search --}}
                     <form action="{{ route('supply-orders.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
+                        <div class="relative md:w-96">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                                 <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
@@ -26,6 +36,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
@@ -42,6 +53,7 @@
                 <tbody class="h-min-[300px]">
                     @forelse ($barangs as $barang)
                         <tr class="border-b dark:border-gray-700">
+                            <td class="px-4 py-3">{{ $barang->id }}</td>
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
