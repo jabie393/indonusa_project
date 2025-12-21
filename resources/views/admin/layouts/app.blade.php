@@ -9,8 +9,6 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -19,9 +17,6 @@
     {{-- sweetalert --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    {{-- DaisyUI --}}
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     {{-- DaisyUI --}}
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -34,21 +29,11 @@
 
     <!-- JQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     {{-- select2 --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    {{-- select2 --}}
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <style>
-        div.dt-container div.dt-layout-row {
-            margin: 0;
-        }
-    </style>
     <style>
         div.dt-container div.dt-layout-row {
             margin: 0;
@@ -69,10 +54,6 @@
     </script>
 </head>
 
-<!-- Mendeteksi & menyimpan role user yang login -->
-@php
-    $userRole = auth()->user()->role ?? null;
-@endphp
 <!-- Mendeteksi & menyimpan role user yang login -->
 @php
     $userRole = auth()->user()->role ?? null;
@@ -156,7 +137,6 @@
         integrity="sha384-Qqo2BXySTT0KiB7yPTOOsf2DPibBoanEFBmbYpif+dj/RI9uBph6NSTpfq1m1eDM" crossorigin="anonymous">
     </script>
 
-</body>
 </body>
 
 </html>

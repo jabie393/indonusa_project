@@ -15,6 +15,10 @@ jobs:
       DEPLOY_PATH_PROD: "/www/wwwroot/warehouse.fahd.my.id"
       DEPLOY_PATH_STAGING: "/www/wwwroot/staging.warehouse.fahd.my.id"
       BACKUP_PATH: "/www/wwwroot/backups"
+      PUSHER_APP_ID: "dummy"
+      PUSHER_APP_KEY: "dummy"
+      PUSHER_APP_SECRET: "dummy"
+      PUSHER_APP_CLUSTER: "mt1"
 
     steps:
       # 1️ Checkout kode dari GitHub
@@ -39,7 +43,6 @@ jobs:
 
           npm ci
           npm run build
-
 
       # 4️ Setup PHP (Laravel)
       - name: Setup PHP
