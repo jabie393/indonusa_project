@@ -100,12 +100,16 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
+    // Excel Import
     Route::resource('/import-excel', ImportExcelController::class);
     Route::post('/import-excel/import', [ImportExcelController::class, 'import'])->name('import-excel.import');
+    // End Excel Import
+    // Excel Stock Import
     Route::get('/import-stock-excel', [ImportStockExcelController::class, 'index'])->name('import-stock-excel.index');
     Route::post('/import-stock-excel/store', [ImportStockExcelController::class, 'store'])->name('import-stock-excel.store');
     Route::post('/import-stock-excel/import', [ImportStockExcelController::class, 'import'])->name('import-stock-excel.import');
     Route::get('/import-stock-excel/export', [ImportStockExcelController::class, 'export'])->name('import-stock-excel.export');
+    // End Excel Stock Import
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/pics', PicsController::class);

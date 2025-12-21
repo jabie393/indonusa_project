@@ -8,6 +8,10 @@ use App\Models\Barang;
 use App\Observers\OrderObserver;
 use App\Observers\BarangObserver;
 
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Login;
+use App\Listeners\BroadcastUserLogin;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
