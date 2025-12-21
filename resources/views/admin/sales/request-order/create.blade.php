@@ -95,7 +95,7 @@
                                 <select class="@error('pic_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="pic_id" name="pic_id" required>
                                     <option value="">-- Pilih PIC Sales --</option>
                                     @foreach ($salesUsers as $sales)
-                                        <option value="{{ $sales->id }}" @selected(old('pic_id') == $sales->id)>
+                                        <option value="{{ $sales->id }}" @selected(old('pic_id', Auth::id()) == $sales->id)>
                                             {{ $sales->name }}
                                         </option>
                                     @endforeach
@@ -203,7 +203,7 @@
                                             <input type="number" name="quantity[]" class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
+                                            <input type="number" name="harga[]" class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="">
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <div class="upload-btn-container relative">
@@ -218,7 +218,7 @@
                                             <input type="text" class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" style="min-width: 100px; font-size: 1rem; font-weight: 500;" readonly>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
+                                            <input type="number" name="ppn_percent[]" class="form-control ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="">
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
@@ -713,14 +713,14 @@
                             }
                         }
 
-                        // Compute jual price (base + 30%) then apply diskon if any
+                        // Compute jual price (base + 30%)
                         const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                        const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
-                        if (hargaInput) hargaInput.value = finalHarga;
+                        // Harga satuan tetap tanpa diskon
+                        if (hargaInput) hargaInput.value = hargaJual;
 
-                        // Hitung harga setelah diskon otomatis (qty * harga setelah diskon)
+                        // Hitung harga setelah diskon otomatis (qty * harga satuan * (1 - diskon/100))
                         const qty = parseInt(quantityInput.value) || 1;
-                        const hargaSetelahDiskon = qty * finalHarga;
+                        const hargaSetelahDiskon = qty * hargaJual * (1 - (useDiskon / 100));
                         if (hargaSetelahDiskonDisplay) {
                             hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                                 'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
@@ -754,14 +754,15 @@
 
                     document.querySelectorAll('.item-row').forEach(row => {
                         const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
-                        const harga = parseFloat(row.querySelector('.harga-input').value) || 0;
+                        const hargaSatuan = parseFloat(row.querySelector('.harga-input').value) || 0;
+                        const diskon = parseFloat(row.querySelector('.diskon-input').value) || 0;
                         const ppnPercent = parseFloat(row.querySelector('.ppn-input').value) || 0;
 
-                        // Harga setelah diskon (sudah termasuk diskon)
-                        const hargaSetelahDiskon = qty * harga;
+                        // Harga setelah diskon
+                        const hargaSetelahDiskon = +(qty * hargaSatuan * (1 - (diskon / 100))).toFixed(2);
 
                         // Hitung PPN untuk item ini
-                        const ppnAmount = hargaSetelahDiskon * (ppnPercent / 100);
+                        const ppnAmount = +(hargaSetelahDiskon * (ppnPercent / 100)).toFixed(2);
 
                         // Update display harga setelah diskon
                         const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
@@ -879,6 +880,12 @@
                         keteranganNew.required = false;
                     }
 
+                    // Set default PPN to empty for new rows
+                    const ppnNew = newRow.querySelector('.ppn-input');
+                    if (ppnNew) {
+                        ppnNew.value = '';
+                    }
+
                     newRow.querySelectorAll('select').forEach(sel => {
                         sel.selectedIndex = 0;
                     });
@@ -921,8 +928,10 @@
                             const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
 
                             if (hargaInput && hargaSetelahDiskonDisplay) {
-                                const harga = parseFloat(hargaInput.value) || 0;
-                                const hargaSetelahDiskon = qty * harga;
+                                const hargaSatuan = parseFloat(hargaInput.value) || 0;
+                                const diskonInput = row.querySelector('.diskon-input');
+                                const diskon = parseFloat(diskonInput.value) || 0;
+                                const hargaSetelahDiskon = qty * hargaSatuan * (1 - (diskon / 100));
                                 hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                                     'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
                                         minimumFractionDigits: 2,
@@ -943,21 +952,30 @@
                     row.querySelector('.harga-input').addEventListener('change', calculateTotals);
                     const diskonInput = row.querySelector('.diskon-input');
                     if (diskonInput) {
-                        diskonInput.addEventListener('change', function() {
-                            // Recompute harga based on selected barang baseHarga and discount
+                        const updateHargaFromDiskon = function() {
+                            // Update harga setelah diskon display, harga satuan tetap
                             const select = row.querySelector('.barang-select');
-                            if (select && select.value) {
-                                const option = select.options[select.selectedIndex];
-                                const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                            const quantityInput = row.querySelector('.quantity-input');
+                            const hargaInput = row.querySelector('.harga-input');
+                            const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+                            if (select && select.value && hargaInput && hargaSetelahDiskonDisplay) {
+                                const qty = parseInt(quantityInput.value) || 1;
+                                const hargaSatuan = parseFloat(hargaInput.value) || 0;
                                 const d = parseFloat(this.value) || 0;
-                                const computedHarga = +(baseHarga * 1.3 * (1 - (d / 100))).toFixed(2);
-                                const hargaInput = row.querySelector('.harga-input');
-                                if (hargaInput) hargaInput.value = computedHarga;
+                                const hargaSetelahDiskon = qty * hargaSatuan * (1 - (d / 100));
+                                hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                    'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }) :
+                                    '0';
                             }
                             calculateTotals();
                             updateDiscountWarning();
                             updateKeteranganState(row);
-                        });
+                        };
+                        diskonInput.addEventListener('change', updateHargaFromDiskon);
+                        diskonInput.addEventListener('input', updateHargaFromDiskon);
                     }
                     row.querySelector('.remove-row').addEventListener('click', function() {
                         row.remove();

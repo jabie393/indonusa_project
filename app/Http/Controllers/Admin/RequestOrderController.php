@@ -100,6 +100,8 @@ class RequestOrderController extends Controller
             'harga.*' => 'nullable|numeric|min:0',
             'diskon_percent' => 'nullable|array',
             'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
+            'ppn_percent' => 'nullable|array',
+            'ppn_percent.*' => 'nullable|numeric|min:0|max:100',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
             'item_images' => 'nullable|array',
@@ -116,18 +118,21 @@ class RequestOrderController extends Controller
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
             // compute diskon percentage from input, fallback to 0
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
-            // calculate harga based on baseHarga * 1.3 (jual) then apply discount
-            $computedHarga = round($baseHarga * 1.3 * (1 - ($diskon / 100)), 2);
-            // If harga provided explicitly, we keep it but prefer computedHarga to be consistent
-            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
-            $subtotal = $qty * $harga;
+            // calculate harga satuan based on baseHarga * 1.3
+            $computedHargaSatuan = round($baseHarga * 1.3, 2);
+            // If harga provided explicitly, we keep it but prefer computedHargaSatuan to be consistent
+            $hargaSatuan = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHargaSatuan;
+            // compute ppn percentage from input, fallback to 0
+            $ppnPercent = isset($validated['ppn_percent'][$i]) && $validated['ppn_percent'][$i] !== '' ? (float) $validated['ppn_percent'][$i] : 0;
+            $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
                 'barang_id' => $barangId,
                 'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
                 'quantity' => $qty,
-                'harga' => $harga,
+                'harga' => $hargaSatuan,
                 'diskon_percent' => $diskon,
+                'ppn_percent' => $ppnPercent,
                 'subtotal' => $subtotal,
             ];
         }
@@ -378,6 +383,8 @@ class RequestOrderController extends Controller
             'harga.*' => 'nullable|numeric|min:0',
             'diskon_percent' => 'nullable|array',
             'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
+            'ppn_percent' => 'nullable|array',
+            'ppn_percent.*' => 'nullable|numeric|min:0|max:100',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
             'item_images' => 'nullable|array',
@@ -393,9 +400,10 @@ class RequestOrderController extends Controller
             // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
-            $computedHarga = round($baseHarga * 1.3 * (1 - ($diskon / 100)), 2);
+            $computedHarga = round($baseHarga * 1.3, 2);
             $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
-            $subtotal = $qty * $harga;
+            $ppnPercent = isset($validated['ppn_percent'][$i]) && $validated['ppn_percent'][$i] !== '' ? (float) $validated['ppn_percent'][$i] : 0;
+            $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
                 'barang_id' => $barangId,
@@ -403,6 +411,7 @@ class RequestOrderController extends Controller
                 'quantity' => $qty,
                 'harga' => $harga,
                 'diskon_percent' => $diskon,
+                'ppn_percent' => $ppnPercent,
                 'subtotal' => $subtotal,
             ];
         }

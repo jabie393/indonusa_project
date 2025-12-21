@@ -227,10 +227,10 @@
                                                 </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
+                                                <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="{{ 'Rp ' . number_format($item->quantity * $item->harga * (1 - ($item->diskon_percent ?? 0) / 100), 2, ',', '.') }}" readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="{{ $item->ppn_percent ?? 11 }}">
+                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="{{ $item->ppn_percent ?? 0 }}">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
@@ -292,7 +292,7 @@
                                                 <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
+                                                <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700" style="display: none;">
@@ -718,9 +718,9 @@
                     const diskonPercent = parseFloat(row.querySelector('.diskon-input').value) || 0;
                     const ppnPercent = parseFloat(row.querySelector('.ppn-input').value) || 0;
 
-                    const hargaSetelahDiskon = markupHarga * (1 - (diskonPercent / 100));
-                    const itemSubtotal = qty * hargaSetelahDiskon;
-                    const itemPPN = itemSubtotal * (ppnPercent / 100);
+                    const hargaSetelahDiskon = +(markupHarga * (1 - (diskonPercent / 100))).toFixed(2);
+                    const itemSubtotal = +(qty * hargaSetelahDiskon).toFixed(2);
+                    const itemPPN = +(itemSubtotal * (ppnPercent / 100)).toFixed(2);
 
                     row.querySelector('.harga-setelah-diskon-display').value = 'Rp ' + hargaSetelahDiskon.toLocaleString('id-ID', {
                         minimumFractionDigits: 2,
@@ -800,7 +800,7 @@
                         <input type="text" class="harga-setelah-diskon-display block h-10 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="11">
+                        <input type="number" name="ppn_percent[]" class="ppn-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                         <button type="button" class="btn remove-row rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">

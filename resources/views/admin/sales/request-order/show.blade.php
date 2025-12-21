@@ -211,16 +211,18 @@
                                         <th scope="col" class="px-6 py-3">Diskon (%)</th>
                                         <th scope="col" class="px-6 py-3">Jumlah</th>
                                         <th scope="col" class="px-6 py-3">Harga Satuan</th>
-                                        <th scope="col" class="px-6 py-3">Subtotal</th>
+                                        <th scope="col" class="px-6 py-3">Harga Setelah Diskon</th>
+                                        <th scope="col" class="px-6 py-3">PPN (%)</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 border-b dark:divide-gray-700 dark:border-gray-700">
                                     @php $total = 0; @endphp
                                     @forelse($requestOrder->items as $item)
                                         @php
-                                            // Show harga satuan directly from barang table (fallback to item's harga if barang missing)
-                                            $displayHarga = optional($item->barang)->harga ?? ($item->harga ?? 0);
-                                            $computedSubtotal = $displayHarga * $item->quantity;
+                                            $displayHarga = $item->harga ?? 0;
+                                            $diskonPercent = $item->diskon_percent ?? 0;
+                                            $hargaSetelahDiskon = round($displayHarga * (1 - ($diskonPercent / 100)), 2);
+                                            $computedSubtotal = $item->subtotal ?? ($hargaSetelahDiskon * $item->quantity);
                                             $total += $computedSubtotal;
                                         @endphp
                                         <tr class="bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -237,16 +239,17 @@
                                             <td class="px-6 py-4">{{ $item->quantity }} {{ $item->barang->satuan ?? 'pcs' }}</td>
                                             <td class="text-nowrap px-6 py-4">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                             <td class="text-nowrap px-6 py-4 font-semibold text-gray-900 dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
+                                            <td class="text-nowrap px-6 py-4">{{ $item->ppn_percent ?? 0 }}%</td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="px-6 py-4 text-center">Tidak ada item</td>
+                                            <td colspan="8" class="px-6 py-4 text-center">Tidak ada item</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
                                 <tfoot class="bg-gray-50 font-semibold text-gray-900 dark:bg-gray-700 dark:text-white">
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-right">TOTAL:</td>
+                                        <td colspan="6" class="px-6 py-4 text-right">TOTAL:</td>
                                         <td class="px-6 py-4">Rp {{ number_format($total, 2, ',', '.') }}</td>
                                     </tr>
                                 </tfoot>
@@ -356,13 +359,11 @@
                         </div>
 
                         @php
-
-                            $subtotal = $requestOrder->items->sum(function ($item) {
-                                $displayHarga = optional($item->barang)->harga ?? ($item->harga ?? 0);
-                                return $displayHarga * $item->quantity;
+                            $subtotal = $requestOrder->items->sum('subtotal');
+                            $totalPPN = $requestOrder->items->sum(function ($item) {
+                                return round($item->subtotal * (($item->ppn_percent ?? 0) / 100), 2);
                             });
-                            $tax = 0; // Assuming tax is 0 for now, or calculate if needed
-                            $grandTotal = $subtotal + $tax;
+                            $grandTotal = round($subtotal + $totalPPN, 2);
                         @endphp
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -380,7 +381,7 @@
                                     <div class="flex justify-between">
                                         <span class="text-gray-600 dark:text-gray-400">Pajak/PPN</span>
                                         <span class="font-semibold text-gray-900 dark:text-white">Rp
-                                            {{ number_format($tax, 0, ',', '.') }}</span>
+                                            {{ number_format($totalPPN, 0, ',', '.') }}</span>
                                     </div>
                                     <div class="flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
                                         <span class="text-lg font-bold text-gray-900 dark:text-white">Grand Total</span>
