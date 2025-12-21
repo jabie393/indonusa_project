@@ -26,11 +26,13 @@ class CustomPenawaranController extends Controller
         Log::info('Custom Penawaran Index accessed', ['auth_id' => Auth::id(), 'auth_email' => Auth::user()->email ?? null]);
 
         // Check and update expired penawarans
-        CustomPenawaran::whereIn('status', ['open', 'sent'])
-            ->whereNotNull('expired_at')
-            ->where('expired_at', '<', now())
-            ->where('sales_id', Auth::id())
-            ->update(['status' => 'expired']);
+        if (\Illuminate\Support\Facades\Schema::hasColumn('custom_penawarans', 'expired_at')) {
+            CustomPenawaran::whereIn('status', ['open', 'sent'])
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '<', now())
+                ->where('sales_id', Auth::id())
+                ->update(['status' => 'expired']);
+        }
 
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
             ->with('items')

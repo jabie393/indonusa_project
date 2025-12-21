@@ -22,23 +22,25 @@ class RequestOrderController extends Controller
      */
     public function index()
     {
-        // First, extend any pending request orders that were created with an older 7-day expiry
-        // to be 14 days from now if they are still unexpired and were likely set with 7 days.
-        \Illuminate\Support\Facades\DB::table('request_orders')
-            ->whereIn('status', ['pending', 'open'])
-            ->whereNotNull('created_at')
-            ->whereNotNull('expired_at')
-            ->where('expired_at', '>', now())
-            ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
-            ->where('sales_id', Auth::id())
-            ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
+        if (\Illuminate\Support\Facades\Schema::hasColumn('request_orders', 'expired_at')) {
+            // First, extend any pending request orders that were created with an older 7-day expiry
+            // to be 14 days from now if they are still unexpired and were likely set with 7 days.
+            \Illuminate\Support\Facades\DB::table('request_orders')
+                ->whereIn('status', ['pending', 'open'])
+                ->whereNotNull('created_at')
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '>', now())
+                ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
+                ->where('sales_id', Auth::id())
+                ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
 
-        // Ensure any pending RequestOrders past their expiry are marked expired
-        RequestOrder::whereIn('status', ['pending', 'open'])
-            ->whereNotNull('expired_at')
-            ->where('expired_at', '<', now())
-            ->where('sales_id', Auth::id())
-            ->update(['status' => 'expired']);
+            // Ensure any pending RequestOrders past their expiry are marked expired
+            RequestOrder::whereIn('status', ['pending', 'open'])
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '<', now())
+                ->where('sales_id', Auth::id())
+                ->update(['status' => 'expired']);
+        }
 
         $requestOrders = RequestOrder::with('items.barang', 'sales')
             ->where('sales_id', Auth::id())

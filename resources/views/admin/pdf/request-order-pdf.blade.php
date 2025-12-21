@@ -30,15 +30,16 @@
 <body class="m-0 flex justify-center bg-slate-200 p-0 print:bg-white">
 
     <!-- A4 PAGE WRAPPER (FIXED HEIGHT) -->
-    <div class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
+    <div
+        class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
 
         <!-- INNER MARGINS (1.27 cm) -->
-        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]" style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]"
+            style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
 
             @php
                 // Helper function to get base64 encoded image from public/images
-                function getPublicImageBase64($filename)
-                {
+                $getPublicImageBase64 = function ($filename) {
                     try {
                         $path = public_path('images/' . $filename);
                         if (file_exists($path) && is_readable($path)) {
@@ -50,17 +51,18 @@
                         // Log error if needed
                     }
                     return '';
-                }
+                };
 
                 // Helper function to get base64 encoded image from storage
-                function getStorageImageBase64($imagePath)
-                {
+                $getStorageImageBase64 = function ($imagePath) use (&$getStorageImageBase64) {
                     try {
                         if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
                             return $imagePath;
                         }
 
-                        $fullPath = str_starts_with($imagePath, 'public/') ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/')) : storage_path('app/public/' . ltrim($imagePath, '/'));
+                        $fullPath = str_starts_with($imagePath, 'public/')
+                            ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
+                            : storage_path('app/public/' . ltrim($imagePath, '/'));
 
                         if (file_exists($fullPath) && is_readable($fullPath)) {
                             $mime = mime_content_type($fullPath);
@@ -71,18 +73,20 @@
                         // Log error if needed
                     }
                     return '';
-                }
+                };
             @endphp
 
             <!-- WATERMARK IMAGE (OPTIONAL) -->
-            @if (getPublicImageBase64('LogoText_transparent.png'))
-                <img src="{{ getPublicImageBase64('LogoText_transparent.png') }}" alt="" class="right-30 pointer-events-none absolute top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @if ($getPublicImageBase64('LogoText_transparent.png'))
+                <img src="{{ $getPublicImageBase64('LogoText_transparent.png') }}" alt=""
+                    class="right-30 pointer-events-none absolute top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
             @endif
 
             <!-- COMPANY INFO -->
             <div class="flex text-[9pt]">
-                @if (getPublicImageBase64('Logo_transparent.png'))
-                    <img src="{{ getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
+                @if ($getPublicImageBase64('Logo_transparent.png'))
+                    <img src="{{ $getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama"
+                        class="w-[16%]" />
                 @endif
 
                 <div class="">
@@ -131,9 +135,11 @@
 
                         <tr>
                             <td class="w-[68.1pt] border-b border-r border-black px-2"><strong>To</strong></td>
-                            <td class="w-[184pt] border-b border-r border-black px-2">{{ $requestOrder->customer_name }}</td>
+                            <td class="w-[184pt] border-b border-r border-black px-2">{{ $requestOrder->customer_name }}
+                            </td>
                             <td class="w-[68pt] border-b border-r border-black px-2"><strong>Email</strong></td>
-                            <td class="w-[177.3pt] border-b border-black px-2">{{ optional($requestOrder->sales)->email ?? '-' }}</td>
+                            <td class="w-[177.3pt] border-b border-black px-2">
+                                {{ optional($requestOrder->sales)->email ?? '-' }}</td>
                         </tr>
 
                         <tr>
@@ -145,7 +151,8 @@
 
                         <tr>
                             <td class="border-r border-black px-2"><strong>Subject</strong></td>
-                            <td class="border-r border-black px-2">{{ $requestOrder->subject ?? 'Request Order - ' . $requestOrder->request_number }}</td>
+                            <td class="border-r border-black px-2">
+                                {{ $requestOrder->subject ?? 'Request Order - ' . $requestOrder->request_number }}</td>
                             <td class="border-r border-black px-2"><strong>Date</strong></td>
                             <td class="border-black px-2">{{ $requestOrder->created_at->format('d/m/Y') }}</td>
                         </tr>
@@ -159,7 +166,10 @@
                 <p class="border-b border-black pb-1">Dengan Hormat,</p>
                 <p class="mt-1">&nbsp;</p>
                 @php
-                    $noteToShow = $pdfNote ?? ($requestOrder->catatan_customer ?? 'Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:');
+                    $noteToShow =
+                        $pdfNote ??
+                        ($requestOrder->catatan_customer ??
+                            'Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:');
                 @endphp
                 <p>{!! nl2br(e($noteToShow)) !!}</p>
             </div>
@@ -175,7 +185,8 @@
                             @endphp
                             @if ($imgSrc)
                                 <div class="h-[90px] w-[90px] overflow-hidden border border-gray-300">
-                                    <img src="{{ $imgSrc }}" alt="Gambar Pendukung" class="h-full w-full object-cover" />
+                                    <img src="{{ $imgSrc }}" alt="Gambar Pendukung"
+                                        class="h-full w-full object-cover" />
                                 </div>
                             @endif
                         @endforeach
@@ -189,7 +200,8 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang
+                            </th>
                             <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[30.15pt] border border-black px-2 py-1 text-center text-white">Diskon</th>
                             <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Satuan</th>
@@ -206,19 +218,27 @@
                         @forelse($requestOrder->items as $index => $item)
                             @php
                                 $displayHarga = $item->harga ?? round(optional($item->barang)->harga * 1.3, 2);
-                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - ($item->diskon_percent ?? 0) / 100), 2);
+                                $computedSubtotal = round(
+                                    $displayHarga * $item->quantity * (1 - ($item->diskon_percent ?? 0) / 100),
+                                    2,
+                                );
                                 $ppnAmount = round($computedSubtotal * (($item->ppn_percent ?? 0) / 100), 2);
                                 $total += $computedSubtotal;
                                 $totalPPN += $ppnAmount;
                             @endphp
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
-                                <td class="border px-2 py-1">{{ optional($item->barang)->nama_barang ?? ($item->barang->nama_barang ?? $item->barang_id) }}</td>
+                                <td class="border px-2 py-1">
+                                    {{ optional($item->barang)->nama_barang ?? ($item->barang->nama_barang ?? $item->barang_id) }}
+                                </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->diskon_percent ?? 0 }}%</td>
-                                <td class="border px-2 py-1 text-center">{{ optional($item->barang)->satuan ?? '-' }}</td>
-                                <td class="border px-2 py-1 text-right">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
-                                <td class="border px-2 py-1 text-right">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
+                                <td class="border px-2 py-1 text-center">{{ optional($item->barang)->satuan ?? '-' }}
+                                </td>
+                                <td class="border px-2 py-1 text-right">Rp
+                                    {{ number_format($displayHarga, 2, ',', '.') }}</td>
+                                <td class="border px-2 py-1 text-right">Rp
+                                    {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-center">
                                     @if ($item->item_images && count($item->item_images) > 0)
                                         <div class="flex flex-wrap justify-center gap-2">
@@ -228,7 +248,8 @@
                                                 @endphp
 
                                                 @if ($imgSrc)
-                                                    <img src="{{ $imgSrc }}" alt="Gambar" class="h-20 w-20 border border-gray-300 object-contain">
+                                                    <img src="{{ $imgSrc }}" alt="Gambar"
+                                                        class="h-20 w-20 border border-gray-300 object-contain">
                                                 @else
                                                     <span>-</span>
                                                 @endif
@@ -259,15 +280,18 @@
                         @endphp
                         <tr>
                             <td class="border-b border-r border-black px-2">Sub Total</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($finalSubtotal, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp
+                                {{ number_format($finalSubtotal, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Tax</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($finalTax, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp
+                                {{ number_format($finalTax, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Grand Total</td>
-                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp
+                                {{ number_format($finalGrandTotal, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>

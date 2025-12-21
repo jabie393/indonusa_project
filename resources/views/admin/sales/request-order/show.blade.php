@@ -517,8 +517,7 @@
                             $ppnRate = $subtotal > 0 ? round(($totalPPN / $subtotal) * 100, 2) : 0;
 
                             // Helper function to get base64 encoded image from storage
-                            function getStorageImageBase64($imagePath)
-                            {
+                            $getStorageImageBase64 = function ($imagePath) {
                                 try {
                                     if (
                                         str_starts_with($imagePath, 'http://') ||
@@ -540,7 +539,7 @@
                                     // Log error if needed
                                 }
                                 return '';
-                            }
+                            };
                         @endphp
                         <div
                             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
