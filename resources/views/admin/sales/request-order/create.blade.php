@@ -822,6 +822,11 @@
                     const uploadBtn = row.querySelector('.upload-btn-container');
                     if (!fileInput || !preview) return;
 
+                    // Make upload button trigger file input
+                    if (uploadBtn) {
+                        uploadBtn.addEventListener('click', () => fileInput.click());
+                    }
+
                     fileInput.addEventListener('change', function() {
                         // Clear existing previews
                         preview.innerHTML = '';

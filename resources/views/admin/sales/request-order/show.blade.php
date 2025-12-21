@@ -240,24 +240,18 @@
                                             <td class="text-nowrap px-6 py-4">Rp {{ number_format($displayHarga, 2, ',', '.') }}</td>
                                             <td class="text-nowrap px-6 py-4 font-semibold text-gray-900 dark:text-white">Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                             <td class="px-4 py-3 text-center">
-                                                @if ($item->images && count($item->images) > 0)
+                                                @if ($item->item_images && count($item->item_images) > 0)
+                                                    @php \Log::info('Item images found', ['images' => $item->item_images]); @endphp
                                                     <div class="flex flex-wrap justify-center gap-3">
-                                                        @foreach ($item->images as $image)
+                                                        @foreach ($item->item_images as $image)
                                                             @php
-                                                                if (is_null($image) || $image === '') {
-                                                                    $imgUrl = null;
-                                                                } elseif (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
-                                                                    $imgUrl = $image;
-                                                                } elseif (str_starts_with($image, 'public/')) {
-                                                                    $imgUrl = asset('storage/' . ltrim(substr($image, 7), '/'));
-                                                                } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                                }
+                                                                $imgSrc = getStorageImageBase64($image);
+                                                                \Log::info('Image base64', ['image' => $image, 'imgSrc' => substr($imgSrc, 0, 50) . '...']);
                                                             @endphp
 
-                                                            @if ($imgUrl)
-                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}" aria-label="Lihat gambar">
-                                                                    <img src="{{ $imgUrl }}" alt="Gambar" class="h-20 w-20 rounded border border-gray-300 object-cover transition hover:shadow-lg sm:h-28 sm:w-28">
+                                                            @if ($imgSrc)
+                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgSrc }}" aria-label="Lihat gambar">
+                                                                    <img src="{{ $imgSrc }}" alt="Gambar" class="h-20 w-20 rounded border border-gray-300 object-cover transition hover:shadow-lg sm:h-28 sm:w-28">
                                                                 </button>
                                                             @else
                                                                 <span class="text-sm text-gray-400">-</span>
@@ -391,6 +385,27 @@
                             $totalPPN = $requestOrder->tax ?? 0;
                             $grandTotal = $requestOrder->grand_total ?? round($subtotal + $totalPPN, 2);
                             $ppnRate = $subtotal > 0 ? round(($totalPPN / $subtotal) * 100, 2) : 0;
+
+                            // Helper function to get base64 encoded image from storage
+                            function getStorageImageBase64($imagePath)
+                            {
+                                try {
+                                    if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
+                                        return $imagePath;
+                                    }
+
+                                    $fullPath = str_starts_with($imagePath, 'public/') ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/')) : storage_path('app/public/' . ltrim($imagePath, '/'));
+
+                                    if (file_exists($fullPath) && is_readable($fullPath)) {
+                                        $mime = mime_content_type($fullPath);
+                                        $data = base64_encode(file_get_contents($fullPath));
+                                        return 'data:' . $mime . ';base64,' . $data;
+                                    }
+                                } catch (\Exception $e) {
+                                    // Log error if needed
+                                }
+                                return '';
+                            }
                         @endphp
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
