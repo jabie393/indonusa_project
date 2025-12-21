@@ -22,31 +22,24 @@ class CustomPenawaranController extends Controller
      */
     public function index()
     {
-        // Log current user and items fetched for debugging
-        Log::info('Custom Penawaran Index accessed', ['auth_id' => Auth::id(), 'auth_email' => Auth::user()->email ?? null]);
-
-        // Check and update expired penawarans
-        if (\Illuminate\Support\Facades\Schema::hasColumn('custom_penawarans', 'expired_at')) {
-            CustomPenawaran::whereIn('status', ['open', 'sent'])
-                ->whereNotNull('expired_at')
-                ->where('expired_at', '<', now())
-                ->where('sales_id', Auth::id())
-                ->update(['status' => 'expired']);
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('custom_penawarans') && 
+                \Illuminate\Support\Facades\Schema::hasColumn('custom_penawarans', 'expired_at')) {
+                
+                CustomPenawaran::whereIn('status', ['open', 'sent'])
+                    ->whereNotNull('expired_at')
+                    ->where('expired_at', '<', now())
+                    ->where('sales_id', Auth::id())
+                    ->update(['status' => 'expired']);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Custom Penawaran Expiry update failed: ' . $e->getMessage());
         }
 
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
             ->with('items')
             ->latest()
             ->paginate(20);
-
-        // Also log raw DB table count and sample rows for diagnosis
-        try {
-            $rawCount = DB::table('custom_penawarans')->count();
-            $sample = DB::table('custom_penawarans')->orderByDesc('id')->limit(5)->get();
-            Log::info('Custom Penawaran Index result', ['count' => $customPenawarans->count(), 'raw_count' => $rawCount, 'sample' => $sample]);
-        } catch (\Throwable $e) {
-            Log::error('Custom Penawaran Index DB read error', ['message' => $e->getMessage()]);
-        }
 
         return view('admin.sales.custom-penawaran.index', compact('customPenawarans'));
     }
