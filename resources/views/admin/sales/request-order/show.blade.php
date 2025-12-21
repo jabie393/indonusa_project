@@ -515,6 +515,32 @@
                             $totalPPN = $requestOrder->tax ?? 0;
                             $grandTotal = $requestOrder->grand_total ?? round($subtotal + $totalPPN, 2);
                             $ppnRate = $subtotal > 0 ? round(($totalPPN / $subtotal) * 100, 2) : 0;
+
+                            // Helper function to get base64 encoded image from storage
+                            function getStorageImageBase64($imagePath)
+                            {
+                                try {
+                                    if (
+                                        str_starts_with($imagePath, 'http://') ||
+                                        str_starts_with($imagePath, 'https://')
+                                    ) {
+                                        return $imagePath;
+                                    }
+
+                                    $fullPath = str_starts_with($imagePath, 'public/')
+                                        ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
+                                        : storage_path('app/public/' . ltrim($imagePath, '/'));
+
+                                    if (file_exists($fullPath) && is_readable($fullPath)) {
+                                        $mime = mime_content_type($fullPath);
+                                        $data = base64_encode(file_get_contents($fullPath));
+                                        return 'data:' . $mime . ';base64,' . $data;
+                                    }
+                                } catch (\Exception $e) {
+                                    // Log error if needed
+                                }
+                                return '';
+                            }
                         @endphp
                         <div
                             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
