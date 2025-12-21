@@ -1,46 +1,32 @@
-let table = new DataTable('#warehouseTable', {
-    searching: false,
-    paging: false,
-    info: false,
-    fixedHeader: true,
-    colReorder: true,
-    scrollX: true,
-
-});
-
-let datatable = new DataTable('#DataTable', {
+const commonConfig = {
     fixedHeader: true,
     searching: false,
     paging: false,
     info: false,
     scrollX: true,
     colReorder: true,
-});
-let datatable2 = new DataTable('#DataTable2', {
-    fixedHeader: true,
-    searching: false,
-    paging: false,
-    info: false,
-    colReorder: true,
-    scrollX: true,
 
-});
-let datatable3 = new DataTable('#DataTable3', {
-    fixedHeader: true,
-    searching: false,
-    paging: false,
-    info: false,
-    colReorder: true,
-    scrollX: true,
+    // Select row
+    select: {
+        style: 'multi',
+        selector: 'td:first-child'
+    },
+    columnDefs: [
+        {
+            targets: 0,
+            orderable: false,
+            render: DataTable.render.select()
+        }
+    ]
+};
 
-});
+let table = new DataTable('#warehouseTable', commonConfig);
+let datatable = new DataTable('#DataTable', commonConfig);
+let datatable2 = new DataTable('#DataTable2', commonConfig);
+let datatable3 = new DataTable('#DataTable3', commonConfig);
 
 let datatableExcel = new DataTable('#DataTableExcel', {
-    fixedHeader: true,
-    scrollX: true,
-    searching: false,
-    paging: false,
-    info: false,
+    ...commonConfig,
     fixedColumns: {
         left: 0,
         right: 1

@@ -6,6 +6,16 @@
             </div>
             <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
                 <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
+                    {{-- Bulk Actions --}}
+                    <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-sent-to-warehouse') }}">
+                        <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
+                            Delete Selected (<span id="selected-count">0</span>)
+                        </button>
+                        <button id="bulk-sent" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                            Sent to Warehouse
+                        </button>
+                    </div>
+
                     {{-- Search --}}
                     <form action="{{ route('sales.request-order.index') }}" method="GET" class="block pl-2">
                         <label for="topbar-search" class="sr-only">Search</label>
@@ -35,6 +45,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        <th scope="col" class="px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">No. Request</th>
                         <th scope="col" class="px-4 py-3">No. Penawaran</th>
                         <th scope="col" class="px-4 py-3">No. Sales Order</th>
@@ -74,6 +85,7 @@
                             };
                         @endphp
                         <tr class="max-h-16 dark:border-gray-700">
+                            <td class="px-4 py-3">{{ $ro->id }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
                             <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
@@ -269,4 +281,5 @@
             </div>
         </nav>
     </div>
+    @vite(['resources/js/request-order.js'])
 </x-app-layout>

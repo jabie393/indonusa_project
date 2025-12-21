@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\DeliveryOrdersController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
@@ -66,11 +67,11 @@ Route::post('/confirm-login/cancel', [ConfirmLoginController::class, 'cancel'])-
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::get('/session/check', function () {
-    if (!auth()->check()) {
+    if (!Auth::check()) {
         return ['valid' => false];
     }
 
-    $session = \App\Models\UserSession::where('user_id', auth()->id())->first();
+    $session = \App\Models\UserSession::where('user_id', Auth::id())->first();
 
     return [
         'valid' => $session && $session->session_id === session()->getId()
@@ -114,6 +115,8 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
 
 // Warehouse
 route::middleware(['auth', 'role:Warehouse'])->group(function () {
+    Route::post('/supply-orders/bulk/approve', [SupplyOrdersController::class, 'bulkApprove'])->name('supply-orders.bulk-approve');
+    Route::post('/supply-orders/bulk/reject', [SupplyOrdersController::class, 'bulkReject'])->name('supply-orders.bulk-reject');
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
@@ -169,12 +172,15 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/request-order/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.request-order.edit');
     Route::put('/request-order/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.request-order.update');
     Route::post('/request-order/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.request-order.status');
+    Route::post('/request-order/bulk/delete', [RequestOrderController::class, 'bulkDelete'])->name('sales.request-order.bulk-delete');
+    Route::post('/request-order/bulk/sent-to-warehouse', [RequestOrderController::class, 'bulkSentToWarehouse'])->name('sales.request-order.bulk-sent-to-warehouse');
     Route::post('/request-order/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.request-order.sent-to-warehouse');
 
     // Custom Penawaran Routes (Child of Request Order)
     Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');
     Route::get('/custom-penawaran/create', [CustomPenawaranController::class, 'create'])->name('sales.custom-penawaran.create');
     Route::post('/custom-penawaran', [CustomPenawaranController::class, 'store'])->name('sales.custom-penawaran.store');
+    Route::post('/custom-penawaran/bulk/delete', [CustomPenawaranController::class, 'bulkDelete'])->name('sales.custom-penawaran.bulk-delete');
     Route::get('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('sales.custom-penawaran.show');
     Route::get('/custom-penawaran/{customPenawaran}/edit', [CustomPenawaranController::class, 'edit'])->name('sales.custom-penawaran.edit');
     Route::put('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'update'])->name('sales.custom-penawaran.update');

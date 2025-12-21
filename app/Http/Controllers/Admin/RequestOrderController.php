@@ -567,21 +567,92 @@ class RequestOrderController extends Controller
             return back()->withErrors('Request Order ini sudah dikirim ke Warehouse.');
         }
 
+        try {
+            $this->processSentToWarehouse($requestOrder);
+            return redirect()->route('sales.request-order.index')
+                ->with('success', "Request Order berhasil dikirim ke Warehouse.")->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
+        } catch (\Throwable $e) {
+            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage())->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
+        }
+    }
+
+    /**
+     * Bulk Delete Request Orders
+     */
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
         DB::beginTransaction();
         try {
+            $requestOrders = RequestOrder::whereIn('id', $ids)
+                ->where('sales_id', Auth::id())
+                ->get();
+
+            foreach ($requestOrders as $ro) {
+                $ro->items()->delete();
+                $ro->delete();
+            }
+
+            DB::commit();
+            return response()->json(['success' => true]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Bulk Sent to Warehouse
+     */
+    public function bulkSentToWarehouse(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        $successCount = 0;
+        foreach ($ids as $id) {
+            try {
+                $ro = RequestOrder::where('id', $id)
+                    ->where('sales_id', Auth::id())
+                    ->first();
+
+                if ($ro && in_array($ro->status, ['open', 'approved']) && !$ro->order) {
+                    $this->processSentToWarehouse($ro);
+                    $successCount++;
+                }
+            } catch (\Throwable $e) {
+                // Skip failed ones in bulk
+            }
+        }
+
+        return response()->json([
+            'success' => $successCount > 0,
+            'count' => $successCount
+        ]);
+    }
+
+    protected function processSentToWarehouse(RequestOrder $ro)
+    {
+        DB::transaction(function () use ($ro) {
             $order = Order::create([
                 'order_number' => 'DO-' . strtoupper(Str::random(8)),
                 'sales_id' => Auth::id(),
-                'supervisor_id' => $requestOrder->approved_by, // assuming approved_by is supervisor
-                'request_order_id' => $requestOrder->id,
+                'supervisor_id' => $ro->approved_by,
+                'request_order_id' => $ro->id,
                 'status' => 'sent_to_warehouse',
-                'customer_name' => $requestOrder->customer_name,
-                'customer_id' => $requestOrder->customer_id,
-                'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                'catatan_customer' => $requestOrder->catatan_customer,
+                'customer_name' => $ro->customer_name,
+                'customer_id' => $ro->customer_id,
+                'tanggal_kebutuhan' => $ro->tanggal_kebutuhan,
+                'catatan_customer' => $ro->catatan_customer,
             ]);
 
-            foreach ($requestOrder->items as $reqItem) {
+            foreach ($ro->items as $reqItem) {
                 OrderItem::create([
                     'order_id' => $order->id,
                     'barang_id' => $reqItem->barang_id,
@@ -591,17 +662,7 @@ class RequestOrderController extends Controller
                 ]);
             }
 
-            // Update Request Order status to sent_to_warehouse or keep approved
-            $requestOrder->update(['status' => 'sent_to_warehouse']);
-
-            DB::commit();
-
-            return redirect()->route('sales.request-order.index')
-                ->with('success', "Order {$order->order_number} berhasil dikirim ke Warehouse.")->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
-
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage())->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
-        }
+            $ro->update(['status' => 'sent_to_warehouse']);
+        });
     }
 }

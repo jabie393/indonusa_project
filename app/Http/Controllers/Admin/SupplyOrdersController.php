@@ -32,6 +32,56 @@ class SupplyOrdersController extends Controller
     // Approve barang
     public function approve($id)
     {
+        $this->processApproval($id);
+        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diapprove.']);
+    }
+
+    // Reject barang dengan alasan (catatan)
+    public function reject($id)
+    {
+        $barang = Barang::findOrFail($id);
+        $barang->catatan = request('catatan');
+        $barang->status_barang = 'ditolak';
+        $barang->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    // Bulk Approve
+    public function bulkApprove(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        foreach ($ids as $id) {
+            $this->processApproval($id);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    // Bulk Reject
+    public function bulkReject(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $catatan = $request->input('catatan');
+
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        Barang::whereIn('id', $ids)->update([
+            'status_barang' => 'ditolak',
+            'catatan' => $catatan
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    protected function processApproval($id)
+    {
         $barang = Barang::findOrFail($id);
 
         if ($barang->tipe_request == 'primary') {
@@ -51,23 +101,10 @@ class SupplyOrdersController extends Controller
             $barang->status_barang = 'masuk';
             $barang->save();
 
-            // Hapus record new_stock tanpa memicu event model (agar tidak tercatat history delete)
+            // Hapus record new_stock tanpa memicu event model
             Barang::withoutEvents(function () use ($barang) {
                 $barang->delete();
             });
         }
-
-        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diapprove.']);
-    }
-
-    // Reject barang dengan alasan (catatan)
-    public function reject($id)
-    {
-        $barang = Barang::findOrFail($id);
-        $barang->catatan = request('catatan');
-        $barang->status_barang = 'ditolak';
-        $barang->save();
-
-        return response()->json(['success' => true]);
     }
 }
