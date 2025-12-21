@@ -222,8 +222,14 @@ class RequestOrderController extends Controller
 
                 DB::commit();
 
-                return redirect()->route('sales.request-order.show', $requestOrder->id)
-                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.")->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
+                // If the request order is for the current user, redirect to show; otherwise, redirect to index
+                if ($requestOrder->sales_id == Auth::id()) {
+                    return redirect()->route('sales.request-order.show', $requestOrder->id)
+                        ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
+                } else {
+                    return redirect()->route('sales.request-order.index')
+                        ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat untuk sales lain.");
+                }
             }
 
         } catch (\Throwable $e) {
