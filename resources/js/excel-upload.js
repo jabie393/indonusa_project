@@ -174,15 +174,18 @@ document.addEventListener("DOMContentLoaded", function () {
             "HARGA",
         ];
 
+        // Columns that are allowed but will be ignored during import
+        const ignored = ["LIST KATEGORI"];
+
         const upperHeaders = headers.map((h) => String(h).trim().toUpperCase());
 
         // 1. Check Missing
         const missing = required.filter((req) => !upperHeaders.includes(req));
 
         // 2. Check Extra (Unknown columns)
-        // Any header in upperHeaders that is NOT in required list is an extra
+        // Any header in upperHeaders that is NOT in required list AND NOT in ignored list is an extra
         const extra = upperHeaders.filter(
-            (h) => h !== "" && !required.includes(h)
+            (h) => h !== "" && !required.includes(h) && !ignored.includes(h)
         );
 
         return {
@@ -209,9 +212,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // helper: remove completely empty rows and trim each row to headers length
-    function cleanRows(rows, headers) {
+    // Also validates that rows have essential product data (nama_barang)
+    function cleanRows(rows, headers, mapping) {
         if (!Array.isArray(rows)) return [];
         const hlen = Array.isArray(headers) ? headers.length : null;
+
         return rows
             .map((r) => (Array.isArray(r) ? r : []))
             .map((r) => (hlen ? r.slice(0, hlen) : r))
@@ -220,7 +225,31 @@ document.addEventListener("DOMContentLoaded", function () {
                     c === null || c === undefined ? "" : String(c).trim()
                 )
             )
-            .filter((r) => r.some((c) => c !== "")); // keep rows that have at least one non-empty cell
+            .filter((r) => {
+                // Check if row has at least one non-empty cell
+                if (!r.some((c) => c !== "")) return false;
+
+                // If mapping is provided, validate that essential fields have data
+                if (mapping && typeof mapping === "object") {
+                    // Check if nama_barang column has data (essential field)
+                    const namaBarangIdx = mapping["nama_barang"];
+                    if (
+                        namaBarangIdx !== null &&
+                        namaBarangIdx !== undefined &&
+                        namaBarangIdx !== ""
+                    ) {
+                        const namaBarangValue = r[namaBarangIdx];
+                        // Only include row if nama_barang has actual data
+                        return (
+                            namaBarangValue &&
+                            String(namaBarangValue).trim() !== ""
+                        );
+                    }
+                }
+
+                // Fallback: keep rows that have at least one non-empty cell
+                return true;
+            });
     }
 
     // render DataTableExcel from rows (rows are array-of-arrays, headers not included)
@@ -666,13 +695,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
                         // no preview UI: keep import path, auto-map and populate main table
+                        // Create mapping first so we can use it to validate rows
+                        const mapping = autoMapHeaders(resp.headers || []);
                         const cleanedRows = cleanRows(
                             resp.rows || [],
-                            resp.headers || []
+                            resp.headers || [],
+                            mapping
                         );
                         if (importFilePathInput)
                             importFilePathInput.value = resp.path || "";
-                        const mapping = autoMapHeaders(resp.headers || []);
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
                         renderDataTableFromPreviewAll(
                             cleanedRows,
