@@ -252,6 +252,58 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    // Fungsi untuk mendeteksi NAMA BARANG yang sama dengan KATEGORI berbeda
+    function validateDuplicateNames(rows, mapping) {
+        const duplicateIndices = new Set();
+        const nameKategoriMap = new Map(); // Map: nama_barang -> Set of {kategori, rowIndices[]}
+
+        // Iterasi semua baris untuk mengumpulkan data
+        rows.forEach((r, idx) => {
+            const namaIdx = mapping["nama_barang"];
+            const kategoriIdx = mapping["kategori"];
+
+            if (namaIdx === null || namaIdx === undefined || namaIdx === "")
+                return;
+            if (
+                kategoriIdx === null ||
+                kategoriIdx === undefined ||
+                kategoriIdx === ""
+            )
+                return;
+
+            const nama = String(r[namaIdx] || "")
+                .trim()
+                .toUpperCase();
+            const kategori = String(r[kategoriIdx] || "")
+                .trim()
+                .toUpperCase();
+
+            if (!nama) return; // Skip jika nama kosong
+
+            if (!nameKategoriMap.has(nama)) {
+                nameKategoriMap.set(nama, new Map());
+            }
+
+            const kategoriMap = nameKategoriMap.get(nama);
+            if (!kategoriMap.has(kategori)) {
+                kategoriMap.set(kategori, []);
+            }
+            kategoriMap.get(kategori).push(idx);
+        });
+
+        // Cek konflik: nama yang sama dengan kategori berbeda
+        nameKategoriMap.forEach((kategoriMap, nama) => {
+            if (kategoriMap.size > 1) {
+                // Ada lebih dari 1 kategori untuk nama yang sama = KONFLIK!
+                kategoriMap.forEach((indices) => {
+                    indices.forEach((idx) => duplicateIndices.add(idx));
+                });
+            }
+        });
+
+        return Array.from(duplicateIndices);
+    }
+
     // render DataTableExcel from rows (rows are array-of-arrays, headers not included)
     function renderDataTableFromPreviewAll(rows, mapping, headers) {
         const tableEl = document.getElementById("DataTableExcel");
@@ -554,6 +606,65 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add all rows using the requested API and add the 'new' class
         dt.rows.add(newRows).draw().nodes().to$().addClass("new");
 
+        // Validasi duplikat nama barang dengan kategori berbeda
+        const duplicateIndices = validateDuplicateNames(rows, mapping);
+
+        if (duplicateIndices.length > 0) {
+            // Terapkan styling merah pada baris yang konflik
+            duplicateIndices.forEach((idx) => {
+                const row = newRows[idx];
+                if (!row) return;
+
+                // Tambahkan class warning pada row
+                row.classList.add("duplicate-name-warning");
+                row.setAttribute("data-has-duplicate", "true");
+
+                // Style untuk NAMA BARANG (kolom 1)
+                const tdNama = row.children[1];
+                if (tdNama) {
+                    const inp = tdNama.querySelector("input");
+                    if (inp) {
+                        inp.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        inp.title =
+                            "Nama barang ini memiliki kategori berbeda di baris lain!";
+                    }
+                }
+
+                // Style untuk KATEGORI (kolom 2)
+                const tdKategori = row.children[2];
+                if (tdKategori) {
+                    const sel = tdKategori.querySelector("select");
+                    if (sel) {
+                        sel.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        sel.title =
+                            "Nama barang ini memiliki kategori berbeda di baris lain!";
+                    }
+                }
+            });
+
+            // Tampilkan peringatan
+            if (window.Swal) {
+                window.Swal.fire({
+                    icon: "warning",
+                    title: "Duplikat Nama Barang Terdeteksi",
+                    html: `Ditemukan <b>${duplicateIndices.length} baris</b> dengan nama barang yang sama tapi kategori berbeda.<br><br>Field yang konflik ditandai dengan <span class="text-red-500">warna merah</span>.<br><br>Silakan ubah salah satu sebelum submit.`,
+                    confirmButtonText: "Mengerti",
+                });
+            }
+        }
+
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
             window.Swal.fire({
@@ -819,6 +930,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 return;
             }
+
+            // Cek apakah masih ada duplikat nama barang
+            const tableEl = document.getElementById("DataTableExcel");
+            if (tableEl) {
+                const duplicateRows = tableEl.querySelectorAll(
+                    'tr[data-has-duplicate="true"]'
+                );
+                if (duplicateRows.length > 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Tidak Bisa Submit",
+                        html: `Masih ada <b>${duplicateRows.length} baris</b> dengan nama barang yang sama tapi kategori berbeda.<br><br>Field yang konflik ditandai dengan <span class="text-red-500">warna merah</span>.<br><br>Silakan ubah salah satu sebelum submit.`,
+                        confirmButtonText: "Mengerti",
+                    });
+                    return;
+                }
+            }
+
             // allow submit to proceed
         });
     }
@@ -1074,6 +1204,136 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch (err) {
                     /* ignore */
                 }
+            }
+        });
+    })();
+
+    // Re-validasi duplikat nama ketika NAMA BARANG atau KATEGORI berubah
+    (function attachDuplicateNameValidator() {
+        const table = document.getElementById("DataTableExcel");
+        if (!table) return;
+
+        table.addEventListener("change", function (e) {
+            const inp = e.target.closest("input, select");
+            if (!inp) return;
+
+            const td = inp.closest("td");
+            const tr = inp.closest("tr");
+            if (!tr || !td) return;
+
+            const colIndex = Array.prototype.indexOf.call(tr.children, td);
+
+            // Hanya proses jika kolom NAMA BARANG (1) atau KATEGORI (2)
+            if (colIndex !== 1 && colIndex !== 2) return;
+
+            // Kumpulkan semua data dari tabel untuk re-validasi
+            const tbody = table.querySelector("tbody");
+            if (!tbody) return;
+
+            const allRows = Array.from(tbody.querySelectorAll("tr"));
+            const rowsData = [];
+            const mapping = {
+                nama_barang: 1, // kolom index untuk nama barang
+                kategori: 2, // kolom index untuk kategori
+            };
+
+            allRows.forEach((row) => {
+                const namaInput = row.children[1]?.querySelector("input");
+                const kategoriSelect = row.children[2]?.querySelector("select");
+
+                if (namaInput && kategoriSelect) {
+                    // Buat array data seperti format rows asli
+                    const rowData = [];
+                    rowData[1] = namaInput.value || "";
+                    rowData[2] = kategoriSelect.value || "";
+                    rowsData.push(rowData);
+                }
+            });
+
+            // Validasi ulang semua baris
+            const duplicateIndices = validateDuplicateNames(rowsData, mapping);
+
+            // Reset semua styling duplikat terlebih dahulu
+            allRows.forEach((row) => {
+                row.classList.remove("duplicate-name-warning");
+                row.removeAttribute("data-has-duplicate");
+
+                // Reset NAMA BARANG
+                const tdNama = row.children[1];
+                if (tdNama) {
+                    const inp = tdNama.querySelector("input");
+                    if (inp) {
+                        inp.classList.remove(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        inp.title = "";
+                    }
+                }
+
+                // Reset KATEGORI
+                const tdKategori = row.children[2];
+                if (tdKategori) {
+                    const sel = tdKategori.querySelector("select");
+                    if (sel) {
+                        sel.classList.remove(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        sel.title = "";
+                    }
+                }
+            });
+
+            // Terapkan styling merah pada baris yang masih konflik
+            if (duplicateIndices.length > 0) {
+                duplicateIndices.forEach((idx) => {
+                    const row = allRows[idx];
+                    if (!row) return;
+
+                    row.classList.add("duplicate-name-warning");
+                    row.setAttribute("data-has-duplicate", "true");
+
+                    // Style NAMA BARANG
+                    const tdNama = row.children[1];
+                    if (tdNama) {
+                        const inp = tdNama.querySelector("input");
+                        if (inp) {
+                            inp.classList.add(
+                                "border-red-500",
+                                "focus:border-red-500",
+                                "focus:ring-red-500",
+                                "bg-red-50",
+                                "dark:bg-red-900/20"
+                            );
+                            inp.title =
+                                "Nama barang ini memiliki kategori berbeda di baris lain!";
+                        }
+                    }
+
+                    // Style KATEGORI
+                    const tdKategori = row.children[2];
+                    if (tdKategori) {
+                        const sel = tdKategori.querySelector("select");
+                        if (sel) {
+                            sel.classList.add(
+                                "border-red-500",
+                                "focus:border-red-500",
+                                "focus:ring-red-500",
+                                "bg-red-50",
+                                "dark:bg-red-900/20"
+                            );
+                            sel.title =
+                                "Nama barang ini memiliki kategori berbeda di baris lain!";
+                        }
+                    }
+                });
             }
         });
     })();
