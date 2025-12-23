@@ -17,6 +17,14 @@ document.addEventListener("DOMContentLoaded", function () {
     let uploadCompleted = false;
     const submitButton = form.querySelector(".submit-btn");
 
+    // Simpan template row di awal sebelum DataTable diinisialisasi
+    const tableEl = document.getElementById("DataTableExcel");
+    const tbody = tableEl ? tableEl.querySelector("tbody") : null;
+    const savedTemplateRow =
+        tbody && tbody.querySelector("tr")
+            ? tbody.querySelector("tr").cloneNode(true)
+            : null;
+
     // helper: auto-map headers to fields using keywords
     function autoMapHeaders(headers) {
         const lower = headers.map((h) => (h || "").toString().toLowerCase());
@@ -31,13 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return null;
         };
 
-        // map["kode_barang"] = pick([
-        //     "kode",
-        //     "sku",
-        //     "code",
-        //     "id barang",
-        //     "kode barang",
-        // ]);
         // FORCE NULL so it is always generated
         map["kode_barang"] = null;
         map["nama_barang"] =
@@ -227,25 +228,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableEl = document.getElementById("DataTableExcel");
         if (!tableEl) return;
 
-        // Get DataTable instance safely (handle both DT 1.x and 2.x)
+        // Get atau inisialisasi DataTable instance dengan aman
         let dt;
-        try {
-            dt = new DataTable("#DataTableExcel");
-        } catch (e) {
-            console.warn("DataTable re-init attempt managed:", e);
-            return; // Exit if initialization fails to avoid blocking
+        if ($.fn.DataTable.isDataTable("#DataTableExcel")) {
+            // Jika sudah ada instance, ambil instance yang ada
+            dt = $("#DataTableExcel").DataTable();
+        } else {
+            // Jika belum ada, inisialisasi baru
+            dt = $("#DataTableExcel").DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+            });
         }
 
         const tbody = tableEl.querySelector("tbody");
         if (!tbody) return;
 
-        const templateRow = tbody.querySelector("tr");
-
-        // if no template row, build one minimal for 10 columns
+        // Gunakan template row yang sudah disimpan di awal
         let baseRow;
-        if (templateRow) {
-            baseRow = templateRow.cloneNode(true);
+        if (savedTemplateRow) {
+            baseRow = savedTemplateRow.cloneNode(true);
         } else {
+            // Fallback: jika tidak ada template tersimpan, buat manual
             baseRow = document.createElement("tr");
             for (let i = 0; i < 10; i++) {
                 const td = document.createElement("td");
@@ -518,12 +523,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return newRow;
         });
         // Add all rows using the requested API and add the 'new' class
-        dt.rows
-            .add(newRows)
-            .draw()
-            .nodes()
-            .to$()
-            .addClass("new");
+        dt.rows.add(newRows).draw().nodes().to$().addClass("new");
 
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
@@ -789,6 +789,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
             // allow submit to proceed
+        });
+    }
+
+    // Event listener untuk tombol "Ganti File" - reset file input agar bisa upload file dengan nama sama
+    const gantiFileLabel = document.querySelector(
+        '#upload-result label[for="excel"]'
+    );
+    if (gantiFileLabel) {
+        gantiFileLabel.addEventListener("click", function () {
+            // Reset file input value agar event change ter-trigger meskipun nama file sama
+            if (fileInput) {
+                fileInput.value = "";
+            }
         });
     }
 
