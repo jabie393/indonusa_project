@@ -130,17 +130,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!sing) sing = "UNK";
         }
 
-        // Base logic: SING-TIMESTAMP
+        // Base logic: SING-RANDOM7DIGIT
         // Using increment strategy for collisions as requested (no suffix)
 
-        // Initial seed from time
-        let seed = parseInt(Date.now().toString().slice(-5), 10);
+        // Initial seed from random 7-digit number
+        let seed = Math.floor(Math.random() * 10000000);
         let candidate = ``;
 
         let attempt = 0;
         // Try creating a code. If taken, increment seed and try again.
         while (attempt < 2000) {
-            candidate = `${sing}-${seed.toString().padStart(5, "0")}`;
+            candidate = `${sing}-${seed.toString().padStart(7, "0")}`;
 
             if (!existingCodesSet.has(candidate)) {
                 // Found a free slot
@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Collision -> Increment seed
             seed++;
-            if (seed > 99999) seed = 0; // Wrap around
+            if (seed > 9999999) seed = 0; // Wrap around
             attempt++;
         }
 
@@ -374,7 +374,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     inp.type = "text";
                     tdKode.appendChild(inp);
                 }
-                inp.readOnly = true;
+                inp.readOnly = false;
                 const kodeVal =
                     getVal("kode_barang") ||
                     generateKodeFromCategory(

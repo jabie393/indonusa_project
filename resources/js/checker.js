@@ -1,5 +1,4 @@
-document.addEventListener('input', function (e) {
-
+document.addEventListener("input", function (e) {
     // Helper to check invalid email format
     function isInvalidEmail(email) {
         const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -7,49 +6,51 @@ document.addEventListener('input', function (e) {
     }
 
     // Checker for new sales account email
-    if (e.target && e.target.id === 'createEmail') {
+    if (e.target && e.target.id === "createEmail") {
         const email = e.target.value;
-        const submitBtn = document.querySelector('#createUserModal button[type="submit"]');
+        const submitBtn = document.querySelector(
+            '#createUserModal button[type="submit"]'
+        );
         if (email.length === 0) {
-            document.getElementById('email-warning')?.remove();
-            document.getElementById('email-invalid-warning')?.remove();
+            document.getElementById("email-warning")?.remove();
+            document.getElementById("email-invalid-warning")?.remove();
             submitBtn.disabled = false;
             return;
         }
 
         // Check invalid email format
         if (isInvalidEmail(email)) {
-            let invalidWarn = document.getElementById('email-invalid-warning');
+            let invalidWarn = document.getElementById("email-invalid-warning");
             if (!invalidWarn) {
-                invalidWarn = document.createElement('div');
-                invalidWarn.id = 'email-invalid-warning';
-                invalidWarn.className = 'text-red-600 text-sm mt-1';
+                invalidWarn = document.createElement("div");
+                invalidWarn.id = "email-invalid-warning";
+                invalidWarn.className = "text-red-600 text-sm mt-1";
                 invalidWarn.innerText = "Format email tidak valid.";
                 e.target.parentNode.appendChild(invalidWarn);
             }
             submitBtn.disabled = true;
             return; // skip uniqueness check
         } else {
-            document.getElementById('email-invalid-warning')?.remove();
+            document.getElementById("email-invalid-warning")?.remove();
         }
 
         fetch(window.CHECK_EMAIL_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": window.CSRF_TOKEN
+                "X-CSRF-TOKEN": window.CSRF_TOKEN,
             },
-            body: JSON.stringify({ email: email })
+            body: JSON.stringify({ email: email }),
         })
-            .then(res => res.json())
-            .then(data => {
-                let warning = document.getElementById('email-warning');
+            .then((res) => res.json())
+            .then((data) => {
+                let warning = document.getElementById("email-warning");
                 if (data.exists) {
                     if (!warning) {
-                        warning = document.createElement('div');
-                        warning.id = 'email-warning';
-                        warning.className = 'text-red-600 text-sm mt-1';
-                        warning.innerText = 'Email sudah terdaftar!';
+                        warning = document.createElement("div");
+                        warning.id = "email-warning";
+                        warning.className = "text-red-600 text-sm mt-1";
+                        warning.innerText = "Email sudah terdaftar!";
                         e.target.parentNode.appendChild(warning);
                     }
                     submitBtn.disabled = true;
@@ -61,50 +62,54 @@ document.addEventListener('input', function (e) {
     }
 
     // Checker for editing sales account email
-    if (e.target && e.target.id === 'editEmail') {
+    if (e.target && e.target.id === "editEmail") {
         const email = e.target.value;
-        const id = document.getElementById('editUserId').value;
-        const submitBtn = document.querySelector('#editUserModal button[type="submit"]');
+        const id = document.getElementById("editUserId").value;
+        const submitBtn = document.querySelector(
+            '#editUserModal button[type="submit"]'
+        );
         if (email.length === 0) {
-            document.getElementById('edit-email-warning')?.remove();
-            document.getElementById('edit-email-invalid-warning')?.remove();
+            document.getElementById("edit-email-warning")?.remove();
+            document.getElementById("edit-email-invalid-warning")?.remove();
             submitBtn.disabled = false;
             return;
         }
 
         // Check invalid email format
         if (isInvalidEmail(email)) {
-            let invalidWarn = document.getElementById('edit-email-invalid-warning');
+            let invalidWarn = document.getElementById(
+                "edit-email-invalid-warning"
+            );
             if (!invalidWarn) {
-                invalidWarn = document.createElement('div');
-                invalidWarn.id = 'edit-email-invalid-warning';
-                invalidWarn.className = 'text-red-600 text-sm mt-1';
+                invalidWarn = document.createElement("div");
+                invalidWarn.id = "edit-email-invalid-warning";
+                invalidWarn.className = "text-red-600 text-sm mt-1";
                 invalidWarn.innerText = "Format email tidak valid.";
                 e.target.parentNode.appendChild(invalidWarn);
             }
             submitBtn.disabled = true;
             return; // skip uniqueness check
         } else {
-            document.getElementById('edit-email-invalid-warning')?.remove();
+            document.getElementById("edit-email-invalid-warning")?.remove();
         }
 
         fetch(window.CHECK_EMAIL_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRF-TOKEN": window.CSRF_TOKEN
+                "X-CSRF-TOKEN": window.CSRF_TOKEN,
             },
-            body: JSON.stringify({ email: email, id: id })
+            body: JSON.stringify({ email: email, id: id }),
         })
-            .then(res => res.json())
-            .then(data => {
-                let warning = document.getElementById('edit-email-warning');
+            .then((res) => res.json())
+            .then((data) => {
+                let warning = document.getElementById("edit-email-warning");
                 if (data.exists) {
                     if (!warning) {
-                        warning = document.createElement('div');
-                        warning.id = 'edit-email-warning';
-                        warning.className = 'text-red-600 text-sm mt-1';
-                        warning.innerText = 'Email sudah terdaftar!';
+                        warning = document.createElement("div");
+                        warning.id = "edit-email-warning";
+                        warning.className = "text-red-600 text-sm mt-1";
+                        warning.innerText = "Email sudah terdaftar!";
                         e.target.parentNode.appendChild(warning);
                     }
                     submitBtn.disabled = true;
@@ -116,17 +121,19 @@ document.addEventListener('input', function (e) {
     }
 
     // Real-time password validation for create form
-    if (e.target && e.target.id === 'createPassword') {
+    if (e.target && e.target.id === "createPassword") {
         const password = e.target.value;
-        const submitBtn = document.querySelector('#createUserModal button[type="submit"]');
-        let warning = document.getElementById('password-warning');
+        const submitBtn = document.querySelector(
+            '#createUserModal button[type="submit"]'
+        );
+        let warning = document.getElementById("password-warning");
 
         if (password.length < 6) {
             if (!warning) {
-                warning = document.createElement('div');
-                warning.id = 'password-warning';
-                warning.className = 'text-red-600 text-sm mt-1';
-                warning.innerText = 'Password harus minimal 6 karakter.';
+                warning = document.createElement("div");
+                warning.id = "password-warning";
+                warning.className = "text-red-600 text-sm mt-1";
+                warning.innerText = "Password harus minimal 6 karakter.";
                 e.target.parentNode.appendChild(warning);
             }
             submitBtn.disabled = true;
@@ -137,17 +144,19 @@ document.addEventListener('input', function (e) {
     }
 
     // Real-time password validation for edit form
-    if (e.target && e.target.id === 'editPassword') {
+    if (e.target && e.target.id === "editPassword") {
         const password = e.target.value;
-        const submitBtn = document.querySelector('#editUserModal button[type="submit"]');
-        let warning = document.getElementById('edit-password-warning');
+        const submitBtn = document.querySelector(
+            '#editUserModal button[type="submit"]'
+        );
+        let warning = document.getElementById("edit-password-warning");
 
         if (password.length > 0 && password.length < 6) {
             if (!warning) {
-                warning = document.createElement('div');
-                warning.id = 'edit-password-warning';
-                warning.className = 'text-red-600 text-sm mt-1';
-                warning.innerText = 'Password harus minimal 6 karakter.';
+                warning = document.createElement("div");
+                warning.id = "edit-password-warning";
+                warning.className = "text-red-600 text-sm mt-1";
+                warning.innerText = "Password harus minimal 6 karakter.";
                 e.target.parentNode.appendChild(warning);
             }
             submitBtn.disabled = true;
@@ -160,42 +169,44 @@ document.addEventListener('input', function (e) {
 
 // Data kategori dan singkatan
 const kategoriSingkatan = {
-    "HANDTOOLS": "HT",
+    HANDTOOLS: "HT",
     "ADHESIVE AND SEALANT": "AS",
     "AUTOMOTIVE EQUIPMENT": "AE",
-    "CLEANING": "CLN",
-    "COMPRESSOR": "CMP",
-    "CONSTRUCTION": "CST",
+    CLEANING: "CLN",
+    COMPRESSOR: "CMP",
+    CONSTRUCTION: "CST",
     "CUTTING TOOLS": "CT",
-    "LIGHTING": "LTG",
-    "FASTENING": "FST",
-    "GENERATOR": "GEN",
+    LIGHTING: "LTG",
+    FASTENING: "FST",
+    GENERATOR: "GEN",
     "HEALTH CARE EQUIPMENT": "HCE",
-    "HOSPITALITY": "HSP",
+    HOSPITALITY: "HSP",
     "HYDRAULIC TOOLS": "HYD",
     "MARKING MACHINE": "MM",
     "MATERIAL HANDLING EQUIPMENT": "MHE",
     "MEASURING AND TESTING EQUIPMENT": "MTE",
     "METAL CUTTING MACHINERY": "MCM",
-    "PACKAGING": "PKG",
+    PACKAGING: "PKG",
     "PAINTING AND COATING": "PC",
     "PNEUMATIC TOOLS": "PN",
     "POWER TOOLS": "PT",
     "SAFETY AND PROTECTION EQUIPMENT": "SPE",
-    "SECURITY": "SEC",
+    SECURITY: "SEC",
     "SHEET METAL MACHINERY": "SMM",
     "STORAGE SYSTEM": "STS",
     "WELDING EQUIPMENT": "WLD",
     "WOODWORKING EQUIPMENT": "WWE",
-    "MISCELLANEOUS": "MSC",
+    MISCELLANEOUS: "MSC",
     "OTHER CATEGORIES": "OC",
 };
 
 // Fungsi untuk menghasilkan kode barang
 function generateKodeBarang(kategori, kodeBarangElement) {
     const singkatan = kategoriSingkatan[kategori] || "UNK"; // Default "UNK" jika kategori tidak ditemukan
-    const timestamp = Date.now().toString().slice(-5); // Ambil 5 digit terakhir dari timestamp
-    const kodeBarang = `${singkatan}-${timestamp}`;
+    const randomNumber = Math.floor(Math.random() * 10000000)
+        .toString()
+        .padStart(7, "0"); // Generate 7 digit random number
+    const kodeBarang = `${singkatan}-${randomNumber}`;
 
     if (kodeBarangElement) {
         kodeBarangElement.value = kodeBarang;
@@ -208,33 +219,68 @@ function generateKodeBarang(kategori, kodeBarangElement) {
 // Fungsi untuk validasi kode barang yang Baru
 function validateKodeBarang(kodeBarangElement) {
     const kodeBarang = kodeBarangElement.value;
-    const warningId = kodeBarangElement.id === 'kode_barang' ? 'kode-barang-warning' : 'edit-kode-barang-warning';
-    const submitButton = kodeBarangElement.id === 'kode_barang'
-        ? document.querySelector('#tambahBarang button[type="submit"]')
-        : kodeBarangElement.id === 'edit_kode_barang' && kodeBarangElement.closest('#editBarangModalPrimary')
-            ? document.querySelector('#editBarangModalPrimary button[type="submit"]')
+    const warningId =
+        kodeBarangElement.id === "kode_barang"
+            ? "kode-barang-warning"
+            : "edit-kode-barang-warning";
+
+    // Tentukan container untuk warning
+    let warningContainerId = null;
+    if (kodeBarangElement.id === "kode_barang") {
+        // Modal tambah barang
+        warningContainerId = "kode-barang-warning-container";
+    } else if (
+        kodeBarangElement.id === "edit_kode_barang" &&
+        kodeBarangElement.closest("#editBarangModalPrimary")
+    ) {
+        // Modal edit primary
+        warningContainerId = "kode-barang-warning-container";
+    }
+    // Untuk edit modal biasa, tetap null (gunakan cara lama)
+
+    const submitButton =
+        kodeBarangElement.id === "kode_barang"
+            ? document.querySelector('#tambahBarang button[type="submit"]')
+            : kodeBarangElement.id === "edit_kode_barang" &&
+              kodeBarangElement.closest("#editBarangModalPrimary")
+            ? document.querySelector(
+                  '#editBarangModalPrimary button[type="submit"]'
+              )
             : document.querySelector('#editBarangModal button[type="submit"]');
 
     // Validasi kode barang ke server
     fetch(window.CHECK_KODE_BARANG_URL, {
-        method: 'POST',
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': window.CSRF_TOKEN
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": window.CSRF_TOKEN,
         },
-        body: JSON.stringify({ kode_barang: kodeBarang })
+        body: JSON.stringify({ kode_barang: kodeBarang }),
     })
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
             let warning = document.getElementById(warningId);
 
             if (!data.valid) {
                 if (!warning) {
-                    warning = document.createElement('div');
+                    warning = document.createElement("div");
                     warning.id = warningId;
-                    warning.className = 'text-red-600 text-sm mt-1';
-                    warning.innerText = 'Kode barang sudah ada, silakan coba lagi.';
-                    kodeBarangElement.parentNode.appendChild(warning);
+                    warning.className = "text-red-600 text-sm mt-1";
+                    warning.innerText =
+                        "Kode barang sudah ada, silakan coba lagi.";
+
+                    // Append ke container khusus jika ada, jika tidak gunakan parentNode
+                    if (warningContainerId) {
+                        const container =
+                            document.getElementById(warningContainerId);
+                        if (container) {
+                            container.appendChild(warning);
+                        } else {
+                            kodeBarangElement.parentNode.appendChild(warning);
+                        }
+                    } else {
+                        kodeBarangElement.parentNode.appendChild(warning);
+                    }
                 }
                 submitButton.disabled = true;
             } else {
@@ -242,30 +288,30 @@ function validateKodeBarang(kodeBarangElement) {
                 submitButton.disabled = false;
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch((error) => console.error("Error:", error));
 }
 
 // Event listener untuk kategori
-document.addEventListener('DOMContentLoaded', function () {
-    const kategoriElement = document.getElementById('kategori');
-    const kodeBarangElement = document.getElementById('kode_barang');
+document.addEventListener("DOMContentLoaded", function () {
+    const kategoriElement = document.getElementById("kategori");
+    const kodeBarangElement = document.getElementById("kode_barang");
 
     if (kategoriElement && kodeBarangElement) {
-        kategoriElement.addEventListener('change', function () {
+        kategoriElement.addEventListener("change", function () {
             generateKodeBarang(this.value, kodeBarangElement);
             // remove any existing warning when user selects a category
-            document.getElementById('kategori-warning')?.remove();
+            document.getElementById("kategori-warning")?.remove();
         });
     }
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    const editButtons = document.querySelectorAll('.edit-barang-btn');
-    const editKategoriElement = document.getElementById('edit_kategori');
-    const editKodeBarangElement = document.getElementById('edit_kode_barang');
+document.addEventListener("DOMContentLoaded", function () {
+    const editButtons = document.querySelectorAll(".edit-barang-btn");
+    const editKategoriElement = document.getElementById("edit_kategori");
+    const editKodeBarangElement = document.getElementById("edit_kode_barang");
 
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
+    editButtons.forEach((button) => {
+        button.addEventListener("click", function () {
             // Ambil data dari tombol edit
             const id = this.dataset.id;
             const kategori = this.dataset.kategori;
@@ -280,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Buka modal edit
-            const modal = document.getElementById('editBarangModal');
+            const modal = document.getElementById("editBarangModal");
             if (modal) {
                 modal.showModal();
             }
@@ -289,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Logika untuk menangani perubahan kategori
     if (editKategoriElement && editKodeBarangElement) {
-        editKategoriElement.addEventListener('change', function () {
+        editKategoriElement.addEventListener("change", function () {
             const selectedKategori = this.value;
             const initialKategori = this.dataset.initialKategori;
             const initialKode = editKodeBarangElement.dataset.initialKode;
@@ -302,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 generateKodeBarang(selectedKategori, editKodeBarangElement);
             }
             // remove any warning shown for edit kategori when a value is selected
-            document.getElementById('edit-kategori-warning')?.remove();
+            document.getElementById("edit-kategori-warning")?.remove();
         });
     }
 });
@@ -318,14 +364,17 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
 
     if (!kategori) {
         // show inline warning instead of alert
-        const warningId = kategoriElementId === 'kategori' ? 'kategori-warning' : 'edit-kategori-warning';
+        const warningId =
+            kategoriElementId === "kategori"
+                ? "kategori-warning"
+                : "edit-kategori-warning";
         // remove previous warning if exists
         document.getElementById(warningId)?.remove();
 
-        const warn = document.createElement('div');
+        const warn = document.createElement("div");
         warn.id = warningId;
-        warn.className = 'text-red-600 text-sm mt-1';
-        warn.innerText = 'Pilih kategori terlebih dahulu!';
+        warn.className = "text-red-600 text-sm mt-1";
+        warn.innerText = "Pilih kategori terlebih dahulu!";
 
         // append next to the kategori input
         kategoriElement.parentNode.appendChild(warn);
@@ -334,7 +383,10 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
     }
 
     // Hapus warning jika ada
-    const warningId = kodeBarangElementId === 'kode_barang' ? 'kode-barang-warning' : 'edit-kode-barang-warning';
+    const warningId =
+        kodeBarangElementId === "kode_barang"
+            ? "kode-barang-warning"
+            : "edit-kode-barang-warning";
     const warning = document.getElementById(warningId);
     warning?.remove();
 
@@ -346,16 +398,24 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
 }
 
 // Event Listener untuk tombol refresh kode_barang
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
     const refreshButtons = [
-        { buttonId: 'refreshKodeBarang', kategoriId: 'kategori', kodeBarangId: 'kode_barang' },
-        { buttonId: 'editRefreshKodeBarang', kategoriId: 'edit_kategori', kodeBarangId: 'edit_kode_barang' },
+        {
+            buttonId: "refreshKodeBarang",
+            kategoriId: "kategori",
+            kodeBarangId: "kode_barang",
+        },
+        {
+            buttonId: "editRefreshKodeBarang",
+            kategoriId: "edit_kategori",
+            kodeBarangId: "edit_kode_barang",
+        },
     ];
 
     refreshButtons.forEach(({ buttonId, kategoriId, kodeBarangId }) => {
         const button = document.getElementById(buttonId);
         if (button) {
-            button.addEventListener('click', function () {
+            button.addEventListener("click", function () {
                 handleRefreshKodeBarang(kategoriId, kodeBarangId);
             });
         }
@@ -363,18 +423,18 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Validasi kode barang untuk modal #tambahBarang
-document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('input', function (e) {
-        if (e.target.id === 'kode_barang') {
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("input", function (e) {
+        if (e.target.id === "kode_barang") {
             validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
         }
     });
 });
 
 // Validasi kode barang untuk modal #editBarangModal dan #editBarangModalPrimary
-document.addEventListener('DOMContentLoaded', function () {
-    document.addEventListener('input', function (e) {
-        if (e.target.id === 'edit_kode_barang') {
+document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("input", function (e) {
+        if (e.target.id === "edit_kode_barang") {
             validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
         }
     });
