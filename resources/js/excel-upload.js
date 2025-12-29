@@ -17,6 +17,32 @@ document.addEventListener("DOMContentLoaded", function () {
     let uploadCompleted = false;
     const submitButton = form.querySelector(".submit-btn");
 
+    // Intercept form submission
+    form.addEventListener("submit", function (e) {
+        // Run validation one last time
+        const hasDuplicates = validateDuplicateCodes(true); // true = silent check, but we want to show alert
+        if (hasDuplicates) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (window.Swal) {
+                window.Swal.fire({
+                    icon: "error",
+                    title: "Terdapat Duplikat Kode Barang",
+                    text: "Terdapat kode barang yang sama (duplikat) atau sudah ada di database. Silakan perbaiki/refresh kode yang bertanda merah sebelum menyimpan.",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+            } else {
+                alert(
+                    "Terdapat kode barang duplikat. Harap perbaiki sebelum submit."
+                );
+            }
+            return false;
+        }
+        // If valid, allow submit
+    });
+
     // Simpan template row di awal sebelum DataTable diinisialisasi
     const tableEl = document.getElementById("DataTableExcel");
     const tbody = tableEl ? tableEl.querySelector("tbody") : null;
@@ -105,8 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
         "OTHER CATEGORIES": "OC",
     };
 
-    // Prepare Existing Codes Set for fast lookup
+    // Prepare Existing Codes Set for fast lookup (includes generated ones during session)
     const existingCodesSet = new Set(
+        (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
+    );
+    // Keep a pure Set of DB codes for validation (static)
+    const dbCodesSet = new Set(
         (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
     );
 
@@ -374,7 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     inp.type = "text";
                     tdKode.appendChild(inp);
                 }
-                inp.readOnly = false;
+                inp.readOnly = true;
                 const kodeVal =
                     getVal("kode_barang") ||
                     generateKodeFromCategory(
@@ -606,7 +636,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add all rows using the requested API and add the 'new' class
         dt.rows.add(newRows).draw().nodes().to$().addClass("new");
 
-        // Validasi duplikat nama barang dengan kategori berbeda
+        // Validasi duplikat nama barang dengan kategori berbeda juga tetap jalan
         const duplicateIndices = validateDuplicateNames(rows, mapping);
 
         if (duplicateIndices.length > 0) {
@@ -665,6 +695,60 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Add event listener for Refresh Kode Barang buttons
+        const refreshBtns = document.querySelectorAll(
+            ".refresh-kode-barang-btn"
+        );
+        refreshBtns.forEach((btn) => {
+            // Remove old listeners to be safe (though this is a fresh render)
+            // btn.replaceWith(btn.cloneNode(true)); // Brute force clean if needed, but dt.clear() handles dom
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const tr = btn.closest("tr");
+                if (!tr) return;
+
+                // Find inputs
+                const kodeInput = tr.querySelector(
+                    "td:nth-child(1) input[type='text']"
+                );
+                const hiddenKode = tr.querySelector(
+                    "td:nth-child(1) input[type='hidden']"
+                );
+
+                // Get necessary data for generation
+                let kategori = "";
+                // Try getting category from select or hidden
+                const catSel = tr.querySelector("td:nth-child(3) select");
+                const catHidden = tr.querySelector(
+                    "td:nth-child(3) input[type='hidden']"
+                );
+                if (catSel) kategori = catSel.value;
+                else if (catHidden) kategori = catHidden.value;
+
+                let nama = "";
+                const namaInput = tr.querySelector(
+                    "td:nth-child(2) input[type='text']"
+                );
+                if (namaInput) nama = namaInput.value;
+
+                // Generate new code
+                const newKode = generateKodeFromCategory(
+                    kategori,
+                    nama,
+                    Math.floor(Math.random() * 1000)
+                );
+
+                if (kodeInput) kodeInput.value = newKode;
+                if (hiddenKode) hiddenKode.value = newKode;
+
+                // Re-validate all codes
+                validateDuplicateCodes();
+            });
+        });
+
+        // Run validation initially
+        validateDuplicateCodes();
+
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
             window.Swal.fire({
@@ -678,6 +762,76 @@ document.addEventListener("DOMContentLoaded", function () {
                 timerProgressBar: true,
             });
         }
+    }
+
+    // Fungsi Validasi Code Duplicate (Internal & External)
+    function validateDuplicateCodes() {
+        // Ambil semua input kode barang yang ada di tabel
+        const inputs = document.querySelectorAll(
+            "#DataTableExcel tbody tr td:nth-child(1) input[type='text']"
+        );
+        if (inputs.length === 0) return false;
+
+        const codeMap = new Map(); // code -> [elements]
+        let foundDuplicate = false;
+
+        // 1. Collect codes and check Internal Duplicates
+        inputs.forEach((input) => {
+            const code = String(input.value || "")
+                .trim()
+                .toUpperCase();
+            if (!code) return;
+
+            if (!codeMap.has(code)) {
+                codeMap.set(code, []);
+            }
+            codeMap.get(code).push(input);
+        });
+
+        // 2. Validate against Internal & External
+        codeMap.forEach((duplicates, code) => {
+            const isInternalDup = duplicates.length > 1;
+            const isExternalDup = dbCodesSet.has(code);
+
+            if (isInternalDup || isExternalDup) {
+                foundDuplicate = true;
+                duplicates.forEach((inp) => {
+                    inp.classList.add(
+                        "border-red-500",
+                        "bg-red-50",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "text-red-900"
+                    );
+                    inp.classList.remove("border-gray-300", "bg-gray-50");
+
+                    if (isInternalDup && isExternalDup) {
+                        inp.title =
+                            "Kode ini duplikat dalam tabel ini DAN sudah ada di database!";
+                    } else if (isInternalDup) {
+                        inp.title =
+                            "Kode ini duplikat (ada baris lain dengan kode sama)!";
+                    } else {
+                        inp.title = "Kode ini sudah digunakan di database!";
+                    }
+                });
+            } else {
+                // Clear error styles
+                duplicates.forEach((inp) => {
+                    inp.classList.remove(
+                        "border-red-500",
+                        "bg-red-50",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "text-red-900"
+                    );
+                    inp.classList.add("border-gray-300", "bg-gray-50");
+                    inp.title = "";
+                });
+            }
+        });
+
+        return foundDuplicate;
     }
     // Handle file selection
     fileInput.addEventListener("change", function (e) {

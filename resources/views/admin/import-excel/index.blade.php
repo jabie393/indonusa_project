@@ -131,8 +131,8 @@
                                         <input type="text"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                             readonly>
-                                        <button type="button" id="refreshKodeBarang"
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                        <button type="button"
+                                            class="refresh-kode-barang-btn absolute inset-y-0 right-0 flex items-center pr-3">
                                             <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                                 viewBox="0 0 24 24" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
