@@ -72,15 +72,10 @@
                             </td>
                             <td class="px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
                             <td class="px-4 py-2">
-                                @if (($customer->pics && $customer->pics->count() > 0) || ($customer->users && $customer->users->count() > 0))
+                                @if ($customer->pics && $customer->pics->count() > 0)
                                     @foreach ($customer->pics as $pic)
                                         <div class="mb-1">
-                                            {{ $pic->name }} (PIC)
-                                        </div>
-                                    @endforeach
-                                    @foreach ($customer->users as $user)
-                                        <div class="mb-1">
-                                            {{ $user->name }} ({{ $user->pivot->pic_type }})
+                                            {{ $pic->name }} ({{ $pic->position }})
                                         </div>
                                     @endforeach
                                 @else

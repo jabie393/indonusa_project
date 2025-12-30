@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 window.Swal = Swal;
 
@@ -13,8 +13,8 @@ window.confirmDelete = function (callback) {
         cancelButtonColor: "#d33",
         confirmButtonText: "Ya, hapus!",
         customClass: {
-            popup: 'rounded-2xl!',
-        }
+            popup: "rounded-2xl!",
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             callback();
@@ -25,13 +25,6 @@ window.confirmDelete = function (callback) {
 
 // Success alert
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("SweetAlert check:", {
-        title: window.sweetTitle,
-        text: window.sweetText,
-        errorTitle: window.errorTitle,
-        errorText: window.errorText,
-    });
-
     if (window.sweetTitle || window.sweetText) {
         Swal.fire({
             title: window.sweetTitle || "Berhasil!",

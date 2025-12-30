@@ -1,11 +1,11 @@
-<!-- Edit Sales Account Modal -->
+<!-- Edit Customer Modal -->
 <dialog id="editCustomerModal" class="modal">
     <div
         class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div
             class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Edit Akun Sales </h3>
+                Edit Customer </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <button
@@ -108,14 +108,21 @@
                         <input type="email" id="editEmail" name="email" placeholder="example@example.com"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
-                    <div class="col-span-2 mb-4">
-                        <label for="editPic"
-                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
-                        <select id="editPic" name="pics[]"
-                            class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            multiple="multiple" required>
-                            <!-- Options akan diisi via JavaScript -->
-                        </select>
+                    <!-- Dynamic PIC Fields -->
+                    <div class="col-span-2">
+                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC (Minimal
+                            1)</label>
+                        <div id="edit-pic-container" class="space-y-4">
+                            <!-- Rows will be populated by JS -->
+                        </div>
+                        <button type="button" id="edit-add-pic-btn"
+                            class="mt-2 flex items-center rounded-lg border border-dashed border-blue-500 px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-gray-700">
+                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Tambah PIC Lain
+                        </button>
                     </div>
                 </div>
             </div>
@@ -129,84 +136,64 @@
     </form>
 </dialog>
 
-<!-- Edit Sales Account Modal -->
-<dialog id="editCustomerModal" class="modal">
-    <!-- ... (modal HTML tetap sama seperti sebelumnya) ... -->
-</dialog>
-
 <script>
-    // Data global
-    let salesUsersData = @json($salesUsers);
-    let picsData = @json($pics);
+    let editPicIndex = 0;
 
-    // Fungsi inisialisasi Select2
-    function initSelect2() {
-        if ($.fn.select2) {
-            $('#editPic').select2({
-                tags: true,
-                placeholder: "Ketik untuk mencari PIC atau isi manual...",
-                dropdownParent: $("#editCustomerModal"),
-                createTag: function(params) {
-                    let term = $.trim(params.term);
-                    if (term === '') return null;
-                    return {
-                        id: term,
-                        text: term + " (baru)",
-                        newTag: true
-                    };
-                },
-                templateResult: function(data) {
-                    if (data.newTag) {
-                        return $('<span>' + data.text + '</span>');
-                    }
-                    return data.text;
-                },
-                templateSelection: function(data) {
-                    if (data.newTag) {
-                        return data.id;
-                    }
-                    return data.text;
-                }
-            }).on('select2:open', function() {
-                // Pastikan dropdown berada di dalam modal
-                $('.select2-dropdown').css('z-index', '9999');
-            });
+    // Helper to add PIC row
+    function addEditPicRow(pic = null) {
+        const container = document.getElementById('edit-pic-container');
+        const index = editPicIndex++;
 
-            // Sembunyikan dropdown awal
-            $('#editPic').select2('close');
-        }
+        const row = document.createElement('div');
+        row.className =
+            'pic-row grid grid-cols-1 gap-2 rounded-lg border border-gray-200 p-3 relative dark:border-gray-600 md:grid-cols-2 bg-gray-50 dark:bg-gray-800';
+
+        // Values
+        const id = pic ? pic.id : '';
+        const name = pic ? pic.name : '';
+        const phone = pic ? pic.phone : '';
+        const email = pic ? pic.email : '';
+        const position = pic ? pic.position : '';
+
+        // Hidden ID input if existing
+        const idInput = id ? `<input type="hidden" name="pics[${index}][id]" value="${id}">` : '';
+
+        row.innerHTML = `
+            ${idInput}
+            <button type="button" class="remove-pic-btn absolute -right-2 -top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200 shadow-sm z-10">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="col-span-1">
+                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Nama PIC <span class="text-red-500">*</span></label>
+                <input type="text" name="pics[${index}][name]" value="${name}" placeholder="Nama Lengkap" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+            </div>
+            <div class="col-span-1">
+                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">No. HP <span class="text-red-500">*</span></label>
+                <input type="tel" name="pics[${index}][phone]" value="${(phone || '')}" placeholder="08xxxxxxxx" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+            </div>
+            <div class="col-span-1">
+                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email <span class="text-red-500">*</span></label>
+                <input type="email" name="pics[${index}][email]" value="${(email || '')}" placeholder="email@example.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+            </div>
+            <div class="col-span-1">
+                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Posisi/Jabatan <span class="text-red-500">*</span></label>
+                <input type="text" name="pics[${index}][position]" value="${(position || '')}" placeholder="Manager, Staff, dll" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+            </div>
+        `;
+
+        container.appendChild(row);
+
+        // Bind remove event
+        row.querySelector('.remove-pic-btn').addEventListener('click', function() {
+            row.remove();
+        });
     }
 
     // Tunggu dokumen siap
     $(document).ready(function() {
-        // Inisialisasi Select2 jika sudah tersedia
-        if ($.fn.select2) {
-            initSelect2();
-        }
-
-        // Event untuk menutup modal - reset select2
-        $('#editCustomerModal').on('close', function() {
-            if ($.fn.select2 && $('#editPic').hasClass('select2-hidden-accessible')) {
-                $('#editPic').val(null).trigger('change');
-            }
-        });
-
-        // Pastikan saat submit, nilai yang dikirim ke server tidak mengandung " (baru)"
-        $('#editCustomerForm').on('submit', function() {
-            if ($.fn.select2) {
-                const $el = $('#editPic');
-                let vals = $el.val() || [];
-                console.log('Submitting PIC values:', vals);
-                vals = vals.map(function(v) {
-                    try {
-                        return v.replace(/\s*\(baru\)$/, '');
-                    } catch (e) {
-                        return v;
-                    }
-                });
-                $el.val(vals);
-                console.log('Cleaned PIC values:', vals);
-            }
+        // Add listener for adding new PIC row in edit modal
+        $('#edit-add-pic-btn').on('click', function() {
+            addEditPicRow();
         });
     });
 
@@ -214,14 +201,15 @@
     function openEditModal(customer) {
         // Set form action
         const form = document.getElementById('editCustomerForm');
-        form.action = form.action.replace(':id', customer.id);
+        form.action = "{{ route('customer.update', ['customer' => ':id']) }}".replace(':id', customer
+            .id); // Reset base route then replace
 
         // Isi data form
         document.getElementById('editCustomerId').value = customer.id;
         document.getElementById('editName').value = customer.nama_customer || '';
         document.getElementById('editNpwp').value = customer.npwp || '';
         document.getElementById('editTipeCustomer').value = customer.tipe_customer ? customer.tipe_customer
-        .toLowerCase() : 'pribadi';
+            .toLowerCase() : 'pribadi';
         document.getElementById('editTermOfPayments').value = customer.term_of_payments || '';
         document.getElementById('editKreditLimit').value = customer.kredit_limit || '';
         document.getElementById('editAlamat').value = customer.alamat || '';
@@ -231,8 +219,10 @@
         document.getElementById('editTelepon').value = customer.telepon || '';
         document.getElementById('editEmail').value = customer.email || '';
 
-        const editPicDropdown = $('#editPic');
-        editPicDropdown.empty();
+        // Reset PIC Container
+        const container = document.getElementById('edit-pic-container');
+        container.innerHTML = '';
+        editPicIndex = 0;
 
         // Ambil PICs langsung dari tabel via AJAX
         const picsUrl = "{{ url('admin/customer') }}" + "/" + customer.id + "/pics";
@@ -247,88 +237,15 @@
                 return response.json();
             })
             .then(customerPics => {
-                console.log('Customer PICs loaded:', customerPics);
-                // Render daftar customer_pics ke div #customerPicsList
-                (function renderCustomerPicsList(picsList) {
-                    const container = document.getElementById('customerPicsList');
-                    if (!container) return;
-                    container.innerHTML = '';
-                    if (!picsList || picsList.length === 0) {
-                        container.innerHTML =
-                            '<p class="text-sm text-gray-500 dark:text-gray-300">Tidak ada PIC untuk customer ini.</p>';
-                        return;
-                    }
-                    const ul = document.createElement('ul');
-                    ul.className = 'space-y-2';
-                    picsList.forEach((p) => {
-                        const type = p.pivot ? (p.pivot.pic_type || 'Unknown') : 'Unknown';
-                        const name = p.name || '—';
-                        const position = p.position || '';
-                        const addedAt = (p.pivot && p.pivot.created_at) ? p.pivot.created_at : '';
-                        const li = document.createElement('li');
-                        li.className = 'flex items-start justify-between gap-3';
-                        li.innerHTML = `
-                        <div>
-                            <div class="font-medium text-gray-900 dark:text-white">${escapeHtml(name)}</div>
-                            <div class="text-xs text-gray-500 dark:text-gray-300">
-                                ${escapeHtml(type)}${position ? ' · ' + escapeHtml(position) : ''}
-                                ${addedAt ? ' · ditambahkan: ' + escapeHtml(addedAt) : ''}
-                            </div>
-                        </div>
-                    `;
-                        ul.appendChild(li);
+                // Populate rows
+                if (customerPics && customerPics.length > 0) {
+                    customerPics.forEach(pic => {
+                        addEditPicRow(pic);
                     });
-                    container.appendChild(ul);
-                })(customerPics);
-
-                // Sekarang build options Select2 dari salesUsersData dan picsData, dan tandai selected berdasarkan customerPics
-                const selectedValues = [];
-
-                // Sales Users
-                salesUsersData.forEach(user => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(user.id) && cp
-                        .pivot && cp.pivot.pic_type === 'User');
-                    const optionValue = JSON.stringify({
-                        id: user.id,
-                        type: 'User'
-                    });
-                    const optionText = `${user.name} (Sales)`;
-                    if (isSelected) selectedValues.push(optionValue);
-                    editPicDropdown.append(new Option(optionText, optionValue, isSelected, isSelected));
-                });
-
-                // PICs (master list from picsData)
-                picsData.forEach(pic => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(pic.id) && cp
-                        .pivot && cp.pivot.pic_type === 'Pic');
-                    const position = pic.position || 'Tanpa jabatan';
-                    const optionValue = JSON.stringify({
-                        id: pic.id,
-                        type: 'Pic'
-                    });
-                    const optionText = `${pic.name} (${position})`;
-                    if (isSelected) selectedValues.push(optionValue);
-                    editPicDropdown.append(new Option(optionText, optionValue, isSelected, isSelected));
-                });
-
-                // Init / re-init Select2 dan set selected
-                setTimeout(() => {
-                    if ($.fn.select2) {
-                        if (!editPicDropdown.hasClass('select2-hidden-accessible')) {
-                            initSelect2();
-                        } else {
-                            editPicDropdown.select2('destroy');
-                            initSelect2();
-                        }
-
-                        console.log('Setting selected values:', selectedValues);
-                        if (selectedValues.length > 0) {
-                            editPicDropdown.val(selectedValues).trigger('change');
-                        } else {
-                            editPicDropdown.val(null).trigger('change');
-                        }
-                    }
-                }, 50);
+                } else {
+                    // Jika tidak ada PIC, tambahkan 1 baris kosong (optional, tapi good UX)
+                    addEditPicRow();
+                }
 
                 // Buka modal setelah data siap
                 setTimeout(() => {
@@ -337,61 +254,11 @@
                 }, 100);
             })
             .catch(err => {
-                // fallback: buka modal tanpa data PIC
+                console.error(err);
+                // fallback: buka modal tanpa data PIC (add 1 empty row)
+                addEditPicRow();
                 const modal = document.getElementById('editCustomerModal');
                 if (modal) modal.showModal();
             });
     }
-
-    // Override fungsi openEditModal untuk tambahan debug + fallback fetch jika pics kosong
-    const originalOpenEditModal = window.openEditModal || function(c) {};
-
-    window.openEditModal = function(customer) {
-        // jika relationship pics tidak ada/ kosong, fetch detail dari server
-        if (!customer.pics || !customer.pics.length) {
-            fetch(`/admin/customer/${customer.id}/json`)
-                .then(res => {
-                    if (!res.ok) throw new Error('Failed to fetch customer');
-                    return res.json();
-                })
-                .then(fullCustomer => {
-                    originalOpenEditModal(fullCustomer);
-                })
-                .catch(err => {
-                    // fallback: buka modal dengan data yg ada (tanpa pic selected)
-                    originalOpenEditModal(customer);
-                });
-        } else {
-            originalOpenEditModal(customer);
-        }
-    };
-
-    // Fungsi escape HTML
-    $("#editPic").select2({
-        tags: true,
-        placeholder: "Ketik untuk mencari PIC atau isi manual...",
-        dropdownParent: $("#editCustomerModal"),
-        createTag: function(params) {
-            let term = $.trim(params.term);
-
-            if (term === '') {
-                return null;
-            }
-
-            return {
-                id: term,
-                text: term + " (baru)",
-                newTag: true
-            };
-        },
-        templateResult: function(data) {
-            if (data.newTag) {
-                return $('<span>' + data.text + '</span>');
-            }
-            return data.text;
-        },
-        templateSelection: function(data) {
-            return data.text || data.id;
-        }
-    });
 </script>

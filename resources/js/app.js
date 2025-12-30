@@ -16,16 +16,9 @@ const userId = document
     ?.getAttribute("content");
 
 if (userId && window.Echo) {
-    console.log("[DEBUG] Echo monitoring user:", userId);
-
     window.Echo.private(`user.${userId}`).listen(
         ".UserLoggedInElsewhere",
         (e) => {
-            console.log(
-                "[DEBUG] Event UserLoggedInElsewhere diterima di Device A:",
-                e
-            );
-
             Swal.fire({
                 title: "Ada yang login di device lain",
                 text: `Akun Anda baru saja login di perangkat lain (${
@@ -47,8 +40,6 @@ if (userId && window.Echo) {
     );
 
     window.Echo.connector.pusher.connection.bind("error", (err) => {
-        console.error("[DEBUG] Pusher connection error:", err);
+        // Handle connection error silently or log to monitoring service if needed
     });
-} else {
-    console.warn("Echo or UserID not found for session monitoring.");
 }

@@ -9,12 +9,10 @@ class Pic extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'phone', 'email', 'position'];
+    protected $fillable = ['customer_id', 'name', 'phone', 'email', 'position'];
 
-    public function customers()
+    public function customer()
     {
-        return $this->belongsToMany(Customer::class, 'customer_pics', 'pic_id', 'customer_id')
-                    ->withPivot('pic_type')
-                    ->withTimestamps();
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }

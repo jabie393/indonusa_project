@@ -10,6 +10,7 @@ class CreatePicsTable extends Migration
     {
         Schema::create('pics', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('customer_id')->nullable(); // Foreign Key ke Customers
 
             // Field PIC
             $table->string('name'); // Nama PIC
@@ -18,6 +19,8 @@ class CreatePicsTable extends Migration
             $table->string('position')->nullable(); // Jabatan (Manager, SPV, dll)
 
             $table->timestamps();
+
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

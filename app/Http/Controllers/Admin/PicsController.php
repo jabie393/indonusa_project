@@ -8,15 +8,19 @@ use App\Models\User;
 use App\Models\Pic; // Pastikan model Pic sudah ada
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Customer;
+
 class PicsController extends Controller
 {
     public function index()
     {
-        // Ambil semua data dari tabel pics
-        $pics = Pic::all();
+        // Ambil semua data dari tabel pics dengan relasi customer
+        $pics = Pic::with('customer')->get();
+        // Ambil data customer untuk dropdown
+        $customers = Customer::all();
 
         // Kirim data ke view
-        return view('admin.pics.index', compact('pics'));
+        return view('admin.pics.index', compact('pics', 'customers'));
     }
 
     public function store(Request $request)
@@ -26,6 +30,7 @@ class PicsController extends Controller
             'telepon' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'position' => 'nullable|string|max:255',
+            'customer_id' => 'nullable|exists:customers,id',
         ]);
 
         if ($validator->fails()) {
@@ -37,6 +42,7 @@ class PicsController extends Controller
             'phone' => $request->telepon,
             'email' => $request->email,
             'position' => $request->position,
+            'customer_id' => $request->customer_id,
         ]);
 
         return redirect()->route('pics.index')->with(['title' => 'Berhasil', 'text' => 'PIC berhasil ditambahkan.']);
@@ -55,6 +61,7 @@ class PicsController extends Controller
             'telepon' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'position' => 'nullable|string|max:255',
+            'customer_id' => 'nullable|exists:customers,id',
         ]);
 
         $pic->update([
@@ -62,6 +69,7 @@ class PicsController extends Controller
             'phone' => $request->telepon,
             'email' => $request->email,
             'position' => $request->position,
+            'customer_id' => $request->customer_id,
         ]);
 
         return redirect()->route('pics.index')->with(['title' => 'Berhasil', 'text' => 'PIC berhasil diperbarui.']);
