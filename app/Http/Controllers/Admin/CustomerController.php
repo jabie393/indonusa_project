@@ -32,7 +32,7 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'npwp' => 'nullable|string|max:50',
-            'term_of_payments' => 'nullable|string|max:100',
+            'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
@@ -116,7 +116,7 @@ class CustomerController extends Controller
             'id' => 'required|exists:customers,id',
             'name' => 'required|string|max:255',
             'npwp' => 'nullable|string|max:50',
-            'term_of_payments' => 'nullable|string|max:100',
+            'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',

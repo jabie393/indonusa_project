@@ -56,9 +56,12 @@
                         <label for="editTermOfPayments"
                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of
                             Payments</label>
-                        <input type="text" id="editTermOfPayments" name="term_of_payments"
-                            placeholder="Term of Payments"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="editTermOfPayments" name="term_of_payments" placeholder="30"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                min="0">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">Hari</span>
+                        </div>
                     </div>
                     <div class="col-span-2 mb-4">
                         <label for="editKreditLimit"
@@ -143,7 +146,7 @@
                 tags: true,
                 placeholder: "Ketik untuk mencari PIC atau isi manual...",
                 dropdownParent: $("#editCustomerModal"),
-                createTag: function (params) {
+                createTag: function(params) {
                     let term = $.trim(params.term);
                     if (term === '') return null;
                     return {
@@ -152,19 +155,19 @@
                         newTag: true
                     };
                 },
-                templateResult: function (data) {
+                templateResult: function(data) {
                     if (data.newTag) {
                         return $('<span>' + data.text + '</span>');
                     }
                     return data.text;
                 },
-                templateSelection: function (data) {
+                templateSelection: function(data) {
                     if (data.newTag) {
                         return data.id;
                     }
                     return data.text;
                 }
-            }).on('select2:open', function () {
+            }).on('select2:open', function() {
                 // Pastikan dropdown berada di dalam modal
                 $('.select2-dropdown').css('z-index', '9999');
             });
@@ -175,26 +178,26 @@
     }
 
     // Tunggu dokumen siap
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Inisialisasi Select2 jika sudah tersedia
         if ($.fn.select2) {
             initSelect2();
         }
 
         // Event untuk menutup modal - reset select2
-        $('#editCustomerModal').on('close', function () {
+        $('#editCustomerModal').on('close', function() {
             if ($.fn.select2 && $('#editPic').hasClass('select2-hidden-accessible')) {
                 $('#editPic').val(null).trigger('change');
             }
         });
 
         // Pastikan saat submit, nilai yang dikirim ke server tidak mengandung " (baru)"
-        $('#editCustomerForm').on('submit', function () {
+        $('#editCustomerForm').on('submit', function() {
             if ($.fn.select2) {
                 const $el = $('#editPic');
                 let vals = $el.val() || [];
                 console.log('Submitting PIC values:', vals);
-                vals = vals.map(function (v) {
+                vals = vals.map(function(v) {
                     try {
                         return v.replace(/\s*\(baru\)$/, '');
                     } catch (e) {
@@ -217,7 +220,8 @@
         document.getElementById('editCustomerId').value = customer.id;
         document.getElementById('editName').value = customer.nama_customer || '';
         document.getElementById('editNpwp').value = customer.npwp || '';
-        document.getElementById('editTipeCustomer').value = customer.tipe_customer ? customer.tipe_customer.toLowerCase() : 'pribadi';
+        document.getElementById('editTipeCustomer').value = customer.tipe_customer ? customer.tipe_customer
+        .toLowerCase() : 'pribadi';
         document.getElementById('editTermOfPayments').value = customer.term_of_payments || '';
         document.getElementById('editKreditLimit').value = customer.kredit_limit || '';
         document.getElementById('editAlamat').value = customer.alamat || '';
@@ -233,7 +237,11 @@
         // Ambil PICs langsung dari tabel via AJAX
         const picsUrl = "{{ url('admin/customer') }}" + "/" + customer.id + "/pics";
 
-        fetch(picsUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        fetch(picsUrl, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
             .then(response => {
                 if (!response.ok) throw new Error('Network response was not ok');
                 return response.json();
@@ -246,7 +254,8 @@
                     if (!container) return;
                     container.innerHTML = '';
                     if (!picsList || picsList.length === 0) {
-                        container.innerHTML = '<p class="text-sm text-gray-500 dark:text-gray-300">Tidak ada PIC untuk customer ini.</p>';
+                        container.innerHTML =
+                            '<p class="text-sm text-gray-500 dark:text-gray-300">Tidak ada PIC untuk customer ini.</p>';
                         return;
                     }
                     const ul = document.createElement('ul');
@@ -277,8 +286,12 @@
 
                 // Sales Users
                 salesUsersData.forEach(user => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(user.id) && cp.pivot && cp.pivot.pic_type === 'User');
-                    const optionValue = JSON.stringify({ id: user.id, type: 'User' });
+                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(user.id) && cp
+                        .pivot && cp.pivot.pic_type === 'User');
+                    const optionValue = JSON.stringify({
+                        id: user.id,
+                        type: 'User'
+                    });
                     const optionText = `${user.name} (Sales)`;
                     if (isSelected) selectedValues.push(optionValue);
                     editPicDropdown.append(new Option(optionText, optionValue, isSelected, isSelected));
@@ -286,9 +299,13 @@
 
                 // PICs (master list from picsData)
                 picsData.forEach(pic => {
-                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(pic.id) && cp.pivot && cp.pivot.pic_type === 'Pic');
+                    const isSelected = customerPics.some(cp => Number(cp.id) === Number(pic.id) && cp
+                        .pivot && cp.pivot.pic_type === 'Pic');
                     const position = pic.position || 'Tanpa jabatan';
-                    const optionValue = JSON.stringify({ id: pic.id, type: 'Pic' });
+                    const optionValue = JSON.stringify({
+                        id: pic.id,
+                        type: 'Pic'
+                    });
                     const optionText = `${pic.name} (${position})`;
                     if (isSelected) selectedValues.push(optionValue);
                     editPicDropdown.append(new Option(optionText, optionValue, isSelected, isSelected));
@@ -327,9 +344,9 @@
     }
 
     // Override fungsi openEditModal untuk tambahan debug + fallback fetch jika pics kosong
-    const originalOpenEditModal = window.openEditModal || function (c) { };
+    const originalOpenEditModal = window.openEditModal || function(c) {};
 
-    window.openEditModal = function (customer) {
+    window.openEditModal = function(customer) {
         // jika relationship pics tidak ada/ kosong, fetch detail dari server
         if (!customer.pics || !customer.pics.length) {
             fetch(`/admin/customer/${customer.id}/json`)
@@ -354,7 +371,7 @@
         tags: true,
         placeholder: "Ketik untuk mencari PIC atau isi manual...",
         dropdownParent: $("#editCustomerModal"),
-        createTag: function (params) {
+        createTag: function(params) {
             let term = $.trim(params.term);
 
             if (term === '') {
@@ -367,13 +384,13 @@
                 newTag: true
             };
         },
-        templateResult: function (data) {
+        templateResult: function(data) {
             if (data.newTag) {
                 return $('<span>' + data.text + '</span>');
             }
             return data.text;
         },
-        templateSelection: function (data) {
+        templateSelection: function(data) {
             return data.text || data.id;
         }
     });

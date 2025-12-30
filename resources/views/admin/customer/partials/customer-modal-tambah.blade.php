@@ -56,8 +56,12 @@
                         <label for="term_of_payments"
                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of
                             Payments</label>
-                        <input type="text" id="term_of_payments" name="term_of_payments" placeholder="Term of Payments"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="term_of_payments" name="term_of_payments" placeholder="30"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                min="0">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">Hari</span>
+                        </div>
                     </div>
                     <div class="col-span-2 mb-4">
                         <label for="kredit_limit"
@@ -110,11 +114,11 @@
                             class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             multiple="multiple" required>
                             <optgroup>
-                                @foreach($salesUsers as $user)
+                                @foreach ($salesUsers as $user)
                                     <option value="{{ json_encode(['id' => $user->id, 'type' => 'User']) }}">
                                         {{ $user->name }} (Sales)</option>
                                 @endforeach
-                                @foreach($pics as $pic)
+                                @foreach ($pics as $pic)
                                     <option value="{{ json_encode(['id' => $pic->id, 'type' => 'Pic']) }}">
                                         {{ $pic->name }} ({{ $pic->position ?: 'Tanpa jabatan' }})
                                     </option>
@@ -140,7 +144,7 @@
         tags: true,
         placeholder: "Ketik untuk mencari PIC atau isi manual...",
         dropdownParent: $("#createCustomerModal"),
-        createTag: function (params) {
+        createTag: function(params) {
             let term = $.trim(params.term);
 
             if (term === '') {
@@ -153,13 +157,13 @@
                 newTag: true
             };
         },
-        templateResult: function (data) {
+        templateResult: function(data) {
             if (data.newTag) {
                 return $('<span>' + data.text + '</span>');
             }
             return data.text;
         },
-        templateSelection: function (data) {
+        templateSelection: function(data) {
             // Menampilkan badge dengan teks yang mengandung " (baru)" untuk tag baru,
             // namun nilai yang tersimpan tetap berupa term asli (tanpa suffix).
             if (data && data.newTag) {
@@ -170,11 +174,11 @@
     });
 
     // Pastikan saat submit, nilai yang dikirim ke server tidak mengandung " (baru)"
-    $('form[action="{{ route('customer.store') }}"]').on('submit', function () {
+    $('form[action="{{ route('customer.store') }}"]').on('submit', function() {
         if ($.fn.select2) {
             const $el = $('#pic');
             let vals = $el.val() || [];
-            vals = vals.map(function (v) {
+            vals = vals.map(function(v) {
                 try {
                     return v.replace(/\s*\(baru\)$/, '');
                 } catch (e) {
@@ -185,7 +189,7 @@
         }
     });
 
-    $('#pic').on('change', function () {
+    $('#pic').on('change', function() {
         const selectedOptions = $(this).val() || [];
         const parsedOptions = selectedOptions.map(option => {
             try {

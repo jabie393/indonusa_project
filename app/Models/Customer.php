@@ -30,6 +30,7 @@ class Customer extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'term_of_payments' => 'integer',
     ];
 
     protected static function boot()

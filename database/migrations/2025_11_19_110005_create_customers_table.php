@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nama_customer');
             $table->string('npwp')->nullable();
-            $table->string('term_of_payments')->nullable();
+            $table->integer('term_of_payments')->nullable();
             $table->string('kredit_limit')->nullable();
             $table->string('email')->nullable();
             $table->string('telepon')->nullable();
