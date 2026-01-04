@@ -1,11 +1,11 @@
-<!-- Create Sales Account Modal -->
+<!-- Create Customer Modal -->
 <dialog id="createCustomerModal" class="modal">
     <div
         class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh] inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div
             class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
             <h3 class="text-lg font-semibold text-white">
-                Tambah Akun Sales </h3>
+                Tambah Customer </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -56,8 +56,12 @@
                         <label for="term_of_payments"
                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of
                             Payments</label>
-                        <input type="text" id="term_of_payments" name="term_of_payments" placeholder="Term of Payments"
-                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="term_of_payments" name="term_of_payments" placeholder="30"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                min="0">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">Hari</span>
+                        </div>
                     </div>
                     <div class="col-span-2 mb-4">
                         <label for="kredit_limit"
@@ -103,24 +107,54 @@
                         <input type="email" id="email" name="email" placeholder="example@example.com"
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     </div>
-                    <div class="col-span-2 mb-4">
-                        <label for="pic"
-                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC</label>
-                        <select id="pic" name="pics[]"
-                            class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            multiple="multiple" required>
-                            <optgroup>
-                                @foreach($salesUsers as $user)
-                                    <option value="{{ json_encode(['id' => $user->id, 'type' => 'User']) }}">
-                                        {{ $user->name }} (Sales)</option>
-                                @endforeach
-                                @foreach($pics as $pic)
-                                    <option value="{{ json_encode(['id' => $pic->id, 'type' => 'Pic']) }}">
-                                        {{ $pic->name }} ({{ $pic->position ?: 'Tanpa jabatan' }})
-                                    </option>
-                                @endforeach
-                            </optgroup>
-                        </select>
+                    <!-- Dynamic PIC Fields -->
+                    <div class="col-span-2">
+                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">PIC (Minimal
+                            1)</label>
+                        <div id="pic-container" class="space-y-4">
+                            <!-- First Row (Default & Required) -->
+                            <div
+                                class="pic-row grid grid-cols-1 gap-2 rounded-lg border border-gray-200 p-3 dark:border-gray-600 md:grid-cols-2">
+                                <div class="col-span-1">
+                                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Nama
+                                        PIC <span class="text-red-500">*</span></label>
+                                    <input type="text" name="pics[0][name]" placeholder="Nama Lengkap"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
+                                        required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">No.
+                                        HP <span class="text-red-500">*</span></label>
+                                    <input type="tel" name="pics[0][phone]" placeholder="08xxxxxxxx"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
+                                        required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="email" name="pics[0][email]" placeholder="email@example.com"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
+                                        required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label
+                                        class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Posisi/Jabatan
+                                        <span class="text-red-500">*</span></label>
+                                    <input type="text" name="pics[0][position]" placeholder="Manager, Staff, dll"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-pic-btn"
+                            class="mt-2 flex items-center rounded-lg border border-dashed border-blue-500 px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-gray-700">
+                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Tambah PIC Lain
+                        </button>
                     </div>
                 </div>
             </div>
@@ -134,65 +168,44 @@
     </form>
 </dialog>
 
-
 <script>
-    $("#pic").select2({
-        tags: true,
-        placeholder: "Ketik untuk mencari PIC atau isi manual...",
-        dropdownParent: $("#createCustomerModal"),
-        createTag: function (params) {
-            let term = $.trim(params.term);
+    document.addEventListener("DOMContentLoaded", function() {
+        let picIndex = 1;
+        const picContainer = document.getElementById('pic-container');
+        const addPicBtn = document.getElementById('add-pic-btn');
 
-            if (term === '') {
-                return null;
-            }
+        addPicBtn.addEventListener('click', function() {
+            const newRow = document.createElement('div');
+            newRow.className =
+                'pic-row grid grid-cols-1 gap-2 rounded-lg border border-gray-200 p-3 relative dark:border-gray-600 md:grid-cols-2 mt-2';
+            newRow.innerHTML = `
+                <button type="button" class="remove-pic-btn absolute -right-2 -top-2 rounded-full bg-red-100 p-1 text-red-600 hover:bg-red-200">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                <div class="col-span-1">
+                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Nama PIC <span class="text-red-500">*</span></label>
+                    <input type="text" name="pics[${picIndex}][name]" placeholder="Nama Lengkap" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                </div>
+                <div class="col-span-1">
+                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">No. HP <span class="text-red-500">*</span></label>
+                    <input type="tel" name="pics[${picIndex}][phone]" placeholder="08xxxxxxxx" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                </div>
+                <div class="col-span-1">
+                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email <span class="text-red-500">*</span></label>
+                    <input type="email" name="pics[${picIndex}][email]" placeholder="email@example.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                </div>
+                <div class="col-span-1">
+                    <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Posisi/Jabatan <span class="text-red-500">*</span></label>
+                    <input type="text" name="pics[${picIndex}][position]" placeholder="Manager, Staff, dll" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                </div>
+            `;
+            picContainer.appendChild(newRow);
+            picIndex++;
 
-            return {
-                id: term,
-                text: term + " (baru)",
-                newTag: true
-            };
-        },
-        templateResult: function (data) {
-            if (data.newTag) {
-                return $('<span>' + data.text + '</span>');
-            }
-            return data.text;
-        },
-        templateSelection: function (data) {
-            // Menampilkan badge dengan teks yang mengandung " (baru)" untuk tag baru,
-            // namun nilai yang tersimpan tetap berupa term asli (tanpa suffix).
-            if (data && data.newTag) {
-                return data.text || data.id;
-            }
-            return data && data.text ? data.text : data.id;
-        }
-    });
-
-    // Pastikan saat submit, nilai yang dikirim ke server tidak mengandung " (baru)"
-    $('form[action="{{ route('customer.store') }}"]').on('submit', function () {
-        if ($.fn.select2) {
-            const $el = $('#pic');
-            let vals = $el.val() || [];
-            vals = vals.map(function (v) {
-                try {
-                    return v.replace(/\s*\(baru\)$/, '');
-                } catch (e) {
-                    return v;
-                }
+            // Bind remove event
+            newRow.querySelector('.remove-pic-btn').addEventListener('click', function() {
+                newRow.remove();
             });
-            $el.val(vals);
-        }
-    });
-
-    $('#pic').on('change', function () {
-        const selectedOptions = $(this).val() || [];
-        const parsedOptions = selectedOptions.map(option => {
-            try {
-                return JSON.parse(option);
-            } catch (e) {
-                return option; // plain new-tag string
-            }
         });
     });
 </script>

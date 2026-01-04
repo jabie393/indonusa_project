@@ -114,8 +114,6 @@
         <span id="notification-message">Notifikasi</span>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 
     {{-- SweetAlert --}}
     @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])

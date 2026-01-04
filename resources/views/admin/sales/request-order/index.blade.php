@@ -62,7 +62,7 @@
                 <tbody>
                     @forelse($requestOrders as $ro)
                         @php
-                            $total = $ro->items->sum('subtotal');
+                            $total = $ro->grand_total ?? ($ro->subtotal + $ro->tax);
                             $statusClass = match ($ro->status) {
                                 'open', 'converted' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
                                 'pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',

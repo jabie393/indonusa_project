@@ -22,23 +22,25 @@ class RequestOrderController extends Controller
      */
     public function index()
     {
-        // First, extend any pending request orders that were created with an older 7-day expiry
-        // to be 14 days from now if they are still unexpired and were likely set with 7 days.
-        \Illuminate\Support\Facades\DB::table('request_orders')
-            ->whereIn('status', ['pending', 'open'])
-            ->whereNotNull('created_at')
-            ->whereNotNull('expired_at')
-            ->where('expired_at', '>', now())
-            ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
-            ->where('sales_id', Auth::id())
-            ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
+        if (\Illuminate\Support\Facades\Schema::hasColumn('request_orders', 'expired_at')) {
+            // First, extend any pending request orders that were created with an older 7-day expiry
+            // to be 14 days from now if they are still unexpired and were likely set with 7 days.
+            \Illuminate\Support\Facades\DB::table('request_orders')
+                ->whereIn('status', ['pending', 'open'])
+                ->whereNotNull('created_at')
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '>', now())
+                ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
+                ->where('sales_id', Auth::id())
+                ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
 
-        // Ensure any pending RequestOrders past their expiry are marked expired
-        RequestOrder::whereIn('status', ['pending', 'open'])
-            ->whereNotNull('expired_at')
-            ->where('expired_at', '<', now())
-            ->where('sales_id', Auth::id())
-            ->update(['status' => 'expired']);
+            // Ensure any pending RequestOrders past their expiry are marked expired
+            RequestOrder::whereIn('status', ['pending', 'open'])
+                ->whereNotNull('expired_at')
+                ->where('expired_at', '<', now())
+                ->where('sales_id', Auth::id())
+                ->update(['status' => 'expired']);
+        }
 
         $query = RequestOrder::with('items.barang', 'sales')
             ->where('sales_id', Auth::id());
@@ -140,6 +142,7 @@ class RequestOrderController extends Controller
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
+                'original_index' => $i,
                 'barang_id' => $barangId,
                 'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
                 'quantity' => $qty,
@@ -199,11 +202,12 @@ class RequestOrderController extends Controller
                 'status' => 'open',
             ]);
 
-            foreach ($items as $i => $item) {
+            foreach ($items as $item) {
+                $origIdx = $item['original_index'];
                 // handle per-item images
                 $itemImagePaths = [];
-                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
-                    foreach ($request->file('item_images')[$i] as $f) {
+                if ($request->hasFile("item_images.{$origIdx}")) {
+                    foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
@@ -429,6 +433,7 @@ class RequestOrderController extends Controller
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
+                'original_index' => $i,
                 'barang_id' => $barangId,
                 'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
                 'quantity' => $qty,
@@ -479,10 +484,11 @@ class RequestOrderController extends Controller
             $requestOrder->items()->delete();
 
             // Tambah item baru
-            foreach ($items as $i => $item) {
+            foreach ($items as $item) {
+                $origIdx = $item['original_index'];
                 $itemImagePaths = [];
-                if ($request->hasFile('item_images') && isset($request->file('item_images')[$i])) {
-                    foreach ($request->file('item_images')[$i] as $f) {
+                if ($request->hasFile("item_images.{$origIdx}")) {
+                    foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }

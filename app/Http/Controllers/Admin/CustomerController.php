@@ -35,11 +35,19 @@ class CustomerController extends Controller
             });
         }
 
+        // Ensure pics are loaded
+        $query->with('pics');
+
         $customers = $query->paginate($perPage);
         $customers->appends(['search' => $search, 'perPage' => $perPage]);
 
-        $salesUsers = User::where('role', 'Sales')->get();
-        $pics = DB::table('pics')->get();
+        $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
+        
+        // Pics sekarang spesifik per customer, jadi mungkin tidak butuh list semua pics global untuk dropdown 'attach' existing, 
+        // kecuali UI-nya masih butuh. Tapi karena 1 PIC = 1 Customer, listing all pics untuk attach ke customer lain jadi tidak valid (steal ownership).
+        // Kita biarkan kosong atau hanya pic yang belum punya customer (jika ada).
+        // Untuk sekarang kita tidak kirim $pics global untuk menghindari kebingungan, atau kirim kosong.
+        $pics = []; 
 
         return view('admin.customer.index', compact('customers', 'salesUsers', 'pics'));
     }
@@ -49,7 +57,7 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'npwp' => 'nullable|string|max:50',
-            'term_of_payments' => 'nullable|string|max:100',
+            'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
@@ -57,74 +65,67 @@ class CustomerController extends Controller
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
-            'pics' => 'required|array',
+            'pics' => 'required|array', // Array of PIC definitions
+            'pics.*.name' => 'required|string',
+            'pics.*.phone' => 'required|string', // Sesuai blade required
+            'pics.*.email' => 'nullable|email',
+            'pics.*.position' => 'nullable|string',
             'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
         ]);
 
-        // Buat customer baru
-        $customer = Customer::create([
-            'nama_customer' => $validatedData['name'],
-            'npwp' => $validatedData['npwp'] ?? null,
-            'term_of_payments' => $validatedData['term_of_payments'] ?? null,
-            'kredit_limit' => $validatedData['kredit_limit'] ?? null,
-            'email' => $validatedData['email'] ?? null,
-            'telepon' => $validatedData['telepon'] ?? null,
-            'alamat' => $validatedData['alamat'] ?? null,
-            'kota' => $validatedData['kota'] ?? null,
-            'provinsi' => $validatedData['provinsi'] ?? null,
-            'kode_pos' => $validatedData['kode_pos'] ?? null,
-            'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
-            'created_by' => auth()->id(),
-        ]);
+        DB::beginTransaction();
+        try {
+            // Buat customer baru
+            $customer = Customer::create([
+                'nama_customer' => $validatedData['name'],
+                'npwp' => $validatedData['npwp'] ?? null,
+                'term_of_payments' => $validatedData['term_of_payments'] ?? null,
+                'kredit_limit' => $validatedData['kredit_limit'] ?? null,
+                'email' => $validatedData['email'] ?? null,
+                'telepon' => $validatedData['telepon'] ?? null,
+                'alamat' => $validatedData['alamat'] ?? null,
+                'kota' => $validatedData['kota'] ?? null,
+                'provinsi' => $validatedData['provinsi'] ?? null,
+                'kode_pos' => $validatedData['kode_pos'] ?? null,
+                'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
+                'created_by' => auth()->id(),
+            ]);
 
-        // Proses setiap PIC yang dikirim
-        foreach ($validatedData['pics'] as $pic) {
-            // Jika data adalah JSON string, decode terlebih dahulu
-            if (is_string($pic)) {
-                $decodedPic = json_decode($pic, true);
+            // Proses setiap PIC yang dikirim
+            foreach ($validatedData['pics'] as $picData) {
+                // $picData sudah divalidasi sebagai array dengan keys name, phone, email, position
+                // (atau string jika fallback legacy masih ada, tapi kita utamakan array struktur baru)
 
-                // Jika berhasil di-decode, gunakan data yang di-decode
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    $pic = $decodedPic;
-                } else {
-                    // Jika tidak bisa di-decode, anggap sebagai PIC baru
-                    $newPic = Pic::create([
-                        'name' => $pic,
+                $name = $picData['name'] ?? null;
+                
+                // Fallback untuk legacy/select2 jika data dikirim sebagai string/json (opsional, jaga-jaga)
+                if (empty($name) && is_string($picData)) {
+                     $decoded = json_decode($picData, true);
+                     if (json_last_error() === JSON_ERROR_NONE) {
+                         $name = $decoded['name'] ?? ($decoded['text'] ?? null);
+                     } else {
+                         $name = $picData;
+                     }
+                }
+
+                if ($name) {
+                    Pic::create([
+                        'customer_id' => $customer->id,
+                        'name' => $name,
+                        'phone' => $picData['phone'] ?? null,
+                        'email' => $picData['email'] ?? null,
+                        'position' => $picData['position'] ?? null,
                     ]);
-                    $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
-                    continue;
                 }
             }
-
-            // Jika data memiliki ID dan tipe, periksa apakah sudah ada di database
-            if (isset($pic['id']) && isset($pic['type'])) {
-                if ($pic['type'] === 'Pic') {
-                    // Periksa apakah PIC sudah ada di database
-                    $existingPic = Pic::find($pic['id']);
-                    if ($existingPic) {
-                        $customer->pics()->attach($pic['id'], ['pic_type' => 'Pic']);
-                        continue;
-                    }
-                } elseif ($pic['type'] === 'User') {
-                    // Periksa apakah User sudah ada di database
-                    $existingUser = User::find($pic['id']);
-                    if ($existingUser) {
-                        $customer->pics()->attach($pic['id'], ['pic_type' => 'User']);
-                        continue;
-                    }
-                }
-            }
-
-            // Jika data memiliki properti `newTag`, buat entri baru
-            if (isset($pic['newTag']) && $pic['newTag'] === true) {
-                $newPic = Pic::create([
-                    'name' => $pic['id'],
-                ]);
-                $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
-            }
+            
+            DB::commit();
+            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil ditambahkan.']);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Gagal menyimpan customer: ' . $e->getMessage())->withInput();
         }
-
-        return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil ditambahkan.']);
     }
 
     public function update(Request $request)
@@ -133,7 +134,7 @@ class CustomerController extends Controller
             'id' => 'required|exists:customers,id',
             'name' => 'required|string|max:255',
             'npwp' => 'nullable|string|max:50',
-            'term_of_payments' => 'nullable|string|max:100',
+            'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
@@ -142,113 +143,112 @@ class CustomerController extends Controller
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
             'pics' => 'nullable|array',
+            'pics.*.id' => 'nullable|exists:pics,id', // Validasi ID jika ada
+            'pics.*.name' => 'required|string',
+            'pics.*.phone' => 'required|string',
+            'pics.*.email' => 'nullable|email',
+            'pics.*.position' => 'nullable|string',
             'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
         ]);
 
-        // Temukan customer berdasarkan ID
-        $customer = Customer::findOrFail($validatedData['id']);
+        DB::beginTransaction();
+        try {
+            $customer = Customer::findOrFail($validatedData['id']);
 
-        // Update data customer
-        $customer->update([
-            'nama_customer' => $validatedData['name'],
-            'npwp' => $validatedData['npwp'] ?? null,
-            'term_of_payments' => $validatedData['term_of_payments'] ?? null,
-            'kredit_limit' => $validatedData['kredit_limit'] ?? null,
-            'email' => $validatedData['email'] ?? null,
-            'telepon' => $validatedData['telepon'] ?? null,
-            'alamat' => $validatedData['alamat'] ?? null,
-            'kota' => $validatedData['kota'] ?? null,
-            'provinsi' => $validatedData['provinsi'] ?? null,
-            'kode_pos' => $validatedData['kode_pos'] ?? null,
-            'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
-        ]);
+            $customer->update([
+                'nama_customer' => $validatedData['name'],
+                'npwp' => $validatedData['npwp'] ?? null,
+                'term_of_payments' => $validatedData['term_of_payments'] ?? null,
+                'kredit_limit' => $validatedData['kredit_limit'] ?? null,
+                'email' => $validatedData['email'] ?? null,
+                'telepon' => $validatedData['telepon'] ?? null,
+                'alamat' => $validatedData['alamat'] ?? null,
+                'kota' => $validatedData['kota'] ?? null,
+                'provinsi' => $validatedData['provinsi'] ?? null,
+                'kode_pos' => $validatedData['kode_pos'] ?? null,
+                'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
+            ]);
 
-        // Sinkronisasi PICs
-        $customer->pics()->detach(); // Hapus semua hubungan PIC sebelumnya
-
-        if (!empty($validatedData['pics'])) {
-            foreach ($validatedData['pics'] as $pic) {
-                try {
-                    if (is_string($pic)) {
-                        $decodedPic = json_decode($pic, true);
+            // Logic Sinkronisasi PIC One-to-Many
+            // 1. Ambil semua ID PIC yang ada di request (yang merupakan PIC lama yang dipertahankan/diedit)
+            $submittedPicIds = [];
+            
+            if (!empty($validatedData['pics'])) {
+                foreach ($validatedData['pics'] as $picData) {
+                    if (is_string($picData)) {
+                        $decoded = json_decode($picData, true);
                         if (json_last_error() === JSON_ERROR_NONE) {
-                            $pic = $decodedPic;
+                            $picData = $decoded;
                         } else {
-                            $newPic = Pic::create(['name' => $pic]);
-                            $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
+                            // String biasa -> create new PIC
+                            $newPic = Pic::create([
+                                'customer_id' => $customer->id,
+                                'name' => $picData
+                            ]);
+                            $submittedPicIds[] = $newPic->id;
                             continue;
                         }
                     }
 
-                    if (isset($pic['id']) && isset($pic['type'])) {
-                        if ($pic['type'] === 'Pic') {
-                            $existingPic = Pic::find($pic['id']);
-                            if ($existingPic) {
-                                $customer->pics()->attach($pic['id'], ['pic_type' => 'Pic']);
-                                continue;
-                            }
-                        } elseif ($pic['type'] === 'User') {
-                            $existingUser = User::find($pic['id']);
-                            if ($existingUser) {
-                                $customer->pics()->attach($pic['id'], ['pic_type' => 'User']);
-                                continue;
-                            }
+                    // Handle Array data
+                    if (isset($picData['id']) && $picData['id']) {
+                        // Ini kemungkinan existing PIC atau PIC yang dikirim dengan ID
+                        // Pastikan PIC ini milik customer ini (security check)
+                        $existingPic = Pic::where('id', $picData['id'])->where('customer_id', $customer->id)->first();
+                        
+                        if ($existingPic) {
+                            // Update existing
+                            $existingPic->update([
+                                'name' => $picData['name'] ?? $existingPic->name,
+                                'phone' => $picData['phone'] ?? $existingPic->phone,
+                                'email' => $picData['email'] ?? $existingPic->email,
+                                'position' => $picData['position'] ?? $existingPic->position,
+                            ]);
+                            $submittedPicIds[] = $existingPic->id;
+                        } else {
+                            // Jika ID dikirim tapi bukan milik customer ini (atau tidak ketemu), 
+                            // bisa jadi logika 'assign' pic existing ke customer ini (steal) 
+                            // atau abaikan ID dan create baru.
+                            // Sesuai requirement "1 pics cuma terhubung dengan 1 customer", kita asumsikan create baru jika id invalid context,
+                            // tapi lebih aman create baru untuk menghindari konflik
+                             $newPic = Pic::create([
+                                'customer_id' => $customer->id,
+                                'name' => $picData['name'] ?? 'Unknown',
+                                'phone' => $picData['phone'] ?? null,
+                                'email' => $picData['email'] ?? null,
+                                'position' => $picData['position'] ?? null,
+                            ]);
+                            $submittedPicIds[] = $newPic->id;
                         }
+                    } else {
+                        // Tidak ada ID -> Create New
+                        $newPic = Pic::create([
+                            'customer_id' => $customer->id,
+                            'name' => $picData['name'] ?? ($picData['text'] ?? ($picData['id'] ?? 'Unknown')), // Fallback parsing
+                            'phone' => $picData['phone'] ?? null,
+                            'email' => $picData['email'] ?? null,
+                            'position' => $picData['position'] ?? null,
+                        ]);
+                        $submittedPicIds[] = $newPic->id;
                     }
-
-                    if (isset($pic['newTag']) && $pic['newTag'] === true) {
-                        $newPic = Pic::create(['name' => $pic['id']]);
-                        $customer->pics()->attach($newPic->id, ['pic_type' => 'Pic']);
-                    }
-                } catch (\Exception $e) {
-                    \Log::error('Error processing PIC: ' . $e->getMessage(), ['pic' => $pic]);
                 }
             }
-        }
 
-        return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil diperbarui.']);
+            // Hapus PIC milik customer ini yang tidak ada di submittedPicIds
+            $customer->pics()->whereNotIn('id', $submittedPicIds)->delete();
+
+            DB::commit();
+            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil diperbarui.']);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Gagal memperbarui customer: ' . $e->getMessage())->withInput();
+        }
     }
 
-    // Ambil langsung dari tabel customer_pics (mengembalikan array objek: id, name, position, pivot.pic_type, pivot.created_at)
     public function getPics($id)
     {
-        if (!Schema::hasTable('customer_pics')) {
-            return response()->json([]);
-        }
-
-        $rows = DB::table('customer_pics')->where('customer_id', $id)->get();
-
-        $result = $rows->map(function ($r) {
-            if ($r->pic_type === 'Pic') {
-                $pic = DB::table('pics')->where('id', $r->pic_id)->first();
-                if ($pic) {
-                    return (object)[
-                        'id' => $pic->id,
-                        'name' => $pic->name,
-                        'position' => $pic->position ?? null,
-                        'pivot' => (object)[
-                            'pic_type' => 'Pic',
-                            'created_at' => $r->created_at,
-                        ],
-                    ];
-                }
-            } elseif ($r->pic_type === 'User') {
-                $user = DB::table('users')->where('id', $r->pic_id)->first();
-                if ($user) {
-                    return (object)[
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'position' => null,
-                        'pivot' => (object)[
-                            'pic_type' => 'User',
-                            'created_at' => $r->created_at,
-                        ],
-                    ];
-                }
-            }
-            return null;
-        })->filter()->values();
-
-        return response()->json($result);
+        $pics = Pic::where('customer_id', $id)->get();
+        return response()->json($pics);
     }
 }

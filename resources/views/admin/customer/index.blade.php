@@ -54,50 +54,62 @@
                             <td class="text-nowrap px-4 py-2">{{ $customer->nama_customer }}</td>
                             <td class="px-4 py-2 text-nowrap">{{ $customer->tipe_customer }}</td>
                             <td class="px-4 py-2 text-nowrap">{{ $customer->npwp ?? '-' }}</td>
-                            <td class="px-4 py-2 text-nowrap">{{ $customer->term_of_payments ?? '-' }}</td>
+                            <td class="px-4 py-2 text-nowrap">
+                                {{ $customer->term_of_payments !== null ? $customer->term_of_payments . ' Hari' : '-' }}
+                            </td>
                             <td class="px-4 py-2 text-nowrap">{{ $customer->kredit_limit ?? '-' }}</td>
                             <td class="px-4 py-2">
-                                @if (($customer->pics && $customer->pics->count() > 0) || ($customer->users && $customer->users->count() > 0))
+                                @if ($customer->pics && $customer->pics->count() > 0)
                                     @foreach ($customer->pics as $pic)
                                         <div class="mb-1">
-                                            {{ $pic->name }} (PIC)
-                                        </div>
-                                    @endforeach
-                                    @foreach ($customer->users as $user)
-                                        <div class="mb-1">
-                                            {{ $user->name }} ({{ $user->pivot->pic_type }})
+                                            {{ $pic->name }} ({{ $pic->position }})
                                         </div>
                                     @endforeach
                                 @else
                                     -
                                 @endif
                             </td>
-                            <td class="px-4 py-2">No. Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}</td>
+                            <td class="px-4 py-2">No.
+                                Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}</td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
-                                    <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                    <div
+                                        class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Edit --}}
-                                        <button onclick="openEditModal({{ $customer->toJson() }})" class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4">
-                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+                                        <button onclick="openEditModal({{ $customer->toJson() }})"
+                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-pencil h-4 w-4">
+                                                <path
+                                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                </path>
                                                 <path d="m15 5 4 4"></path>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                            <span
+                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                         </button>
                                         {{-- Delete --}}
                                         <form action="" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="confirmDelete(() => this.closest('form').submit())">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
+                                            <button type="button"
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                onclick="confirmDelete(() => this.closest('form').submit())">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
                                                     <path d="M10 11v6"></path>
                                                     <path d="M14 11v6"></path>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
                                                     <path d="M3 6h18"></path>
                                                     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
                                             </button>
                                         </form>
                                     </div>
@@ -108,7 +120,8 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing

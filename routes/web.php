@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\AkunSalesController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\PicsController;
-use App\Http\Controllers\Admin\CustomerController2;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController;
@@ -157,16 +156,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
-    // Customer Routes
-    Route::get('/customer2', [CustomerController2::class, 'index'])->name('sales.customer.index');
-    Route::get('/customer2/create', [CustomerController2::class, 'create'])->name('sales.customer.create');
-    Route::post('/customer2', [CustomerController2::class, 'store'])->name('sales.customer.store');
-    Route::get('/customer2/{customer}', [CustomerController2::class, 'show'])->name('sales.customer.show');
-    Route::get('/customer2/{customer}/edit', [CustomerController2::class, 'edit'])->name('sales.customer.edit');
-    Route::put('/customer2/{customer}', [CustomerController2::class, 'update'])->name('sales.customer.update');
-    Route::delete('/customer2/{customer}', [CustomerController2::class, 'destroy'])->name('sales.customer.destroy');
-    Route::get('/customer2/api/search', [CustomerController2::class, 'search'])->name('sales.customer.search');
-
     // Request Order Routes
     Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
     Route::get('/request-order/create', [RequestOrderController::class, 'create'])->name('sales.request-order.create');

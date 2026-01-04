@@ -30,20 +30,66 @@
 <body class="m-0 flex justify-center bg-slate-200 p-0 print:bg-white">
 
     <!-- A4 PAGE WRAPPER (FIXED HEIGHT) -->
-    <div class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
+    <div
+        class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
 
         <!-- INNER MARGINS (1.27 cm) -->
-        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]" style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]"
+            style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+
+            @php
+                // Helper function to get base64 encoded image from public/images
+                $getPublicImageBase64 = function ($filename) {
+                    try {
+                        $path = public_path('images/' . $filename);
+                        if (file_exists($path) && is_readable($path)) {
+                            $mime = mime_content_type($path);
+                            $data = base64_encode(file_get_contents($path));
+                            return 'data:' . $mime . ';base64,' . $data;
+                        }
+                    } catch (\Exception $e) {
+                        // Log error if needed
+                    }
+                    return '';
+                };
+
+                // Helper function to get base64 encoded image from storage
+                $getStorageImageBase64 = function ($imagePath) {
+                    try {
+                        if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
+                            return $imagePath;
+                        }
+
+                        $fullPath = str_starts_with($imagePath, 'public/')
+                            ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
+                            : storage_path('app/public/' . ltrim($imagePath, '/'));
+
+                        if (file_exists($fullPath) && is_readable($fullPath)) {
+                            $mime = mime_content_type($fullPath);
+                            $data = base64_encode(file_get_contents($fullPath));
+                            return 'data:' . $mime . ';base64,' . $data;
+                        }
+                    } catch (\Exception $e) {
+                        // Log error if needed
+                    }
+                    return '';
+                };
+            @endphp
 
             <!-- WATERMARK IMAGE -->
-            <img src="{{ asset('images/LogoText_transparent.png') }}" alt=""
-                class="pointer-events-none absolute right-30 top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @if ($getPublicImageBase64('LogoText_transparent.png'))
+                <img src="{{ $getPublicImageBase64('LogoText_transparent.png') }}" alt=""
+                    class="pointer-events-none absolute right-30 top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+            @endif
 
             <!-- TOP HEADER LOGO -->
 
             <!-- COMPANY INFO -->
             <div class="flex text-[9pt]">
-                <img src="{{ asset('images/Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
+                @if ($getPublicImageBase64('Logo_transparent.png'))
+                    <img src="{{ $getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama"
+                        class="w-[16%]" />
+                @endif
 
                 <div class="">
                     <div class="px-2 py-1">
@@ -107,7 +153,8 @@
                             <td class="border-r border-black px-2"><strong>Subject</strong></td>
                             <td class="border-r border-black px-2">{{ $customPenawaran->subject }}</td>
                             <td class="border-r border-black px-2"><strong>Date</strong></td>
-                            <td class="border-black px-2">{{ \Carbon\Carbon::parse($customPenawaran->date)->format('d/m/Y') }}</td>
+                            <td class="border-black px-2">
+                                {{ \Carbon\Carbon::parse($customPenawaran->date)->format('d/m/Y') }}</td>
                         </tr>
 
                     </tbody>
@@ -118,7 +165,7 @@
             <div class="mt-2 text-[9pt]">
                 <p class="border-b border-black pb-1">Dengan Hormat,</p>
                 <p class="mt-1">&nbsp;</p>
-                @if($customPenawaran->intro_text)
+                @if ($customPenawaran->intro_text)
                     <p class="whitespace-pre-wrap">{{ $customPenawaran->intro_text }}</p>
                 @else
                     <p>Dengan ini kami mengajukan penawaran harga sebagai berikut :</p>
@@ -131,7 +178,8 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang
+                            </th>
                             <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Satuan</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Harga</th>
@@ -146,26 +194,21 @@
                                 <td class="border px-2 py-1">{{ $item->nama_barang }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->qty }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->satuan }}</td>
-                                <td class="border px-2 py-1 text-right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                <td class="border px-2 py-1 text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                <td class="border px-2 py-1 text-right">Rp
+                                    {{ number_format($item->harga, 0, ',', '.') }}</td>
+                                <td class="border px-2 py-1 text-right">Rp
+                                    {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-center">
-                                    @if($item->images && count($item->images) > 0)
+                                    @if ($item->images && count($item->images) > 0)
                                         <div class="flex gap-2 justify-center flex-wrap">
-                                            @foreach($item->images as $image)
+                                            @foreach ($item->images as $image)
                                                 @php
-                                                    if (is_null($image) || $image === '') {
-                                                        $imgUrl = null;
-                                                    } elseif (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
-                                                        $imgUrl = $image;
-                                                    } elseif (str_starts_with($image, 'public/')) {
-                                                        $imgUrl = asset('storage/' . ltrim(substr($image, 7), '/'));
-                                                    } else {
-                                                        $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                    }
+                                                    $imgBase64 = $getStorageImageBase64($image);
                                                 @endphp
 
-                                                @if($imgUrl)
-                                                    <img src="{{ $imgUrl }}" alt="Gambar" class="w-20 h-20 object-contain border border-gray-300">
+                                                @if ($imgBase64)
+                                                    <img src="{{ $imgBase64 }}" alt="Gambar"
+                                                        class="w-20 h-20 object-contain border border-gray-300">
                                                 @else
                                                     <span>-</span>
                                                 @endif
@@ -191,15 +234,18 @@
                     <tbody>
                         <tr>
                             <td class="border-b border-r border-black px-2">Sub Total</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($customPenawaran->subtotal, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp
+                                {{ number_format($customPenawaran->subtotal, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Tax</td>
-                            <td class="border-b border-l border-black px-2 text-right">Rp {{ number_format($customPenawaran->tax, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right">Rp
+                                {{ number_format($customPenawaran->tax, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td class="border-b border-r border-black px-2">Grand Total</td>
-                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp {{ number_format($customPenawaran->grand_total, 0, ',', '.') }}</td>
+                            <td class="border-b border-l border-black px-2 text-right font-bold">Rp
+                                {{ number_format($customPenawaran->grand_total, 0, ',', '.') }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -221,7 +267,10 @@
                 <p>Indonusa Jaya Bersama</p>
 
                 <div class="mt-2">
-                    <img src="{{ asset('images/ttd.png') }}" alt="Tanda tangan" class="mx-auto h-20 object-contain" />
+                    @if ($getPublicImageBase64('ttd.png'))
+                        <img src="{{ $getPublicImageBase64('ttd.png') }}" alt="Tanda tangan"
+                            class="mx-auto h-20 object-contain" />
+                    @endif
                 </div>
 
                 <p class="mt-1">Alimul Imam S.AP</p>

@@ -12,7 +12,9 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        //
+        if ($order->status === 'sent_to_warehouse') {
+            event(new OrderStatusUpdated($order->id));
+        }
     }
 
     /**

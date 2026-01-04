@@ -17,6 +17,40 @@ document.addEventListener("DOMContentLoaded", function () {
     let uploadCompleted = false;
     const submitButton = form.querySelector(".submit-btn");
 
+    // Intercept form submission
+    form.addEventListener("submit", function (e) {
+        // Run validation one last time
+        const hasDuplicates = validateDuplicateCodes(true); // true = silent check, but we want to show alert
+        if (hasDuplicates) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            if (window.Swal) {
+                window.Swal.fire({
+                    icon: "error",
+                    title: "Terdapat Duplikat Kode Barang",
+                    text: "Terdapat kode barang yang sama (duplikat) atau sudah ada di database. Silakan perbaiki/refresh kode yang bertanda merah sebelum menyimpan.",
+                    confirmButtonText: "OK",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+            } else {
+                alert(
+                    "Terdapat kode barang duplikat. Harap perbaiki sebelum submit."
+                );
+            }
+            return false;
+        }
+        // If valid, allow submit
+    });
+
+    // Simpan template row di awal sebelum DataTable diinisialisasi
+    const tableEl = document.getElementById("DataTableExcel");
+    const tbody = tableEl ? tableEl.querySelector("tbody") : null;
+    const savedTemplateRow =
+        tbody && tbody.querySelector("tr")
+            ? tbody.querySelector("tr").cloneNode(true)
+            : null;
+
     // helper: auto-map headers to fields using keywords
     function autoMapHeaders(headers) {
         const lower = headers.map((h) => (h || "").toString().toLowerCase());
@@ -31,13 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return null;
         };
 
-        // map["kode_barang"] = pick([
-        //     "kode",
-        //     "sku",
-        //     "code",
-        //     "id barang",
-        //     "kode barang",
-        // ]);
         // FORCE NULL so it is always generated
         map["kode_barang"] = null;
         map["nama_barang"] =
@@ -104,8 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
         "OTHER CATEGORIES": "OC",
     };
 
-    // Prepare Existing Codes Set for fast lookup
+    // Prepare Existing Codes Set for fast lookup (includes generated ones during session)
     const existingCodesSet = new Set(
+        (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
+    );
+    // Keep a pure Set of DB codes for validation (static)
+    const dbCodesSet = new Set(
         (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
     );
 
@@ -129,17 +160,17 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!sing) sing = "UNK";
         }
 
-        // Base logic: SING-TIMESTAMP
+        // Base logic: SING-RANDOM7DIGIT
         // Using increment strategy for collisions as requested (no suffix)
 
-        // Initial seed from time
-        let seed = parseInt(Date.now().toString().slice(-5), 10);
+        // Initial seed from random 7-digit number
+        let seed = Math.floor(Math.random() * 10000000);
         let candidate = ``;
 
         let attempt = 0;
         // Try creating a code. If taken, increment seed and try again.
         while (attempt < 2000) {
-            candidate = `${sing}-${seed.toString().padStart(5, "0")}`;
+            candidate = `${sing}-${seed.toString().padStart(7, "0")}`;
 
             if (!existingCodesSet.has(candidate)) {
                 // Found a free slot
@@ -149,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Collision -> Increment seed
             seed++;
-            if (seed > 99999) seed = 0; // Wrap around
+            if (seed > 9999999) seed = 0; // Wrap around
             attempt++;
         }
 
@@ -173,15 +204,18 @@ document.addEventListener("DOMContentLoaded", function () {
             "HARGA",
         ];
 
+        // Columns that are allowed but will be ignored during import
+        const ignored = ["LIST KATEGORI"];
+
         const upperHeaders = headers.map((h) => String(h).trim().toUpperCase());
 
         // 1. Check Missing
         const missing = required.filter((req) => !upperHeaders.includes(req));
 
         // 2. Check Extra (Unknown columns)
-        // Any header in upperHeaders that is NOT in required list is an extra
+        // Any header in upperHeaders that is NOT in required list AND NOT in ignored list is an extra
         const extra = upperHeaders.filter(
-            (h) => h !== "" && !required.includes(h)
+            (h) => h !== "" && !required.includes(h) && !ignored.includes(h)
         );
 
         return {
@@ -208,9 +242,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // helper: remove completely empty rows and trim each row to headers length
-    function cleanRows(rows, headers) {
+    // Also validates that rows have essential product data (nama_barang)
+    function cleanRows(rows, headers, mapping) {
         if (!Array.isArray(rows)) return [];
         const hlen = Array.isArray(headers) ? headers.length : null;
+
         return rows
             .map((r) => (Array.isArray(r) ? r : []))
             .map((r) => (hlen ? r.slice(0, hlen) : r))
@@ -219,7 +255,83 @@ document.addEventListener("DOMContentLoaded", function () {
                     c === null || c === undefined ? "" : String(c).trim()
                 )
             )
-            .filter((r) => r.some((c) => c !== "")); // keep rows that have at least one non-empty cell
+            .filter((r) => {
+                // Check if row has at least one non-empty cell
+                if (!r.some((c) => c !== "")) return false;
+
+                // If mapping is provided, validate that essential fields have data
+                if (mapping && typeof mapping === "object") {
+                    // Check if nama_barang column has data (essential field)
+                    const namaBarangIdx = mapping["nama_barang"];
+                    if (
+                        namaBarangIdx !== null &&
+                        namaBarangIdx !== undefined &&
+                        namaBarangIdx !== ""
+                    ) {
+                        const namaBarangValue = r[namaBarangIdx];
+                        // Only include row if nama_barang has actual data
+                        return (
+                            namaBarangValue &&
+                            String(namaBarangValue).trim() !== ""
+                        );
+                    }
+                }
+
+                // Fallback: keep rows that have at least one non-empty cell
+                return true;
+            });
+    }
+
+    // Fungsi untuk mendeteksi NAMA BARANG yang sama dengan KATEGORI berbeda
+    function validateDuplicateNames(rows, mapping) {
+        const duplicateIndices = new Set();
+        const nameKategoriMap = new Map(); // Map: nama_barang -> Set of {kategori, rowIndices[]}
+
+        // Iterasi semua baris untuk mengumpulkan data
+        rows.forEach((r, idx) => {
+            const namaIdx = mapping["nama_barang"];
+            const kategoriIdx = mapping["kategori"];
+
+            if (namaIdx === null || namaIdx === undefined || namaIdx === "")
+                return;
+            if (
+                kategoriIdx === null ||
+                kategoriIdx === undefined ||
+                kategoriIdx === ""
+            )
+                return;
+
+            const nama = String(r[namaIdx] || "")
+                .trim()
+                .toUpperCase();
+            const kategori = String(r[kategoriIdx] || "")
+                .trim()
+                .toUpperCase();
+
+            if (!nama) return; // Skip jika nama kosong
+
+            if (!nameKategoriMap.has(nama)) {
+                nameKategoriMap.set(nama, new Map());
+            }
+
+            const kategoriMap = nameKategoriMap.get(nama);
+            if (!kategoriMap.has(kategori)) {
+                kategoriMap.set(kategori, []);
+            }
+            kategoriMap.get(kategori).push(idx);
+        });
+
+        // Cek konflik: nama yang sama dengan kategori berbeda
+        nameKategoriMap.forEach((kategoriMap, nama) => {
+            if (kategoriMap.size > 1) {
+                // Ada lebih dari 1 kategori untuk nama yang sama = KONFLIK!
+                kategoriMap.forEach((indices) => {
+                    indices.forEach((idx) => duplicateIndices.add(idx));
+                });
+            }
+        });
+
+        return Array.from(duplicateIndices);
     }
 
     // render DataTableExcel from rows (rows are array-of-arrays, headers not included)
@@ -227,25 +339,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableEl = document.getElementById("DataTableExcel");
         if (!tableEl) return;
 
-        // Get DataTable instance safely (handle both DT 1.x and 2.x)
+        // Get atau inisialisasi DataTable instance dengan aman
         let dt;
-        try {
-            dt = new DataTable("#DataTableExcel");
-        } catch (e) {
-            console.warn("DataTable re-init attempt managed:", e);
-            return; // Exit if initialization fails to avoid blocking
+        if ($.fn.DataTable.isDataTable("#DataTableExcel")) {
+            // Jika sudah ada instance, ambil instance yang ada
+            dt = $("#DataTableExcel").DataTable();
+        } else {
+            // Jika belum ada, inisialisasi baru
+            dt = $("#DataTableExcel").DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+            });
         }
 
         const tbody = tableEl.querySelector("tbody");
         if (!tbody) return;
 
-        const templateRow = tbody.querySelector("tr");
-
-        // if no template row, build one minimal for 10 columns
+        // Gunakan template row yang sudah disimpan di awal
         let baseRow;
-        if (templateRow) {
-            baseRow = templateRow.cloneNode(true);
+        if (savedTemplateRow) {
+            baseRow = savedTemplateRow.cloneNode(true);
         } else {
+            // Fallback: jika tidak ada template tersimpan, buat manual
             baseRow = document.createElement("tr");
             for (let i = 0; i < 10; i++) {
                 const td = document.createElement("td");
@@ -518,12 +634,120 @@ document.addEventListener("DOMContentLoaded", function () {
             return newRow;
         });
         // Add all rows using the requested API and add the 'new' class
-        dt.rows
-            .add(newRows)
-            .draw()
-            .nodes()
-            .to$()
-            .addClass("new");
+        dt.rows.add(newRows).draw().nodes().to$().addClass("new");
+
+        // Validasi duplikat nama barang dengan kategori berbeda juga tetap jalan
+        const duplicateIndices = validateDuplicateNames(rows, mapping);
+
+        if (duplicateIndices.length > 0) {
+            // Terapkan styling merah pada baris yang konflik
+            duplicateIndices.forEach((idx) => {
+                const row = newRows[idx];
+                if (!row) return;
+
+                // Tambahkan class warning pada row
+                row.classList.add("duplicate-name-warning");
+                row.setAttribute("data-has-duplicate", "true");
+
+                // Style untuk NAMA BARANG (kolom 1)
+                const tdNama = row.children[1];
+                if (tdNama) {
+                    const inp = tdNama.querySelector("input");
+                    if (inp) {
+                        inp.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        inp.title =
+                            "Nama barang ini memiliki kategori berbeda di baris lain!";
+                    }
+                }
+
+                // Style untuk KATEGORI (kolom 2)
+                const tdKategori = row.children[2];
+                if (tdKategori) {
+                    const sel = tdKategori.querySelector("select");
+                    if (sel) {
+                        sel.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        sel.title =
+                            "Nama barang ini memiliki kategori berbeda di baris lain!";
+                    }
+                }
+            });
+
+            // Tampilkan peringatan
+            if (window.Swal) {
+                window.Swal.fire({
+                    icon: "warning",
+                    title: "Duplikat Nama Barang Terdeteksi",
+                    html: `Ditemukan <b>${duplicateIndices.length} baris</b> dengan nama barang yang sama tapi kategori berbeda.<br><br>Field yang konflik ditandai dengan <span class="text-red-500">warna merah</span>.<br><br>Silakan ubah salah satu sebelum submit.`,
+                    confirmButtonText: "Mengerti",
+                });
+            }
+        }
+
+        // Add event listener for Refresh Kode Barang buttons
+        const refreshBtns = document.querySelectorAll(
+            ".refresh-kode-barang-btn"
+        );
+        refreshBtns.forEach((btn) => {
+            // Remove old listeners to be safe (though this is a fresh render)
+            // btn.replaceWith(btn.cloneNode(true)); // Brute force clean if needed, but dt.clear() handles dom
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+                const tr = btn.closest("tr");
+                if (!tr) return;
+
+                // Find inputs
+                const kodeInput = tr.querySelector(
+                    "td:nth-child(1) input[type='text']"
+                );
+                const hiddenKode = tr.querySelector(
+                    "td:nth-child(1) input[type='hidden']"
+                );
+
+                // Get necessary data for generation
+                let kategori = "";
+                // Try getting category from select or hidden
+                const catSel = tr.querySelector("td:nth-child(3) select");
+                const catHidden = tr.querySelector(
+                    "td:nth-child(3) input[type='hidden']"
+                );
+                if (catSel) kategori = catSel.value;
+                else if (catHidden) kategori = catHidden.value;
+
+                let nama = "";
+                const namaInput = tr.querySelector(
+                    "td:nth-child(2) input[type='text']"
+                );
+                if (namaInput) nama = namaInput.value;
+
+                // Generate new code
+                const newKode = generateKodeFromCategory(
+                    kategori,
+                    nama,
+                    Math.floor(Math.random() * 1000)
+                );
+
+                if (kodeInput) kodeInput.value = newKode;
+                if (hiddenKode) hiddenKode.value = newKode;
+
+                // Re-validate all codes
+                validateDuplicateCodes();
+            });
+        });
+
+        // Run validation initially
+        validateDuplicateCodes();
 
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
@@ -538,6 +762,76 @@ document.addEventListener("DOMContentLoaded", function () {
                 timerProgressBar: true,
             });
         }
+    }
+
+    // Fungsi Validasi Code Duplicate (Internal & External)
+    function validateDuplicateCodes() {
+        // Ambil semua input kode barang yang ada di tabel
+        const inputs = document.querySelectorAll(
+            "#DataTableExcel tbody tr td:nth-child(1) input[type='text']"
+        );
+        if (inputs.length === 0) return false;
+
+        const codeMap = new Map(); // code -> [elements]
+        let foundDuplicate = false;
+
+        // 1. Collect codes and check Internal Duplicates
+        inputs.forEach((input) => {
+            const code = String(input.value || "")
+                .trim()
+                .toUpperCase();
+            if (!code) return;
+
+            if (!codeMap.has(code)) {
+                codeMap.set(code, []);
+            }
+            codeMap.get(code).push(input);
+        });
+
+        // 2. Validate against Internal & External
+        codeMap.forEach((duplicates, code) => {
+            const isInternalDup = duplicates.length > 1;
+            const isExternalDup = dbCodesSet.has(code);
+
+            if (isInternalDup || isExternalDup) {
+                foundDuplicate = true;
+                duplicates.forEach((inp) => {
+                    inp.classList.add(
+                        "border-red-500",
+                        "bg-red-50",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "text-red-900"
+                    );
+                    inp.classList.remove("border-gray-300", "bg-gray-50");
+
+                    if (isInternalDup && isExternalDup) {
+                        inp.title =
+                            "Kode ini duplikat dalam tabel ini DAN sudah ada di database!";
+                    } else if (isInternalDup) {
+                        inp.title =
+                            "Kode ini duplikat (ada baris lain dengan kode sama)!";
+                    } else {
+                        inp.title = "Kode ini sudah digunakan di database!";
+                    }
+                });
+            } else {
+                // Clear error styles
+                duplicates.forEach((inp) => {
+                    inp.classList.remove(
+                        "border-red-500",
+                        "bg-red-50",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "text-red-900"
+                    );
+                    inp.classList.add("border-gray-300", "bg-gray-50");
+                    inp.title = "";
+                });
+            }
+        });
+
+        return foundDuplicate;
     }
     // Handle file selection
     fileInput.addEventListener("change", function (e) {
@@ -666,13 +960,15 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
                         // no preview UI: keep import path, auto-map and populate main table
+                        // Create mapping first so we can use it to validate rows
+                        const mapping = autoMapHeaders(resp.headers || []);
                         const cleanedRows = cleanRows(
                             resp.rows || [],
-                            resp.headers || []
+                            resp.headers || [],
+                            mapping
                         );
                         if (importFilePathInput)
                             importFilePathInput.value = resp.path || "";
-                        const mapping = autoMapHeaders(resp.headers || []);
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
                         renderDataTableFromPreviewAll(
                             cleanedRows,
@@ -788,7 +1084,39 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 return;
             }
+
+            // Cek apakah masih ada duplikat nama barang
+            const tableEl = document.getElementById("DataTableExcel");
+            if (tableEl) {
+                const duplicateRows = tableEl.querySelectorAll(
+                    'tr[data-has-duplicate="true"]'
+                );
+                if (duplicateRows.length > 0) {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: "error",
+                        title: "Tidak Bisa Submit",
+                        html: `Masih ada <b>${duplicateRows.length} baris</b> dengan nama barang yang sama tapi kategori berbeda.<br><br>Field yang konflik ditandai dengan <span class="text-red-500">warna merah</span>.<br><br>Silakan ubah salah satu sebelum submit.`,
+                        confirmButtonText: "Mengerti",
+                    });
+                    return;
+                }
+            }
+
             // allow submit to proceed
+        });
+    }
+
+    // Event listener untuk tombol "Ganti File" - reset file input agar bisa upload file dengan nama sama
+    const gantiFileLabel = document.querySelector(
+        '#upload-result label[for="excel"]'
+    );
+    if (gantiFileLabel) {
+        gantiFileLabel.addEventListener("click", function () {
+            // Reset file input value agar event change ter-trigger meskipun nama file sama
+            if (fileInput) {
+                fileInput.value = "";
+            }
         });
     }
 
@@ -1030,6 +1358,136 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch (err) {
                     /* ignore */
                 }
+            }
+        });
+    })();
+
+    // Re-validasi duplikat nama ketika NAMA BARANG atau KATEGORI berubah
+    (function attachDuplicateNameValidator() {
+        const table = document.getElementById("DataTableExcel");
+        if (!table) return;
+
+        table.addEventListener("change", function (e) {
+            const inp = e.target.closest("input, select");
+            if (!inp) return;
+
+            const td = inp.closest("td");
+            const tr = inp.closest("tr");
+            if (!tr || !td) return;
+
+            const colIndex = Array.prototype.indexOf.call(tr.children, td);
+
+            // Hanya proses jika kolom NAMA BARANG (1) atau KATEGORI (2)
+            if (colIndex !== 1 && colIndex !== 2) return;
+
+            // Kumpulkan semua data dari tabel untuk re-validasi
+            const tbody = table.querySelector("tbody");
+            if (!tbody) return;
+
+            const allRows = Array.from(tbody.querySelectorAll("tr"));
+            const rowsData = [];
+            const mapping = {
+                nama_barang: 1, // kolom index untuk nama barang
+                kategori: 2, // kolom index untuk kategori
+            };
+
+            allRows.forEach((row) => {
+                const namaInput = row.children[1]?.querySelector("input");
+                const kategoriSelect = row.children[2]?.querySelector("select");
+
+                if (namaInput && kategoriSelect) {
+                    // Buat array data seperti format rows asli
+                    const rowData = [];
+                    rowData[1] = namaInput.value || "";
+                    rowData[2] = kategoriSelect.value || "";
+                    rowsData.push(rowData);
+                }
+            });
+
+            // Validasi ulang semua baris
+            const duplicateIndices = validateDuplicateNames(rowsData, mapping);
+
+            // Reset semua styling duplikat terlebih dahulu
+            allRows.forEach((row) => {
+                row.classList.remove("duplicate-name-warning");
+                row.removeAttribute("data-has-duplicate");
+
+                // Reset NAMA BARANG
+                const tdNama = row.children[1];
+                if (tdNama) {
+                    const inp = tdNama.querySelector("input");
+                    if (inp) {
+                        inp.classList.remove(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        inp.title = "";
+                    }
+                }
+
+                // Reset KATEGORI
+                const tdKategori = row.children[2];
+                if (tdKategori) {
+                    const sel = tdKategori.querySelector("select");
+                    if (sel) {
+                        sel.classList.remove(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "bg-red-50",
+                            "dark:bg-red-900/20"
+                        );
+                        sel.title = "";
+                    }
+                }
+            });
+
+            // Terapkan styling merah pada baris yang masih konflik
+            if (duplicateIndices.length > 0) {
+                duplicateIndices.forEach((idx) => {
+                    const row = allRows[idx];
+                    if (!row) return;
+
+                    row.classList.add("duplicate-name-warning");
+                    row.setAttribute("data-has-duplicate", "true");
+
+                    // Style NAMA BARANG
+                    const tdNama = row.children[1];
+                    if (tdNama) {
+                        const inp = tdNama.querySelector("input");
+                        if (inp) {
+                            inp.classList.add(
+                                "border-red-500",
+                                "focus:border-red-500",
+                                "focus:ring-red-500",
+                                "bg-red-50",
+                                "dark:bg-red-900/20"
+                            );
+                            inp.title =
+                                "Nama barang ini memiliki kategori berbeda di baris lain!";
+                        }
+                    }
+
+                    // Style KATEGORI
+                    const tdKategori = row.children[2];
+                    if (tdKategori) {
+                        const sel = tdKategori.querySelector("select");
+                        if (sel) {
+                            sel.classList.add(
+                                "border-red-500",
+                                "focus:border-red-500",
+                                "focus:ring-red-500",
+                                "bg-red-50",
+                                "dark:bg-red-900/20"
+                            );
+                            sel.title =
+                                "Nama barang ini memiliki kategori berbeda di baris lain!";
+                        }
+                    }
+                });
             }
         });
     })();

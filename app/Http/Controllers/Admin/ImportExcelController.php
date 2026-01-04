@@ -110,7 +110,7 @@ class ImportExcelController extends Controller
                     // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok, harga, satuan, status_listing, lokasi, gambar...
                     $kode = $r['kode_barang'] ?? null;
                     if (empty($kode)) {
-                        $kode = 'IMP' . substr(uniqid(), -6);
+                        $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
                     }
 
                     $hargaRaw = $r['harga'] ?? null;
@@ -228,7 +228,7 @@ class ImportExcelController extends Controller
 
             $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
             if (empty($kode)) {
-                $kode = 'IMP' . uniqid();
+                $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             }
 
             $hargaRaw = $data['harga'] ?? null;
