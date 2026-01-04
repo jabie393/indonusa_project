@@ -17,7 +17,7 @@ class PicsController extends Controller
         $perPage = $request->input('perPage', 10);
         $search = $request->input('search');
 
-        $query = Pic::query();
+        $query = Pic::with('customer');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -31,7 +31,7 @@ class PicsController extends Controller
         $pics = $query->paginate($perPage);
         $pics->appends(['search' => $search, 'perPage' => $perPage]);
 
-        $pics = Pic::with('customer')->get();
+
         // Ambil data customer untuk dropdown
         $customers = Customer::all();
 
