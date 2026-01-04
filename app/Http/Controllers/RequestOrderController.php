@@ -75,16 +75,16 @@ class RequestOrderController extends Controller
     public function create()
     {
         // 1) Semua barang
-        // $barangs = Barang::orderBy('nama_barang')->get();
+        // $goods = Barang::orderBy('nama_barang')->get();
 
         // 2) Hanya barang yang listing dan stok > 0 (rekomendasi)
-        $barangs = Barang::where('tipe_request', 'primary')
+        $goods = Barang::where('tipe_request', 'primary')
             ->where('stok', '>', 0)
             ->orderBy('nama_barang')
             ->get();
 
         // 🟢 ubah lokasi view ke folder admin
-        return view('admin.requestorder.create', compact('barangs'));
+        return view('admin.requestorder.create', compact('goods'));
     }
 
     public function store(StoreRequestOrder $request)

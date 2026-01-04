@@ -15,7 +15,7 @@ class StoreRequestOrder extends FormRequest
     {
         return [
             'barang_id' => ['required','array','min:1'],
-            'barang_id.*' => ['required','exists:barangs,id'],
+            'barang_id.*' => ['required','exists:goods,id'],
             'quantity' => ['required','array','min:1'],
             'quantity.*' => ['required','integer','min:1'],
             'customer_name' => ['nullable','string','max:255'],

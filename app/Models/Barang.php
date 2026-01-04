@@ -12,6 +12,8 @@ class Barang extends Model
 {
     use HasFactory;
 
+    protected $table = 'goods';
+
     // LIST KATEGORI
     public const KATEGORI = [
         'HANDTOOLS',

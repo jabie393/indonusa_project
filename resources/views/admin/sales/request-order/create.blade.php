@@ -256,7 +256,7 @@
                                                 class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 required onchange="updateKategoriBarang(this)">
                                                 <option value="">Pilih Barang</option>
-                                                @foreach ($barangs as $b)
+                                                @foreach ($goods as $b)
                                                     <option value="{{ $b->id }}"
                                                         data-kode="{{ $b->kode_barang }}"
                                                         data-nama="{{ $b->nama_barang }}"
@@ -358,7 +358,8 @@
                             <div
                                 class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                                 <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                    <i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                                    <i class="fas fa-calculator"></i> Ringkasan Penawaran
+                                </h3>
                             </div>
                             <div class="p-5">
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -438,7 +439,8 @@
                             <div
                                 class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
                                 <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                    <i class="fas fa-images"></i> Gambar Pendukung Penawaran</h3>
+                                    <i class="fas fa-images"></i> Gambar Pendukung Penawaran
+                                </h3>
                             </div>
                             <div class="p-5">
                                 <div class="mb-3">
@@ -1110,7 +1112,7 @@
                             const qty = parseInt(this.value) || 1;
                             const hargaInput = row.querySelector('.harga-input');
                             const hargaSetelahDiskonDisplay = row.querySelector(
-                            '.harga-setelah-diskon-display');
+                                '.harga-setelah-diskon-display');
 
                             if (hargaInput && hargaSetelahDiskonDisplay) {
                                 const hargaSatuan = parseFloat(hargaInput.value) || 0;

@@ -1,6 +1,7 @@
 <x-app-layout>
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
         <div class="p-4">
 
@@ -10,11 +11,15 @@
                 <div class="relative md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                         <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
                             </path>
                         </svg>
                     </div>
-                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search" />
+                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        value="{{ request('search') }}"
+                        class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                        placeholder="Search" />
                 </div>
             </form>
         </div>
@@ -42,11 +47,12 @@
                     </tr>
                 </thead>
                 <tbody class="h-min-[300px]">
-                    @forelse ($barangs as $barang)
+                    @forelse ($goods as $barang)
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-3"></td>
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            <td scope="row"
+                                class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
                             </td>
                             <td class="px-4 py-3">{{ $barang->nama_barang }}</td>
@@ -59,26 +65,52 @@
                                 <td class="w-fit px-4 py-3">
                                     <div class="relative flex min-h-[40px] w-fit items-center justify-start">
                                         <div class="w-15 pointer-events-none invisible h-9 opacity-0">Placeholder</div>
-                                        <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            <button class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}" data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}" data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}" data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}" data-gambar="{{ $barang->gambar }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4" aria-hidden="true">
-                                                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
+                                        <div
+                                            class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                            <button
+                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                data-id="{{ $barang->id }}"
+                                                data-status="{{ $barang->status_listing }}"
+                                                data-kode="{{ $barang->kode_barang }}"
+                                                data-nama="{{ $barang->nama_barang }}"
+                                                data-kategori="{{ $barang->kategori }}"
+                                                data-stok="{{ $barang->stok }}" data-satuan="{{ $barang->satuan }}"
+                                                data-lokasi="{{ $barang->lokasi }}" data-harga="{{ $barang->harga }}"
+                                                data-deskripsi="{{ $barang->deskripsi }}"
+                                                data-gambar="{{ $barang->gambar }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-pencil h-4 w-4" aria-hidden="true">
+                                                    <path
+                                                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                    </path>
                                                     <path d="m15 5 4 4"></path>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
-                                            <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST"
+                                                style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="confirmDelete(() => this.closest('form').submit())">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4" aria-hidden="true">
+                                                <button type="button"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    onclick="confirmDelete(() => this.closest('form').submit())">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        class="lucide lucide-trash2 lucide-trash-2 h-4 w-4"
+                                                        aria-hidden="true">
                                                         <path d="M10 11v6"></path>
                                                         <path d="M14 11v6"></path>
                                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
                                                         <path d="M3 6h18"></path>
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
                                         </div>
@@ -91,26 +123,31 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->firstItem() ?? 0 }}-{{ $barangs->lastItem() ?? 0 }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $goods->firstItem() ?? 0 }}-{{ $goods->lastItem() ?? 0 }}</span>
                     of
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $barangs->total() ?? $barangs->count() }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $goods->total() ?? $goods->count() }}</span>
                 </span>
                 <form method="GET" action="{{ route('warehouse.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                    <select name="perPage" onchange="this.form.submit()"
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                            <option value="{{ $size }}"
+                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
                     </select>
                 </form>
                 <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
             <div>
-                {{ $barangs->links() }}
+                {{ $goods->links() }}
             </div>
         </nav>
 

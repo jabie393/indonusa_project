@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        Echo.channel("barangs").listen("BarangStatusUpdated", (e) => {
+        Echo.channel("goods").listen("BarangStatusUpdated", (e) => {
             // Determine title and text based on request type
             let title = "Barang Baru!";
             let text = `Ada barang baru yang perlu ditinjau. Total permintaan: ${e.barangCount}`;

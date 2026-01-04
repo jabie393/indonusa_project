@@ -9,8 +9,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::all();
-        return view('guest.order.product', compact('barangs'));
+        $goods = Barang::all();
+        return view('guest.order.product', compact('goods'));
     }
     public function barang($id)
     {

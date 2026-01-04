@@ -16,12 +16,12 @@ class ImportExcelController extends Controller
     // Tampilkan daftar barang (purchase request)
     public function index()
     {
-        $barangs = Barang::all();
+        $goods = Barang::all();
         $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
 
         $existingCodes = Barang::pluck('kode_barang')->toArray();
 
-        return view('admin.import-excel.index', compact('barangs', 'kategoriList', 'existingCodes'));
+        return view('admin.import-excel.index', compact('goods', 'kategoriList', 'existingCodes'));
     }
 
     // saat file diupload via AJAX -> simpan file & kembalikan preview

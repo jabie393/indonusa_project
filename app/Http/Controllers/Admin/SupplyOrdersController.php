@@ -13,10 +13,10 @@ class SupplyOrdersController extends Controller
     {
         $perPage = $request->input('perPage', 10); // Default to 10
         $query = $request->input('search');
-        $barangs = Barang::where('status_barang', 'ditinjau');
+        $goods = Barang::where('status_barang', 'ditinjau');
 
         if ($query) {
-            $barangs = $barangs->where(function ($q) use ($query) {
+            $goods = $goods->where(function ($q) use ($query) {
                 $q->where('nama_barang', 'like', "%{$query}%")
                     ->orWhere('kode_barang', 'like', "%{$query}%")
                     ->orWhere('lokasi', 'like', "%{$query}%")
@@ -25,8 +25,8 @@ class SupplyOrdersController extends Controller
             });
         }
 
-        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
-        return view('admin.supply-orders.index', compact('barangs'));
+        $goods = $goods->paginate($perPage)->appends($request->except('page'));
+        return view('admin.supply-orders.index', compact('goods'));
     }
 
     // Approve barang

@@ -13,17 +13,17 @@ class GoodsInStatusController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $barangs = Barang::whereIn('status_barang', ['ditinjau', 'ditolak']);
+        $goods = Barang::whereIn('status_barang', ['ditinjau', 'ditolak']);
 
         if ($query) {
-            $barangs = $barangs->where(function ($q) use ($query) {
+            $goods = $goods->where(function ($q) use ($query) {
                 $q->where('nama_barang', 'like', "%{$query}%")
                     ->orWhere('kode_barang', 'like', "%{$query}%")
                     ->orWhere('kategori', 'like', "%{$query}%");
             });
         }
-        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
-        return view('admin.goods-in-status.index', compact('barangs'));
+        $goods = $goods->paginate($perPage)->appends($request->except('page'));
+        return view('admin.goods-in-status.index', compact('goods'));
     }
 
     // Tampilkan detail barang

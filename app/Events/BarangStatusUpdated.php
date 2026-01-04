@@ -36,7 +36,7 @@ class BarangStatusUpdated implements ShouldBroadcastNow, ShouldDispatchAfterComm
     public function broadcastOn(): array
     {
         return [
-            new Channel('barangs'),
+            new Channel('goods'),
         ];
     }
 

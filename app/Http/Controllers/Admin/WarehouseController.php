@@ -13,29 +13,29 @@ class WarehouseController extends Controller
     {
         $perPage = $request->input('perPage', 10); // Default to 10 if not set
         $query = $request->input('search');
-        $barangs = Barang::where('status_barang', 'masuk');
+        $goods = Barang::where('status_barang', 'masuk');
 
         if ($query) {
-            $barangs = $barangs->where(function ($q) use ($query) {
+            $goods = $goods->where(function ($q) use ($query) {
                 $q->where('nama_barang', 'like', "%{$query}%")
                     ->orWhere('kode_barang', 'like', "%{$query}%")
                     ->orWhere('kategori', 'like', "%{$query}%");
             });
         }
 
-        $barangs = $barangs->paginate($perPage)->appends($request->except('page'));
+        $goods = $goods->paginate($perPage)->appends($request->except('page'));
         $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
 
         // Kirimkan barang pertama sebagai contoh (opsional)
-        $barang = $barangs->first();
+        $barang = $goods->first();
 
-        return view('admin.warehouse.index', compact('barangs', 'kategoriList', 'barang'));
+        return view('admin.warehouse.index', compact('goods', 'kategoriList', 'barang'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kode_barang' => 'required|string|max:255|unique:barangs,kode_barang',
+            'kode_barang' => 'required|string|max:255|unique:goods,kode_barang',
             'nama_barang' => 'required|string|max:255',
             'kategori' => 'required|string|max:255',
             'stok' => 'required|integer',

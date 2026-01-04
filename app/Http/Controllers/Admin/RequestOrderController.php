@@ -71,7 +71,7 @@ class RequestOrderController extends Controller
      */
     public function create()
     {
-        $barangs = Barang::where('tipe_request', 'primary')
+        $goods = Barang::where('tipe_request', 'primary')
             ->where('stok', '>', 0)
             ->orderBy('nama_barang')
             ->get();
@@ -80,7 +80,7 @@ class RequestOrderController extends Controller
             ->orderBy('nama_customer')
             ->get();
 
-        // Get unique categories from barangs
+        // Get unique categories from goods
         $categories = Barang::distinct()
             ->whereNotNull('kategori')
             ->where('kategori', '!=', '')
@@ -93,7 +93,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.create', compact('barangs', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
+        return view('admin.sales.request-order.create', compact('goods', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
     }
 
     /**
@@ -109,7 +109,7 @@ class RequestOrderController extends Controller
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'required|integer|exists:barangs,id',
+            'barang_id.*' => 'required|integer|exists:goods,id',
             'kategori_barang' => 'required|array|min:1',
             'kategori_barang.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',
@@ -360,7 +360,7 @@ class RequestOrderController extends Controller
             }
         }
 
-        $barangs = Barang::where('tipe_request', 'primary')
+        $goods = Barang::where('tipe_request', 'primary')
             ->where('stok', '>', 0)
             ->orderBy('nama_barang')
             ->get();
@@ -376,7 +376,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.edit', compact('requestOrder', 'barangs', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
+        return view('admin.sales.request-order.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
     /**
@@ -401,7 +401,7 @@ class RequestOrderController extends Controller
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'required|integer|exists:barangs,id',
+            'barang_id.*' => 'required|integer|exists:goods,id',
             'kategori_barang' => 'required|array|min:1',
             'kategori_barang.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',

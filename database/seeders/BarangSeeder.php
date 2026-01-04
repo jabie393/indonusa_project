@@ -9,7 +9,7 @@ class BarangSeeder extends Seeder
 {
     public function run(): void
     {
-        $barangs = [
+        $goods = [
             [
                 'tipe_request' => 'primary',
                 'kode_barang' => 'MSC-38274',
@@ -126,7 +126,7 @@ class BarangSeeder extends Seeder
             ],
         ];
 
-        foreach ($barangs as $barang) {
+        foreach ($goods as $barang) {
             Barang::create($barang);
         }
     }

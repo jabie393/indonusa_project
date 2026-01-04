@@ -9,7 +9,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::all();
-        return view('guest.order.index', compact('barangs'));
+        $goods = Barang::all();
+        return view('guest.order.index', compact('goods'));
     }
 }

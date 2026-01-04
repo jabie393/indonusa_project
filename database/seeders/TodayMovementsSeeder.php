@@ -14,8 +14,8 @@ class TodayMovementsSeeder extends Seeder
         $faker = Faker::create();
 
         // pastikan ada beberapa barang untuk direferensi
-        $barangs = DB::table('barangs')->get();
-        if ($barangs->isEmpty()) {
+        $goods = DB::table('goods')->get();
+        if ($goods->isEmpty()) {
             $sample = [];
             for ($i = 1; $i <= 5; $i++) {
                 $sample[] = [
@@ -30,8 +30,8 @@ class TodayMovementsSeeder extends Seeder
                     'updated_at'  => now(),
                 ];
             }
-            DB::table('barangs')->insert($sample);
-            $barangs = DB::table('barangs')->get();
+            DB::table('goods')->insert($sample);
+            $goods = DB::table('goods')->get();
         }
 
         $userIds = DB::table('users')->pluck('id')->toArray();
@@ -39,7 +39,7 @@ class TodayMovementsSeeder extends Seeder
 
         // buat beberapa history 'masuk' hari ini
         $inserts = [];
-        foreach ($barangs->random(min(3, $barangs->count())) as $b) {
+        foreach ($goods->random(min(3, $goods->count())) as $b) {
             $inserts[] = [
                 'barang_id'   => $b->id,
                 'kode_barang' => $b->kode_barang,
@@ -61,7 +61,7 @@ class TodayMovementsSeeder extends Seeder
         }
 
         // buat beberapa history 'keluar' hari ini
-        foreach ($barangs->random(min(3, $barangs->count())) as $b) {
+        foreach ($goods->random(min(3, $goods->count())) as $b) {
             $inserts[] = [
                 'barang_id'   => $b->id,
                 'kode_barang' => $b->kode_barang,

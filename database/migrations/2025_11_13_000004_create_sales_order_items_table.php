@@ -25,7 +25,7 @@ return new class extends Migration
 
             $table->foreign('sales_order_id')->references('id')->on('sales_orders')->onDelete('cascade');
             $table->foreign('request_order_item_id')->references('id')->on('request_order_items')->onDelete('set null');
-            $table->foreign('barang_id')->references('id')->on('barangs')->onDelete('cascade');
+            $table->foreign('barang_id')->references('id')->on('goods')->onDelete('cascade');
         });
     }
 

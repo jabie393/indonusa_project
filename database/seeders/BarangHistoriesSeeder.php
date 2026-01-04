@@ -17,14 +17,14 @@ class BarangHistoriesSeeder extends Seeder
         $faker = Faker::create();
 
         // ambil data barang & users (jika ada) untuk membuat relasi realistis
-        $barangs = DB::table('barangs')->get();
+        $goods = DB::table('goods')->get();
         $userIds = DB::table('users')->pluck('id')->toArray();
 
         $newStatuses = ['ditinjau', 'masuk', 'ditolak', 'dihapus', 'keluar'];
         $oldStatuses = ['ditinjau', 'masuk', 'ditolak', null];
 
         for ($i = 0; $i < 50; $i++) {
-            $barang = $barangs->isNotEmpty() ? $barangs->random() : null;
+            $barang = $goods->isNotEmpty() ? $goods->random() : null;
 
             DB::table('barang_histories')->insert([
                 'barang_id'    => $barang->id ?? null,

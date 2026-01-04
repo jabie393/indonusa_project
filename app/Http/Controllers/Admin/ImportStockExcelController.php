@@ -16,10 +16,10 @@ class ImportStockExcelController extends Controller
     // Tampilkan daftar barang (purchase request)
     public function index()
     {
-        $barangs = Barang::all();
+        $goods = Barang::all();
         $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
 
-        return view('admin.import-stock-excel.index', compact('barangs', 'kategoriList'));
+        return view('admin.import-stock-excel.index', compact('goods', 'kategoriList'));
     }
 
     // Export data barang dengan status masuk

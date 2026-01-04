@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('barangs', function (Blueprint $table) {
+        Schema::table('goods', function (Blueprint $table) {
             // Diskon sebagai persentase (mis. 11 = 10%)
             $table->unsignedSmallInteger('diskon_percent')->default(0)->after('harga');
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('barangs', function (Blueprint $table) {
+        Schema::table('goods', function (Blueprint $table) {
             $table->dropColumn('diskon_percent');
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('barang_id'); // refer ke tabel barangs (jika ada)
+            $table->unsignedBigInteger('barang_id'); // refer ke tabel goods (jika ada)
             $table->integer('quantity')->default(1);
             $table->timestamps();
         });
