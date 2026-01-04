@@ -10,12 +10,25 @@ use Illuminate\Support\Facades\Validator;
 
 class PicsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil semua data dari tabel pics
-        $pics = Pic::all();
+        $perPage = $request->input('perPage', 10);
+        $search = $request->input('search');
 
-        // Kirim data ke view
+        $query = Pic::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('position', 'like', "%{$search}%");
+            });
+        }
+
+        $pics = $query->paginate($perPage);
+        $pics->appends(['search' => $search, 'perPage' => $perPage]);
+
         return view('admin.pics.index', compact('pics'));
     }
 

@@ -1,17 +1,7 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-6 md:flex-row md:space-x-4 md:space-y-0">
-            <div class="px-6 text-gray-900 dark:text-gray-100">
-                <h1 class="text-xl font-bold text-gray-900 dark:text-gray-100">
-                    Halo, {{ Auth::user()->name }} (
-                    <span class="font-semibold text-gray-900 dark:text-gray-100">
-                        {{ Auth::user()->role ?? 'User' }}
-                    </span> )
-                </h1>
-                <p class="mt-2 text-gray-700 dark:text-gray-300">
-                    {{ __('Selamat datang di Dashboard!') }}
-                </p>
-            </div>
+
 
             <!-- FILTER FORM -->
             <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">

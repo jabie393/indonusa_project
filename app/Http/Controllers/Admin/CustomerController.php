@@ -12,17 +12,34 @@ use Illuminate\Support\Facades\Schema;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // If pivot table doesn't exist yet (migrations not run), avoid eager-loading to prevent SQL errors
+        $perPage = $request->input('perPage', 10);
+        $search = $request->input('search');
+
+        $query = Customer::query();
+
         if (Schema::hasTable('customer_pics')) {
-            $customers = Customer::with('pics', 'users')->get(); // Mengambil semua data customer dari database beserta relasi pics dan users
-        } else {
-            $customers = Customer::all();
+            $query->with('pics', 'users');
         }
 
-        $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
-        $pics = DB::table('pics')->get(); // Mengambil data dari tabel pics
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_customer', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('npwp', 'like', "%{$search}%")
+                  ->orWhere('telepon', 'like', "%{$search}%")
+                  ->orWhere('alamat', 'like', "%{$search}%")
+                  ->orWhere('tipe_customer', 'like', "%{$search}%")
+                  ->orWhere('kota', 'like', "%{$search}%");
+            });
+        }
+
+        $customers = $query->paginate($perPage);
+        $customers->appends(['search' => $search, 'perPage' => $perPage]);
+
+        $salesUsers = User::where('role', 'Sales')->get();
+        $pics = DB::table('pics')->get();
 
         return view('admin.customer.index', compact('customers', 'salesUsers', 'pics'));
     }

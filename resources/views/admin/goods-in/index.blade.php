@@ -1,13 +1,10 @@
 <x-app-layout>
     <div class="relative h-full overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
-            <div>
-                <h2 class="mr-3 font-semibold text-white">Goods In</h2>
-            </div>
         </div>
 
         <div class="">
-            <div class="flex flex-col flex-wrap items-center justify-center gap-6 p-8 sm:flex-row sm:gap-8">
+            <div class="flex flex-col flex-wrap items-center justify-center gap-6 p-8 sm:flex-row sm:gap-8 ">
                 <!-- Tambah Barang (Manual) -->
                 <button onclick="tambahBarang.showModal()" class="group relative flex h-56 w-full max-w-[220px] cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
                     <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>

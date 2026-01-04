@@ -40,10 +40,26 @@ class RequestOrderController extends Controller
             ->where('sales_id', Auth::id())
             ->update(['status' => 'expired']);
 
-        $requestOrders = RequestOrder::with('items.barang', 'sales')
-            ->where('sales_id', Auth::id())
-            ->latest()
-            ->paginate(20);
+        $query = RequestOrder::with('items.barang', 'sales')
+            ->where('sales_id', Auth::id());
+
+        if ($search = request('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('request_number', 'like', "%{$search}%")
+                    ->orWhere('nomor_penawaran', 'like', "%{$search}%")
+                    ->orWhere('sales_order_number', 'like', "%{$search}%")
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhere('catatan_customer', 'like', "%{$search}%")
+                    ->orWhere('kategori_barang', 'like', "%{$search}%")
+                    ->orWhere('grand_total', 'like', "%{$search}%");
+            });
+        }
+
+        $requestOrders = $query->latest()
+            ->paginate(request('perPage', 20))
+            ->withQueryString();
 
         return view('admin.sales.request-order.index', compact('requestOrders'));
     }

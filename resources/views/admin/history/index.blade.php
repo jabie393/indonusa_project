@@ -1,34 +1,32 @@
 <x-app-layout>
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
-        <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div>
-                <h2 class="mr-3 font-semibold text-white">Riwayat Perubahan Barang</h2>
-            </div>
-            <div class="flex w-full flex-col py-5 md:w-auto md:flex-row md:py-0">
-                <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
-                    {{-- Search --}}
-                    <form action="{{ route('history.index') }}" method="GET" class="block pl-2">
-                        <label for="topbar-search" class="sr-only">Search</label>
-                        <div class="relative md:w-64 md:w-96">
-                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                                    </path>
-                                </svg>
-                            </div>
-                            <input type="search" name="search" id="topbar-search" aria-controls="historyTable" value="{{ request('search') }}"
-                                class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                                placeholder="Search by kode, name, category, note or user" />
-                        </div>
-                    </form>
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+
+        <div class="p-4">
+            {{-- Search --}}
+            <form action="{{ route('history.index') }}" method="GET" class="block pl-2">
+                <label for="topbar-search" class="sr-only">Search</label>
+                <div class="relative md:w-64 md:w-96">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <input type="search" name="search" id="topbar-search" aria-controls="historyTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search by kode, name, category, note or user" />
                 </div>
-            </div>
+            </form>
+        </div>
+
+    </div>
+
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="w-full hover text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-3"></th>
+                        <th class="selectCol px-4 py-3"></th>
                         <th class="px-4 py-3">Tanggal</th>
                         <th class="px-4 py-3">Kode Barang</th>
                         <th class="px-4 py-3">Nama Barang</th>
