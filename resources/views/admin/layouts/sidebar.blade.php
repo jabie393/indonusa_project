@@ -392,8 +392,7 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('sales.request-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Request
-                                    Order (Penawaran)</span>
+                                    class="{{ request()->routeIs('sales.request-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Penawaran</span>
                             </a>
                         </li>
 
