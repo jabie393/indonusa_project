@@ -83,7 +83,7 @@ class TodayMovementsSeeder extends Seeder
         }
 
         if (!empty($inserts)) {
-            DB::table('barang_histories')->insert($inserts);
+            DB::table('goods_histories')->insert($inserts);
         }
     }
 }
