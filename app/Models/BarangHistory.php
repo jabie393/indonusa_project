@@ -8,7 +8,7 @@ use App\Models\User;
 
 class BarangHistory extends Model
 {
-    protected $table = 'barang_histories';
+    protected $table = 'goods_histories';
 
     protected $fillable = [
         'barang_id',

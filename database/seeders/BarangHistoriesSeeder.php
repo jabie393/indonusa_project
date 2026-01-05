@@ -26,7 +26,7 @@ class BarangHistoriesSeeder extends Seeder
         for ($i = 0; $i < 50; $i++) {
             $barang = $goods->isNotEmpty() ? $goods->random() : null;
 
-            DB::table('barang_histories')->insert([
+            DB::table('goods_histories')->insert([
                 'barang_id'    => $barang->id ?? null,
                 'kode_barang'  => $barang->kode_barang ?? 'KD' . $faker->unique()->numerify('###'),
                 'nama_barang'  => $barang->nama_barang ?? $faker->word(),

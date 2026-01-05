@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('barang_histories', function (Blueprint $table) {
+        Schema::create('goods_histories', function (Blueprint $table) {
             $table->id();
 
             // Relasi ke tabel barang (bisa null jika barang sudah dihapus)
@@ -53,6 +53,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('barang_histories');
+        Schema::dropIfExists('goods_histories');
     }
 };
