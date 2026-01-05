@@ -157,6 +157,30 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="no_po" class="form-label dark:text-gray-300">No. PO</label>
+                                <input type="text"
+                                    class="@error('no_po') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="no_po" name="no_po" value="{{ old('no_po', $requestOrder->no_po) }}"
+                                    placeholder="Masukkan No. PO">
+                                @error('no_po')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted dark:text-gray-400">Nomor Purchase Order</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
+                                <label for="sales_order_number" class="form-label dark:text-gray-300">No. SO</label>
+                                <input type="text"
+                                    class="@error('sales_order_number') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="sales_order_number" name="sales_order_number" value="{{ old('sales_order_number', $requestOrder->sales_order_number) }}"
+                                    placeholder="Masukkan No. SO">
+                                @error('sales_order_number')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted dark:text-gray-400">Nomor Sales Order</small>
+                            </div>
+
+                            <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="tanggal_kebutuhan" class="form-label dark:text-gray-300">Tanggal
                                     Kebutuhan</label>
                                 <input type="date"

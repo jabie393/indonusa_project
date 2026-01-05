@@ -12,6 +12,7 @@ class RequestOrder extends Model
         'request_number',
         'nomor_penawaran',
         'sales_order_number',
+        'no_po',
         'sales_id',
         'customer_name',
         'customer_id',
