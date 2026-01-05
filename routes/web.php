@@ -182,6 +182,9 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-penawaran.destroy');
     Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
     Route::post('/custom-penawaran/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-penawaran.sent-to-warehouse');
+
+    // Customer Routes
+    Route::resource('/sales/customer', CustomerController::class)->names('sales.customer');
 });
 // End of Sales
 
