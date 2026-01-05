@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminPTController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\CustomPenawaranController;
+use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\ImportStockExcelController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
@@ -182,6 +183,15 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-penawaran.destroy');
     Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
     Route::post('/custom-penawaran/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-penawaran.sent-to-warehouse');
+
+    // Sales Order Routes
+    Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
+    Route::get('/sales-order/create', [SalesOrderController::class, 'create'])->name('sales.sales-order.create');
+    Route::post('/sales-order', [SalesOrderController::class, 'store'])->name('sales.sales-order.store');
+    Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
+    Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
+    Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
+    Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
 
     // Customer Routes
     Route::resource('/sales/customer', CustomerController::class)->names('sales.customer');

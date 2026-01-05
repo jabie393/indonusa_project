@@ -417,6 +417,26 @@
                             </a>
                         </li>
 
+                        {{-- Sales Order --}}
+                        <li class="w-[75%]">
+                            <a href="{{ route('sales.sales-order.index') }}"
+                                class="{{ request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    <path
+                                        d="M15 2C8.37256 2 3 7.37256 3 14C3 20.6274 8.37256 26 15 26C21.6274 26 27 20.6274 27 14C27 7.37256 21.6274 2 15 2ZM15 4C20.5228 4 25 8.47715 25 14C25 19.5228 20.5228 24 15 24C9.47715 24 5 19.5228 5 14C5 8.47715 9.47715 4 15 4Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M13 10C13 9.44772 13.4477 9 14 9H16C16.5523 9 17 9.44772 17 10V14.5858L18.293 13.293C18.6835 12.9024 19.3166 12.9024 19.7071 13.293C20.0976 13.6835 20.0976 14.3166 19.7071 14.7071L15.707 18.707C15.3165 19.0975 14.6834 19.0975 14.2929 18.707L10.293 14.707C9.90245 14.3165 9.90245 13.6834 10.293 13.293C10.6835 12.9024 11.3166 12.9024 11.707 13.293L13 14.586V10Z"
+                                        fill="currentColor" />
+                                </svg>
+
+                                <span
+                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales Order (SO)</span>
+                            </a>
+                        </li>
+
                         {{-- Customer Management
                         <li class="w-[75%]">
                             <a href="{{ route('sales.customer.index') }}"
