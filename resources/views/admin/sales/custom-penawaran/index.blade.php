@@ -113,6 +113,7 @@
                                     $statusClass =
                                         [
                                             'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
                                             'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
                                             'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
                                             'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
@@ -123,6 +124,7 @@
                                     $statusLabel =
                                         [
                                             'draft' => 'Draft',
+                                            'pending_approval' => 'Menunggu Approve Supervisor',
                                             'open' => 'Open',
                                             'sent' => 'Terkirim',
                                             'approved' => 'Disetujui/Open',
@@ -135,11 +137,6 @@
                                     <span class="{{ $statusClass }} badge">
                                         {{ $statusLabel }}
                                     </span>
-                                    @if ($penawaran->status === 'sent' && $hasHighDiscountStatus)
-                                        <span
-                                            class="badge inset-ring inset-ring-blue-700 bg-blue-50 text-blue-700">Menunggu
-                                            Approval</span>
-                                    @endif
                                 </div>
                             </td>
                             <td class="w-fit px-4 py-3 text-right">
@@ -237,7 +234,7 @@
                                                         ->isNotEmpty();
                                                     $isExpired = $penawaran->isExpired();
                                                 @endphp
-                                                @if ((!$hasHighDiscount || $penawaran->status === 'approved') && !$isExpired)
+                                                @if ($penawaran->status === 'open' && !$isExpired)
                                                     <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}"
                                                         target="_blank"
                                                         class="flex items-center gap-2 text-green-600 hover:bg-green-50">

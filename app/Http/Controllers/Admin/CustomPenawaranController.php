@@ -91,16 +91,6 @@ class CustomPenawaranController extends Controller
 
         DB::beginTransaction();
         try {
-            $needApproval = false;
-            foreach ($validated['items'] as $i => $itemData) {
-                if ($itemData['diskon'] > 20) {
-                    $needApproval = true;
-                    if (empty($itemData['keterangan'])) {
-                        throw new \Exception('Keterangan wajib diisi jika diskon lebih dari 20%.');
-                    }
-                }
-            }
-
             $penawaran = CustomPenawaran::create([
                 'sales_id' => Auth::id(),
                 'penawaran_number' => CustomPenawaran::generatePenawaranNumber(),
@@ -112,7 +102,7 @@ class CustomPenawaranController extends Controller
                 'date' => $validated['date'],
                 'intro_text' => $validated['intro_text'] ?? null,
                 'tax' => $validated['tax'] ?? 0,
-                'status' => $needApproval ? 'sent' : 'open',
+                'status' => 'pending_approval',
             ]);
 
             // Set expired_at to 14 days from created_at
@@ -341,7 +331,7 @@ class CustomPenawaranController extends Controller
     {
         // Role check is already done by route middleware 'role:Supervisor'
         $action = $request->input('action');
-            if ($customPenawaran->status !== 'sent') {
+            if ($customPenawaran->status !== 'pending_approval') {
                 return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
             }
             $userRole = trim(strtolower(Auth::user()->role ?? ''));
@@ -350,7 +340,9 @@ class CustomPenawaranController extends Controller
                 abort(403);
             }
         if ($action === 'approve') {
-            $customPenawaran->status = 'approved';
+            $customPenawaran->status = 'open';
+            $customPenawaran->approved_by = Auth::id();
+            $customPenawaran->approved_at = now();
             // clear any previous reason on approval
             $customPenawaran->reason = null;
             $customPenawaran->save();
@@ -376,14 +368,12 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
-        // If there is any item with diskon > 20% and the penawaran is not approved,
-        // disallow PDF generation for Sales users (Supervisor/Admin can still view).
-        $hasHighDiscount = $customPenawaran->items()->where('diskon', '>', 20)->exists();
-        if ($hasHighDiscount && $customPenawaran->status !== 'approved') {
+        // If status is not open, disallow PDF generation for Sales users (Supervisor/Admin can still view).
+        if ($customPenawaran->status !== 'open') {
             // If the current user is Supervisor or Admin allow viewing (they can inspect),
             // otherwise deny/redirect back for Sales until approval.
             if (!in_array($userRole, $allowed)) {
-                return back()->withErrors('PDF hanya dapat di-generate setelah permintaan diskon disetujui oleh Supervisor.');
+                return back()->withErrors('PDF hanya dapat di-generate setelah penawaran disetujui oleh Supervisor.');
             }
         }
 
@@ -555,5 +545,15 @@ class CustomPenawaranController extends Controller
             return response()->json(['success' => true, 'count' => $successCount]);
         }
         return response()->json(['success' => false, 'message' => 'No items were processed.']);
+    }
+
+    public function supervisorIndex()
+    {
+        $customPenawarans = CustomPenawaran::where('status', 'pending_approval')
+            ->with('items', 'sales')
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.supervisor.custom-penawaran.index', compact('customPenawarans'));
     }
 }

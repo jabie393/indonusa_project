@@ -23,11 +23,14 @@ class CustomPenawaran extends Model
         'grand_total',
         'status',
         'reason',
+        'approved_by',
+        'approved_at',
     ];
 
     protected $casts = [
         'date' => 'date',
         'expired_at' => 'datetime',
+        'approved_at' => 'datetime',
         'subtotal' => 'decimal:2',
         'tax' => 'decimal:2',
         'grand_total' => 'decimal:2',
