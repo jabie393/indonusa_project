@@ -121,7 +121,7 @@
     </div>
 
     <!-- Modals -->
-    @include('components.add-stock-edit')
+    @include('admin.add-stock.partials.add-stock-modal')
 
     <!-- Js -->
     @vite(['resources/js/add-stock.js'])
