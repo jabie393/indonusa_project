@@ -6,13 +6,25 @@ use App\Models\Barang;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithEvents
+class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithColumnFormatting
 {
+    /**
+     * @return array
+     */
+    public function columnFormats(): array
+    {
+        return [
+            'E' => '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)',
+        ];
+    }
+
     /**
      * @return array
      */
@@ -23,6 +35,7 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
             'Nama Barang',
             'Kategori',
             'Stok',
+            'Harga Beli',
         ];
     }
 
@@ -39,7 +52,8 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
                     $barang->kode_barang,
                     $barang->nama_barang,
                     $barang->kategori,
-                    '',
+                    '', // Stok (empty for user to fill)
+                    '', // Harga Beli (empty for user to fill)
                 ];
             });
     }
@@ -74,7 +88,7 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
                 $table = new \PhpOffice\PhpSpreadsheet\Worksheet\Table(
-                    "A1:D{$highestRow}",
+                    "A1:E{$highestRow}",
                     'BarangTable'
                 );
                 $sheet->addTable($table);
