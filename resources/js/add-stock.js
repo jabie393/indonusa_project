@@ -1,19 +1,31 @@
-
-function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, stok, satuan, lokasi, harga, deskripsi = '', gambar = null) {
+function openEditModal(
+    id,
+    status_listing,
+    kode_barang,
+    nama_barang,
+    kategori,
+    stok,
+    satuan,
+    lokasi,
+    harga,
+    deskripsi = "",
+    gambar = null
+) {
     // Set data ke elemen modal (bukan input)
-    document.getElementById('kode_barang').textContent = kode_barang ?? '-';
-    document.getElementById('nama_barang').textContent = nama_barang ?? '-';
-    document.getElementById('kategori').textContent = kategori ?? '-';
-    document.getElementById('lokasi').textContent = lokasi ?? '-';
-    document.getElementById('status_listing').textContent = status_listing ?? '-';
-    document.getElementById('harga').textContent = harga ?? '-';
-    document.getElementById('satuan').textContent = satuan ?? '-';
-    document.getElementById('current_stok').textContent = stok ?? '-';
-    document.getElementById('deskripsi').textContent = deskripsi ?? '-';
+    document.getElementById("kode_barang").textContent = kode_barang ?? "-";
+    document.getElementById("nama_barang").textContent = nama_barang ?? "-";
+    document.getElementById("kategori").textContent = kategori ?? "-";
+    document.getElementById("lokasi").textContent = lokasi ?? "-";
+    document.getElementById("status_listing").textContent =
+        status_listing ?? "-";
+    document.getElementById("harga").textContent = harga ?? "-";
+    document.getElementById("satuan").textContent = satuan ?? "-";
+    document.getElementById("current_stok").textContent = stok ?? "-";
+    document.getElementById("deskripsi").textContent = deskripsi ?? "-";
 
     // Preview gambar jika ada
-    const gambarPreview = document.getElementById('gambar_preview');
-    if (gambar && gambar !== '') {
+    const gambarPreview = document.getElementById("gambar_preview");
+    if (gambar && gambar !== "") {
         gambarPreview.innerHTML = `<img src="files/${gambar}" alt="Gambar Barang" class="h-48 w-48 object-cover rounded-lg" />`;
     } else {
         gambarPreview.innerHTML = `
@@ -41,16 +53,17 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
     }
 
     // Set value untuk form update stok
-    document.getElementById('id').value = id;
-    document.getElementById('stok').value = '';
+    document.getElementById("id").value = id;
+    document.getElementById("stok").value = "";
+    document.getElementById("unit_cost").value = "";
 
     // Set form action (jika perlu)
     // console.log('Form action:', '/add-stock/' + id);
-    document.getElementById('tambahStockForm').action = '/add-stock/' + id;
+    document.getElementById("tambahStockForm").action = "/add-stock/" + id;
 
     // Show modal
-    const modal = document.getElementById('editBarangModal');
-    if (modal && typeof modal.showModal === 'function') {
+    const modal = document.getElementById("editBarangModal");
+    if (modal && typeof modal.showModal === "function") {
         modal.showModal();
     }
 }
@@ -58,22 +71,33 @@ function openEditModal(id, status_listing, kode_barang, nama_barang, kategori, s
 window.openEditModal = openEditModal;
 
 // Delegated event handler
-$(document).on('click', '.edit-barang-btn', function (e) {
+$(document).on("click", ".edit-barang-btn", function (e) {
     e.preventDefault();
 
     // Get data attributes
-    const id = $(this).data('id');
-    const status = $(this).data('status');
-    const kode = $(this).data('kode');
-    const nama = $(this).data('nama');
-    const kategori = $(this).data('kategori');
-    const stok = $(this).data('stok');
-    const satuan = $(this).data('satuan');
-    const lokasi = $(this).data('lokasi');
-    const harga = $(this).data('harga');
-    const deskripsi = $(this).data('deskripsi');
-    const gambar = $(this).data('gambar');
+    const id = $(this).data("id");
+    const status = $(this).data("status");
+    const kode = $(this).data("kode");
+    const nama = $(this).data("nama");
+    const kategori = $(this).data("kategori");
+    const stok = $(this).data("stok");
+    const satuan = $(this).data("satuan");
+    const lokasi = $(this).data("lokasi");
+    const harga = $(this).data("harga");
+    const deskripsi = $(this).data("deskripsi");
+    const gambar = $(this).data("gambar");
 
-    openEditModal(id, status, kode, nama, kategori, stok, satuan, lokasi, harga, deskripsi, gambar);
-
+    openEditModal(
+        id,
+        status,
+        kode,
+        nama,
+        kategori,
+        stok,
+        satuan,
+        lokasi,
+        harga,
+        deskripsi,
+        gambar
+    );
 });

@@ -39,11 +39,13 @@ class GoodsInStatusController extends Controller
         $barang = Barang::findOrFail($id);
 
         if ($request->has('stok') && !$request->has('nama_barang')) {
-            // hanya update stok
+            // update stok & harga (untuk request baru/penambahan stok)
             $request->validate([
                 'stok' => 'required|integer',
+                'harga' => 'required|numeric|min:0',
             ]);
             $barang->stok = $request->stok;
+            $barang->harga = $request->harga; // Simpan harga beli baru
             $barang->status_barang = 'ditinjau'; // ubah status_barang
             $barang->catatan = null; // kosongkan kolom catatan
             $barang->save();

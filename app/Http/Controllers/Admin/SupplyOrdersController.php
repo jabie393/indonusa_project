@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Illuminate\Support\Facades\Auth;
 
 class SupplyOrdersController extends Controller
 {
@@ -87,6 +88,16 @@ class SupplyOrdersController extends Controller
         if ($barang->tipe_request == 'primary') {
             $barang->status_barang = 'masuk';
             $barang->save();
+
+            // Buat record GoodsReceipt untuk barang baru
+            \App\Models\GoodsReceipt::create([
+                'good_id' => $barang->id,
+                'supplier_id' => $barang->form, // User yang input (GA)
+                'received_at' => now(),
+                'approved_by' => Auth::id(), // User yang approve (Warehouse)
+                'quantity' => $barang->stok,
+                'unit_cost' => $barang->harga,
+            ]);
         } elseif ($barang->tipe_request == 'new_stock') {
             $kodeUtama = explode('#', $barang->kode_barang)[0];
             $barangUtama = Barang::where('kode_barang', $kodeUtama)
@@ -97,6 +108,16 @@ class SupplyOrdersController extends Controller
                 $barangUtama->stok += $barang->stok;
                 $barangUtama->save();
             }
+
+            // Buat record GoodsReceipt
+            \App\Models\GoodsReceipt::create([
+                'good_id' => $barangUtama ? $barangUtama->id : $barang->id,
+                'supplier_id' => $barang->form, // User yang input (GA)
+                'received_at' => now(),
+                'approved_by' => Auth::id(), // User yang approve (Warehouse)
+                'quantity' => $barang->stok,
+                'unit_cost' => $barang->harga,
+            ]);
 
             $barang->status_barang = 'masuk';
             $barang->save();

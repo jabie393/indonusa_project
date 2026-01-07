@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('good_id');
             $table->unsignedBigInteger('supplier_id'); // Relasi ke users (Role: General Affair)
             $table->timestamp('received_at');
-            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('approved_by');
             $table->integer('quantity');
             $table->decimal('unit_cost', 15, 2); // CATATAN harga beli
             $table->timestamps();
@@ -23,7 +23,7 @@ return new class extends Migration {
             // Foreign keys
             $table->foreign('good_id')->references('id')->on('goods')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

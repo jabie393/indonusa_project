@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const progressSection = document.getElementById("progress-section");
     const progressBar = document.getElementById("progress-bar");
     const progressText = document.getElementById("progress-text");
-    const uploadArea = document.getElementById("upload-area");
     const uploadLabel = document.getElementById("upload-label");
     const uploadResult = document.getElementById("upload-result");
     const importFilePathInput = document.getElementById("import_file_path");
@@ -38,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
         map["nama_barang"] = 1;
         map["kategori"] = 2;
         map["stok"] = 3;
+        map["harga"] = 4;
 
         // Mapping sudah hardcode, skip ensure unique
 
@@ -65,7 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!Array.isArray(headers))
             return { valid: false, missing: [], extra: [] };
 
-        const required = ["KODE BARANG", "NAMA BARANG", "KATEGORI", "STOK"];
+        const required = [
+            "KODE BARANG",
+            "NAMA BARANG",
+            "KATEGORI",
+            "STOK",
+            "HARGA BELI",
+        ];
 
         const upperHeaders = headers.map((h) => String(h).trim().toUpperCase());
 
@@ -85,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // helper: remove completely empty rows and trim each row to headers length
     // helper: remove completely empty rows and trim each row to headers length
     function cleanRows(rows, headers) {
         if (!Array.isArray(rows)) return [];
@@ -157,9 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             // fallback template
             baseRow = document.createElement("tr");
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 6; i++) {
                 const td = document.createElement("td");
-                if (i === 4) {
+                if (i === 5) {
                     const btn = document.createElement("button");
                     btn.type = "button";
                     btn.className =
@@ -359,8 +364,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 4: aksi
-            const aksiTd = newRow.children[4];
+            // 4: harga
+            const tdHarga = newRow.children[4];
+            if (tdHarga) {
+                let inp = tdHarga.querySelector("input");
+                if (!inp) {
+                    inp = document.createElement("input");
+                    inp.type = "number";
+                    tdHarga.appendChild(inp);
+                }
+                const v = getVal("harga") || "";
+                inp.value = v;
+
+                if (isKnown) {
+                    const hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = `rows[${rowIndex}][harga]`;
+                    hidden.value = v;
+                    tdHarga.appendChild(hidden);
+                } else {
+                    inp.readOnly = true;
+                    inp.classList.add(
+                        "border-red-500",
+                        "focus:border-red-500",
+                        "focus:ring-red-500",
+                        "cursor-not-allowed",
+                        "bg-gray-100",
+                        "dark:bg-gray-700",
+                        "text-gray-500"
+                    );
+                    inp.title = "Barang belum terdaftar";
+                }
+            }
+
+            // 5: aksi
+            const aksiTd = newRow.children[5];
             if (aksiTd) {
                 const removeBtn = aksiTd.querySelector("button.remove-row");
                 if (removeBtn) {
@@ -378,12 +416,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // Add all rows using the requested API and add the 'new' class
-        dt.rows
-            .add(newRows)
-            .draw()
-            .nodes()
-            .to$()
-            .addClass("new");
+        dt.rows.add(newRows).draw().nodes().to$().addClass("new");
 
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
@@ -497,7 +530,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // STRICT VALIDATION
                         const valResult = validateHeaders(resp.headers);
                         if (!valResult.valid) {
-                            let errorHtml = `File Excel harus MEMILIKI kolom PERSIS berikut:<br><b>KODE BARANG, NAMA BARANG, KATEGORI, STOK</b>.<br><br>`;
+                            let errorHtml = `File Excel harus MEMILIKI kolom PERSIS berikut:<br><b>KODE BARANG, NAMA BARANG, KATEGORI, STOK, HARGA BELI</b>.<br><br>`;
 
                             if (valResult.missing.length > 0) {
                                 errorHtml += `Kolom yang hilang: <span class="text-red-500 font-bold">${valResult.missing.join(
@@ -748,8 +781,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 case 3:
                     fieldName = "stok";
                     break;
+                case 4:
+                    fieldName = "harga";
+                    break;
                 default:
-                    return; // skip kode_barang (0), aksi (4)
+                    return; // skip kode_barang (0), aksi (5)
             }
 
             const value = (inp.value || "").toString().trim();

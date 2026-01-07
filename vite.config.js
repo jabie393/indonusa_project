@@ -10,6 +10,7 @@ export default defineConfig({
                 "node_modules/flowbite/dist/flowbite.min.js",
                 "resources/js/add-stock.js",
                 "resources/js/sweetalert.js",
+                "resources/js/goods-receipts.js",
                 "resources/js/warehouse.js",
                 "resources/js/goods-in-status.js",
                 "resources/js/supply-orders.js",

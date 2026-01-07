@@ -142,6 +142,7 @@ class ImportStockExcelController extends Controller
                     }
 
                     $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
+                    $harga = isset($r['harga']) ? (float)$r['harga'] : 0;
 
                     // Cek apakah barang dengan kode tersebut sudah ada
                     $existingBarang = Barang::where('kode_barang', $kode)->first();
@@ -151,6 +152,7 @@ class ImportStockExcelController extends Controller
                         // Copy data baru dengan stok baru dan status_barang 'ditinjau'
                         $copyData = $existingBarang->replicate();
                         $copyData->stok = $stok;
+                        $copyData->harga = $harga;
                         $copyData->status_barang = 'ditinjau';
                         $copyData->tipe_request = 'new_stock';
                         $copyData->form = Auth::id();
