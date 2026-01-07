@@ -2,6 +2,9 @@
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-4">
+            <a href="{{ route('sales.custom-penawaran.create') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                + Buat Penawaran Baru
+            </a>
             {{-- Bulk Actions --}}
             <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.custom-penawaran.bulk-delete') }}" data-sent-url="{{ route('sales.custom-penawaran.bulk-send-to-warehouse') }}">
                 <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
@@ -11,9 +14,7 @@
                     Send to Warehouse
                 </button>
             </div>
-            <a href="{{ route('sales.custom-penawaran.create') }}" class="rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                + Buat Penawaran Baru
-            </a>
+
         </div>
 
         <div class="p-4">
@@ -41,7 +42,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-3 selectCol"></th>
+                        <th class="selectCol px-4 py-3"></th>
                         <th class="px-4 py-3">No Penawaran</th>
                         <th class="px-4 py-3">Kepada</th>
                         <th class="px-4 py-3">Subject</th>
