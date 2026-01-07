@@ -31,6 +31,7 @@ class AddStockController extends Controller
     {
         $validated = $request->validate([
             'stok' => 'required|integer',
+            'unit_cost' => 'required|numeric|min:0',
         ]);
 
         $barang = Barang::findOrFail($id);
@@ -38,6 +39,7 @@ class AddStockController extends Controller
         // Copy data baru dengan stok baru dan status_barang 'ditinjau'
         $copyData = $barang->replicate();
         $copyData->stok = $validated['stok'];
+        $copyData->harga = $validated['unit_cost'];
         $copyData->status_barang = 'ditinjau';
         $copyData->tipe_request = 'new_stock'; // Set tipe_request ke new_stock
 

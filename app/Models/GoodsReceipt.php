@@ -11,7 +11,7 @@ class GoodsReceipt extends Model
         'good_id',
         'supplier_id',
         'received_at',
-        'created_by',
+        'approved_by',
         'quantity',
         'unit_cost',
     ];
@@ -38,10 +38,10 @@ class GoodsReceipt extends Model
     }
 
     /**
-     * Get the user who created the receipt.
+     * Get the user who approved the receipt.
      */
-    public function creator(): BelongsTo
+    public function approver(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }
