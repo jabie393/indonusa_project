@@ -196,9 +196,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
     Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
-
-    // Customer Routes
-    Route::resource('/sales/customer', CustomerController::class)->names('sales.customer');
 });
 // End of Sales
 

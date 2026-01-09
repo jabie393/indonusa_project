@@ -16,7 +16,8 @@ class Customer extends Model
         'kredit_limit',
         'email',
         'telepon',
-        'alamat',
+        'alamat_penagihan',
+        'alamat_pengiriman',
         'kota',
         'provinsi',
         'kode_pos',
@@ -64,7 +65,7 @@ class Customer extends Model
 
     public function getFullAddressAttribute()
     {
-        return "{$this->alamat}, {$this->kota}, {$this->provinsi} {$this->kode_pos}";
+        return "{$this->alamat_penagihan}, {$this->kota}, {$this->provinsi} {$this->kode_pos}";
     }
 
     public function pics()

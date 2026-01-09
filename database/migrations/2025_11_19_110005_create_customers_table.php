@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('kredit_limit')->nullable();
             $table->string('email')->nullable();
             $table->string('telepon')->nullable();
-            $table->text('alamat')->nullable();
+            $table->text('alamat_penagihan')->nullable();
+            $table->text('alamat_pengiriman')->nullable();
             $table->string('kota')->nullable();
             $table->string('provinsi')->nullable();
             $table->string('kode_pos')->nullable();

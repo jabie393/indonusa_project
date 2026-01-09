@@ -172,7 +172,8 @@
                                 <label for="sales_order_number" class="form-label dark:text-gray-300">No. SO</label>
                                 <input type="text"
                                     class="@error('sales_order_number') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="sales_order_number" name="sales_order_number" value="{{ old('sales_order_number', $requestOrder->sales_order_number) }}"
+                                    id="sales_order_number" name="sales_order_number"
+                                    value="{{ old('sales_order_number', $requestOrder->sales_order_number) }}"
                                     placeholder="Masukkan No. SO">
                                 @error('sales_order_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -499,7 +500,8 @@
                             <div
                                 class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                                 <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                    <i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                                    <i class="fas fa-calculator"></i> Ringkasan Penawaran
+                                </h3>
                             </div>
                             <div class="p-5">
                                 <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -671,9 +673,14 @@
                                 <div class="invalid-feedback text-xs text-red-500" id="error-tipe_customer"></div>
                             </div>
                             <div>
-                                <label for="modalAlamat" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat</label>
-                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalAlamat" name="alamat" rows="2"></textarea>
-                                <div class="invalid-feedback text-xs text-red-500" id="error-alamat"></div>
+                                <label for="modalAlamatPenagihan" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat Penagihan</label>
+                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalAlamatPenagihan" name="alamat_penagihan" rows="2"></textarea>
+                                <div class="invalid-feedback text-xs text-red-500" id="error-alamat_penagihan"></div>
+                            </div>
+                            <div>
+                                <label for="modalAlamatPengiriman" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat Pengiriman</label>
+                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalAlamatPengiriman" name="alamat_pengiriman" rows="2"></textarea>
+                                <div class="invalid-feedback text-xs text-red-500" id="error-alamat_pengiriman"></div>
                             </div>
                         </div>
 

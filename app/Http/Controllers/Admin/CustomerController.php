@@ -29,7 +29,8 @@ class CustomerController extends Controller
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('npwp', 'like', "%{$search}%")
                   ->orWhere('telepon', 'like', "%{$search}%")
-                  ->orWhere('alamat', 'like', "%{$search}%")
+                  ->orWhere('alamat_penagihan', 'like', "%{$search}%")
+                  ->orWhere('alamat_pengiriman', 'like', "%{$search}%")
                   ->orWhere('tipe_customer', 'like', "%{$search}%")
                   ->orWhere('kota', 'like', "%{$search}%");
             });
@@ -61,7 +62,8 @@ class CustomerController extends Controller
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string|max:255',
+            'alamat_penagihan' => 'nullable|string|max:255',
+            'alamat_pengiriman' => 'nullable|string|max:255',
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
@@ -83,7 +85,8 @@ class CustomerController extends Controller
                 'kredit_limit' => $validatedData['kredit_limit'] ?? null,
                 'email' => $validatedData['email'] ?? null,
                 'telepon' => $validatedData['telepon'] ?? null,
-                'alamat' => $validatedData['alamat'] ?? null,
+                'alamat_penagihan' => $validatedData['alamat_penagihan'] ?? null,
+                'alamat_pengiriman' => $validatedData['alamat_pengiriman'] ?? null,
                 'kota' => $validatedData['kota'] ?? null,
                 'provinsi' => $validatedData['provinsi'] ?? null,
                 'kode_pos' => $validatedData['kode_pos'] ?? null,
@@ -138,7 +141,8 @@ class CustomerController extends Controller
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
             'telepon' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string|max:255',
+            'alamat_penagihan' => 'nullable|string|max:255',
+            'alamat_pengiriman' => 'nullable|string|max:255',
             'kota' => 'nullable|string|max:100',
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
@@ -162,7 +166,8 @@ class CustomerController extends Controller
                 'kredit_limit' => $validatedData['kredit_limit'] ?? null,
                 'email' => $validatedData['email'] ?? null,
                 'telepon' => $validatedData['telepon'] ?? null,
-                'alamat' => $validatedData['alamat'] ?? null,
+                'alamat_penagihan' => $validatedData['alamat_penagihan'] ?? null,
+                'alamat_pengiriman' => $validatedData['alamat_pengiriman'] ?? null,
                 'kota' => $validatedData['kota'] ?? null,
                 'provinsi' => $validatedData['provinsi'] ?? null,
                 'kode_pos' => $validatedData['kode_pos'] ?? null,
