@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 sm:rounded-lg">
+    <div class="relative overflow-hidden bg-white shadow-md dark:bg-gray-800 rounded-2xl">
         <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div class="overflow-x-auto">

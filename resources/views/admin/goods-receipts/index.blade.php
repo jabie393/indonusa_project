@@ -24,7 +24,6 @@
         class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div
             class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 shadow-2xl md:flex-row md:space-x-4 md:space-y-0">
-            <h2 class="text-lg font-bold text-white">Riwayat Harga Beli (Goods Receipt)</h2>
         </div>
         <div class="overflow-x-auto">
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
