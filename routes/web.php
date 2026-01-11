@@ -146,6 +146,7 @@ Route::middleware(['auth'])->group(function () {
     // Supervisor view detail for custom penawaran (so Supervisor can access without Sales role)
     Route::get('/supervisor/custom-penawaran/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('admin.custom-penawaran.show');
     Route::get('/supervisor/custom-penawaran', [CustomPenawaranController::class, 'supervisorIndex'])->name('supervisor.custom-penawaran.index');
+    Route::post('/supervisor/custom-penawaran/bulk-approval', [CustomPenawaranController::class, 'bulkApproval'])->name('supervisor.custom-penawaran.bulk-approval');
     Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
     Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');

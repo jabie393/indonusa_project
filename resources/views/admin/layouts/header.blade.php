@@ -86,6 +86,11 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods Receipt</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Harga Beli</p>
                     </div>
+                @elseif (request()->routeIs('supervisor.custom-penawaran.*'))
+                    <div class="hidden text-gray-100 md:block">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Penawaran</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Menunggu Approval</p>
+                    </div>
                 @elseif (request()->routeIs('sales.request-order.*'))
                     @php
                         $ro = request()->route('request_order');

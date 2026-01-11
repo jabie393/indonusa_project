@@ -547,13 +547,89 @@ class CustomPenawaranController extends Controller
         return response()->json(['success' => false, 'message' => 'No items were processed.']);
     }
 
-    public function supervisorIndex()
+    public function supervisorIndex(Request $request)
     {
-        $customPenawarans = CustomPenawaran::where('status', 'pending_approval')
+        $query = CustomPenawaran::where('status', 'pending_approval')
             ->with('items', 'sales')
-            ->latest()
-            ->paginate(20);
+            ->latest();
+
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('penawaran_number', 'like', "%{$search}%")
+                  ->orWhere('to', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%")
+                  ->orWhereHas('sales', function ($subQ) use ($search) {
+                      $subQ->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $customPenawarans = $query->paginate(20);
 
         return view('admin.supervisor.custom-penawaran.index', compact('customPenawarans'));
+    }
+
+    /**
+     * Bulk Approval for Supervisor
+     */
+    public function bulkApproval(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        $action = $request->input('action'); // 'approve' or 'reject'
+        
+        if (empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No items selected.']);
+        }
+
+        if (!in_array($action, ['approve', 'reject'])) {
+            return response()->json(['success' => false, 'message' => 'Invalid action.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $penawarans = CustomPenawaran::whereIn('id', $ids)
+                ->where('status', 'pending_approval')
+                ->get();
+            
+            if ($penawarans->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'No valid items found for approval/rejection.']);
+            }
+
+            foreach ($penawarans as $penawaran) {
+                // Determine if user is allowed (re-using logic from single approval)
+                $userRole = trim(strtolower(Auth::user()->role ?? ''));
+                $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
+                // Check if supervisor or admin
+                if (!in_array($userRole, $allowed) && $penawaran->sales_id !== Auth::id()) {
+                     continue; // Skip unauthorized
+                }
+                
+                if ($action === 'approve') {
+                    $penawaran->status = 'open';
+                    $penawaran->approved_by = Auth::id();
+                    $penawaran->approved_at = now();
+                    $penawaran->reason = null;
+                } else {
+                     // note: bulk reject usually needs a reason, but for bulk we might just set a generic one or empty
+                     // For now let's set a generic reason if not provided, or handle it differently.
+                     // The user requested bulk action.
+                     $reason = $request->input('reason', 'Bulk rejected by supervisor');
+                     $penawaran->status = 'rejected';
+                     $penawaran->reason = $reason;
+                }
+                $penawaran->save();
+            }
+
+            DB::commit();
+            
+            $message = $action === 'approve' ? 'Items approved successfully.' : 'Items rejected successfully.';
+            return response()->json(['success' => true, 'message' => $message]);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Custom Penawaran Bulk Approval Error', ['message' => $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+        }
     }
 }
