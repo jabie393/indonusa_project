@@ -38,7 +38,7 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-4 py-3 selectCol"></th>
+                        <th scope="col" class="selectCol px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
@@ -66,7 +66,21 @@
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             <td class="px-4 py-3">{{ $barang->harga }}</td>
-                            <td class="px-4 py-3">{{ $barang->status_barang }}</td>
+                            <td class="px-4 py-3">
+                                @php
+                                    $statusClass =
+                                        [
+                                            'ditinjau' => 'bg-blue-100 text-blue-800',
+                                        ][$barang->status_barang] ?? 'bg-gray-100 text-gray-800';
+                                    $statusLabel =
+                                        [
+                                            'ditinjau' => 'Ditinjau',
+                                        ][$barang->status_barang] ?? $barang->status_barang;
+                                @endphp
+                                <span class="{{ $statusClass }} mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold">
+                                    {{ $statusLabel }}
+                                </span>
+                            </td>
                             <td class="px-4 py-3">
                                 @if ($barang->tipe_request == 'primary')
                                     Barang baru

@@ -241,7 +241,10 @@
 
                                 <span class="{{ request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Delivery
                                     Orders</span>
-                                <span id="delivery-orders-notif-badge" class="ml-2 hidden rounded-full bg-red-500 px-2 py-1 text-xs text-white">0</span>
+                                @php
+                                    $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                                @endphp
+                                <span id="delivery-orders-notif-badge" class="{{ $deliveryOrderCount > 0 ? '' : 'hidden' }} ml-2 rounded-full bg-red-500 px-2 py-1 text-xs text-white">{{ $deliveryOrderCount }}</span>
                             </a>
                         </li>
 

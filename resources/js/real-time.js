@@ -35,9 +35,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const notifBadge = document.getElementById(
                 "delivery-orders-notif-badge"
             );
+
             if (notifBadge) {
-                notifBadge.textContent = e.orderCount;
-                notifBadge.classList.remove("hidden");
+                notifBadge.textContent = e.barangCount;
+                if (e.barangCount > 0) {
+                    notifBadge.classList.remove("hidden");
+                } else {
+                    notifBadge.classList.add("hidden");
+                }
             }
         });
 
