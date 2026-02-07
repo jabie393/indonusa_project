@@ -44,10 +44,14 @@
                                     $statusClass =
                                         [
                                             'sent_to_warehouse' => 'bg-green-100 text-green-800',
+                                            'approved_warehouse' => 'bg-green-100 text-green-800',
+                                            'rejected_warehouse' => 'bg-red-100 text-red-800',
                                         ][$order->status] ?? 'bg-gray-100 text-gray-800';
                                     $statusLabel =
                                         [
                                             'sent_to_warehouse' => 'Terkirim ke Warehouse',
+                                            'approved_warehouse' => 'Disetujui Warehouse',
+                                            'rejected_warehouse' => 'Ditolak Warehouse',
                                         ][$order->status] ?? $order->status;
                                 @endphp
                                 <span class="{{ $statusClass }} mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold">
@@ -66,6 +70,40 @@
                                             </svg>
                                             <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Show</span>
                                         </button>
+                                        @if ($order->status === 'sent_to_warehouse')
+                                            {{-- Approve --}}
+                                            <form action="{{ route('delivery-orders.approve', $order->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
+                                                </button>
+                                            </form>
+                                            {{-- Reject barang --}}
+                                            <form action="{{ route('delivery-orders.reject', $order->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                <button type="submit" class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Reject</span>
+                                                </button>
+                                            </form>
+                                        @endif
+                                        @if ($order->status === 'approved_warehouse')
+                                            <a href="{{ route('delivery-orders.pdf', $order->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text mr-2 h-4 w-4">
+                                                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                <path d="M10 9H8"></path>
+                                                <path d="M16 13H8"></path>
+                                                <path d="M16 17H8"></path>
+                                            </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">DO</span>
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
