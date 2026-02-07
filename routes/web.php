@@ -128,6 +128,9 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
     Route::resource('/delivery-orders', DeliveryOrdersController::class);
+    Route::post('/delivery-orders/{id}/approve', [DeliveryOrdersController::class, 'approve'])->name('delivery-orders.approve');
+    Route::post('/delivery-orders/{id}/reject', [DeliveryOrdersController::class, 'reject'])->name('delivery-orders.reject');
+    Route::get('/delivery-orders/{id}/pdf', [DeliveryOrdersController::class, 'pdf'])->name('delivery-orders.pdf');
     Route::get('/admin/dashboard/warehouse/data', [WarehouseDashboardController::class, 'chartData'])
         ->name('dashboard.chart.data');
 });
