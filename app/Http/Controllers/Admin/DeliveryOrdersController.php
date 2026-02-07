@@ -17,7 +17,7 @@ class DeliveryOrdersController extends Controller
 
         // Baseline query: eager-load relations and filter by status
         $orders = Order::with(['supervisor', 'items.barang'])
-            ->where('status', 'sent_to_warehouse')
+            ->whereIn('status', ['sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse'])
             ->orderBy('created_at', 'desc');
 
         if ($query) {
@@ -52,4 +52,41 @@ class DeliveryOrdersController extends Controller
 
         return view('admin.delivery-orders.index', compact('orders'));
     }
+
+    // Approve order
+    protected function processApproval($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->status = 'approved_warehouse';
+        $order->save();
+    }
+
+    // Approve order
+    public function approve($id)
+    {
+        $this->processApproval($id);
+        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
+    }
+
+    // Reject order
+    protected function processRejection($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->status = 'rejected_warehouse';
+        $order->save();
+    }
+
+    // Reject order
+    public function reject($id)
+    {
+        $this->processRejection($id);
+        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil direject.']);
+    }
+
+    public function pdf($id)
+    {
+        $orders = Order::with('items.barang')->findOrFail($id);
+        return view('admin.pdf.delivery-order-pdf', compact('orders'));
+    }
+    
 }
