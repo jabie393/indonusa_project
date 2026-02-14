@@ -1,10 +1,10 @@
 <dialog id="noteModal" class="modal">
     <div class="modal-box relative w-full max-w-md rounded-lg bg-white p-0 shadow dark:bg-gray-700">
-        <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+            <h3 class="text-lg font-semibold text-white">
                 Catatan Barang
             </h3>
-            <form method="dialog" class="modal-action">
+            <form method="dialog" class="modal-action mt-0">
                 <button
                     class="btn ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
                     id="closeNoteModal">
