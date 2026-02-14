@@ -165,6 +165,9 @@ Route::middleware(['auth'])->group(function () {
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
+    // Customer Routes for Sales
+    Route::post('/customer', [CustomerController::class, 'store'])->name('sales.customer.store');
+    
     // Request Order Routes
     Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
     Route::get('/request-order/create', [RequestOrderController::class, 'create'])->name('sales.request-order.create');

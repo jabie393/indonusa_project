@@ -332,8 +332,7 @@
                                     <path d="M13 10C13 9.44772 13.4477 9 14 9H16C16.5523 9 17 9.44772 17 10V14.5858L18.293 13.293C18.6835 12.9024 19.3166 12.9024 19.7071 13.293C20.0976 13.6835 20.0976 14.3166 19.7071 14.7071L15.707 18.707C15.3165 19.0975 14.6834 19.0975 14.2929 18.707L10.293 14.707C9.90245 14.3165 9.90245 13.6834 10.293 13.293C10.6835 12.9024 11.3166 12.9024 11.707 13.293L13 14.586V10Z" fill="currentColor" />
                                 </svg>
 
-                                <span class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales
-                                    Order (SO)</span>
+                                
                                 <span class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales Order (SO)</span>
                             </a>
                         </li>

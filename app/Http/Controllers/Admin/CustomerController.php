@@ -123,10 +123,34 @@ class CustomerController extends Controller
             }
             
             DB::commit();
+
+            // Return JSON for AJAX requests, redirect for normal requests
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Customer berhasil ditambahkan.',
+                    'customer' => [
+                        'id' => $customer->id,
+                        'nama_customer' => $customer->nama_customer,
+                        'email' => $customer->email,
+                        'telepon' => $customer->telepon,
+                        'kota' => $customer->kota,
+                    ],
+                ]);
+            }
+            
             return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil ditambahkan.']);
             
         } catch (\Exception $e) {
             DB::rollBack();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan customer: ' . $e->getMessage(),
+                ], 422);
+            }
+            
             return redirect()->back()->withErrors('Gagal menyimpan customer: ' . $e->getMessage())->withInput();
         }
     }
