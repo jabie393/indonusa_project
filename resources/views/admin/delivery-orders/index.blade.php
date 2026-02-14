@@ -43,10 +43,10 @@
                                 @php
                                     $statusClass =
                                         [
-                                            'sent_to_warehouse' => 'bg-green-100 text-green-800',
-                                            'approved_warehouse' => 'bg-green-100 text-green-800',
-                                            'rejected_warehouse' => 'bg-red-100 text-red-800',
-                                        ][$order->status] ?? 'bg-gray-100 text-gray-800';
+                                            'sent_to_warehouse' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'approved_warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'rejected_warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                        ][$order->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
                                             'sent_to_warehouse' => 'Terkirim ke Warehouse',
@@ -54,9 +54,11 @@
                                             'rejected_warehouse' => 'Ditolak Warehouse',
                                         ][$order->status] ?? $order->status;
                                 @endphp
-                                <span class="{{ $statusClass }} mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold">
-                                    {{ $statusLabel }}
-                                </span>
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">{{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
                             <td class="w-fit px-4 py-3 text-right">
@@ -94,13 +96,13 @@
                                         @endif
                                         @if ($order->status === 'approved_warehouse')
                                             <a href="{{ route('delivery-orders.pdf', $order->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text mr-2 h-4 w-4">
-                                                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                                                <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                <path d="M10 9H8"></path>
-                                                <path d="M16 13H8"></path>
-                                                <path d="M16 17H8"></path>
-                                            </svg>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
+                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                    <path d="M10 9H8"></path>
+                                                    <path d="M16 13H8"></path>
+                                                    <path d="M16 17H8"></path>
+                                                </svg>
                                                 <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">DO</span>
                                             </a>
                                         @endif
