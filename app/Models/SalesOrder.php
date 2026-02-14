@@ -8,31 +8,24 @@ use Illuminate\Support\Str;
 class SalesOrder extends Model
 {
     protected $fillable = [
+        'sales_order_number',
+        'request_order_id',
         'sales_id',
-        'custom_penawaran_id',
-        'so_number',
-        'to',
-        'up',
-        'subject',
-        'email',
-        'our_ref',
-        'date',
-        'intro_text',
-        'subtotal',
-        'tax',
-        'grand_total',
+        'customer_name',
+        'customer_id',
         'status',
         'reason',
+        'tanggal_kebutuhan',
+        'catatan_customer',
+        'supervisor_id',
+        'warehouse_id',
         'approved_by',
         'approved_at',
     ];
 
     protected $casts = [
-        'date' => 'date',
+        'tanggal_kebutuhan' => 'date',
         'approved_at' => 'datetime',
-        'subtotal' => 'decimal:2',
-        'tax' => 'decimal:2',
-        'grand_total' => 'decimal:2',
     ];
 
     public function sales()
@@ -45,9 +38,19 @@ class SalesOrder extends Model
         return $this->hasMany(SalesOrderItem::class);
     }
 
-    public function customPenawaran()
+    public function requestOrder()
     {
-        return $this->belongsTo(CustomPenawaran::class, 'custom_penawaran_id');
+        return $this->belongsTo(RequestOrder::class, 'request_order_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     public static function generateSONumber()
@@ -60,14 +63,5 @@ class SalesOrder extends Model
     public static function generateUniqueRef()
     {
         return 'REF-' . strtoupper(Str::random(8));
-    }
-
-    public function calculateTotals()
-    {
-        $subtotal = $this->items()->sum('subtotal');
-        $tax = $this->tax ?? 0;
-        $this->subtotal = $subtotal;
-        $this->grand_total = $subtotal + $tax;
-        $this->save();
     }
 }

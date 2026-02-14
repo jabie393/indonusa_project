@@ -19,14 +19,164 @@ class SalesOrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $salesOrders = SalesOrder::where('sales_id', Auth::id())
-            ->with('items', 'customPenawaran')
-            ->latest()
-            ->paginate(20);
+        $search = $request->input('search', '');
+        
+        // Query untuk Sales Orders
+        $soQuery = SalesOrder::where('sales_id', Auth::id())
+            ->with('items', 'requestOrder', 'customer');
 
-        return view('admin.sales.sales-order.index', compact('salesOrders'));
+        if ($request->filled('search')) {
+            $soQuery->where(function ($q) use ($search) {
+                $q->where('sales_order_number', 'like', '%' . $search . '%')
+                  ->orWhere('customer_name', 'like', '%' . $search . '%')
+                  ->orWhere('catatan_customer', 'like', '%' . $search . '%');
+            });
+        }
+
+        // Query untuk Custom Penawarans (juga tampil sebagai SO jika search)
+        $penawaranQuery = null;
+        if ($request->filled('search')) {
+            $penawaranQuery = CustomPenawaran::where('sales_id', Auth::id())
+                ->where(function ($q) use ($search) {
+                    $q->where('penawaran_number', 'like', '%' . $search . '%')
+                      ->orWhere('to', 'like', '%' . $search . '%')
+                      ->orWhere('subject', 'like', '%' . $search . '%');
+                })
+                ->with('items')
+                ->get()
+                ->map(function ($penawaran) {
+                    // Transform penawaran menjadi array yang mirip SO
+                    return [
+                        'id' => $penawaran->id,
+                        'type' => 'penawaran',
+                        'sales_order_number' => $penawaran->penawaran_number,
+                        'customer_name' => $penawaran->to,
+                        'catatan_customer' => $penawaran->subject,
+                        'tanggal_kebutuhan' => $penawaran->date,
+                        'status' => $penawaran->status,
+                        'date' => $penawaran->date,
+                        'email' => $penawaran->email,
+                        'up' => $penawaran->up,
+                        'items' => $penawaran->items,
+                        'is_penawaran' => true,
+                    ];
+                });
+        }
+
+        $salesOrders = $soQuery->latest()->paginate(20)->appends(request()->query());
+
+        return view('admin.sales.sales-order.index', compact('salesOrders', 'search', 'penawaranQuery'));
+    }
+
+    /**
+     * Search Sales Orders via AJAX (including Penawarans)
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('q', '');
+        
+        // Search dalam Sales Orders
+        $soResults = SalesOrder::where('sales_id', Auth::id())
+            ->where(function ($q) use ($query) {
+                $q->where('sales_order_number', 'like', '%' . $query . '%')
+                  ->orWhere('customer_name', 'like', '%' . $query . '%')
+                  ->orWhere('catatan_customer', 'like', '%' . $query . '%');
+            })
+            ->with('items', 'requestOrder', 'customer')
+            ->limit(5)
+            ->get()
+            ->map(function ($so) {
+                return [
+                    'id' => $so->id,
+                    'type' => 'sales_order',
+                    'sales_order_number' => $so->sales_order_number,
+                    'customer_name' => $so->customer_name,
+                    'catatan_customer' => $so->catatan_customer,
+                    'tanggal_kebutuhan' => $so->tanggal_kebutuhan ? \Carbon\Carbon::parse($so->tanggal_kebutuhan)->format('d/m/Y') : '-',
+                    'status' => $so->status,
+                    'url' => route('sales.sales-order.show', $so),
+                    'badge' => 'Sales Order',
+                ];
+            });
+
+        // Search dalam Custom Penawarans
+        $penawaranResults = CustomPenawaran::where('sales_id', Auth::id())
+            ->where(function ($q) use ($query) {
+                $q->where('penawaran_number', 'like', '%' . $query . '%')
+                  ->orWhere('to', 'like', '%' . $query . '%')
+                  ->orWhere('subject', 'like', '%' . $query . '%')
+                  ->orWhere('email', 'like', '%' . $query . '%');
+            })
+            ->with('items')
+            ->limit(5)
+            ->get()
+            ->map(function ($penawaran) {
+                return [
+                    'id' => $penawaran->id,
+                    'type' => 'penawaran',
+                    'sales_order_number' => $penawaran->penawaran_number,
+                    'customer_name' => $penawaran->to,
+                    'catatan_customer' => $penawaran->subject,
+                    'email' => $penawaran->email,
+                    'up' => $penawaran->up,
+                    'tanggal_kebutuhan' => $penawaran->date ? \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') : '-',
+                    'status' => $penawaran->status,
+                    'url' => route('sales.custom-penawaran.show', $penawaran),
+                    'badge' => 'Penawaran',
+                ];
+            });
+
+        // Gabung hasil
+        $results = collect($soResults)->merge($penawaranResults)->all();
+
+        return response()->json([
+            'success' => true,
+            'data' => $results,
+        ]);
+    }
+
+    /**
+     * Get Penawaran detail via AJAX
+     */
+    public function getPenawaranDetail(Request $request)
+    {
+        $penawaranId = $request->input('id');
+        
+        $penawaran = CustomPenawaran::where('sales_id', Auth::id())
+            ->findOrFail($penawaranId);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $penawaran->id,
+                'penawaran_number' => $penawaran->penawaran_number,
+                'to' => $penawaran->to,
+                'up' => $penawaran->up,
+                'email' => $penawaran->email,
+                'subject' => $penawaran->subject,
+                'our_ref' => $penawaran->our_ref,
+                'date' => $penawaran->date ? \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') : '-',
+                'intro_text' => $penawaran->intro_text,
+                'status' => $penawaran->status,
+                'subtotal' => $penawaran->subtotal,
+                'tax' => $penawaran->tax,
+                'grand_total' => $penawaran->grand_total,
+                'items' => $penawaran->items->map(function ($item) {
+                    return [
+                        'nama_barang' => $item->nama_barang,
+                        'qty' => $item->qty,
+                        'satuan' => $item->satuan,
+                        'harga' => $item->harga,
+                        'diskon' => $item->diskon,
+                        'subtotal' => $item->subtotal,
+                        'keterangan' => $item->keterangan,
+                        'images' => $item->images ?? [],
+                    ];
+                }),
+            ],
+        ]);
     }
 
     /**

@@ -197,6 +197,8 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 
     // Sales Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
+    Route::get('/sales-order/search', [SalesOrderController::class, 'search'])->name('sales.sales-order.search');
+    Route::get('/sales-order/penawaran-detail', [SalesOrderController::class, 'getPenawaranDetail'])->name('sales.sales-order.penawaran-detail');
     Route::get('/sales-order/create', [SalesOrderController::class, 'create'])->name('sales.sales-order.create');
     Route::post('/sales-order', [SalesOrderController::class, 'store'])->name('sales.sales-order.store');
     Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
