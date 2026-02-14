@@ -530,24 +530,144 @@ document.addEventListener("DOMContentLoaded", function () {
                         // STRICT VALIDATION
                         const valResult = validateHeaders(resp.headers);
                         if (!valResult.valid) {
-                            let errorHtml = `File Excel harus MEMILIKI kolom PERSIS berikut:<br><b>KODE BARANG, NAMA BARANG, KATEGORI, STOK, HARGA BELI</b>.<br><br>`;
+                            const required = [
+                                "KODE BARANG",
+                                "NAMA BARANG",
+                                "KATEGORI",
+                                "STOK",
+                                "HARGA BELI",
+                            ];
+                            const upperHeaders = resp.headers.map((h) =>
+                                String(h).trim().toUpperCase()
+                            );
 
-                            if (valResult.missing.length > 0) {
-                                errorHtml += `Kolom yang hilang: <span class="text-red-500 font-bold">${valResult.missing.join(
-                                    ", "
-                                )}</span><br>`;
-                            }
+                            const badgesHtml = required
+                                .map((req) => {
+                                    const isPresent =
+                                        upperHeaders.includes(req);
+                                    const bgColor = isPresent
+                                        ? "bg-emerald-50"
+                                        : "bg-red-50";
+                                    const textColor = isPresent
+                                        ? "text-emerald-600"
+                                        : "text-red-500";
+                                    const borderColor = isPresent
+                                        ? "border-emerald-100"
+                                        : "border-red-100";
+                                    const icon = isPresent
+                                        ? `<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`
+                                        : `<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
 
-                            if (valResult.extra && valResult.extra.length > 0) {
-                                errorHtml += `Kolom tidak dikenal (harus dihapus): <span class="text-red-500 font-bold">${valResult.extra.join(
-                                    ", "
-                                )}</span>`;
-                            }
+                                    return `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold border ${bgColor} ${textColor} ${borderColor} m-0.5 uppercase">
+                                        ${icon}${req}
+                                    </span>`;
+                                })
+                                .join("");
 
                             Swal.fire({
-                                icon: "error",
-                                title: "Format Header Tidak Sesuai",
-                                html: errorHtml,
+                                html: `
+                                    <style>
+                                        .swal-error-popup {
+                                            border-radius: 24px !important;
+                                            padding: 1.5rem 1rem !important;
+                                        }
+                                        .swal-error-confirm {
+                                            width: 100% !important;
+                                            margin-top: 1rem !important;
+                                            border-radius: 14px !important;
+                                            padding: 14px !important;
+                                            font-size: 16px !important;
+                                            font-weight: 700 !important;
+                                            background-color: #5850ec !important;
+                                            box-shadow: 0 4px 6px -1px rgba(88, 80, 236, 0.2), 0 2px 4px -1px rgba(88, 80, 236, 0.1) !important;
+                                        }
+                                        .swal-error-close {
+                                            color: #9ca3af !important;
+                                            top: 15px !important;
+                                            right: 15px !important;
+                                        }
+                                        .swal-error-close:hover {
+                                            color: #4b5563 !important;
+                                        }
+                                    </style>
+                                    <div class="mt-2">
+                                        <!-- Error Icon -->
+                                        <div class="flex justify-center mb-6">
+                                            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center">
+                                                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
+                                                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white">
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Format Header Tidak Sesuai</h2>
+                                        <p class="text-gray-500 text-sm mb-6 px-6">File Excel harus memiliki kolom yang sesuai dengan format yang ditentukan.</p>
+
+                                        <!-- Required Columns Grid -->
+                                        <div class="bg-gray-50 rounded-2xl p-5 mb-6">
+                                            <div class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-4 text-center">KOLOM YANG DIPERLUKAN</div>
+                                            <div class="flex flex-wrap justify-center gap-1.5">
+                                                ${badgesHtml}
+                                            </div>
+                                        </div>
+
+                                        <!-- Alert Boxes -->
+                                        ${
+                                            valResult.missing.length > 0
+                                                ? `
+                                        <div class="bg-red-50 border border-red-100 rounded-2xl p-4 mb-4 text-left flex items-start">
+                                            <div class="text-red-500 mr-3 mt-0.5">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div class="text-red-500 font-bold text-sm">Kolom yang Hilang</div>
+                                                <div class="text-red-700 font-extrabold text-base uppercase mt-1 tracking-tight">${valResult.missing.join(
+                                                    ", "
+                                                )}</div>
+                                            </div>
+                                        </div>
+                                        `
+                                                : ""
+                                        }
+
+                                        ${
+                                            valResult.extra &&
+                                            valResult.extra.length > 0
+                                                ? `
+                                        <div class="bg-orange-50 border border-amber-100 rounded-2xl p-4 mb-2 text-left flex items-start">
+                                            <div class="text-amber-500 mr-3 mt-0.5">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <div class="text-amber-800 font-bold text-sm">Kolom Tidak Dikenal (harus dihapus)</div>
+                                                <div class="text-amber-900 font-extrabold text-base uppercase mt-1 tracking-tight">${valResult.extra.join(
+                                                    ", "
+                                                )}</div>
+                                            </div>
+                                        </div>
+                                        `
+                                                : ""
+                                        }
+                                    </div>
+                                `,
+                                showConfirmButton: true,
+                                confirmButtonText: "Mengerti",
+                                showCloseButton: true,
+                                customClass: {
+                                    popup: "swal-error-popup",
+                                    confirmButton: "swal-error-confirm",
+                                    closeButton: "swal-error-close",
+                                },
+                                width: "480px",
+                                allowOutsideClick: false,
                             });
                             // Reset UI
                             progressBar.style.width = "0%";
