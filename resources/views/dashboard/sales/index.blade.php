@@ -185,7 +185,7 @@
                     class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Sales Order</h1>
                 </div>
-                <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <table id="dashTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th class="px-4 py-3">No. Sales Order</th>
