@@ -70,16 +70,18 @@
                                 @php
                                     $statusClass =
                                         [
-                                            'ditinjau' => 'bg-blue-100 text-blue-800',
-                                        ][$barang->status_barang] ?? 'bg-gray-100 text-gray-800';
+                                            'ditinjau' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                        ][$barang->status_barang] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
                                             'ditinjau' => 'Ditinjau',
                                         ][$barang->status_barang] ?? $barang->status_barang;
                                 @endphp
-                                <span class="{{ $statusClass }} mt-1 inline-block rounded-full px-3 py-1 text-sm font-semibold">
-                                    {{ $statusLabel }}
-                                </span>
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="px-4 py-3">
                                 @if ($barang->tipe_request == 'primary')
