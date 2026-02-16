@@ -16,7 +16,7 @@ class DeliveryOrdersController extends Controller
         $query = $request->input('search');
 
         // Baseline query: eager-load relations and filter by status
-        $orders = Order::with(['supervisor', 'items.barang'])
+        $orders = Order::with(['supervisor', 'items.barang', 'customer', 'requestOrder.sales'])
             ->whereIn('status', ['sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse'])
             ->orderBy('created_at', 'desc');
 
