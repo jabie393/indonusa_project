@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        Schema::dropIfExists('sales_order_items');
         Schema::create('sales_order_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('sales_order_id');

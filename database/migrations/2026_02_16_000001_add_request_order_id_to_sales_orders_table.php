@@ -8,6 +8,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('sales_orders', function (Blueprint $table) {
+            if (Schema::hasColumn('sales_orders', 'request_order_id')) {
+                $table->dropForeign(['request_order_id']);
+                $table->dropColumn('request_order_id');
+            }
+        });
+
+        Schema::table('sales_orders', function (Blueprint $table) {
             $table->unsignedBigInteger('request_order_id')->nullable()->after('id');
             $table->foreign('request_order_id')->references('id')->on('request_orders')->onDelete('set null');
         });
