@@ -106,24 +106,19 @@
                                         </button>
                                         @if ($order->status === 'sent_to_warehouse')
                                             {{-- Approve --}}
-                                            <form action="{{ route('delivery-orders.approve', $order->id) }}"
-                                                method="POST" style="display:inline;">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                                    data-id="{{ $order->id }}"
-                                                    data-order-number="{{ $order->order_number }}"
-                                                    data-items='@json($order->items)'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
-                                                </button>
-                                            </form>
+                                            <button type="button"
+                                                class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                data-id="{{ $order->id }}"
+                                                data-order-number="{{ $order->order_number }}"
+                                                data-approve-url="{{ route('delivery-orders.approve', $order->id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M5 13l4 4L19 7" />
+                                                </svg>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
+                                            </button>
                                             {{-- Reject barang --}}
                                             <form action="{{ route('delivery-orders.reject', $order->id) }}"
                                                 method="POST" style="display:inline;">
@@ -204,7 +199,10 @@
     </div>
 
     <!-- Modals -->
-    @include('components.delivery-orders-modal-show')
+    @include('admin.delivery-orders.partials.delivery-orders-modal-show')
+    @include('admin.delivery-orders.partials.delivery-orders-detail-modal-show')
+    @include('admin.delivery-orders.partials.delivery-orders-approve-modal')
+
     @vite(['resources/js/delivery-orders.js'])
 
 </x-app-layout>

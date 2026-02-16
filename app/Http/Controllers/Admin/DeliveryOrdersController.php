@@ -88,5 +88,21 @@ class DeliveryOrdersController extends Controller
         $orders = Order::with('items.barang')->findOrFail($id);
         return view('admin.pdf.delivery-order-pdf', compact('orders'));
     }
-    
+
+    public function getItems($id)
+    {
+        $order = Order::with('items.barang')->findOrFail($id);
+        $items = $order->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'kode_barang' => $item->barang->kode_barang ?? ($item->kode_barang ?? '-'),
+                'nama_barang' => $item->barang->nama_barang ?? ($item->nama_barang ?? '-'),
+                'qty_pesanan' => $item->quantity,
+                'stok_gudang' => ($item->barang && $item->barang->status_barang === 'masuk') ? $item->barang->stok : 0,
+                'satuan' => $item->barang->satuan ?? ($item->satuan ?? '-'),
+            ];
+        });
+
+        return response()->json($items);
+    }
 }
