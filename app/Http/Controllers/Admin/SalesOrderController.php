@@ -28,7 +28,7 @@ class SalesOrderController extends Controller
         if ($isSearch) {
             // Sales Orders
             $soResults = SalesOrder::where('sales_id', Auth::id())
-                ->with('items', 'requestOrder', 'customer')
+                ->with(['items', 'requestOrder', 'customer', 'requestOrder.items'])
                 ->where(function ($q) use ($search) {
                     $q->where('sales_order_number', 'like', "%$search%")
                       ->orWhere('customer_name', 'like', "%$search%")
@@ -42,17 +42,34 @@ class SalesOrderController extends Controller
                 })
                 ->get()
                 ->map(function ($so) {
+                    $diskonPersen = 0;
+                    $total = 0;
+                    $tanggalPenawaran = null;
+                    $penawaran = null;
+                    if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
+                        $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
+                            ->with('items')
+                            ->first();
+                    }
+                    if ($penawaran) {
+                        // Ambil diskon dari item pertama penawaran
+                        $diskonPersen = $penawaran->items->first()->diskon ?? 0;
+                        // Ambil grand_total dari penawaran (sudah termasuk diskon dan ppn)
+                        $total = $penawaran->grand_total;
+                        // Ambil tanggal dari penawaran, tanpa perubahan zona waktu
+                        $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
+                    }
                     return [
                         'id' => $so->id,
                         'type' => 'sales_order',
                         'no_request' => optional($so->requestOrder)->request_number,
                         'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
                         'no_sales_order' => $so->sales_order_number,
-                        'tanggal' => $so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-',
+                        'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
                         'customer_name' => $so->customer_name,
                         'jumlah_item' => $so->items->count(),
-                        'total' => $so->items->sum('subtotal'),
-                        'diskon' => $so->items->sum('diskon'),
+                        'total' => $total, // grand_total dari penawaran
+                        'diskon' => $diskonPersen, // diskon dari item penawaran
                         'status' => $so->status,
                         'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
                         'catatan_customer' => $so->catatan_customer,
@@ -70,6 +87,11 @@ class SalesOrderController extends Controller
                 ->with('items')
                 ->get()
                 ->map(function ($ro) {
+                    $diskonPersen = 0;
+                    $total = 0;
+                    // Ambil grand_total langsung dari field grand_total di tabel request_orders
+                    $diskonPersen = ($ro->items && $ro->items->count() > 0) ? ($ro->items->first()->diskon_percent ?? 0) : 0;
+                    $total = $ro->grand_total ?? 0;
                     return [
                         'id' => $ro->id,
                         'type' => 'request_order',
@@ -79,8 +101,8 @@ class SalesOrderController extends Controller
                         'tanggal' => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
                         'customer_name' => $ro->customer_name,
                         'jumlah_item' => $ro->items->count(),
-                        'total' => $ro->subtotal,
-                        'diskon' => $ro->diskon ?? 0,
+                        'total' => $total, // grand_total dari request_order_items
+                        'diskon' => $diskonPersen,
                         'status' => $ro->status,
                         'berlaku_sampai' => $ro->expired_at ? $ro->expired_at->format('d/m/Y') : '-',
                         'catatan_customer' => $ro->catatan_customer,
