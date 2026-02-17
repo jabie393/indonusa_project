@@ -51,6 +51,7 @@
                         <th scope="col" class="px-4 py-3 selectCol "></th>
                         <th scope="col" class="px-4 py-3 text-nowrap">No. Request</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">No. Penawaran</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">No. PO</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">No. Sales Order</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Tanggal</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Nama Customer</th>
@@ -91,6 +92,7 @@
                             <td class="px-4 py-3">{{ $ro->id }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
                             <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span></td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->no_po ?? '-' }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>

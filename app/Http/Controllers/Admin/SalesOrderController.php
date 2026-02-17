@@ -27,53 +27,53 @@ class SalesOrderController extends Controller
 
         if ($isSearch) {
             // Sales Orders
-            $soResults = SalesOrder::where('sales_id', Auth::id())
-                ->with(['items', 'requestOrder', 'customer', 'requestOrder.items'])
+            $soResults = SalesOrder::query()
+                ->leftJoin('request_orders', 'sales_orders.request_order_id', '=', 'request_orders.id')
+                ->where('sales_orders.sales_id', Auth::id())
                 ->where(function ($q) use ($search) {
-                    $q->where('sales_order_number', 'like', "%$search%")
-                      ->orWhere('customer_name', 'like', "%$search%")
-                      ->orWhere('catatan_customer', 'like', "%$search%")
-                      ->orWhereHas('requestOrder', function ($qr) use ($search) {
-                          $qr->where('sales_order_number', 'like', "%$search%")
-                             ->orWhere('request_number', 'like', "%$search%")
-                             ->orWhere('nomor_penawaran', 'like', "%$search%")
-                             ->orWhere('customer_name', 'like', "%$search%");
-                      });
+                    $q->where('sales_orders.sales_order_number', 'like', "%$search%")
+                      ->orWhere('sales_orders.customer_name', 'like', "%$search%")
+                      ->orWhere('sales_orders.catatan_customer', 'like', "%$search%")
+                      ->orWhere('request_orders.sales_order_number', 'like', "%$search%")
+                      ->orWhere('request_orders.request_number', 'like', "%$search%")
+                      ->orWhere('request_orders.nomor_penawaran', 'like', "%$search%")
+                      ->orWhere('request_orders.customer_name', 'like', "%$search%");
                 })
+                ->select('sales_orders.*', 'request_orders.no_po as request_no_po', 'request_orders.request_number as request_request_number', 'request_orders.nomor_penawaran as request_nomor_penawaran', 'request_orders.expired_at as request_expired_at')
                 ->get()
                 ->map(function ($so) {
                     $diskonPersen = 0;
                     $total = 0;
                     $tanggalPenawaran = null;
                     $penawaran = null;
-                    if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
-                        $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
+                    // Relasi manual ke model jika perlu
+                    $soModel = \App\Models\SalesOrder::find($so->id);
+                    if ($soModel && $soModel->requestOrder && $soModel->requestOrder->nomor_penawaran) {
+                        $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $soModel->requestOrder->nomor_penawaran)
                             ->with('items')
                             ->first();
                     }
                     if ($penawaran) {
-                        // Ambil diskon dari item pertama penawaran
                         $diskonPersen = $penawaran->items->first()->diskon ?? 0;
-                        // Ambil grand_total dari penawaran (sudah termasuk diskon dan ppn)
                         $total = $penawaran->grand_total;
-                        // Ambil tanggal dari penawaran, tanpa perubahan zona waktu
                         $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
                     }
                     return [
                         'id' => $so->id,
                         'type' => 'sales_order',
-                        'no_request' => optional($so->requestOrder)->request_number,
-                        'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
+                        'no_request' => $so->request_request_number ?? '-',
+                        'no_penawaran' => $so->request_nomor_penawaran ?? '-',
+                        'no_po' => $so->request_no_po ?? '-',
                         'no_sales_order' => $so->sales_order_number,
-                        'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
+                        'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? (is_string($so->tanggal_kebutuhan) ? date('d/m/Y', strtotime($so->tanggal_kebutuhan)) : $so->tanggal_kebutuhan->format('d/m/Y')) : '-'),
                         'customer_name' => $so->customer_name,
-                        'jumlah_item' => $so->items->count(),
-                        'total' => $total, // grand_total dari penawaran
-                        'diskon' => $diskonPersen, // diskon dari item penawaran
+                        'jumlah_item' => $soModel ? $soModel->items->count() : 0,
+                        'total' => $total,
+                        'diskon' => $diskonPersen,
                         'status' => $so->status,
-                        'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
+                        'berlaku_sampai' => $so->request_expired_at ? (is_string($so->request_expired_at) ? date('d/m/Y', strtotime($so->request_expired_at)) : $so->request_expired_at->format('d/m/Y')) : '-',
                         'catatan_customer' => $so->catatan_customer,
-                        'aksi_url' => route('sales.sales-order.show', $so),
+                        'aksi_url' => route('sales.sales-order.show', $so->id),
                     ];
                 });
 
@@ -115,11 +115,44 @@ class SalesOrderController extends Controller
         } else {
             // Default: hanya SO, paginasi
             $salesOrders = SalesOrder::where('sales_id', Auth::id())
-                ->with('items', 'requestOrder', 'customer')
+                ->with(['items', 'requestOrder', 'customer', 'requestOrder.items'])
                 ->latest()
                 ->paginate(20)
                 ->appends(request()->query());
-            $results = $salesOrders;
+            // Map NO.PO dan field lain agar konsisten dengan hasil search
+            $results = $salesOrders->map(function ($so) {
+                $diskonPersen = 0;
+                $total = 0;
+                $tanggalPenawaran = null;
+                $penawaran = null;
+                if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
+                    $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
+                        ->with('items')
+                        ->first();
+                }
+                if ($penawaran) {
+                    $diskonPersen = $penawaran->items->first()->diskon ?? 0;
+                    $total = $penawaran->grand_total;
+                    $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
+                }
+                return [
+                    'id' => $so->id,
+                    'type' => 'sales_order',
+                    'no_request' => optional($so->requestOrder)->request_number,
+                    'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
+                        'no_po' => optional($so->requestOrder)->no_po ?? '-',
+                    'no_sales_order' => $so->sales_order_number,
+                    'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
+                    'customer_name' => $so->customer_name,
+                    'jumlah_item' => $so->items->count(),
+                    'total' => $total,
+                    'diskon' => $diskonPersen,
+                    'status' => $so->status,
+                    'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
+                    'catatan_customer' => $so->catatan_customer,
+                    'aksi_url' => route('sales.sales-order.show', $so),
+                ];
+            });
         }
 
         return view('admin.sales.sales-order.index', [
