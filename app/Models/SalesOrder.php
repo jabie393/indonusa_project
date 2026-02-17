@@ -53,6 +53,12 @@ class SalesOrder extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
+    // Relasi ke penawaran (CustomPenawaran) jika diperlukan untuk pencarian
+    public function penawaran()
+    {
+        return $this->belongsTo(\App\Models\CustomPenawaran::class, 'custom_penawaran_id');
+    }
+
     public static function generateSONumber()
     {
         $date = now()->format('Ymd');
