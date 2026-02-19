@@ -165,10 +165,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const tr = document.createElement("tr");
             tr.className = "dark:hover:bg-gray-700/50";
 
-            const isOutOfStock = item.qty_pesanan > item.stok_gudang;
+            const qtySisa = Math.max(
+                0,
+                item.qty_pesanan - (item.qty_terkirim || 0),
+            );
+            const isOutOfStock = qtySisa > item.stok_gudang;
             const stockColor = isOutOfStock
                 ? "text-red-600 font-bold"
                 : "text-green-600";
+
+            // Skip if already fully delivered
+            if (qtySisa <= 0) return;
 
             tr.innerHTML = `
                 <td class="px-4 py-3">
@@ -179,22 +186,23 @@ document.addEventListener("DOMContentLoaded", function () {
                         item.kode_barang
                     }</div>
                 </td>
-                <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">${
-                    item.qty_pesanan
-                } ${item.satuan}</td>
+                <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
+                    <div>${item.qty_pesanan} ${item.satuan}</div>
+                    <div class="text-[10px] text-blue-500">Sisa: ${qtySisa} ${item.satuan}</div>
+                </td>
                 <td class="px-4 py-3 text-center text-sm ${stockColor}">${
                     item.stok_gudang
                 } ${item.satuan}</td>
                 <td class="px-4 py-3 text-center">
                     <input type="number" 
                         name="items[${item.id}]" 
-                        value="${Math.min(item.qty_pesanan, item.stok_gudang)}"
-                        max="${item.qty_pesanan}"
+                        value="${Math.min(qtySisa, item.stok_gudang)}"
+                        max="${qtySisa}"
                         min="0"
                         class="qty-input block w-full rounded-md border-gray-300 py-1 text-center text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                     ${
-                        isOutOfStock
+                        isOutOfStock && item.stok_gudang < qtySisa
                             ? '<div class="mt-1 text-[10px] text-red-500 leading-tight">Stok Kurang!</div>'
                             : ""
                     }
@@ -227,6 +235,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 partialOrderNumberEl.textContent = orderNumber;
             if (fullDeliveryForm)
                 fullDeliveryForm.setAttribute("action", approveUrl);
+            if (partialDeliveryForm) {
+                // Construct partial approve URL from approveUrl or set it directly
+                const partialUrl = approveUrl.replace(
+                    "/approve",
+                    "/partial-approve",
+                );
+                partialDeliveryForm.setAttribute("action", partialUrl);
+            }
 
             // Initial view
             toggleView("selection");
@@ -268,6 +284,26 @@ document.addEventListener("DOMContentLoaded", function () {
         btnBackToSelection.addEventListener("click", () =>
             toggleView("selection"),
         );
+    }
+
+    if (partialDeliveryForm) {
+        partialDeliveryForm.addEventListener("submit", function (e) {
+            // Clear existing inputs in container
+            const container = document.getElementById(
+                "partial-inputs-container",
+            );
+            if (container) container.innerHTML = "";
+
+            // Collect values from table inputs and append to form
+            const inputs = partialItemsBody.querySelectorAll(".qty-input");
+            inputs.forEach((input) => {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.type = "hidden";
+                hiddenInput.name = input.name;
+                hiddenInput.value = input.value;
+                container.appendChild(hiddenInput);
+            });
+        });
     }
 
     if (approveModalCloseBtn) {

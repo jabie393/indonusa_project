@@ -62,16 +62,18 @@
                                         [
                                             'sent_to_warehouse' =>
                                                 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'approved_warehouse' =>
-                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'not_completed' =>
+                                                'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
                                             'rejected_warehouse' =>
                                                 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
                                         ][$order->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
-                                            'sent_to_warehouse' => 'Terkirim ke Warehouse',
-                                            'approved_warehouse' => 'Disetujui Warehouse',
-                                            'rejected_warehouse' => 'Ditolak Warehouse',
+                                            'sent_to_warehouse' => 'New Request',
+                                            'completed' => 'Completed',
+                                            'not_completed' => 'Partial Delivery',
+                                            'rejected_warehouse' => 'Rejected',
                                         ][$order->status] ?? $order->status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
@@ -104,7 +106,7 @@
                                             <span
                                                 class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Show</span>
                                         </button>
-                                        @if ($order->status === 'sent_to_warehouse')
+                                        @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
                                             {{-- Approve --}}
                                             <button type="button"
                                                 class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -139,7 +141,7 @@
                                                 </button>
                                             </form>
                                         @endif
-                                        @if ($order->status === 'approved_warehouse')
+                                        @if (in_array($order->status, ['completed', 'not_completed']))
                                             <a href="{{ route('delivery-orders.pdf', $order->id) }}"
                                                 class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                 data-id="{{ $order->id }}"
