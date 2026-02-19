@@ -25,10 +25,14 @@ return new class extends Migration
             $table->decimal('subtotal', 15, 2)->default(0);
             $table->decimal('tax', 15, 2)->nullable();
             $table->decimal('grand_total', 15, 2)->default(0);
-            $table->enum('status', ['draft', 'sent', 'approved', 'rejected'])->default('draft');
+            $table->string('status')->default('draft'); // draft, sent, approved, rejected, expired, sent_to_warehouse, etc.
+            $table->dateTime('expired_at')->nullable();
+            $table->text('reason')->nullable();
+            $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamps();
 
             $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

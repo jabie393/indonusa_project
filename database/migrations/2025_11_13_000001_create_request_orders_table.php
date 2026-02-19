@@ -14,13 +14,24 @@ return new class extends Migration
         Schema::create('request_orders', function (Blueprint $table) {
             $table->id();
             $table->string('request_number')->unique();
+            $table->string('nomor_penawaran')->nullable();
             $table->unsignedBigInteger('sales_id');
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected', 'converted'])->default('pending');
+            $table->string('subject')->nullable();
+            $table->string('status')->default('pending'); // pending, approved, rejected, expired, converted, etc.
             $table->text('reason')->nullable(); // alasan penolakan
             $table->date('tanggal_kebutuhan')->nullable();
+            $table->dateTime('tanggal_berlaku')->nullable();
+            $table->dateTime('expired_at')->nullable();
             $table->text('catatan_customer')->nullable();
+            $table->decimal('subtotal', 14, 2)->default(0);
+            $table->decimal('tax', 14, 2)->default(0);
+            $table->decimal('grand_total', 14, 2)->default(0);
+            $table->string('kategori_barang')->nullable();
+            $table->json('supporting_images')->nullable();
+            $table->string('no_po')->nullable();
+            $table->string('sales_order_number')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
