@@ -224,7 +224,7 @@ class RequestOrderController extends Controller
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
-                    'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
