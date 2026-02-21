@@ -22,6 +22,10 @@ class Order extends Model
         'tanggal_kebutuhan',
         'catatan_customer',
     ];
+    protected static function boot()
+    {
+        parent::boot();
+    }
 
     public function items()
     {
@@ -57,5 +61,10 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 }

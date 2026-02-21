@@ -17,7 +17,6 @@ class RequestOrder extends Model
         'customer_name',
         'customer_id',
         'subject',
-        'status', // pending, pending_approval, approved, rejected, open, expired
         'reason', 
         'tanggal_kebutuhan',
         'tanggal_berlaku',
@@ -105,9 +104,6 @@ class RequestOrder extends Model
         return $this->hasOne(Order::class, 'request_order_id');
     }
 
-    /**
-     * Generate nomor penawaran (e.g., PNW-20251113-001)
-     */
     public static function generateNomorPenawaran()
     {
         $date = now()->format('Ymd');
@@ -121,37 +117,5 @@ class RequestOrder extends Model
     public function isExpired()
     {
         return $this->expired_at && now() > $this->expired_at;
-    }
-
-    /**
-     * Auto-mark as expired if time has passed
-     */
-    public function checkAndUpdateExpiry()
-    {
-        if (!$this->expired_at) {
-            return;
-        }
-
-        // If expiry has passed and the request is still editable/pending (open or pending), mark expired
-        if (now() > $this->expired_at && in_array($this->status, ['pending', 'open'])) {
-            $this->update(['status' => 'expired']);
-        }
-    }
-
-    /**
-     * Get display status with styling
-     */
-    public function getStatusBadgeAttribute()
-    {
-        $statuses = [
-            'pending' => 'warning',
-            'pending_approval' => 'warning',
-            'approved' => 'success',
-            'rejected' => 'danger',
-            'open' => 'primary',
-            'expired' => 'secondary',
-        ];
-
-        return $statuses[$this->status] ?? 'secondary';
     }
 }

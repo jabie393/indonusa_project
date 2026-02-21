@@ -27,7 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Order::observe(OrderObserver::class);
-        Barang::observe(BarangObserver::class);
+        if (app()->environment('production')) {
+            Order::observe(OrderObserver::class);
+            Barang::observe(BarangObserver::class);
+        }
     }
 }

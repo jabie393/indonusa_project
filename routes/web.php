@@ -130,6 +130,8 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::resource('/delivery-orders', DeliveryOrdersController::class);
     Route::post('/delivery-orders/{id}/approve', [DeliveryOrdersController::class, 'approve'])->name('delivery-orders.approve');
     Route::post('/delivery-orders/{id}/reject', [DeliveryOrdersController::class, 'reject'])->name('delivery-orders.reject');
+    Route::post('/delivery-orders/{id}/partial-approve', [DeliveryOrdersController::class, 'partialApprove'])->name('delivery-orders.partial-approve');
+    Route::get('/delivery-orders/{id}/items', [DeliveryOrdersController::class, 'getItems'])->name('delivery-orders.items');
     Route::get('/delivery-orders/{id}/pdf', [DeliveryOrdersController::class, 'pdf'])->name('delivery-orders.pdf');
     Route::get('/admin/dashboard/warehouse/data', [WarehouseDashboardController::class, 'chartData'])
         ->name('dashboard.chart.data');
@@ -165,8 +167,7 @@ Route::middleware(['auth'])->group(function () {
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
-    // Customer Routes for Sales
-    Route::post('/customer', [CustomerController::class, 'store'])->name('sales.customer.store');
+    // Customer Routes for Sales (Consolidated to global customer.store)
     
     // Request Order Routes
     Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
@@ -181,6 +182,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/request-order/bulk/delete', [RequestOrderController::class, 'bulkDelete'])->name('sales.request-order.bulk-delete');
     Route::post('/request-order/bulk/send-to-warehouse', [RequestOrderController::class, 'bulkSendToWarehouse'])->name('sales.request-order.bulk-send-to-warehouse');
     Route::post('/request-order/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.request-order.sent-to-warehouse');
+    Route::post('/request-order/{requestOrder}/upload-image-so', [RequestOrderController::class, 'uploadImageSO'])->name('request-order.upload-image-so');
 
     // Custom Penawaran Routes (Child of Request Order)
     Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');

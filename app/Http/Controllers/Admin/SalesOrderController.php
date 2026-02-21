@@ -22,118 +22,146 @@ class SalesOrderController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search', '');
-        
-        // Query untuk Sales Orders
-        $soQuery = SalesOrder::where('sales_id', Auth::id())
-            ->with('items', 'requestOrder', 'customer');
+        $results = collect();
+        $isSearch = $request->filled('search');
 
-        if ($request->filled('search')) {
-            $soQuery->where(function ($q) use ($search) {
-                $q->where('sales_order_number', 'like', '%' . $search . '%')
-                  ->orWhere('customer_name', 'like', '%' . $search . '%')
-                  ->orWhere('catatan_customer', 'like', '%' . $search . '%');
-            });
-        }
-
-        // Query untuk Custom Penawarans (juga tampil sebagai SO jika search)
-        $penawaranQuery = null;
-        if ($request->filled('search')) {
-            $penawaranQuery = CustomPenawaran::where('sales_id', Auth::id())
+        if ($isSearch) {
+            // Sales Orders
+            $soResults = SalesOrder::query()
+                ->leftJoin('request_orders', 'sales_orders.request_order_id', '=', 'request_orders.id')
+                ->where('sales_orders.sales_id', Auth::id())
                 ->where(function ($q) use ($search) {
-                    $q->where('penawaran_number', 'like', '%' . $search . '%')
-                      ->orWhere('to', 'like', '%' . $search . '%')
-                      ->orWhere('subject', 'like', '%' . $search . '%');
+                    $q->where('sales_orders.sales_order_number', 'like', "%$search%")
+                      ->orWhere('sales_orders.customer_name', 'like', "%$search%")
+                      ->orWhere('sales_orders.catatan_customer', 'like', "%$search%")
+                      ->orWhere('request_orders.sales_order_number', 'like', "%$search%")
+                      ->orWhere('request_orders.request_number', 'like', "%$search%")
+                      ->orWhere('request_orders.nomor_penawaran', 'like', "%$search%")
+                      ->orWhere('request_orders.customer_name', 'like', "%$search%");
+                })
+                ->select('sales_orders.*', 'request_orders.no_po as request_no_po', 'request_orders.request_number as request_request_number', 'request_orders.nomor_penawaran as request_nomor_penawaran', 'request_orders.expired_at as request_expired_at')
+                ->get()
+                ->map(function ($so) {
+                    $diskonPersen = 0;
+                    $total = 0;
+                    $tanggalPenawaran = null;
+                    $penawaran = null;
+                    // Relasi manual ke model jika perlu
+                    $soModel = \App\Models\SalesOrder::find($so->id);
+                    if ($soModel && $soModel->requestOrder && $soModel->requestOrder->nomor_penawaran) {
+                        $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $soModel->requestOrder->nomor_penawaran)
+                            ->with('items')
+                            ->first();
+                    }
+                    if ($penawaran) {
+                        $diskonPersen = $penawaran->items->first()->diskon ?? 0;
+                        $total = $penawaran->grand_total;
+                        $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
+                    }
+                    return [
+                        'id' => $so->id,
+                        'type' => 'sales_order',
+                        'no_request' => $so->request_request_number ?? '-',
+                        'no_penawaran' => $so->request_nomor_penawaran ?? '-',
+                        'no_po' => $so->request_no_po ?? '-',
+                        'no_sales_order' => $so->sales_order_number,
+                        'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? (is_string($so->tanggal_kebutuhan) ? date('d/m/Y', strtotime($so->tanggal_kebutuhan)) : $so->tanggal_kebutuhan->format('d/m/Y')) : '-'),
+                        'customer_name' => $so->customer_name,
+                        'jumlah_item' => $soModel ? $soModel->items->count() : 0,
+                        'total' => $total,
+                        'diskon' => $diskonPersen,
+                        'status' => $so->status,
+                        'berlaku_sampai' => $so->request_expired_at ? (is_string($so->request_expired_at) ? date('d/m/Y', strtotime($so->request_expired_at)) : $so->request_expired_at->format('d/m/Y')) : '-',
+                        'catatan_customer' => $so->catatan_customer,
+                        'aksi_url' => route('sales.sales-order.show', $so->id),
+                    ];
+                });
+
+            // Request Orders
+            $requestOrderResults = \App\Models\RequestOrder::where(function ($q) use ($search) {
+                                        $q->where('request_number', 'like', "%$search%")
+                                            ->orWhere('nomor_penawaran', 'like', "%$search%")
+                                            ->orWhere('sales_order_number', 'like', "%$search%")
+                                            ->orWhere('customer_name', 'like', "%$search%")
+                                            ->orWhere('no_po', 'like', "%$search%");
                 })
                 ->with('items')
                 ->get()
-                ->map(function ($penawaran) {
-                    // Transform penawaran menjadi array yang mirip SO
+                ->map(function ($ro) {
+                    $diskonPersen = 0;
+                    $total = 0;
+                    // Ambil grand_total langsung dari field grand_total di tabel request_orders
+                    $diskonPersen = ($ro->items && $ro->items->count() > 0) ? ($ro->items->first()->diskon_percent ?? 0) : 0;
+                    $total = $ro->grand_total ?? 0;
                     return [
-                        'id' => $penawaran->id,
-                        'type' => 'penawaran',
-                        'sales_order_number' => $penawaran->penawaran_number,
-                        'customer_name' => $penawaran->to,
-                        'catatan_customer' => $penawaran->subject,
-                        'tanggal_kebutuhan' => $penawaran->date,
-                        'status' => $penawaran->status,
-                        'date' => $penawaran->date,
-                        'email' => $penawaran->email,
-                        'up' => $penawaran->up,
-                        'items' => $penawaran->items,
-                        'is_penawaran' => true,
+                        'id' => $ro->id,
+                        'type' => 'request_order',
+                        'no_request' => $ro->request_number,
+                        'no_penawaran' => $ro->nomor_penawaran,
+                                                'no_po' => $ro->no_po,
+                        'no_sales_order' => $ro->sales_order_number,
+                        'tanggal' => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
+                        'customer_name' => $ro->customer_name,
+                        'jumlah_item' => $ro->items->count(),
+                        'total' => $total, // grand_total dari request_order_items
+                        'diskon' => $diskonPersen,
+                        'status' => $ro->status,
+                        'berlaku_sampai' => $ro->expired_at ? $ro->expired_at->format('d/m/Y') : '-',
+                        'catatan_customer' => $ro->catatan_customer,
+                        'aksi_url' => route('sales.request-order.show', $ro),
                     ];
                 });
-        }
 
-        $salesOrders = $soQuery->latest()->paginate(20)->appends(request()->query());
-
-        return view('admin.sales.sales-order.index', compact('salesOrders', 'search', 'penawaranQuery'));
-    }
-
-    /**
-     * Search Sales Orders via AJAX (including Penawarans)
-     */
-    public function search(Request $request)
-    {
-        $query = $request->input('q', '');
-        
-        // Search dalam Sales Orders
-        $soResults = SalesOrder::where('sales_id', Auth::id())
-            ->where(function ($q) use ($query) {
-                $q->where('sales_order_number', 'like', '%' . $query . '%')
-                  ->orWhere('customer_name', 'like', '%' . $query . '%')
-                  ->orWhere('catatan_customer', 'like', '%' . $query . '%');
-            })
-            ->with('items', 'requestOrder', 'customer')
-            ->limit(5)
-            ->get()
-            ->map(function ($so) {
+            // Gabungkan hasil dan pastikan Collection
+            $results = collect($soResults)->merge($requestOrderResults);
+        } else {
+            // Default: hanya SO, paginasi
+            $salesOrders = SalesOrder::where('sales_id', Auth::id())
+                ->with(['items', 'requestOrder', 'customer', 'requestOrder.items'])
+                ->latest()
+                ->paginate(20)
+                ->appends(request()->query());
+            // Map NO.PO dan field lain agar konsisten dengan hasil search
+            $results = $salesOrders->map(function ($so) {
+                $diskonPersen = 0;
+                $total = 0;
+                $tanggalPenawaran = null;
+                $penawaran = null;
+                if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
+                    $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
+                        ->with('items')
+                        ->first();
+                }
+                if ($penawaran) {
+                    $diskonPersen = $penawaran->items->first()->diskon ?? 0;
+                    $total = $penawaran->grand_total;
+                    $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
+                }
                 return [
                     'id' => $so->id,
                     'type' => 'sales_order',
-                    'sales_order_number' => $so->sales_order_number,
+                    'no_request' => optional($so->requestOrder)->request_number,
+                    'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
+                        'no_po' => optional($so->requestOrder)->no_po ?? '-',
+                    'no_sales_order' => $so->sales_order_number,
+                    'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
                     'customer_name' => $so->customer_name,
-                    'catatan_customer' => $so->catatan_customer,
-                    'tanggal_kebutuhan' => $so->tanggal_kebutuhan ? \Carbon\Carbon::parse($so->tanggal_kebutuhan)->format('d/m/Y') : '-',
+                    'jumlah_item' => $so->items->count(),
+                    'total' => $total,
+                    'diskon' => $diskonPersen,
                     'status' => $so->status,
-                    'url' => route('sales.sales-order.show', $so),
-                    'badge' => 'Sales Order',
+                    'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
+                    'catatan_customer' => $so->catatan_customer,
+                    'aksi_url' => route('sales.sales-order.show', $so),
                 ];
             });
+        }
 
-        // Search dalam Custom Penawarans
-        $penawaranResults = CustomPenawaran::where('sales_id', Auth::id())
-            ->where(function ($q) use ($query) {
-                $q->where('penawaran_number', 'like', '%' . $query . '%')
-                  ->orWhere('to', 'like', '%' . $query . '%')
-                  ->orWhere('subject', 'like', '%' . $query . '%')
-                  ->orWhere('email', 'like', '%' . $query . '%');
-            })
-            ->with('items')
-            ->limit(5)
-            ->get()
-            ->map(function ($penawaran) {
-                return [
-                    'id' => $penawaran->id,
-                    'type' => 'penawaran',
-                    'sales_order_number' => $penawaran->penawaran_number,
-                    'customer_name' => $penawaran->to,
-                    'catatan_customer' => $penawaran->subject,
-                    'email' => $penawaran->email,
-                    'up' => $penawaran->up,
-                    'tanggal_kebutuhan' => $penawaran->date ? \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') : '-',
-                    'status' => $penawaran->status,
-                    'url' => route('sales.custom-penawaran.show', $penawaran),
-                    'badge' => 'Penawaran',
-                ];
-            });
-
-        // Gabung hasil
-        $results = collect($soResults)->merge($penawaranResults)->all();
-
-        return response()->json([
-            'success' => true,
-            'data' => $results,
+        return view('admin.sales.sales-order.index', [
+            'results' => $results,
+            'search' => $search,
+            'isSearch' => $isSearch,
+            'salesOrders' => isset($salesOrders) ? $salesOrders : null,
         ]);
     }
 

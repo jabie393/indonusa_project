@@ -16,8 +16,8 @@ class DeliveryOrdersController extends Controller
         $query = $request->input('search');
 
         // Baseline query: eager-load relations and filter by status
-        $orders = Order::with(['supervisor', 'items.barang'])
-            ->whereIn('status', ['sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse'])
+        $orders = Order::with(['supervisor', 'items.barang', 'customer', 'requestOrder.sales'])
+            ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse'])
             ->orderBy('created_at', 'desc');
 
         if ($query) {
@@ -56,8 +56,15 @@ class DeliveryOrdersController extends Controller
     // Approve order
     protected function processApproval($id)
     {
-        $order = Order::findOrFail($id);
-        $order->status = 'approved_warehouse';
+        $order = Order::with('items')->findOrFail($id);
+        
+        foreach ($order->items as $item) {
+            $item->delivered_quantity = $item->quantity;
+            $item->status_item = 'delivered';
+            $item->save();
+        }
+
+        $order->status = 'completed';
         $order->save();
     }
 
@@ -83,10 +90,66 @@ class DeliveryOrdersController extends Controller
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil direject.']);
     }
 
+    public function partialApprove(Request $request, $id)
+    {
+        $order = Order::with('items')->findOrFail($id);
+        $itemsData = $request->input('items', []);
+
+        foreach ($order->items as $item) {
+            if (isset($itemsData[$item->id])) {
+                $sentQuantity = (int) $itemsData[$item->id];
+                
+                if ($sentQuantity > 0) {
+                    $newDeliveredQuantity = $item->delivered_quantity + $sentQuantity;
+                    $item->delivered_quantity = $newDeliveredQuantity;
+
+                    // Jika total terkirim sudah mencapai atau melebihi kuantitas pesanan
+                    if ($newDeliveredQuantity >= $item->quantity) {
+                        $item->status_item = 'delivered';
+                    } else {
+                        $item->status_item = 'partial';
+                    }
+                    
+                    $item->save();
+                }
+            }
+        }
+
+        // Refresh order to get updated item statuses
+        $order->load('items');
+        
+        // Check if all items are delivered
+        $allDelivered = $order->items->every(function ($item) {
+            return $item->status_item === 'delivered';
+        });
+
+        $order->status = $allDelivered ? 'completed' : 'not_completed';
+        $order->save();
+
+        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Partial delivery berhasil diproses.']);
+    }
+
     public function pdf($id)
     {
         $orders = Order::with('items.barang')->findOrFail($id);
         return view('admin.pdf.delivery-order-pdf', compact('orders'));
     }
-    
+
+    public function getItems($id)
+    {
+        $order = Order::with('items.barang')->findOrFail($id);
+        $items = $order->items->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'kode_barang' => $item->barang->kode_barang ?? ($item->kode_barang ?? '-'),
+                'nama_barang' => $item->barang->nama_barang ?? ($item->nama_barang ?? '-'),
+                'qty_pesanan' => $item->quantity,
+                'qty_terkirim' => $item->delivered_quantity,
+                'stok_gudang' => ($item->barang && $item->barang->status_barang === 'masuk') ? $item->barang->stok : 0,
+                'satuan' => $item->barang->satuan ?? ($item->satuan ?? '-'),
+            ];
+        });
+
+        return response()->json($items);
+    }
 }

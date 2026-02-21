@@ -18,6 +18,9 @@ return new class extends Migration
             $table->integer('quantity');
             $table->decimal('harga', 12, 2)->nullable();
             $table->decimal('subtotal', 14, 2)->nullable();
+            $table->unsignedSmallInteger('diskon_percent')->default(0);
+            $table->string('kategori_barang')->nullable();
+            $table->json('images')->nullable();
             $table->timestamps();
 
             $table->foreign('request_order_id')->references('id')->on('request_orders')->onDelete('cascade');

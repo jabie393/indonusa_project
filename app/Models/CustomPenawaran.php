@@ -48,7 +48,7 @@ class CustomPenawaran extends Model
 
     public function order()
     {
-        return $this->hasOne(Order::class, 'custom_penawaran_id');
+        return $this->hasOne(\App\Models\Order::class, 'custom_penawaran_id');
     }
 
     public static function generatePenawaranNumber()

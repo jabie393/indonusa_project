@@ -61,6 +61,7 @@ class Barang extends Model
         'deskripsi',
         'gambar',
         'catatan',
+        'alasan_pengajuan',
         'form',
     ];
 

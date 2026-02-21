@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('goods', function (Blueprint $table) {
             $table->id();
             $table->enum('tipe_request', ['primary', 'new_stock'])->default('primary');
-            $table->enum('status_barang', ['ditinjau', 'masuk', 'ditolak'])->default('ditinjau');
+            $table->enum('status_barang', ['ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor'])->default('ditinjau');
             $table->string('status_listing')->default('listing');
             $table->string('kode_barang')->unique();
             $table->string('nama_barang');
@@ -52,9 +52,11 @@ return new class extends Migration {
             $table->string('satuan');
             $table->string('lokasi')->nullable();
             $table->decimal('harga', 15, 2)->default(0);
+            $table->unsignedSmallInteger('diskon_percent')->default(0);
             $table->text('deskripsi');
             $table->string('gambar')->nullable();
             $table->text('catatan')->nullable();
+            $table->text('alasan_pengajuan')->nullable();
             $table->string('form')->nullable();
             $table->timestamps();
         });

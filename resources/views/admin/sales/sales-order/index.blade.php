@@ -1,9 +1,10 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <a href="{{ route('sales.sales-order.create') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+
+            {{-- <a href="{{ route('sales.sales-order.create') }}" class="inline-block rounded-lg bg-[#225A97] px-6 py-3 text-center font-semibold text-white hover:bg-[#1c4d81]">
                 + Buat Sales Order
-            </a>
+            </a> --}}
         </div>
     </div>
 
@@ -73,86 +74,199 @@
             <table class="w-full">
                 <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No SO</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Nama Customer</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Catatan</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal Kebutuhan</th>
-                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                        <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No.PO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. SO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah Item</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Diskon</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Berlaku Sampai</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($salesOrders as $salesOrder)
+                    @forelse ($results as $row)
                         <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
-                            <td class="px-6 py-4">
-                                <a href="{{ route('sales.sales-order.show', $salesOrder) }}" class="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    {{ $salesOrder->sales_order_number }}
-                                </a>
-                            </td>
-                            <td class="px-6 py-4 text-gray-900 dark:text-white">
-                                {{ $salesOrder->customer_name }}
-                            </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                {{ Str::limit($salesOrder->catatan_customer, 50) ?? '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                {{ $salesOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($salesOrder->tanggal_kebutuhan)->format('d/m/Y') : '-' }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                @php
-                                    $statusClass =
-                                        [
-                                            'pending' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-                                            'in_process' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-                                            'shipped' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400',
-                                            'completed' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-                                            'cancelled' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-                                        ][$salesOrder->status] ?? 'bg-gray-100 text-gray-800';
-                                    $statusLabel =
-                                        [
-                                            'pending' => 'Pending',
-                                            'in_process' => 'Dalam Proses',
-                                            'shipped' => 'Dikirim',
-                                            'completed' => 'Selesai',
-                                            'cancelled' => 'Dibatalkan',
-                                        ][$salesOrder->status] ?? $salesOrder->status;
-                                @endphp
-                                <span class="{{ $statusClass }} inline-block rounded-full px-3 py-1 text-xs font-semibold">
-                                    {{ $statusLabel }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('sales.sales-order.show', $salesOrder) }}" title="Lihat" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </a>
-                                    <a href="{{ route('sales.sales-order.edit', $salesOrder) }}" title="Edit" class="rounded-lg bg-yellow-600 px-3 py-2 text-xs font-semibold text-white hover:bg-yellow-700">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                        </svg>
-                                    </a>
-                                    <form action="{{ route('sales.sales-order.destroy', $salesOrder) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sales order ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" title="Hapus" class="rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polyline points="3 6 5 6 21 6"></polyline>
-                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                <line x1="10" x2="10" y1="11" y2="17"></line>
-                                                <line x1="14" x2="14" y1="11" y2="17"></line>
-                                            </svg>
-                                        </button>
-                                    </form>
+                            <td class="px-4 py-3">{{ $row['no_po'] ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $row['no_penawaran'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                {{ $row['no_sales_order'] ?? '-' }}
+                                <div id="image-so-preview-{{ $row['id'] }}">
+                                    @if(isset($row['image_so']) && $row['image_so'])
+                                        <a href="{{ Storage::url($row['image_so']) }}" target="_blank">
+                                            <img src="{{ Storage::url($row['image_so']) }}" alt="SO Image" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" />
+                                        </a>
+                                        <button class="inline-block ml-2 text-xs text-blue-600 hover:underline" onclick="removeImageSO({{ $row['id'] }})">Hapus</button>
+                                    @else
+                                        <input type="file" id="image-so-input-{{ $row['id'] }}" style="display:inline-block;width:120px;" accept="image/jpeg,image/png,image/jpg" onchange="uploadImageSO({{ $row['id'] }})">
+                                    @endif
                                 </div>
                             </td>
+                            @push('scripts')
+                            <script>
+                            function uploadImageSO(id) {
+                                const input = document.getElementById('image-so-input-' + id);
+                                if (!input.files.length) return;
+                                const file = input.files[0];
+                                if (!['image/jpeg','image/png','image/jpg'].includes(file.type)) {
+                                    alert('Format file harus JPG, JPEG, atau PNG');
+                                    input.value = '';
+                                    return;
+                                }
+                                if (file.size > 2 * 1024 * 1024) {
+                                    alert('Ukuran file maksimal 2MB');
+                                    input.value = '';
+                                    return;
+                                }
+                                const formData = new FormData();
+                                formData.append('image_so', file);
+                                formData.append('_token', '{{ csrf_token() }}');
+                                fetch('/request-order/' + id + '/upload-image-so', {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'Accept': 'application/json',
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        document.getElementById('image-so-preview-' + id).innerHTML =
+                                            `<a href="${data.image_url}" target="_blank"><img src="${data.image_url}" alt="SO Image" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" /></a>` +
+                                            `<button class='inline-block ml-2 text-xs text-blue-600 hover:underline' onclick='removeImageSO(${id})'>Hapus</button>`;
+                                    } else {
+                                        alert(data.message || 'Upload gagal');
+                                    }
+                                })
+                                .catch(() => {
+                                    alert('Upload gagal');
+                                });
+                            }
+
+                            function removeImageSO(id) {
+                                if (!confirm('Hapus gambar SO ini?')) return;
+                                const formData = new FormData();
+                                formData.append('_token', '{{ csrf_token() }}');
+                                formData.append('_method', 'DELETE');
+                                fetch('/request-order/' + id + '/upload-image-so', {
+                                    method: 'POST',
+                                    body: formData,
+                                    headers: {
+                                        'Accept': 'application/json',
+                                    },
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.status === 'success') {
+                                        document.getElementById('image-so-preview-' + id).innerHTML =
+                                            `<input type='file' id='image-so-input-${id}' style='display:inline-block;width:120px;' accept='image/jpeg,image/png,image/jpg' onchange='uploadImageSO(${id})'>`;
+                                    } else {
+                                        alert(data.message || 'Gagal menghapus gambar');
+                                    }
+                                })
+                                .catch(() => {
+                                    alert('Gagal menghapus gambar');
+                                });
+                            }
+                            </script>
+                            @endpush
+                            <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $row['customer_name'] ?? '-' }}</td>
+                            <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
+                            <td class="px-4 py-3 text-right">Rp {{ number_format($row['total'] ?? 0, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
+                            <td class="px-4 py-3 text-center">
+                                <span class="inline-block rounded-full px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-800">
+                                    {{ ucfirst($row['status']) }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3">{{ $row['berlaku_sampai'] ?? '-' }}</td>
+                            <td class="px-4 py-3 text-center">
+                                <a href="{{ $row['aksi_url'] }}" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">Lihat</a>
+                                @if(isset($row['type']) && $row['type'] === 'sales_order' && !empty($row['id']))
+                                    <div style="margin-top:6px;">
+                                        <span id="so-image-preview-aksi-{{ $row['id'] }}">
+                                            @php $soModel = \App\Models\SalesOrder::find($row['id']); @endphp
+                                            @if($soModel && $soModel->image)
+                                                <a href="{{ $soModel->image_url }}" target="_blank">
+                                                    <img src="{{ $soModel->image_url }}" alt="SO Image" style="width:32px;height:32px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" />
+                                                </a>
+                                                <button class="inline-block ml-1 text-xs text-blue-600 hover:underline" onclick="removeSOImageAksi({{ $row['id'] }})">Ganti</button>
+                                            @else
+                                                <input type="file" id="so-image-input-aksi-{{ $row['id'] }}" style="display:inline-block;width:90px;" accept="image/jpeg,image/png,image/jpg" onchange="uploadSOImageAksi({{ $row['id'] }})">
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endif
+                            </td>
+                        @push('scripts')
+                        <script>
+                        function uploadSOImageAksi(id) {
+                            const input = document.getElementById('so-image-input-aksi-' + id);
+                            if (!input.files.length) return;
+                            const file = input.files[0];
+                            if (!['image/jpeg','image/png','image/jpg'].includes(file.type)) {
+                                alert('Format file harus JPG, JPEG, atau PNG');
+                                input.value = '';
+                                return;
+                            }
+                            if (file.size > 2 * 1024 * 1024) {
+                                alert('Ukuran file maksimal 2MB');
+                                input.value = '';
+                                return;
+                            }
+                            const formData = new FormData();
+                            formData.append('image', file);
+                            formData.append('_token', '{{ csrf_token() }}');
+                            fetch('/sales-order/' + id + '/upload-image', {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'Accept': 'application/json' },
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    document.getElementById('so-image-preview-aksi-' + id).innerHTML =
+                                        `<a href="${data.image_url}" target="_blank"><img src="${data.image_url}" alt="SO Image" style="width:32px;height:32px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" /></a>` +
+                                        `<button class='inline-block ml-1 text-xs text-blue-600 hover:underline' onclick='removeSOImageAksi(${id})'>Ganti</button>`;
+                                } else {
+                                    alert(data.message || 'Upload gagal');
+                                }
+                            })
+                            .catch(() => { alert('Upload gagal'); });
+                        }
+                        function removeSOImageAksi(id) {
+                            if (!confirm('Hapus gambar SO ini?')) return;
+                            const formData = new FormData();
+                            formData.append('_token', '{{ csrf_token() }}');
+                            formData.append('_method', 'DELETE');
+                            fetch('/sales-order/' + id + '/upload-image', {
+                                method: 'POST',
+                                body: formData,
+                                headers: { 'Accept': 'application/json' },
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 'success') {
+                                    document.getElementById('so-image-preview-aksi-' + id).innerHTML =
+                                        `<input type='file' id='so-image-input-aksi-${id}' style='display:inline-block;width:90px;' accept='image/jpeg,image/png,image/jpg' onchange='uploadSOImageAksi(${id})'>`;
+                                } else {
+                                    alert(data.message || 'Gagal menghapus gambar');
+                                }
+                            })
+                            .catch(() => { alert('Gagal menghapus gambar'); });
+                        }
+                        </script>
+                        @endpush
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="12" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <path d="m21 21-4.35-4.35"></path>
@@ -161,7 +275,7 @@
                                     @if ($search)
                                         Tidak ada hasil untuk pencarian "{{ $search }}"
                                     @else
-                                        Tidak ada sales order
+                                        Tidak ada data
                                     @endif
                                 </p>
                                 <p class="mt-1 text-sm">
@@ -177,91 +291,14 @@
                 </tbody>
             </table>
         </div>
-
-        @if ($salesOrders->hasPages())
+        @if (!$isSearch && $salesOrders && $salesOrders->hasPages())
             <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-600">
                 {{ $salesOrders->links() }}
             </div>
         @endif
     </div>
 
-    @if ($search && $penawaranQuery && count($penawaranQuery) > 0)
-        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-6 overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex items-center justify-between rounded-t-2xl bg-blue-600 p-[1rem] text-white">
-                <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    Data Penawaran Terkait
-                </h3>
-            </div>
-
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No Penawaran</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tujuan</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</th>
-                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
-                            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                            <th class="px-6 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Grand Total</th>
-                            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($penawaranQuery as $penawaran)
-                            <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
-                                <td class="px-6 py-4">
-                                    <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $penawaran['sales_order_number'] }}</span>
-                                </td>
-                                <td class="px-6 py-4 text-gray-900 dark:text-white">
-                                    {{ $penawaran['customer_name'] ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                    {{ Str::limit($penawaran['catatan_customer'], 50) ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 text-gray-700 dark:text-gray-300">
-                                    {{ $penawaran['tanggal_kebutuhan'] ?? '-' }}
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    @php
-                                        $statusClass = [
-                                            'draft' => 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
-                                            'sent' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
-                                            'approved' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
-                                            'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-                                        ][$penawaran['status']] ?? 'bg-gray-100 text-gray-800';
-                                        $statusLabel = [
-                                            'draft' => 'Draft',
-                                            'sent' => 'Terkirim',
-                                            'approved' => 'Disetujui',
-                                            'rejected' => 'Ditolak',
-                                        ][$penawaran['status']] ?? $penawaran['status'];
-                                    @endphp
-                                    <span class="{{ $statusClass }} inline-block rounded-full px-3 py-1 text-xs font-semibold">
-                                        {{ $statusLabel }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right font-semibold text-gray-900 dark:text-white">
-                                    Rp {{ number_format($penawaran['items']->sum('total_harga'), 0, ',', '.') }}
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <a href="{{ route('sales.custom-penawaran.show', $penawaran['id']) }}" title="Lihat Penawaran" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                        @empty
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @endif
+    {{-- $penawaranQuery section dihapus, sudah digabung ke tabel utama --}}
 
     <!-- Modal Detail Penawaran -->
     <div id="penawaranModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -322,7 +359,7 @@
             if (results.length === 0) {
                 searchResults.innerHTML = `
                     <div class="p-4 text-center text-gray-500 dark:text-gray-400">
-                        <p>Tidak ada hasil yang ditemukan</p>
+                        <p>Data tidak ditemukan</p>
                     </div>
                 `;
                 searchResults.classList.remove('hidden');
@@ -330,37 +367,15 @@
             }
 
             searchResults.innerHTML = results.map(item => {
-                const itemLink = item.type === 'penawaran' 
-                    ? `onclick="event.preventDefault(); showPenawaranDetail(${item.id}); return false;"`
-                    : '';
-                
                 return `
-                    <a href="${item.url}" ${itemLink} class="block border-b border-gray-200 dark:border-gray-500 last:border-b-0 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition cursor-pointer">
-                        <div class="flex justify-between items-start gap-2">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    <p class="font-semibold text-gray-900 dark:text-white">${item.sales_order_number}</p>
-                                    <span class="text-xs font-bold px-2 py-0.5 rounded" style="
-                                        background-color: ${item.type === 'penawaran' ? '#dbeafe' : '#e0e7ff'};
-                                        color: ${item.type === 'penawaran' ? '#1e40af' : '#3730a3'};
-                                    ">
-                                        ${item.badge || 'Item'}
-                                    </span>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">${item.customer_name}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">${item.catatan_customer || '-'}</p>
-                            </div>
-                            <span class="text-xs font-semibold px-2 py-1 rounded whitespace-nowrap" style="
-                                background-color: ${getStatusColor(item.status).bg};
-                                color: ${getStatusColor(item.status).text};
-                            ">
-                                ${getStatusLabel(item.status)}
-                            </span>
+                    <div class="p-3 border-b border-gray-200 dark:border-gray-500 flex justify-between items-center">
+                        <div>
+                            <strong>${item.sales_order_number}</strong> - ${item.customer_name}
+                            <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded ${item.type === 'penawaran' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}">${item.badge}</span>
+                            <span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-yellow-100 text-yellow-800">NO.PO: ${item.no_po ? item.no_po : '<i>tidak ada</i>'}</span>
                         </div>
-                        <div class="mt-2 flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                            <span>${item.tanggal_kebutuhan}</span>
-                        </div>
-                    </a>
+                        <a href="${item.url}" class="text-blue-600 hover:underline">Detail</a>
+                    </div>
                 `;
             }).join('');
             searchResults.classList.remove('hidden');

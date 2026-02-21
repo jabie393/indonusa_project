@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RequestOrderController extends Controller
 {
@@ -26,20 +27,12 @@ class RequestOrderController extends Controller
             // First, extend any pending request orders that were created with an older 7-day expiry
             // to be 14 days from now if they are still unexpired and were likely set with 7 days.
             \Illuminate\Support\Facades\DB::table('request_orders')
-                ->whereIn('status', ['pending', 'open'])
                 ->whereNotNull('created_at')
                 ->whereNotNull('expired_at')
                 ->where('expired_at', '>', now())
                 ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
                 ->where('sales_id', Auth::id())
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
-
-            // Ensure any pending RequestOrders past their expiry are marked expired
-            RequestOrder::whereIn('status', ['pending', 'open'])
-                ->whereNotNull('expired_at')
-                ->where('expired_at', '<', now())
-                ->where('sales_id', Auth::id())
-                ->update(['status' => 'expired']);
         }
 
         $query = RequestOrder::with('items.barang', 'sales')
@@ -52,7 +45,6 @@ class RequestOrderController extends Controller
                     ->orWhere('sales_order_number', 'like', "%{$search}%")
                     ->orWhere('customer_name', 'like', "%{$search}%")
                     ->orWhere('subject', 'like', "%{$search}%")
-                    ->orWhere('status', 'like', "%{$search}%")
                     ->orWhere('catatan_customer', 'like', "%{$search}%")
                     ->orWhere('kategori_barang', 'like', "%{$search}%")
                     ->orWhere('grand_total', 'like', "%{$search}%");
@@ -201,8 +193,6 @@ class RequestOrderController extends Controller
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
-                // Initial status is 'open' so Sales can edit right after creating
-                'status' => 'open',
             ]);
 
             foreach ($items as $item) {
@@ -224,7 +214,7 @@ class RequestOrderController extends Controller
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
-                    'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
@@ -234,37 +224,15 @@ class RequestOrderController extends Controller
                 RequestOrderItem::create($itemData);
             }
 
-            // Check discount rules: if any item has diskon_percent > 20 then require supervisor approval
-            $maxDiskon = 0;
-            foreach ($items as $it) {
-                $d = isset($it['diskon_percent']) ? (float)$it['diskon_percent'] : 0;
-                if ($d > $maxDiskon) $maxDiskon = $d;
-            }
+            DB::commit();
 
-            if ($maxDiskon > 20) {
-                // Mark as pending approval by supervisor
-                $requestOrder->update(['status' => 'pending_approval']);
-
-                DB::commit();
-
-                return redirect()->route('sales.request-order.index')
-                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat dan menunggu persetujuan.");
+            // If the request order is for the current user, redirect to show; otherwise, redirect to index
+            if ($requestOrder->sales_id == Auth::id()) {
+                return redirect()->route('sales.request-order.show', $requestOrder->id)
+                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
             } else {
-                // Keep newly created Request Order in 'open' state so Sales can review/edit before any conversion
-                $requestOrder->update([
-                    'status' => 'open',
-                ]);
-
-                DB::commit();
-
-                // If the request order is for the current user, redirect to show; otherwise, redirect to index
-                if ($requestOrder->sales_id == Auth::id()) {
-                    return redirect()->route('sales.request-order.show', $requestOrder->id)
-                        ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
-                } else {
-                    return redirect()->route('sales.request-order.index')
-                        ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat untuk sales lain.");
-                }
+                return redirect()->route('sales.request-order.index')
+                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat untuk sales lain.");
             }
 
         } catch (\Throwable $e) {
@@ -299,7 +267,7 @@ class RequestOrderController extends Controller
         }
 
         // Ensure this request order's expiry status is up-to-date
-        $requestOrder->checkAndUpdateExpiry();
+        // $requestOrder->checkAndUpdateExpiry(); // logic depends on status
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales', 'approvedBy');
 
@@ -326,7 +294,7 @@ class RequestOrderController extends Controller
         }
 
         // Ensure expiry status is up-to-date before generating PDF
-        $requestOrder->checkAndUpdateExpiry();
+        // $requestOrder->checkAndUpdateExpiry();
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales');
 
@@ -346,9 +314,9 @@ class RequestOrderController extends Controller
         }
 
         // Allow editing when status is 'open' or 'pending'
-        if (!in_array($requestOrder->status, ['open', 'pending'])) {
-            return back()->withErrors('Hanya Request Order yang open atau pending dapat diubah.');
-        }
+        // if (!in_array($requestOrder->status, ['open', 'pending'])) {
+        //     return back()->withErrors('Hanya Request Order yang open atau pending dapat diubah.');
+        // }
 
         // If this request order appears to have been created with a 7-day expiry
         // and is still unexpired, extend it to 14 days from now (as requested)
@@ -392,9 +360,9 @@ class RequestOrderController extends Controller
         }
 
         // Allow updating when status is 'open' or 'pending'
-        if (!in_array($requestOrder->status, ['open', 'pending'])) {
-            return back()->withErrors('Hanya Request Order yang open atau pending dapat diubah.');
-        }
+        // if (!in_array($requestOrder->status, ['open', 'pending'])) {
+        //     return back()->withErrors('Hanya Request Order yang open atau pending dapat diubah.');
+        // }
 
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
@@ -518,23 +486,6 @@ class RequestOrderController extends Controller
                 RequestOrderItem::create($itemData);
             }
 
-            // Re-evaluate discount rule after update based on provided diskon_percent
-            $maxDiskon = 0;
-            foreach ($items as $it) {
-                $d = isset($it['diskon_percent']) ? (float)$it['diskon_percent'] : 0;
-                if ($d > $maxDiskon) $maxDiskon = $d;
-            }
-
-            if ($maxDiskon > 20) {
-                $requestOrder->update(['status' => 'pending_approval']);
-            } else {
-                $requestOrder->update([
-                    'status' => 'approved',
-                    'approved_by' => Auth::id(),
-                    'approved_at' => now(),
-                ]);
-            }
-
             DB::commit();
 
             return redirect()->route('sales.request-order.show', $requestOrder->id)
@@ -549,67 +500,27 @@ class RequestOrderController extends Controller
     /**
      * Konversi Request Order ke Sales Order
      */
-    /**
-     * Supervisor approves a Request Order that required approval
-     */
-    public function supervisorApprove(RequestOrder $requestOrder)
-    {
-        // Only supervisors should call this (route middleware enforces it)
-        if ($requestOrder->status !== 'pending_approval') {
-            return back()->withErrors('Request Order tidak memerlukan persetujuan atau sudah diproses.');
-        }
 
-        $requestOrder->update([
-            'status' => 'approved',
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-        ]);
-
-        return back()->with('success', 'Request Order telah disetujui oleh Supervisor.')->with(['title' => 'Berhasil', 'text' => 'Request Order telah disetujui oleh Supervisor!']);
-    }
-
-    /**
-     * Supervisor rejects a Request Order that required approval
-     */
-    public function supervisorReject(Request $request, RequestOrder $requestOrder)
-    {
-        if ($requestOrder->status !== 'pending_approval') {
-            return back()->withErrors('Request Order tidak dapat ditolak pada status ini.');
-        }
-
-        $request->validate([
-            'reason' => 'required|string|max:1000',
-        ]);
-
-        $requestOrder->update([
-            'status' => 'rejected',
-            'reason' => $request->input('reason'),
-            'approved_by' => Auth::id(),
-            'approved_at' => now(),
-        ]);
-
-        return back()->with('success', 'Request Order ditolak.')->with(['title' => 'Berhasil', 'text' => 'Request Order ditolak!']);
-    }
 
     /**
      * Update status for a request order (Sales).
      */
-    public function updateStatus(Request $request, RequestOrder $requestOrder)
-    {
-        // Only allow owner Sales to change status here
-        if ($requestOrder->sales_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $validated = $request->validate([
-            'status' => 'required|string|in:open,pending,expired,complete',
-        ]);
-
-        // Update status
-        $requestOrder->update(['status' => $validated['status']]);
-
-        return back()->with('success', 'Status Request Order diperbarui.')->with(['title' => 'Berhasil', 'text' => 'Status Request Order diperbarui!']);
-    }
+    // public function updateStatus(Request $request, RequestOrder $requestOrder)
+    // {
+    //     // Only allow owner Sales to change status here
+    //     if ($requestOrder->sales_id !== Auth::id()) {
+    //         abort(403);
+    //     }
+    //
+    //     $validated = $request->validate([
+    //         'status' => 'required|string|in:open,pending,expired,complete',
+    //     ]);
+    //
+    //     // Update status
+    //     $requestOrder->update(['status' => $validated['status']]);
+    //
+    //     return back()->with('success', 'Status Request Order diperbarui.')->with(['title' => 'Berhasil', 'text' => 'Status Request Order diperbarui!']);
+    // }
 
     /**
      * Sent Request Order to Warehouse (create Order with status sent_to_warehouse)
@@ -620,9 +531,9 @@ class RequestOrderController extends Controller
             abort(403);
         }
 
-        if (!in_array($requestOrder->status, ['open', 'approved'])) {
-            return back()->withErrors('Hanya Request Order yang open atau approved dapat dikirim ke Warehouse.');
-        }
+        // if (!in_array($requestOrder->status, ['open', 'approved'])) {
+        //     return back()->withErrors('Hanya Request Order yang open atau approved dapat dikirim ke Warehouse.');
+        // }
 
         if ($requestOrder->order) {
             return back()->withErrors('Request Order ini sudah dikirim ke Warehouse.');
@@ -703,7 +614,7 @@ class RequestOrderController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($ro && in_array($ro->status, ['open', 'approved']) && !$ro->order) {
+                if ($ro && !$ro->order) {
                     $this->processSentToWarehouse($ro);
                     $successCount++;
                 }
@@ -716,6 +627,20 @@ class RequestOrderController extends Controller
             'success' => $successCount > 0,
             'count' => $successCount
         ]);
+    }
+
+    /**
+     * Upload image SO for request order
+     */
+    public function uploadImageSO(Request $request, RequestOrder $requestOrder)
+    {
+        if ($request->hasFile('image_so')) {
+            $path = $request->file('image_so')->store('request-order-so-images', 'public');
+            $requestOrder->image_so = $path;
+            $requestOrder->save();
+            return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
     protected function processSentToWarehouse(RequestOrder $ro)
@@ -743,7 +668,7 @@ class RequestOrderController extends Controller
                 ]);
             }
 
-            $ro->update(['status' => 'sent_to_warehouse']);
+            // $ro->update(['status' => 'sent_to_warehouse']);
         });
     }
 }
