@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('custom_penawaran_id')->nullable();
             $table->enum('status', [
                 'pending',
+                'open',
                 'approved_supervisor',
                 'rejected_supervisor',
                 'sent_to_warehouse',
@@ -42,6 +43,10 @@ return new class extends Migration
             $table->foreign('request_order_id')->references('id')->on('request_orders')->onDelete('set null');
             $table->foreign('custom_penawaran_id')->references('id')->on('custom_penawarans')->onDelete('cascade');
         });
+        // Hapus kolom status dari request_orders
+        Schema::table('request_orders', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 
     /**
@@ -50,5 +55,9 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('orders');
+        // Kembalikan kolom status ke request_orders
+        Schema::table('request_orders', function (Blueprint $table) {
+            $table->string('status')->default('pending');
+        });
     }
 };

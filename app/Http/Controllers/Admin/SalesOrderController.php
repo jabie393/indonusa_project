@@ -79,10 +79,11 @@ class SalesOrderController extends Controller
 
             // Request Orders
             $requestOrderResults = \App\Models\RequestOrder::where(function ($q) use ($search) {
-                    $q->where('request_number', 'like', "%$search%")
-                      ->orWhere('nomor_penawaran', 'like', "%$search%")
-                      ->orWhere('sales_order_number', 'like', "%$search%")
-                      ->orWhere('customer_name', 'like', "%$search%");
+                                        $q->where('request_number', 'like', "%$search%")
+                                            ->orWhere('nomor_penawaran', 'like', "%$search%")
+                                            ->orWhere('sales_order_number', 'like', "%$search%")
+                                            ->orWhere('customer_name', 'like', "%$search%")
+                                            ->orWhere('no_po', 'like', "%$search%");
                 })
                 ->with('items')
                 ->get()
@@ -97,6 +98,7 @@ class SalesOrderController extends Controller
                         'type' => 'request_order',
                         'no_request' => $ro->request_number,
                         'no_penawaran' => $ro->nomor_penawaran,
+                                                'no_po' => $ro->no_po,
                         'no_sales_order' => $ro->sales_order_number,
                         'tanggal' => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
                         'customer_name' => $ro->customer_name,

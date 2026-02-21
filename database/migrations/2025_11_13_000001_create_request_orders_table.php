@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('subject')->nullable();
-            $table->string('status')->default('pending'); // pending, approved, rejected, expired, converted, etc.
+            // $table->string('status')->default('pending'); // pending, approved, rejected, expired, converted, etc.
             $table->text('reason')->nullable(); // alasan penolakan
             $table->date('tanggal_kebutuhan')->nullable();
             $table->dateTime('tanggal_berlaku')->nullable();
@@ -32,6 +32,7 @@ return new class extends Migration
             $table->json('supporting_images')->nullable();
             $table->string('no_po')->nullable();
             $table->string('sales_order_number')->nullable();
+            $table->string('image_so')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();

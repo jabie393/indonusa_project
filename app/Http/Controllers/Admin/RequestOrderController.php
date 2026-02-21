@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RequestOrderController extends Controller
 {
@@ -716,6 +717,20 @@ class RequestOrderController extends Controller
             'success' => $successCount > 0,
             'count' => $successCount
         ]);
+    }
+
+    /**
+     * Upload image SO for request order
+     */
+    public function uploadImageSO(Request $request, RequestOrder $requestOrder)
+    {
+        if ($request->hasFile('image_so')) {
+            $path = $request->file('image_so')->store('request-order-so-images', 'public');
+            $requestOrder->image_so = $path;
+            $requestOrder->save();
+            return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
     protected function processSentToWarehouse(RequestOrder $ro)

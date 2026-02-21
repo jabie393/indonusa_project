@@ -73,4 +73,69 @@ $(document).ready(function() {
             }
         });
     });
+
+    window.uploadImageSO = function(id) {
+        const input = document.getElementById('image-so-input-' + id);
+        if (!input.files.length) return;
+        const file = input.files[0];
+        if (!['image/jpeg','image/png','image/jpg'].includes(file.type)) {
+            alert('Format file harus JPG, JPEG, atau PNG');
+            input.value = '';
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            alert('Ukuran file maksimal 2MB');
+            input.value = '';
+            return;
+        }
+        const formData = new FormData();
+        formData.append('image_so', file);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        fetch('/request-order/' + id + '/upload-image-so', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('image-so-preview-' + id).innerHTML =
+                    `<a href="${data.image_url}" target="_blank"><img src="${data.image_url}" alt="SO Image" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" /></a>` +
+                    `<button class='inline-block ml-2 text-xs text-blue-600 hover:underline' onclick='removeImageSO(${id})'>Hapus</button>`;
+            } else {
+                alert(data.message || 'Upload gagal');
+            }
+        })
+        .catch(() => {
+            alert('Upload gagal');
+        });
+    }
+
+    window.removeImageSO = function(id) {
+        if (!confirm('Hapus gambar SO ini?')) return;
+        const formData = new FormData();
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        formData.append('_method', 'DELETE');
+        fetch('/request-order/' + id + '/upload-image-so', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('image-so-preview-' + id).innerHTML =
+                    `<input type='file' id='image-so-input-${id}' style='display:inline-block;width:120px;' accept='image/jpeg,image/png,image/jpg' onchange='uploadImageSO(${id})'>`;
+            } else {
+                alert(data.message || 'Gagal menghapus gambar');
+            }
+        })
+        .catch(() => {
+            alert('Gagal menghapus gambar');
+        });
+    }
 });
