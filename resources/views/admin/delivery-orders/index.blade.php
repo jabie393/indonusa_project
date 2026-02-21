@@ -95,7 +95,7 @@
                                             </form>
                                         @endif
                                         @if ($order->status === 'approved_warehouse')
-                                            <a href="{{ route('delivery-orders.pdf', $order->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
+                                            <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-items='@json($order->items)'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-4 w-4">
                                                     <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
                                                     <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>

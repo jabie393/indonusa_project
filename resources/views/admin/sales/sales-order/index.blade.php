@@ -1,11 +1,7 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Daftar Sales Order</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Kelola semua sales order Anda</p>
-            </div>
-            <a href="{{ route('sales.sales-order.create') }}" class="inline-block rounded-lg bg-[#225A97] px-6 py-3 text-center font-semibold text-white hover:bg-[#1c4d81]">
+            <a href="{{ route('sales.sales-order.create') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
                 + Buat Sales Order
             </a>
         </div>
@@ -57,7 +53,7 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button type="button" id="searchBtn" class="rounded-lg bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700 flex items-center gap-2 whitespace-nowrap">
+                    <button type="button" id="searchBtn" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2 font-semibold text-white hover:bg-[#19426d]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="m21 21-4.35-4.35"></path>

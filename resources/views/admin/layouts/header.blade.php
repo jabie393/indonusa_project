@@ -126,6 +126,11 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">History Orders</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Pesanan Selesai</p>
                     </div>
+                @elseif (request()->routeIs('sales.sales-order.*'))
+                    <div class="text-gray-100">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
+                    </div>
                 @endif
             @endif
         </div>
