@@ -74,6 +74,10 @@ class SalesOrderController extends Controller
                         'berlaku_sampai' => $so->request_expired_at ? (is_string($so->request_expired_at) ? date('d/m/Y', strtotime($so->request_expired_at)) : $so->request_expired_at->format('d/m/Y')) : '-',
                         'catatan_customer' => $so->catatan_customer,
                         'aksi_url' => route('sales.sales-order.show', $so->id),
+                        'image' => $so->image,
+                        'image_url' => $soModel ? $soModel->image_url : null,
+                        'image_so' => optional($soModel->requestOrder)->image_so,
+                        'image_po' => optional($soModel->requestOrder)->image_po,
                     ];
                 });
 
@@ -109,6 +113,8 @@ class SalesOrderController extends Controller
                         'berlaku_sampai' => $ro->expired_at ? $ro->expired_at->format('d/m/Y') : '-',
                         'catatan_customer' => $ro->catatan_customer,
                         'aksi_url' => route('sales.request-order.show', $ro),
+                        'image_so' => $ro->image_so,
+                        'image_po' => $ro->image_po,
                     ];
                 });
 
@@ -153,6 +159,10 @@ class SalesOrderController extends Controller
                     'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
                     'catatan_customer' => $so->catatan_customer,
                     'aksi_url' => route('sales.sales-order.show', $so),
+                    'image' => $so->image,
+                    'image_url' => $so->image_url,
+                    'image_so' => optional($so->requestOrder)->image_so,
+                    'image_po' => optional($so->requestOrder)->image_po,
                 ];
             });
         }
@@ -467,5 +477,66 @@ class SalesOrderController extends Controller
         } catch (\Throwable $e) {
             return back()->withErrors('Gagal menghapus Sales Order: ' . $e->getMessage());
         }
+    }
+    public function uploadImage(Request $request, SalesOrder $salesOrder)
+    {
+        if ($salesOrder->sales_id !== Auth::id()) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('sales-order-so-images', 'public');
+            
+            // Delete old image if exists
+            if ($salesOrder->image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($salesOrder->image);
+            }
+
+            $salesOrder->image = $path;
+            $salesOrder->save();
+            return response()->json(['status' => 'success', 'image_url' => \Illuminate\Support\Facades\Storage::url($path)]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
+    }
+
+    public function deleteImage(SalesOrder $salesOrder)
+    {
+        if ($salesOrder->sales_id !== Auth::id()) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
+        if ($salesOrder->image) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($salesOrder->image);
+            $salesOrder->image = null;
+            $salesOrder->save();
+        }
+
+        return response()->json(['status' => 'success']);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->input('q', '');
+        
+        $soResults = SalesOrder::query()
+            ->where('sales_id', Auth::id())
+            ->where(function($q) use ($search) {
+                $q->where('sales_order_number', 'like', "%$search%")
+                  ->orWhere('customer_name', 'like', "%$search%");
+            })
+            ->limit(10)
+            ->get()
+            ->map(function($so) {
+                return [
+                    'sales_order_number' => $so->sales_order_number,
+                    'customer_name' => $so->customer_name,
+                    'type' => 'sales_order',
+                    'badge' => 'SO',
+                    'url' => route('sales.sales-order.show', $so->id),
+                    'no_po' => optional($so->requestOrder)->no_po,
+                ];
+            });
+
+        return response()->json(['success' => true, 'data' => $soResults]);
     }
 }

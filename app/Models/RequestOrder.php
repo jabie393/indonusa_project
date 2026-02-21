@@ -29,6 +29,8 @@ class RequestOrder extends Model
         'grand_total',
         'approved_by',
         'approved_at',
+        'image_so',
+        'image_po',
     ];
 
     protected $casts = [

@@ -183,6 +183,9 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/request-order/bulk/send-to-warehouse', [RequestOrderController::class, 'bulkSendToWarehouse'])->name('sales.request-order.bulk-send-to-warehouse');
     Route::post('/request-order/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.request-order.sent-to-warehouse');
     Route::post('/request-order/{requestOrder}/upload-image-so', [RequestOrderController::class, 'uploadImageSO'])->name('request-order.upload-image-so');
+    Route::delete('/request-order/{requestOrder}/upload-image-so', [RequestOrderController::class, 'deleteImageSO'])->name('request-order.delete-image-so');
+    Route::post('/request-order/{requestOrder}/upload-image-po', [RequestOrderController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
+    Route::delete('/request-order/{requestOrder}/upload-image-po', [RequestOrderController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
 
     // Custom Penawaran Routes (Child of Request Order)
     Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');
@@ -207,6 +210,8 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
     Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
+    Route::post('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'uploadImage'])->name('sales-order.upload-image');
+    Route::delete('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'deleteImage'])->name('sales-order.delete-image');
 });
 // End of Sales
 

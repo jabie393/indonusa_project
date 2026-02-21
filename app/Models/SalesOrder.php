@@ -21,12 +21,18 @@ class SalesOrder extends Model
         'warehouse_id',
         'approved_by',
         'approved_at',
+        'image',
     ];
 
     protected $casts = [
         'tanggal_kebutuhan' => 'date',
         'approved_at' => 'datetime',
     ];
+
+    public function getImageUrlAttribute()
+    {
+        return $this->image ? \Illuminate\Support\Facades\Storage::url($this->image) : null;
+    }
 
     public function sales()
     {

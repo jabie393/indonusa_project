@@ -636,11 +636,53 @@ class RequestOrderController extends Controller
     {
         if ($request->hasFile('image_so')) {
             $path = $request->file('image_so')->store('request-order-so-images', 'public');
+            
+            // Delete old image if exists
+            if ($requestOrder->image_so) {
+                Storage::disk('public')->delete($requestOrder->image_so);
+            }
+
             $requestOrder->image_so = $path;
             $requestOrder->save();
             return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
         }
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
+    }
+
+    public function deleteImageSO(RequestOrder $requestOrder)
+    {
+        if ($requestOrder->image_so) {
+            Storage::disk('public')->delete($requestOrder->image_so);
+            $requestOrder->image_so = null;
+            $requestOrder->save();
+        }
+        return response()->json(['status' => 'success']);
+    }
+
+    public function uploadImagePO(Request $request, RequestOrder $requestOrder)
+    {
+        if ($request->hasFile('image_po')) {
+            $path = $request->file('image_po')->store('request-order-po-images', 'public');
+            
+            if ($requestOrder->image_po) {
+                Storage::disk('public')->delete($requestOrder->image_po);
+            }
+
+            $requestOrder->image_po = $path;
+            $requestOrder->save();
+            return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
+    }
+
+    public function deleteImagePO(RequestOrder $requestOrder)
+    {
+        if ($requestOrder->image_po) {
+            Storage::disk('public')->delete($requestOrder->image_po);
+            $requestOrder->image_po = null;
+            $requestOrder->save();
+        }
+        return response()->json(['status' => 'success']);
     }
 
     protected function processSentToWarehouse(RequestOrder $ro)
