@@ -25,12 +25,6 @@ class Order extends Model
     protected static function boot()
     {
         parent::boot();
-        static::updated(function ($order) {
-            if ($order->requestOrder) {
-                $order->requestOrder->status = $order->status;
-                $order->requestOrder->save();
-            }
-        });
     }
 
     public function items()

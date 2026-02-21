@@ -43,7 +43,6 @@ class OrderSeeder extends Seeder
             'customer_id' => $customer->id,
             'customer_name' => $customer->nama_customer,
             'subject' => 'Permintaan Barang Alat Tulis Kantor',
-            'status' => 'approved',
             'tanggal_kebutuhan' => now()->addDays(7),
         ]);
 
@@ -83,7 +82,6 @@ class OrderSeeder extends Seeder
             'customer_id' => $customer2->id,
             'customer_name' => $customer2->nama_customer,
             'subject' => 'Pemesanan Suku Cadang Mesin',
-            'status' => 'approved',
         ]);
 
         $order2 = Order::create([
