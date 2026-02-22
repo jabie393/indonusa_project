@@ -130,14 +130,14 @@
                     <tbody class="grid grid-cols-5">
                         <tr class="col-span-3 row-span-3 flex flex-col">
                             <td class="px-2">Delivery To :</td>
-                            <td class="px-2"><strong>{{ $orders->customer_name }}</strong></td>
-                            <td class="px-2"><span class="text-2xs">{{ $orders->customer_id->address ?? '-' }}</span></td>
+                            <td class="px-2"><strong>{{ $orders->customer?->nama_customer ?? $orders->customer_name }}</strong></td>
+                            <td class="px-2"><span class="text-2xs">{{ $orders->customer?->alamat_pengiriman ?? '-' }}</span></td>
 
                         </tr>
                         <tr class="col-span-2 row-span-3 flex flex-col">
                             <td class="px-2">Date : <strong>{{ $orders->created_at->format('d F Y') }}</strong></td>
                             <td class="px-2">DO No : <strong>{{ $orders->order_number }}</strong></td>
-                            <td class="px-2">PO No : <strong>{{ $orders->no_po }}</strong></td>
+                            <td class="px-2">PO No : <strong>{{ $orders->requestOrder?->no_po ?? '-' }}</strong></td>
                         </tr>
                     </tbody>
                 </table>
