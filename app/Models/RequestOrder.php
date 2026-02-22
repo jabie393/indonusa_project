@@ -8,6 +8,16 @@ use App\Models\RequestOrderItem;
 
 class RequestOrder extends Model
 {
+    /**
+     * Cek apakah ada item dengan diskon >20%
+     *
+     * @return bool
+     */
+    public function hasDiscountOver20(): bool
+    {
+        return $this->items->max('diskon_percent') > 20;
+    }
+
     protected $fillable = [
         'request_number',
         'nomor_penawaran',
@@ -19,22 +29,10 @@ class RequestOrder extends Model
         'subject',
         'reason', 
         'tanggal_kebutuhan',
-        'tanggal_berlaku',
-        'expired_at',
-        'catatan_customer',
-        'kategori_barang',
-        'supporting_images',
-        'subtotal',
-        'tax',
-        'grand_total',
-        'approved_by',
-        'approved_at',
-        'image_so',
-        'image_po',
+        // tambahkan field lain jika ada
     ];
 
     protected $casts = [
-        'approved_at' => 'datetime',
         'tanggal_kebutuhan' => 'date',
         'tanggal_berlaku' => 'datetime',
         'expired_at' => 'datetime',
@@ -43,6 +41,40 @@ class RequestOrder extends Model
         'tax' => 'decimal:2',
         'grand_total' => 'decimal:2',
     ];
+
+    /**
+     * Relasi ke Order (hasOne)
+     */
+
+    /**
+     * Accessor untuk status order terkait
+     *
+     * @return string|null
+     */
+    /**
+     * Accessor untuk status order terkait (label user-friendly)
+     *
+     * @return string
+     */
+    public function getStatusAttribute()
+    {
+        $status = $this->order?->status;
+        $labels = [
+            'pending' => 'Pending',
+            'open' => 'Open',
+            'approved_supervisor' => 'Disetujui Supervisor',
+            'rejected_supervisor' => 'Ditolak Supervisor',
+            'sent_to_warehouse' => 'Dikirim ke Gudang',
+            'approved_warehouse' => 'Disetujui Gudang',
+            'rejected_warehouse' => 'Ditolak Gudang',
+            'completed' => 'Selesai',
+            'not_completed' => 'Tidak Selesai',
+        ];
+        if (!$status) {
+            return 'Belum Diproses';
+        }
+        return $labels[$status] ?? $status;
+    }
 
     /**
      * Accessor untuk tanggal_kebutuhan yang aman

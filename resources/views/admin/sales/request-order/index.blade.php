@@ -71,6 +71,7 @@
                         <th scope="col" class="px-4 py-3 text-nowrap">Jumlah Item</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Total</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Diskon</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Status</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Berlaku Sampai</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Aksi</th>
                     </tr>
@@ -121,6 +122,19 @@
                                     @endforeach
                                     @if (!$displayed)
                                         <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                    @endif
+                                @endif
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="badge bg-blue-50 text-blue-700">{{ $ro->status }}</span>
+                                @if($ro->status === 'Disetujui Supervisor')
+                                    @php
+                                        $maxDiskon = $ro->items->max('diskon_percent');
+                                    @endphp
+                                    @if($maxDiskon > 20)
+                                        <div class="mt-1 text-xs text-orange-600">
+                                            <i class="fa fa-exclamation-triangle"></i> Order menunggu approval supervisor karena diskon melebihi 20%
+                                        </div>
                                     @endif
                                 @endif
                             </td>

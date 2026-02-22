@@ -35,7 +35,7 @@ class RequestOrderController extends Controller
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
         }
 
-        $query = RequestOrder::with('items.barang', 'sales')
+        $query = RequestOrder::with(['items.barang', 'sales', 'order'])
             ->where('sales_id', Auth::id());
 
         if ($search = request('search')) {
@@ -121,17 +121,14 @@ class RequestOrderController extends Controller
         ]);
 
         $items = [];
-            foreach ($validated['barang_id'] as $i => $barangId) {
+        $maxDiskon = 0;
+        foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) continue;
 
-            // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
-            // compute diskon percentage from input, fallback to 0
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
-            // calculate harga satuan based on baseHarga * 1.3
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
-            // If harga provided explicitly, we keep it but prefer computedHargaSatuan to be consistent
             $hargaSatuan = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHargaSatuan;
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
@@ -144,6 +141,9 @@ class RequestOrderController extends Controller
                 'diskon_percent' => $diskon,
                 'subtotal' => $subtotal,
             ];
+            if ($diskon > $maxDiskon) {
+                $maxDiskon = $diskon;
+            }
         }
 
         if (empty($items)) {
@@ -193,6 +193,18 @@ class RequestOrderController extends Controller
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
+            ]);
+            // Buat order jika diperlukan
+            $orderStatus = ($maxDiskon > 20) ? 'pending' : 'approved_supervisor';
+            $order = Order::create([
+                'order_number' => 'ORD-' . strtoupper(Str::random(8)),
+                'sales_id' => $requestOrder->sales_id,
+                'customer_name' => $requestOrder->customer_name,
+                'customer_id' => $requestOrder->customer_id,
+                'request_order_id' => $requestOrder->id,
+                'status' => $orderStatus,
+                'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                'catatan_customer' => $requestOrder->catatan_customer,
             ]);
 
             foreach ($items as $item) {
@@ -279,6 +291,20 @@ class RequestOrderController extends Controller
      */
     public function pdf(RequestOrder $requestOrder)
     {
+        // Cek aturan bisnis PDF
+        $requestOrder->loadMissing('items', 'order');
+        if (!$requestOrder->canDownloadPdf()) {
+            $status = $requestOrder->order?->status;
+            if ($requestOrder->hasDiscountOver20()) {
+                if ($status === 'pending') {
+                    return redirect()->back()->withErrors('PDF tidak dapat didownload, menunggu persetujuan supervisor.');
+                }
+                if ($status === 'rejected_supervisor') {
+                    return redirect()->back()->withErrors('PDF tidak dapat didownload, ditolak oleh supervisor.');
+                }
+            }
+            return redirect()->back()->withErrors('PDF tidak dapat didownload.');
+        }
         // Authorization (case-insensitive role check):
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $adminAllowed = array_map('strtolower', ['Supervisor', 'Admin']);

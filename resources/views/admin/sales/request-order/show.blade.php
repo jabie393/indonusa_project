@@ -359,8 +359,26 @@
                                     </a>
 
                                     @php
-                                        $canDownloadPdf = true;
+                                        $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
+                                        $status = $requestOrder->order?->status;
+                                        $badge = '';
+                                        $badgeText = '';
+                                        if ($requestOrder->hasDiscountOver20()) {
+                                            if ($status === 'pending') {
+                                                $badge = 'bg-yellow-500 text-white';
+                                                $badgeText = 'Menunggu Persetujuan Supervisor';
+                                            } elseif ($status === 'rejected_supervisor') {
+                                                $badge = 'bg-red-600 text-white';
+                                                $badgeText = 'Ditolak Supervisor';
+                                            } elseif ($status === 'approved_supervisor') {
+                                                $badge = 'bg-green-600 text-white';
+                                                $badgeText = 'Disetujui, PDF dapat didownload';
+                                            }
+                                        }
                                     @endphp
+                                    @if($badgeText)
+                                        <span class="badge {{ $badge }} mx-2">{{ $badgeText }}</span>
+                                    @endif
 
                                     @if ($canDownloadPdf)
                                         <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}"
@@ -382,7 +400,7 @@
                                     @else
                                         <button type="button"
                                             class="flex cursor-not-allowed items-center justify-center rounded-lg bg-gray-300 px-3 py-2 text-sm font-medium text-white"
-                                            disabled title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
+                                            disabled title="PDF tidak dapat didownload, menunggu persetujuan supervisor">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -396,6 +414,9 @@
                                             </svg>
                                             <span>PDF</span>
                                         </button>
+                                        <span class="text-warning ms-2" style="font-size: 0.9em;">
+                                            <i class="fa fa-exclamation-triangle"></i> Menunggu persetujuan supervisor
+                                        </span>
                                     @endif
 
                                     {{-- Sent to Warehouse --}}
