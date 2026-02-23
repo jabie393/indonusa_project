@@ -194,18 +194,41 @@ class RequestOrderController extends Controller
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
             ]);
-            // Buat order jika diperlukan
-            $orderStatus = ($maxDiskon > 20) ? 'pending' : 'approved_supervisor';
-            $order = Order::create([
-                'order_number' => 'ORD-' . strtoupper(Str::random(8)),
-                'sales_id' => $requestOrder->sales_id,
-                'customer_name' => $requestOrder->customer_name,
-                'customer_id' => $requestOrder->customer_id,
-                'request_order_id' => $requestOrder->id,
-                'status' => $orderStatus,
-                'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                'catatan_customer' => $requestOrder->catatan_customer,
-            ]);
+
+            // Simpan item
+
+            // Cek ulang diskon dari tabel items (kolom diskon_percent)
+            // Setelah seluruh item tersimpan, cek ulang diskon dari tabel items
+            $requestOrder->refresh();
+            $requestOrder->load('items');
+            $maxDiskon = $requestOrder->items->max('diskon_percent');
+            if ($maxDiskon > 20) {
+                Order::updateOrCreate(
+                    ['request_order_id' => $requestOrder->id],
+                    [
+                        'order_number' => 'ORD-' . strtoupper(uniqid()),
+                        'sales_id' => $requestOrder->sales_id,
+                        'customer_name' => $requestOrder->customer_name,
+                        'customer_id' => $requestOrder->customer_id,
+                        'status' => 'sent_to_supervisor',
+                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                        'catatan_customer' => $requestOrder->catatan_customer,
+                    ]
+                );
+            } else {
+                Order::updateOrCreate(
+                    ['request_order_id' => $requestOrder->id],
+                    [
+                        'order_number' => 'ORD-' . strtoupper(uniqid()),
+                        'sales_id' => $requestOrder->sales_id,
+                        'customer_name' => $requestOrder->customer_name,
+                        'customer_id' => $requestOrder->customer_id,
+                        'status' => 'open',
+                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                        'catatan_customer' => $requestOrder->catatan_customer,
+                    ]
+                );
+            }
 
             foreach ($items as $item) {
                 $origIdx = $item['original_index'];
@@ -237,6 +260,38 @@ class RequestOrderController extends Controller
             }
 
             DB::commit();
+
+            // Setelah commit, cek ulang diskon dan update status order
+            $requestOrder->refresh();
+            $requestOrder->load('items');
+            $maxDiskon = $requestOrder->items->max('diskon_percent');
+            if ($maxDiskon > 20) {
+                Order::updateOrCreate(
+                    ['request_order_id' => $requestOrder->id],
+                    [
+                        'order_number' => 'ORD-' . strtoupper(uniqid()),
+                        'sales_id' => $requestOrder->sales_id,
+                        'customer_name' => $requestOrder->customer_name,
+                        'customer_id' => $requestOrder->customer_id,
+                        'status' => 'sent_to_supervisor',
+                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                        'catatan_customer' => $requestOrder->catatan_customer,
+                    ]
+                );
+            } else {
+                Order::updateOrCreate(
+                    ['request_order_id' => $requestOrder->id],
+                    [
+                        'order_number' => 'ORD-' . strtoupper(uniqid()),
+                        'sales_id' => $requestOrder->sales_id,
+                        'customer_name' => $requestOrder->customer_name,
+                        'customer_id' => $requestOrder->customer_id,
+                        'status' => 'open',
+                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                        'catatan_customer' => $requestOrder->catatan_customer,
+                    ]
+                );
+            }
 
             // If the request order is for the current user, redirect to show; otherwise, redirect to index
             if ($requestOrder->sales_id == Auth::id()) {
