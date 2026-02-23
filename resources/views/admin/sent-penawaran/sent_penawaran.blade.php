@@ -25,7 +25,7 @@
                         <th class="px-4 py-3">Keterangan</th>
                         <th class="px-4 py-3">Sent At</th>
                         <th class="px-4 py-3">Status</th>
-                        <th class="px-4 py-3">Aksi</th>
+                        <th class="px-4 py-3">AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,39 +82,58 @@
                                         <span class="badge bg-blue-50 text-blue-700">{{ $label }}</span>
                                     @endif
                                 </td>
-                                <td class="w-fit px-4 py-3 text-right">
-                                    <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                        <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                        <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            <a href="#" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
-                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
-                                            </a>
-                                            @if (auth()->user()->role === 'Supervisor' && $status === 'sent_to_supervisor')
-                                                <form action="{{ route('admin.request-order.approve', $penawaran->id) }}" method="POST" class="inline">
+                                <td>
+                                    {{-- Tombol Detail --}}
+                                    <a href="{{ route('admin.request-order.show', $penawaran->id) }}" class="btn btn-info btn-sm" style="margin-right:4px;">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </a>
+
+                                    {{-- Tombol Terima --}}
+                                    <form action="{{ route('supervisor.approve', $penawaran->id) }}" method="POST" style="display:inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm" style="margin-right:4px;">
+                                            <i class="fas fa-check"></i> Terima
+                                        </button>
+                                    </form>
+
+                                    {{-- Tombol Tolak --}}
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTolak{{ $penawaran->id }}">
+                                        <i class="fas fa-times"></i> Tolak
+                                    </button>
+
+                                    {{-- Modal Alasan Penolakan --}}
+                                    <div class="modal fade" id="modalTolak{{ $penawaran->id }}" tabindex="-1" aria-labelledby="modalTolakLabel{{ $penawaran->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="modalTolakLabel{{ $penawaran->id }}">
+                                                        Alasan Penolakan - {{ $penawaran->request_number ?? $penawaran->penawaran_number }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('supervisor.reject', $penawaran->id) }}" method="POST">
                                                     @csrf
-                                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4">
-                                                            <path d="M20 6 9 17l-5-5"></path>
-                                                        </svg>
-                                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Setujui</span>
-                                                    </button>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">
+                                                                Alasan Penolakan <span class="text-danger">*</span>
+                                                            </label>
+                                                            <textarea name="reason" class="form-control" rows="4" required placeholder="Tulis alasan penolakan..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fas fa-times"></i> Konfirmasi Tolak
+                                                        </button>
+                                                    </div>
                                                 </form>
-                                                <form action="{{ route('admin.request-order.reject', $penawaran->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" title="Tolak">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
-                                                            <circle cx="12" cy="12" r="10"></circle>
-                                                            <path d="m15 9-6 6"></path>
-                                                            <path d="m9 9 6 6"></path>
-                                                        </svg>
-                                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Tolak</span>
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
                                         </div>
                                     </div>
                                 </td>
@@ -153,47 +172,50 @@
                                 </td>
                                 <td class="px-4 py-3">{{ $penawaran->created_at ? $penawaran->created_at->format('Y-m-d H:i') : '-' }}</td>
                                 <td class="px-4 py-3">{{ ucfirst($penawaran->status) }}</td>
-                                <td class="w-fit px-4 py-3 text-right">
-                                    <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                        <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                        <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            @if (auth()->user()->role === 'Supervisor')
-                                                <a href="{{ route('admin.request-order.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
-                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                                                        <circle cx="12" cy="12" r="3"></circle>
-                                                    </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
-                                                </a>
-                                            @else
-                                                <a href="{{ route('sales.request-order.show', $penawaran->id) }}" class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
-                                                        <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                                                        <circle cx="12" cy="12" r="3"></circle>
-                                                    </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
-                                                </a>
-                                            @endif
+                                <td>
+                                    {{-- Tombol Terima --}}
+                                    <form action="{{ route('supervisor.approve', $penawaran->id) }}" method="POST" style="display:inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Terima
+                                        </button>
+                                    </form>
 
-                                            @if (auth()->user()->role === 'Supervisor' && $penawaran->status === 'pending_approval')
-                                                <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" class="inline">
+                                    {{-- Tombol Tolak --}}
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalTolak{{ $penawaran->id }}">
+                                        <i class="fas fa-times"></i> Tolak
+                                    </button>
+
+                                    {{-- Modal Alasan Penolakan --}}
+                                    <div class="modal fade" id="modalTolak{{ $penawaran->id }}" tabindex="-1" aria-labelledby="modalTolakLabel{{ $penawaran->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title" id="modalTolakLabel{{ $penawaran->id }}">
+                                                        Alasan Penolakan - {{ $penawaran->request_number ?? $penawaran->penawaran_number }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form action="{{ route('supervisor.reject', $penawaran->id) }}" method="POST">
                                                     @csrf
-                                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4">
-                                                            <path d="M20 6 9 17l-5-5"></path>
-                                                        </svg>
-                                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Setujui</span>
-                                                    </button>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-bold">
+                                                                Alasan Penolakan <span class="text-danger">*</span>
+                                                            </label>
+                                                            <textarea name="reason" class="form-control" rows="4" required placeholder="Tulis alasan penolakan..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fas fa-times"></i> Konfirmasi Tolak
+                                                        </button>
+                                                    </div>
                                                 </form>
-                                                <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="submitReject('{{ route('supervisor.request-order.reject', $penawaran->id) }}')" title="Tolak">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
-                                                        <circle cx="12" cy="12" r="10"></circle>
-                                                        <path d="m15 9-6 6"></path>
-                                                        <path d="m9 9 6 6"></path>
-                                                    </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Tolak</span>
-                                                </button>
-                                            @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -208,57 +230,20 @@
         {{ $penawarans->links() }}
     </div>
 
-    <script>
-        function submitReject(actionUrl, extra = {}) {
-            try {
-                var reason = prompt('Masukkan alasan penolakan:');
-                if (reason === null) return; // cancelled
-                reason = reason.trim();
-                if (!reason) {
-                    alert('Alasan penolakan diperlukan.');
-                    return;
-                }
 
-                // create form dynamically and submit
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = actionUrl;
-                form.style.display = 'none';
 
-                // CSRF token from meta tag (Laravel includes this in layout)
-                var token = document.querySelector('meta[name="csrf-token"]');
-                if (token) {
-                    var inputToken = document.createElement('input');
-                    inputToken.type = 'hidden';
-                    inputToken.name = '_token';
-                    inputToken.value = token.getAttribute('content');
-                    form.appendChild(inputToken);
-                }
 
-                // reason
-                var inReason = document.createElement('input');
-                inReason.type = 'hidden';
-                inReason.name = 'reason';
-                inReason.value = reason;
-                form.appendChild(inReason);
-
-                // extra fields (like action=reject)
-                for (var k in extra) {
-                    if (!extra.hasOwnProperty(k)) continue;
-                    var ei = document.createElement('input');
-                    ei.type = 'hidden';
-                    ei.name = k;
-                    ei.value = extra[k];
-                    form.appendChild(ei);
-                }
-
-                document.body.appendChild(form);
-                form.submit();
-            } catch (e) {
-                console.error('submitReject error', e);
-                alert('Terjadi kesalahan saat mengirim penolakan.');
-            }
+<script>
+// Fallback: force open modal Bootstrap jika event gagal
+$(document).on('click', '.btn-danger[data-bs-toggle="modal"]', function(e) {
+    var target = $(this).attr('data-bs-target');
+    if (target) {
+        var modal = $(target);
+        if (modal.length) {
+            var bsModal = new bootstrap.Modal(modal[0]);
+            bsModal.show();
         }
-    </script>
-
+    }
+});
+</script>
 </x-app-layout>

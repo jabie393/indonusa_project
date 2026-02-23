@@ -17,6 +17,7 @@ class RequestOrder extends Model
         $maxDiskon = $this->items->max('diskon_percent');
         $status = $this->order?->status;
         if ($maxDiskon === null) return false; // Tidak ada item
+        if ($status === 'approved_supervisor') return true;
         if ($maxDiskon <= 20 && $status === 'open') return true;
         if ($maxDiskon > 20 && $status === 'open') return true;
         if ($status === 'sent_to_supervisor') return false;

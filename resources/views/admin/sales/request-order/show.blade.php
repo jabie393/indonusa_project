@@ -372,7 +372,7 @@
                                                 $badgeText = 'Ditolak Supervisor';
                                             } elseif ($status === 'approved_supervisor') {
                                                 $badge = 'bg-green-600 text-white';
-                                                $badgeText = 'Disetujui, PDF dapat didownload';
+                                                $badgeText = 'Sudah disetujui oleh supervisor';
                                             }
                                         }
                                     @endphp

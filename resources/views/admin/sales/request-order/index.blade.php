@@ -133,7 +133,7 @@
                                     @endphp
                                     @if ($maxDiskon > 20)
                                         <div class="mt-1 text-xs text-orange-600">
-                                            <i class="fa fa-exclamation-triangle"></i> Order menunggu approval supervisor karena diskon melebihi 20%
+                                            <i class="fa fa-exclamation-triangle"></i> 
                                         </div>
                                     @endif
                                 @endif
