@@ -123,16 +123,31 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3">
-                                <span class="badge bg-blue-50 text-blue-700">{{ $ro->status }}</span>
-                                @if($ro->status === 'Disetujui Supervisor')
-                                    @php
-                                        $maxDiskon = $ro->items->max('diskon_percent');
-                                    @endphp
-                                    @if($maxDiskon > 20)
-                                        <div class="mt-1 text-xs text-orange-600">
-                                            <i class="fa fa-exclamation-triangle"></i> Order menunggu approval supervisor karena diskon melebihi 20%
-                                        </div>
-                                    @endif
+                                @php
+                                    $status = $ro->order?->status;
+                                @endphp
+                                @if($status === 'pending')
+                                    <span class="badge bg-gray-400 text-white">Pending</span>
+                                @elseif($status === 'open')
+                                    <span class="badge bg-green-500 text-white">Open</span>
+                                @elseif($status === 'sent_to_supervisor')
+                                    <span class="badge bg-yellow-400 text-gray-900">Menunggu Persetujuan Supervisor</span>
+                                @elseif($status === 'approved_supervisor')
+                                    <span class="badge bg-blue-500 text-white">Disetujui Supervisor</span>
+                                @elseif($status === 'rejected_supervisor')
+                                    <span class="badge bg-red-500 text-white">Ditolak Supervisor</span>
+                                @elseif($status === 'sent_to_warehouse')
+                                    <span class="badge bg-blue-200 text-blue-900">Dikirim ke Gudang</span>
+                                @elseif($status === 'approved_warehouse')
+                                    <span class="badge bg-green-700 text-white">Disetujui Gudang</span>
+                                @elseif($status === 'rejected_warehouse')
+                                    <span class="badge bg-red-700 text-white">Ditolak Gudang</span>
+                                @elseif($status === 'completed')
+                                    <span class="badge bg-green-500 text-white">Selesai</span>
+                                @elseif($status === 'not_completed')
+                                    <span class="badge bg-red-500 text-white">Tidak Selesai</span>
+                                @else
+                                    <span class="badge bg-gray-300 text-gray-700">Belum Diproses</span>
                                 @endif
                             </td>
                             <td class="text-nowrap px-4 py-3">

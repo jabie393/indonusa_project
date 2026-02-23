@@ -55,7 +55,7 @@ class AdminPTController extends Controller
             ->get();
 
         $requestOrders = \App\Models\RequestOrder::whereHas('order', function($query) {
-            $query->where('status', 'pending_approval');
+            $query->where('status', 'sent_to_supervisor');
         })
             ->with(['items', 'sales', 'order'])
             ->get();

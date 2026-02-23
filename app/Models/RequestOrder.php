@@ -15,12 +15,15 @@ class RequestOrder extends Model
     public function canDownloadPdf(): bool
     {
         $maxDiskon = $this->items->max('diskon_percent');
-        if ($maxDiskon === null) return true; // Tidak ada item
-        if ($maxDiskon <= 20) return true;
-        // Diskon > 20%, cek status order
         $status = $this->order?->status;
-        return $status === 'approved_supervisor';
+        if ($maxDiskon === null) return false; // Tidak ada item
+        if ($maxDiskon <= 20 && $status === 'open') return true;
+        if ($maxDiskon > 20 && $status === 'open') return true;
+        if ($status === 'sent_to_supervisor') return false;
+        if ($status === 'rejected_supervisor') return false;
+        return false;
     }
+
 
     protected $fillable = [
         'request_number',
