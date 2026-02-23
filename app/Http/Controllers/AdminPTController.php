@@ -54,8 +54,10 @@ class AdminPTController extends Controller
             ->with(['items', 'sales'])
             ->get();
 
-        $requestOrders = \App\Models\RequestOrder::where('status', 'pending_approval')
-            ->with(['items', 'sales'])
+        $requestOrders = \App\Models\RequestOrder::whereHas('order', function($query) {
+            $query->where('status', 'pending_approval');
+        })
+            ->with(['items', 'sales', 'order'])
             ->get();
 
         // Tag each item with a type so view can differentiate

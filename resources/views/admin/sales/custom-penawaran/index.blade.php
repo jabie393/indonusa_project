@@ -98,6 +98,8 @@
                                         <br><small class="text-success">Berlaku {{ $daysLeft }} hari lagi</small>
                                     @endif
                                 @else
+                                    {{ \Carbon\Carbon::parse($penawaran->created_at)->addDays(14)->format('d/m/Y') }}
+                                    <br><small class="text-success">Berlaku 14 hari dari dibuat</small>
                                     -
                                 @endif
                             </td>

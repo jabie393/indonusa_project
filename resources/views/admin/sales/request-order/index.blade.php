@@ -78,9 +78,6 @@
                 </thead>
                 <tbody>
                     @forelse($requestOrders as $ro)
-                        @php
-                            $total = $ro->grand_total ?? $ro->subtotal + $ro->tax;
-                        @endphp
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->id }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
@@ -92,7 +89,7 @@
                             <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
-                            <td class="text-nowrap px-4 py-3">Rp {{ number_format($total, 2, ',', '.') }}</td>
+                            <td class="text-nowrap px-4 py-3">Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
                             @php
                                 // Collect discounts per item, group by percentage and count occurrences
                                 $discountCounts = $ro->items
@@ -139,32 +136,8 @@
                                 @endif
                             </td>
                             <td class="text-nowrap px-4 py-3">
-                                @if ($ro->expired_at)
-                                    {{ $ro->expired_at_formatted }}
-                                    <br>
-                                    <small>
-                                        @if ($ro->isExpired())
-                                            <span class="badge bg-danger">KADALUARSA</span>
-                                        @else
-                                            @php
-                                                try {
-                                                    $expiry = is_string($ro->expired_at)
-                                                        ? \Carbon\Carbon::parse($ro->expired_at)
-                                                        : $ro->expired_at;
-                                                    $daysLeft = $expiry->diffInDays(now());
-                                                } catch (\Throwable $e) {
-                                                    $daysLeft = null;
-                                                }
-                                            @endphp
-                                            <span class="text-success">
-                                                @if ($daysLeft && $daysLeft > 0)
-                                                    {{ $daysLeft }} hari dari sekarang
-                                                @else
-                                                    -
-                                                @endif
-                                            </span>
-                                        @endif
-                                    </small>
+                                @if ($ro->tanggal_berlaku)
+                                    {{ \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y') }}
                                 @else
                                     -
                                 @endif
@@ -233,10 +206,7 @@
 
                                             <li>
                                                 {{-- PDF --}}
-                                                @php
-                                                    $canDownload = true; // status check removed
-                                                @endphp
-                                                @if ($canDownload)
+                                                @if ($ro->canDownloadPdf())
                                                     <a href="{{ route('sales.request-order.pdf', $ro->id) }}"
                                                         class="flex items-center gap-2 text-green-600 hover:bg-green-50"
                                                         target="_blank">
@@ -245,9 +215,7 @@
                                                             stroke="currentColor" stroke-width="2"
                                                             stroke-linecap="round" stroke-linejoin="round"
                                                             class="lucide lucide-file-text">
-                                                            <path
-                                                                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
-                                                            </path>
+                                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
                                                             <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
                                                             <path d="M10 9H8"></path>
                                                             <path d="M16 13H8"></path>
@@ -258,19 +226,10 @@
                                                 @else
                                                     <button type="button" disabled
                                                         class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
-                                                        title="PDF tidak tersedia sampai Supervisor menyetujui penawaran">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                            height="16" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-file-text">
-                                                            <path
-                                                                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
-                                                            </path>
-                                                            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                            <path d="M10 9H8"></path>
-                                                            <path d="M16 13H8"></path>
-                                                            <path d="M16 17H8"></path>
+                                                        title="Menunggu Persetujuan Supervisor">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock">
+                                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                                         </svg>
                                                         PDF
                                                     </button>

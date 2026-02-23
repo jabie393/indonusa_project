@@ -9,13 +9,17 @@ use App\Models\RequestOrderItem;
 class RequestOrder extends Model
 {
     /**
-     * Cek apakah ada item dengan diskon >20%
-     *
+     * Cek apakah PDF bisa didownload sesuai aturan diskon dan status order
      * @return bool
      */
-    public function hasDiscountOver20(): bool
+    public function canDownloadPdf(): bool
     {
-        return $this->items->max('diskon_percent') > 20;
+        $maxDiskon = $this->items->max('diskon_percent');
+        if ($maxDiskon === null) return true; // Tidak ada item
+        if ($maxDiskon <= 20) return true;
+        // Diskon > 20%, cek status order
+        $status = $this->order?->status;
+        return $status === 'approved_supervisor';
     }
 
     protected $fillable = [
@@ -27,10 +31,22 @@ class RequestOrder extends Model
         'customer_name',
         'customer_id',
         'subject',
-        'reason', 
+        'reason',
         'tanggal_kebutuhan',
-        // tambahkan field lain jika ada
+        'tanggal_berlaku',
+        'subtotal',
+        'tax',
+        'grand_total',
     ];
+    /**
+     * Cek apakah ada item dengan diskon >20%
+     *
+     * @return bool
+     */
+    public function hasDiscountOver20(): bool
+    {
+        return $this->items->max('diskon_percent') > 20;
+    }
 
     protected $casts = [
         'tanggal_kebutuhan' => 'date',

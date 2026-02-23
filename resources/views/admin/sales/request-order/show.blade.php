@@ -494,21 +494,22 @@
                                 <div class="mb-6 space-y-4">
                                     <div class="flex justify-between">
                                         <span class="text-gray-600 dark:text-gray-400">Sub Total</span>
-                                        <span class="font-semibold text-gray-900 dark:text-white">Rp
-                                            {{ number_format($subtotal, 0, ',', '.') }}</span>
+                                        <span class="font-semibold text-gray-900 dark:text-white">Rp {{ number_format($requestOrder->subtotal, 2, ',', '.') }}</span>
                                     </div>
                                     <div class="flex justify-between">
-                                        <span class="text-gray-600 dark:text-gray-400">Pajak/PPN
-                                            ({{ $ppnRate }}%)</span>
-                                        <span class="font-semibold text-gray-900 dark:text-white">Rp
-                                            {{ number_format($totalPPN, 0, ',', '.') }}</span>
+                                        <span class="text-gray-600 dark:text-gray-400">
+                                            Pajak/PPN
+                                            @if($requestOrder->tax > 0)
+                                                (PPN (11%))
+                                            @else
+                                                (PPN (0%))
+                                            @endif
+                                        </span>
+                                        <span class="font-semibold text-gray-900 dark:text-white">Rp {{ number_format($requestOrder->tax, 2, ',', '.') }}</span>
                                     </div>
-                                    <div
-                                        class="flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
-                                        <span class="text-lg font-bold text-gray-900 dark:text-white">Grand
-                                            Total</span>
-                                        <span class="text-lg font-bold text-blue-600 dark:text-blue-400">Rp
-                                            {{ number_format($grandTotal, 0, ',', '.') }}</span>
+                                    <div class="flex justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
+                                        <span class="text-lg font-bold text-gray-900 dark:text-white">Grand Total</span>
+                                        <span class="text-lg font-bold text-blue-600 dark:text-blue-400">Rp {{ number_format($requestOrder->grand_total, 2, ',', '.') }}</span>
                                     </div>
                                 </div>
 
