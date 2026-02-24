@@ -127,8 +127,7 @@
                                         {{ $requestOrder->tanggal_berlaku_formatted }}</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold text-gray-900 dark:text-white">Masa Berlaku
-                                        Berakhir</label>
+                                    <label class="form-label fw-bold text-gray-900 dark:text-white">Masa Berlaku Berakhir</label>
                                     <p class="text-gray-900 dark:text-white">
                                         @if ($requestOrder->expired_at)
                                             {{ $requestOrder->expired_at_formatted }}
@@ -154,9 +153,12 @@
                                                     @endif
                                                 </small>
                                             @endif
+                                        @elseif ($requestOrder->tanggal_berlaku_formatted)
+                                            {{ $requestOrder->tanggal_berlaku_formatted }}
                                         @else
                                             <span class="text-gray-500">-</span>
                                         @endif
+                                    </p>
                                 </div>
                             </div>
 

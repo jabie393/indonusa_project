@@ -39,14 +39,20 @@ class SalesOrderController extends Controller
                       ->orWhere('request_orders.nomor_penawaran', 'like', "%$search%")
                       ->orWhere('request_orders.customer_name', 'like', "%$search%");
                 })
-                ->select('sales_orders.*', 'request_orders.no_po as request_no_po', 'request_orders.request_number as request_request_number', 'request_orders.nomor_penawaran as request_nomor_penawaran', 'request_orders.expired_at as request_expired_at')
+                ->select(
+                    'sales_orders.*',
+                    'request_orders.no_po as request_no_po',
+                    'request_orders.request_number as request_request_number',
+                    'request_orders.nomor_penawaran as request_nomor_penawaran',
+                    'request_orders.expired_at as request_expired_at',
+                    'request_orders.tanggal_berlaku as request_tanggal_berlaku' // ← TAMBAH INI
+                )
                 ->get()
                 ->map(function ($so) {
                     $diskonPersen = 0;
                     $total = 0;
                     $tanggalPenawaran = null;
                     $penawaran = null;
-                    // Relasi manual ke model jika perlu
                     $soModel = \App\Models\SalesOrder::find($so->id);
                     if ($soModel && $soModel->requestOrder && $soModel->requestOrder->nomor_penawaran) {
                         $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $soModel->requestOrder->nomor_penawaran)
@@ -58,6 +64,17 @@ class SalesOrderController extends Controller
                         $total = $penawaran->grand_total;
                         $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
                     }
+
+                    // ← PERBAIKAN: prioritas tanggal_berlaku, fallback ke expired_at
+                    $berlakuSampai = '-';
+                    if (!empty($so->request_tanggal_berlaku)) {
+                        $berlakuSampai = \Carbon\Carbon::parse($so->request_tanggal_berlaku)->translatedFormat('d F Y');
+                    } elseif (!empty($so->request_expired_at)) {
+                        $berlakuSampai = \Carbon\Carbon::parse($so->request_expired_at)->translatedFormat('d F Y');
+                    } elseif ($soModel && $soModel->requestOrder && $soModel->requestOrder->tanggal_berlaku) {
+                        $berlakuSampai = \Carbon\Carbon::parse($soModel->requestOrder->tanggal_berlaku)->translatedFormat('d F Y');
+                    }
+
                     return [
                         'id' => $so->id,
                         'type' => 'sales_order',
@@ -71,7 +88,7 @@ class SalesOrderController extends Controller
                         'total' => $total,
                         'diskon' => $diskonPersen,
                         'status' => $so->status,
-                        'berlaku_sampai' => $so->request_expired_at ? (is_string($so->request_expired_at) ? date('d/m/Y', strtotime($so->request_expired_at)) : $so->request_expired_at->format('d/m/Y')) : '-',
+                        'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
                         'catatan_customer' => $so->catatan_customer,
                         'aksi_url' => route('sales.sales-order.show', $so->id),
                         'image' => $so->image,
@@ -83,34 +100,40 @@ class SalesOrderController extends Controller
 
             // Request Orders
             $requestOrderResults = \App\Models\RequestOrder::where(function ($q) use ($search) {
-                                        $q->where('request_number', 'like', "%$search%")
-                                            ->orWhere('nomor_penawaran', 'like', "%$search%")
-                                            ->orWhere('sales_order_number', 'like', "%$search%")
-                                            ->orWhere('customer_name', 'like', "%$search%")
-                                            ->orWhere('no_po', 'like', "%$search%");
+                    $q->where('request_number', 'like', "%$search%")
+                        ->orWhere('nomor_penawaran', 'like', "%$search%")
+                        ->orWhere('sales_order_number', 'like', "%$search%")
+                        ->orWhere('customer_name', 'like', "%$search%")
+                        ->orWhere('no_po', 'like', "%$search%");
                 })
                 ->with('items')
                 ->get()
                 ->map(function ($ro) {
-                    $diskonPersen = 0;
-                    $total = 0;
-                    // Ambil grand_total langsung dari field grand_total di tabel request_orders
                     $diskonPersen = ($ro->items && $ro->items->count() > 0) ? ($ro->items->first()->diskon_percent ?? 0) : 0;
                     $total = $ro->grand_total ?? 0;
+
+                    // ← PERBAIKAN: prioritas tanggal_berlaku, fallback ke expired_at
+                    $berlakuSampai = '-';
+                    if ($ro->tanggal_berlaku) {
+                        $berlakuSampai = \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y');
+                    } elseif ($ro->expired_at) {
+                        $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
+                    }
+
                     return [
                         'id' => $ro->id,
                         'type' => 'request_order',
                         'no_request' => $ro->request_number,
                         'no_penawaran' => $ro->nomor_penawaran,
-                                                'no_po' => $ro->no_po,
+                        'no_po' => $ro->no_po,
                         'no_sales_order' => $ro->sales_order_number,
                         'tanggal' => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
                         'customer_name' => $ro->customer_name,
                         'jumlah_item' => $ro->items->count(),
-                        'total' => $total, // grand_total dari request_order_items
+                        'total' => $total,
                         'diskon' => $diskonPersen,
                         'status' => $ro->status,
-                        'berlaku_sampai' => $ro->expired_at ? $ro->expired_at->format('d/m/Y') : '-',
+                        'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
                         'catatan_customer' => $ro->catatan_customer,
                         'aksi_url' => route('sales.request-order.show', $ro),
                         'image_so' => $ro->image_so,
@@ -118,8 +141,8 @@ class SalesOrderController extends Controller
                     ];
                 });
 
-            // Gabungkan hasil dan pastikan Collection
             $results = collect($soResults)->merge($requestOrderResults);
+
         } else {
             // Default: hanya SO, paginasi
             $salesOrders = SalesOrder::where('sales_id', Auth::id())
@@ -127,12 +150,13 @@ class SalesOrderController extends Controller
                 ->latest()
                 ->paginate(20)
                 ->appends(request()->query());
-            // Map NO.PO dan field lain agar konsisten dengan hasil search
+
             $results = $salesOrders->map(function ($so) {
                 $diskonPersen = 0;
                 $total = 0;
                 $tanggalPenawaran = null;
                 $penawaran = null;
+
                 if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
                     $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
                         ->with('items')
@@ -143,12 +167,34 @@ class SalesOrderController extends Controller
                     $total = $penawaran->grand_total;
                     $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
                 }
+
+                // ← PERBAIKAN UTAMA: ambil tanggal_berlaku dari requestOrder
+                $berlakuSampai = '-';
+                $requestOrderArr = [];
+
+                if ($so->requestOrder) {
+                    // Prioritas 1: tanggal_berlaku (14 hari setelah penawaran dibuat)
+                    if ($so->requestOrder->tanggal_berlaku) {
+                        $berlakuSampai = \Carbon\Carbon::parse(
+                            $so->requestOrder->tanggal_berlaku
+                        )->translatedFormat('d F Y');
+                    }
+                    // Prioritas 2: expired_at sebagai fallback
+                    elseif ($so->requestOrder->expired_at) {
+                        $berlakuSampai = \Carbon\Carbon::parse(
+                            $so->requestOrder->expired_at
+                        )->translatedFormat('d F Y');
+                    }
+
+                    $requestOrderArr['tanggal_berlaku_formatted'] = $berlakuSampai;
+                }
+
                 return [
                     'id' => $so->id,
                     'type' => 'sales_order',
                     'no_request' => optional($so->requestOrder)->request_number,
                     'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
-                        'no_po' => optional($so->requestOrder)->no_po ?? '-',
+                    'no_po' => optional($so->requestOrder)->no_po ?? '-',
                     'no_sales_order' => $so->sales_order_number,
                     'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
                     'customer_name' => $so->customer_name,
@@ -156,13 +202,14 @@ class SalesOrderController extends Controller
                     'total' => $total,
                     'diskon' => $diskonPersen,
                     'status' => $so->status,
-                    'berlaku_sampai' => optional($so->requestOrder)->expired_at ? optional($so->requestOrder)->expired_at->format('d/m/Y') : '-',
+                    'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
                     'catatan_customer' => $so->catatan_customer,
                     'aksi_url' => route('sales.sales-order.show', $so),
                     'image' => $so->image,
                     'image_url' => $so->image_url,
                     'image_so' => optional($so->requestOrder)->image_so,
                     'image_po' => optional($so->requestOrder)->image_po,
+                    'request_order' => $requestOrderArr,
                 ];
             });
         }
@@ -175,15 +222,12 @@ class SalesOrderController extends Controller
         ]);
     }
 
-    /**
-     * Get Penawaran detail via AJAX
-     */
+    // ===== Semua method lain tidak diubah =====
+
     public function getPenawaranDetail(Request $request)
     {
         $penawaranId = $request->input('id');
-        
-        $penawaran = CustomPenawaran::where('sales_id', Auth::id())
-            ->findOrFail($penawaranId);
+        $penawaran = CustomPenawaran::where('sales_id', Auth::id())->findOrFail($penawaranId);
 
         return response()->json([
             'success' => true,
@@ -217,9 +261,6 @@ class SalesOrderController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
@@ -227,16 +268,13 @@ class SalesOrderController extends Controller
             ->with('items')
             ->latest()
             ->get();
-        
+
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
-        
+
         return view('admin.sales.sales-order.create', compact('customPenawarans', 'salesUsers', 'currentUserName'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         Log::info('Sales Order Store Request Incoming', [
@@ -321,7 +359,6 @@ class SalesOrderController extends Controller
             ]);
 
             DB::commit();
-
             Log::info('Sales Order Commit Successful', ['id' => $salesOrder->id]);
 
             return redirect()->route('sales.sales-order.show', $salesOrder->id)
@@ -333,9 +370,6 @@ class SalesOrderController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(SalesOrder $salesOrder)
     {
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
@@ -348,9 +382,6 @@ class SalesOrderController extends Controller
         return view('admin.sales.sales-order.show', compact('salesOrder'));
     }
 
-    /**
-     * Show the form for editing the resource.
-     */
     public function edit(SalesOrder $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {
@@ -360,13 +391,10 @@ class SalesOrderController extends Controller
         $salesOrder->load('items');
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
-        
+
         return view('admin.sales.sales-order.edit', compact('salesOrder', 'salesUsers', 'currentUserName'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, SalesOrder $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {
@@ -409,11 +437,10 @@ class SalesOrderController extends Controller
             ]);
 
             $salesOrder->items()->delete();
-
             $subtotal = 0;
+
             foreach ($validated['items'] as $i => $itemData) {
                 $itemImages = [];
-
                 if ($request->hasFile("items.$i.images")) {
                     foreach ($request->file("items.$i.images") as $file) {
                         if ($file) {
@@ -449,7 +476,6 @@ class SalesOrderController extends Controller
             ]);
 
             DB::commit();
-
             return redirect()->route('sales.sales-order.show', $salesOrder->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil diubah.']);
         } catch (\Throwable $e) {
@@ -458,9 +484,6 @@ class SalesOrderController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(SalesOrder $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {
@@ -478,6 +501,7 @@ class SalesOrderController extends Controller
             return back()->withErrors('Gagal menghapus Sales Order: ' . $e->getMessage());
         }
     }
+
     public function uploadImage(Request $request, SalesOrder $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {
@@ -486,12 +510,9 @@ class SalesOrderController extends Controller
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('sales-order-so-images', 'public');
-            
-            // Delete old image if exists
             if ($salesOrder->image) {
                 \Illuminate\Support\Facades\Storage::disk('public')->delete($salesOrder->image);
             }
-
             $salesOrder->image = $path;
             $salesOrder->save();
             return response()->json(['status' => 'success', 'image_url' => \Illuminate\Support\Facades\Storage::url($path)]);
@@ -510,23 +531,22 @@ class SalesOrderController extends Controller
             $salesOrder->image = null;
             $salesOrder->save();
         }
-
         return response()->json(['status' => 'success']);
     }
 
     public function search(Request $request)
     {
         $search = $request->input('q', '');
-        
+
         $soResults = SalesOrder::query()
             ->where('sales_id', Auth::id())
-            ->where(function($q) use ($search) {
+            ->where(function ($q) use ($search) {
                 $q->where('sales_order_number', 'like', "%$search%")
                   ->orWhere('customer_name', 'like', "%$search%");
             })
             ->limit(10)
             ->get()
-            ->map(function($so) {
+            ->map(function ($so) {
                 return [
                     'sales_order_number' => $so->sales_order_number,
                     'customer_name' => $so->customer_name,

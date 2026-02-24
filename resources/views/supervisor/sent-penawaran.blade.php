@@ -24,14 +24,20 @@
                 <td>Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
                 <td>{{ $ro->created_at->format('d-m-Y H:i') }}</td>
                 <td>
-                    <form action="{{ route('supervisor.approve', $ro->id) }}" method="POST" style="display:inline">
+                    <form action="{{ route('supervisor.request-order.approve', $ro->id) }}" method="POST" style="display:inline">
                         @csrf
                         <button type="submit" class="btn btn-success btn-sm">Terima</button>
                     </form>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="konfirmasiTolak({{ $ro->id }}, '{{ $ro->nomor_penawaran }}')">
+                    <!-- Tombol Tolak baru -->
+                    <button type="button"
+                        class="btn btn-danger btn-sm btn-tolak"
+                        data-id="{{ $ro->id }}">
                         <i class="fas fa-times"></i> Tolak
                     </button>
-                    <form id="formTolak{{ $ro->id }}" action="{{ route('supervisor.reject', $ro->id) }}" method="POST" style="display:none">
+                    <form id="formTolak{{ $ro->id }}"
+                        action="{{ route('supervisor.request-order.reject', $ro->id) }}"
+                        method="POST"
+                        style="display:none">
                         @csrf
                         <input type="hidden" name="reason" id="reasonInput{{ $ro->id }}">
                     </form>
@@ -43,21 +49,19 @@
 </div>
 @endsection
 
-
-
-
-@push('scripts')
 <script>
-function konfirmasiTolak(id, noPenawaran) {
-    let alasan = '';
-    while (true) {
-        alasan = prompt('Masukkan alasan penolakan untuk penawaran ' + noPenawaran + ':', alasan);
-        if (alasan === null) return; // Cancel
-        if (alasan.trim() !== '') break;
-        alert('Alasan penolakan wajib diisi!');
-    }
-    document.getElementById('reasonInput' + id).value = alasan;
-    document.getElementById('formTolak' + id).submit();
-}
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-tolak').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            var alasan = prompt('Masukkan alasan penolakan:', '');
+            if (alasan !== null && alasan.trim() !== '') {
+                document.getElementById('reasonInput' + id).value = alasan;
+                document.getElementById('formTolak' + id).submit();
+            } else if (alasan !== null) {
+                alert('Alasan penolakan wajib diisi!');
+            }
+        });
+    });
+});
 </script>
-@endpush

@@ -19,6 +19,22 @@ use Illuminate\Support\Facades\Storage;
 class RequestOrderController extends Controller
 {
     /**
+     * Supervisor approve request order (ubah status order menjadi approved_supervisor)
+     */
+    public function supervisorApprove(Request $request, $id)
+    {
+        $order = Order::where('request_order_id', $id)->first();
+        if (!$order) {
+            return back()->withErrors('Order tidak ditemukan.');
+        }
+        $order->update([
+            'status' => 'approved_supervisor',
+            'supervisor_id' => Auth::id(),
+            'approved_at' => now(),
+        ]);
+        return redirect()->back()->with('success', 'Request order berhasil di-approve oleh supervisor.');
+    }
+    /**
      * List semua Request Order milik Sales
      */
     public function index()
@@ -194,6 +210,11 @@ class RequestOrderController extends Controller
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
             ]);
+            // Pastikan tanggal_berlaku selalu terisi
+            if (!$requestOrder->tanggal_berlaku) {
+                $requestOrder->tanggal_berlaku = $tanggalBerlaku;
+                $requestOrder->save();
+            }
 
             // Simpan item
 

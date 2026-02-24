@@ -163,7 +163,15 @@
                                     {{ ucfirst($row['status']) }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3">{{ $row['berlaku_sampai'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
+                                    {{ $row['berlaku_sampai'] }}
+                                @elseif (!empty($row['request_order']) && !empty($row['request_order']['tanggal_berlaku_formatted']))
+                                    {{ $row['request_order']['tanggal_berlaku_formatted'] }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-center">
                                 <div class="flex flex-col items-center gap-2">
                                     <a href="{{ $row['aksi_url'] }}" class="w-full rounded-lg bg-blue-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700">Lihat</a>

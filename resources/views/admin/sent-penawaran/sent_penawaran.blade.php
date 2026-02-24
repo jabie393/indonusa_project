@@ -89,50 +89,25 @@
                                     </a>
 
                                     {{-- Tombol Terima --}}
-                                    <form action="{{ route('supervisor.approve', $penawaran->id) }}" method="POST" style="display:inline">
+                                    <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" style="display:inline">
                                         @csrf
                                         <button type="submit" class="btn btn-success btn-sm" style="margin-right:4px;">
                                             <i class="fas fa-check"></i> Terima
                                         </button>
                                     </form>
 
-                                    {{-- Tombol Tolak --}}
-                                    <button type="button" class="btn btn-danger btn-sm"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalTolak{{ $penawaran->id }}">
+                                    <button type="button"
+                                        class="btn btn-danger btn-sm btn-tolak"
+                                        data-id="{{ $penawaran->id }}">
                                         <i class="fas fa-times"></i> Tolak
                                     </button>
-
-                                    {{-- Modal Alasan Penolakan --}}
-                                    <div class="modal fade" id="modalTolak{{ $penawaran->id }}" tabindex="-1" aria-labelledby="modalTolakLabel{{ $penawaran->id }}" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title" id="modalTolakLabel{{ $penawaran->id }}">
-                                                        Alasan Penolakan - {{ $penawaran->request_number ?? $penawaran->penawaran_number }}
-                                                    </h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <form action="{{ route('supervisor.reject', $penawaran->id) }}" method="POST">
-                                                    @csrf
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label class="form-label fw-bold">
-                                                                Alasan Penolakan <span class="text-danger">*</span>
-                                                            </label>
-                                                            <textarea name="reason" class="form-control" rows="4" required placeholder="Tulis alasan penolakan..."></textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="fas fa-times"></i> Konfirmasi Tolak
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <form id="formTolak{{ $penawaran->id }}"
+                                        action="{{ route('supervisor.request-order.reject', $penawaran->id) }}"
+                                        method="POST"
+                                        style="display:none">
+                                        @csrf
+                                        <input type="hidden" name="reason" id="reasonInput{{ $penawaran->id }}">
+                                    </form>
                                 </td>
                                         </div>
                                     </div>
@@ -174,7 +149,7 @@
                                 <td class="px-4 py-3">{{ ucfirst($penawaran->status) }}</td>
                                 <td>
                                     {{-- Tombol Terima --}}
-                                    <form action="{{ route('supervisor.approve', $penawaran->id) }}" method="POST" style="display:inline">
+                                    <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" style="display:inline">
                                         @csrf
                                         <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Terima
@@ -198,7 +173,7 @@
                                                     </h5>
                                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form action="{{ route('supervisor.reject', $penawaran->id) }}" method="POST">
+                                                <form action="{{ route('supervisor.request-order.reject', $penawaran->id) }}" method="POST">
                                                     @csrf
                                                     <div class="modal-body">
                                                         <div class="mb-3">
@@ -221,6 +196,7 @@
                                 </td>
                             @endif
                         </tr>
+                        <!-- Form Tolak hidden sudah di atas, tidak perlu modal -->
                     @empty
                     @endforelse
                 </tbody>
@@ -244,6 +220,22 @@ $(document).on('click', '.btn-danger[data-bs-toggle="modal"]', function(e) {
             bsModal.show();
         }
     }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-tolak').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            var alasan = prompt('Masukkan alasan penolakan:', '');
+            if (alasan !== null && alasan.trim() !== '') {
+                document.getElementById('reasonInput' + id).value = alasan;
+                document.getElementById('formTolak' + id).submit();
+            } else if (alasan !== null) {
+                alert('Alasan penolakan wajib diisi!');
+            }
+        });
+    });
 });
 </script>
 </x-app-layout>
