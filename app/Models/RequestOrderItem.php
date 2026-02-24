@@ -15,6 +15,7 @@ class RequestOrderItem extends Model
         'subtotal',
         'diskon_percent',
         'ppn_percent',
+        'images',
         'item_images',
         'notes',
     ];
@@ -25,6 +26,7 @@ class RequestOrderItem extends Model
         'subtotal' => 'decimal:2',
         'diskon_percent' => 'decimal:2',
         'ppn_percent' => 'decimal:2',
+        'images' => 'array',
         'item_images' => 'array',
         'kategori_barang' => 'string',
     ];

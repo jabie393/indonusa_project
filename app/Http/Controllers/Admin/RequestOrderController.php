@@ -258,6 +258,7 @@ class RequestOrderController extends Controller
                 if ($request->hasFile("item_images.{$origIdx}")) {
                     foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
+                            // FIX: simpan ke disk 'public'
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
                     }
@@ -270,14 +271,15 @@ class RequestOrderController extends Controller
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
+                    // FIX: simpan ke kolom 'images' (bukan 'item_images')
                     'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
-                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
-                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
-                }
+                        if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
+                            $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
+                        }
 
-                RequestOrderItem::create($itemData);
+                        RequestOrderItem::create($itemData);
             }
 
             DB::commit();
@@ -575,10 +577,11 @@ class RequestOrderController extends Controller
                 $itemData = [
                     'request_order_id' => $requestOrder->id,
                     'barang_id' => $item['barang_id'],
+                    'kategori_barang' => $item['kategori_barang'] ?? null,
                     'quantity' => $item['quantity'],
                     'harga' => $item['harga'],
                     'subtotal' => $item['subtotal'],
-                    'item_images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {

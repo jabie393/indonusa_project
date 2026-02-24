@@ -276,9 +276,12 @@
                                                 class="text-nowrap px-6 py-4 font-semibold text-gray-900 dark:text-white">
                                                 Rp {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                             <td class="px-4 py-3 text-center">
-                                                @if ($item->item_images && count($item->item_images) > 0)
+                                                @php
+                                                    $itemImgs = $item->images ?? $item->item_images ?? [];
+                                                @endphp
+                                                @if (!empty($itemImgs) && count($itemImgs) > 0)
                                                     <div class="flex flex-wrap justify-center gap-3">
-                                                        @foreach ($item->item_images as $image)
+                                                        @foreach ($itemImgs as $image)
                                                             @php
                                                                 if (is_null($image) || $image === '') {
                                                                     $imgUrl = null;

@@ -240,13 +240,15 @@
                                 <td class="border px-2 py-1 text-right">Rp
                                     {{ number_format($computedSubtotal, 2, ',', '.') }}</td>
                                 <td class="border px-2 py-1 text-center">
-                                    @if ($item->item_images && count($item->item_images) > 0)
+                                    @php
+                                        $itemImgs = $item->images ?? $item->item_images ?? [];
+                                    @endphp
+                                    @if (!empty($itemImgs))
                                         <div class="flex flex-wrap justify-center gap-2">
-                                            @foreach ($item->item_images as $image)
+                                            @foreach ($itemImgs as $image)
                                                 @php
                                                     $imgSrc = $getStorageImageBase64($image);
                                                 @endphp
-
                                                 @if ($imgSrc)
                                                     <img src="{{ $imgSrc }}" alt="Gambar"
                                                         class="h-20 w-20 border border-gray-300 object-contain">

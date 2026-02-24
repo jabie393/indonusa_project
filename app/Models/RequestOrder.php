@@ -41,6 +41,7 @@ class RequestOrder extends Model
         'subtotal',
         'tax',
         'grand_total',
+        'supporting_images',
     ];
     /**
      * Cek apakah ada item dengan diskon >20%

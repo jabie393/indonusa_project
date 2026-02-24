@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('diskon_percent')->default(0);
             $table->string('kategori_barang')->nullable();
             $table->json('images')->nullable();
+            // $table->json('item_images')->nullable();
             $table->timestamps();
 
             $table->foreign('request_order_id')->references('id')->on('request_orders')->onDelete('cascade');
