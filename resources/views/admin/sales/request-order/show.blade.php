@@ -84,7 +84,7 @@
                                         class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Kategori
                                         Barang</label>
                                     <p><span
-                                            class="rounded bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-300">{{ $requestOrder->kategori_barang ?? '-' }}</span>
+                                            class="rounded bg-gray-100 px-2.5 py-0.5 text-xs font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-300">{{ $requestOrder->items->first()->barang->kategori ?? '-' }}</span>
                                     </p>
                                 </div>
                                 <div>
@@ -124,7 +124,7 @@
                                         class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-300">Masa
                                         Berlaku Mulai</label>
                                     <p class="text-gray-900 dark:text-white">
-                                        {{ $requestOrder->tanggal_berlaku_formatted }}</p>
+                                        {{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold text-gray-900 dark:text-white">Masa Berlaku Berakhir</label>
