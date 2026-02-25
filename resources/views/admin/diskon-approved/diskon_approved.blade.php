@@ -62,11 +62,13 @@
                             @endforeach
                         @else
                             <tr>
+                                <td class="px-4 py-3"></td>
                                 <td class="px-4 py-3">{{ $loop->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                                 <td class="px-4 py-3">{{ $order->order_number }}</td>
                                 <td class="px-4 py-3">-</td>
                                 <td class="px-4 py-3">{{ optional($order->sales)->name ?? 'N/A' }}</td>
                                 <td class="px-4 py-3">{{ $order->customer_name ?? '-' }}</td>
+                                <td class="px-4 py-3">-</td>
                                 <td class="px-4 py-3">-</td>
                                 <td class="px-4 py-3">-</td>
                                 <td class="px-4 py-3">-</td>

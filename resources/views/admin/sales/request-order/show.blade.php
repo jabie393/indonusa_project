@@ -36,12 +36,103 @@
                     aria-label="Close">Tutup</button>
             </div>
         @endif
+
+        {{-- ============================================================
+             BANNER STATUS SUPERVISOR
+             Letakkan di sini, sebelum .space-y-3.p-6
+             Muncul otomatis sesuai status order dari supervisor
+             ============================================================ --}}
+        @php $orderStatus = $requestOrder->order?->status; @endphp
+
+        @if ($orderStatus === 'rejected_supervisor')
+            {{-- BANNER MERAH: Ditolak --}}
+            <div class="mx-6 mt-6 flex items-start gap-4 rounded-xl border border-red-300 bg-red-50 p-5 shadow-sm dark:border-red-700 dark:bg-red-900/20">
+                <div class="flex-shrink-0 rounded-full bg-red-100 p-2 dark:bg-red-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 dark:text-red-300"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-base font-bold text-red-700 dark:text-red-300">
+                        Penawaran Ini Ditolak oleh Supervisor
+                    </h4>
+                    {{-- Alasan: cek dari request_orders.reason dulu, fallback ke orders.reason --}}
+                    @if (!empty($requestOrder->reason))
+                        <p class="mt-1.5 text-sm text-red-700 dark:text-red-300">
+                            <span class="font-semibold">Alasan:</span> {{ $requestOrder->reason }}
+                        </p>
+                    @elseif (!empty($requestOrder->order?->reason))
+                        <p class="mt-1.5 text-sm text-red-700 dark:text-red-300">
+                            <span class="font-semibold">Alasan:</span> {{ $requestOrder->order->reason }}
+                        </p>
+                    @else
+                        <p class="mt-1.5 text-sm italic text-red-500 dark:text-red-400">
+                            Tidak ada keterangan alasan penolakan.
+                        </p>
+                    @endif
+                    {{-- Nama supervisor & waktu --}}
+                    @if ($requestOrder->order?->supervisor)
+                        <p class="mt-1 text-xs text-red-500 dark:text-red-400">
+                            Ditolak oleh:
+                            <span class="font-medium">{{ $requestOrder->order->supervisor->name }}</span>
+                            @if ($requestOrder->order->approved_at)
+                                &middot; {{ \Carbon\Carbon::parse($requestOrder->order->approved_at)->translatedFormat('d F Y, H:i') }}
+                            @endif
+                        </p>
+                    @endif
+                    {{-- Tombol perbaiki --}}
+                    <div class="mt-3">
+                        <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}"
+                           class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                                <path d="m15 5 4 4"/>
+                            </svg>
+                            Perbaiki &amp; Ajukan Ulang
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        @elseif ($orderStatus === 'sent_to_supervisor')
+            {{-- BANNER KUNING: Menunggu persetujuan --}}
+            <div class="mx-6 mt-6 flex items-center gap-3 rounded-xl border border-yellow-300 bg-yellow-50 p-4 shadow-sm dark:border-yellow-600 dark:bg-yellow-900/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-yellow-500"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+                <p class="text-sm font-medium text-yellow-700 dark:text-yellow-300">
+                    Penawaran mengandung diskon &gt;20% dan sedang menunggu persetujuan Supervisor.
+                    PDF belum dapat diunduh sampai disetujui.
+                </p>
+            </div>
+
+        @elseif ($orderStatus === 'approved_supervisor')
+            {{-- BANNER HIJAU: Disetujui --}}
+            <div class="mx-6 mt-6 flex items-center gap-3 rounded-xl border border-green-300 bg-green-50 p-4 shadow-sm dark:border-green-600 dark:bg-green-900/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-green-500"
+                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                <p class="text-sm font-semibold text-green-700 dark:text-green-300">
+                    Penawaran telah disetujui oleh Supervisor. PDF sudah dapat diunduh.
+                </p>
+            </div>
+        @endif
+        {{-- ============================================================
+             END BANNER STATUS SUPERVISOR
+             ============================================================ --}}
+
         <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Left Column -->
                 <div class="lg:col-span-2">
                     <!-- Main Details Card -->
-
                     <div
                         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div
@@ -174,19 +265,20 @@
                                 </div>
                             @endif
 
-                            @if ($requestOrder->reason)
-                                <div class="md:col-span-2">
-                                    <label
-                                        class="mb-1 block text-sm font-semibold text-red-600 dark:text-red-400">Alasan
-                                        Penolakan</label>
-                                    <div
-                                        class="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
-                                        {{ $requestOrder->reason }}
+                            {{-- Alasan penolakan di dalam card (backup tampilan selain banner atas) --}}
+                            @if (!empty($requestOrder->reason) || !empty($requestOrder->order?->reason))
+                                <div class="mt-4 md:col-span-2">
+                                    <label class="mb-1 block text-sm font-semibold text-red-600 dark:text-red-400">
+                                        Alasan Penolakan Supervisor
+                                    </label>
+                                    <div class="rounded-lg bg-red-50 p-3 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-300">
+                                        {{ $requestOrder->reason ?? $requestOrder->order?->reason }}
                                     </div>
                                 </div>
                             @endif
                         </div>
                     </div>
+
                     <!-- Supporting Images Card -->
                     @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
                         <div class="overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
@@ -266,7 +358,13 @@
                                                     {{ $item->barang->kode_barang ?? '-' }}</div>
                                             </td>
                                             <td class="px-6 py-4">
-                                                {{ $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0) }}%
+                                                @php $dk = $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0); @endphp
+                                                <span class="{{ $dk > 20 ? 'font-bold text-red-600' : '' }}">
+                                                    {{ $dk }}%
+                                                </span>
+                                                @if ($dk > 20)
+                                                    <span class="ml-1 rounded bg-red-100 px-1.5 py-0.5 text-xs text-red-700">&gt;20%</span>
+                                                @endif
                                             </td>
                                             <td class="px-6 py-4">{{ $item->quantity }}
                                                 {{ $item->barang->satuan ?? 'pcs' }}</td>
@@ -333,6 +431,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Sidebar -->
                 <div class="gap-2 lg:col-span-1">
                     <div class="sticky top-5 space-y-6">
@@ -369,7 +468,7 @@
                                         $badge = '';
                                         $badgeText = '';
                                         if ($requestOrder->hasDiscountOver20()) {
-                                            if ($status === 'pending') {
+                                            if ($status === 'sent_to_supervisor') {
                                                 $badge = 'bg-yellow-500 text-white';
                                                 $badgeText = 'Menunggu Persetujuan Supervisor';
                                             } elseif ($status === 'rejected_supervisor') {
@@ -382,7 +481,7 @@
                                         }
                                     @endphp
                                     @if($badgeText)
-                                        <span class="badge {{ $badge }} mx-2">{{ $badgeText }}</span>
+                                        <span class="w-full rounded px-2 py-1 text-center text-xs {{ $badge }}">{{ $badgeText }}</span>
                                     @endif
 
                                     @if ($canDownloadPdf)
@@ -419,7 +518,7 @@
                                             </svg>
                                             <span>PDF</span>
                                         </button>
-                                        <span class="text-warning ms-2" style="font-size: 0.9em;">
+                                        <span class="w-full text-center text-xs text-yellow-600">
                                             <i class="fa fa-exclamation-triangle"></i> Menunggu persetujuan supervisor
                                         </span>
                                     @endif
@@ -462,7 +561,6 @@
                             $grandTotal = $requestOrder->grand_total ?? round($subtotal + $totalPPN, 2);
                             $ppnRate = $subtotal > 0 ? round(($totalPPN / $subtotal) * 100, 2) : 0;
 
-                            // Helper function to get base64 encoded image from storage
                             $getStorageImageBase64 = function ($imagePath) {
                                 try {
                                     if (
@@ -471,22 +569,19 @@
                                     ) {
                                         return $imagePath;
                                     }
-
                                     $fullPath = str_starts_with($imagePath, 'public/')
                                         ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
                                         : storage_path('app/public/' . ltrim($imagePath, '/'));
-
                                     if (file_exists($fullPath) && is_readable($fullPath)) {
                                         $mime = mime_content_type($fullPath);
                                         $data = base64_encode(file_get_contents($fullPath));
                                         return 'data:' . $mime . ';base64,' . $data;
                                     }
-                                } catch (\Exception $e) {
-                                    // Log error if needed
-                                }
+                                } catch (\Exception $e) {}
                                 return '';
                             };
                         @endphp
+
                         <div
                             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                             <div
@@ -539,7 +634,6 @@
 
     </div>
 
-    <!-- Reject Modal -->
     <!-- PDF Note Modal -->
     <div class="modal fade" id="pdfNoteModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
@@ -570,6 +664,7 @@
             </div>
         </div>
     </div>
+
     <!-- Image modal (lightbox) -->
     <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-70">
         <button id="image-modal-close"
@@ -593,13 +688,12 @@
                 modal.classList.add('hidden');
             }
 
-            // Using event delegation for dynamic or static elements
             document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.custom-penawaran-thumb');
                 if (btn) {
                     const src = btn.getAttribute('data-full');
                     if (src) {
-                        e.preventDefault(); // Prevent default if it's a link (though we used button)
+                        e.preventDefault();
                         openModal(src);
                     }
                 }
@@ -616,21 +710,17 @@
             });
         })();
 
-        // Supervisor back script (keeping it just in case)
         function supervisorBack() {
             try {
                 var backBtn = document.getElementById('backBtn');
                 var fallback = backBtn ? backBtn.dataset.fallback : '/sent-penawaran';
 
-                // If referrer is the sent-penawaran page, just go back
                 if (document.referrer && document.referrer.indexOf('/sent-penawaran') !== -1) {
                     history.back();
                     return;
                 }
 
-                // If there's history, try history.back() and fallback if nothing changes
                 if (history.length > 1) {
-                    // attempt history.back(), but also set a fallback timer
                     var navigated = false;
                     var onPop = function() {
                         navigated = true;
@@ -646,10 +736,8 @@
                     return;
                 }
 
-                // No useful history -> direct fallback
                 window.location.href = fallback;
             } catch (e) {
-                // If any error, go to fallback
                 window.location.href = '{{ route('admin.sent_penawaran') }}';
             }
         }

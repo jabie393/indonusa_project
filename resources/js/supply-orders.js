@@ -1,6 +1,17 @@
 // Bulk Action Logic
 $(document).ready(function() {
-    const table = new DataTable('#DataTable'); // This gets the existing instance
+    const table = new DataTable('#DataTable'); // Default, tanpa konfigurasi columns/columnDefs/select
+
+    // Handle select-all checkbox
+    $('#select-all-checkbox').on('click', function() {
+        const checked = $(this).prop('checked');
+        $('.row-checkbox').prop('checked', checked);
+        if (checked) {
+            table.rows().select();
+        } else {
+            table.rows().deselect();
+        }
+    });
 
     function updateBulkActions() {
         const selectedIds = table.rows({ selected: true }).data().toArray().map(row => row[0]);
