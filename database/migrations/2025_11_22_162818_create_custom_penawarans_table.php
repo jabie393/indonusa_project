@@ -11,29 +11,39 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('custom_penawarans', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('sales_id');
-            $table->string('penawaran_number')->unique();
-            $table->string('to')->nullable();
-            $table->string('up')->nullable();
-            $table->string('subject')->nullable();
-            $table->string('email')->nullable();
-            $table->string('our_ref')->unique();
-            $table->date('date')->nullable();
-            $table->longText('intro_text')->nullable();
-            $table->decimal('subtotal', 15, 2)->default(0);
-            $table->decimal('tax', 15, 2)->nullable();
-            $table->decimal('grand_total', 15, 2)->default(0);
-            $table->string('status')->default('draft'); // draft, sent, approved, rejected, expired, sent_to_warehouse, etc.
-            $table->dateTime('expired_at')->nullable();
-            $table->text('reason')->nullable();
-            $table->unsignedBigInteger('approved_by')->nullable();
-            $table->timestamps();
+        // Tambahkan kolom approved_at jika tabel sudah ada
+        if (Schema::hasTable('custom_penawarans')) {
+            Schema::table('custom_penawarans', function (Blueprint $table) {
+                if (!Schema::hasColumn('custom_penawarans', 'approved_at')) {
+                    $table->dateTime('approved_at')->nullable();
+                }
+            });
+        } else {
+            Schema::create('custom_penawarans', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('sales_id');
+                $table->string('penawaran_number')->unique();
+                $table->string('to')->nullable();
+                $table->string('up')->nullable();
+                $table->string('subject')->nullable();
+                $table->string('email')->nullable();
+                $table->string('our_ref')->unique();
+                $table->date('date')->nullable();
+                $table->longText('intro_text')->nullable();
+                $table->decimal('subtotal', 15, 2)->default(0);
+                $table->decimal('tax', 15, 2)->nullable();
+                $table->decimal('grand_total', 15, 2)->default(0);
+                $table->string('status')->default('draft'); // draft, sent, approved, rejected, expired, sent_to_warehouse, etc.
+                $table->dateTime('expired_at')->nullable();
+                $table->text('reason')->nullable();
+                $table->unsignedBigInteger('approved_by')->nullable();
+                $table->dateTime('approved_at')->nullable(); // Added approved_at column
+                $table->timestamps();
 
-            $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
-        });
+                $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
+                $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
+            });
+        }
     }
 
     /**
