@@ -285,6 +285,14 @@
                                     @forelse($requestOrder->items as $item)
                                         <tr class="item-row">
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                                                                @php
+                                                                                                    $existingImgs = $item->images ?? $item->item_images ?? [];
+                                                                                                @endphp
+                                                                                                @foreach ($existingImgs as $existingImg)
+                                                                                                    <input type="hidden"
+                                                                                                        name="existing_item_images[{{ $loop->parent->index }}][]"
+                                                                                                        value="{{ $existingImg }}">
+                                                                                                @endforeach
                                                 <select name="kategori_barang[]"
                                                     class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                                     <option value="">Pilih Kategori</option>
@@ -374,9 +382,6 @@
                                                     </button>
                                                 </div>
                                                 <div class="item-images-preview mt-2 flex flex-wrap gap-2">
-                                                    @php
-                                                        $existingImgs = $item->images ?? $item->item_images ?? [];
-                                                    @endphp
                                                     @if (!empty($existingImgs))
                                                         @foreach ($existingImgs as $img)
                                                             @php

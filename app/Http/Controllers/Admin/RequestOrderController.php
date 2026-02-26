@@ -532,6 +532,9 @@ class RequestOrderController extends Controller
             'item_images.*.*' => 'nullable|image|max:5120',
             'nama_barang_custom'   => 'nullable|array',
             'nama_barang_custom.*' => 'nullable|string|max:255',
+            'existing_item_images'       => 'nullable|array',
+            'existing_item_images.*'     => 'nullable|array',
+            'existing_item_images.*.*'   => 'nullable|string',
         ]);
 
         // Validasi dinamis: minimal salah satu dari barang_id atau nama_barang_custom harus terisi per item
@@ -634,6 +637,14 @@ class RequestOrderController extends Controller
                         if ($f) {
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
+                    }
+                }
+                // Jika tidak ada file baru diupload, gunakan existing images
+                // (mempertahankan gambar dari Custom Penawaran atau upload sebelumnya)
+                if (empty($itemImagePaths)) {
+                    $existingImgs = $request->input("existing_item_images.{$origIdx}", []);
+                    if (!empty($existingImgs)) {
+                        $itemImagePaths = array_values(array_filter($existingImgs));
                     }
                 }
 
