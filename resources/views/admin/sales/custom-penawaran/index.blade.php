@@ -243,6 +243,38 @@
                                                     </li>
                                                 </form>
                                             @endif
+
+                                            {{-- Sent to Penawaran --}}
+                                            @if ($penawaran->status === 'open')
+                                                @php
+                                                    $sudahDikirim = \App\Models\RequestOrder::where('custom_penawaran_id', $penawaran->id)->exists();
+                                                @endphp
+                                                @if (!$sudahDikirim)
+                                                    <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('POST')
+                                                        <li>
+                                                            <button type="submit"
+                                                                class="flex w-full items-center gap-2 text-indigo-600 hover:bg-indigo-50"
+                                                                onclick="return confirm('Kirim ke halaman Penawaran? No.PO dan No.SO bisa diisi manual nanti.')">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22 11 13 2 9l20-7z"></path></svg>
+                                                                Sent to Penawaran
+                                                            </button>
+                                                        </li>
+                                                    </form>
+                                                @else
+                                                    @php
+                                                        $existingRO = \App\Models\RequestOrder::where('custom_penawaran_id', $penawaran->id)->first();
+                                                    @endphp
+                                                    <li>
+                                                        <a href="{{ route('sales.request-order.show', $existingRO->id) }}"
+                                                            class="flex items-center gap-2 text-indigo-400 hover:bg-indigo-50">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
+                                                            Sudah di Penawaran
+                                                        </a>
+                                                    </li>
+                                                @endif
+                                            @endif
                                         </ul>
                                         {{-- Action Dropdown --}}
 

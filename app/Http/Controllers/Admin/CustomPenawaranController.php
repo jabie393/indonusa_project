@@ -632,4 +632,72 @@ class CustomPenawaranController extends Controller
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
         }
     }
+    /**
+     * Kirim Custom Penawaran ke Penawaran (Request Order)
+     */
+    public function sentToPenawaran(CustomPenawaran $customPenawaran)
+    {
+        if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
+            abort(403);
+        }
+        if ($customPenawaran->status !== 'open') {
+            return back()->withErrors('Harus status open untuk dikirim ke Penawaran.');
+        }
+        $existing = \App\Models\RequestOrder::where('custom_penawaran_id', $customPenawaran->id)->first();
+        if ($existing) {
+            return redirect()->route('sales.request-order.show', $existing->id)
+                ->with('info', 'Sudah pernah dikirim ke Penawaran.');
+        }
+        \DB::beginTransaction();
+        try {
+            $nomorPenawaran = \App\Models\RequestOrder::generateNomorPenawaran();
+            $tanggalBerlaku = now()->addDays(14);
+            $requestOrder = \App\Models\RequestOrder::create([
+                'custom_penawaran_id' => $customPenawaran->id,
+                'request_number'      => 'REQ-' . strtoupper(\Str::random(8)),
+                'nomor_penawaran'     => $nomorPenawaran,
+                'sales_id'            => $customPenawaran->sales_id,
+                'customer_name'       => $customPenawaran->to,
+                'subject'             => $customPenawaran->subject,
+                'tanggal_kebutuhan'   => $customPenawaran->date,
+                'tanggal_berlaku'     => $tanggalBerlaku,
+                'expired_at'          => $tanggalBerlaku,
+                'catatan_customer'    => $customPenawaran->intro_text,
+                'subtotal'            => $customPenawaran->subtotal,
+                'tax'                 => $customPenawaran->tax ?? 0,
+                'grand_total'         => $customPenawaran->grand_total,
+                'no_po'               => null,
+                'sales_order_number'  => null,
+            ]);
+            \App\Models\Order::create([
+                'order_number'      => 'ORD-' . strtoupper(uniqid()),
+                'sales_id'          => $customPenawaran->sales_id,
+                'request_order_id'  => $requestOrder->id,
+                'customer_name'     => $customPenawaran->to,
+                'status'            => 'open',
+                'tanggal_kebutuhan' => $customPenawaran->date,
+                'catatan_customer'  => $customPenawaran->intro_text,
+            ]);
+            foreach ($customPenawaran->items as $cpItem) {
+                \App\Models\RequestOrderItem::create([
+                    'request_order_id'   => $requestOrder->id,
+                    'barang_id'          => null,
+                    'nama_barang_custom' => $cpItem->nama_barang,
+                    'kategori_barang'    => $cpItem->keterangan ?? 'Custom',
+                    'quantity'           => $cpItem->qty,
+                    'harga'              => $cpItem->harga,
+                    'subtotal'           => $cpItem->subtotal,
+                    'diskon_percent'     => $cpItem->diskon ?? 0,
+                    'images'             => $cpItem->images,
+                ]);
+            }
+            $customPenawaran->update(['status' => 'sent_to_penawaran']);
+            \DB::commit();
+            return redirect()->route('sales.request-order.show', $requestOrder->id)
+                ->with('success', "Berhasil dikirim ke Penawaran: {$requestOrder->request_number}");
+        } catch (\Throwable $e) {
+            \DB::rollBack();
+            return back()->withErrors('Gagal: ' . $e->getMessage());
+        }
+    }
 }

@@ -200,6 +200,11 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-penawaran.pdf');
     Route::post('/custom-penawaran/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-penawaran.sent-to-warehouse');
 
+    // Sent to Penawaran
+    Route::post('/custom-penawaran/{customPenawaran}/sent-to-penawaran',
+        [CustomPenawaranController::class, 'sentToPenawaran'])
+        ->name('sales.custom-penawaran.sent-to-penawaran');
+
     // Sales Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
     Route::get('/sales-order/search', [SalesOrderController::class, 'search'])->name('sales.sales-order.search');

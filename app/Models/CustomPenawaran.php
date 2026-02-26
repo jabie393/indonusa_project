@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 
 class CustomPenawaran extends Model
 {
+    public function requestOrder() {
+        return $this->hasOne(\App\Models\RequestOrder::class, 'custom_penawaran_id');
+    }
     protected $fillable = [
         'sales_id',
         'penawaran_number',

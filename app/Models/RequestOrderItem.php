@@ -9,6 +9,7 @@ class RequestOrderItem extends Model
     protected $fillable = [
         'request_order_id',
         'barang_id',
+        'nama_barang_custom',
         'kategori_barang',
         'quantity',
         'harga',

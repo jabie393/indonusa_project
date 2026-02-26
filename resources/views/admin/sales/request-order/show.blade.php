@@ -38,10 +38,16 @@
         @endif
 
         {{-- ============================================================
-             BANNER STATUS SUPERVISOR
-             Letakkan di sini, sebelum .space-y-3.p-6
-             Muncul otomatis sesuai status order dari supervisor
-             ============================================================ --}}
+                    {{-- Info asal custom penawaran --}}
+                    @if ($requestOrder->customPenawaran)
+                        <div class="mx-6 mt-4 mb-2 flex items-center gap-2 rounded bg-indigo-50 p-3 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
+                            <span class="font-semibold">Dari Custom Penawaran:</span>
+                            <a href="{{ route('sales.custom-penawaran.show', $requestOrder->customPenawaran->id) }}" class="underline hover:text-indigo-600">
+                                {{ $requestOrder->customPenawaran->penawaran_number }}
+                            </a>
+                        </div>
+                    @endif
+             
         @php $orderStatus = $requestOrder->order?->status; @endphp
 
         @if ($orderStatus === 'rejected_supervisor')
@@ -353,7 +359,7 @@
                                             </td>
                                             <td class="px-6 py-4">
                                                 <div class="text-nowrap font-medium text-gray-900 dark:text-white">
-                                                    {{ $item->barang->nama_barang ?? 'N/A' }}</div>
+                                                    {{ $item->barang->nama_barang ?? $item->nama_barang_custom ?? 'N/A' }}</div>
                                                 <div class="text-nowrap text-xs text-gray-500 dark:text-gray-400">Kode:
                                                     {{ $item->barang->kode_barang ?? '-' }}</div>
                                             </td>

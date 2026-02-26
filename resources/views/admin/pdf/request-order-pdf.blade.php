@@ -229,7 +229,7 @@
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                 <td class="border px-2 py-1">
-                                    {{ optional($item->barang)->nama_barang ?? ($item->barang->nama_barang ?? $item->barang_id) }}
+                                    {{ optional($item->barang)->nama_barang ?? $item->nama_barang_custom ?? '-' }}
                                 </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
                                 <td class="border px-2 py-1 text-center">{{ $item->diskon_percent ?? 0 }}%</td>

@@ -42,7 +42,12 @@ class RequestOrder extends Model
         'tax',
         'grand_total',
         'supporting_images',
+        'custom_penawaran_id',
     ];
+
+    public function customPenawaran() {
+        return $this->belongsTo(\App\Models\CustomPenawaran::class, 'custom_penawaran_id');
+    }
     /**
      * Cek apakah ada item dengan diskon >20%
      *

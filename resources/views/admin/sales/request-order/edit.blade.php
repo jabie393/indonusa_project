@@ -1,4 +1,9 @@
 <x-app-layout>
+    @php
+        $dariCustomPenawaran = !empty($requestOrder->custom_penawaran_id)
+            && $requestOrder->customPenawaran !== null;
+        $cp = $dariCustomPenawaran ? $requestOrder->customPenawaran : null;
+    @endphp
     <div
         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
@@ -68,9 +73,9 @@
                                 <label for="customer_id" class="form-label dark:text-gray-300">Pilih Customer <span
                                         class="text-danger">*</span></label>
                                 <select
-                                    class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_id" name="customer_id" required
-                                    onchange="populateCustomerData(this.value)">
+                                    class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 {{ $dariCustomPenawaran ? 'cursor-not-allowed opacity-60' : '' }}"
+                                    id="customer_id" name="customer_id" {{ $dariCustomPenawaran ? 'disabled' : 'required' }}
+                                    onchange="{{ $dariCustomPenawaran ? '' : 'populateCustomerData(this.value)' }}">
                                     <option value="">-- Pilih Customer --</option>
                                     @foreach ($customers as $c)
                                         <option value="{{ $c->id }}" data-email="{{ $c->email }}"
@@ -83,6 +88,12 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                        @if ($dariCustomPenawaran)
+                                            <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1 inline"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                                                Customer dikunci karena berasal dari Custom Penawaran ({{ $cp->penawaran_number }})
+                                            </small>
+                                        @endif
                                 @error('customer_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -95,7 +106,7 @@
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_name" name="customer_name"
-                                    value="{{ old('customer_name', $requestOrder->customer_name) }}" readonly>
+                                    value="{{ is_array(old('customer_name', $requestOrder->customer_name)) ? (old('customer_name', $requestOrder->customer_name)[0] ?? '') : old('customer_name', $requestOrder->customer_name) }}" readonly>
                                 <small class="text-muted dark:text-gray-400">Auto-filled dari customer yang
                                     dipilih</small>
                             </div>
@@ -104,21 +115,21 @@
                                 <label for="customer_email" class="form-label dark:text-gray-300">Email</label>
                                 <input type="email"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_email" readonly>
+                                    id="customer_email" value="{{ is_array($dariCustomPenawaran ? $cp->email : '') ? (($dariCustomPenawaran ? $cp->email : '')[0] ?? '') : ($dariCustomPenawaran ? $cp->email : '') }}" readonly>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="customer_telepon" class="form-label dark:text-gray-300">Telepon</label>
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_telepon" readonly>
+                                    id="customer_telepon" name="customer_telepon" value="{{ is_array(old('customer_telepon', $requestOrder->customer_telepon ?? '')) ? (old('customer_telepon', $requestOrder->customer_telepon ?? '')[0] ?? '') : old('customer_telepon', $requestOrder->customer_telepon ?? '') }}" placeholder="Masukkan nomor telepon" {{ $dariCustomPenawaran ? '' : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="customer_kota" class="form-label dark:text-gray-300">Kota</label>
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_kota" readonly>
+                                    id="customer_kota" name="customer_kota" value="{{ is_array(old('customer_kota', $requestOrder->customer_kota ?? '')) ? (old('customer_kota', $requestOrder->customer_kota ?? '')[0] ?? '') : old('customer_kota', $requestOrder->customer_kota ?? '') }}" placeholder="Masukkan kota" {{ $dariCustomPenawaran ? '' : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -187,7 +198,12 @@
                                 <input type="date"
                                     class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="tanggal_kebutuhan" name="tanggal_kebutuhan"
-                                    value="{{ old('tanggal_kebutuhan', $requestOrder->tanggal_kebutuhan) }}">
+                                    value="{{ old('tanggal_kebutuhan', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : $requestOrder->tanggal_kebutuhan) : $requestOrder->tanggal_kebutuhan) }}">
+                                @if ($dariCustomPenawaran && $cp->date)
+                                    <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
+                                        Auto-terisi dari tanggal Custom Penawaran. Bisa diubah jika perlu.
+                                    </small>
+                                @endif
                                 @error('tanggal_kebutuhan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -274,58 +290,78 @@
                                                     <option value="">Pilih Kategori</option>
                                                     @foreach ($categories as $cat)
                                                         <option value="{{ $cat }}"
-                                                            @selected($item->barang->kategori === $cat)>{{ $cat }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <select name="barang_id[]"
-                                                    class="barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                    required onchange="updateKategoriBarang(this)">
-                                                    <option value="">-- Pilih Barang --</option>
-                                                    @foreach ($goods as $b)
-                                                        <option value="{{ $b->id }}"
-                                                            data-kode="{{ $b->kode_barang }}"
-                                                            data-nama="{{ $b->nama_barang }}"
-                                                            data-kategori="{{ $b->kategori }}"
-                                                            data-stok="{{ $b->stok }}"
-                                                            data-harga="{{ $b->harga ?? 0 }}"
-                                                            data-diskon="{{ $b->diskon_percent ?? 0 }}"
-                                                            @selected($item->barang_id === $b->id)>
-                                                            {{ $b->kode_barang }}
+                                                            @selected(($item->kategori_barang ?? optional($item->barang)->kategori) === $cat)>
+                                                            {{ $cat }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                    class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                    readonly value="{{ $item->barang->nama_barang ?? '' }}">
+                                                @if ($item->barang_id === null && $item->nama_barang_custom)
+                                                    {{-- Item dari Custom Penawaran: tidak ada di tabel goods --}}
+                                                    <input type="hidden" name="barang_id[]" value="">
+                                                    <span class="block rounded-lg bg-indigo-50 px-2.5 py-2 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
+                                                        Custom Item
+                                                    </span>
+                                                @else
+                                                    <select name="barang_id[]"
+                                                        class="barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                        onchange="updateKategoriBarang(this)">
+                                                        <option value="">-- Pilih Barang --</option>
+                                                        @foreach ($goods as $b)
+                                                            <option value="{{ $b->id }}"
+                                                                data-kode="{{ $b->kode_barang }}"
+                                                                data-nama="{{ $b->nama_barang }}"
+                                                                data-kategori="{{ $b->kategori }}"
+                                                                data-stok="{{ $b->stok }}"
+                                                                data-harga="{{ $b->harga ?? 0 }}"
+                                                                data-diskon="{{ $b->diskon_percent ?? 0 }}"
+                                                                @selected($item->barang_id === $b->id)>
+                                                                {{ $b->kode_barang }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                @endif
+                                            </td>
+                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                @if ($item->barang_id === null && $item->nama_barang_custom)
+                                                    {{-- Custom item: nama bisa diedit manual --}}
+                                                    <input type="text" name="nama_barang_custom[]"
+                                                        class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                        value="{{ is_array(old('nama_barang_custom', $item->nama_barang_custom)) ? (old('nama_barang_custom', $item->nama_barang_custom)[0] ?? '') : old('nama_barang_custom', $item->nama_barang_custom) }}"
+                                                        placeholder="Nama barang">
+                                                @else
+                                                    {{-- Regular item: readonly, auto-filled dari select barang --}}
+                                                    <input type="hidden" name="nama_barang_custom[]" value="">
+                                                    <input type="text"
+                                                        class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                        readonly value="{{ $item->barang->nama_barang ?? '' }}">
+                                                @endif
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="diskon_percent[]"
                                                     class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     min="0" max="100" step="0.01"
-                                                    value="{{ $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0) }}">
+                                                    value="{{ is_array(old('diskon_percent', $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0))) ? (old('diskon_percent', $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0))[0] ?? '') : old('diskon_percent', $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0)) }}">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="keterangan[]" maxlength="255"
                                                     class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     placeholder="Isi jika diskon > 20%"
-                                                    value="{{ $item->keterangan }}"
+                                                    value="{{ is_array(old('keterangan', $item->keterangan)) ? (old('keterangan', $item->keterangan)[0] ?? '') : old('keterangan', $item->keterangan) }}"
                                                     {{ ($item->diskon_percent ?? 0) > 20 ? '' : 'disabled' }}>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="quantity[]"
                                                     class="quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                    min="1" value="{{ old('quantity', $item->quantity) }}"
+                                                    min="1" value="{{ is_array(old('quantity', $item->quantity)) ? (old('quantity', $item->quantity)[0] ?? '') : old('quantity', $item->quantity) }}"
                                                     required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="harga[]"
                                                     class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     min="0" step="0.01"
-                                                    value="{{ old('harga', $item->harga) }}" readonly>
+                                                    value="{{ is_array(old('harga', $item->harga)) ? (old('harga', $item->harga)[0] ?? '') : old('harga', $item->harga) }}" readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
@@ -338,14 +374,30 @@
                                                     </button>
                                                 </div>
                                                 <div class="item-images-preview mt-2 flex flex-wrap gap-2">
-                                                    @if ($item->item_images && count($item->item_images) > 0)
-                                                        @foreach ($item->item_images as $img)
-                                                            <div class="relative">
-                                                                <img src="{{ asset('storage/' . $img) }}"
-                                                                    class="h-20 w-20 rounded border object-cover"
-                                                                    alt="Image">
+                                                    @php
+                                                        $existingImgs = $item->images ?? $item->item_images ?? [];
+                                                    @endphp
+                                                    @if (!empty($existingImgs))
+                                                        @foreach ($existingImgs as $img)
+                                                            @php
+                                                                if (str_starts_with($img, 'public/')) {
+                                                                    $imgUrl = asset('storage/' . ltrim(substr($img, 7), '/'));
+                                                                } else {
+                                                                    $imgUrl = asset('storage/' . ltrim($img, '/'));
+                                                                }
+                                                            @endphp
+                                                            <div class="relative group">
+                                                                <img src="{{ $imgUrl }}" class="h-20 w-20 rounded border border-gray-300 object-cover" alt="Gambar item">
+                                                                @if ($dariCustomPenawaran)
+                                                                    <span class="absolute -top-1 -right-1 rounded-full bg-indigo-500 px-1 py-0.5 text-[9px] text-white" title="Gambar dari Custom Penawaran">CP</span>
+                                                                @endif
                                                             </div>
                                                         @endforeach
+                                                        @if ($dariCustomPenawaran)
+                                                            <small class="mt-1 w-full block text-xs text-indigo-600 dark:text-indigo-400">
+                                                                Gambar sudah terisi dari Custom Penawaran. Upload baru untuk mengganti.
+                                                            </small>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </td>
@@ -1169,6 +1221,7 @@
                 document.querySelectorAll('.item-row').forEach((row, i) => {
                     const fileInput = row.querySelector('.item-images-input');
                     if (fileInput) fileInput.name = `item_images[${i}][]`;
+nput.name = `item_images[${i}][]`;
                 });
             }
 

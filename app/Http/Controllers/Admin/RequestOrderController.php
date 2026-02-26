@@ -151,7 +151,7 @@ class RequestOrderController extends Controller
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'required|integer|exists:goods,id',
+            'barang_id.*' => 'nullable',
             'kategori_barang' => 'required|array|min:1',
             'kategori_barang.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',
@@ -166,6 +166,8 @@ class RequestOrderController extends Controller
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
+            'nama_barang_custom'   => 'nullable|array',
+            'nama_barang_custom.*' => 'nullable|string|max:255',
         ]);
 
         $items = [];
@@ -467,6 +469,9 @@ class RequestOrderController extends Controller
             }
         }
 
+        // Load relasi custom penawaran jika ada
+        $requestOrder->loadMissing('customPenawaran', 'items.barang');
+
         $goods = Barang::where('tipe_request', 'primary')
             ->where('stok', '>', 0)
             ->orderBy('nama_barang')
@@ -510,9 +515,9 @@ class RequestOrderController extends Controller
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'required|integer|exists:goods,id',
+            'barang_id.*' => 'nullable|integer|exists:goods,id',
             'kategori_barang' => 'required|array|min:1',
-            'kategori_barang.*' => 'required|string|max:100',
+            'kategori_barang.*' => 'nullable|string|max:100',
             'quantity' => 'required|array|min:1',
             'quantity.*' => 'required|integer|min:1',
             'harga' => 'nullable|array',
@@ -525,30 +530,56 @@ class RequestOrderController extends Controller
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
+            'nama_barang_custom'   => 'nullable|array',
+            'nama_barang_custom.*' => 'nullable|string|max:255',
         ]);
 
+        // Validasi dinamis: minimal salah satu dari barang_id atau nama_barang_custom harus terisi per item
+        foreach ($validated['barang_id'] as $i => $barangId) {
+            $isCustom = empty($barangId) && (!empty($validated['nama_barang_custom'][$i] ?? null));
+            $isRegular = !empty($barangId);
+            if (!$isCustom && !$isRegular) {
+                return back()->withErrors(["barang_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i+1)])
+                    ->withInput();
+            }
+            if (($isCustom || $isRegular) && empty($validated['kategori_barang'][$i])) {
+                return back()->withErrors(["kategori_barang.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i+1)])
+                    ->withInput();
+            }
+        }
+
         $items = [];
-            foreach ($validated['barang_id'] as $i => $barangId) {
+        foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) continue;
 
-            // If harga wasn't provided from the form, fallback to Barang.harga * 1.3
-            $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
-            $computedHarga = round($baseHarga * 1.3, 2);
-            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
-            $computedHarga = round($baseHarga * 1.3, 2);
-            $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHarga;
+
+            // Jika barang_id null (custom item), pakai harga dari input langsung
+            if (empty($barangId)) {
+                $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== ''
+                    ? (float) $validated['harga'][$i]
+                    : 0;
+            } else {
+                $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
+                $computedHarga = round($baseHarga * 1.3, 2);
+                $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== ''
+                    ? (float) $validated['harga'][$i]
+                    : $computedHarga;
+            }
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
-                'original_index' => $i,
-                'barang_id' => $barangId,
-                'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
-                'quantity' => $qty,
-                'harga' => $harga,
-                'diskon_percent' => $diskon,
-                'subtotal' => $subtotal,
+                'original_index'     => $i,
+                'barang_id'          => empty($barangId) ? null : (int) $barangId,
+                'nama_barang_custom' => empty($barangId)
+                    ? ($validated['nama_barang_custom'][$i] ?? null)
+                    : null,
+                'kategori_barang'    => $validated['kategori_barang'][$i] ?? null,
+                'quantity'           => $qty,
+                'harga'              => $harga,
+                'diskon_percent'     => $diskon,
+                'subtotal'           => $subtotal,
             ];
         }
 
@@ -607,13 +638,14 @@ class RequestOrderController extends Controller
                 }
 
                 $itemData = [
-                    'request_order_id' => $requestOrder->id,
-                    'barang_id' => $item['barang_id'],
-                    'kategori_barang' => $item['kategori_barang'] ?? null,
-                    'quantity' => $item['quantity'],
-                    'harga' => $item['harga'],
-                    'subtotal' => $item['subtotal'],
-                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'request_order_id'   => $requestOrder->id,
+                    'barang_id'          => $item['barang_id'],
+                    'nama_barang_custom' => $item['nama_barang_custom'] ?? null,
+                    'kategori_barang'    => $item['kategori_barang'] ?? null,
+                    'quantity'           => $item['quantity'],
+                    'harga'              => $item['harga'],
+                    'subtotal'           => $item['subtotal'],
+                    'images'             => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
