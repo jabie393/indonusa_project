@@ -217,6 +217,13 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
     Route::post('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'uploadImage'])->name('sales-order.upload-image');
     Route::delete('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'deleteImage'])->name('sales-order.delete-image');
+    // Sent to Warehouse dari Sales Order
+    Route::post('/sales-order/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])
+        ->name('sales.sales-order.sent-to-warehouse');
+
+    // Sent to Warehouse dari Request Order (yang muncul di halaman SO)
+    Route::post('/request-order-so/{requestOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
+        ->name('sales.request-order.sent-to-warehouse-from-so');
 });
 // End of Sales
 

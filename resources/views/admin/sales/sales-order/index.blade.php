@@ -203,6 +203,47 @@
                                             @endif
                                         </div>
                                     @endif
+
+                                    {{-- Tombol Sent to Warehouse --}}
+                                    @php
+                                        $sudahDikirim = in_array($row['status'], ['sent_to_warehouse', 'completed', 'not_completed']);
+                                    @endphp
+
+                                    @if (!$sudahDikirim)
+                                        @if ($row['type'] === 'sales_order')
+                                            <form method="POST"
+                                                action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}"
+                                                onsubmit="return confirm('Kirim Sales Order ini ke Warehouse?')">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="w-full rounded-lg bg-green-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition-colors hover:bg-green-700">
+                                                    📦 Sent to Warehouse
+                                                </button>
+                                            </form>
+                                        @elseif ($row['type'] === 'request_order')
+                                            <form method="POST"
+                                                action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}"
+                                                onsubmit="return confirm('Kirim Request Order ini ke Warehouse?')">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="w-full rounded-lg bg-green-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition-colors hover:bg-green-700">
+                                                    📦 Sent to Warehouse
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @else
+                                        @php
+                                            $badgeConfig = [
+                                                'sent_to_warehouse' => ['class' => 'bg-yellow-100 text-yellow-800', 'label' => '🏭 Terkirim ke Gudang'],
+                                                'completed'         => ['class' => 'bg-green-100 text-green-800', 'label' => '✅ Selesai'],
+                                                'not_completed'     => ['class' => 'bg-orange-100 text-orange-800', 'label' => '🔄 Partial'],
+                                            ];
+                                            $badge = $badgeConfig[$row['status']] ?? ['class' => 'bg-gray-100 text-gray-800', 'label' => $row['status']];
+                                        @endphp
+                                        <span class="w-full rounded-full px-3 py-1 text-center text-xs font-semibold {{ $badge['class'] }}">
+                                            {{ $badge['label'] }}
+                                        </span>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

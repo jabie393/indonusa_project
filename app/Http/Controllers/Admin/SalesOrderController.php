@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Order;
+use App\Models\OrderItem;
+
 use App\Http\Controllers\Controller;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
@@ -16,6 +19,139 @@ use Illuminate\Validation\Rule;
 
 class SalesOrderController extends Controller
 {
+    /**
+     * Kirim SalesOrder ke Warehouse (buat Order & OrderItem)
+     */
+    public function sentToWarehouse(Request $request, SalesOrder $salesOrder)
+    {
+        if ($salesOrder->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Cek apakah sudah pernah dikirim
+        $alreadySent = Order::where('sales_id', $salesOrder->sales_id)
+            ->where(function ($q) use ($salesOrder) {
+                $q->where('request_order_id', $salesOrder->request_order_id)
+                  ->orWhere('custom_penawaran_id', $salesOrder->custom_penawaran_id);
+            })
+            ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
+            ->exists();
+
+        if ($alreadySent) {
+            return redirect()->back()
+                ->with(['title' => 'Gagal', 'text' => 'Order ini sudah pernah dikirim ke warehouse.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $salesOrder->load('items', 'requestOrder');
+
+            // Generate order number
+            $orderNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
+                Order::whereDate('created_at', now()->toDateString())->count() + 1,
+                4, '0', STR_PAD_LEFT
+            );
+
+            $order = Order::create([
+                'order_number'       => $orderNumber,
+                'sales_id'           => $salesOrder->sales_id,
+                'customer_name'      => $salesOrder->to ?? $salesOrder->customer_name,
+                'customer_id'        => $salesOrder->customer_id ?? null,
+                'request_order_id'   => $salesOrder->request_order_id ?? null,
+                'custom_penawaran_id'=> $salesOrder->custom_penawaran_id ?? null,
+                'status'             => 'sent_to_warehouse',
+                'tanggal_kebutuhan'  => $salesOrder->tanggal_kebutuhan ?? now()->toDateString(),
+                'catatan_customer'   => $salesOrder->intro_text ?? null,
+            ]);
+
+            // Buat order_items dari sales_order_items
+            foreach ($salesOrder->items as $item) {
+                OrderItem::create([
+                    'order_id'           => $order->id,
+                    'barang_id'          => null, // SO tidak punya barang_id
+                    'quantity'           => $item->qty ?? $item->quantity ?? 1,
+                    'delivered_quantity' => 0,
+                    'status_item'        => 'pending',
+                    'harga'              => $item->harga ?? 0,
+                    'subtotal'           => $item->subtotal ?? 0,
+                ]);
+            }
+
+            // Update status SalesOrder
+            $salesOrder->update(['status' => 'sent_to_warehouse']);
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with(['title' => 'Berhasil', 'text' => "Sales Order berhasil dikirim ke Warehouse dengan No. {$orderNumber}."]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withErrors('Gagal mengirim ke warehouse: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Kirim RequestOrder ke Warehouse (buat Order & OrderItem) dari halaman SO
+     */
+    public function sentRequestOrderToWarehouse(Request $request, \App\Models\RequestOrder $requestOrder)
+    {
+        // Cek sudah pernah dikirim
+        $alreadySent = Order::where('request_order_id', $requestOrder->id)
+            ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
+            ->exists();
+
+        if ($alreadySent) {
+            return redirect()->back()
+                ->with(['title' => 'Gagal', 'text' => 'Request Order ini sudah pernah dikirim ke warehouse.']);
+        }
+
+        DB::beginTransaction();
+        try {
+            $requestOrder->load('items', 'sales');
+
+            $orderNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
+                Order::whereDate('created_at', now()->toDateString())->count() + 1,
+                4, '0', STR_PAD_LEFT
+            );
+
+            $order = Order::create([
+                'order_number'       => $orderNumber,
+                'sales_id'           => $requestOrder->sales_id ?? Auth::id(),
+                'customer_name'      => $requestOrder->customer_name,
+                'customer_id'        => $requestOrder->customer_id ?? null,
+                'request_order_id'   => $requestOrder->id,
+                'custom_penawaran_id'=> $requestOrder->custom_penawaran_id ?? null,
+                'status'             => 'sent_to_warehouse',
+                'tanggal_kebutuhan'  => $requestOrder->tanggal_kebutuhan ?? now()->toDateString(),
+                'catatan_customer'   => $requestOrder->catatan_customer ?? null,
+            ]);
+
+            foreach ($requestOrder->items as $item) {
+                OrderItem::create([
+                    'order_id'           => $order->id,
+                    'barang_id'          => $item->barang_id ?? null,
+                    'quantity'           => $item->quantity ?? 1,
+                    'delivered_quantity' => 0,
+                    'status_item'        => 'pending',
+                    'harga'              => $item->harga ?? 0,
+                    'subtotal'           => $item->subtotal ?? 0,
+                ]);
+            }
+
+            // Update status RequestOrder
+            $requestOrder->update(['status' => 'sent_to_warehouse']);
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with(['title' => 'Berhasil', 'text' => "Request Order berhasil dikirim ke Warehouse dengan No. {$orderNumber}."]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withErrors('Gagal mengirim ke warehouse: ' . $e->getMessage());
+        }
+    }
     /**
      * Display a listing of the resource.
      */
