@@ -105,28 +105,28 @@
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
-                                    $hasHighDiscountStatus = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
-                                    $statusClass =
-                                        [
-                                            'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
-                                            'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
-                                            'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
-                                            'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                            'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
-                                        ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
-                                    $statusLabel =
-                                        [
-                                            'draft' => 'Draft',
-                                            'pending_approval' => 'Menunggu Approve Supervisor',
-                                            'open' => 'Open',
-                                            'sent' => 'Terkirim',
-                                            'approved' => 'Disetujui/Open',
-                                            'rejected' => 'Ditolak',
-                                            'expired' => 'Kadaluarsa',
-                                            'sent_to_warehouse' => 'Dikirim ke Warehouse',
-                                        ][$penawaran->status] ?? $penawaran->status;
+                                    $statusClass = [
+                                        'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                        'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
+                                        'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
+                                        'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
+                                        'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                        'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
+                                        'approved_supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'rejected_supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                    ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
+                                    $statusLabel = [
+                                        'draft' => 'Draft',
+                                        'pending_approval' => 'Menunggu Approve Supervisor',
+                                        'open' => 'Open',
+                                        'sent' => 'Terkirim',
+                                        'approved' => 'Disetujui/Open',
+                                        'rejected' => 'Ditolak',
+                                        'expired' => 'Kadaluarsa',
+                                        'approved_supervisor' => 'Disetujui Supervisor',
+                                        'rejected_supervisor'  => 'Ditolak Supervisor',
+                                    ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="{{ $statusClass }} badge">
@@ -163,28 +163,19 @@
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $penawaran->id }}" style="position-anchor:--anchor-{{ $penawaran->id }}">
                                             <li>
                                                 {{-- Edit --}}
-                                                <a href="{{ route('sales.custom-penawaran.edit', $penawaran->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
-                                                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
-                                                        </path>
-                                                        <path d="m15 5 4 4"></path>
-                                                    </svg>
+                                                <a href="{{ route('sales.custom-penawaran.edit', $penawaran->id) }}"
+                                                   class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-indigo-600 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3h3z" /></svg>
                                                     Edit
                                                 </a>
                                             </li>
-                                            {{-- Delete --}}
-                                            <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST">
+                                            {{-- Tombol Hapus --}}
+                                            <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus penawaran ini?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <li>
-                                                    <button type="button" onclick="confirmDelete(() => this.closest('form').submit())" class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2">
-                                                            <path d="M10 11v6"></path>
-                                                            <path d="M14 11v6"></path>
-                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                                                            <path d="M3 6h18"></path>
-                                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                        </svg>
+                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                                                         Hapus
                                                     </button>
                                                 </li>
@@ -196,17 +187,12 @@
                                                     $hasHighDiscount = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
                                                     $isExpired = $penawaran->isExpired();
                                                 @endphp
-                                                @if ($penawaran->status === 'open' && !$isExpired)
-                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" target="_blank" class="flex items-center gap-2 text-green-600 hover:bg-green-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
-                                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
-                                                            </path>
-                                                            <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                            <path d="M10 9H8"></path>
-                                                            <path d="M16 13H8"></path>
-                                                            <path d="M16 17H8"></path>
-                                                        </svg>
-                                                        PDF
+                                                @if ($penawaran->status === 'approved_supervisor' && !$isExpired)
+                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}"
+                                                       class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400"
+                                                       target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                                        Download PDF
                                                     </a>
                                                 @else
                                                     <button type="button" disabled class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400" title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
@@ -223,60 +209,28 @@
                                                 @endif
                                             </li>
                                             {{-- Sent to Warehouse --}}
-                                            @if (in_array($penawaran->status, ['open', 'approved']))
-                                                <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST">
+                                            @if ($penawaran->status === 'approved_supervisor')
+                                                <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" style="display:inline;">
                                                     @csrf
-                                                    @method('POST')
-                                                    <li>
-                                                        <button type="submit" class="flex w-full items-center gap-2 text-blue-600 hover:bg-blue-50" title="Kirim ke Warehouse">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck">
-                                                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2">
-                                                                </path>
-                                                                <path d="M15 18H9"></path>
-                                                                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14">
-                                                                </path>
-                                                                <circle cx="17" cy="18" r="2"></circle>
-                                                                <circle cx="7" cy="18" r="2"></circle>
-                                                            </svg>
-                                                            Kirim ke Warehouse
-                                                        </button>
-                                                    </li>
+                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-yellow-600 hover:to-yellow-800 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" /></svg>
+                                                        Kirim ke Warehouse
+                                                    </button>
                                                 </form>
                                             @endif
 
                                             {{-- Sent to Penawaran --}}
-                                            @if ($penawaran->status === 'open')
-                                                @php
-                                                    $sudahDikirim = \App\Models\RequestOrder::where('custom_penawaran_id', $penawaran->id)->exists();
-                                                @endphp
-                                                @if (!$sudahDikirim)
-                                                    <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('POST')
-                                                        <li>
-                                                            <button type="submit"
-                                                                class="flex w-full items-center gap-2 text-indigo-600 hover:bg-indigo-50"
-                                                                onclick="return confirm('Kirim ke halaman Penawaran? No.PO dan No.SO bisa diisi manual nanti.')">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"></path><path d="M22 2 15 22 11 13 2 9l20-7z"></path></svg>
-                                                                Sent to Penawaran
-                                                            </button>
-                                                        </li>
-                                                    </form>
-                                                @else
-                                                    @php
-                                                        $existingRO = \App\Models\RequestOrder::where('custom_penawaran_id', $penawaran->id)->first();
-                                                    @endphp
-                                                    <li>
-                                                        <a href="{{ route('sales.request-order.show', $existingRO->id) }}"
-                                                            class="flex items-center gap-2 text-indigo-400 hover:bg-indigo-50">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"></path></svg>
-                                                            Sudah di Penawaran
-                                                        </a>
-                                                    </li>
-                                                @endif
+                                            @if (in_array($penawaran->status, ['open', 'approved_supervisor']))
+                                                <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                                        Sent to Penawaran
+                                                    </button>
+                                                </form>
                                             @endif
-                                        </ul>
-                                        {{-- Action Dropdown --}}
+
+                                            {{-- Action Dropdown --}}
 
 
 

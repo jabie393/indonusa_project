@@ -91,14 +91,6 @@ class CustomPenawaranController extends Controller
 
         DB::beginTransaction();
         try {
-            $needApproval = false;
-            foreach ($validated['items'] as $itemData) {
-                if ($itemData['diskon'] > 20) {
-                    $needApproval = true;
-                    break;
-                }
-            }
-
             $penawaran = CustomPenawaran::create([
                 'sales_id' => Auth::id(),
                 'penawaran_number' => CustomPenawaran::generatePenawaranNumber(),
@@ -110,7 +102,7 @@ class CustomPenawaranController extends Controller
                 'date' => $validated['date'],
                 'intro_text' => $validated['intro_text'] ?? null,
                 'tax' => $validated['tax'] ?? 0,
-                'status' => $needApproval ? 'pending_approval' : 'open',
+                'status' => 'pending_approval',
             ]);
 
             // Set expired_at to 14 days from created_at
@@ -293,9 +285,12 @@ class CustomPenawaranController extends Controller
             }
 
             $customPenawaran->update([
-                'subtotal' => $subtotal,
+                'subtotal'    => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-                'status' => $needApproval ? 'pending_approval' : $customPenawaran->status,
+                'status'      => 'pending_approval',
+                'approved_by' => null,
+                'approved_at' => null,
+                'reason'      => null,
             ]);
 
             DB::commit();
@@ -361,7 +356,7 @@ class CustomPenawaranController extends Controller
     {
         // Role check is already done by route middleware 'role:Supervisor'
         $action = $request->input('action');
-        if (!in_array($customPenawaran->status, ['pending_approval', 'sent'])) {
+        if (!in_array($customPenawaran->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
             return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
         }
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
@@ -370,10 +365,9 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
         if ($action === 'approve') {
-            $customPenawaran->status = 'open';
+            $customPenawaran->status = 'approved_supervisor';
             $customPenawaran->approved_by = Auth::id();
             $customPenawaran->approved_at = now();
-            // clear any previous reason on approval
             $customPenawaran->reason = null;
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
@@ -381,8 +375,7 @@ class CustomPenawaranController extends Controller
             $validated = $request->validate([
                 'reason' => 'required|string|max:2000',
             ]);
-
-            $customPenawaran->status = 'rejected';
+            $customPenawaran->status = 'rejected_supervisor';
             $customPenawaran->reason = $validated['reason'];
             $customPenawaran->save();
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
@@ -398,13 +391,10 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
-        // If status is not open, disallow PDF generation for Sales users (unless it has no high discounts).
-        $hasHighDiscount = $customPenawaran->items->where('diskon', '>', 20)->isNotEmpty();
-        if ($customPenawaran->status !== 'open' && $hasHighDiscount) {
-            // If the current user is Supervisor or Admin allow viewing (they can inspect),
-            // otherwise deny/redirect back for Sales until approval.
+        // PDF hanya bisa didownload jika status approved_supervisor, kecuali Supervisor/Admin
+        if ($customPenawaran->status !== 'approved_supervisor') {
             if (!in_array($userRole, $allowed)) {
-                return back()->withErrors('PDF hanya dapat di-generate setelah penawaran disetujui oleh Supervisor karena terdapat diskon > 20%.');
+                return back()->withErrors('PDF hanya dapat didownload setelah disetujui oleh Supervisor.');
             }
         }
 
@@ -421,8 +411,8 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
-        if (!in_array($customPenawaran->status, ['open', 'approved'])) {
-            return back()->withErrors('Hanya Custom Penawaran yang open atau approved dapat dikirim ke Warehouse.');
+        if (!in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor'])) {
+            return back()->withErrors('Hanya Custom Penawaran yang open, approved, atau approved supervisor dapat dikirim ke Warehouse.');
         }
 
         if ($customPenawaran->order) {
@@ -532,7 +522,7 @@ class CustomPenawaranController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($penawaran && in_array($penawaran->status, ['open', 'approved']) && !$penawaran->order) {
+                if ($penawaran && in_array($penawaran->status, ['open', 'approved', 'approved_supervisor']) && !$penawaran->order) {
                     // For Custom Penawaran, we don't have a processSentToWarehouse method yet, 
                     // we'll use the logic from sentToWarehouse but adapted or just call it if it was refactored.
                     // Instead of refactoring now, I'll just check if I can reuse sentToWarehouse logic.
@@ -671,8 +661,8 @@ class CustomPenawaranController extends Controller
         if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }
-        if ($customPenawaran->status !== 'open') {
-            return back()->withErrors('Harus status open untuk dikirim ke Penawaran.');
+        if ($customPenawaran->status !== 'open' && $customPenawaran->status !== 'approved_supervisor') {
+            return back()->withErrors('Hanya penawaran dengan status open atau approved supervisor yang bisa dikirim ke Penawaran.');
         }
         $existing = \App\Models\RequestOrder::where('custom_penawaran_id', $customPenawaran->id)->first();
         if ($existing) {
@@ -724,6 +714,7 @@ class CustomPenawaranController extends Controller
             }
             $customPenawaran->update(['status' => 'sent_to_penawaran']);
             \DB::commit();
+            // Redirect langsung ke halaman penawaran sales
             return redirect()->route('sales.request-order.show', $requestOrder->id)
                 ->with('success', "Berhasil dikirim ke Penawaran: {$requestOrder->request_number}");
         } catch (\Throwable $e) {
