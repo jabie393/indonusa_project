@@ -17,78 +17,229 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
+use App\Models\Barang;
+
 class SalesOrderController extends Controller
 {
     /**
      * Kirim SalesOrder ke Warehouse (buat Order & OrderItem)
-     */
     public function sentToWarehouse(Request $request, SalesOrder $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {
             abort(403);
         }
+        /**
+         * Show Invoice View
+         */
+        public function showInvoice(Request $request, $id)
+        {
+            $type = $request->query('type', 'sales_order');
+            $customerModel = null;
+            if ($type === 'request_order') {
+                $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
+                $customerName = $ro->customer_name ?? '-';
+                $noPoDisplay  = $ro->no_po ?? '-';
+                $subtotal     = $ro->subtotal ?? 0;
+                $tax          = $ro->tax ?? 0;
+                $grandTotal   = $ro->grand_total ?? 0;
 
-        // Cek apakah sudah pernah dikirim
-        $alreadySent = Order::where('sales_id', $salesOrder->sales_id)
-            ->where(function ($q) use ($salesOrder) {
-                $q->where('request_order_id', $salesOrder->request_order_id)
-                  ->orWhere('custom_penawaran_id', $salesOrder->custom_penawaran_id);
-            })
-            ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
-            ->exists();
+                // Cari data customer dari tabel customers
+                if (!empty($ro->customer_id)) {
+                    $customerModel = \App\Models\Customer::find($ro->customer_id);
+                }
+                if (!$customerModel && !empty($customerName)) {
+                    $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
+                }
 
-        if ($alreadySent) {
-            return redirect()->back()
-                ->with(['title' => 'Gagal', 'text' => 'Order ini sudah pernah dikirim ke warehouse.']);
-        }
+                $items = $ro->items->map(function ($item) {
+                    return [
+                        'nama_barang' => $item->nama_barang_custom
+                            ?? optional(\App\Models\Barang::find($item->barang_id))->nama_barang
+                            ?? '-',
+                        'qty'      => $item->quantity ?? 1,
+                        'harga'    => $item->harga ?? 0,
+                        'subtotal' => $item->subtotal ?? 0,
+                    ];
+                })->toArray();
+            } else {
+                $so = SalesOrder::with(['items', 'requestOrder', 'customer'])->findOrFail($id);
+                if ($so->sales_id !== Auth::id()) {
+                    abort(403);
+                }
+                $customerName = $so->to ?? $so->customer_name ?? '-';
+                $noPoDisplay  = optional($so->requestOrder)->no_po ?? '-';
+                $subtotal     = $so->subtotal ?? 0;
+                $tax          = $so->tax ?? 0;
+                $grandTotal   = $so->grand_total ?? 0;
 
-        DB::beginTransaction();
-        try {
-            $salesOrder->load('items', 'requestOrder');
+                // Cari data customer dari tabel customers
+                $customerModel = $so->customer ?? null;
+                if (!$customerModel && !empty($customerName)) {
+                    $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
+                }
 
-            // Generate order number
-            $orderNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
-                Order::whereDate('created_at', now()->toDateString())->count() + 1,
-                4, '0', STR_PAD_LEFT
-            );
-
-            $order = Order::create([
-                'order_number'       => $orderNumber,
-                'sales_id'           => $salesOrder->sales_id,
-                'customer_name'      => $salesOrder->to ?? $salesOrder->customer_name,
-                'customer_id'        => $salesOrder->customer_id ?? null,
-                'request_order_id'   => $salesOrder->request_order_id ?? null,
-                'custom_penawaran_id'=> $salesOrder->custom_penawaran_id ?? null,
-                'status'             => 'sent_to_warehouse',
-                'tanggal_kebutuhan'  => $salesOrder->tanggal_kebutuhan ?? now()->toDateString(),
-                'catatan_customer'   => $salesOrder->intro_text ?? null,
-            ]);
-
-            // Buat order_items dari sales_order_items
-            foreach ($salesOrder->items as $item) {
-                OrderItem::create([
-                    'order_id'           => $order->id,
-                    'barang_id'          => null, // SO tidak punya barang_id
-                    'quantity'           => $item->qty ?? $item->quantity ?? 1,
-                    'delivered_quantity' => 0,
-                    'status_item'        => 'pending',
-                    'harga'              => $item->harga ?? 0,
-                    'subtotal'           => $item->subtotal ?? 0,
-                ]);
+                $items = $so->items->map(function ($item) {
+                    return [
+                        'nama_barang' => $item->nama_barang ?? '-',
+                        'qty'         => $item->qty ?? $item->quantity ?? 1,
+                        'harga'       => $item->harga ?? 0,
+                        'subtotal'    => $item->subtotal ?? 0,
+                    ];
+                })->toArray();
             }
 
-            // Update status SalesOrder
-            $salesOrder->update(['status' => 'sent_to_warehouse']);
+            // Ambil data dari customer model jika ada
+            $customerNpwp    = $customerModel->npwp ?? '';
+            $customerAddress = '';
+            if ($customerModel) {
+                $parts = array_filter([
+                    $customerModel->alamat_pengiriman ?? null,
+                    $customerModel->kota ?? null,
+                    $customerModel->provinsi ?? null,
+                    $customerModel->kode_pos ?? null,
+                ]);
+                $customerAddress = implode(', ', $parts);
+            }
 
-            DB::commit();
+            $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
 
-            return redirect()->back()
-                ->with(['title' => 'Berhasil', 'text' => "Sales Order berhasil dikirim ke Warehouse dengan No. {$orderNumber}."]);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return redirect()->back()
-                ->withErrors('Gagal mengirim ke warehouse: ' . $e->getMessage());
+            return view('admin.sales.sales-order.invoice', compact(
+                'customerName',
+                'customerAddress',
+                'customerNpwp',
+                'noPoDisplay',
+                'subtotal',
+                'tax',
+                'grandTotal',
+                'items',
+                'invoiceNumber',
+            ) + ['rowId' => $id, 'rowType' => $type]);
         }
+
+        /**
+         * Download Invoice Excel (SpreadsheetML)
+         */
+        public function downloadInvoiceExcel(Request $request, $id)
+        {
+            $type = $request->input('row_type', 'sales_order');
+            $invNumber      = $request->input('inv_number', 'IO-IJB/' . now()->format('my') . '/' . rand(1000,9999));
+            $invDate        = $request->input('inv_date', now()->format('Y-m-d'));
+            $invNpwp        = $request->input('inv_npwp', $request->input('inv_npwp_val', ''));
+            $invPoNo        = $request->input('inv_po_no', '-');
+            $invPaymentNote = $request->input('inv_payment_note', '');
+            $invAddress     = $request->input('inv_address', '');
+
+            $customerName = '';
+            $customerAddress = '';
+            $items = collect();
+            $subtotal = 0;
+            $tax = 0;
+            $grandTotal = 0;
+
+            if ($type === 'request_order') {
+                $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
+                $customerName = $ro->customer_name;
+                $customerAddress = $ro->customer_address ?? '';
+                $items = $ro->items->map(function($item) {
+                    $desc = $item->nama_barang_custom ?? (Barang::find($item->barang_id)?->nama_barang ?? '-');
+                    return [
+                        'nama_barang' => $desc,
+                        'quantity' => $item->quantity,
+                        'harga' => $item->harga,
+                        'subtotal' => $item->subtotal,
+                    ];
+                });
+                $subtotal = $ro->subtotal ?? 0;
+                $tax = $ro->tax ?? 0;
+                $grandTotal = $ro->grand_total ?? ($subtotal + $tax);
+            } else {
+                $so = SalesOrder::with(['items', 'requestOrder'])->findOrFail($id);
+                $customerName = $so->to ?? $so->customer_name;
+                $customerAddress = $so->customer_address ?? '';
+                $items = $so->items->map(function($item) {
+                    return [
+                        'nama_barang' => $item->nama_barang,
+                        'qty' => $item->qty,
+                        'harga' => $item->harga,
+                        'subtotal' => $item->subtotal,
+                    ];
+                });
+                $subtotal = $so->subtotal ?? 0;
+                $tax = $so->tax ?? 0;
+                $grandTotal = $so->grand_total ?? ($subtotal + $tax);
+            }
+
+            $dpp = $tax > 0 ? round($subtotal * 100 / 111, 0) : 0;
+
+            // Build SpreadsheetML XML
+            $xml = '<?xml version="1.0"?>
+    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:o="urn:schemas-microsoft-com:office:office"
+    xmlns:x="urn:schemas-microsoft-com:office:excel"
+    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+    xmlns:html="http://www.w3.org/TR/REC-html40">
+    <Styles>
+        <Style ss:ID="header"><Font ss:Bold="1" ss:Size="28" ss:Color="#003399"/><Alignment ss:Horizontal="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#003399"/></Borders></Style>
+        <Style ss:ID="navy"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1A3A6B" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#1A3A6B"/></Borders></Style>
+        <Style ss:ID="normal"><Alignment ss:Horizontal="Left"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/></Borders></Style>
+        <Style ss:ID="right"><Alignment ss:Horizontal="Right"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/></Borders></Style>
+        <Style ss:ID="bold"><Font ss:Bold="1"/><Alignment ss:Horizontal="Right"/></Style>
+        <Style ss:ID="red"><Font ss:Bold="1" ss:Color="#e53e3e"/></Style>
+        <Style ss:ID="label"><Font ss:Bold="1"/></Style>
+    </Styles>
+    <Worksheet ss:Name="Invoice">
+    <Table>
+        <Row><Cell ss:MergeAcross="4" ss:StyleID="header"><Data ss:Type="String">INVOICE</Data></Cell></Row>
+        <Row>
+          <Cell ss:StyleID="label"><Data ss:Type="String">'.htmlspecialchars(strtoupper($customerName)).'</Data></Cell>
+          <Cell ss:Index="7"><Data ss:Type="String">No Invoice:</Data></Cell>
+          <Cell><Data ss:Type="String">'.htmlspecialchars($invNumber).'</Data></Cell>
+        </Row>
+        '.(!empty($invAddress) ? '<Row><Cell ss:MergeAcross="3"><Data ss:Type="String">'.htmlspecialchars($invAddress).'</Data></Cell></Row>' : '').'
+        <Row>
+          <Cell><Data ss:Type="String">NPWP</Data></Cell>
+          <Cell><Data ss:Type="String">'.htmlspecialchars($invNpwp).'</Data></Cell>
+          <Cell ss:Index="7"><Data ss:Type="String">PO No :</Data></Cell>
+          <Cell><Data ss:Type="String">'.htmlspecialchars($invPoNo).'</Data></Cell>
+        </Row>
+        <Row></Row>
+        <Row>
+            <Cell ss:StyleID="navy"><Data ss:Type="String">No</Data></Cell>
+            <Cell ss:StyleID="navy"><Data ss:Type="String">Description</Data></Cell>
+            <Cell ss:StyleID="navy"><Data ss:Type="String">Qty</Data></Cell>
+            <Cell ss:StyleID="navy"><Data ss:Type="String">Unit Price</Data></Cell>
+            <Cell ss:StyleID="navy"><Data ss:Type="String">Total</Data></Cell>
+        </Row>
+        ';
+            foreach ($items as $i => $item) {
+                $desc = $item['nama_barang'] ?? $item['description'] ?? '-';
+                $qty = $item['qty'] ?? $item['quantity'] ?? 0;
+                $harga = $item['harga'] ?? 0;
+                $sub = $item['subtotal'] ?? 0;
+                $xml .= '<Row>
+                    <Cell ss:StyleID="normal"><Data ss:Type="Number">'.($i+1).'</Data></Cell>
+                    <Cell ss:StyleID="normal"><Data ss:Type="String">'.$desc.'</Data></Cell>
+                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$qty.'</Data></Cell>
+                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$harga.'</Data></Cell>
+                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$sub.'</Data></Cell>
+                </Row>';
+            }
+            $xml .= '<Row></Row>
+            <Row><Cell ss:MergeAcross="3" ss:StyleID="bold"><Data ss:Type="String">Subtotal</Data></Cell><Cell ss:StyleID="bold"><Data ss:Type="Number">'.$subtotal.'</Data></Cell></Row>
+            <Row><Cell ss:MergeAcross="3" ss:StyleID="normal"><Data ss:Type="String">DPP</Data></Cell><Cell ss:StyleID="normal"><Data ss:Type="Number">'.$dpp.'</Data></Cell></Row>
+            <Row><Cell ss:MergeAcross="3" ss:StyleID="normal"><Data ss:Type="String">PPN</Data></Cell><Cell ss:StyleID="normal"><Data ss:Type="Number">'.$tax.'</Data></Cell></Row>
+            <Row><Cell ss:MergeAcross="3" ss:StyleID="bold"><Data ss:Type="String">Total</Data></Cell><Cell ss:StyleID="bold"><Data ss:Type="Number">'.$grandTotal.'</Data></Cell></Row>
+            <Row></Row>
+            <Row><Cell ss:MergeAcross="2" ss:StyleID="red"><Data ss:Type="String">PAYMENT INFORMATION</Data></Cell><Cell ss:MergeAcross="1" ss:StyleID="normal"><Data ss:Type="String">PT. Indonusa Jaya Bersama</Data></Cell></Row>
+            <Row><Cell ss:MergeAcross="2" ss:StyleID="normal"><Data ss:Type="String">'.str_replace("\n", " ", $invPaymentNote).'</Data></Cell><Cell ss:MergeAcross="1" ss:StyleID="normal"><Data ss:Type="String">(Nama Penandatangan)</Data></Cell></Row>
+        </Table>
+    </Worksheet>
+    </Workbook>';
+
+                $filename = 'Invoice_' . str_replace(['/', ' '], ['_', '_'], $invNumber) . '.xls';
+            return response($xml)
+                ->header('Content-Type', 'application/vnd.ms-excel')
+                ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
     /**

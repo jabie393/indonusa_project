@@ -217,6 +217,14 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
     Route::post('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'uploadImage'])->name('sales-order.upload-image');
     Route::delete('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'deleteImage'])->name('sales-order.delete-image');
+    // Invoice View
+    Route::get('/sales-order/{id}/invoice', [\App\Http\Controllers\Admin\SalesOrderController::class, 'showInvoice'])
+        ->name('sales.sales-order.invoice');
+
+    // Invoice Download Excel
+    Route::post('/sales-order/{id}/invoice-excel', [\App\Http\Controllers\Admin\SalesOrderController::class, 'downloadInvoiceExcel'])
+        ->name('sales.sales-order.invoice-excel');
+
     // Sent to Warehouse dari Sales Order
     Route::post('/sales-order/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])
         ->name('sales.sales-order.sent-to-warehouse');

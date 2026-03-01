@@ -174,6 +174,7 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <div class="flex flex-col items-center gap-2">
+
                                     <a href="{{ $row['aksi_url'] }}" class="w-full rounded-lg bg-blue-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700">Lihat</a>
 
                                     @if ($row['type'] === 'sales_order')
@@ -203,6 +204,13 @@
                                             @endif
                                         </div>
                                     @endif
+
+                                    {{-- Tombol Invoice --}}
+                                    <a href="{{ route('sales.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}"
+                                        target="_blank"
+                                        class="w-full rounded-lg bg-indigo-600 px-3 py-1.5 text-center text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700">
+                                        🧾 Invoice
+                                    </a>
 
                                     {{-- Tombol Sent to Warehouse --}}
                                     @php
