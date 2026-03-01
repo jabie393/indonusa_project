@@ -25,14 +25,20 @@ class RequestOrderController extends Controller
     {
         $order = Order::where('request_order_id', $id)->first();
         if (!$order) {
-            return back()->withErrors('Order tidak ditemukan.');
+            return back()->with([
+                'title' => 'Gagal!',
+                'text'  => 'Order tidak ditemukan.',
+            ]);
         }
         $order->update([
             'status' => 'approved_supervisor',
             'supervisor_id' => Auth::id(),
             'approved_at' => now(),
         ]);
-        return redirect()->back()->with('success', 'Request order berhasil di-approve oleh supervisor.');
+        return redirect()->back()->with([
+            'title' => 'Berhasil!',
+            'text'  => 'Request order berhasil di-approve oleh supervisor.',
+        ]);
     }
 
     /**
@@ -49,7 +55,10 @@ class RequestOrderController extends Controller
 
         $order = Order::where('request_order_id', $id)->first();
         if (!$order) {
-            return back()->withErrors('Order tidak ditemukan.');
+            return back()->with([
+                'title' => 'Gagal!',
+                'text'  => 'Order tidak ditemukan.',
+            ]);
         }
 
         $order->update([
@@ -64,7 +73,10 @@ class RequestOrderController extends Controller
             $requestOrder->update(['reason' => $request->reason]);
         }
 
-        return redirect()->back()->with('success', 'Request order berhasil ditolak.');
+        return redirect()->back()->with([
+            'title' => 'Berhasil!',
+            'text'  => 'Request order berhasil ditolak.',
+        ]);
     }
     /**
      * List semua Request Order milik Sales
@@ -739,12 +751,29 @@ class RequestOrderController extends Controller
 
         try {
             DB::transaction(function () use ($requestOrder) {
+                // If there is an associated order, delete its items and the order first
+                if ($requestOrder->order) {
+                    $requestOrder->order->items()->delete();
+                    $requestOrder->order->delete();
+                }
+
+                // Delete request order items
                 $requestOrder->items()->delete();
+                
+                // Delete the request order itself
                 $requestOrder->delete();
             });
-            return back()->with('success', 'Request Order berhasil dihapus.');
+
+            return redirect()->route('sales.request-order.index')->with([
+                'success' => 'Request Order berhasil dihapus.',
+                'title' => 'Terhapus!',
+                'text' => 'Request Order dan data terkait telah berhasil dihapus dari sistem.'
+            ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage());
+            return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage())->with([
+                'title' => 'Gagal!',
+                'text' => 'Terjadi kesalahan saat mencoba menghapus data.'
+            ]);
         }
     }
 

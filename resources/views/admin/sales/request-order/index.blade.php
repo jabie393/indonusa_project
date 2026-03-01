@@ -67,14 +67,13 @@
                     @forelse($requestOrders as $ro)
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->id }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
-                            <td class="px-4 py-3"><span class="badge inset-ring inset-ring-indigo-700 h-fit bg-indigo-50 text-indigo-700">{{ $ro->nomor_penawaran ?? '-' }}</span>
-                            </td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->no_po ?? '-' }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
-                            <td class="px-4 py-3">{{ $ro->customer_name }}</td>
-                            <td class="px-4 py-3">{{ $ro->items->count() }} item(s)</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->request_number }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->nomor_penawaran ?? '-' }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->no_po ?? '-' }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->sales_order_number ?? '-' }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->created_at->format('d M Y') }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->customer_name }}</td>
+                            <td class="px-4 py-3 text-nowrap">{{ $ro->items->count() }} item(s)</td>
                             <td class="text-nowrap px-4 py-3">Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
                             @php
                                 // Collect discounts per item, group by percentage and count occurrences
@@ -93,17 +92,17 @@
                             @endphp
                             <td class="px-4 py-3">
                                 @if ($discountCounts->isEmpty())
-                                    <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                    <span class="badge bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600">0%</span>
                                 @else
                                     @php $displayed = false; @endphp
                                     @foreach ($discountCounts as $dc)
                                         @if ((float) $dc['percent'] > 0)
-                                            <span class="badge mr-1 bg-green-50 text-green-700">{{ $dc['percent'] }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}</span>
+                                            <span class="badge bg-green-50 text-green-700 inset-ring inset-ring-green-600">{{ $dc['percent'] }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}</span>
                                             @php $displayed = true; @endphp
                                         @endif
                                     @endforeach
                                     @if (!$displayed)
-                                        <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                        <span class="badge bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600">0%</span>
                                     @endif
                                 @endif
                             </td>
@@ -113,6 +112,7 @@
                                         [
                                             'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
                                             'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                             'Ditolak Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
                                             'Dikirim ke Gudang' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',

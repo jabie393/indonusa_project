@@ -88,6 +88,7 @@ class RequestOrder extends Model
         $labels = [
             'pending' => 'Pending',
             'open' => 'Open',
+            'sent_to_supervisor' => 'Dikirim ke Supervisor',
             'approved_supervisor' => 'Disetujui Supervisor',
             'rejected_supervisor' => 'Ditolak Supervisor',
             'sent_to_warehouse' => 'Dikirim ke Gudang',
