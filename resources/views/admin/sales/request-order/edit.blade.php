@@ -1232,14 +1232,11 @@ nput.name = `item_images[${i}][]`;
 
             function updateRemoveButtons() {
                 const rows = document.querySelectorAll('.item-row');
-                rows.forEach((row, index) => {
-                    const btn = row.querySelector('.remove-row');
-                    if (index === 0) {
-                        btn.style.display = 'none';
-                    } else {
-                        btn.style.display = 'inline-block';
-                    }
-                });
+    rows.forEach((row) => {
+        const btn = row.querySelector('.remove-row');
+        if (!btn) return;
+        btn.style.display = 'inline-block';
+    });
             }
 
             // Initialization on load

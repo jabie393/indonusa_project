@@ -171,7 +171,11 @@
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Kategori</label>
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {{ $requestOrder->items->first()->barang->kategori ?? 'UMUM' }}
+                                                @php
+                                                    $firstItem = $requestOrder->items->first();
+                                                    $kategori = $firstItem->kategori_barang ?? $firstItem->kategori ?? ($firstItem->barang->kategori ?? '-');
+                                                @endphp
+                                                {{ $kategori }}
                                             </p>
                                         </div>
                                     </div>
@@ -226,7 +230,7 @@
                                         <div class="space-y-1 md:col-span-2">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Masa Berlaku</label>
                                             <div class="flex items-center space-x-3">
-                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->expired_at_formatted ?? '-' }}</p>
+                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->tanggal_berlaku_formatted ?? '-' }}</p>
                                                 @if ($requestOrder->expired_at)
                                                     @php
                                                         try {
@@ -375,8 +379,10 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                                <span class="font-bold text-gray-900 dark:text-white">{{ $item->quantity }}</span>
-                                                <span class="ml-0.5 text-xs italic text-gray-400">{{ $item->barang->satuan ?? 'pcs' }}</span>
+                                                <div class="flex flex-col">
+                                                    <span class="font-black text-gray-900 dark:text-white">{{ $item->quantity ?? $item->qty }}</span>
+                                                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->kategori_barang ?? $item->satuan ?? '-' }}</span>
+                                                </div>
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5 text-gray-600 dark:text-gray-400">
                                                 <span class="text-xs">Rp</span> {{ number_format($displayHarga, 0, ',', '.') }}
@@ -385,34 +391,40 @@
                                                 <span class="text-xs">Rp</span> {{ number_format($computedSubtotal, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                                @php
-                                                    $itemImgs = $item->images ?? ($item->item_images ?? []);
-                                                @endphp
+                                        @php
+    $rawImgs = $item->images ?? ($item->item_images ?? []);
+    if (is_string($rawImgs)) {
+        $itemImgs = json_decode($rawImgs, true) ?? [];
+    } else {
+        $itemImgs = is_array($rawImgs) ? $rawImgs : [];
+    }
+    $itemImgs = array_filter($itemImgs, fn($img) => !empty($img));
+@endphp
                                                 @if (!empty($itemImgs) && count($itemImgs) > 0)
                                                     <div class="flex items-center justify-center -space-x-2 overflow-hidden">
                                                         @foreach (array_slice($itemImgs, 0, 3) as $image)
                                                             @php
-                                                                if (is_null($image) || $image === '') {
-                                                                    $imgUrl = null;
-                                                                } elseif (str_starts_with($image, 'http')) {
-                                                                    $imgUrl = $image;
-                                                                } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($image, 'public/'));
-                                                                }
-                                                            @endphp
-                                                            @if ($imgUrl)
-                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
-                                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
-                                                                </button>
-                                                            @endif
-                                                        @endforeach
-                                                        @if (count($itemImgs) > 3)
-                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <span class="text-gray-300 dark:text-gray-600">-</span>
-                                                @endif
+                if (is_null($image) || $image === '') {
+                    $imgUrl = null;
+                } elseif (str_starts_with($image, 'http')) {
+                    $imgUrl = $image;
+                } else {
+                    $imgUrl = asset('storage/' . ltrim($image, '/'));
+                }
+            @endphp
+            @if ($imgUrl)
+                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
+                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
+                </button>
+            @endif
+        @endforeach
+        @if (count($itemImgs) > 3)
+            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
+        @endif
+    </div>
+@else
+    <span class="text-gray-300 dark:text-gray-600">-</span>
+@endif
                                             </td>
                                         </tr>
                                     @empty

@@ -19,11 +19,37 @@ document.addEventListener('DOMContentLoaded', () => {
         data: {
             labels: imcLabels,
             datasets: [
-                { label: 'Masuk', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
-                { label: 'Keluar', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
+                { label: 'Potensi Pendapatan', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
+                { label: 'Pendapatan Selesai', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false }
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + (value / 1000000) + 'jt';
+                        }
+                    }
+                }
+            }
+        }
     });
 
     // SVC initial
@@ -35,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const svcCtx = svcCanvas.getContext('2d');
         window.svcChart = new Chart(svcCtx, {
             type: 'bar',
-            data: { labels: svcLabels, datasets: [{ label: 'Stock', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
+            data: { labels: svcLabels, datasets: [{ label: 'Total Qty', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
             options: {
                 indexAxis: 'y', // <-- makes the bar chart horizontal
                 responsive: true,

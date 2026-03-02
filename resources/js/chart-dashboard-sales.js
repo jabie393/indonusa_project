@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         data: {
             labels: imcLabels,
             datasets: [
-                { label: 'Masuk', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
-                { label: 'Keluar', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
+                { label: 'Request', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
+                { label: 'Approved', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
             ]
         },
         options: { responsive: true, maintainAspectRatio: false }
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const svcCtx = svcCanvas.getContext('2d');
         window.svcChart = new Chart(svcCtx, {
             type: 'bar',
-            data: { labels: svcLabels, datasets: [{ label: 'Stock', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
+            data: { labels: svcLabels, datasets: [{ label: 'Sales Quantity', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
             options: {
                 indexAxis: 'y', // <-- makes the bar chart horizontal
                 responsive: true,

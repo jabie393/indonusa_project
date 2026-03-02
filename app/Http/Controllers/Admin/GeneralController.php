@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Barang;
 use App\Models\User;
 
@@ -10,7 +11,7 @@ class GeneralController extends Controller
 {
     public function dashboard()
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (! $user) {
             return redirect()->route('login');
         }
@@ -18,7 +19,7 @@ class GeneralController extends Controller
         // jika pakai spatie/permission
         if (method_exists($user, 'hasRole')) {
             if ($user->hasRole('Sales')) {
-                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard(request());
             }
             if ($user->hasRole('Supervisor')) {
                 return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
@@ -36,7 +37,7 @@ class GeneralController extends Controller
         $r = str_replace(' ', '', $role);
         switch ($r) {
             case 'sales':
-                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard(request());
             case 'supervisor':
                 return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
             case 'warehouse':
