@@ -398,27 +398,27 @@
                                                     <div class="flex items-center justify-center -space-x-2 overflow-hidden">
                                                         @foreach (array_slice($itemImgs, 0, 3) as $image)
                                                             @php
-                                                                if (is_null($image) || $image === '') {
-                                                                    $imgUrl = null;
-                                                                } elseif (str_starts_with($image, 'http')) {
-                                                                    $imgUrl = $image;
-                                                                } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($image, 'public/'));
-                                                                }
-                                                            @endphp
-                                                            @if ($imgUrl)
-                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
-                                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
-                                                                </button>
-                                                            @endif
-                                                        @endforeach
-                                                        @if (count($itemImgs) > 3)
-                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <span class="text-gray-300 dark:text-gray-600">-</span>
-                                                @endif
+                if (is_null($image) || $image === '') {
+                    $imgUrl = null;
+                } elseif (str_starts_with($image, 'http')) {
+                    $imgUrl = $image;
+                } else {
+                    $imgUrl = asset('storage/' . ltrim($image, '/'));
+                }
+            @endphp
+            @if ($imgUrl)
+                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
+                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
+                </button>
+            @endif
+        @endforeach
+        @if (count($itemImgs) > 3)
+            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
+        @endif
+    </div>
+@else
+    <span class="text-gray-300 dark:text-gray-600">-</span>
+@endif
                                             </td>
                                         </tr>
                                     @empty

@@ -134,7 +134,10 @@ class CustomPenawaranController extends Controller
                     'subtotal' => $itemSubtotal,
                     'diskon' => $itemData['diskon'] ?? 0,
                     'keterangan' => $itemData['keterangan'] ?? null,
-                    'images' => !empty($itemImages) ? $itemImages : null,
+                    // Pastikan images selalu array dan path tanpa awalan 'public/'
+                    'images' => !empty($itemImages) ? array_map(function($img){
+                        return str_replace('public/', '', $img);
+                    }, $itemImages) : null,
                 ]);
             }
 
@@ -280,7 +283,9 @@ class CustomPenawaranController extends Controller
                     'subtotal' => $itemSubtotal,
                     'diskon' => $itemData['diskon'] ?? 0,
                     'keterangan' => $itemData['keterangan'] ?? null,
-                    'images' => !empty($itemImages) ? $itemImages : null,
+                    'images' => !empty($itemImages) ? array_map(function($img){
+                        return str_replace('public/', '', $img);
+                    }, $itemImages) : null,
                 ]);
             }
 

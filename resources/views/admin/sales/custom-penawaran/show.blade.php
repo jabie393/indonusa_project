@@ -244,16 +244,24 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                                @if ($item->images && count($item->images) > 0)
+                                                @php
+                                                    $images = $item->images;
+                                                    if (is_string($images)) {
+                                                        // Try to decode JSON string
+                                                        $decoded = json_decode($images, true);
+                                                        $images = is_array($decoded) ? $decoded : [];
+                                                    }
+                                                @endphp
+                                                @if ($images && count($images) > 0)
                                                     <div class="flex items-center justify-center -space-x-2 overflow-hidden">
-                                                        @foreach (array_slice($item->images, 0, 3) as $image)
+                                                        @foreach (array_slice($images, 0, 3) as $image)
                                                             @php
                                                                 if (is_null($image) || $image === '') {
                                                                     $imgUrl = null;
                                                                 } elseif (str_starts_with($image, 'http')) {
                                                                     $imgUrl = $image;
                                                                 } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($image, 'public/'));
+                                                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
                                                                 }
                                                             @endphp
                                                             @if ($imgUrl)
@@ -262,8 +270,8 @@
                                                                 </button>
                                                             @endif
                                                         @endforeach
-                                                        @if (count($item->images) > 3)
-                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-black text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($item->images) - 3 }}</span>
+                                                        @if (count($images) > 3)
+                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-black text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($images) - 3 }}</span>
                                                         @endif
                                                     </div>
                                                 @else
