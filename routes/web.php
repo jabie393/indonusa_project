@@ -117,6 +117,10 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
     Route::get('/goods-receipts', [GoodsReceiptsController::class, 'index'])->name('goods-receipts.index');
     Route::get('/goods-receipts/{id}/logs', [GoodsReceiptsController::class, 'getLogs'])->name('goods-receipts.logs');
+
+    // Dashboard Chart Data for GA
+    Route::get('/admin/dashboard/general-affair/data', [\App\Http\Controllers\Admin\Dashboard\GeneralAffairDashboardController::class, 'chartData'])
+        ->name('dashboard.general-affair.chart.data');
 });
 // End of General Affair
 
@@ -232,6 +236,10 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Sent to Warehouse dari Request Order (yang muncul di halaman SO)
     Route::post('/request-order-so/{requestOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
         ->name('sales.request-order.sent-to-warehouse-from-so');
+
+    // Dashboard Chart Data for Sales
+    Route::get('/admin/dashboard/sales/data', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'chartData'])
+        ->name('dashboard.sales.chart.data');
 });
 // End of Sales
 
