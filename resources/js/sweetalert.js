@@ -19,7 +19,27 @@ window.confirmDelete = function (callback) {
         if (result.isConfirmed) {
             callback();
         }
-        // Do nothing if cancelled
+    });
+};
+
+// Cancel alert for defect request
+window.confirmCancel = function (callback) {
+    Swal.fire({
+        title: "Batalkan Pengajuan?",
+        text: "Stok akan dikembalikan ke barang utama dan data pengajuan ini akan dihapus.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, batalkan!",
+        cancelButtonText: "Tidak",
+        customClass: {
+            popup: "rounded-2xl!",
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback();
+        }
     });
 };
 

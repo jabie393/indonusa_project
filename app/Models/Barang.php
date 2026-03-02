@@ -63,7 +63,18 @@ class Barang extends Model
         'catatan',
         'alasan_pengajuan',
         'form',
+        'parent_id',
     ];
+
+    public function parent()
+    {
+        return $this->belongsTo(Barang::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Barang::class, 'parent_id');
+    }
 
     protected static function booted()
     {

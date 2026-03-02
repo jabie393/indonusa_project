@@ -22,7 +22,7 @@ class WarehouseController extends Controller
         $status = session('warehouse_filter_status', 'masuk');
 
         if ($status === 'defect') {
-            $goods = Barang::where('status_barang', 'ditinjau_supervisor');
+            $goods = Barang::with('parent')->whereIn('status_barang', ['ditinjau_supervisor', 'ditolak_supervisor']);
         } else {
             $goods = Barang::where('status_barang', 'masuk');
         }
@@ -36,9 +36,8 @@ class WarehouseController extends Controller
         }
 
         $goods = $goods->paginate($perPage)->appends($request->except('page'));
-        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
+        $kategoriList = Barang::KATEGORI;
 
-        // Kirimkan barang pertama sebagai contoh (opsional)
         $barang = $goods->first();
 
         return view('admin.warehouse.index', compact('goods', 'kategoriList', 'barang'));
@@ -58,16 +57,13 @@ class WarehouseController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
-        // Set default deskripsi jika tidak diisi
         if (empty($validated['deskripsi'])) {
             $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
         }
 
-        // Simpan id user yang submit ke kolom 'form'
         $validated['form'] = Auth::id();
-
-        $validated['status_barang'] = 'masuk'; // Set status_barang masuk
-        $validated['tipe_request'] = 'primary'; // Set tipe_request primary
+        $validated['status_barang'] = 'masuk';
+        $validated['tipe_request'] = 'primary';
 
         $barang = Barang::create($validated);
 
@@ -85,7 +81,6 @@ class WarehouseController extends Controller
     {
         $barang = Barang::findOrFail($id);
 
-        // Jika request memiliki harga_diajukan, ini adalah pelaporan barang rusak dari Warehouse
         if ($request->has('harga_diajukan')) {
             $request->validate([
                 'harga_diajukan' => 'required|numeric|min:0',
@@ -93,18 +88,46 @@ class WarehouseController extends Controller
                 'alasan_pengajuan' => 'required|string',
             ]);
 
+            if ($barang->status_barang === 'ditolak_supervisor') {
+                if ($barang->parent_id) {
+                    $parent = Barang::find($barang->parent_id);
+                    $selisih = $request->input('stok_diajukan') - $barang->stok;
+
+                    if (!$parent || $parent->stok < $selisih) {
+                        return redirect()->back()->with([
+                            'title' => 'Gagal',
+                            'text' => 'Stok barang induk tidak cukup untuk penyesuaian.',
+                            'icon' => 'error'
+                        ]);
+                    }
+
+                    $parent->stok -= $selisih;
+                    $parent->save();
+                }
+
+                $barang->stok = $request->input('stok_diajukan');
+                $barang->harga = $request->input('harga_diajukan');
+                $barang->alasan_pengajuan = $request->input('alasan_pengajuan');
+                $barang->status_barang = 'ditinjau_supervisor';
+                $barang->catatan = null;
+                $barang->save();
+
+                return redirect()->route('warehouse.index')->with([
+                    'title' => 'Berhasil',
+                    'text' => 'Barang defect berhasil diajukan ulang dan menunggu tinjauan supervisor.'
+                ]);
+            }
+
             if ($barang->stok < $request->input('stok_diajukan')) {
                 return redirect()->back()->with(['title' => 'Gagal', 'text' => 'Stok barang tidak cukup untuk dilaporkan rusak.', 'icon' => 'error']);
             }
 
-            // 1. Kurangi stok barang asli
             $barang->stok -= $request->input('stok_diajukan');
             $barang->save();
 
-            // 2. Buat barang baru dengan status ditinjau_supervisor
             $defectData = $barang->toArray();
             unset($defectData['id'], $defectData['created_at'], $defectData['updated_at']);
-            
+
             $defectData['nama_barang'] = "(defect) " . $barang->nama_barang;
             $defectData['kode_barang'] = $this->generateUniqueKodeBarang($barang->kategori);
             $defectData['status_barang'] = 'ditinjau_supervisor';
@@ -112,6 +135,7 @@ class WarehouseController extends Controller
             $defectData['harga'] = $request->input('harga_diajukan');
             $defectData['alasan_pengajuan'] = $request->input('alasan_pengajuan');
             $defectData['form'] = Auth::id();
+            $defectData['parent_id'] = $barang->id;
 
             Barang::create($defectData);
 
@@ -131,14 +155,16 @@ class WarehouseController extends Controller
             'deskripsi' => 'nullable|string',
         ]);
 
+        $oldGambar = $barang->gambar;
+
+        $barang->update($validated);
+
         if ($request->hasFile('gambar')) {
-            // Upload gambar baru
             $folder = 'barang/' . $barang->id;
             $path = $request->file('gambar')->store($folder, 'public');
             $barang->gambar = $path;
             $barang->save();
 
-            // Hapus gambar lama jika ada
             if ($oldGambar && \Storage::disk('public')->exists($oldGambar)) {
                 \Storage::disk('public')->delete($oldGambar);
             }
@@ -151,16 +177,24 @@ class WarehouseController extends Controller
     {
         $barang = Barang::findOrFail($id);
 
-        // Hapus folder gambar barang beserta isinya jika ada
+        if ($barang->parent_id) {
+            $parent = Barang::find($barang->parent_id);
+            if ($parent) {
+                $parent->stok += $barang->stok;
+                $parent->save();
+            }
+        }
+
         $folder = 'barang/' . $barang->id;
         if (\Storage::disk('public')->exists($folder)) {
             \Storage::disk('public')->deleteDirectory($folder);
         }
 
-        // Hapus data barang di database
         $barang->delete();
 
-        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil dihapus!']);
+        $message = $barang->parent_id ? 'Pengajuan berhasil dibatalkan dan stok dikembalikan.' : 'Barang berhasil dihapus!';
+
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => $message]);
     }
 
     private function generateUniqueKodeBarang($kategori)
