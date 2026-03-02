@@ -171,7 +171,11 @@
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Kategori</label>
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {{ $requestOrder->items->first()->barang->kategori ?? 'UMUM' }}
+                                                @php
+                                                    $firstItem = $requestOrder->items->first();
+                                                    $kategori = $firstItem->kategori_barang ?? $firstItem->kategori ?? ($firstItem->barang->kategori ?? '-');
+                                                @endphp
+                                                {{ $kategori }}
                                             </p>
                                         </div>
                                     </div>
@@ -375,8 +379,10 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                                <span class="font-bold text-gray-900 dark:text-white">{{ $item->quantity }}</span>
-                                                <span class="ml-0.5 text-xs italic text-gray-400">{{ $item->barang->satuan ?? 'pcs' }}</span>
+                                                <div class="flex flex-col">
+                                                    <span class="font-black text-gray-900 dark:text-white">{{ $item->quantity ?? $item->qty }}</span>
+                                                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->kategori_barang ?? $item->satuan ?? '-' }}</span>
+                                                </div>
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5 text-gray-600 dark:text-gray-400">
                                                 <span class="text-xs">Rp</span> {{ number_format($displayHarga, 0, ',', '.') }}
