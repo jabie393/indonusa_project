@@ -226,7 +226,7 @@
                                         <div class="space-y-1 md:col-span-2">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Masa Berlaku</label>
                                             <div class="flex items-center space-x-3">
-                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->expired_at_formatted ?? '-' }}</p>
+                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->tanggal_berlaku_formatted ?? '-' }}</p>
                                                 @if ($requestOrder->expired_at)
                                                     @php
                                                         try {
@@ -385,9 +385,15 @@
                                                 <span class="text-xs">Rp</span> {{ number_format($computedSubtotal, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                                @php
-                                                    $itemImgs = $item->images ?? ($item->item_images ?? []);
-                                                @endphp
+                                        @php
+    $rawImgs = $item->images ?? ($item->item_images ?? []);
+    if (is_string($rawImgs)) {
+        $itemImgs = json_decode($rawImgs, true) ?? [];
+    } else {
+        $itemImgs = is_array($rawImgs) ? $rawImgs : [];
+    }
+    $itemImgs = array_filter($itemImgs, fn($img) => !empty($img));
+@endphp
                                                 @if (!empty($itemImgs) && count($itemImgs) > 0)
                                                     <div class="flex items-center justify-center -space-x-2 overflow-hidden">
                                                         @foreach (array_slice($itemImgs, 0, 3) as $image)
