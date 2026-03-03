@@ -30,10 +30,12 @@
 <body class="m-0 flex justify-center bg-slate-200 p-0 print:bg-white">
 
     <!-- A4 PAGE WRAPPER (FIXED HEIGHT) -->
-    <div class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
+    <div
+        class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
 
         <!-- INNER MARGINS (1.27 cm) -->
-        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]" style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+        <div class="relative h-full w-full p-[1.27cm] font-sans text-[11pt] leading-[1.08]"
+            style="font-family: Calibri, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
 
             @php
                 // Helper function to get base64 encoded image from public/images
@@ -58,7 +60,9 @@
                             return $imagePath;
                         }
 
-                        $fullPath = str_starts_with($imagePath, 'public/') ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/')) : storage_path('app/public/' . ltrim($imagePath, '/'));
+                        $fullPath = str_starts_with($imagePath, 'public/')
+                            ? storage_path('app/public/' . ltrim(substr($imagePath, 7), '/'))
+                            : storage_path('app/public/' . ltrim($imagePath, '/'));
 
                         if (file_exists($fullPath) && is_readable($fullPath)) {
                             $mime = mime_content_type($fullPath);
@@ -74,7 +78,8 @@
 
             <!-- WATERMARK IMAGE -->
             @if ($getPublicImageBase64('LogoText_transparent.png'))
-                <img src="{{ $getPublicImageBase64('LogoText_transparent.png') }}" alt="" class="right-30 pointer-events-none absolute top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
+                <img src="{{ $getPublicImageBase64('LogoText_transparent.png') }}" alt=""
+                    class="right-30 pointer-events-none absolute top-1/2 z-10 h-[563px] w-[563px] -translate-y-1/2 opacity-10" />
             @endif
 
             <!-- TOP HEADER LOGO -->
@@ -82,7 +87,8 @@
             <!-- COMPANY INFO -->
             <div class="flex text-[9pt]">
                 @if ($getPublicImageBase64('Logo_transparent.png'))
-                    <img src="{{ $getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama" class="w-[16%]" />
+                    <img src="{{ $getPublicImageBase64('Logo_transparent.png') }}" alt="Indonusa Jaya Bersama"
+                        class="w-[16%]" />
                 @endif
 
                 <div class="">
@@ -130,8 +136,11 @@
                     <tbody class="grid grid-cols-5">
                         <tr class="col-span-3 row-span-3 flex flex-col">
                             <td class="px-2">Delivery To :</td>
-                            <td class="px-2"><strong>{{ $orders->customer?->nama_customer ?? $orders->customer_name }}</strong></td>
-                            <td class="px-2"><span class="text-2xs">{{ $orders->customer?->alamat_pengiriman ?? '-' }}</span></td>
+                            <td class="px-2">
+                                <strong>{{ $orders->customer?->nama_customer ?? $orders->customer_name }}</strong>
+                            </td>
+                            <td class="px-2"><span
+                                    class="text-2xs">{{ $orders->customer?->alamat_pengiriman ?? '-' }}</span></td>
 
                         </tr>
                         <tr class="col-span-2 row-span-3 flex flex-col">
@@ -156,13 +165,16 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php $iteration = 1; @endphp
                         @foreach ($orders->items as $item)
-                            <tr>
-                                <td class="border px-2 py-1 text-center">{{ $loop->iteration }}</td>
-                                <td class="border px-2 py-1">{{ $item->nama_barang }}</td>
-                                <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
-                                <td class="border px-2 py-1 text-center"></td>
-                            </tr>
+                            @if ($item->delivered_quantity > 0)
+                                <tr>
+                                    <td class="border px-2 py-1 text-center">{{ $iteration++ }}</td>
+                                    <td class="border px-2 py-1">{{ $item->nama_barang }}</td>
+                                    <td class="border px-2 py-1 text-center">{{ $item->delivered_quantity }}</td>
+                                    <td class="border px-2 py-1 text-center"></td>
+                                </tr>
+                            @endif
                         @endforeach
                     </tbody>
                 </table>
@@ -171,7 +183,8 @@
 
             <!-- TERMS -->
             <div class="mt-3 text-[9pt]">
-                <p>Goods and items cannot be refund except with aggrement. <br>Received the above in good order and conditition.</p>
+                <p>Goods and items cannot be refund except with aggrement. <br>Received the above in good order and
+                    conditition.</p>
             </div>
 
             <!-- SIGNATURE -->

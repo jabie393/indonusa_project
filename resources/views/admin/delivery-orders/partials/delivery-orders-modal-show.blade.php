@@ -1,6 +1,8 @@
 <dialog id="delivery-order-modal" class="modal">
-    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+    <div
+        class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 sm:max-h-[90vh]">
+        <div
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Detail Delivery Order - <span id="delivery-order-number" class="font-normal">#-</span>
             </h3>
@@ -29,17 +31,28 @@
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"">
                         <tr>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Kode Barang</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Nama Barang</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Qty</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Delivered</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">Status</th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                Kode Barang</th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                Nama Barang</th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                Qty</th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                Delivered</th>
+                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                                Status</th>
                         </tr>
                     </thead>
                     <tbody id="delivery-order-items-body" class="">
                         <!-- JS will populate rows here -->
                     </tbody>
                 </table>
+            </div>
+
+            <div id="delivery-order-reason-container"
+                class="mt-6 hidden rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/30 dark:bg-red-900/10">
+                <h4 class="mb-2 text-sm font-semibold text-red-800 dark:text-red-400">Alasan Pembatalan/Reject:</h4>
+                <p id="delivery-order-reason-text" class="text-sm text-red-700 dark:text-red-300"></p>
             </div>
         </div>
     </div>

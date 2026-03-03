@@ -64,6 +64,29 @@ class DeliveryOrdersController extends Controller
             $item->delivered_quantity = $item->quantity;
             $item->status_item = 'delivered';
             $item->save();
+
+            // Deduct stock from goods table
+            if ($item->barang) {
+                $barang = $item->barang;
+                $barang->stok -= $item->quantity;
+                $barang->save();
+
+                // Manual history logging for stock deduction
+                \App\Models\BarangHistory::create([
+                    'barang_id'   => $barang->id,
+                    'kode_barang' => $barang->kode_barang,
+                    'nama_barang' => $barang->nama_barang,
+                    'kategori'    => $barang->kategori,
+                    'stok'        => $barang->stok,
+                    'satuan'      => $barang->satuan,
+                    'lokasi'      => $barang->lokasi,
+                    'harga'       => $barang->harga,
+                    'old_status'  => $barang->status_barang,
+                    'new_status'  => $barang->status_barang, // status remains 'masuk' or same
+                    'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
+                    'note'        => 'Stock berkurang (' . $item->quantity . ') karena pengiriman penuh DO: ' . $order->order_number,
+                ]);
+            }
         }
 
         $order->status = 'completed';
@@ -95,18 +118,50 @@ class DeliveryOrdersController extends Controller
     }
 
     // Reject order
-    protected function processRejection($id)
+    public function reject(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-        $order->status = 'rejected_warehouse';
-        $order->save();
+        $order = Order::with('items.barang')->findOrFail($id);
+        
+        // Check if there are any delivered items
+        $hasDeliveries = $order->items->contains(fn($item) => $item->delivered_quantity > 0);
+
+        if ($hasDeliveries) {
+            // Case: Partial Delivery already happened. We just finalize the order.
+            // Items with delivered_quantity > 0 are marked as delivered (finalized).
+            foreach ($order->items as $item) {
+                if ($item->delivered_quantity > 0) {
+                    if ($item->delivered_quantity < $item->quantity) {
+                        $item->status_item = 'partially_delivered';
+                    } else {
+                        $item->status_item = 'delivered';
+                    }
+                } else {
+                    $item->status_item = 'cancel';
+                }
+                $item->save();
+            }
+
+            $order->status = 'completed';
+            $order->reason = $request->input('reason');
+            $order->save();
+
+            $message = 'Order (sebagian) telah dibatalkan sisanya dan ditandai Selesai.';
+        } else {
+            // Case: No deliveries yet, full rejection
+            $order->status = 'rejected_warehouse';
+            $order->reason = $request->input('reason');
+            $order->save();
+            
+            $message = 'Order berhasil direject.';
+        }
+
+        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => $message]);
     }
 
-    // Reject order
-    public function reject($id)
+    protected function processRejection($id)
     {
-        $this->processRejection($id);
-        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil direject.']);
+        // This method might be redundant now as logic is moved to reject()
+        // Keeping it empty or removing it if not used elsewhere
     }
 
     public function partialApprove(Request $request, $id)
@@ -126,10 +181,33 @@ class DeliveryOrdersController extends Controller
                     if ($newDeliveredQuantity >= $item->quantity) {
                         $item->status_item = 'delivered';
                     } else {
-                        $item->status_item = 'partial';
+                        $item->status_item = 'partially_delivered';
                     }
                     
                     $item->save();
+
+                    // Deduct stock from goods table for partial delivery
+                    if ($item->barang) {
+                        $barang = $item->barang;
+                        $barang->stok -= $sentQuantity;
+                        $barang->save();
+
+                        // Manual history logging for partial stock deduction
+                        \App\Models\BarangHistory::create([
+                            'barang_id'   => $barang->id,
+                            'kode_barang' => $barang->kode_barang,
+                            'nama_barang' => $barang->nama_barang,
+                            'kategori'    => $barang->kategori,
+                            'stok'        => $barang->stok,
+                            'satuan'      => $barang->satuan,
+                            'lokasi'      => $barang->lokasi,
+                            'harga'       => $barang->harga,
+                            'old_status'  => $barang->status_barang,
+                            'new_status'  => $barang->status_barang,
+                            'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
+                            'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . $order->order_number,
+                        ]);
+                    }
                 }
             }
         }
