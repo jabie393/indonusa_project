@@ -597,7 +597,7 @@ class SalesOrderController extends Controller
         try {
             $salesOrder = SalesOrder::create([
                 'sales_id' => Auth::id(),
-                'so_number' => SalesOrder::generateSONumber(),
+                'sales_order_number' => SalesOrder::generateSONumber(),
                 'to' => $validated['to'],
                 'up' => $validated['up'],
                 'subject' => $validated['subject'],
@@ -824,6 +824,9 @@ class SalesOrderController extends Controller
     public function search(Request $request)
     {
         $search = $request->input('q', '');
+        if (empty($search)) {
+            return response()->json(['success' => true, 'data' => []]);
+        }
 
         $soResults = SalesOrder::query()
             ->where('sales_id', Auth::id())
@@ -831,7 +834,7 @@ class SalesOrderController extends Controller
                 $q->where('sales_order_number', 'like', "%$search%")
                   ->orWhere('customer_name', 'like', "%$search%");
             })
-            ->limit(10)
+            ->limit(5)
             ->get()
             ->map(function ($so) {
                 return [
@@ -844,6 +847,28 @@ class SalesOrderController extends Controller
                 ];
             });
 
-        return response()->json(['success' => true, 'data' => $soResults]);
+        $roResults = \App\Models\RequestOrder::where('sales_id', Auth::id())
+            ->where(function ($q) use ($search) {
+                $q->where('request_number', 'like', "%$search%")
+                  ->orWhere('nomor_penawaran', 'like', "%$search%")
+                  ->orWhere('customer_name', 'like', "%$search%")
+                  ->orWhere('no_po', 'like', "%$search%");
+            })
+            ->limit(5)
+            ->get()
+            ->map(function ($ro) {
+                return [
+                    'sales_order_number' => $ro->nomor_penawaran ?: ($ro->request_number ?: 'Quotation'),
+                    'customer_name' => $ro->customer_name,
+                    'type' => 'penawaran',
+                    'badge' => 'Quotation',
+                    'url' => route('sales.request-order.show', $ro->id),
+                    'no_po' => $ro->no_po,
+                ];
+            });
+
+        $combined = collect($soResults)->merge($roResults);
+
+        return response()->json(['success' => true, 'data' => $combined]);
     }
 }

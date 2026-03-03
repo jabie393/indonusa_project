@@ -90,20 +90,27 @@
                                     })
                                     ->values();
                             @endphp
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 text-center">
                                 @if ($discountCounts->isEmpty())
-                                    <span class="badge bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600">0%</span>
+                                    <span class="text-gray-300 dark:text-gray-600">-</span>
                                 @else
-                                    @php $displayed = false; @endphp
-                                    @foreach ($discountCounts as $dc)
-                                        @if ((float) $dc['percent'] > 0)
-                                            <span class="badge bg-green-50 text-green-700 inset-ring inset-ring-green-600">{{ $dc['percent'] }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}</span>
-                                            @php $displayed = true; @endphp
+                                    <div class="flex flex-col items-center gap-1">
+                                        @php $displayed = false; @endphp
+                                        @foreach ($discountCounts as $dc)
+                                            @php $dk = (float) $dc['percent']; @endphp
+                                            @if ($dk > 0)
+                                                <div class="flex flex-col items-center">
+                                                    <span class="{{ $dk > 20 ? 'badge bg-red-50 text-red-700 inset-ring inset-ring-red-600' : 'badge bg-green-50 text-green-700 inset-ring inset-ring-green-600' }} inline-flex items-center  px-2 py-0.5 text-xs font-bold">
+                                                        {{ $dk }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}
+                                                    </span>
+                                                </div>
+                                                @php $displayed = true; @endphp
+                                            @endif
+                                        @endforeach
+                                        @if (!$displayed)
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
                                         @endif
-                                    @endforeach
-                                    @if (!$displayed)
-                                        <span class="badge bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600">0%</span>
-                                    @endif
+                                    </div>
                                 @endif
                             </td>
                             <td class="px-4 py-3">
@@ -133,7 +140,7 @@
                                     @endphp
                                     @if ($maxDiskon > 20)
                                         <div class="mt-1 text-xs text-orange-600">
-                                            <i class="fa fa-exclamation-triangle"></i> 
+                                            <i class="fa fa-exclamation-triangle"></i>
                                         </div>
                                     @endif
                                 @endif

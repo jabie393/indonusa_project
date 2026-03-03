@@ -41,21 +41,20 @@ class SalesDashboardController extends Controller
         $lastMonthStart = \Carbon\Carbon::now()->subMonth()->startOfMonth();
         $lastMonthEnd = \Carbon\Carbon::now()->subMonth()->endOfMonth();
 
-        // Pending Orders (Order model + CustomPenawaran)
-        $pendingOrderQuery = \App\Models\Order::where('sales_id', $user->id)
-            ->whereIn('status', ['sent_to_supervisor', 'sent_to_warehouse', 'pending_approval']);
-        $pendingCustomQuery = \App\Models\CustomPenawaran::where('sales_id', $user->id)
-            ->whereIn('status', ['pending_approval', 'sent', 'open']);
+        // Total orders (Order model + CustomPenawaran)
+        $totalQuotationQuery = \App\Models\Order::where('sales_id', $user->id);
+        $totalCustomQuotationQuery = \App\Models\CustomPenawaran::where('sales_id', $user->id)
+            ->whereIn('status', ['pending_approval', 'sent_to_warehouse', 'open','approved_supervisor', 'approved_warehouse']);
 
-        $totalPending = $pendingOrderQuery->count() + $pendingCustomQuery->count();
-        $lastMonthPending = (clone $pendingOrderQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
-            + (clone $pendingCustomQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
+        $totalQuotation = $totalQuotationQuery->count() + $totalCustomQuotationQuery->count();
+        $lastMonthQuotation = (clone $totalQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
+            + (clone $totalCustomQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
 
         // Approved Orders (Order model + CustomPenawaran)
         $approvedOrderQuery = \App\Models\Order::where('sales_id', $user->id)
             ->whereIn('status', ['approved_supervisor', 'approved_warehouse', 'open']);
         $approvedCustomQuery = \App\Models\CustomPenawaran::where('sales_id', $user->id)
-            ->whereIn('status', ['approved_supervisor', 'approved']);
+            ->whereIn('status', ['approved_supervisor', 'open']);
 
         $totalApproved = $approvedOrderQuery->count() + $approvedCustomQuery->count();
         $lastMonthApproved = (clone $approvedOrderQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
@@ -69,14 +68,15 @@ class SalesDashboardController extends Controller
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->count();
 
-        // Customers (Distinct customers from SalesOrder)
-        $totalCustomers = \App\Models\Order::where('sales_id', $user->id)
-            ->distinct('customer_id')
-            ->count('customer_id');
-        $lastMonthCustomers = \App\Models\Order::where('sales_id', $user->id)
+        // Total Profit (Sum of subtotal from completed RequestOrders)
+        $profitQuery = \App\Models\RequestOrder::where('sales_id', $user->id)
+            ->whereHas('order', function($q) {
+                $q->where('status', 'completed');
+            });
+        $totalProfit = $profitQuery->sum('subtotal');
+        $lastMonthProfit = (clone $profitQuery)
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
-            ->distinct('customer_id')
-            ->count('customer_id');
+            ->sum('subtotal');
 
         // 3. Chart Data (IMC - Sales Performance)
         $selectedYear = (int) $request->query('year', now()->year);
@@ -84,19 +84,27 @@ class SalesDashboardController extends Controller
         $imcMasuk = []; // We'll use this for 'Request'
         $imcKeluar = []; // We'll use this for 'Approved'
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = \App\Models\RequestOrder::where('sales_id', $user->id)
+            // Potensi Laba (Subtotal all RequestOrders)
+            $imcMasuk[] = (float) \App\Models\RequestOrder::where('sales_id', $user->id)
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->count();
-            $imcKeluar[] = \App\Models\Order::where('sales_id', $user->id)
-                ->whereIn('status', ['approved_supervisor', 'approved_warehouse', 'completed'])
+                ->sum('subtotal');
+
+            // Laba Selesai (Subtotal where associated order is completed)
+            $imcKeluar[] = (float) \App\Models\RequestOrder::where('sales_id', $user->id)
+                ->whereHas('order', function($q) {
+                    $q->where('status', 'completed');
+                })
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->count();
+                ->sum('subtotal');
         }
 
-        $imcYears = \App\Models\RequestOrder::selectRaw('YEAR(created_at) as year')
-            ->where('sales_id', $user->id)
+        $imcYears = \App\Models\RequestOrder::where('sales_id', $user->id)
+            ->whereHas('order', function($q) {
+                $q->where('status', 'completed');
+            })
+            ->selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')
@@ -135,14 +143,14 @@ class SalesDashboardController extends Controller
             ->get();
 
         return view('dashboard.sales.index', [
-            'totalPending' => $totalPending,
-            'lastMonthPending' => $lastMonthPending,
+            'totalQuotation' => $totalQuotation,
+            'lastMonthQuotation' => $lastMonthQuotation,
             'totalApproved' => $totalApproved,
             'lastMonthApproved' => $lastMonthApproved,
             'totalSales' => $totalSales,
             'lastMonthSales' => $lastMonthSales,
-            'totalCustomers' => $totalCustomers,
-            'lastMonthCustomers' => $lastMonthCustomers,
+            'totalProfit' => $totalProfit,
+            'lastMonthProfit' => $lastMonthProfit,
             'imc_labels' => $months,
             'imc_masuk' => $imcMasuk,
             'imc_keluar' => $imcKeluar,

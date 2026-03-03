@@ -41,15 +41,15 @@
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Pesanan Tertunda</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Quotation</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
-                                {{ $totalPending ?? 0 }}
+                                {{ $totalQuotation ?? 0 }}
                             </h1>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Pesanan</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400">Quotations</span>
                         </div>
                     </div>
                 </div>
@@ -57,7 +57,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Pesanan Disetujui</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
@@ -65,7 +65,7 @@
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $totalApproved ?? 0 }}
                             </h1>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Pesanan</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400">Sales Order</span>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Total Penjualan</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Total Penjualan</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center justify-center">
@@ -95,22 +95,28 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white dark:text-white">Pelanggan</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Total Nominal Terjual</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
-
-                    <div class="flex w-full flex-row items-end justify-center">
-                        <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
-                            {{ $totalCustomers ?? 0 }}
-                        </h1>
-                        <span class="text-lg text-gray-500 dark:text-gray-400">Pelanggan</span>
+                <div class="flex h-full flex-col justify-center p-4">
+                    <div class="flex w-full flex-col items-center justify-center">
+                        <div class="flex w-full flex-row items-end justify-center">
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
+                                Rp{{ number_format($totalProfit ?? 0, 0, ',', '.') }}
+                            </h2>
+                        </div>
+                        <div class="mt-2 flex w-full flex-row items-center justify-center gap-1">
+                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
+                                Rp{{ number_format($lastMonthProfit ?? 0, 0, ',', '.') }}
+                            </p>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400">bulan lalu</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Performa Penjualan</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Performance</h1>
                     <div class="m-3">
                         <select id="imc-year-select" class="rounded-full border-none bg-[#225A97] px-5 py-2 text-white focus:ring-0">
                             @foreach ($imc_years as $year)
@@ -128,7 +134,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Penjualan per Barang</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Penjualan per Barang</h1>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-64 w-full p-4">
@@ -140,7 +146,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Riwayat Request Order</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Riwayat Request Order</h1>
                 </div>
                 <div class="overflow-x-auto">
                     <table id="dashTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -180,7 +186,7 @@
                                                 'rejected' => 'bg-red-100 text-red-800',
                                             ];
                                             $statusNames = [
-                                                'open' => 'Baru',
+                                                'open' => 'Open',
                                                 'pending_approval' => 'Menunggu Persetujuan',
                                                 'approved_supervisor' => 'Disetujui Supervisor',
                                                 'approved_warehouse' => 'Disetujui Gudang',

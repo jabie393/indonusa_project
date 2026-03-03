@@ -173,7 +173,7 @@
                                             <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 @php
                                                     $firstItem = $requestOrder->items->first();
-                                                    $kategori = $firstItem->kategori_barang ?? $firstItem->kategori ?? ($firstItem->barang->kategori ?? '-');
+                                                    $kategori = $firstItem->kategori_barang ?? ($firstItem->kategori ?? ($firstItem->barang->kategori ?? '-'));
                                                 @endphp
                                                 {{ $kategori }}
                                             </p>
@@ -381,7 +381,7 @@
                                             <td class="px-6 py-5 text-center">
                                                 <div class="flex flex-col">
                                                     <span class="font-black text-gray-900 dark:text-white">{{ $item->quantity ?? $item->qty }}</span>
-                                                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->kategori_barang ?? $item->satuan ?? '-' }}</span>
+                                                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->kategori_barang ?? ($item->satuan ?? '-') }}</span>
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5 text-gray-600 dark:text-gray-400">
@@ -391,40 +391,40 @@
                                                 <span class="text-xs">Rp</span> {{ number_format($computedSubtotal, 0, ',', '.') }}
                                             </td>
                                             <td class="px-6 py-5 text-center">
-                                        @php
-    $rawImgs = $item->images ?? ($item->item_images ?? []);
-    if (is_string($rawImgs)) {
-        $itemImgs = json_decode($rawImgs, true) ?? [];
-    } else {
-        $itemImgs = is_array($rawImgs) ? $rawImgs : [];
-    }
-    $itemImgs = array_filter($itemImgs, fn($img) => !empty($img));
-@endphp
+                                                @php
+                                                    $rawImgs = $item->images ?? ($item->item_images ?? []);
+                                                    if (is_string($rawImgs)) {
+                                                        $itemImgs = json_decode($rawImgs, true) ?? [];
+                                                    } else {
+                                                        $itemImgs = is_array($rawImgs) ? $rawImgs : [];
+                                                    }
+                                                    $itemImgs = array_filter($itemImgs, fn($img) => !empty($img));
+                                                @endphp
                                                 @if (!empty($itemImgs) && count($itemImgs) > 0)
                                                     <div class="flex items-center justify-center -space-x-2 overflow-hidden">
                                                         @foreach (array_slice($itemImgs, 0, 3) as $image)
                                                             @php
-                if (is_null($image) || $image === '') {
-                    $imgUrl = null;
-                } elseif (str_starts_with($image, 'http')) {
-                    $imgUrl = $image;
-                } else {
-                    $imgUrl = asset('storage/' . ltrim($image, '/'));
-                }
-            @endphp
-            @if ($imgUrl)
-                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
-                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
-                </button>
-            @endif
-        @endforeach
-        @if (count($itemImgs) > 3)
-            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
-        @endif
-    </div>
-@else
-    <span class="text-gray-300 dark:text-gray-600">-</span>
-@endif
+                                                                if (is_null($image) || $image === '') {
+                                                                    $imgUrl = null;
+                                                                } elseif (str_starts_with($image, 'http')) {
+                                                                    $imgUrl = $image;
+                                                                } else {
+                                                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
+                                                                }
+                                                            @endphp
+                                                            @if ($imgUrl)
+                                                                <button type="button" class="custom-penawaran-thumb inline-block" data-full="{{ $imgUrl }}">
+                                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
+                                                                </button>
+                                                            @endif
+                                                        @endforeach
+                                                        @if (count($itemImgs) > 3)
+                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-300 dark:text-gray-600">-</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty

@@ -2,19 +2,22 @@
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-4">
-            <a href="{{ route('sales.custom-penawaran.create') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                + Buat Penawaran Baru
-            </a>
-            {{-- Bulk Actions --}}
-            <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.custom-penawaran.bulk-delete') }}" data-sent-url="{{ route('sales.custom-penawaran.bulk-send-to-warehouse') }}">
-                <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
-                    Delete Selected (<span id="selected-count">0</span>)
-                </button>
-                <button id="bulk-send" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    Send to Warehouse
-                </button>
-            </div>
+            <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
+                <a href="{{ route('sales.custom-penawaran.create') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                    + Buat Penawaran Baru
+                </a>
+                {{-- Bulk Actions --}}
+                <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.custom-penawaran.bulk-delete') }}" data-sent-url="{{ route('sales.custom-penawaran.bulk-send-to-warehouse') }}">
+                    <button id="bulk-delete" class="flex items-center justify-center rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
+                        Delete Selected (<span id="selected-count">0</span>)
+                    </button>
+                    <button id="bulk-send" class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                        Send to Warehouse
+                    </button>
+                </div>
+
+            </div>
         </div>
 
         <div class="p-4">
@@ -65,30 +68,49 @@
                             <td class="text-nowrap px-4 py-4">{{ $penawaran->to }}</td>
                             <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
                             <td class="text-nowrap px-4 py-4">{{ $penawaran->our_ref }}</td>
-                            <td class="px-4 py-4">
+                            <td class="px-4 py-4 text-center">
                                 @php
-                                    $discounts = $penawaran->items->pluck('diskon')->unique()->sort()->values();
+                                    $discountCounts = $penawaran->items
+                                        ->pluck('diskon')
+                                        ->groupBy(function ($d) {
+                                            return $d;
+                                        })
+                                        ->map(function ($g, $k) {
+                                            return ['percent' => $k, 'count' => $g->count()];
+                                        })
+                                        ->values();
                                 @endphp
-                                @if ($discounts->isNotEmpty())
-                                    @foreach ($discounts as $index => $d)
-                                        <span class="badge bg-green-50 text-green-700">{{ $d }}%</span>
-                                        @if ($index < $discounts->count() - 1)
-                                            ,
-                                        @endif
-                                    @endforeach
+                                @if ($discountCounts->isEmpty())
+                                    <span class="text-gray-300 dark:text-gray-600">-</span>
                                 @else
-                                    <span class="badge bg-gray-50 text-gray-700">0%</span>
+                                    <div class="flex flex-col items-center gap-1">
+                                        @php $displayed = false; @endphp
+                                        @foreach ($discountCounts as $dc)
+                                            @php $dk = (float) $dc['percent']; @endphp
+                                            @if ($dk > 0)
+                                                <div class="flex flex-col items-center">
+                                                    <span class="{{ $dk > 20 ? 'badge bg-red-50 text-red-700 inset-ring inset-ring-red-600' : 'badge bg-green-50 text-green-700 inset-ring inset-ring-green-600' }} inline-flex items-center px-2 py-0.5 text-xs font-bold">
+                                                        {{ $dk }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}
+                                                    </span>
+                                                </div>
+                                                @php $displayed = true; @endphp
+                                            @endif
+                                        @endforeach
+                                        @if (!$displayed)
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
+                                        @endif
+                                    </div>
                                 @endif
                             </td>
                             <td class="text-nowrap px-4 py-4 text-right font-semibold">
                                 Rp {{ number_format($penawaran->grand_total ?? 0, 0, ',', '.') }}
                             </td>
                             <td class="px-4 py-4 text-center">
-                                {{ \Carbon\Carbon::parse($penawaran->created_at)->format('d/m/Y') }}
+                                {{ \Carbon\Carbon::parse($penawaran->created_at)->format('d F Y') }}
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @if ($penawaran->expired_at)
-                                    {{ \Carbon\Carbon::parse($penawaran->expired_at)->format('d/m/Y') }}
+                                    {{ \Carbon\Carbon::parse($penawaran->expired_at)->format('d F Y') }}
                                     @if ($penawaran->isExpired())
                                         <br><small class="text-danger">Kadaluarsa</small>
                                     @else
@@ -105,28 +127,32 @@
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
-                                    $statusClass = [
-                                        'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                        'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
-                                        'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
-                                        'sent' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
-                                        'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                        'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
-                                        'approved_supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'rejected_supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                    ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
-                                    $statusLabel = [
-                                        'draft' => 'Draft',
-                                        'pending_approval' => 'Menunggu Approve Supervisor',
-                                        'open' => 'Open',
-                                        'sent' => 'Terkirim',
-                                        'approved' => 'Disetujui/Open',
-                                        'rejected' => 'Ditolak',
-                                        'expired' => 'Kadaluarsa',
-                                        'approved_supervisor' => 'Disetujui Supervisor',
-                                        'rejected_supervisor'  => 'Ditolak Supervisor',
-                                    ][$penawaran->status] ?? $penawaran->status;
+                                    $statusClass =
+                                        [
+                                            'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
+                                            'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
+                                            'sent_to_warehouse' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
+                                            'sent_to_penawaran' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
+                                            'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                            'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
+                                            'approved_supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'rejected_supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
+                                        ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
+                                    $statusLabel =
+                                        [
+                                            'draft' => 'Draft',
+                                            'pending_approval' => 'Menunggu Approve Supervisor',
+                                            'open' => 'Open',
+                                            'sent_to_warehouse' => 'Terkirim ke Gudang',
+                                            'sent_to_penawaran' => 'Terkirim ke Penawaran',
+                                            'approved' => 'Disetujui/Open',
+                                            'rejected' => 'Ditolak',
+                                            'expired' => 'Kadaluarsa',
+                                            'approved_supervisor' => 'Disetujui Supervisor',
+                                            'rejected_supervisor' => 'Ditolak Supervisor',
+                                        ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="{{ $statusClass }} badge">
@@ -163,19 +189,28 @@
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $penawaran->id }}" style="position-anchor:--anchor-{{ $penawaran->id }}">
                                             <li>
                                                 {{-- Edit --}}
-                                                <a href="{{ route('sales.custom-penawaran.edit', $penawaran->id) }}"
-                                                   class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-indigo-600 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3h3z" /></svg>
+                                                <a href="{{ route('sales.custom-penawaran.edit', $penawaran->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
+                                                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                        </path>
+                                                        <path d="m15 5 4 4"></path>
+                                                    </svg>
                                                     Edit
                                                 </a>
                                             </li>
                                             {{-- Tombol Hapus --}}
-                                            <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus penawaran ini?');">
+                                            <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <li>
-                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    <button type="button" onclick="confirmDelete(() => this.closest('form').submit())" class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2">
+                                                            <path d="M10 11v6"></path>
+                                                            <path d="M14 11v6"></path>
+                                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                            <path d="M3 6h18"></path>
+                                                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                        </svg>
                                                         Hapus
                                                     </button>
                                                 </li>
@@ -188,10 +223,10 @@
                                                     $isExpired = $penawaran->isExpired();
                                                 @endphp
                                                 @if ($penawaran->status === 'approved_supervisor' && !$isExpired)
-                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}"
-                                                       class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400"
-                                                       target="_blank">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400" target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                                        </svg>
                                                         Download PDF
                                                     </a>
                                                 @else
@@ -213,7 +248,9 @@
                                                 <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-yellow-600 hover:to-yellow-800 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" /></svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" />
+                                                        </svg>
                                                         Kirim ke Warehouse
                                                     </button>
                                                 </form>
@@ -224,14 +261,15 @@
                                                 <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                        </svg>
                                                         Sent to Penawaran
                                                     </button>
                                                 </form>
                                             @endif
 
-                                            {{-- Action Dropdown --}}
-
+                                        </ul>
 
 
 
@@ -248,12 +286,28 @@
             </table>
         </div>
 
-        <!-- Pagination -->
-        @if ($customPenawarans->hasPages())
-            <div class="mt-6">
-                {{ $customPenawarans->links('pagination::tailwind') }}
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->firstItem() ?? 0 }}-{{ $customPenawarans->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->total() ?? $customPenawarans->count() }}</span>
+                </span>
+                <form method="GET" action="{{ route('sales.custom-penawaran.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                        @foreach ([10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
-        @endif
+            <div>
+                {{ $customPenawarans->links() }}
+            </div>
+        </nav>
     </div>
     @vite(['resources/js/custom-penawaran.js'])
 </x-app-layout>

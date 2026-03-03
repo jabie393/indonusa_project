@@ -20,7 +20,7 @@ class CustomPenawaranController extends Controller
     /**
      * List semua custom penawarans milik sales
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
             if (\Illuminate\Support\Facades\Schema::hasTable('custom_penawarans') && 
@@ -36,10 +36,21 @@ class CustomPenawaranController extends Controller
             Log::warning('Custom Penawaran Expiry update failed: ' . $e->getMessage());
         }
 
-        $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
+        $query = CustomPenawaran::where('sales_id', Auth::id())
             ->with('items')
-            ->latest()
-            ->paginate(20);
+            ->latest();
+
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('penawaran_number', 'like', "%{$search}%")
+                  ->orWhere('to', 'like', "%{$search}%")
+                  ->orWhere('subject', 'like', "%{$search}%");
+            });
+        }
+
+        $perPage = $request->input('perPage', 10);
+        $customPenawarans = $query->paginate($perPage)->withQueryString();
 
         return view('admin.sales.custom-penawaran.index', compact('customPenawarans'));
     }

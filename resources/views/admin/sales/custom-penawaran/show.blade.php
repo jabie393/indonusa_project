@@ -144,9 +144,7 @@
                                 </h2>
                             </div>
                             <div class="p-6">
-                                <div class="rounded-xl border-l-4 border-blue-400 bg-gray-50 p-4 text-sm leading-relaxed text-gray-700 dark:bg-gray-900/50 dark:text-gray-300">
-                                    {!! nl2br(e($customPenawaran->intro_text)) !!}
-                                </div>
+                                {!! nl2br(e($customPenawaran->intro_text)) !!}
                             </div>
                         </div>
                     @endif
