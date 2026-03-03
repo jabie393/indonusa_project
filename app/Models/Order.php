@@ -21,6 +21,7 @@ class Order extends Model
         'customer_id',
         'tanggal_kebutuhan',
         'catatan_customer',
+        'delivery_options',
     ];
     protected static function boot()
     {
@@ -66,5 +67,10 @@ class Order extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function batches()
+    {
+        return $this->hasMany(DeliveryBatch::class, 'order_id');
     }
 }

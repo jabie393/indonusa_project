@@ -137,6 +137,8 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::post('/delivery-orders/{id}/partial-approve', [DeliveryOrdersController::class, 'partialApprove'])->name('delivery-orders.partial-approve');
     Route::get('/delivery-orders/{id}/items', [DeliveryOrdersController::class, 'getItems'])->name('delivery-orders.items');
     Route::get('/delivery-orders/{id}/pdf', [DeliveryOrdersController::class, 'pdf'])->name('delivery-orders.pdf');
+    Route::get('/delivery-orders/{id}/history', [DeliveryOrdersController::class, 'getHistory'])->name('delivery-orders.history');
+    Route::get('/delivery-orders/batch/{batchId}/pdf', [DeliveryOrdersController::class, 'printBatch'])->name('delivery-orders.batch-pdf');
     Route::get('/admin/dashboard/warehouse/data', [WarehouseDashboardController::class, 'chartData'])
         ->name('dashboard.chart.data');
 });

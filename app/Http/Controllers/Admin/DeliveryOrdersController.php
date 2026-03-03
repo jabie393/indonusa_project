@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\DeliveryBatch;
+use App\Models\DeliveryBatchItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -65,7 +67,24 @@ class DeliveryOrdersController extends Controller
         }
 
         $order->status = 'completed';
+        if ($order->delivery_options === null) {
+            $order->delivery_options = 'full';
+        }
         $order->save();
+
+        // Create a delivery batch for full delivery
+        $batch = DeliveryBatch::create([
+            'order_id' => $order->id,
+            'batch_number' => $order->batches()->count() + 1,
+        ]);
+
+        foreach ($order->items as $item) {
+            DeliveryBatchItem::create([
+                'delivery_batch_id' => $batch->id,
+                'order_item_id' => $item->id,
+                'quantity_sent' => $item->quantity,
+            ]);
+        }
     }
 
     // Approve order
@@ -115,15 +134,39 @@ class DeliveryOrdersController extends Controller
             }
         }
 
+        // Create a delivery batch for partial delivery if any quantity was sent
+        $sentItems = collect($itemsData)->filter(fn($qty) => (int)$qty > 0);
+        if ($sentItems->isNotEmpty()) {
+            $batch = DeliveryBatch::create([
+                'order_id' => $order->id,
+                'batch_number' => $order->batches()->count() + 1,
+            ]);
+
+            foreach ($sentItems as $itemId => $qty) {
+                DeliveryBatchItem::create([
+                    'delivery_batch_id' => $batch->id,
+                    'order_item_id' => $itemId,
+                    'quantity_sent' => (int)$qty,
+                ]);
+            }
+        }
+
         // Refresh order to get updated item statuses
         $order->load('items');
         
-        // Check if all items are delivered
-        $allDelivered = $order->items->every(function ($item) {
-            return $item->status_item === 'delivered';
-        });
+        $allDelivered = $order->items->every(fn($item) => $item->status_item === 'delivered');
 
-        $order->status = $allDelivered ? 'completed' : 'not_completed';
+        if ($allDelivered) {
+            $order->status = 'completed';
+            if ($order->delivery_options === null) {
+                $order->delivery_options = 'full';
+            }
+        } else {
+            $order->status = 'not_completed';
+            if ($order->delivery_options === null) {
+                $order->delivery_options = 'partial';
+            }
+        }
         $order->save();
 
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Partial delivery berhasil diproses.']);
@@ -151,5 +194,37 @@ class DeliveryOrdersController extends Controller
         });
 
         return response()->json($items);
+    }
+
+    public function getHistory($id)
+    {
+        $order = Order::with(['batches.items.orderItem.barang'])->findOrFail($id);
+        
+        $history = $order->batches->map(function ($batch) {
+            return [
+                'id' => $batch->id,
+                'batch_number' => $batch->batch_number,
+                'created_at' => $batch->created_at->format('Y-m-d H:i'),
+                'items' => $batch->items->map(function ($item) {
+                    return [
+                        'nama_barang' => $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-'),
+                        'quantity_sent' => $item->quantity_sent,
+                    ];
+                }),
+            ];
+        });
+
+        return response()->json($history);
+    }
+
+    public function printBatch($batchId)
+    {
+        $batch = DeliveryBatch::with(['order.customer', 'order.requestOrder', 'items.orderItem.barang'])->findOrFail($batchId);
+        $order = $batch->order;
+        
+        // We reuse the variable name 'orders' to maintain compatibility with the template if possible, 
+        // but we'll adapt the template or create a new one.
+        // Actually, let's pass the batch specifically.
+        return view('admin.pdf.delivery-batch-pdf', compact('batch', 'order'));
     }
 }

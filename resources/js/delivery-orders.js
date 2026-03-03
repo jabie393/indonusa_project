@@ -228,13 +228,22 @@ document.addEventListener("DOMContentLoaded", function () {
             const orderNumber = btn.getAttribute("data-order-number");
             const approveUrl = btn.getAttribute("data-approve-url");
 
+            const deliveryOptions = btn.getAttribute("data-delivery-options");
+
             currentOrderId = orderId;
             if (approveOrderNumberEl)
                 approveOrderNumberEl.textContent = orderNumber;
             if (partialOrderNumberEl)
                 partialOrderNumberEl.textContent = orderNumber;
-            if (fullDeliveryForm)
+            if (fullDeliveryForm) {
                 fullDeliveryForm.setAttribute("action", approveUrl);
+                // Hide Full Delivery option if order is already partial
+                if (deliveryOptions === "partial") {
+                    fullDeliveryForm.classList.add("hidden");
+                } else {
+                    fullDeliveryForm.classList.remove("hidden");
+                }
+            }
             if (partialDeliveryForm) {
                 // Construct partial approve URL from approveUrl or set it directly
                 const partialUrl = approveUrl.replace(
@@ -310,9 +319,98 @@ document.addEventListener("DOMContentLoaded", function () {
         approveModalCloseBtn.addEventListener("click", closeApproveModal);
     }
 
+    // --- Logic for History Modal ---
+    const historyButtons = document.querySelectorAll(".js-history-order");
+    const historyModal = document.getElementById("historyModal");
+    const historyOrderNumberEl = document.getElementById("historyOrderNumber");
+    const historyTableBody = document.getElementById("historyTableBody");
+
+    function openHistoryModal() {
+        if (!historyModal) return;
+        historyModal.classList.remove("hidden");
+        historyModal.classList.add("flex");
+        document.body.classList.add("overflow-hidden");
+    }
+
+    function closeHistoryModal() {
+        if (!historyModal) return;
+        historyModal.classList.add("hidden");
+        historyModal.classList.remove("flex");
+        document.body.classList.remove("overflow-hidden");
+    }
+
+    historyButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const orderId = btn.getAttribute("data-id");
+            const orderNumber = btn.getAttribute("data-order-number");
+            const historyUrl = btn.getAttribute("data-history-url");
+
+            if (historyOrderNumberEl)
+                historyOrderNumberEl.textContent = orderNumber;
+            if (historyTableBody)
+                historyTableBody.innerHTML =
+                    '<tr><td colspan="4" class="p-4 text-center">Loading...</td></tr>';
+
+            openHistoryModal();
+
+            fetch(historyUrl)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (historyTableBody) {
+                        historyTableBody.innerHTML = "";
+                        if (data.length === 0) {
+                            historyTableBody.innerHTML =
+                                '<tr><td colspan="4" class="p-4 text-center">Belum ada histori pengiriman.</td></tr>';
+                            return;
+                        }
+
+                        data.forEach((batch) => {
+                            const tr = document.createElement("tr");
+                            tr.className = "border-b dark:border-gray-600";
+
+                            const itemsList = batch.items
+                                .map(
+                                    (item) =>
+                                        `<li>${item.nama_barang} (${item.quantity_sent})</li>`,
+                                )
+                                .join("");
+
+                            tr.innerHTML = `
+                                <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">Batch #${batch.batch_number}</td>
+                                <td class="px-4 py-3">${batch.created_at}</td>
+                                <td class="px-4 py-3">
+                                    <ul class="list-disc pl-4 text-xs font-normal">
+                                        ${itemsList}
+                                    </ul>
+                                </td>
+                                <td class="px-4 py-3 text-right">
+                                    <a href="/delivery-orders/batch/${batch.id}/pdf" target="_blank" class="text-blue-600 hover:underline dark:text-blue-500 font-medium">Cetak PDF</a>
+                                </td>
+                            `;
+                            historyTableBody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch history", err);
+                    if (historyTableBody)
+                        historyTableBody.innerHTML =
+                            '<tr><td colspan="4" class="p-4 text-center text-red-500">Gagal mengambil data.</td></tr>';
+                });
+        });
+    });
+
+    // Close buttons for history modal
+    document
+        .querySelectorAll('[data-modal-hide="historyModal"]')
+        .forEach((btn) => {
+            btn.addEventListener("click", closeHistoryModal);
+        });
+
     // allow clicking overlay to close
     document.addEventListener("click", function (e) {
         if (modal && e.target === modal) closeModal();
         if (approveModal && e.target === approveModal) closeApproveModal();
+        if (historyModal && e.target === historyModal) closeHistoryModal();
     });
 });
