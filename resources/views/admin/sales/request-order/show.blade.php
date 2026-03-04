@@ -710,103 +710,108 @@
             <img id="image-modal-img" src="" alt="Gambar" class="max-h-[90%] max-w-[95%] rounded shadow-lg">
         </div>
 
-        <script>
-            (function() {
-                const modal = document.getElementById('image-modal');
-                const modalImg = document.getElementById('image-modal-img');
-                const closeBtn = document.getElementById('image-modal-close');
+    </div>
 
-                function openModal(src) {
-                    modalImg.src = src;
-                    modal.classList.remove('hidden');
-                }
 
-                function closeModal() {
-                    modalImg.src = '';
-                    modal.classList.add('hidden');
-                }
+    <script>
+        (function() {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('image-modal-img');
+            const closeBtn = document.getElementById('image-modal-close');
 
-                document.addEventListener('click', function(e) {
-                    const btn = e.target.closest('.custom-penawaran-thumb');
-                    if (btn) {
-                        const src = btn.getAttribute('data-full');
-                        if (src) {
-                            e.preventDefault();
-                            openModal(src);
-                        }
-                    }
-                });
-
-                if (closeBtn) closeBtn.addEventListener('click', closeModal);
-                if (modal) {
-                    modal.addEventListener('click', function(e) {
-                        if (e.target === modal) closeModal();
-                    });
-                }
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') closeModal();
-                });
-
-                // SweetAlert for Delete
-                const btnDelete = document.getElementById('btnDeleteRequestOrder');
-                if (btnDelete) {
-                    btnDelete.addEventListener('click', function() {
-                        Swal.fire({
-                            title: 'Hapus Request Order?',
-                            text: "Data ini akan dihapus permanen dari sistem.",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#e11d48', // rose-600
-                            cancelButtonColor: '#64748b', // slate-500
-                            confirmButtonText: 'Ya, Hapus!',
-                            cancelButtonText: 'Batal',
-                            customClass: {
-                                popup: 'rounded-2xl border-none shadow-2xl',
-                                confirmButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest',
-                                cancelButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest'
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                document.getElementById('deleteRequestOrderForm').submit();
-                            }
-                        });
-                    });
-                }
-            })();
-
-            function supervisorBack() {
-                try {
-                    var backBtn = document.getElementById('backBtn');
-                    var fallback = backBtn ? backBtn.dataset.fallback : '/sent-penawaran';
-
-                    if (document.referrer && document.referrer.indexOf('/sent-penawaran') !== -1) {
-                        history.back();
-                        return;
-                    }
-
-                    if (history.length > 1) {
-                        var navigated = false;
-                        var onPop = function() {
-                            navigated = true;
-                            window.removeEventListener('popstate', onPop);
-                        };
-                        window.addEventListener('popstate', onPop);
-                        history.back();
-                        setTimeout(function() {
-                            if (!navigated) {
-                                window.location.href = fallback;
-                            }
-                        }, 250);
-                        return;
-                    }
-
-                    window.location.href = fallback;
-                } catch (e) {
-                    window.location.href = '{{ route('admin.sent_penawaran') }}';
-                }
+            function openModal(src) {
+                modalImg.src = src;
+                modal.classList.remove('hidden');
             }
-        </script>
 
-        @include('admin.sent-penawaran.partials.modal_tolak')
+            function closeModal() {
+                modalImg.src = '';
+                modal.classList.add('hidden');
+            }
+
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.custom-penawaran-thumb');
+                if (btn) {
+                    const src = btn.getAttribute('data-full');
+                    if (src) {
+                        e.preventDefault();
+                        openModal(src);
+                    }
+                }
+            });
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) closeModal();
+                });
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // SweetAlert for Delete
+            const btnDelete = document.getElementById('btnDeleteRequestOrder');
+            if (btnDelete) {
+                btnDelete.addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'Hapus Request Order?',
+                        text: "Data ini akan dihapus permanen dari sistem.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e11d48', // rose-600
+                        cancelButtonColor: '#64748b', // slate-500
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal',
+                        customClass: {
+                            popup: 'rounded-2xl border-none shadow-2xl',
+                            confirmButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest',
+                            cancelButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('deleteRequestOrderForm').submit();
+                        }
+                    });
+                });
+            }
+        })();
+
+        function supervisorBack() {
+            try {
+                var backBtn = document.getElementById('backBtn');
+                var fallback = backBtn ? backBtn.dataset.fallback : '/sent-penawaran';
+
+                if (document.referrer && document.referrer.indexOf('/sent-penawaran') !== -1) {
+                    history.back();
+                    return;
+                }
+
+                if (history.length > 1) {
+                    var navigated = false;
+                    var onPop = function() {
+                        navigated = true;
+                        window.removeEventListener('popstate', onPop);
+                    };
+                    window.addEventListener('popstate', onPop);
+                    history.back();
+                    setTimeout(function() {
+                        if (!navigated) {
+                            window.location.href = fallback;
+                        }
+                    }, 250);
+                    return;
+                }
+
+                window.location.href = fallback;
+            } catch (e) {
+                window.location.href = '{{ route('admin.sent_penawaran') }}';
+            }
+        }
+    </script>
+
+    @include('admin.sent-penawaran.partials.modal_tolak')
+
+
 
 </x-app-layout>

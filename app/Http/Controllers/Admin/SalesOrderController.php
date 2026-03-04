@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Order;
 use App\Models\OrderItem;
-
 use App\Http\Controllers\Controller;
 use App\Models\SalesOrder;
 use App\Models\SalesOrderItem;
@@ -16,8 +15,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-
 use App\Models\Barang;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\InvoiceExport;
 
 class SalesOrderController extends Controller
 {
@@ -169,77 +169,28 @@ class SalesOrderController extends Controller
                 $grandTotal = $so->grand_total ?? ($subtotal + $tax);
             }
 
-            $dpp = $tax > 0 ? round($subtotal * 100 / 111, 0) : 0;
+            $dpp = $tax > 0 ? round(($subtotal * 100) / 111) : 0;
 
-            // Build SpreadsheetML XML
-            $xml = '<?xml version="1.0"?>
-    <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
-    xmlns:o="urn:schemas-microsoft-com:office:office"
-    xmlns:x="urn:schemas-microsoft-com:office:excel"
-    xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
-    xmlns:html="http://www.w3.org/TR/REC-html40">
-    <Styles>
-        <Style ss:ID="header"><Font ss:Bold="1" ss:Size="28" ss:Color="#003399"/><Alignment ss:Horizontal="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#003399"/></Borders></Style>
-        <Style ss:ID="navy"><Font ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#1A3A6B" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#1A3A6B"/></Borders></Style>
-        <Style ss:ID="normal"><Alignment ss:Horizontal="Left"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/></Borders></Style>
-        <Style ss:ID="right"><Alignment ss:Horizontal="Right"/><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#CCCCCC"/></Borders></Style>
-        <Style ss:ID="bold"><Font ss:Bold="1"/><Alignment ss:Horizontal="Right"/></Style>
-        <Style ss:ID="red"><Font ss:Bold="1" ss:Color="#e53e3e"/></Style>
-        <Style ss:ID="label"><Font ss:Bold="1"/></Style>
-    </Styles>
-    <Worksheet ss:Name="Invoice">
-    <Table>
-        <Row><Cell ss:MergeAcross="4" ss:StyleID="header"><Data ss:Type="String">INVOICE</Data></Cell></Row>
-        <Row>
-          <Cell ss:StyleID="label"><Data ss:Type="String">'.htmlspecialchars(strtoupper($customerName)).'</Data></Cell>
-          <Cell ss:Index="7"><Data ss:Type="String">No Invoice:</Data></Cell>
-          <Cell><Data ss:Type="String">'.htmlspecialchars($invNumber).'</Data></Cell>
-        </Row>
-        '.(!empty($invAddress) ? '<Row><Cell ss:MergeAcross="3"><Data ss:Type="String">'.htmlspecialchars($invAddress).'</Data></Cell></Row>' : '').'
-        <Row>
-          <Cell><Data ss:Type="String">NPWP</Data></Cell>
-          <Cell><Data ss:Type="String">'.htmlspecialchars($invNpwp).'</Data></Cell>
-          <Cell ss:Index="7"><Data ss:Type="String">PO No :</Data></Cell>
-          <Cell><Data ss:Type="String">'.htmlspecialchars($invPoNo).'</Data></Cell>
-        </Row>
-        <Row></Row>
-        <Row>
-            <Cell ss:StyleID="navy"><Data ss:Type="String">No</Data></Cell>
-            <Cell ss:StyleID="navy"><Data ss:Type="String">Description</Data></Cell>
-            <Cell ss:StyleID="navy"><Data ss:Type="String">Qty</Data></Cell>
-            <Cell ss:StyleID="navy"><Data ss:Type="String">Unit Price</Data></Cell>
-            <Cell ss:StyleID="navy"><Data ss:Type="String">Total</Data></Cell>
-        </Row>
-        ';
-            foreach ($items as $i => $item) {
-                $desc = $item['nama_barang'] ?? $item['description'] ?? '-';
-                $qty = $item['qty'] ?? $item['quantity'] ?? 0;
-                $harga = $item['harga'] ?? 0;
-                $sub = $item['subtotal'] ?? 0;
-                $xml .= '<Row>
-                    <Cell ss:StyleID="normal"><Data ss:Type="Number">'.($i+1).'</Data></Cell>
-                    <Cell ss:StyleID="normal"><Data ss:Type="String">'.$desc.'</Data></Cell>
-                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$qty.'</Data></Cell>
-                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$harga.'</Data></Cell>
-                    <Cell ss:StyleID="right"><Data ss:Type="Number">'.$sub.'</Data></Cell>
-                </Row>';
-            }
-            $xml .= '<Row></Row>
-            <Row><Cell ss:MergeAcross="3" ss:StyleID="bold"><Data ss:Type="String">Subtotal</Data></Cell><Cell ss:StyleID="bold"><Data ss:Type="Number">'.$subtotal.'</Data></Cell></Row>
-            <Row><Cell ss:MergeAcross="3" ss:StyleID="normal"><Data ss:Type="String">DPP</Data></Cell><Cell ss:StyleID="normal"><Data ss:Type="Number">'.$dpp.'</Data></Cell></Row>
-            <Row><Cell ss:MergeAcross="3" ss:StyleID="normal"><Data ss:Type="String">PPN</Data></Cell><Cell ss:StyleID="normal"><Data ss:Type="Number">'.$tax.'</Data></Cell></Row>
-            <Row><Cell ss:MergeAcross="3" ss:StyleID="bold"><Data ss:Type="String">Total</Data></Cell><Cell ss:StyleID="bold"><Data ss:Type="Number">'.$grandTotal.'</Data></Cell></Row>
-            <Row></Row>
-            <Row><Cell ss:MergeAcross="2" ss:StyleID="red"><Data ss:Type="String">PAYMENT INFORMATION</Data></Cell><Cell ss:MergeAcross="1" ss:StyleID="normal"><Data ss:Type="String">PT. Indonusa Jaya Bersama</Data></Cell></Row>
-            <Row><Cell ss:MergeAcross="2" ss:StyleID="normal"><Data ss:Type="String">'.str_replace("\n", " ", $invPaymentNote).'</Data></Cell><Cell ss:MergeAcross="1" ss:StyleID="normal"><Data ss:Type="String">(Nama Penandatangan)</Data></Cell></Row>
-        </Table>
-    </Worksheet>
-    </Workbook>';
+            $data = [
+                'type'             => $type,
+                'invNumber'        => $invNumber,
+                'invDate'          => $invDate,
+                'invNpwp'          => $invNpwp,
+                'invPoNo'          => $invPoNo,
+                'invPaymentNote'   => $invPaymentNote,
+                'invAddress'       => $invAddress,
+                'customerName'     => $customerName,
+                'customerAddress'  => $customerAddress,
+                'items'            => $items,
+                'subtotal'         => $subtotal,
+                'tax'              => $tax,
+                'grandTotal'       => $grandTotal,
+                'dpp'              => $dpp,
+            ];
 
-                $filename = 'Invoice_' . str_replace(['/', ' '], ['_', '_'], $invNumber) . '.xls';
-            return response($xml)
-                ->header('Content-Type', 'application/vnd.ms-excel')
-                ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
+            $filename = 'Invoice_' . str_replace(['/', ' '], ['_', '_'], $invNumber) . '.xlsx';
+            
+            return Excel::download(new InvoiceExport($data), $filename);
     }
 
     /**
