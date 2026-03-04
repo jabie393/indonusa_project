@@ -114,11 +114,6 @@ class DeliveryOrdersController extends Controller
     // Approve order
     public function approve(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-        if ($request->has('do_number')) {
-            $order->do_number = $request->input('do_number');
-            $order->save();
-        }
         $this->processApproval($id);
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
     }
@@ -173,11 +168,6 @@ class DeliveryOrdersController extends Controller
     public function partialApprove(Request $request, $id)
     {
         $order = Order::with('items')->findOrFail($id);
-        
-        if ($request->has('do_number')) {
-            $order->do_number = $request->input('do_number');
-            $order->save();
-        }
         
         $itemsData = $request->input('items', []);
 

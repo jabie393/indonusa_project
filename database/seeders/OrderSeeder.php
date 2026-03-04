@@ -49,17 +49,21 @@ class OrderSeeder extends Seeder
         // 4. Buat Order (Delivery Order) yang terhubung ke RequestOrder dan Customer
         $order1 = Order::create([
             'order_number' => 'DO-' . date('Ymd') . '-0001',
+            'do_number' => 'DO/2026/001',
             'sales_id' => $sales->id,
             'customer_id' => $customer->id,
             'request_order_id' => $requestOrder->id,
             'supervisor_id' => $supervisor->id,
-            'status' => 'sent_to_warehouse'
+            'status' => 'completed',
+            'delivery_options' => 'full'
         ]);
 
         OrderItem::create([
             'order_id' => $order1->id,
             'barang_id' => 1,
-            'quantity' => 10
+            'quantity' => 10,
+            'delivered_quantity' => 10,
+            'status_item' => 'delivered'
         ]);
 
         // 5. Order Kedua dengan data berbeda
@@ -86,16 +90,20 @@ class OrderSeeder extends Seeder
 
         $order2 = Order::create([
             'order_number' => 'DO-' . date('Ymd') . '-0002',
+            'do_number' => 'DO/2026/002',
             'sales_id' => 5,
             'customer_id' => $customer2->id,
             'request_order_id' => $requestOrder2->id,
-            'status' => 'approved_warehouse'
+            'status' => 'not_completed',
+            'delivery_options' => 'partial'
         ]);
 
         OrderItem::create([
             'order_id' => $order2->id,
             'barang_id' => 2,
-            'quantity' => 20
+            'quantity' => 20,
+            'delivered_quantity' => 5,
+            'status_item' => 'partially_delivered'
         ]);
     }
 }
