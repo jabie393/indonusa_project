@@ -246,11 +246,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    const approveDoNumberInput = document.getElementById("approve-do-number");
+
     approveButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
             const orderId = btn.getAttribute("data-id");
             const orderNumber = btn.getAttribute("data-order-number");
             const approveUrl = btn.getAttribute("data-approve-url");
+            const currentDoNumber = btn.getAttribute("data-do-number");
 
             const deliveryOptions = btn.getAttribute("data-delivery-options");
 
@@ -259,6 +262,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 approveOrderNumberEl.textContent = orderNumber;
             if (partialOrderNumberEl)
                 partialOrderNumberEl.textContent = orderNumber;
+
+            if (approveDoNumberInput) {
+                approveDoNumberInput.value = currentDoNumber || "";
+            }
+
             if (fullDeliveryForm) {
                 fullDeliveryForm.setAttribute("action", approveUrl);
                 // Hide Full Delivery option if order is already partial
@@ -291,6 +299,40 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     });
+
+    if (fullDeliveryForm) {
+        fullDeliveryForm.addEventListener("submit", function () {
+            if (approveDoNumberInput && approveDoNumberInput.value) {
+                let hiddenInput = fullDeliveryForm.querySelector(
+                    'input[name="do_number"]',
+                );
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement("input");
+                    hiddenInput.type = "hidden";
+                    hiddenInput.name = "do_number";
+                    fullDeliveryForm.appendChild(hiddenInput);
+                }
+                hiddenInput.value = approveDoNumberInput.value;
+            }
+        });
+    }
+
+    if (partialDeliveryForm) {
+        partialDeliveryForm.addEventListener("submit", function () {
+            if (approveDoNumberInput && approveDoNumberInput.value) {
+                let hiddenInput = partialDeliveryForm.querySelector(
+                    'input[name="do_number"]',
+                );
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement("input");
+                    hiddenInput.type = "hidden";
+                    hiddenInput.name = "do_number";
+                    partialDeliveryForm.appendChild(hiddenInput);
+                }
+                hiddenInput.value = approveDoNumberInput.value;
+            }
+        });
+    }
 
     if (btnPartialDelivery) {
         btnPartialDelivery.addEventListener("click", () => {

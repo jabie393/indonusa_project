@@ -110,7 +110,8 @@
                         </tr>
                         <tr class="col-span-2 row-span-3 flex flex-col">
                             <td class="px-2">Date : <strong>{{ $batch->created_at->format('d F Y') }}</strong></td>
-                            <td class="px-2">DO No : <strong>{{ $order->order_number }}</strong></td>
+                            <td class="px-2">DO No : <strong>{{ $order->do_number ?? $order->order_number }}</strong>
+                            </td>
                             <td class="px-2">PO No : <strong>{{ $order->requestOrder?->no_po ?? '-' }}</strong></td>
                             <td class="px-2">Batch : <strong>#{{ $batch->batch_number }}</strong></td>
                         </tr>

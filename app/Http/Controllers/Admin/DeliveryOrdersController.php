@@ -29,8 +29,9 @@ class DeliveryOrdersController extends Controller
                     $q->orWhere('id', $query);
                 }
 
-                // Search by order number (allow partial matches)
-                $q->orWhere('order_number', 'like', "%{$query}%");
+                // Search by order number or DO number (allow partial matches)
+                $q->orWhere('order_number', 'like', "%{$query}%")
+                  ->orWhere('do_number', 'like', "%{$query}%");
 
                 // Search supervisor name (common column 'name'). If a 'username' column exists, include it.
                 $q->orWhereHas('supervisor', function ($sq) use ($query) {
@@ -84,7 +85,7 @@ class DeliveryOrdersController extends Controller
                     'old_status'  => $barang->status_barang,
                     'new_status'  => $barang->status_barang, // status remains 'masuk' or same
                     'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
-                    'note'        => 'Stock berkurang (' . $item->quantity . ') karena pengiriman penuh DO: ' . $order->order_number,
+                    'note'        => 'Stock berkurang (' . $item->quantity . ') karena pengiriman penuh DO: ' . ($order->do_number ?? $order->order_number),
                 ]);
             }
         }
@@ -111,8 +112,13 @@ class DeliveryOrdersController extends Controller
     }
 
     // Approve order
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
+        $order = Order::findOrFail($id);
+        if ($request->has('do_number')) {
+            $order->do_number = $request->input('do_number');
+            $order->save();
+        }
         $this->processApproval($id);
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
     }
@@ -167,6 +173,12 @@ class DeliveryOrdersController extends Controller
     public function partialApprove(Request $request, $id)
     {
         $order = Order::with('items')->findOrFail($id);
+        
+        if ($request->has('do_number')) {
+            $order->do_number = $request->input('do_number');
+            $order->save();
+        }
+        
         $itemsData = $request->input('items', []);
 
         foreach ($order->items as $item) {
@@ -205,7 +217,7 @@ class DeliveryOrdersController extends Controller
                             'old_status'  => $barang->status_barang,
                             'new_status'  => $barang->status_barang,
                             'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
-                            'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . $order->order_number,
+                            'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . ($order->do_number ?? $order->order_number),
                         ]);
                     }
                 }

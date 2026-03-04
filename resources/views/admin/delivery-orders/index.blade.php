@@ -43,7 +43,7 @@
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                 {{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->order_number }}</td>
+                                {{ $order->do_number ?? $order->order_number }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                 {{ $order->requestOrder?->sales_order_number ?? $order->no_so }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
