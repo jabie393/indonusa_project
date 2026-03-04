@@ -11,7 +11,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h5 id="modalTolakTitle" class="text-lg font-bold tracking-tight text-white">
-                            Penolakan Penawaran
+                            Penolakan Penawaran Kustom
                         </h5>
                         <p class="mt-1 text-xs font-medium text-rose-100/80">Nomor: <span id="modalTolakNomor"></span></p>
                     </div>

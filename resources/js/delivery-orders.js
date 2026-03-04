@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         value="${Math.min(qtySisa, item.stok_gudang)}"
                         max="${qtySisa}"
                         min="0"
-                        class="qty-input block w-full rounded-md border-gray-300 py-1 text-center text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        class="qty-input bg-white text-black block w-full rounded-md border-gray-300 py-1 text-center text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                     ${
                         isOutOfStock && item.stok_gudang < qtySisa
@@ -351,16 +351,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function openHistoryModal() {
         if (!historyModal) return;
-        historyModal.classList.remove("hidden");
-        historyModal.classList.add("flex");
-        document.body.classList.add("overflow-hidden");
+        if (typeof historyModal.showModal === "function") {
+            historyModal.showModal();
+        } else {
+            historyModal.style.display = "flex";
+        }
     }
 
     function closeHistoryModal() {
         if (!historyModal) return;
-        historyModal.classList.add("hidden");
-        historyModal.classList.remove("flex");
-        document.body.classList.remove("overflow-hidden");
+        if (typeof historyModal.close === "function") {
+            historyModal.close();
+        } else {
+            historyModal.style.display = "none";
+        }
     }
 
     historyButtons.forEach((btn) => {
@@ -408,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </ul>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="/delivery-orders/batch/${batch.id}/pdf" target="_blank" class="text-blue-600 hover:underline dark:text-blue-500 font-medium">Cetak PDF</a>
+                                    <a href="/delivery-orders/batch/${batch.id}/pdf" target="_blank" class="flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">Cetak PDF</a>
                                 </td>
                             `;
                             historyTableBody.appendChild(tr);
@@ -439,56 +443,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // --- Logic for Reject with Reason ---
-    const rejectButtons = document.querySelectorAll(".reject-btn");
-    rejectButtons.forEach((btn) => {
-        btn.addEventListener("click", function (e) {
-            e.preventDefault();
-            const form = this.closest("form");
-            const orderNumber = this.getAttribute("data-order-number") || "#-";
-            const items = JSON.parse(this.getAttribute("data-items") || "[]");
-            const hasDeliveries = items.some(
-                (item) => item.delivered_quantity > 0,
-            );
 
-            let title = "Reject Order?";
-            let text = `Apakah Anda yakin ingin menolak order ${orderNumber}?`;
-            let confirmText = "Ya, Reject!";
-
-            if (hasDeliveries) {
-                title = "Batalkan Order (Parsial)?";
-                text = `Order ${orderNumber} memiliki pengiriman yang sudah berjalan. Order akan ditandai sebagai Selesai untuk membatalkan sisanya.`;
-                confirmText = "Ya, Cancel!";
-            }
-
-            Swal.fire({
-                title: title,
-                text: text,
-                icon: "warning",
-                input: "textarea",
-                inputPlaceholder: "Tulis alasan di sini...",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: confirmText,
-                cancelButtonText: "Batal",
-                inputValidator: (value) => {
-                    if (!value) {
-                        return "Alasan wajib diisi!";
-                    }
-                },
-                customClass: {
-                    popup: "rounded-2xl",
-                },
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const reasonInput = document.createElement("input");
-                    reasonInput.type = "hidden";
-                    reasonInput.name = "reason";
-                    reasonInput.value = result.value;
-                    form.appendChild(reasonInput);
-                    form.submit();
-                }
-            });
-        });
-    });
 });

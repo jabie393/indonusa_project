@@ -37,7 +37,7 @@
     <div class="duration-750 starting:opacity-0 flex min-h-[768px] w-full items-center justify-center gap-10 bg-white opacity-100 transition-opacity lg:grow" id="about">
         <div class="max-w-(--breakpoint-xl) mx-auto flex flex-col items-center gap-4 px-4 md:flex-row md:gap-12">
             <div>
-                <img src="{{ asset('images/components.png') }}" alt="">
+                <img class="w-100" src="{{ asset('images/Logo_transparent.png') }}" alt="">
             </div>
             <div>
                 <h1 class="mb-4 text-4xl font-bold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">
