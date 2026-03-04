@@ -93,6 +93,7 @@
                                             class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             data-order-id="{{ $order->id }}"
                                             data-order-number="{{ $order->order_number }}"
+                                            data-reason="{{ $order->reason }}"
                                             data-items='@json($order->items)'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -126,23 +127,36 @@
                                             <form action="{{ route('delivery-orders.reject', $order->id) }}"
                                                 method="POST" style="display:inline;">
                                                 @csrf
+                                                @php
+                                                    $hasDeliveries = $order->items->sum('delivered_quantity') > 0;
+                                                    $btnLabel = $hasDeliveries ? 'Cancel' : 'Reject';
+                                                @endphp
                                                 <button type="submit"
                                                     class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                     data-id="{{ $order->id }}"
                                                     data-order-number="{{ $order->order_number }}"
                                                     data-items='@json($order->items)'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                        stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
+                                                    @if ($hasDeliveries)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M18.36 6.64a9 9 0 11-12.73 12.73 9 9 0 0112.73-12.73zM6.34 17.66l11.32-11.32" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    @endif
                                                     <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Reject</span>
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">{{ $btnLabel }}</span>
                                                 </button>
                                             </form>
                                         @endif
-                                        @if (in_array($order->status, ['completed', 'not_completed']))
+                                        @if ($order->status === 'completed')
                                             <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
                                                 class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                 data-id="{{ $order->id }}"
@@ -163,25 +177,25 @@
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">DO</span>
                                             </a>
-                                            @if ($order->delivery_options === 'partial')
-                                                <button type="button"
-                                                    class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                                                    data-id="{{ $order->id }}"
-                                                    data-order-number="{{ $order->order_number }}"
-                                                    data-history-url="{{ route('delivery-orders.history', $order->id) }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" class="lucide lucide-history h-4 w-4">
-                                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
-                                                        </path>
-                                                        <path d="M3 3v5h5"></path>
-                                                        <path d="M12 7v5l3 3"></path>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDO</span>
-                                                </button>
-                                            @endif
+                                        @endif
+                                        @if (in_array($order->status, ['completed', 'not_completed']) && $order->delivery_options === 'partial')
+                                            <button type="button"
+                                                class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                                                data-id="{{ $order->id }}"
+                                                data-order-number="{{ $order->order_number }}"
+                                                data-history-url="{{ route('delivery-orders.history', $order->id) }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-history h-4 w-4">
+                                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+                                                    </path>
+                                                    <path d="M3 3v5h5"></path>
+                                                    <path d="M12 7v5l3 3"></path>
+                                                </svg>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDO</span>
+                                            </button>
                                         @endif
                                     </div>
                                 </div>

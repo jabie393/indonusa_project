@@ -64,7 +64,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 "-";
             const qty = item.quantity ?? "-";
             const delivered = item.delivered_quantity ?? "-";
-            const status = item.status_item ?? item.status ?? "-";
+            let status = item.status_item ?? item.status ?? "-";
+            if (status === "partially_delivered" || status === "partial") {
+                status = "Partially Delivered";
+            } else if (status === "cancel") {
+                status = "Cancelled";
+            } else if (status === "delivered") {
+                status = "Delivered";
+            } else if (status === "pending") {
+                status = "Pending";
+            }
 
             const cells = [kodeBarang, namaBarang, qty, delivered, status];
 
@@ -108,6 +117,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 btn.dataset.orderNumber ||
                 "#-";
             if (orderNumberEl) orderNumberEl.textContent = orderNumber;
+
+            const reason = btn.getAttribute("data-reason");
+            const reasonContainer = document.getElementById(
+                "delivery-order-reason-container",
+            );
+            const reasonText = document.getElementById(
+                "delivery-order-reason-text",
+            );
+
+            if (reason && reason !== "null" && reason.trim() !== "") {
+                if (reasonContainer) reasonContainer.classList.remove("hidden");
+                if (reasonText) reasonText.textContent = reason;
+            } else {
+                if (reasonContainer) reasonContainer.classList.add("hidden");
+            }
 
             renderRows(items);
             openModal();
@@ -412,5 +436,59 @@ document.addEventListener("DOMContentLoaded", function () {
         if (modal && e.target === modal) closeModal();
         if (approveModal && e.target === approveModal) closeApproveModal();
         if (historyModal && e.target === historyModal) closeHistoryModal();
+    });
+
+    // --- Logic for Reject with Reason ---
+    const rejectButtons = document.querySelectorAll(".reject-btn");
+    rejectButtons.forEach((btn) => {
+        btn.addEventListener("click", function (e) {
+            e.preventDefault();
+            const form = this.closest("form");
+            const orderNumber = this.getAttribute("data-order-number") || "#-";
+            const items = JSON.parse(this.getAttribute("data-items") || "[]");
+            const hasDeliveries = items.some(
+                (item) => item.delivered_quantity > 0,
+            );
+
+            let title = "Reject Order?";
+            let text = `Apakah Anda yakin ingin menolak order ${orderNumber}?`;
+            let confirmText = "Ya, Reject!";
+
+            if (hasDeliveries) {
+                title = "Batalkan Order (Parsial)?";
+                text = `Order ${orderNumber} memiliki pengiriman yang sudah berjalan. Order akan ditandai sebagai Selesai untuk membatalkan sisanya.`;
+                confirmText = "Ya, Cancel!";
+            }
+
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: "warning",
+                input: "textarea",
+                inputPlaceholder: "Tulis alasan di sini...",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: confirmText,
+                cancelButtonText: "Batal",
+                inputValidator: (value) => {
+                    if (!value) {
+                        return "Alasan wajib diisi!";
+                    }
+                },
+                customClass: {
+                    popup: "rounded-2xl",
+                },
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const reasonInput = document.createElement("input");
+                    reasonInput.type = "hidden";
+                    reasonInput.name = "reason";
+                    reasonInput.value = result.value;
+                    form.appendChild(reasonInput);
+                    form.submit();
+                }
+            });
+        });
     });
 });
