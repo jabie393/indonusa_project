@@ -22,6 +22,7 @@ class Order extends Model
         'tanggal_kebutuhan',
         'catatan_customer',
         'delivery_options',
+        'do_number',
     ];
     protected static function boot()
     {

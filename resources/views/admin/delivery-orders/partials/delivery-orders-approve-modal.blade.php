@@ -21,10 +21,18 @@
         </div>
 
         <div id="selection-view" class="p-6">
-            <p class="mb-6 text-center text-gray-600 dark:text-gray-400">
+            <p class="mb-4 text-center text-gray-600 dark:text-gray-400">
                 Silakan pilih metode pengiriman untuk order <span id="approve-order-number"
                     class="font-bold text-gray-900 dark:text-white"></span>
             </p>
+
+            <div class="mb-6">
+                <label for="approve-do-number" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
+                    DO (Opsional)</label>
+                <input type="text" id="approve-do-number" name="do_number"
+                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    placeholder="Contoh: DO/2026/001">
+            </div>
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {{-- Full Delivery --}}
