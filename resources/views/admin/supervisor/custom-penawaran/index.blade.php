@@ -80,10 +80,10 @@
                                         </a>
 
                                         <!-- Approve -->
-                                        <form method="POST" action="{{ route('admin.custom-penawaran.approval', $penawaran->id) }}" class="m-0 inline p-0">
+                                        <form method="POST" action="{{ route('admin.custom-penawaran.approval', $penawaran->id) }}" class="approve-form m-0 inline p-0" data-confirm-text="Apakah Anda yakin ingin menyetujui penawaran ini?">
                                             @csrf
                                             <input type="hidden" name="action" value="approve">
-                                            <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" onclick="return confirm('Apakah Anda yakin ingin menyetujui penawaran ini?')" title="Setujui">
+                                            <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check h-4 w-4">
                                                     <path d="M20 6 9 17l-5-5"></path>
                                                 </svg>
@@ -92,7 +92,7 @@
                                         </form>
 
                                         <!-- Reject -->
-                                        <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="rejectPenawaran({{ $penawaran->id }})" title="Tolak">
+                                        <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="openTolakModal('custom', {{ $penawaran->id }}, '{{ $penawaran->penawaran_number }}')" title="Tolak">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="m15 9-6 6"></path>
@@ -104,48 +104,38 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
+                        @empty
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        <div class="border-t border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
-            {{ $customPenawarans->links() }}
-        </div>
-
-        <!-- Single Item Reject Modal (For Action Column) -->
-        <div id="rejectModal" class="fixed inset-0 z-50 hidden h-full w-full overflow-y-auto bg-gray-600 bg-opacity-50">
-            <div class="relative top-20 mx-auto w-96 rounded-md border bg-white p-5 shadow-lg dark:bg-gray-800">
-                <div class="mt-3 text-center">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Tolak Penawaran</h3>
-                    <form id="rejectForm" method="POST" class="mt-4">
-                        @csrf
-                        <input type="hidden" name="action" value="reject">
-                        <textarea name="reason" rows="4" class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="Alasan penolakan..." required></textarea>
-                        <div class="mt-4 flex justify-end">
-                            <button type="button" onclick="closeRejectModal()" class="mr-2 rounded-md bg-gray-300 px-4 py-2 text-gray-800 hover:bg-gray-400">Batal</button>
-                            <button type="submit" class="rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700">Tolak</button>
-                        </div>
-                    </form>
-                </div>
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->firstItem() ?? 0 }}-{{ $customPenawarans->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->total() ?? $customPenawarans->count() }}</span>
+                </span>
+                <form method="GET" action="{{ route('supervisor.custom-penawaran.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                        @foreach ([10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
-        </div>
+            <div>
+                {{ $customPenawarans->links() }}
+            </div>
+        </nav>
 
         <script>
             // Single Item Script
             let currentPenawaranId = null;
-
-            function rejectPenawaran(id) {
-                currentPenawaranId = id;
-                document.getElementById('rejectModal').classList.remove('hidden');
-                document.getElementById('rejectForm').action = `{{ url('/supervisor/custom-penawaran') }}/${id}/approval`;
-            }
-
-            function closeRejectModal() {
-                document.getElementById('rejectModal').classList.add('hidden');
-                currentPenawaranId = null;
-            }
 
             // Bulk Action Script (Using DataTables API)
             $(document).ready(function() {
@@ -187,31 +177,22 @@
                         return;
                     }
 
-                    Swal.fire({
-                        title: 'Bulk Approve',
-                        text: `Are you sure you want to approve ${selectedIds.length} items?`,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#15803d',
-                        confirmButtonText: 'Yes, Approve All'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const url = $('#bulk-actions').data('approve-url');
-                            $.post(url, {
-                                _token: $('meta[name="csrf-token"]').attr('content'),
-                                ids: selectedIds,
-                                action: 'approve'
-                            }, function(res) {
-                                if (res.success) {
-                                    Swal.fire('Approved!', res.message, 'success').then(() => location.reload());
-                                } else {
-                                    Swal.fire('Error', res.message || 'Something went wrong.', 'error');
-                                }
-                            }).fail(function() {
-                                Swal.fire('Error', 'Server error.', 'error');
-                            });
-                        }
-                    });
+                    window.confirmApprove(() => {
+                        const url = $('#bulk-actions').data('approve-url');
+                        $.post(url, {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            ids: selectedIds,
+                            action: 'approve'
+                        }, function(res) {
+                            if (res.success) {
+                                Swal.fire('Approved!', res.message, 'success').then(() => location.reload());
+                            } else {
+                                Swal.fire('Error', res.message || 'Something went wrong.', 'error');
+                            }
+                        }).fail(function() {
+                            Swal.fire('Error', 'Server error.', 'error');
+                        });
+                    }, `Are you sure you want to approve ${selectedIds.length} items?`, 'Yes, Approve All');
                 });
 
                 // Bulk Reject
@@ -260,4 +241,6 @@
             });
         </script>
     </div>
+
+    @include('admin.supervisor.custom-penawaran.partials.modal_tolak')
 </x-app-layout>

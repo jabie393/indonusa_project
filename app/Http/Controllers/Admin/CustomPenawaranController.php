@@ -643,7 +643,7 @@ class CustomPenawaranController extends Controller
                 }
                 
                 if ($action === 'approve') {
-                    $penawaran->status = 'open';
+                    $penawaran->status = 'approved_supervisor';
                     $penawaran->approved_by = Auth::id();
                     $penawaran->approved_at = now();
                     $penawaran->reason = null;
@@ -652,7 +652,7 @@ class CustomPenawaranController extends Controller
                      // For now let's set a generic reason if not provided, or handle it differently.
                      // The user requested bulk action.
                      $reason = $request->input('reason', 'Bulk rejected by supervisor');
-                     $penawaran->status = 'rejected';
+                     $penawaran->status = 'rejected_supervisor';
                      $penawaran->reason = $reason;
                 }
                 $penawaran->save();

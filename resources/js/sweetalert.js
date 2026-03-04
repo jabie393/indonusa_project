@@ -43,6 +43,37 @@ window.confirmCancel = function (callback) {
     });
 };
 
+// Approve alert
+window.confirmApprove = function (callback, text = "Apakah Anda yakin ingin menyetujui data ini?", confirmButtonText = "Ya, Setujui") {
+    Swal.fire({
+        title: "Konfirmasi",
+        text: text,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#15803d",
+        cancelButtonColor: "#d33",
+        confirmButtonText: confirmButtonText,
+        cancelButtonText: "Batal",
+        customClass: {
+            popup: "rounded-2xl!",
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback();
+        }
+    });
+};
+
+// Global listener for approve-form
+$(document).on("submit", ".approve-form", function (e) {
+    e.preventDefault();
+    const form = this;
+    const text = $(this).data("confirm-text") || "Apakah Anda yakin ingin menyetujui data ini?";
+    window.confirmApprove(() => {
+        form.submit();
+    }, text);
+});
+
 // Success alert
 document.addEventListener("DOMContentLoaded", function () {
     if (window.sweetTitle || window.sweetText) {

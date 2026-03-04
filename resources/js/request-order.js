@@ -138,4 +138,23 @@ $(document).ready(function() {
             alert('Gagal menghapus gambar');
         });
     }
+
+    // Note Modal
+    $('.note-btn').on('click', function() {
+        const catatan = $(this).data('catatan');
+        $('#catatanContent').text(catatan || 'Tidak ada catatan.');
+        const modal = document.getElementById('noteModal');
+        if (modal) {
+            modal.showModal();
+        }
+    });
+
+    // Handler untuk tombol tutup modal Note
+    document.getElementById("closeNoteModal").onclick = function (e) {
+        e.preventDefault();
+        const noteModal = document.getElementById("noteModal");
+        if (noteModal && typeof noteModal.close === "function") {
+            noteModal.close();
+        }
+    };
 });

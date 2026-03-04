@@ -47,18 +47,40 @@ class AdminPTController extends Controller
         return redirect()->route('orders.history')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
     }
 
-    public function sentPenawaran()
+    public function sentPenawaran(Request $request)
     {
-        // List custom penawaran (status = 'sent') and RequestOrders that require supervisor approval
-        $penawarans = CustomPenawaran::where('status', 'sent')
-            ->with(['items', 'sales'])
-            ->get();
+        $search = $request->get('search');
 
-        $requestOrders = \App\Models\RequestOrder::whereHas('order', function($query) {
+        // Query for custom penawaran (status = 'sent')
+        $penawaransQuery = CustomPenawaran::where('status', 'sent')
+            ->with(['items', 'sales']);
+
+        if ($search) {
+            $penawaransQuery->where(function($q) use ($search) {
+                $q->where('penawaran_number', 'like', "%{$search}%")
+                  ->orWhere('to', 'like', "%{$search}%")
+                  ->orWhereHas('sales', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        $penawarans = $penawaransQuery->get();
+
+        // Query for RequestOrders that require supervisor approval
+        $requestOrdersQuery = \App\Models\RequestOrder::whereHas('order', function($query) {
             $query->where('status', 'sent_to_supervisor');
-        })
-            ->with(['items', 'sales', 'order'])
-            ->get();
+        })->with(['items', 'sales', 'order']);
+
+        if ($search) {
+            $requestOrdersQuery->where(function($q) use ($search) {
+                $q->where('request_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhereHas('sales', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+        $requestOrders = $requestOrdersQuery->get();
 
         // Tag each item with a type so view can differentiate
         $penawarans->each(function($p) { $p->offer_type = 'custom'; });

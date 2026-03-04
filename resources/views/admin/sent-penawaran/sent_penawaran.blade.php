@@ -1,21 +1,27 @@
 <x-app-layout>
 
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
+        <div class="p-4">
+            {{-- Search --}}
+            <form action="{{ route('admin.sent_penawaran') }}" method="GET" class="block pl-2">
+                <label for="topbar-search" class="sr-only">Search</label>
+                <div class="relative md:w-96">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                            </path>
+                        </svg>
+                    </div>
+                    <input type="search" name="search" id="topbar-search" value="{{ request('search') }}" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500" placeholder="Search" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
         </div>
-
-        {{-- Tampilkan error validasi jika ada --}}
-        @if ($errors->any())
-            <div class="m-4 rounded bg-red-50 p-3 text-sm text-red-700">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
         <div class="overflow-x-auto">
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -40,8 +46,12 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-col">
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $penawaran->request_number }}</span>
-                                    <span class="mt-0.5 text-[10px] font-semibold uppercase tracking-widest text-amber-500">Request Order</span>
+                                    <span class="font-bold text-gray-900 dark:text-white">
+                                        {{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}
+                                    </span>
+                                    <span class="{{ $penawaran->offer_type === 'custom' ? 'text-blue-500' : 'text-amber-500' }} mt-0.5 text-[10px] font-semibold uppercase tracking-widest">
+                                        {{ $penawaran->offer_type === 'custom' ? 'Custom Penawaran' : 'Request Order' }}
+                                    </span>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -49,7 +59,9 @@
                                     <span class="font-medium">{{ optional($penawaran->sales)->name ?? 'N/A' }}</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 font-medium">{{ $penawaran->customer_name }}</td>
+                            <td class="px-4 py-3 font-medium">
+                                {{ $penawaran->offer_type === 'custom' ? $penawaran->to : $penawaran->customer_name }}
+                            </td>
                             <td class="px-4 py-3">
                                 <span class="inset-ring inline-flex items-center rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700">
                                     {{ $penawaran->items->count() }} Items
@@ -100,8 +112,13 @@
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
                                     <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+
+
                                         {{-- Detail --}}
-                                        <a href="{{ route('sales.request-order.show', $penawaran->id) }}" class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat Detail">
+                                        @php
+                                            $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
+                                        @endphp
+                                        <a href="{{ $detailRoute }}" class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat Detail">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
                                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
                                                 <circle cx="12" cy="12" r="3"></circle>
@@ -110,8 +127,14 @@
                                         </a>
 
                                         {{-- Approve --}}
-                                        <form action="{{ route('supervisor.request-order.approve', $penawaran->id) }}" method="POST" class="m-0 border-l border-white/20 p-0">
+                                        @php
+                                            $approveRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.approval', $penawaran->id) : route('supervisor.request-order.approve', $penawaran->id);
+                                        @endphp
+                                        <form action="{{ $approveRoute }}" method="POST" class="approve-form m-0 border-l border-white/20 p-0" data-confirm-text="Apakah Anda yakin ingin menyetujui penawaran ini?">
                                             @csrf
+                                            @if ($penawaran->offer_type === 'custom')
+                                                <input type="hidden" name="action" value="approve">
+                                            @endif
                                             <button type="submit" class="group/btn flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" title="Setujui">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -121,7 +144,7 @@
                                         </form>
 
                                         {{-- Reject --}}
-                                        <button type="button" class="group/btn flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="openTolakModal('request_order', '{{ $penawaran->id }}', '{{ $penawaran->request_number }}')" title="Tolak">
+                                        <button type="button" class="group/btn flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="openTolakModal('{{ $penawaran->offer_type }}', '{{ $penawaran->id }}', '{{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}')" title="Tolak">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle h-4 w-4">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="m15 9-6 6"></path>
@@ -139,134 +162,30 @@
             </table>
         </div>
 
-        {{ $penawarans->links() }}
-    </div>
-
-    {{-- ===================================================
-         MODAL TOLAK - Satu modal dipakai untuk semua baris
-         ===================================================  --}}
-    {{-- ===================================================
-         MODAL TOLAK - Premium Redesign
-         ===================================================  --}}
-    <div id="modalTolakGlobal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modalTolakTitle">
-        <div class="animate-scale-up w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
-            {{-- Header --}}
-            <div class="relative bg-rose-600 px-6 py-5">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h5 id="modalTolakTitle" class="text-lg font-bold tracking-tight text-white">
-                            Penolakan Penawaran
-                        </h5>
-                        <p class="mt-1 text-xs font-medium text-rose-100/80">Nomor: <span id="modalTolakNomor"></span></p>
-                    </div>
-                    <button type="button" onclick="closeTolakModal()" class="rounded-lg bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                {{-- Decorative SVG --}}
-                <div class="pointer-events-none absolute bottom-0 right-0 opacity-10">
-                    <svg width="100" height="100" viewBox="0 0 24 24" fill="white">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-                    </svg>
-                </div>
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $penawarans->firstItem() ?? 0 }}-{{ $penawarans->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $penawarans->total() ?? $penawarans->count() }}</span>
+                </span>
+                <form method="GET" action="{{ route('admin.sent_penawaran') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                        @foreach ([10, 25, 50, 100] as $size)
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
-
-            {{-- Body --}}
-            <form id="formTolakGlobal" method="POST" action="">
-                @csrf
-                <div class="px-7 py-6">
-                    <div class="mb-5 rounded-lg border border-amber-100 bg-amber-50 p-3">
-                        <div class="flex space-x-2">
-                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                            </svg>
-                            <p class="text-[11px] font-medium leading-relaxed text-amber-800">Harap sertakan alasan yang konstruktif agar tim sales dapat melakukan revisi dengan tepat.</p>
-                        </div>
-                    </div>
-
-                    <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
-                        Alasan Penolakan <span class="text-rose-500">*</span>
-                    </label>
-                    <textarea id="modalTolakReason" name="reason" rows="4" required minlength="5" placeholder="Contoh: Diskon terlalu besar (max 15%), harap sesuaikan dengan margin target..." class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-all focus:border-rose-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-rose-500/10 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-rose-500"></textarea>
-
-                    <div id="modalTolakError" class="mt-2 hidden items-center text-xs font-semibold text-rose-600">
-                        <svg class="mr-1 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                        Minimal 5 karakter wajib diisi.
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 bg-gray-50 px-7 py-5 dark:bg-gray-900/50">
-                    <button type="button" onclick="closeTolakModal()" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                        Batal
-                    </button>
-                    <button type="button" onclick="submitTolakModal()" class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-rose-600/20 transition-all hover:bg-rose-700 hover:shadow-rose-600/30 active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Konfirmasi Tolak
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div>
+                {{ $penawarans->links() }}
+            </div>
+        </nav>
     </div>
 
-    <script>
-        /**
-         * Buka modal tolak.
-         * @param {string} type  - 'request_order' atau 'custom'
-         * @param {string} id    - ID record
-         * @param {string} nomor - Nomor penawaran / request number (untuk label)
-         */
-        function openTolakModal(type, id, nomor) {
-            // Tentukan action URL berdasarkan tipe
-            let actionUrl = '';
-            if (type === 'request_order') {
-                // route: POST /request-order/{id}/reject  → supervisor.request-order.reject
-                actionUrl = '/request-order/' + id + '/reject';
-            } else if (type === 'custom') {
-                // route: POST /supervisor/custom-penawaran/{id}/approval → admin.custom-penawaran.approval
-                // We set actionUrl to include the ID, but for approval route we need to handle the 'reject' action
-                actionUrl = '/supervisor/custom-penawaran/' + id + '/approval?action=reject';
-            }
-
-            document.getElementById('formTolakGlobal').action = actionUrl;
-            document.getElementById('modalTolakNomor').textContent = nomor;
-            document.getElementById('modalTolakReason').value = '';
-            document.getElementById('modalTolakError').classList.add('hidden');
-            document.getElementById('modalTolakGlobal').classList.remove('hidden');
-            document.getElementById('modalTolakGlobal').classList.add('flex');
-            document.getElementById('modalTolakReason').focus();
-        }
-
-        function closeTolakModal() {
-            document.getElementById('modalTolakGlobal').classList.add('hidden');
-            document.getElementById('modalTolakGlobal').classList.remove('flex');
-        }
-
-        function submitTolakModal() {
-            const reason = document.getElementById('modalTolakReason').value.trim();
-            if (reason.length < 5) {
-                document.getElementById('modalTolakError').classList.remove('hidden');
-                document.getElementById('modalTolakReason').focus();
-                return;
-            }
-            document.getElementById('modalTolakError').classList.add('hidden');
-            document.getElementById('formTolakGlobal').submit();
-        }
-
-        // Tutup modal jika klik di luar area modal
-        document.getElementById('modalTolakGlobal').addEventListener('click', function(e) {
-            if (e.target === this) closeTolakModal();
-        });
-
-        // Tutup modal dengan tombol Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeTolakModal();
-        });
-    </script>
+    @include('admin.sent-penawaran.partials.modal_tolak')
 
 </x-app-layout>

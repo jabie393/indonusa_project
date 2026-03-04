@@ -1,124 +1,130 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        @if (session('success'))
-            <div class="mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300" role="alert">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    <span>{{ session('success') }}</span>
-                </div>
-                <button type="button" class="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 p-1.5 text-green-500 hover:bg-green-200 focus:ring-2 focus:ring-green-400 dark:bg-green-800 dark:text-green-400 dark:hover:bg-green-700" data-bs-dismiss="alert" aria-label="Close">
-                    <span class="sr-only">Close</span>
-                    <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                    </svg>
-                </button>
-            </div>
-        @endif
+        <div class="p-6">
 
-        @if ($errors->any())
-            <div class="mb-6 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
-                <div class="mb-2 flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span class="font-medium">Terdapat kesalahan:</span>
-                </div>
-                <ul class="ml-4 list-inside list-disc">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="mt-2 text-sm underline hover:no-underline" data-bs-dismiss="alert" aria-label="Close">Tutup</button>
-            </div>
-        @endif
-
-        {{-- ============================================================
-                    {{-- Info asal custom penawaran --}}
-        @if ($requestOrder->customPenawaran)
-            <div class="mx-6 mb-2 mt-4 flex items-center gap-2 rounded bg-indigo-50 p-3 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
-                <span class="font-semibold">Dari Custom Penawaran:</span>
-                <a href="{{ route('sales.custom-penawaran.show', $requestOrder->customPenawaran->id) }}" class="underline hover:text-indigo-600">
-                    {{ $requestOrder->customPenawaran->penawaran_number }}
-                </a>
-            </div>
-        @endif
-
-        @php $orderStatus = $requestOrder->order?->status; @endphp
-
-        @if ($orderStatus === 'rejected_supervisor')
-            {{-- BANNER MERAH: Ditolak --}}
-            <div class="overflow-hidden rounded-2xl border border-rose-100 bg-rose-50 shadow-sm dark:border-rose-900/30 dark:bg-rose-900/10">
-                <div class="flex flex-col items-center gap-6 p-5 md:flex-row">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-rose-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+            @if (session('success'))
+                <div class="mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
-                    <div class="flex-grow text-center md:text-left">
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-rose-700">Penawaran Ditolak Supervisor</h4>
-                        <div class="mt-2 space-y-1">
-                            <p class="text-sm font-medium text-rose-600 dark:text-rose-300">
-                                <span class="mr-1 text-[10px] font-black uppercase opacity-50">Alasan:</span>
-                                {{ $requestOrder->reason ?? ($requestOrder->order?->reason ?? 'Keterangan tidak tersedia') }}
-                            </p>
-                            @if ($requestOrder->order?->supervisor)
-                                <p class="text-[10px] font-bold uppercase tracking-tighter text-rose-400">
-                                    Oleh {{ $requestOrder->order->supervisor->name }}
-                                    @if ($requestOrder->order->approved_at)
-                                        &middot; {{ \Carbon\Carbon::parse($requestOrder->order->approved_at)->translatedFormat('d M Y, H:i') }}
-                                    @endif
+                    <button type="button" class="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-green-100 p-1.5 text-green-500 hover:bg-green-200 focus:ring-2 focus:ring-green-400 dark:bg-green-800 dark:text-green-400 dark:hover:bg-green-700" data-bs-dismiss="alert" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="mb-6 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
+                    <div class="mb-2 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span class="font-medium">Terdapat kesalahan:</span>
+                    </div>
+                    <ul class="ml-4 list-inside list-disc">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button type="button" class="mt-2 text-sm underline hover:no-underline" data-bs-dismiss="alert" aria-label="Close">Tutup</button>
+                </div>
+            @endif
+
+            {{-- ============================================================
+                    {{-- Info asal custom penawaran --}}
+            @if ($requestOrder->customPenawaran)
+                <div class="mx-6 mb-2 mt-4 flex items-center gap-2 rounded bg-indigo-50 p-3 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
+                    <span class="font-semibold">Dari Custom Penawaran:</span>
+                    @php
+                        $parentShowRoute = Auth::user()->role === 'Sales' ? 'sales.custom-penawaran.show' : 'admin.custom-penawaran.show';
+                    @endphp
+                    <a href="{{ route($parentShowRoute, $requestOrder->customPenawaran->id) }}" class="underline hover:text-indigo-600">
+                        {{ $requestOrder->customPenawaran->penawaran_number }}
+                    </a>
+                </div>
+            @endif
+
+            @php $orderStatus = $requestOrder->order?->status; @endphp
+
+            @if ($orderStatus === 'rejected_supervisor')
+                {{-- BANNER MERAH: Ditolak --}}
+                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-rose-100 bg-rose-50 shadow-sm dark:border-rose-900/30 dark:bg-rose-900/10">
+                    <div class="flex flex-col items-center gap-6 p-5 md:flex-row">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-rose-900/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="flex-grow text-center md:text-left">
+                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-rose-700">Penawaran Ditolak Supervisor</h4>
+                            <div class="mt-2 space-y-1">
+                                <p class="text-sm font-medium text-rose-600 dark:text-rose-300">
+                                    <span class="mr-1 text-[10px] font-black uppercase opacity-50">Alasan:</span>
+                                    {{ $requestOrder->reason ?? ($requestOrder->order?->reason ?? 'Keterangan tidak tersedia') }}
                                 </p>
+                                @if ($requestOrder->order?->supervisor)
+                                    <p class="text-[10px] font-bold uppercase tracking-tighter text-rose-400">
+                                        Oleh {{ $requestOrder->order->supervisor->name }}
+                                        @if ($requestOrder->order->approved_at)
+                                            &middot; {{ \Carbon\Carbon::parse($requestOrder->order->approved_at)->translatedFormat('d M Y, H:i') }}
+                                        @endif
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            @if (Auth::user()->role === 'Sales')
+                                <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Perbaiki & Ajukan Ulang
+                                </a>
                             @endif
                         </div>
                     </div>
-                    <div class="shrink-0">
-                        <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </div>
+            @elseif ($orderStatus === 'sent_to_supervisor')
+                {{-- BANNER KUNING: Menunggu persetujuan --}}
+                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-amber-100 bg-amber-50 shadow-sm dark:border-amber-900/30 dark:bg-amber-900/10">
+                    <div class="flex items-center gap-5 p-5">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-amber-900/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 animate-pulse text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            Perbaiki & Ajukan Ulang
-                        </a>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-amber-700">Dalam Peninjauan Supervisor</h4>
+                            <p class="mt-1 text-sm font-medium text-amber-600 dark:text-amber-300">
+                                Penawaran mengandung diskon besar (>20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @elseif ($orderStatus === 'sent_to_supervisor')
-            {{-- BANNER KUNING: Menunggu persetujuan --}}
-            <div class="overflow-hidden rounded-2xl border border-amber-100 bg-amber-50 shadow-sm dark:border-amber-900/30 dark:bg-amber-900/10">
-                <div class="flex items-center gap-5 p-5">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-amber-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 animate-pulse text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-amber-700">Dalam Peninjauan Supervisor</h4>
-                        <p class="mt-1 text-sm font-medium text-amber-600 dark:text-amber-300">
-                            Penawaran mengandung diskon besar (>20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        @elseif ($orderStatus === 'approved_supervisor')
-            {{-- BANNER HIJAU: Disetujui --}}
-            <div class="overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
-                <div class="flex items-center gap-5 p-5">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-emerald-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700">Verifikasi Disetujui</h4>
-                        <p class="mt-1 text-sm font-bold text-emerald-600 dark:text-emerald-300">
-                            Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
-                        </p>
+            @elseif ($orderStatus === 'approved_supervisor')
+                {{-- BANNER HIJAU: Disetujui --}}
+                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
+                    <div class="flex items-center gap-5 p-5">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-emerald-900/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700">Verifikasi Disetujui</h4>
+                            <p class="mt-1 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                                Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
-        {{-- ============================================================
+            @endif
+            {{-- ============================================================
              END BANNER STATUS SUPERVISOR
              ============================================================ --}}
 
-        <div class="p-6">
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Left Column -->
                 <div class="lg:col-span-2">
@@ -273,16 +279,14 @@
 
                         {{-- Alasan penolakan di dalam card (backup tampilan selain banner atas) --}}
                         @if (!empty($requestOrder->reason) || !empty($requestOrder->order?->reason))
-                            <div class="mt-8 border-t border-red-50 pt-6 dark:border-red-900/10">
+                            <div class="border-t border-gray-100 p-6 pt-6 dark:border-gray-700">
                                 <label class="mb-3 flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-rose-500 dark:text-rose-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
                                     Catatan Penolakan Supervisor
                                 </label>
-                                <div class="rounded-xl border-l-4 border-rose-500 bg-rose-50 p-4 text-sm font-medium leading-relaxed text-rose-800 dark:bg-rose-900/20 dark:text-rose-300">
-                                    {{ $requestOrder->reason ?? $requestOrder->order?->reason }}
-                                </div>
+                                {{ $requestOrder->reason ?? $requestOrder->order?->reason }}
                             </div>
                         @endif
                     </div>
@@ -466,23 +470,51 @@
                             </div>
                             <div class="p-6">
                                 <div class="flex flex-col gap-3">
+                                    {{-- Approval Actions for Supervisor --}}
+                                    @php $orderStatus = $requestOrder->order?->status; @endphp
+                                    @if ($orderStatus === 'sent_to_supervisor' && Auth::user()->role === 'Supervisor')
+                                        <div class="mb-4 space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
+                                            <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <form action="{{ route('supervisor.request-order.approve', $requestOrder->id) }}" method="POST" class="w-full">
+                                                    @csrf
+                                                    <button type="submit" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-none dark:shadow-none">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                        <span>Approve</span>
+                                                    </button>
+                                                </form>
+                                                <button onclick="openTolakModal('request_order', '{{ $requestOrder->id }}', '{{ $requestOrder->request_number }}')" title="Tolak" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                    <span>Tolak</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     {{-- Top Row: Edit & PDF --}}
                                     <div class="grid grid-cols-2 gap-3">
-                                        {{-- Edit Button --}}
-                                        <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-200 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                            </svg>
-                                            <span>Edit</span>
-                                        </a>
+                                        {{-- Edit Button (Sales Only) --}}
+                                        @if (Auth::user()->role === 'Sales')
+                                            <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-200 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                </svg>
+                                                <span>Edit</span>
+                                            </a>
+                                        @endif
 
                                         @php
                                             $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
+                                            $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
                                         @endphp
 
-                                        @if ($canDownloadPdf)
+                                        @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
                                             {{-- PDF Button (Enabled) --}}
-                                            <a href="{{ route('sales.request-order.pdf', $requestOrder->id) }}" target="_blank" class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
+                                            <a href="{{ route($pdfRoute, $requestOrder->id) }}" target="_blank" class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
@@ -499,8 +531,8 @@
                                         @endif
                                     </div>
 
-                                    {{-- Sent to Warehouse (Primary Action) --}}
-                                    @if (!$requestOrder->order)
+                                    {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
+                                    @if (!$requestOrder->order && Auth::user()->role === 'Sales')
                                         <form action="{{ route('sales.request-order.sent-to-warehouse', $requestOrder->id) }}" method="POST" class="w-full">
                                             @csrf
                                             <button type="submit" class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-200 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
@@ -523,19 +555,21 @@
                                         </div>
                                     @endif
 
-                                    {{-- Dangerous Actions --}}
-                                    <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
-                                        <form id="deleteRequestOrderForm" action="{{ route('sales.request-order.destroy', $requestOrder->id) }}" method="POST" class="w-full">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" id="btnDeleteRequestOrder" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                <span class="uppercase tracking-widest">Hapus Request Order</span>
-                                            </button>
-                                        </form>
-                                    </div>
+                                    {{-- Dangerous Actions (Sales Only) --}}
+                                    @if (Auth::user()->role === 'Sales')
+                                        <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
+                                            <form id="deleteRequestOrderForm" action="{{ route('sales.request-order.destroy', $requestOrder->id) }}" method="POST" class="w-full">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" id="btnDeleteRequestOrder" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    <span class="uppercase tracking-widest">Hapus Request Order</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -646,7 +680,10 @@
                         <h5 class="modal-title">Edit Catatan untuk PDF</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="GET" action="{{ route('sales.request-order.pdf', $requestOrder->id) }}" target="_blank">
+                    @php
+                        $modalPdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
+                    @endphp
+                    <form method="GET" action="{{ route($modalPdfRoute, $requestOrder->id) }}" target="_blank">
                         <div class="modal-body">
                             @php
                                 $defaultPdfNote = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
@@ -769,5 +806,7 @@
                 }
             }
         </script>
+
+        @include('admin.sent-penawaran.partials.modal_tolak')
 
 </x-app-layout>

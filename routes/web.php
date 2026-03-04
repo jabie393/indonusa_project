@@ -168,6 +168,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/request-order/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.request-order.reject');
     // Supervisor view for Request Order detail (so Supervisor can view without Sales role)
     Route::get('/supervisor/request-order/{requestOrder}', [RequestOrderController::class, 'show'])->name('admin.request-order.show');
+    Route::get('/supervisor/request-order/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('admin.request-order.pdf');
+    Route::get('/supervisor/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('admin.custom-penawaran.pdf');
 
     // Supervisor Defect Report routes
     Route::get('/supervisor/defect-report', [\App\Http\Controllers\Admin\DefectReportController::class, 'index'])->name('supervisor.defect-report.index');

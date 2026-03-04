@@ -101,7 +101,7 @@
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
                                     <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Approve barang --}}
-                                        <form action="{{ route('supply-orders.approve', $barang->id) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('supply-orders.approve', $barang->id) }}" method="POST" class="approve-form inline" data-confirm-text="Apakah Anda yakin ingin menyetujui barang ini?">
                                             @csrf
                                             <button type="submit" class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

@@ -131,6 +131,11 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
                     </div>
+                @elseif (request()->routeIs('supervisor.defect-report.*'))
+                    <div class="text-gray-100">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Laporan Defect</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Laporan Barang Rusak</p>
+                    </div>
                 @endif
             @endif
         </div>

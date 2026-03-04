@@ -156,6 +156,8 @@
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
                                     <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        
+                                        
                                         {{-- Detail --}}
                                         <a href="{{ route('sales.request-order.show', $ro->id) }}" class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat Detail">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
@@ -165,6 +167,19 @@
                                             </svg>
                                             <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                         </a>
+
+                                        {{-- If supervisor rejects --}}
+                                        @if ($ro->status == 'Ditolak Supervisor')
+                                            {{-- Note modal --}}
+                                            <button type="button" class="note-btn group flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800" data-catatan="{{ $ro->reason ?? '' }}" title="Lihat Alasan Penolakan">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sticky-note h-4 w-4">
+                                                    <path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
+                                                    </path>
+                                                    <path d="M15 3v6h6"></path>
+                                                </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
+                                            </button>
+                                        @endif
 
                                         {{-- Action Dropdown --}}
                                         <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" popovertarget="popover-{{ $ro->id }}" style="anchor-name:--anchor-{{ $ro->id }}">
@@ -288,4 +303,5 @@
         </nav>
     </div>
     @vite(['resources/js/request-order.js'])
+    @include('admin.sales.request-order.partials.modal-show-note')
 </x-app-layout>

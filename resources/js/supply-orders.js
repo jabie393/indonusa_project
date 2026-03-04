@@ -33,27 +33,22 @@ $(document).ready(function() {
     // Bulk Approve
     $('#bulk-approve').on('click', function() {
         const selectedIds = table.rows({ selected: true }).data().toArray().map(row => row[0]);
-        
-        Swal.fire({
-            title: 'Bulk Approve',
-            text: `Are you sure you want to approve ${selectedIds.length} items?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#15803d',
-            confirmButtonText: 'Yes, Approve All'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const url = $('#bulk-actions').data('approve-url');
-                $.post(url, {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    ids: selectedIds
-                }, function(res) {
-                    if (res.success) {
-                        Swal.fire('Approved!', 'Items have been approved.', 'success').then(() => location.reload());
-                    }
-                });
-            }
-        });
+        if (selectedIds.length === 0) {
+            Swal.fire('Error', 'No items selected.', 'error');
+            return;
+        }
+
+        window.confirmApprove(() => {
+            const url = $('#bulk-actions').data('approve-url');
+            $.post(url, {
+                _token: $('meta[name="csrf-token"]').attr('content'),
+                ids: selectedIds
+            }, function(res) {
+                if (res.success) {
+                    Swal.fire('Approved!', 'Items have been approved.', 'success').then(() => location.reload());
+                }
+            });
+        }, `Are you sure you want to approve ${selectedIds.length} items?`, 'Yes, Approve All');
     });
 
     // Bulk Reject
