@@ -182,55 +182,84 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="px-4 py-3">
-                                @php
-                                    // Baca status dari tabel orders (real-time), fallback ke status RO sendiri
-                                    $orderStatus = $ro->order?->status ?? null;
+<td class="px-4 py-3">
+    @php
+        $orderStatus = $ro->order?->status ?? null;
 
-                                    $statusLabelMap = [
-                                        'open'                => 'Open',
-                                        'sent_to_supervisor'  => 'Dikirim ke Supervisor',
-                                        'approved_supervisor' => 'Disetujui Supervisor',
-                                        'rejected_supervisor' => 'Ditolak Supervisor',
-                                        'sent_to_warehouse'   => 'Dikirim ke Gudang',
-                                        'approved_warehouse'  => 'Disetujui Gudang',
-                                        'rejected_warehouse'  => 'Ditolak Gudang',
-                                        'not_completed'       => 'Tidak Selesai',
-                                        'completed'           => 'Selesai',
-                                        'pending'             => 'Pending',
-                                    ];
+        $statusLabelMap = [
+            'open'                => 'Open',
+            'sent_to_supervisor'  => 'Dikirim ke Supervisor',
+            'approved_supervisor' => 'Disetujui Supervisor',
+            'rejected_supervisor' => 'Ditolak Supervisor',
+            'sent_to_warehouse'   => 'Dikirim ke Gudang',
+            'approved_warehouse'  => 'Disetujui Gudang',
+            'rejected_warehouse'  => 'Ditolak Gudang',
+            'not_completed'       => 'Partial Delivery',
+            'completed'           => 'Selesai',
+            'pending'             => 'Pending',
+        ];
 
-                                    $displayStatus = $orderStatus ? ($statusLabelMap[$orderStatus] ?? $orderStatus) : $ro->status;
+        $displayStatus = $orderStatus ? ($statusLabelMap[$orderStatus] ?? $orderStatus) : $ro->status;
 
-                                    $statusClass = [
-                                        'Pending'              => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                        'Open'                 => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'Dikirim ke Supervisor'=> 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                        'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'Ditolak Supervisor'   => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                        'Dikirim ke Gudang'    => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                        'Disetujui Gudang'     => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'Ditolak Gudang'       => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                        'Selesai'              => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        'Tidak Selesai'        => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-                                    ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
-                                @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $displayStatus }}
+        $statusClass = [
+            'Pending'               => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+            'Open'                  => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+            'Disetujui Supervisor'  => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+            'Ditolak Supervisor'    => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+            'Dikirim ke Gudang'     => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+            'Disetujui Gudang'      => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+            'Ditolak Gudang'        => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+            'Partial Delivery'      => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
+            'Selesai'               => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+        ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+    @endphp
+
+    <div class="flex flex-col items-center gap-1">
+        <span class="{{ $statusClass }} badge">{{ $displayStatus }}</span>
+
+        @if ($orderStatus === 'not_completed' && $ro->order)
+            @php
+                $orderItems   = $ro->order->items ?? collect();
+                $sudahDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) > 0);
+                $belumDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity && ($i->status_item ?? '') !== 'delivered');
+            @endphp
+            @if ($orderItems->count() > 0)
+                <div class="group relative mt-1 inline-block w-full">
+                    <span class="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} item terkirim
+                    </span>
+                    <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                        @if ($sudahDikirim->count() > 0)
+                            <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
+                            @foreach ($sudahDikirim as $item)
+                                <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                    <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                    <span class="ml-2 shrink-0 font-bold text-green-600">
+                                        {{ $item->delivered_quantity }}/{{ $item->quantity }} {{ $item->barang->satuan ?? '' }}
                                     </span>
                                 </div>
-                                @if ($ro->status === 'Disetujui Supervisor')
-                                    @php
-                                        $maxDiskon = $ro->items->max('diskon_percent');
-                                    @endphp
-                                    @if ($maxDiskon > 20)
-                                        <div class="mt-1 text-xs text-orange-600">
-                                            <i class="fa fa-exclamation-triangle"></i>
-                                        </div>
-                                    @endif
-                                @endif
-                            </td>
+                            @endforeach
+                        @endif
+                        @if ($belumDikirim->count() > 0)
+                            <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa Dikirim:</p>
+                            @foreach ($belumDikirim as $item)
+                                @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
+                                <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                    <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                    <span class="ml-2 shrink-0 font-bold text-orange-500">Sisa {{ $sisa }} {{ $item->barang->satuan ?? '' }}</span>
+                                </div>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+            @endif
+        @endif
+    </div>
+</td>
                             <td class="text-nowrap px-4 py-3">
                                 @if ($ro->tanggal_berlaku)
                                     {{ \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y') }}

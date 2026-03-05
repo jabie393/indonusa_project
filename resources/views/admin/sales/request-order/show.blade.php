@@ -103,6 +103,85 @@
                         </div>
                     </div>
                 </div>
+            @elseif ($orderStatus === 'not_completed')
+                {{-- BANNER ORANGE: Partial Delivery --}}
+                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-orange-100 bg-orange-50 shadow-sm dark:border-orange-900/30 dark:bg-orange-900/10">
+                    <div class="flex items-center gap-5 p-5">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-orange-900/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-orange-700">Partial Delivery — Pengiriman Bertahap</h4>
+                            <p class="mt-1 text-sm font-medium text-orange-600 dark:text-orange-300">
+                                Sebagian barang sudah dikirim oleh warehouse. Sisa barang akan dikirim pada pengiriman berikutnya.
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- Detail barang --}}
+                    @php
+                        $orderItems = $requestOrder->order->items ?? collect();
+                        $sudahDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) > 0);
+                        $belumDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity && ($i->status_item ?? '') !== 'delivered');
+                    @endphp
+
+                    @if ($orderItems->count() > 0)
+                        <div class="grid grid-cols-1 gap-0 border-t border-orange-100 md:grid-cols-2 dark:border-orange-900/20">
+                            
+                            {{-- Kolom Sudah Dikirim --}}
+                            <div class="border-b border-orange-100 p-5 md:border-b-0 md:border-r dark:border-orange-900/20">
+                                <h5 class="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-green-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Sudah Dikirim ({{ $sudahDikirim->count() }} item)
+                                </h5>
+                                @forelse ($sudahDikirim as $item)
+                                    <div class="mb-2 flex items-center justify-between rounded-lg bg-green-50 px-3 py-2">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-800">{{ $item->barang->nama_barang ?? '-' }}</p>
+                                            <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                        </div>
+                                        <div class="ml-3 shrink-0 text-right">
+                                            <span class="text-xs font-black text-green-600">{{ $item->delivered_quantity }}/{{ $item->quantity }}</span>
+                                            <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-xs italic text-gray-400">Belum ada barang yang dikirim.</p>
+                                @endforelse
+                            </div>
+
+                            {{-- Kolom Belum/Sisa Dikirim --}}
+                            <div class="p-5">
+                                <h5 class="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-orange-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Menunggu Pengiriman ({{ $belumDikirim->count() }} item)
+                                </h5>
+                                @forelse ($belumDikirim as $item)
+                                    @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
+                                    <div class="mb-2 flex items-center justify-between rounded-lg bg-orange-50 px-3 py-2">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-800">{{ $item->barang->nama_barang ?? '-' }}</p>
+                                            <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                        </div>
+                                        <div class="ml-3 shrink-0 text-right">
+                                            <span class="text-xs font-black text-orange-600">Sisa {{ $sisa }}</span>
+                                            <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-xs italic text-gray-400">Semua barang sudah dikirim.</p>
+                                @endforelse
+                            </div>
+
+                        </div>
+                    @endif
+                </div>
             @elseif ($orderStatus === 'approved_supervisor')
                 {{-- BANNER HIJAU: Disetujui --}}
                 <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
