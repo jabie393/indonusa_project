@@ -37,15 +37,24 @@ class SupplyOrdersController extends Controller
         return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diapprove.']);
     }
 
+    // Store action as fallback to prevent method missing errors if form mis-submits
+    public function store(Request $request)
+    {
+        return redirect()->back()->withErrors('Invalid action specified.');
+    }
+
     // Reject barang dengan alasan (catatan)
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
-        $barang->catatan = request('catatan');
+        $barang->catatan = $request->input('reason') ?? $request->input('catatan');
         $barang->status_barang = 'ditolak';
         $barang->save();
 
-        return response()->json(['success' => true]);
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditolak.']);
     }
 
     // Bulk Approve
