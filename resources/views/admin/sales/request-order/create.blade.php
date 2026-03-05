@@ -1187,6 +1187,14 @@
                     const fileInput = newRow.querySelector('.item-images-input');
                     if (fileInput) fileInput.value = '';
 
+                    // Reset upload button visibility di baris baru
+                    const uploadBtnContainer = newRow.querySelector('.upload-btn-container');
+                    if (uploadBtnContainer) uploadBtnContainer.style.display = 'block';
+
+                    // Hapus preview gambar yang ter-clone
+                    const clonedPreview = newRow.querySelector('.item-images-preview');
+                    if (clonedPreview) clonedPreview.innerHTML = '';
+
                     // Update index file input name
                     const idx = document.querySelectorAll('.item-row').length;
                     if (fileInput) fileInput.name = `item_images[${idx}][]`;
