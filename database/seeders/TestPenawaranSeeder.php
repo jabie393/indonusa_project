@@ -16,39 +16,37 @@ class TestPenawaranSeeder extends Seeder
     public function run(): void
     {
         // Create a test penawaran with status 'sent'
-        $sales = User::where('role', 'Sales')->first();
+        $sales = User::where('role', 'Sales')->first() ?? User::find(4);
         
-        if (!$sales) {
-            // Create a test sales user if not exist
-            $sales = User::create([
-                'name' => 'Test Sales',
-                'email' => 'sales@test.com',
-                'password' => bcrypt('password'),
-                'role' => 'Sales',
-            ]);
-        }
-
         $penawaran = CustomPenawaran::create([
             'sales_id' => $sales->id,
-            'penawaran_number' => 'TEST-' . uniqid(),
-            'to' => 'Test Customer',
-            'subject' => 'Test Penawaran',
-            'email' => 'customer@test.com',
-            'our_ref' => 'REF-' . uniqid(),
+            'penawaran_number' => 'QUO-20260305-001',
+            'to' => 'PT. Global Maju Sentosa',
+            'up' => 'Bp. Handoko',
+            'subject' => 'Penawaran Pengadaan Alat Kantor',
+            'email' => 'procurement@globalmaju.com',
+            'our_ref' => 'REF/IDN/2026/03/001',
             'date' => now(),
-            'status' => 'sent',
-            'subtotal' => 1000000,
-            'grand_total' => 1000000,
+            'intro_text' => 'Bersama ini kami sampaikan penawaran harga untuk kebutuhan alat kantor perusahaan Bapak/Ibu.',
+            'status' => 'approved',
+            'subtotal' => 5000000,
+            'tax' => 550000,
+            'grand_total' => 5550000,
+            'expired_at' => now()->addDays(14),
+            'approved_by' => 2, // Supervisor/Imam
+            'approved_at' => now(),
         ]);
 
         // Add an item
         CustomPenawaranItem::create([
             'custom_penawaran_id' => $penawaran->id,
-            'nama_barang' => 'Test Product',
-            'qty' => 1,
-            'satuan' => 'pcs',
+            'nama_barang' => 'Kursi Kantor Ergonomis',
+            'qty' => 5,
+            'satuan' => 'Unit',
             'harga' => 1000000,
-            'subtotal' => 1000000,
+            'subtotal' => 5000000,
+            'diskon' => 0,
+            'keterangan' => 'Warna Hitam',
         ]);
 
         echo "Test penawaran created: " . $penawaran->penawaran_number . "\n";

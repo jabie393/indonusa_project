@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Http\Controllers\Controller;
-use App\Models\SalesOrder;
-use App\Models\SalesOrderItem;
+use App\Models\RequestOrder;
+use App\Models\RequestOrderItem;
 use App\Models\CustomPenawaran;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,58 +35,31 @@ class SalesOrderController extends Controller
         {
             $type = $request->query('type', 'sales_order');
             $customerModel = null;
-            if ($type === 'request_order') {
-                $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
-                $customerName = $ro->customer_name ?? '-';
-                $noPoDisplay  = $ro->no_po ?? '-';
-                $subtotal     = $ro->subtotal ?? 0;
-                $tax          = $ro->tax ?? 0;
-                $grandTotal   = $ro->grand_total ?? 0;
+            $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
+            $customerName = $ro->customer_name ?? '-';
+            $noPoDisplay  = $ro->no_po ?? '-';
+            $subtotal     = $ro->subtotal ?? 0;
+            $tax          = $ro->tax ?? 0;
+            $grandTotal   = $ro->grand_total ?? 0;
 
-                // Cari data customer dari tabel customers
-                if (!empty($ro->customer_id)) {
-                    $customerModel = \App\Models\Customer::find($ro->customer_id);
-                }
-                if (!$customerModel && !empty($customerName)) {
-                    $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
-                }
-
-                $items = $ro->items->map(function ($item) {
-                    return [
-                        'nama_barang' => $item->nama_barang_custom
-                            ?? optional(\App\Models\Barang::find($item->barang_id))->nama_barang
-                            ?? '-',
-                        'qty'      => $item->quantity ?? 1,
-                        'harga'    => $item->harga ?? 0,
-                        'subtotal' => $item->subtotal ?? 0,
-                    ];
-                })->toArray();
-            } else {
-                $so = SalesOrder::with(['items', 'requestOrder', 'customer'])->findOrFail($id);
-                if ($so->sales_id !== Auth::id()) {
-                    abort(403);
-                }
-                $customerName = $so->to ?? $so->customer_name ?? '-';
-                $noPoDisplay  = optional($so->requestOrder)->no_po ?? '-';
-                $subtotal     = $so->subtotal ?? 0;
-                $tax          = $so->tax ?? 0;
-                $grandTotal   = $so->grand_total ?? 0;
-
-                // Cari data customer dari tabel customers
-                $customerModel = $so->customer ?? null;
-                if (!$customerModel && !empty($customerName)) {
-                    $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
-                }
-
-                $items = $so->items->map(function ($item) {
-                    return [
-                        'nama_barang' => $item->nama_barang ?? '-',
-                        'qty'         => $item->qty ?? $item->quantity ?? 1,
-                        'harga'       => $item->harga ?? 0,
-                        'subtotal'    => $item->subtotal ?? 0,
-                    ];
-                })->toArray();
+            // Cari data customer dari tabel customers
+            if (!empty($ro->customer_id)) {
+                $customerModel = \App\Models\Customer::find($ro->customer_id);
             }
+            if (!$customerModel && !empty($customerName)) {
+                $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
+            }
+
+            $items = $ro->items->map(function ($item) {
+                return [
+                    'nama_barang' => $item->nama_barang_custom
+                        ?? optional(\App\Models\Barang::find($item->barang_id))->nama_barang
+                        ?? '-',
+                    'qty'      => $item->quantity ?? 1,
+                    'harga'    => $item->harga ?? 0,
+                    'subtotal' => $item->subtotal ?? 0,
+                ];
+            })->toArray();
 
             // Ambil data dari customer model jika ada
             $customerNpwp    = $customerModel->npwp ?? '';
@@ -136,38 +109,21 @@ class SalesOrderController extends Controller
             $tax = 0;
             $grandTotal = 0;
 
-            if ($type === 'request_order') {
-                $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
-                $customerName = $ro->customer_name;
-                $customerAddress = $ro->customer_address ?? '';
-                $items = $ro->items->map(function($item) {
-                    $desc = $item->nama_barang_custom ?? (Barang::find($item->barang_id)?->nama_barang ?? '-');
-                    return [
-                        'nama_barang' => $desc,
-                        'quantity' => $item->quantity,
-                        'harga' => $item->harga,
-                        'subtotal' => $item->subtotal,
-                    ];
-                });
-                $subtotal = $ro->subtotal ?? 0;
-                $tax = $ro->tax ?? 0;
-                $grandTotal = $ro->grand_total ?? ($subtotal + $tax);
-            } else {
-                $so = SalesOrder::with(['items', 'requestOrder'])->findOrFail($id);
-                $customerName = $so->to ?? $so->customer_name;
-                $customerAddress = $so->customer_address ?? '';
-                $items = $so->items->map(function($item) {
-                    return [
-                        'nama_barang' => $item->nama_barang,
-                        'qty' => $item->qty,
-                        'harga' => $item->harga,
-                        'subtotal' => $item->subtotal,
-                    ];
-                });
-                $subtotal = $so->subtotal ?? 0;
-                $tax = $so->tax ?? 0;
-                $grandTotal = $so->grand_total ?? ($subtotal + $tax);
-            }
+            $ro = \App\Models\RequestOrder::with('items')->findOrFail($id);
+            $customerName = $ro->customer_name;
+            $customerAddress = $ro->customer_address ?? '';
+            $items = $ro->items->map(function($item) {
+                $desc = $item->nama_barang_custom ?? (Barang::find($item->barang_id)?->nama_barang ?? '-');
+                return [
+                    'nama_barang' => $desc,
+                    'quantity' => $item->quantity,
+                    'harga' => $item->harga,
+                    'subtotal' => $item->subtotal,
+                ];
+            });
+            $subtotal = $ro->subtotal ?? 0;
+            $tax = $ro->tax ?? 0;
+            $grandTotal = $ro->grand_total ?? ($subtotal + $tax);
 
             $dpp = $tax > 0 ? round(($subtotal * 100) / 111) : 0;
 
@@ -282,93 +238,21 @@ class SalesOrderController extends Controller
         $isSearch = $request->filled('search');
 
         if ($isSearch) {
-            // Sales Orders
-            $soResults = SalesOrder::query()
-                ->leftJoin('request_orders', 'sales_orders.request_order_id', '=', 'request_orders.id')
-                ->where('sales_orders.sales_id', Auth::id())
-                ->where(function ($q) use ($search) {
-                    $q->where('sales_orders.sales_order_number', 'like', "%$search%")
-                      ->orWhere('sales_orders.customer_name', 'like', "%$search%")
-                      ->orWhere('sales_orders.catatan_customer', 'like', "%$search%")
-                      ->orWhere('request_orders.sales_order_number', 'like', "%$search%")
-                      ->orWhere('request_orders.request_number', 'like', "%$search%")
-                      ->orWhere('request_orders.nomor_penawaran', 'like', "%$search%")
-                      ->orWhere('request_orders.customer_name', 'like', "%$search%");
-                })
-                ->select(
-                    'sales_orders.*',
-                    'request_orders.no_po as request_no_po',
-                    'request_orders.request_number as request_request_number',
-                    'request_orders.nomor_penawaran as request_nomor_penawaran',
-                    'request_orders.expired_at as request_expired_at',
-                    'request_orders.tanggal_berlaku as request_tanggal_berlaku' // ← TAMBAH INI
-                )
-                ->get()
-                ->map(function ($so) {
-                    $diskonPersen = 0;
-                    $total = 0;
-                    $tanggalPenawaran = null;
-                    $penawaran = null;
-                    $soModel = \App\Models\SalesOrder::find($so->id);
-                    if ($soModel && $soModel->requestOrder && $soModel->requestOrder->nomor_penawaran) {
-                        $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $soModel->requestOrder->nomor_penawaran)
-                            ->with('items')
-                            ->first();
-                    }
-                    if ($penawaran) {
-                        $diskonPersen = $penawaran->items->first()->diskon ?? 0;
-                        $total = $penawaran->grand_total;
-                        $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
-                    }
-
-                    // ← PERBAIKAN: prioritas tanggal_berlaku, fallback ke expired_at
-                    $berlakuSampai = '-';
-                    if (!empty($so->request_tanggal_berlaku)) {
-                        $berlakuSampai = \Carbon\Carbon::parse($so->request_tanggal_berlaku)->translatedFormat('d F Y');
-                    } elseif (!empty($so->request_expired_at)) {
-                        $berlakuSampai = \Carbon\Carbon::parse($so->request_expired_at)->translatedFormat('d F Y');
-                    } elseif ($soModel && $soModel->requestOrder && $soModel->requestOrder->tanggal_berlaku) {
-                        $berlakuSampai = \Carbon\Carbon::parse($soModel->requestOrder->tanggal_berlaku)->translatedFormat('d F Y');
-                    }
-
-                    return [
-                        'id' => $so->id,
-                        'type' => 'sales_order',
-                        'no_request' => $so->request_request_number ?? '-',
-                        'no_penawaran' => $so->request_nomor_penawaran ?? '-',
-                        'no_po' => $so->request_no_po ?? '-',
-                        'no_sales_order' => $so->sales_order_number,
-                        'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? (is_string($so->tanggal_kebutuhan) ? date('d/m/Y', strtotime($so->tanggal_kebutuhan)) : $so->tanggal_kebutuhan->format('d/m/Y')) : '-'),
-                        'customer_name' => $so->customer_name,
-                        'jumlah_item' => $soModel ? $soModel->items->count() : 0,
-                        'total' => $total,
-                        'diskon' => $diskonPersen,
-                        'status' => $so->status,
-                        'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
-                        'catatan_customer' => $so->catatan_customer,
-                        'aksi_url' => route('sales.sales-order.show', $so->id),
-                        'image' => $so->image,
-                        'image_url' => $soModel ? $soModel->image_url : null,
-                        'image_so' => optional($soModel->requestOrder)->image_so,
-                        'image_po' => optional($soModel->requestOrder)->image_po,
-                    ];
-                });
-
             // Request Orders
-            $requestOrderResults = \App\Models\RequestOrder::where(function ($q) use ($search) {
+            $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
                     $q->where('request_number', 'like', "%$search%")
                         ->orWhere('nomor_penawaran', 'like', "%$search%")
                         ->orWhere('sales_order_number', 'like', "%$search%")
                         ->orWhere('customer_name', 'like', "%$search%")
                         ->orWhere('no_po', 'like', "%$search%");
                 })
+                ->where('sales_id', Auth::id())
                 ->with('items')
                 ->get()
                 ->map(function ($ro) {
                     $diskonPersen = ($ro->items && $ro->items->count() > 0) ? ($ro->items->first()->diskon_percent ?? 0) : 0;
                     $total = $ro->grand_total ?? 0;
 
-                    // ← PERBAIKAN: prioritas tanggal_berlaku, fallback ke expired_at
                     $berlakuSampai = '-';
                     if ($ro->tanggal_berlaku) {
                         $berlakuSampai = \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y');
@@ -389,7 +273,7 @@ class SalesOrderController extends Controller
                         'total' => $total,
                         'diskon' => $diskonPersen,
                         'status' => $ro->status,
-                        'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
+                        'berlaku_sampai' => $berlakuSampai,
                         'catatan_customer' => $ro->catatan_customer,
                         'aksi_url' => route('sales.request-order.show', $ro),
                         'image_so' => $ro->image_so,
@@ -397,77 +281,48 @@ class SalesOrderController extends Controller
                     ];
                 });
 
-            $results = collect($soResults)->merge($requestOrderResults);
-
         } else {
-            // Default: hanya SO, paginasi
-            $salesOrders = SalesOrder::where('sales_id', Auth::id())
-                ->with(['items', 'requestOrder', 'customer', 'requestOrder.items'])
+            // Default: fetch RequestOrders instead of SalesOrders
+            $requestOrders = \App\Models\RequestOrder::where('sales_id', Auth::id())
+                ->with(['order', 'items'])
                 ->latest()
                 ->paginate(20)
                 ->appends(request()->query());
 
-            $results = $salesOrders->map(function ($so) {
-                $diskonPersen = 0;
-                $total = 0;
-                $tanggalPenawaran = null;
-                $penawaran = null;
+            $results = $requestOrders->map(function ($ro) {
+                $diskonPersen = ($ro->items && $ro->items->count() > 0) ? ($ro->items->first()->diskon_percent ?? 0) : 0;
+                $total = $ro->grand_total ?? 0;
 
-                if ($so->requestOrder && $so->requestOrder->nomor_penawaran) {
-                    $penawaran = \App\Models\CustomPenawaran::where('penawaran_number', $so->requestOrder->nomor_penawaran)
-                        ->with('items')
-                        ->first();
-                }
-                if ($penawaran) {
-                    $diskonPersen = $penawaran->items->first()->diskon ?? 0;
-                    $total = $penawaran->grand_total;
-                    $tanggalPenawaran = $penawaran->date ? date('d/m/Y', strtotime($penawaran->date)) : '-';
-                }
-
-                // ← PERBAIKAN UTAMA: ambil tanggal_berlaku dari requestOrder
                 $berlakuSampai = '-';
-                $requestOrderArr = [];
-
-                if ($so->requestOrder) {
-                    // Prioritas 1: tanggal_berlaku (14 hari setelah penawaran dibuat)
-                    if ($so->requestOrder->tanggal_berlaku) {
-                        $berlakuSampai = \Carbon\Carbon::parse(
-                            $so->requestOrder->tanggal_berlaku
-                        )->translatedFormat('d F Y');
-                    }
-                    // Prioritas 2: expired_at sebagai fallback
-                    elseif ($so->requestOrder->expired_at) {
-                        $berlakuSampai = \Carbon\Carbon::parse(
-                            $so->requestOrder->expired_at
-                        )->translatedFormat('d F Y');
-                    }
-
-                    $requestOrderArr['tanggal_berlaku_formatted'] = $berlakuSampai;
+                if ($ro->tanggal_berlaku) {
+                    $berlakuSampai = \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y');
+                } elseif ($ro->expired_at) {
+                    $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
                 }
 
                 return [
-                    'id' => $so->id,
-                    'type' => 'sales_order',
-                    'no_request' => optional($so->requestOrder)->request_number,
-                    'no_penawaran' => optional($so->requestOrder)->nomor_penawaran,
-                    'no_po' => optional($so->requestOrder)->no_po ?? '-',
-                    'no_sales_order' => $so->sales_order_number,
-                    'tanggal' => $tanggalPenawaran ?? ($so->tanggal_kebutuhan ? $so->tanggal_kebutuhan->format('d/m/Y') : '-'),
-                    'customer_name' => $so->customer_name,
-                    'jumlah_item' => $so->items->count(),
+                    'id' => $ro->id,
+                    'type' => 'request_order',
+                    'no_request' => $ro->request_number,
+                    'no_penawaran' => $ro->nomor_penawaran,
+                    'no_po' => $ro->no_po ?? '-',
+                    'no_sales_order' => $ro->sales_order_number,
+                    'tanggal' => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
+                    'customer_name' => $ro->customer_name,
+                    'jumlah_item' => $ro->items->count(),
                     'total' => $total,
                     'diskon' => $diskonPersen,
-                    'status' => $so->status,
-                    'berlaku_sampai' => $berlakuSampai, // ← SUDAH DIPERBAIKI
-                    'catatan_customer' => $so->catatan_customer,
-                    'aksi_url' => route('sales.sales-order.show', $so),
-                    'image' => $so->image,
-                    'image_url' => $so->image_url,
-                    'image_so' => optional($so->requestOrder)->image_so,
-                    'image_po' => optional($so->requestOrder)->image_po,
-                    'request_order' => $requestOrderArr,
+                    'status' => $ro->status,
+                    'berlaku_sampai' => $berlakuSampai,
+                    'catatan_customer' => $ro->catatan_customer,
+                    'aksi_url' => route('sales.request-order.show', $ro),
+                    'image_so' => $ro->image_so,
+                    'image_po' => $ro->image_po,
                 ];
             });
+
+            // For compatibility with the view
+            $salesOrders = $requestOrders;
         }
 
         return view('admin.sales.sales-order.index', [
@@ -533,10 +388,9 @@ class SalesOrderController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Sales Order Store Request Incoming', [
+        Log::info('Sales Order Store Request Incoming (Pivoted to RequestOrder)', [
             'auth_id' => Auth::id(),
             'request' => $request->all(),
-            'items_count' => count($request->input('items', []))
         ]);
 
         $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
@@ -546,114 +400,78 @@ class SalesOrderController extends Controller
             'up' => ['required', 'string', 'max:255', Rule::in($salesNames)],
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
-            'our_ref' => 'nullable|string|max:255',
             'date' => 'required|date',
-            'intro_text' => 'nullable|string',
-            'tax' => 'nullable|numeric|min:0',
-            'custom_penawaran_id' => 'nullable|integer|exists:custom_penawarans,id',
             'items' => 'required|array|min:1',
             'items.*.nama_barang' => 'required|string|max:255',
             'items.*.qty' => 'required|integer|min:1',
-            'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|numeric|min:0',
-            'items.*.diskon' => 'required|integer|min:0|max:100',
-            'items.*.keterangan' => 'nullable|string|max:255',
-            'items.*.images' => 'nullable|array',
-            'items.*.images.*' => 'nullable|image|max:5120',
+            'items.*.satuan' => 'required|string|max:50',
+            'items.*.diskon' => 'nullable|integer|min:0|max:100',
         ]);
 
         DB::beginTransaction();
         try {
-            $salesOrder = SalesOrder::create([
+            $requestOrder = RequestOrder::create([
                 'sales_id' => Auth::id(),
-                'sales_order_number' => SalesOrder::generateSONumber(),
-                'to' => $validated['to'],
-                'up' => $validated['up'],
+                'request_number' => RequestOrder::generateNomorPenawaran(),
+                'customer_name' => $validated['to'],
                 'subject' => $validated['subject'],
-                'email' => $validated['email'],
-                'our_ref' => $validated['our_ref'] ?? SalesOrder::generateUniqueRef(),
-                'date' => $validated['date'],
-                'intro_text' => $validated['intro_text'] ?? null,
-                'tax' => $validated['tax'] ?? 0,
-                'status' => 'pending_approval',
-                'custom_penawaran_id' => $validated['custom_penawaran_id'] ?? null,
+                'tanggal_kebutuhan' => $validated['date'],
+                'status' => 'pending',
             ]);
 
-            Log::info('Sales Order Created', ['id' => $salesOrder->id, 'sales_id' => $salesOrder->sales_id]);
-
-            $subtotal = 0;
-            foreach ($validated['items'] as $i => $itemData) {
-                $itemImages = [];
-                if ($request->hasFile("items.$i.images")) {
-                    foreach ($request->file("items.$i.images") as $file) {
-                        if ($file) {
-                            $itemImages[] = $file->store('sales-order-images', 'public');
-                        }
-                    }
-                }
-
-                $itemSubtotal = $itemData['qty'] * $itemData['harga'] * (1 - ($itemData['diskon'] ?? 0) / 100);
-                $subtotal += $itemSubtotal;
-
-                SalesOrderItem::create([
-                    'sales_order_id' => $salesOrder->id,
-                    'nama_barang' => $itemData['nama_barang'],
-                    'qty' => $itemData['qty'],
-                    'satuan' => $itemData['satuan'],
-                    'harga' => $itemData['harga'],
-                    'subtotal' => $itemSubtotal,
-                    'diskon' => $itemData['diskon'] ?? 0,
-                    'keterangan' => $itemData['keterangan'] ?? null,
-                    'images' => !empty($itemImages) ? $itemImages : null,
+            foreach ($validated['items'] as $itemData) {
+                RequestOrderItem::create([
+                    'request_order_id' => $requestOrder->id,
+                    'nama_barang_custom' => $itemData['nama_barang'],
                     'quantity' => $itemData['qty'],
+                    'harga' => $itemData['harga'],
+                    'subtotal' => $itemData['qty'] * $itemData['harga'],
+                    'diskon_percent' => $itemData['diskon'] ?? 0,
                 ]);
             }
 
-            $salesOrder->update([
-                'subtotal' => $subtotal,
-                'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-            ]);
-
             DB::commit();
-            Log::info('Sales Order Commit Successful', ['id' => $salesOrder->id]);
-
-            return redirect()->route('sales.sales-order.show', $salesOrder->id)
-                ->with(['title' => 'Berhasil', 'text' => "Sales Order {$salesOrder->so_number} berhasil dibuat."]);
+            return redirect()->route('sales.request-order.show', $requestOrder->id)
+                ->with(['title' => 'Berhasil', 'text' => "Request Order berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Sales Order Store Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors('Gagal membuat Sales Order: ' . $e->getMessage())->withInput();
+            Log::error('Request Order Store Error (from SO Controller)', ['message' => $e->getMessage()]);
+            return back()->withErrors('Gagal membuat Request Order: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function show(SalesOrder $salesOrder)
+    public function show($id)
     {
+        $requestOrder = RequestOrder::with('items.barang', 'sales', 'customPenawaran', 'order')->findOrFail($id);
+        
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($salesOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($requestOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 
-        $salesOrder->load('items', 'sales', 'customPenawaran');
-        return view('admin.sales.sales-order.show', compact('salesOrder'));
+        return view('admin.sales.request-order.show', compact('requestOrder'));
     }
 
-    public function edit(SalesOrder $salesOrder)
+    public function edit($id)
     {
-        if ($salesOrder->sales_id !== Auth::id()) {
+        $requestOrder = RequestOrder::findOrFail($id);
+        if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
 
-        $salesOrder->load('items');
+        $requestOrder->load('items');
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales.sales-order.edit', compact('salesOrder', 'salesUsers', 'currentUserName'));
+        return view('admin.sales.request-order.edit', compact('requestOrder', 'salesUsers', 'currentUserName'));
     }
 
-    public function update(Request $request, SalesOrder $salesOrder)
+    public function update(Request $request, $id)
     {
-        if ($salesOrder->sales_id !== Auth::id()) {
+        $requestOrder = RequestOrder::findOrFail($id);
+        if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
 
@@ -665,127 +483,90 @@ class SalesOrderController extends Controller
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
             'date' => 'required|date',
-            'intro_text' => 'nullable|string',
-            'tax' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.nama_barang' => 'required|string|max:255',
             'items.*.qty' => 'required|integer|min:1',
-            'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|numeric|min:0',
-            'items.*.diskon' => 'required|integer|min:0|max:100',
-            'items.*.keterangan' => 'nullable|string|max:255',
-            'items.*.images' => 'nullable|array',
-            'items.*.images.*' => 'nullable|image|max:5120',
-            'items.*.existing_images' => 'nullable|array',
-            'items.*.existing_images.*' => 'nullable|string',
+            'items.*.satuan' => 'required|string|max:50',
+            'items.*.diskon' => 'nullable|integer|min:0|max:100',
         ]);
 
         DB::beginTransaction();
         try {
-            $salesOrder->update([
-                'to' => $validated['to'],
-                'up' => $validated['up'],
+            $requestOrder->update([
+                'customer_name' => $validated['to'],
                 'subject' => $validated['subject'],
-                'email' => $validated['email'],
-                'date' => $validated['date'],
-                'intro_text' => $validated['intro_text'] ?? null,
-                'tax' => $validated['tax'] ?? 0,
+                'tanggal_kebutuhan' => $validated['date'],
             ]);
 
-            $salesOrder->items()->delete();
-            $subtotal = 0;
+            $requestOrder->items()->delete();
 
-            foreach ($validated['items'] as $i => $itemData) {
-                $itemImages = [];
-                if ($request->hasFile("items.$i.images")) {
-                    foreach ($request->file("items.$i.images") as $file) {
-                        if ($file) {
-                            $itemImages[] = $file->store('sales-order-images', 'public');
-                        }
-                    }
-                }
-
-                if (empty($itemImages) && isset($validated['items'][$i]['existing_images']) && !empty($validated['items'][$i]['existing_images'])) {
-                    $itemImages = $validated['items'][$i]['existing_images'];
-                }
-
-                $itemSubtotal = $itemData['qty'] * $itemData['harga'] * (1 - ($itemData['diskon'] ?? 0) / 100);
-                $subtotal += $itemSubtotal;
-
-                SalesOrderItem::create([
-                    'sales_order_id' => $salesOrder->id,
-                    'nama_barang' => $itemData['nama_barang'],
-                    'qty' => $itemData['qty'],
-                    'satuan' => $itemData['satuan'],
-                    'harga' => $itemData['harga'],
-                    'subtotal' => $itemSubtotal,
-                    'diskon' => $itemData['diskon'] ?? 0,
-                    'keterangan' => $itemData['keterangan'] ?? null,
-                    'images' => !empty($itemImages) ? $itemImages : null,
+            foreach ($validated['items'] as $itemData) {
+                RequestOrderItem::create([
+                    'request_order_id' => $requestOrder->id,
+                    'nama_barang_custom' => $itemData['nama_barang'],
                     'quantity' => $itemData['qty'],
+                    'harga' => $itemData['harga'],
+                    'subtotal' => $itemData['qty'] * $itemData['harga'],
+                    'diskon_percent' => $itemData['diskon'] ?? 0,
                 ]);
             }
 
-            $salesOrder->update([
-                'subtotal' => $subtotal,
-                'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-            ]);
-
             DB::commit();
-            return redirect()->route('sales.sales-order.show', $salesOrder->id)
-                ->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil diubah.']);
+            return redirect()->route('sales.request-order.show', $requestOrder->id)
+                ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal mengubah Sales Order: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Gagal mengubah Request Order: ' . $e->getMessage())->withInput();
         }
     }
 
-    public function destroy(SalesOrder $salesOrder)
+    public function destroy($id)
     {
-        if ($salesOrder->sales_id !== Auth::id()) {
+        $requestOrder = RequestOrder::findOrFail($id);
+        if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
 
         try {
-            DB::transaction(function () use ($salesOrder) {
-                $salesOrder->items()->delete();
-                $salesOrder->delete();
+            DB::transaction(function () use ($requestOrder) {
+                $requestOrder->items()->delete();
+                $requestOrder->delete();
             });
-            return redirect()->route('sales.sales-order.index')
-                ->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil dihapus.']);
+            return redirect()->route('sales.request-order.index')
+                ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dihapus.']);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus Sales Order: ' . $e->getMessage());
+            return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage());
         }
     }
 
-    public function uploadImage(Request $request, SalesOrder $salesOrder)
+    public function uploadImage(Request $request, $id)
     {
-        if ($salesOrder->sales_id !== Auth::id()) {
+        $requestOrder = RequestOrder::findOrFail($id);
+        if ($requestOrder->sales_id !== Auth::id()) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('sales-order-so-images', 'public');
-            if ($salesOrder->image) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($salesOrder->image);
-            }
-            $salesOrder->image = $path;
-            $salesOrder->save();
+            $path = $request->file('image')->store('request-order-so-images', 'public');
+            $requestOrder->image_so = $path;
+            $requestOrder->save();
             return response()->json(['status' => 'success', 'image_url' => \Illuminate\Support\Facades\Storage::url($path)]);
         }
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function deleteImage(SalesOrder $salesOrder)
+    public function deleteImage($id)
     {
-        if ($salesOrder->sales_id !== Auth::id()) {
+        $requestOrder = RequestOrder::findOrFail($id);
+        if ($requestOrder->sales_id !== Auth::id()) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
 
-        if ($salesOrder->image) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($salesOrder->image);
-            $salesOrder->image = null;
-            $salesOrder->save();
+        if ($requestOrder->image_so) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($requestOrder->image_so);
+            $requestOrder->image_so = null;
+            $requestOrder->save();
         }
         return response()->json(['status' => 'success']);
     }
@@ -797,33 +578,14 @@ class SalesOrderController extends Controller
             return response()->json(['success' => true, 'data' => []]);
         }
 
-        $soResults = SalesOrder::query()
-            ->where('sales_id', Auth::id())
-            ->where(function ($q) use ($search) {
-                $q->where('sales_order_number', 'like', "%$search%")
-                  ->orWhere('customer_name', 'like', "%$search%");
-            })
-            ->limit(5)
-            ->get()
-            ->map(function ($so) {
-                return [
-                    'sales_order_number' => $so->sales_order_number,
-                    'customer_name' => $so->customer_name,
-                    'type' => 'sales_order',
-                    'badge' => 'SO',
-                    'url' => route('sales.sales-order.show', $so->id),
-                    'no_po' => optional($so->requestOrder)->no_po,
-                ];
-            });
-
-        $roResults = \App\Models\RequestOrder::where('sales_id', Auth::id())
+        $results = \App\Models\RequestOrder::where('sales_id', Auth::id())
             ->where(function ($q) use ($search) {
                 $q->where('request_number', 'like', "%$search%")
                   ->orWhere('nomor_penawaran', 'like', "%$search%")
                   ->orWhere('customer_name', 'like', "%$search%")
                   ->orWhere('no_po', 'like', "%$search%");
             })
-            ->limit(5)
+            ->limit(10)
             ->get()
             ->map(function ($ro) {
                 return [
@@ -836,8 +598,6 @@ class SalesOrderController extends Controller
                 ];
             });
 
-        $combined = collect($soResults)->merge($roResults);
-
-        return response()->json(['success' => true, 'data' => $combined]);
+        return response()->json(['success' => true, 'data' => $results]);
     }
 }

@@ -189,14 +189,20 @@ class SalesDashboardController extends Controller
                 ->count();
         }
 
-        $topItems = \App\Models\SalesOrderItem::join('sales_orders', 'sales_order_items.sales_order_id', '=', 'sales_orders.id')
-            ->where('sales_orders.sales_id', $user->id)
-            ->select('nama_barang', DB::raw('SUM(qty) as total_qty'))
-            ->groupBy('nama_barang')
+        $topItems = \App\Models\RequestOrderItem::join('request_orders', 'request_order_items.request_order_id', '=', 'request_orders.id')
+            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
+            ->where('request_orders.sales_id', $user->id)
+            ->where('orders.status', 'completed')
+            ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
+            ->select(
+                DB::raw('COALESCE(goods.nama_barang, request_order_items.nama_barang_custom) as item_name'), 
+                DB::raw('SUM(request_order_items.quantity) as total_qty')
+            )
+            ->groupBy('item_name')
             ->orderByDesc('total_qty')
             ->take(8)
             ->get();
-        $svcLabels = $topItems->pluck('nama_barang')->toArray();
+        $svcLabels = $topItems->pluck('item_name')->toArray();
         $svcData = $topItems->pluck('total_qty')->toArray();
 
         return response()->json([
