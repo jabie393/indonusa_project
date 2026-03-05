@@ -68,33 +68,35 @@
                     @forelse($requestOrders as $ro)
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->id }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->request_number }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->nomor_penawaran ?? '-' }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->no_po ?? '-' }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->sales_order_number ?? '-' }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->created_at->format('d M Y') }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->customer_name }}</td>
-                            <td class="px-4 py-3 text-nowrap">{{ $ro->items->count() }} item(s)</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->nomor_penawaran ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->no_po ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->customer_name }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->items->count() }} item(s)</td>
                             <td class="text-nowrap px-4 py-3">Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
                             <td class="px-4 py-3 text-center">
                                 @php
                                     $stokKurangItems = [];
-                                    $stokCukupCount  = 0;
+                                    $stokCukupCount = 0;
                                     $totalItemsCount = $ro->items->count();
 
                                     foreach ($ro->items as $roItem) {
                                         $barang = $roItem->barang;
-                                        if (!$barang) continue;
+                                        if (!$barang) {
+                                            continue;
+                                        }
 
-                                        $stokGudang    = (int) $barang->stok;
+                                        $stokGudang = (int) $barang->stok;
                                         $qtyDibutuhkan = (int) $roItem->quantity;
-                                        $satuan        = $barang->satuan ?? '';
+                                        $satuan = $barang->satuan ?? '';
 
                                         if ($qtyDibutuhkan > $stokGudang) {
                                             $stokKurangItems[] = [
-                                                'nama'   => $barang->nama_barang,
-                                                'stok'   => $stokGudang,
-                                                'qty'    => $qtyDibutuhkan,
+                                                'nama' => $barang->nama_barang,
+                                                'stok' => $stokGudang,
+                                                'qty' => $qtyDibutuhkan,
                                                 'satuan' => $satuan,
                                                 'kurang' => $qtyDibutuhkan - $stokGudang,
                                             ];
@@ -112,7 +114,7 @@
                                     <div class="group relative inline-block">
                                         <span class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                                             </svg>
                                             Stok Kurang ({{ count($stokKurangItems) }})
                                         </span>
@@ -138,7 +140,7 @@
                                 @else
                                     <span class="inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-600 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                         </svg>
                                         Stok Cukup
                                     </span>
@@ -169,7 +171,7 @@
                                             @php $dk = (float) $dc['percent']; @endphp
                                             @if ($dk > 0)
                                                 <div class="flex flex-col items-center">
-                                                    <span class="{{ $dk > 20 ? 'badge bg-red-50 text-red-700 inset-ring inset-ring-red-600' : 'badge bg-green-50 text-green-700 inset-ring inset-ring-green-600' }} inline-flex items-center  px-2 py-0.5 text-xs font-bold">
+                                                    <span class="{{ $dk > 20 ? 'badge bg-red-50 text-red-700 inset-ring inset-ring-red-600' : 'badge bg-green-50 text-green-700 inset-ring inset-ring-green-600' }} inline-flex items-center px-2 py-0.5 text-xs font-bold">
                                                         {{ $dk }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}
                                                     </span>
                                                 </div>
@@ -182,84 +184,85 @@
                                     </div>
                                 @endif
                             </td>
-<td class="px-4 py-3">
-    @php
-        $orderStatus = $ro->order?->status ?? null;
+                            <td class="px-4 py-3">
+                                @php
+                                    $orderStatus = $ro->order?->status ?? null;
 
-        $statusLabelMap = [
-            'open'                => 'Open',
-            'sent_to_supervisor'  => 'Dikirim ke Supervisor',
-            'approved_supervisor' => 'Disetujui Supervisor',
-            'rejected_supervisor' => 'Ditolak Supervisor',
-            'sent_to_warehouse'   => 'Dikirim ke Gudang',
-            'approved_warehouse'  => 'Disetujui Gudang',
-            'rejected_warehouse'  => 'Ditolak Gudang',
-            'not_completed'       => 'Partial Delivery',
-            'completed'           => 'Selesai',
-            'pending'             => 'Pending',
-        ];
+                                    $statusLabelMap = [
+                                        'open' => 'Open',
+                                        'sent_to_supervisor' => 'Dikirim ke Supervisor',
+                                        'approved_supervisor' => 'Disetujui Supervisor',
+                                        'rejected_supervisor' => 'Ditolak Supervisor',
+                                        'sent_to_warehouse' => 'Dikirim ke Gudang',
+                                        'approved_warehouse' => 'Disetujui Gudang',
+                                        'rejected_warehouse' => 'Ditolak Gudang',
+                                        'not_completed' => 'Partial Delivery',
+                                        'completed' => 'Selesai',
+                                        'pending' => 'Pending',
+                                    ];
 
-        $displayStatus = $orderStatus ? ($statusLabelMap[$orderStatus] ?? $orderStatus) : $ro->status;
+                                    $displayStatus = $orderStatus ? $statusLabelMap[$orderStatus] ?? $orderStatus : $ro->status;
 
-        $statusClass = [
-            'Pending'               => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-            'Open'                  => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-            'Disetujui Supervisor'  => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-            'Ditolak Supervisor'    => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-            'Dikirim ke Gudang'     => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-            'Disetujui Gudang'      => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-            'Ditolak Gudang'        => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-            'Partial Delivery'      => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-            'Selesai'               => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-        ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
-    @endphp
+                                    $statusClass =
+                                        [
+                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Ditolak Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Dikirim ke Gudang' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Disetujui Gudang' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Ditolak Gudang' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
+                                            'Selesai' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                @endphp
 
-    <div class="flex flex-col items-center gap-1">
-        <span class="{{ $statusClass }} badge">{{ $displayStatus }}</span>
+                                <div class="flex flex-col items-center gap-1">
+                                    <span class="{{ $statusClass }} badge">{{ $displayStatus }}</span>
 
-        @if ($orderStatus === 'not_completed' && $ro->order)
-            @php
-                $orderItems   = $ro->order->items ?? collect();
-                $sudahDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) > 0);
-                $belumDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity && ($i->status_item ?? '') !== 'delivered');
-            @endphp
-            @if ($orderItems->count() > 0)
-                <div class="group relative mt-1 inline-block w-full">
-                    <span class="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} item terkirim
-                    </span>
-                    <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
-                        @if ($sudahDikirim->count() > 0)
-                            <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
-                            @foreach ($sudahDikirim as $item)
-                                <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
-                                    <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
-                                    <span class="ml-2 shrink-0 font-bold text-green-600">
-                                        {{ $item->delivered_quantity }}/{{ $item->quantity }} {{ $item->barang->satuan ?? '' }}
-                                    </span>
+                                    @if ($orderStatus === 'not_completed' && $ro->order)
+                                        @php
+                                            $orderItems = $ro->order->items ?? collect();
+                                            $sudahDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) > 0);
+                                            $belumDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity && ($i->status_item ?? '') !== 'delivered');
+                                        @endphp
+                                        @if ($orderItems->count() > 0)
+                                            <div class="group relative mt-1 inline-block w-full">
+                                                <span class="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                    {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} item terkirim
+                                                </span>
+                                                <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                                                    @if ($sudahDikirim->count() > 0)
+                                                        <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
+                                                        @foreach ($sudahDikirim as $item)
+                                                            <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                                                <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                                <span class="ml-2 shrink-0 font-bold text-green-600">
+                                                                    {{ $item->delivered_quantity }}/{{ $item->quantity }} {{ $item->barang->satuan ?? '' }}
+                                                                </span>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                    @if ($belumDikirim->count() > 0)
+                                                        <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa Dikirim:</p>
+                                                        @foreach ($belumDikirim as $item)
+                                                            @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
+                                                            <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                                                <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                                <span class="ml-2 shrink-0 font-bold text-orange-500">Sisa {{ $sisa }} {{ $item->barang->satuan ?? '' }}</span>
+                                                            </div>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
-                            @endforeach
-                        @endif
-                        @if ($belumDikirim->count() > 0)
-                            <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa Dikirim:</p>
-                            @foreach ($belumDikirim as $item)
-                                @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
-                                <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
-                                    <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
-                                    <span class="ml-2 shrink-0 font-bold text-orange-500">Sisa {{ $sisa }} {{ $item->barang->satuan ?? '' }}</span>
-                                </div>
-                            @endforeach
-                        @endif
-                    </div>
-                </div>
-            @endif
-        @endif
-    </div>
-</td>
+                            </td>
                             <td class="text-nowrap px-4 py-3">
                                 @if ($ro->tanggal_berlaku)
                                     {{ \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y') }}
@@ -271,8 +274,8 @@
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
                                     <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                        
-                                        
+
+
                                         {{-- Detail --}}
                                         <a href="{{ route('sales.request-order.show', $ro->id) }}" class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" title="Lihat Detail">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">

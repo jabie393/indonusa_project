@@ -69,9 +69,10 @@ $(document).on("submit", ".approve-form", function (e) {
     e.preventDefault();
     const form = this;
     const text = $(this).data("confirm-text") || "Apakah Anda yakin ingin menyetujui data ini?";
+    const btnText = $(this).data("confirm-button-text") || "Ya, Setujui";
     window.confirmApprove(() => {
         form.submit();
-    }, text);
+    }, text, btnText);
 });
 
 // Success alert

@@ -254,7 +254,7 @@
 
                                             @if (!$sudahDikirim)
                                                 @if ($row['type'] === 'sales_order')
-                                                    <form method="POST" action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}" onsubmit="return confirm('Kirim Sales Order ini ke Warehouse?')" class="w-full">
+                                                    <form method="POST" action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}" data-confirm-text="Kirim Sales Order ini ke Warehouse?" data-confirm-button-text="Ya, Kirim" class="approve-form w-full">
                                                         @csrf
                                                         <li>
                                                             <button type="submit" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
@@ -268,7 +268,7 @@
                                                         </li>
                                                     </form>
                                                 @elseif ($row['type'] === 'request_order')
-                                                    <form method="POST" action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}" onsubmit="return confirm('Kirim Request Order ini ke Warehouse?')" class="w-full">
+                                                    <form method="POST" action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}" data-confirm-text="Kirim Request Order ini ke Warehouse?" data-confirm-button-text="Ya, Kirim" class="approve-form w-full">
                                                         @csrf
                                                         <li>
                                                             <button type="submit" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
@@ -612,11 +612,11 @@
                             </div>
 
                             ${data.intro_text ? `
-                                                                                                        <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                                                                                                            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Teks Pembuka</h3>
-                                                                                                            <p class="text-gray-700 dark:text-gray-300">${data.intro_text}</p>
-                                                                                                        </div>
-                                                                                                    ` : ''}
+                                                                                                            <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                                                                                                                <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Teks Pembuka</h3>
+                                                                                                                <p class="text-gray-700 dark:text-gray-300">${data.intro_text}</p>
+                                                                                                            </div>
+                                                                                                        ` : ''}
 
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Detail Items</h3>

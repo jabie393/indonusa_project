@@ -236,7 +236,7 @@
                                                     $isExpired = $penawaran->isExpired();
                                                 @endphp
                                                 @if ($penawaran->status === 'approved_supervisor' && !$isExpired)
-                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-400" target="_blank">
+                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50" target="_blank">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                                         </svg>
@@ -258,14 +258,16 @@
                                             </li>
                                             {{-- Sent to Warehouse --}}
                                             @if ($penawaran->status === 'approved_supervisor')
-                                                <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" style="display:inline;">
+                                                <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST" >
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-yellow-500 to-yellow-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-yellow-600 hover:to-yellow-800 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" />
-                                                        </svg>
-                                                        Kirim ke Warehouse
-                                                    </button>
+                                                    <li>
+                                                        <button type="button" onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Warehouse?', 'Ya, Kirim')" class="flex w-full items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" />
+                                                            </svg>
+                                                            Kirim ke Warehouse
+                                                        </button>
+                                                    </li>
                                                 </form>
                                             @endif
 
@@ -273,12 +275,14 @@
                                             @if (in_array($penawaran->status, ['open', 'approved_supervisor']))
                                                 <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST" style="display:inline;">
                                                     @csrf
-                                                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 px-4 py-2 text-sm font-semibold text-white shadow-md transition hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                        </svg>
-                                                        Sent to Penawaran
-                                                    </button>
+                                                    <li>
+                                                        <button type="button" class="flex items-center gap-2 text-blue-700 hover:bg-blue-50" onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Penawaran?', 'Ya, Kirim')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                            </svg>
+                                                            Sent to Penawaran
+                                                        </button>
+                                                    </li>
                                                 </form>
                                             @endif
                                         </ul>

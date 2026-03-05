@@ -43,15 +43,6 @@
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg> Informasi Customer
                             </h3>
-                            <button type="button" class="btn btn-sm btn-light" data-bs-toggle="modal"
-                                data-bs-target="#addCustomerModal">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12h14"></path>
-                                    <path d="M12 5v14"></path>
-                                </svg> Tambah Customer Baru
-                            </button>
                         </div>
 
                         <div class="mb-8 grid grid-cols-1 gap-6 p-5 lg:grid-cols-2">
