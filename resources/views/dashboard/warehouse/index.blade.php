@@ -37,12 +37,10 @@
             </div>
         </div>
 
-
-
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Jumlah Barang</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Jumlah Barang</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
@@ -55,9 +53,10 @@
                     </div>
                 </div>
             </div>
+
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Jumlah Stok</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Jumlah Stok</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
@@ -73,7 +72,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Barang masuk hari ini</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Barang masuk hari ini</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center justify-center">
@@ -94,7 +93,7 @@
             </div>
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white dark:text-white">Barang keluar hari ini</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 dark:text-white">Barang keluar hari ini</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
 
@@ -115,7 +114,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Stok barang rendah</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Stok barang rendah</h1>
                 </div>
 
                 <div class="grid h-full grid-cols-4 justify-center gap-2 divide-x lg:gap-5">
@@ -146,7 +145,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Low Stock Items Table</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Low Stock Items Table</h1>
                 </div>
                 <table id="dashTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -176,7 +175,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Inventory Movement Chart</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Inventory Movement Chart</h1>
                     @php
                         $currentYear = now()->year;
                         $selected = $selectedYear ?? $currentYear;
@@ -199,7 +198,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Stock Value Chart</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Stock Value Chart</h1>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-full w-full">
@@ -210,7 +209,7 @@
             </div>
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Recent Inbound Items</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Recent Inbound Items</h1>
                 </div>
                 <table id="dashTable2" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -245,7 +244,7 @@
             </div>
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Recent Outbound Items</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Recent Outbound Items</h1>
                 </div>
                 <table id="dashTable3" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">

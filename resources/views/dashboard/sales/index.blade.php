@@ -35,7 +35,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
 
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">

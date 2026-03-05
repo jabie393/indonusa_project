@@ -39,7 +39,6 @@
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="selectCol px-4 py-3">
-                            <input type="checkbox" id="select-all-checkbox" />
                         </th>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>

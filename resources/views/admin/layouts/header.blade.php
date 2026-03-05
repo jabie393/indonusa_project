@@ -1,11 +1,5 @@
     <nav class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative z-50 flex h-full flex-row items-center justify-between rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] shadow-sm dark:bg-gradient-to-r dark:from-[#0D223A] dark:to-[#225A97]">
         <div class="ml-5 flex items-center">
-            <div class="flex items-center border-gray-400">
-                <a href="{{ route('dashboard') }}" class="items-center justify-between lg:flex">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="mr-3 h-8">
-                </a>
-            </div>
-            <hr class="mx-2 h-[40px] border-r-2 border-gray-400 dark:border-gray-600">
             @hasSection('header_content')
                 @yield('header_content')
             @else

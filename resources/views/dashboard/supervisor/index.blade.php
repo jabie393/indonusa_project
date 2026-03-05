@@ -61,7 +61,7 @@
             {{-- Stat Cards --}}
             <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Menunggu Persetujuan</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Menunggu Persetujuan</h1>
                 </div>
                 <div class="flex flex-col justify-center p-6">
                     <div class="flex flex-col items-center">
@@ -78,7 +78,7 @@
 
             <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Pesanan Disetujui (Bulan Ini)</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Pesanan Disetujui (Bulan Ini)</h1>
                 </div>
                 <div class="flex flex-col justify-center p-6">
                     <div class="flex flex-col items-center">
@@ -95,7 +95,7 @@
 
             <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Pendapatan Bulan Ini</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Pendapatan Bulan Ini</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center p-6">
                     <div class="flex h-full flex-col items-center justify-center">
@@ -113,7 +113,7 @@
 
             <div class="col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white">Penjualan Selesai</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Penjualan Selesai</h1>
                 </div>
                 <div class="flex flex-col justify-center p-6">
                     <div class="flex flex-col items-center">
@@ -130,7 +130,7 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Profit Sales Per Akun</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Profit Sales Per Akun</h1>
                 </div>
 
                 <div class="grid h-full grid-cols-4 justify-center gap-2 divide-x lg:gap-5">
@@ -162,7 +162,7 @@
             {{-- Charts --}}
             <div class="col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white lg:text-2xl">Tren Penjualan (Rp)</h1>
+                    <h1 class="text-lg font-bold text-white ">Tren Penjualan (Rp)</h1>
                     <select id="imc-year-select" class="rounded-full border-none bg-white/10 px-4 py-1 text-sm text-white focus:outline-none">
                         @foreach ($imc_years as $y)
                             <option value="{{ $y }}" {{ $y == $selectedYear ? 'selected' : '' }} class="text-black">{{ $y }}</option>
@@ -176,7 +176,7 @@
 
             <div class="col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white lg:text-2xl">Distribusi Status Pesanan</h1>
+                    <h1 class="text-lg font-bold text-white ">Distribusi Status Pesanan</h1>
                 </div>
                 <div class="p-4" style="height: 300px;">
                     <canvas id="SVC" data-labels='@json($svc_labels)' data-values='@json($svc_data)'></canvas>
@@ -186,7 +186,7 @@
             {{-- Tables --}}
             <div class="col-span-8 w-full rounded-2xl shadow-md">
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white lg:text-2xl">Menunggu Persetujuan Penawaran</h1>
+                    <h1 class="text-lg font-bold text-white ">Menunggu Persetujuan Penawaran</h1>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -224,7 +224,7 @@
 
             <div class="col-span-8 w-full overflow-hidden rounded-2xl shadow-md">
                 <div class="w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white lg:text-2xl">Performa Sales</h1>
+                    <h1 class="text-lg font-bold text-white ">Performa Sales</h1>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -259,7 +259,7 @@
 
             <div class="col-span-8 w-full overflow-hidden rounded-2xl shadow-md">
                 <div class="w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white lg:text-2xl">Aktivitas Pelanggan Terbaru</h1>
+                    <h1 class="text-lg font-bold text-white ">Aktivitas Pelanggan Terbaru</h1>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
@@ -276,7 +276,7 @@
                                     <td class="px-4 py-3 font-medium">{{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
                                     <td class="px-4 py-3">{{ $order->created_at->format('d/m/Y') }}</td>
                                     <td class="px-4 py-3 text-center">
-                                        <span class="{{ $order->status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} badge inset-ring">
+                                        <span class="{{ $order->status == 'completed' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }} badge ">
                                             {{ ucwords(str_replace('_', ' ', $order->status)) }}
                                         </span>
                                     </td>
