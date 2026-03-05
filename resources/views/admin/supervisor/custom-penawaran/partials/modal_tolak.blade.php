@@ -4,10 +4,10 @@
     {{-- ===================================================
          MODAL TOLAK - Premium Redesign
          ===================================================  --}}
-    <div id="modalTolakGlobal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="modalTolakTitle">
-        <div class="animate-scale-up w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
+    <dialog id="modalTolakGlobal" class="modal">
+        <div class="modal-box w-full max-w-md overflow-hidden rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
             {{-- Header --}}
-            <div class="relative  bg-gradient-to-r from-[#225A97] to-[#0D223A]  px-6 py-5">
+            <div class="relative bg-gradient-to-r from-[#225A97] to-[#0D223A] px-6 py-5">
                 <div class="flex items-center justify-between">
                     <div>
                         <h5 id="modalTolakTitle" class="text-lg font-bold tracking-tight text-white">
@@ -15,11 +15,13 @@
                         </h5>
                         <p class="mt-1 text-xs font-medium text-rose-100/80">Nomor: <span id="modalTolakNomor"></span></p>
                     </div>
-                    <button type="button" onclick="closeTolakModal()" class="rounded-lg bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                    </button>
+                    <form method="dialog">
+                        <button class="rounded-lg bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
 
@@ -62,24 +64,20 @@
                 </div>
             </form>
         </div>
-    </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
 
     <script>
         /**
          * Buka modal tolak.
-         * @param {string} type  - 'request_order' atau 'custom'
-         * @param {string} id    - ID record
-         * @param {string} nomor - Nomor penawaran / request number (untuk label)
          */
         function openTolakModal(type, id, nomor) {
-            // Tentukan action URL berdasarkan tipe
             let actionUrl = '';
             if (type === 'request_order') {
-                // route: POST /request-order/{id}/reject  → supervisor.request-order.reject
                 actionUrl = '/request-order/' + id + '/reject';
             } else if (type === 'custom') {
-                // route: POST /supervisor/custom-penawaran/{id}/approval → admin.custom-penawaran.approval
-                // We set actionUrl to include the ID, but for approval route we need to handle the 'reject' action
                 actionUrl = '/supervisor/custom-penawaran/' + id + '/approval?action=reject';
             }
 
@@ -87,14 +85,17 @@
             document.getElementById('modalTolakNomor').textContent = nomor;
             document.getElementById('modalTolakReason').value = '';
             document.getElementById('modalTolakError').classList.add('hidden');
-            document.getElementById('modalTolakGlobal').classList.remove('hidden');
-            document.getElementById('modalTolakGlobal').classList.add('flex');
-            document.getElementById('modalTolakReason').focus();
+
+            const modal = document.getElementById('modalTolakGlobal');
+            if (modal) {
+                modal.showModal();
+                document.getElementById('modalTolakReason').focus();
+            }
         }
 
         function closeTolakModal() {
-            document.getElementById('modalTolakGlobal').classList.add('hidden');
-            document.getElementById('modalTolakGlobal').classList.remove('flex');
+            const modal = document.getElementById('modalTolakGlobal');
+            if (modal) modal.close();
         }
 
         function submitTolakModal() {
@@ -107,14 +108,4 @@
             document.getElementById('modalTolakError').classList.add('hidden');
             document.getElementById('formTolakGlobal').submit();
         }
-
-        // Tutup modal jika klik di luar area modal
-        document.getElementById('modalTolakGlobal').addEventListener('click', function(e) {
-            if (e.target === this) closeTolakModal();
-        });
-
-        // Tutup modal dengan tombol Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeTolakModal();
-        });
     </script>
