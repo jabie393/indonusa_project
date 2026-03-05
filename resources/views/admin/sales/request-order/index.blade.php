@@ -57,6 +57,7 @@
                         <th scope="col" class="text-nowrap px-4 py-3">Nama Customer</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Jumlah Item</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Total</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Diskon</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Status</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Berlaku Sampai</th>
@@ -75,6 +76,74 @@
                             <td class="px-4 py-3 text-nowrap">{{ $ro->customer_name }}</td>
                             <td class="px-4 py-3 text-nowrap">{{ $ro->items->count() }} item(s)</td>
                             <td class="text-nowrap px-4 py-3">Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-center">
+                                @php
+                                    $stokKurangItems = [];
+                                    $stokCukupCount  = 0;
+                                    $totalItemsCount = $ro->items->count();
+
+                                    foreach ($ro->items as $roItem) {
+                                        $barang = $roItem->barang;
+                                        if (!$barang) continue;
+
+                                        $stokGudang    = (int) $barang->stok;
+                                        $qtyDibutuhkan = (int) $roItem->quantity;
+                                        $satuan        = $barang->satuan ?? '';
+
+                                        if ($qtyDibutuhkan > $stokGudang) {
+                                            $stokKurangItems[] = [
+                                                'nama'   => $barang->nama_barang,
+                                                'stok'   => $stokGudang,
+                                                'qty'    => $qtyDibutuhkan,
+                                                'satuan' => $satuan,
+                                                'kurang' => $qtyDibutuhkan - $stokGudang,
+                                            ];
+                                        } else {
+                                            $stokCukupCount++;
+                                        }
+                                    }
+
+                                    $adaStokKurang = count($stokKurangItems) > 0;
+                                @endphp
+
+                                @if ($totalItemsCount === 0)
+                                    <span class="text-xs text-gray-300 dark:text-gray-600">-</span>
+                                @elseif ($adaStokKurang)
+                                    <div class="group relative inline-block">
+                                        <span class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                                            </svg>
+                                            Stok Kurang ({{ count($stokKurangItems) }})
+                                        </span>
+                                        <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-lg border border-red-200 bg-white p-3 text-left text-xs opacity-0 shadow-lg transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 dark:border-gray-600 dark:bg-gray-800">
+                                            <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Item dengan stok kurang:</p>
+                                            @foreach ($stokKurangItems as $sk)
+                                                <div class="mb-1 border-b border-gray-100 pb-1 last:border-0 dark:border-gray-700">
+                                                    <p class="font-medium text-gray-800 dark:text-gray-200">{{ Str::limit($sk['nama'], 35) }}</p>
+                                                    <p class="text-gray-500 dark:text-gray-400">
+                                                        Dibutuhkan: <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $sk['qty'] }} {{ $sk['satuan'] }}</span>
+                                                    </p>
+                                                    <p class="text-gray-500 dark:text-gray-400">
+                                                        Tersedia: <span class="font-semibold text-red-600">{{ $sk['stok'] }} {{ $sk['satuan'] }}</span>
+                                                        &nbsp;|&nbsp; Kurang: <span class="font-bold text-red-600">{{ $sk['kurang'] }} {{ $sk['satuan'] }}</span>
+                                                    </p>
+                                                </div>
+                                            @endforeach
+                                            @if ($stokCukupCount > 0)
+                                                <p class="mt-1 text-green-600">{{ $stokCukupCount }} item lainnya stok cukup</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @else
+                                    <span class="inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-600 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        Stok Cukup
+                                    </span>
+                                @endif
+                            </td>
                             @php
                                 // Collect discounts per item, group by percentage and count occurrences
                                 $discountCounts = $ro->items

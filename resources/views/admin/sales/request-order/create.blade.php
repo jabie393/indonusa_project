@@ -287,6 +287,7 @@
                                                         data-nama="{{ $b->nama_barang }}"
                                                         data-kategori="{{ $b->kategori }}"
                                                         data-stok="{{ $b->stok }}"
+                                                        data-satuan="{{ $b->satuan ?? '' }}"
                                                         data-harga="{{ $b->harga ?? 0 }}"
                                                         data-diskon="{{ $b->diskon_percent ?? 0 }}">
                                                         {{ $b->kode_barang }}
@@ -310,9 +311,13 @@
                                                 placeholder="Isi jika diskon > 20%" disabled>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="quantity[]"
+                                                <input type="number" name="quantity[]"
                                                 class="form-control quantity-input @error('quantity.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 min="1" value="1" required>
+                                                <div class="stok-info mt-1 hidden text-xs">
+                                                    <span class="stok-ok hidden font-medium text-green-600"></span>
+                                                    <span class="stok-warn hidden font-semibold text-red-500">⚠ Stok kurang! Tersedia: <span class="stok-angka font-bold"></span></span>
+                                                </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <input type="number" name="harga[]"
@@ -1031,6 +1036,50 @@
                     document.getElementById('hiddenGrandTotal').value = grandTotal.toFixed(2);
                 }
 
+                // =============================================
+                // VALIDASI STOK REAL-TIME
+                // =============================================
+                function updateStokInfo(row) {
+                    const barangSelect = row.querySelector('.barang-select');
+                    const qtyInput = row.querySelector('.quantity-input');
+                    const stokInfo = row.querySelector('.stok-info');
+                    if (!barangSelect || !qtyInput || !stokInfo) return;
+
+                    const stokOk = stokInfo.querySelector('.stok-ok');
+                    const stokWarn = stokInfo.querySelector('.stok-warn');
+                    const stokAngka = stokInfo.querySelector('.stok-angka');
+                    const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+
+                    if (!selectedOption || !selectedOption.value) {
+                        stokInfo.classList.add('hidden');
+                        qtyInput.classList.remove('border-red-500', 'border-green-500');
+                        return;
+                    }
+
+                    const stokTersedia = parseInt(selectedOption.getAttribute('data-stok') ?? '0') || 0;
+                    const satuan = selectedOption.getAttribute('data-satuan') || '';
+                    const qty = parseInt(qtyInput.value) || 0;
+
+                    stokInfo.classList.remove('hidden');
+
+                    if (qty > stokTersedia) {
+                        if (stokOk) { stokOk.classList.add('hidden'); stokOk.textContent = ''; }
+                        if (stokWarn) stokWarn.classList.remove('hidden');
+                        if (stokAngka) stokAngka.textContent = stokTersedia + (satuan ? ' ' + satuan : '');
+                        qtyInput.classList.add('border-red-500');
+                        qtyInput.classList.remove('border-green-500');
+                    } else if (qty > 0) {
+                        if (stokOk) { stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : ''); stokOk.classList.remove('hidden'); }
+                        if (stokWarn) stokWarn.classList.add('hidden');
+                        qtyInput.classList.remove('border-red-500');
+                        qtyInput.classList.add('border-green-500');
+                    } else {
+                        if (stokOk) { stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : ''); stokOk.classList.remove('hidden'); }
+                        if (stokWarn) stokWarn.classList.add('hidden');
+                        qtyInput.classList.remove('border-red-500', 'border-green-500');
+                    }
+                }
+
                 // Helper: preview for item images
                 function handleItemImagePreview(row) {
                     const fileInput = row.querySelector('.item-images-input');
@@ -1096,6 +1145,18 @@
                     const firstRow = tbody.querySelector('tr');
                     const newRow = firstRow.cloneNode(true);
 
+                    // Reset stok info di row baru
+                    const stokInfoNew = newRow.querySelector('.stok-info');
+                    if (stokInfoNew) {
+                        stokInfoNew.classList.add('hidden');
+                        const stokOkNew = stokInfoNew.querySelector('.stok-ok');
+                        const stokWarnNew = stokInfoNew.querySelector('.stok-warn');
+                        if (stokOkNew) { stokOkNew.textContent = ''; stokOkNew.classList.add('hidden'); }
+                        if (stokWarnNew) stokWarnNew.classList.add('hidden');
+                    }
+                    const newQtyInput = newRow.querySelector('.quantity-input');
+                    if (newQtyInput) newQtyInput.classList.remove('border-red-500', 'border-green-500');
+
                     // Reset all inputs dan selects di baris baru
                     newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
                         inp.value = '';
@@ -1145,6 +1206,7 @@
                     barangSelect.addEventListener('change', function() {
                         handleBarangChange(this);
                         updateSubmitState();
+                        updateStokInfo(row);
                     });
 
                     // Event untuk quantity input - hitung harga setelah diskon saat quantity berubah
@@ -1169,6 +1231,10 @@
                                     '0';
                             }
                             calculateTotals();
+                            updateStokInfo(row);
+                        });
+                        quantityInput.addEventListener('input', function() {
+                            updateStokInfo(row);
                         });
                     }
 
@@ -1303,6 +1369,7 @@
                 });
                 // Ensure keterangan inputs reflect current diskon state on page load
                 document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
+                document.querySelectorAll('.item-row').forEach(row => updateStokInfo(row));
                 updateRemoveButtons();
                 document.getElementById('tax_rate').addEventListener('input', calculateTotals);
                 calculateTotals();
