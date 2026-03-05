@@ -721,18 +721,12 @@
                     </a>
                 </li>
 
-                {{-- History Orders --}}
+                {{-- History (all approval processes) --}}
                 <li>
-                    <a href="{{ route('orders.history') }}"
-                        class="{{ request()->routeIs('admin.orders.history') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg aria-hidden="true"
-                            class="{{ request()->routeIs('admin.orders.history') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
-                            fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M5 4h10v2H5V4zM5 8h10v2H5V8zM5 12h6v2H5v-2z"></path>
-                        </svg>
-                        <span
-                            class="{{ request()->routeIs('admin.orders.history') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">History
-                            Orders</span>
+                    <a href="{{ route('supervisor.history') }}"
+                        class="{{ request()->routeIs('supervisor.history') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        <span class="ml-3 group-hover:text-white">History</span>
                     </a>
                 </li>
         </ul>

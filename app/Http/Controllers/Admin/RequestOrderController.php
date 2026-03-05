@@ -95,7 +95,7 @@ class RequestOrderController extends Controller
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
         }
 
-        $query = RequestOrder::with(['items.barang', 'sales', 'order'])
+        $query = RequestOrder::with(['items.barang', 'sales', 'order.items.barang'])
             ->where('sales_id', Auth::id());
 
         if ($search = request('search')) {
@@ -212,7 +212,7 @@ class RequestOrderController extends Controller
             return back()->withErrors('Tidak ada item valid.')->withInput();
         }
 
-    DB::beginTransaction();
+        DB::beginTransaction();
         try {
             // Generate nomor penawaran
             $nomorPenawaran = RequestOrder::generateNomorPenawaran();
@@ -229,82 +229,39 @@ class RequestOrderController extends Controller
                 }
             }
 
-            // Calculate totals for the main request order
-            $headerSubtotal = array_reduce($items, function($carry, $item) {
-                return $carry + $item['subtotal'];
-            }, 0);
-            
+            // Calculate totals
+            $headerSubtotal = array_reduce($items, fn($carry, $item) => $carry + $item['subtotal'], 0);
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
+            // Buat RequestOrder
             $requestOrder = RequestOrder::create([
-                'request_number' => 'REQ-' . strtoupper(Str::random(8)),
-                'nomor_penawaran' => $nomorPenawaran,
+                'request_number'     => 'REQ-' . strtoupper(Str::random(8)),
+                'nomor_penawaran'    => $nomorPenawaran,
                 'sales_order_number' => $validated['sales_order_number'] ?? null,
-                'no_po' => $validated['no_po'] ?? null,
-                'sales_id' => $validated['pic_id'],
-                'customer_name' => $validated['customer_name'],
-                'customer_id' => $validated['customer_id'] ?? null,
-                'subject' => $validated['subject'],
-                'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
-                'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
-                'tanggal_berlaku' => $tanggalBerlaku,
-                'expired_at' => $tanggalBerlaku,
-                'catatan_customer' => $validated['catatan_customer'] ?? null,
-                'supporting_images' => !empty($supportingImages) ? $supportingImages : null,
-                'subtotal' => $headerSubtotal,
-                'tax' => $headerTax,
-                'grand_total' => $headerGrandTotal,
+                'no_po'              => $validated['no_po'] ?? null,
+                'sales_id'           => $validated['pic_id'],
+                'customer_name'      => $validated['customer_name'],
+                'customer_id'        => $validated['customer_id'] ?? null,
+                'subject'            => $validated['subject'],
+                'kategori_barang'    => $validated['kategori_barang'][0] ?? null,
+                'tanggal_kebutuhan'  => $validated['tanggal_kebutuhan'] ?? null,
+                'tanggal_berlaku'    => $tanggalBerlaku,
+                'expired_at'         => $tanggalBerlaku,
+                'catatan_customer'   => $validated['catatan_customer'] ?? null,
+                'supporting_images'  => !empty($supportingImages) ? $supportingImages : null,
+                'subtotal'           => $headerSubtotal,
+                'tax'                => $headerTax,
+                'grand_total'        => $headerGrandTotal,
             ]);
-            // Pastikan tanggal_berlaku selalu terisi
-            if (!$requestOrder->tanggal_berlaku) {
-                $requestOrder->tanggal_berlaku = $tanggalBerlaku;
-                $requestOrder->save();
-            }
 
-            // Simpan item
-
-            // Cek ulang diskon dari tabel items (kolom diskon_percent)
-            // Setelah seluruh item tersimpan, cek ulang diskon dari tabel items
-            $requestOrder->refresh();
-            $requestOrder->load('items');
-            $maxDiskon = $requestOrder->items->max('diskon_percent');
-            if ($maxDiskon > 20) {
-                Order::updateOrCreate(
-                    ['request_order_id' => $requestOrder->id],
-                    [
-                        'order_number' => 'ORD-' . strtoupper(uniqid()),
-                        'sales_id' => $requestOrder->sales_id,
-                        'customer_name' => $requestOrder->customer_name,
-                        'customer_id' => $requestOrder->customer_id,
-                        'status' => 'sent_to_supervisor',
-                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                        'catatan_customer' => $requestOrder->catatan_customer,
-                    ]
-                );
-            } else {
-                Order::updateOrCreate(
-                    ['request_order_id' => $requestOrder->id],
-                    [
-                        'order_number' => 'ORD-' . strtoupper(uniqid()),
-                        'sales_id' => $requestOrder->sales_id,
-                        'customer_name' => $requestOrder->customer_name,
-                        'customer_id' => $requestOrder->customer_id,
-                        'status' => 'open',
-                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                        'catatan_customer' => $requestOrder->catatan_customer,
-                    ]
-                );
-            }
-
+            // Simpan RequestOrderItems TERLEBIH DAHULU
             foreach ($items as $item) {
                 $origIdx = $item['original_index'];
-                // handle per-item images
                 $itemImagePaths = [];
                 if ($request->hasFile("item_images.{$origIdx}")) {
                     foreach ($request->file("item_images.{$origIdx}") as $f) {
                         if ($f) {
-                            // FIX: simpan ke disk 'public'
                             $itemImagePaths[] = $f->store('request-order-item-images', 'public');
                         }
                     }
@@ -312,57 +269,59 @@ class RequestOrderController extends Controller
 
                 $itemData = [
                     'request_order_id' => $requestOrder->id,
-                    'barang_id' => $item['barang_id'],
-                    'kategori_barang' => $item['kategori_barang'] ?? null,
-                    'quantity' => $item['quantity'],
-                    'harga' => $item['harga'],
-                    'subtotal' => $item['subtotal'],
-                    // FIX: simpan ke kolom 'images' (bukan 'item_images')
-                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'barang_id'        => $item['barang_id'],
+                    'kategori_barang'  => $item['kategori_barang'] ?? null,
+                    'quantity'         => $item['quantity'],
+                    'harga'            => $item['harga'],
+                    'subtotal'         => $item['subtotal'],
+                    'images'           => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
-                        if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
-                            $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
-                        }
+                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
+                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
+                }
 
-                        RequestOrderItem::create($itemData);
+                RequestOrderItem::create($itemData);
+            }
+
+            // Setelah items tersimpan, baru cek diskon dan buat Order
+            // HANYA dipanggil SATU KALI di sini
+            $requestOrder->refresh();
+            $requestOrder->load('items');
+            $maxDiskon = $requestOrder->items->max('diskon_percent') ?? 0;
+
+            // Kurangi stok barang sesuai quantity yang dipesan
+            foreach ($items as $item) {
+                $barangId = $item['barang_id'] ?? null;
+                $qty      = (int) ($item['quantity'] ?? 0);
+                if ($barangId && $qty > 0) {
+                    \App\Models\Barang::where('id', $barangId)
+                        ->where('stok', '>=', $qty)
+                        ->decrement('stok', $qty);
+                }
+            }
+
+            $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
+
+            // Cek apakah order sudah ada (untuk hindari duplikat)
+            $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
+            if (!$existingOrder) {
+                Order::create([
+                    'order_number'      => 'ORD-' . strtoupper(Str::random(8)),
+                    'sales_id'          => $requestOrder->sales_id,
+                    'customer_name'     => $requestOrder->customer_name,
+                    'customer_id'       => $requestOrder->customer_id,
+                    'request_order_id'  => $requestOrder->id,
+                    'status'            => $orderStatus,
+                    'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                    'catatan_customer'  => $requestOrder->catatan_customer,
+                ]);
+            } else {
+                $existingOrder->update(['status' => $orderStatus]);
             }
 
             DB::commit();
 
-            // Setelah commit, cek ulang diskon dan update status order
-            $requestOrder->refresh();
-            $requestOrder->load('items');
-            $maxDiskon = $requestOrder->items->max('diskon_percent');
-            if ($maxDiskon > 20) {
-                Order::updateOrCreate(
-                    ['request_order_id' => $requestOrder->id],
-                    [
-                        'order_number' => 'ORD-' . strtoupper(uniqid()),
-                        'sales_id' => $requestOrder->sales_id,
-                        'customer_name' => $requestOrder->customer_name,
-                        'customer_id' => $requestOrder->customer_id,
-                        'status' => 'sent_to_supervisor',
-                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                        'catatan_customer' => $requestOrder->catatan_customer,
-                    ]
-                );
-            } else {
-                Order::updateOrCreate(
-                    ['request_order_id' => $requestOrder->id],
-                    [
-                        'order_number' => 'ORD-' . strtoupper(uniqid()),
-                        'sales_id' => $requestOrder->sales_id,
-                        'customer_name' => $requestOrder->customer_name,
-                        'customer_id' => $requestOrder->customer_id,
-                        'status' => 'open',
-                        'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                        'catatan_customer' => $requestOrder->catatan_customer,
-                    ]
-                );
-            }
-
-            // If the request order is for the current user, redirect to show; otherwise, redirect to index
             if ($requestOrder->sales_id == Auth::id()) {
                 return redirect()->route('sales.request-order.show', $requestOrder->id)
                     ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
@@ -373,7 +332,10 @@ class RequestOrderController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal membuat Request Order: ' . $e->getMessage())->withInput()->with(['title' => 'Gagal', 'text' => 'Gagal membuat Request Order!']);
+            return back()
+                ->withErrors('Gagal membuat Request Order: ' . $e->getMessage())
+                ->withInput()
+                ->with(['title' => 'Gagal', 'text' => 'Gagal membuat Request Order!']);
         }
     }
 
@@ -897,29 +859,59 @@ class RequestOrderController extends Controller
     protected function processSentToWarehouse(RequestOrder $ro)
     {
         DB::transaction(function () use ($ro) {
-            $order = Order::create([
-                'order_number' => 'DO-' . strtoupper(Str::random(8)),
-                'sales_id' => Auth::id(),
-                'supervisor_id' => $ro->approved_by,
-                'request_order_id' => $ro->id,
-                'status' => 'sent_to_warehouse',
-                'customer_name' => $ro->customer_name,
-                'customer_id' => $ro->customer_id,
-                'tanggal_kebutuhan' => $ro->tanggal_kebutuhan,
-                'catatan_customer' => $ro->catatan_customer,
-            ]);
+            $existingOrder = Order::where('request_order_id', $ro->id)->first();
 
-            foreach ($ro->items as $reqItem) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'barang_id' => $reqItem->barang_id,
-                    'quantity' => $reqItem->quantity,
-                    'harga' => $reqItem->harga,
-                    'subtotal' => $reqItem->subtotal,
+            if ($existingOrder) {
+                // Update status dan set do_number jika belum ada
+                $existingOrder->update([
+                    'status'    => 'sent_to_warehouse',
+                    'do_number' => $existingOrder->do_number
+                        ?? ('DO-' . strtoupper(Str::random(8))),
                 ]);
-            }
 
-            // $ro->update(['status' => 'sent_to_warehouse']);
+                // Sync order_items jika belum ada sama sekali
+                // (order dibuat saat store() tanpa items, baru dibuat di sini)
+                if ($existingOrder->items()->count() === 0) {
+                    foreach ($ro->items as $reqItem) {
+                        OrderItem::create([
+                            'order_id'           => $existingOrder->id,
+                            'barang_id'          => $reqItem->barang_id,
+                            'quantity'           => $reqItem->quantity,
+                            'delivered_quantity' => 0,
+                            'status_item'        => 'pending',
+                            'harga'              => $reqItem->harga,
+                            'subtotal'           => $reqItem->subtotal,
+                        ]);
+                    }
+                }
+
+            } else {
+                // Order belum ada sama sekali, buat baru beserta items
+                $order = Order::create([
+                    'order_number'      => 'ORD-' . strtoupper(Str::random(8)),
+                    'do_number'         => 'DO-' . strtoupper(Str::random(8)),
+                    'sales_id'          => Auth::id(),
+                    'supervisor_id'     => $ro->approved_by ?? null,
+                    'request_order_id'  => $ro->id,
+                    'status'            => 'sent_to_warehouse',
+                    'customer_name'     => $ro->customer_name,
+                    'customer_id'       => $ro->customer_id,
+                    'tanggal_kebutuhan' => $ro->tanggal_kebutuhan,
+                    'catatan_customer'  => $ro->catatan_customer,
+                ]);
+
+                foreach ($ro->items as $reqItem) {
+                    OrderItem::create([
+                        'order_id'           => $order->id,
+                        'barang_id'          => $reqItem->barang_id,
+                        'quantity'           => $reqItem->quantity,
+                        'delivered_quantity' => 0,
+                        'status_item'        => 'pending',
+                        'harga'              => $reqItem->harga,
+                        'subtotal'           => $reqItem->subtotal,
+                    ]);
+                }
+            }
         });
     }
 }

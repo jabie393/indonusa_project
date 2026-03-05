@@ -10,7 +10,6 @@
             <div class="card-body">
                 <form action="{{ route('sales.custom-penawaran.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">

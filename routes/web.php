@@ -185,6 +185,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supervisor/defect-report', [\App\Http\Controllers\Admin\DefectReportController::class, 'index'])->name('supervisor.defect-report.index');
     Route::post('/supervisor/defect-report/{id}/approve', [\App\Http\Controllers\Admin\DefectReportController::class, 'approve'])->name('supervisor.defect-report.approve');
     Route::post('/supervisor/defect-report/{id}/reject', [\App\Http\Controllers\Admin\DefectReportController::class, 'reject'])->name('supervisor.defect-report.reject');
+
+    // Supervisor History (all approval processes)
+    Route::get('/supervisor/history', [\App\Http\Controllers\SupervisorController::class, 'history'])->name('supervisor.history');
 });
 // End of Supervisor
 
