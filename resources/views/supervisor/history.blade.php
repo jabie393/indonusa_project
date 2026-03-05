@@ -22,7 +22,7 @@
 
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table id="DataTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
                         <th class="selectCol px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"></th>
@@ -36,9 +36,9 @@
                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">Tanggal Approve/Reject</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                <tbody class="">
                     @forelse($histories as $item)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                        <tr class="">
                             <td class="selectCol px-4 py-3"></td>
                             <td class="px-4 py-3">
                                 @if ($item['type'] === 'request_order')
