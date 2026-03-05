@@ -212,37 +212,55 @@ class SalesOrderController extends Controller
         try {
             $requestOrder->load('items', 'sales');
 
-            $orderNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
-                Order::whereDate('created_at', now()->toDateString())->count() + 1,
-                4, '0', STR_PAD_LEFT
-            );
+            $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
 
-            $order = Order::create([
-                'order_number'       => $orderNumber,
-                'sales_id'           => $requestOrder->sales_id ?? Auth::id(),
-                'customer_name'      => $requestOrder->customer_name,
-                'customer_id'        => $requestOrder->customer_id ?? null,
-                'request_order_id'   => $requestOrder->id,
-                'custom_penawaran_id'=> $requestOrder->custom_penawaran_id ?? null,
-                'status'             => 'sent_to_warehouse',
-                'tanggal_kebutuhan'  => $requestOrder->tanggal_kebutuhan ?? now()->toDateString(),
-                'catatan_customer'   => $requestOrder->catatan_customer ?? null,
-            ]);
-
-            foreach ($requestOrder->items as $item) {
-                OrderItem::create([
-                    'order_id'           => $order->id,
-                    'barang_id'          => $item->barang_id ?? null,
-                    'quantity'           => $item->quantity ?? 1,
-                    'delivered_quantity' => 0,
-                    'status_item'        => 'pending',
-                    'harga'              => $item->harga ?? 0,
-                    'subtotal'           => $item->subtotal ?? 0,
+            if ($existingOrder) {
+                // Order sudah ada, hanya update status
+                $doNumber = $existingOrder->do_number ?? ('DO-' . now()->format('Ymd') . '-' . str_pad(
+                    Order::whereDate('created_at', now()->toDateString())->count() + 1,
+                    4, '0', STR_PAD_LEFT
+                ));
+                $existingOrder->update([
+                    'status'    => 'sent_to_warehouse',
+                    'do_number' => $doNumber,
                 ]);
-            }
+                $orderNumber = $existingOrder->order_number;
+            } else {
+                // Belum ada order sama sekali, buat baru
+                $orderNumber = 'ORD-' . now()->format('Ymd') . '-' . str_pad(
+                    Order::whereDate('created_at', now()->toDateString())->count() + 1,
+                    4, '0', STR_PAD_LEFT
+                );
+                $doNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
+                    Order::whereDate('created_at', now()->toDateString())->count() + 1,
+                    4, '0', STR_PAD_LEFT
+                );
 
-            // Update status RequestOrder
-            $requestOrder->update(['status' => 'sent_to_warehouse']);
+                $order = Order::create([
+                    'order_number'        => $orderNumber,
+                    'do_number'           => $doNumber,
+                    'sales_id'            => $requestOrder->sales_id ?? Auth::id(),
+                    'customer_name'       => $requestOrder->customer_name,
+                    'customer_id'         => $requestOrder->customer_id ?? null,
+                    'request_order_id'    => $requestOrder->id,
+                    'custom_penawaran_id' => $requestOrder->custom_penawaran_id ?? null,
+                    'status'              => 'sent_to_warehouse',
+                    'tanggal_kebutuhan'   => $requestOrder->tanggal_kebutuhan ?? now()->toDateString(),
+                    'catatan_customer'    => $requestOrder->catatan_customer ?? null,
+                ]);
+
+                foreach ($requestOrder->items as $item) {
+                    OrderItem::create([
+                        'order_id'           => $order->id,
+                        'barang_id'          => $item->barang_id ?? null,
+                        'quantity'           => $item->quantity ?? 1,
+                        'delivered_quantity' => 0,
+                        'status_item'        => 'pending',
+                        'harga'              => $item->harga ?? 0,
+                        'subtotal'           => $item->subtotal ?? 0,
+                    ]);
+                }
+            }
 
             DB::commit();
 

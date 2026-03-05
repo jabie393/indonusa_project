@@ -171,6 +171,13 @@ class DeliveryOrdersController extends Controller
         
         $itemsData = $request->input('items', []);
 
+        // Guard: jika tidak ada qty yang diisi, batalkan proses
+        $hasAnyQty = collect($itemsData)->filter(fn($qty) => (int)$qty > 0)->isNotEmpty();
+        if (!$hasAnyQty) {
+            return redirect()->route('delivery-orders.index')
+                ->with(['title' => 'Perhatian', 'text' => 'Tidak ada item yang diisi untuk dikirim. Silakan isi jumlah barang yang akan dikirim.']);
+        }
+
         foreach ($order->items as $item) {
             if (isset($itemsData[$item->id])) {
                 $sentQuantity = (int) $itemsData[$item->id];
@@ -260,20 +267,63 @@ class DeliveryOrdersController extends Controller
 
     public function getItems($id)
     {
-        $order = Order::with('items.barang')->findOrFail($id);
-        $items = $order->items->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'kode_barang' => $item->barang->kode_barang ?? ($item->kode_barang ?? '-'),
-                'nama_barang' => $item->barang->nama_barang ?? ($item->nama_barang ?? '-'),
-                'qty_pesanan' => $item->quantity,
-                'qty_terkirim' => $item->delivered_quantity,
-                'stok_gudang' => ($item->barang && $item->barang->status_barang === 'masuk') ? $item->barang->stok : 0,
-                'satuan' => $item->barang->satuan ?? ($item->satuan ?? '-'),
-            ];
-        });
+        $order = Order::with(['items.barang', 'requestOrder.items.barang'])->findOrFail($id);
 
-        return response()->json($items);
+        // Jika order_items ada dan terisi, gunakan itu
+        if ($order->items->count() > 0) {
+            $items = $order->items->map(function ($item) {
+                return [
+                    'id'           => $item->id,
+                    'kode_barang'  => $item->barang->kode_barang ?? '-',
+                    'nama_barang'  => $item->barang->nama_barang ?? '-',
+                    'qty_pesanan'  => $item->quantity,
+                    'qty_terkirim' => $item->delivered_quantity ?? 0,
+                    'stok_gudang'  => $item->barang ? ($item->barang->stok ?? 0) : 0,
+                    'satuan'       => $item->barang->satuan ?? '-',
+                ];
+            });
+
+            return response()->json($items);
+        }
+
+        // Fallback: order_items kosong (order lama), ambil dari request_order_items
+        // sekaligus buat order_items agar ke depannya tidak perlu fallback lagi
+        if ($order->requestOrder && $order->requestOrder->items->count() > 0) {
+            $result = collect();
+
+            foreach ($order->requestOrder->items as $reqItem) {
+                $existing = \App\Models\OrderItem::where('order_id', $order->id)
+                    ->where('barang_id', $reqItem->barang_id)
+                    ->first();
+
+                if (!$existing) {
+                    $existing = \App\Models\OrderItem::create([
+                        'order_id'           => $order->id,
+                        'barang_id'          => $reqItem->barang_id,
+                        'quantity'           => $reqItem->quantity,
+                        'delivered_quantity' => 0,
+                        'status_item'        => 'pending',
+                        'harga'              => $reqItem->harga,
+                        'subtotal'           => $reqItem->subtotal,
+                    ]);
+                    $existing->load('barang');
+                }
+
+                $result->push([
+                    'id'           => $existing->id,
+                    'kode_barang'  => $existing->barang->kode_barang ?? '-',
+                    'nama_barang'  => $existing->barang->nama_barang ?? '-',
+                    'qty_pesanan'  => $existing->quantity,
+                    'qty_terkirim' => $existing->delivered_quantity ?? 0,
+                    'stok_gudang'  => $existing->barang ? ($existing->barang->stok ?? 0) : 0,
+                    'satuan'       => $existing->barang->satuan ?? '-',
+                ]);
+            }
+
+            return response()->json($result);
+        }
+
+        return response()->json([]);
     }
 
     public function getHistory($id)

@@ -184,23 +184,40 @@
                             </td>
                             <td class="px-4 py-3">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Dikirim ke Gudang' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Gudang' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Gudang' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Selesai' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Tidak Selesai' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                        ][$ro->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                    // Baca status dari tabel orders (real-time), fallback ke status RO sendiri
+                                    $orderStatus = $ro->order?->status ?? null;
+
+                                    $statusLabelMap = [
+                                        'open'                => 'Open',
+                                        'sent_to_supervisor'  => 'Dikirim ke Supervisor',
+                                        'approved_supervisor' => 'Disetujui Supervisor',
+                                        'rejected_supervisor' => 'Ditolak Supervisor',
+                                        'sent_to_warehouse'   => 'Dikirim ke Gudang',
+                                        'approved_warehouse'  => 'Disetujui Gudang',
+                                        'rejected_warehouse'  => 'Ditolak Gudang',
+                                        'not_completed'       => 'Tidak Selesai',
+                                        'completed'           => 'Selesai',
+                                        'pending'             => 'Pending',
+                                    ];
+
+                                    $displayStatus = $orderStatus ? ($statusLabelMap[$orderStatus] ?? $orderStatus) : $ro->status;
+
+                                    $statusClass = [
+                                        'Pending'              => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                        'Open'                 => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'Dikirim ke Supervisor'=> 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                        'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'Ditolak Supervisor'   => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                        'Dikirim ke Gudang'    => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                        'Disetujui Gudang'     => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'Ditolak Gudang'       => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                        'Selesai'              => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                        'Tidak Selesai'        => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
+                                    ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="{{ $statusClass }} badge">
-                                        {{ $ro->status }}
+                                        {{ $displayStatus }}
                                     </span>
                                 </div>
                                 @if ($ro->status === 'Disetujui Supervisor')
@@ -318,7 +335,11 @@
                                             </form>
 
                                             {{-- Sent to Warehouse --}}
-                                            @if (!$ro->order)
+                                            @php
+                                                $roOrderStatus = $ro->order?->status ?? null;
+                                                $sudahDikirimKeGudang = in_array($roOrderStatus, ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse', 'approved_warehouse']);
+                                            @endphp
+                                            @if (!$sudahDikirimKeGudang)
                                                 <form action="{{ route('sales.request-order.sent-to-warehouse', $ro->id) }}" method="POST">
                                                     @csrf
                                                     @method('POST')

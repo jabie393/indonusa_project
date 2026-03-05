@@ -95,7 +95,7 @@ class RequestOrder extends Model
             'approved_warehouse' => 'Disetujui Gudang',
             'rejected_warehouse' => 'Ditolak Gudang',
             'completed' => 'Selesai',
-            'not_completed' => 'Tidak Selesai',
+            'not_completed' => 'Partial Delivery',
         ];
         if (!$status) {
             return 'Belum Diproses';
