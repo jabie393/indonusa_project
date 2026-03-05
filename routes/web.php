@@ -171,6 +171,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/supervisor/request-order/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('admin.request-order.pdf');
     Route::get('/supervisor/custom-penawaran/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('admin.custom-penawaran.pdf');
 
+    // Supervisor Dashboard
+    Route::get('/admin/dashboard/supervisor', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'dashboard'])
+        ->name('dashboard.supervisor');
+    Route::get('/admin/dashboard/supervisor/data', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'chartData'])
+        ->name('dashboard.supervisor.chart.data');
+    Route::get('/admin/dashboard/supervisor/export-performance', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportPerformance'])
+        ->name('dashboard.supervisor.export.performance');
+    Route::get('/admin/dashboard/supervisor/export-quotations', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportQuotations'])
+        ->name('dashboard.supervisor.export.quotations');
+
     // Supervisor Defect Report routes
     Route::get('/supervisor/defect-report', [\App\Http\Controllers\Admin\DefectReportController::class, 'index'])->name('supervisor.defect-report.index');
     Route::post('/supervisor/defect-report/{id}/approve', [\App\Http\Controllers\Admin\DefectReportController::class, 'approve'])->name('supervisor.defect-report.approve');

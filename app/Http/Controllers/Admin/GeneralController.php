@@ -22,7 +22,7 @@ class GeneralController extends Controller
                 return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard(request());
             }
             if ($user->hasRole('Supervisor')) {
-                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard(request());
             }
             if ($user->hasRole('Warehouse')) {
                 return app(\App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController::class)->dashboard(request());
@@ -39,7 +39,7 @@ class GeneralController extends Controller
             case 'sales':
                 return app(\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class)->dashboard(request());
             case 'supervisor':
-                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard();
+                return app(\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class)->dashboard(request());
             case 'warehouse':
                 return app(\App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController::class)->dashboard(request());
             case 'generalaffair':

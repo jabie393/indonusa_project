@@ -237,22 +237,19 @@
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Masa Berlaku</label>
                                             <div class="flex items-center space-x-3">
                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->tanggal_berlaku_formatted ?? '-' }}</p>
-                                                @if ($requestOrder->expired_at)
+                                                @php
+                                                    $expiryDate = $requestOrder->expired_at ?? $requestOrder->tanggal_berlaku;
+                                                @endphp
+                                                @if ($expiryDate)
                                                     @php
-                                                        try {
-                                                            $expiry = is_string($requestOrder->expired_at) ? \Carbon\Carbon::parse($requestOrder->expired_at) : $requestOrder->expired_at;
-                                                            $isExpired = now() > $expiry;
-                                                            $daysLeft = $expiry->diffInDays(now());
-                                                        } catch (\Throwable $e) {
-                                                            $isExpired = false;
-                                                            $daysLeft = null;
-                                                        }
+                                                        $isExpired = now() > $expiryDate;
+                                                        $daysLeft = now()->diffInDays($expiryDate, false);
                                                     @endphp
                                                     @if ($isExpired)
                                                         <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase text-red-700">Expired</span>
                                                     @else
                                                         <span class="{{ $daysLeft <= 3 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' }} inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase">
-                                                            {{ $daysLeft }} Hari Lagi
+                                                            {{ floor($daysLeft) }} Hari Lagi
                                                         </span>
                                                     @endif
                                                 @endif

@@ -39,12 +39,12 @@ class Customer extends Model
         parent::boot();
 
         static::creating(function ($customer) {
-            $customer->created_by = auth()->id();
-            $customer->updated_by = auth()->id(); // Tambahkan ini untuk mengisi kolom updated_by saat creating
+            $customer->created_by = \Illuminate\Support\Facades\Auth::id();
+            $customer->updated_by = \Illuminate\Support\Facades\Auth::id(); // Tambahkan ini untuk mengisi kolom updated_by saat creating
         });
 
         static::updating(function ($customer) {
-            $customer->updated_by = auth()->id();
+            $customer->updated_by = \Illuminate\Support\Facades\Auth::id();
         });
     }
 
@@ -71,5 +71,15 @@ class Customer extends Model
     public function pics()
     {
         return $this->hasMany(Pic::class, 'customer_id');
+    }
+
+    public function salesOrders()
+    {
+        return $this->hasMany(SalesOrder::class, 'customer_id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
     }
 }
