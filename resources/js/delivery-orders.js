@@ -91,27 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     buttons.forEach(function (btn) {
         btn.addEventListener("click", function (e) {
-            const itemsAttr = btn.getAttribute("data-items");
-            let items = [];
-            if (itemsAttr) {
-                try {
-                    items = JSON.parse(itemsAttr);
-                } catch (err) {
-                    // If JSON.parse fails, try to decode HTML entities then parse
-                    try {
-                        const txt = document.createElement("textarea");
-                        txt.innerHTML = itemsAttr;
-                        items = JSON.parse(txt.value);
-                    } catch (err2) {
-                        console.error(
-                            "Failed to parse order items JSON",
-                            err,
-                            err2,
-                        );
-                    }
-                }
-            }
-
+            const orderId = btn.getAttribute("data-order-id");
             const orderNumber =
                 btn.getAttribute("data-order-number") ||
                 btn.dataset.orderNumber ||
@@ -133,8 +113,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (reasonContainer) reasonContainer.classList.add("hidden");
             }
 
-            renderRows(items);
+            // Show loading state
+            clearTbody();
+            const trLoading = document.createElement("tr");
+            const tdLoading = document.createElement("td");
+            tdLoading.setAttribute("colspan", "5");
+            tdLoading.className =
+                "px-4 py-2 text-center text-sm text-gray-500 dark:text-gray-400";
+            tdLoading.textContent = "Loading items...";
+            trLoading.appendChild(tdLoading);
+            tbody.appendChild(trLoading);
+
             openModal();
+
+            // Fetch latest items
+            fetch(`/delivery-orders/${orderId}/items`)
+                .then((res) => res.json())
+                .then((items) => {
+                    renderRows(items);
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch order items", err);
+                    // Fallback to data-items if AJAX fails
+                    const itemsAttr = btn.getAttribute("data-items");
+                    let items = [];
+                    if (itemsAttr) {
+                        try {
+                            items = JSON.parse(itemsAttr);
+                        } catch (parseErr) {
+                            const txt = document.createElement("textarea");
+                            txt.innerHTML = itemsAttr;
+                            items = JSON.parse(txt.value);
+                        }
+                    }
+                    renderRows(items);
+                });
         });
     });
 
