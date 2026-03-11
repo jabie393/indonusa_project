@@ -25,6 +25,37 @@
     <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div
             class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
+            @php
+                $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
+                $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+            @endphp
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('warehouse.index', ['status' => 'masuk']) }}"
+                    class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    Semua Barang
+                </a>
+                <a href="{{ route('warehouse.index', ['status' => 'defect']) }}"
+                    class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    Pengajuan Defect
+                </a>
+                <div class="h-6 w-px bg-white/20 mx-1"></div>
+                <a href="{{ route('supply-orders.index') }}"
+                    class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    Supply Orders
+                    @if ($supplyOrderCount > 0)
+                        <span
+                            class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $supplyOrderCount }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('delivery-orders.index') }}"
+                    class="bg-white text-[#225A97] flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    Delivery Orders
+                    @if ($deliveryOrderCount > 0)
+                        <span
+                            class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
+                    @endif
+                </a>
+            </div>
         </div>
 
         <div class="overflow-x-auto">
