@@ -159,7 +159,7 @@ class RequestOrderController extends Controller
             'pic_id' => 'required|integer|exists:users,id',
             'subject' => 'required|string|max:255',
             'no_po' => 'nullable|string|max:255',
-            'sales_order_number' => 'nullable|string|max:255',
+            // 'sales_order_number' => 'nullable|string|max:255',
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
@@ -234,11 +234,13 @@ class RequestOrderController extends Controller
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
+            // Generate Sales Order Number (NO.SO)
+            $salesOrderNumber = RequestOrder::generateSalesOrderNumber();
             // Buat RequestOrder
             $requestOrder = RequestOrder::create([
                 'request_number'     => 'REQ-' . strtoupper(Str::random(8)),
                 'nomor_penawaran'    => $nomorPenawaran,
-                'sales_order_number' => $validated['sales_order_number'] ?? null,
+                'sales_order_number' => $salesOrderNumber,
                 'no_po'              => $validated['no_po'] ?? null,
                 'sales_id'           => $validated['pic_id'],
                 'customer_name'      => $validated['customer_name'],

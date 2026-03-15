@@ -1,13 +1,36 @@
 <?php
 
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\RequestOrderItem;
+use Illuminate\Support\Carbon;
 
 class RequestOrder extends Model
 {
+    /**
+     * Generate unique Sales Order Number (NO.SO) with format:
+     * SO-[YYYYMMDD]-[4 digit urut]
+     *
+     * @return string
+     */
+    public static function generateSalesOrderNumber(): string
+    {
+        $date = now()->format('Ymd');
+        $count = self::whereDate('created_at', now()->toDateString())
+            ->whereNotNull('sales_order_number')
+            ->where('sales_order_number', 'like', 'SO-' . $date . '-%')
+            ->count() + 1;
+        $urut = str_pad($count, 4, '0', STR_PAD_LEFT);
+        $noSo = 'SO-' . $date . '-' . $urut;
+        // Pastikan unik di seluruh database
+        while (self::where('sales_order_number', $noSo)->exists()) {
+            $count++;
+            $urut = str_pad($count, 4, '0', STR_PAD_LEFT);
+            $noSo = 'SO-' . $date . '-' . $urut;
+        }
+        return $noSo;
+    }
     /**
      * Cek apakah PDF bisa didownload sesuai aturan diskon dan status order
      * @return bool
