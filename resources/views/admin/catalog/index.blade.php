@@ -51,7 +51,7 @@
                             <td class="text-nowrap px-4 py-2">{{ $catalog->catalog_name }}</td>
                             <td class="text-nowrap px-4 py-2">
                                 @if ($catalog->catalog_file)
-                                    <a href="{{ asset('storage/' . $catalog->catalog_file) }}" target="_blank" class="text-blue-600 hover:underline">
+                                    <a href="{{ asset('files/' . $catalog->catalog_file) }}" target="_blank" class="text-blue-600 hover:underline">
                                         View File
                                     </a>
                                 @else
@@ -60,7 +60,7 @@
                             </td>
                             <td class="px-4 py-2">
                                 @if ($catalog->catalog_cover)
-                                    <img src="{{ url('files/' . $catalog->catalog_cover) }}" class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" alt="Catalog Cover" onclick="openImagePreview(this.src)" onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
+                                    <img src="{{ asset('files/' . $catalog->catalog_cover) }}" class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" alt="Catalog Cover" onclick="openImagePreview(this.src)" onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
                                 @else
                                     <div class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
                                         No Image
