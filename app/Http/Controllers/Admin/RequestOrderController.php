@@ -642,6 +642,37 @@ class RequestOrderController extends Controller
                 RequestOrderItem::create($itemData);
             }
 
+
+            // === Tambahan logika supervisor approval reset & update/create Order ===
+            // Hitung diskon maksimal
+            $requestOrder->refresh();
+            $maxDiskon = $requestOrder->items->max('diskon_percent') ?? 0;
+            $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
+
+            // Update atau buat Order terkait
+            $existingOrder = \App\Models\Order::where('request_order_id', $requestOrder->id)->first();
+            if ($existingOrder) {
+                $updateData = ['status' => $orderStatus];
+                // Jika status berubah ke sent_to_supervisor, reset field supervisor
+                if ($orderStatus === 'sent_to_supervisor') {
+                    $updateData['supervisor_id'] = null;
+                    $updateData['approved_at'] = null;
+                    $updateData['reason'] = null;
+                }
+                $existingOrder->update($updateData);
+            } else {
+                \App\Models\Order::create([
+                    'order_number'      => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
+                    'sales_id'          => $requestOrder->sales_id,
+                    'customer_name'     => $requestOrder->customer_name,
+                    'customer_id'       => $requestOrder->customer_id,
+                    'request_order_id'  => $requestOrder->id,
+                    'status'            => $orderStatus,
+                    'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
+                    'catatan_customer'  => $requestOrder->catatan_customer,
+                ]);
+            }
+
             DB::commit();
 
             return redirect()->route('sales.request-order.show', $requestOrder->id)
