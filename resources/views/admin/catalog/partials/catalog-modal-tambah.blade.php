@@ -85,7 +85,7 @@
                 </div>
             </div>
             <div class="flex justify-end p-2">
-                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600">Simpan</button>
+                <button type="submit" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d] cursor-pointer">Simpan</button>
             </div>
         </form>
     </div>

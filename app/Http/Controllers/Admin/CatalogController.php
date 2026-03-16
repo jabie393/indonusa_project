@@ -8,6 +8,7 @@ use App\Models\Catalog;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Browsershot\Browsershot;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class CatalogController extends Controller
@@ -43,7 +44,11 @@ class CatalogController extends Controller
         $catalog->catalog_name = $request->catalog_name;
 
         if ($request->hasFile('catalog_file')) {
-            $path = $request->file('catalog_file')->store('catalogs', 'public');
+            $file = $request->file('catalog_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            
+            // Store using storage/app/public disk
+            $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
             
             if (Str::endsWith($path, '.pdf')) {
@@ -76,13 +81,19 @@ class CatalogController extends Controller
         $catalog->catalog_name = $request->catalog_name;
 
         if ($request->hasFile('catalog_file')) {
-            // Delete old files
-            if ($catalog->catalog_file) Storage::disk('public')->delete($catalog->catalog_file);
+            // Delete old files from public disk
+            if ($catalog->catalog_file) {
+                Storage::disk('public')->delete($catalog->catalog_file);
+            }
             if ($catalog->catalog_cover && $catalog->catalog_cover !== $catalog->catalog_file) {
                 Storage::disk('public')->delete($catalog->catalog_cover);
             }
 
-            $path = $request->file('catalog_file')->store('catalogs', 'public');
+            $file = $request->file('catalog_file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Store using storage/app/public disk
+            $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
 
             if (Str::endsWith($path, '.pdf')) {
@@ -99,7 +110,9 @@ class CatalogController extends Controller
     public function destroy($id)
     {
         $catalog = Catalog::findOrFail($id);
-        if ($catalog->catalog_file) Storage::disk('public')->delete($catalog->catalog_file);
+        if ($catalog->catalog_file) {
+            Storage::disk('public')->delete($catalog->catalog_file);
+        }
         if ($catalog->catalog_cover && $catalog->catalog_cover !== $catalog->catalog_file) {
             Storage::disk('public')->delete($catalog->catalog_cover);
         }
@@ -114,7 +127,7 @@ class CatalogController extends Controller
     {
         try {
             $pdfPath = Storage::disk('public')->path($filePath);
-            if (!file_exists($pdfPath)) return null;
+            if (!Storage::disk('public')->exists($filePath)) return null;
 
             $thumbnailName = 'covers/' . pathinfo($filePath, PATHINFO_FILENAME) . '.png';
             $thumbnailPath = Storage::disk('public')->path($thumbnailName);
