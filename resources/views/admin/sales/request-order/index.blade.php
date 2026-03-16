@@ -386,7 +386,7 @@
                                                                 <circle cx="17" cy="18" r="2"></circle>
                                                                 <circle cx="7" cy="18" r="2"></circle>
                                                             </svg>
-                                                            Kirim ke Warehouse
+                                                            {{-- Kirim ke Warehouse --}}
                                                         </button>
                                                     </li>
                                                 </form>
