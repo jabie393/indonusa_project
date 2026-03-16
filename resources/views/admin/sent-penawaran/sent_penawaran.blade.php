@@ -26,7 +26,6 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="selectCol px-4 py-3"></th>
                         <th class="px-4 py-3">No. Penawaran</th>
                         <th class="px-4 py-3">Sales</th>
                         <th class="px-4 py-3">To</th>
@@ -41,9 +40,6 @@
                 <tbody>
                     @forelse($penawarans as $index => $penawaran)
                         <tr class="group border-b border-gray-50 transition-colors hover:bg-gray-50/80 dark:border-gray-700/50 dark:hover:bg-gray-700/30">
-                            <td class="px-4 py-3">
-                                <input type="checkbox" class="row-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500" value="{{ $penawaran->id }}" />
-                            </td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-col">
                                     <span class="font-bold text-gray-900 dark:text-white">

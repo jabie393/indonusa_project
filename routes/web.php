@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\ImportStockExcelController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\CatalogController;
 
 // === Guest Routes === //
 Route::get('/', function () {
@@ -121,6 +122,13 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     // Dashboard Chart Data for GA
     Route::get('/admin/dashboard/general-affair/data', [\App\Http\Controllers\Admin\Dashboard\GeneralAffairDashboardController::class, 'chartData'])
         ->name('dashboard.general-affair.chart.data');
+
+    // Catalog Manager
+    Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
+    Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
+    Route::get('/catalog/{id}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
+    Route::put('/catalog/{id}', [CatalogController::class, 'update'])->name('catalog.update');
+    Route::delete('/catalog/{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
 });
 // End of General Affair
 

@@ -22,7 +22,6 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="selectCol px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
                         <th scope="col" class="px-4 py-3">Kode</th>
                         <th scope="col" class="px-4 py-3">Stok Defect</th>
@@ -35,7 +34,6 @@
                     @forelse ($goods as $barang)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
 
-                            <td class="px-4 py-3"></td>
                             <th scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->nama_barang }}
                             </th>
