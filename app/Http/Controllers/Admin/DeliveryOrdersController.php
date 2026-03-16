@@ -277,9 +277,12 @@ class DeliveryOrdersController extends Controller
                     'kode_barang'  => $item->barang->kode_barang ?? '-',
                     'nama_barang'  => $item->barang->nama_barang ?? '-',
                     'qty_pesanan'  => $item->quantity,
+                    'quantity'     => $item->quantity, // for compatibility
                     'qty_terkirim' => $item->delivered_quantity ?? 0,
+                    'delivered_quantity' => $item->delivered_quantity ?? 0, // for compatibility
                     'stok_gudang'  => $item->barang ? ($item->barang->stok ?? 0) : 0,
                     'satuan'       => $item->barang->satuan ?? '-',
+                    'status'       => $item->status_item ?? 'pending',
                 ];
             });
 
@@ -314,9 +317,12 @@ class DeliveryOrdersController extends Controller
                     'kode_barang'  => $existing->barang->kode_barang ?? '-',
                     'nama_barang'  => $existing->barang->nama_barang ?? '-',
                     'qty_pesanan'  => $existing->quantity,
+                    'quantity'     => $existing->quantity, // for compatibility
                     'qty_terkirim' => $existing->delivered_quantity ?? 0,
+                    'delivered_quantity' => $existing->delivered_quantity ?? 0, // for compatibility
                     'stok_gudang'  => $existing->barang ? ($existing->barang->stok ?? 0) : 0,
                     'satuan'       => $existing->barang->satuan ?? '-',
+                    'status'       => $existing->status_item ?? 'pending',
                 ]);
             }
 

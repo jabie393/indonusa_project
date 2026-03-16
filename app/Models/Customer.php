@@ -73,10 +73,6 @@ class Customer extends Model
         return $this->hasMany(Pic::class, 'customer_id');
     }
 
-    public function salesOrders()
-    {
-        return $this->hasMany(SalesOrder::class, 'customer_id');
-    }
 
     public function orders()
     {

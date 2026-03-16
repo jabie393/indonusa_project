@@ -91,27 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     buttons.forEach(function (btn) {
         btn.addEventListener("click", function (e) {
-            const itemsAttr = btn.getAttribute("data-items");
-            let items = [];
-            if (itemsAttr) {
-                try {
-                    items = JSON.parse(itemsAttr);
-                } catch (err) {
-                    // If JSON.parse fails, try to decode HTML entities then parse
-                    try {
-                        const txt = document.createElement("textarea");
-                        txt.innerHTML = itemsAttr;
-                        items = JSON.parse(txt.value);
-                    } catch (err2) {
-                        console.error(
-                            "Failed to parse order items JSON",
-                            err,
-                            err2,
-                        );
-                    }
-                }
-            }
-
+            const orderId = btn.getAttribute("data-order-id");
             const orderNumber =
                 btn.getAttribute("data-order-number") ||
                 btn.dataset.orderNumber ||
@@ -133,8 +113,41 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (reasonContainer) reasonContainer.classList.add("hidden");
             }
 
-            renderRows(items);
+            // Show loading state
+            clearTbody();
+            const trLoading = document.createElement("tr");
+            const tdLoading = document.createElement("td");
+            tdLoading.setAttribute("colspan", "5");
+            tdLoading.className =
+                "px-4 py-2 text-center text-sm text-gray-500 dark:text-gray-400";
+            tdLoading.textContent = "Loading items...";
+            trLoading.appendChild(tdLoading);
+            tbody.appendChild(trLoading);
+
             openModal();
+
+            // Fetch latest items
+            fetch(`/delivery-orders/${orderId}/items`)
+                .then((res) => res.json())
+                .then((items) => {
+                    renderRows(items);
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch order items", err);
+                    // Fallback to data-items if AJAX fails
+                    const itemsAttr = btn.getAttribute("data-items");
+                    let items = [];
+                    if (itemsAttr) {
+                        try {
+                            items = JSON.parse(itemsAttr);
+                        } catch (parseErr) {
+                            const txt = document.createElement("textarea");
+                            txt.innerHTML = itemsAttr;
+                            items = JSON.parse(txt.value);
+                        }
+                    }
+                    renderRows(items);
+                });
         });
     });
 
@@ -224,6 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         max="${qtySisa}"
                         min="0"
                         class="qty-input bg-white text-black block w-full rounded-md border-gray-300 py-1 text-center text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        data-stok="${item.stok_gudang}"
+                        required
                     >
                     ${
                         isOutOfStock && item.stok_gudang < qtySisa
@@ -321,6 +336,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (partialDeliveryForm) {
         partialDeliveryForm.addEventListener("submit", function (e) {
+            // Manually check validity of inputs in the table (outside the form)
+            const inputs = partialItemsBody.querySelectorAll(".qty-input");
+            let isValid = true;
+
+            for (const input of inputs) {
+                const max = parseFloat(input.getAttribute("max"));
+                const stok = parseFloat(input.getAttribute("data-stok"));
+                const val = parseFloat(input.value);
+
+                if (val > max) {
+                    input.setCustomValidity(
+                        `Jumlah kirim (${val}) tidak boleh melebihi sisa pesanan (${max})`,
+                    );
+                    isValid = false;
+                } else if (val > stok) {
+                    input.setCustomValidity(
+                        `Stok gudang tidak mencukupi (Tersedia: ${stok})`,
+                    );
+                    isValid = false;
+                } else if (val < 0) {
+                    input.setCustomValidity(
+                        "Jumlah kirim tidak boleh kurang dari 0",
+                    );
+                    isValid = false;
+                } else if (input.value === "") {
+                    input.setCustomValidity("Jumlah kirim harus diisi");
+                    isValid = false;
+                } else {
+                    input.setCustomValidity("");
+                }
+
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    isValid = false;
+                    break; // Stop at first invalid input
+                }
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                return;
+            }
+
             // Clear existing inputs in container
             const container = document.getElementById(
                 "partial-inputs-container",
@@ -328,7 +386,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (container) container.innerHTML = "";
 
             // Collect values from table inputs and append to form
-            const inputs = partialItemsBody.querySelectorAll(".qty-input");
             inputs.forEach((input) => {
                 const hiddenInput = document.createElement("input");
                 hiddenInput.type = "hidden";
@@ -336,6 +393,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 hiddenInput.value = input.value;
                 container.appendChild(hiddenInput);
             });
+        });
+
+        // Add input event listener to clear custom validity as user types
+        partialItemsBody.addEventListener("input", function (e) {
+            if (e.target.classList.contains("qty-input")) {
+                e.target.setCustomValidity("");
+            }
         });
     }
 
