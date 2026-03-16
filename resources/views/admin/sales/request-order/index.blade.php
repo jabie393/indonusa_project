@@ -10,14 +10,14 @@
                     </svg>
                     Quotation
                 </a>
-                <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-send-to-warehouse') }}">
+                {{-- <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-send-to-warehouse') }}">
                     <button id="bulk-delete" class="flex cursor-pointer items-center justify-center rounded-lg bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
                         Delete Selected (<span id="selected-count">0</span>)
                     </button>
                     <button id="bulk-send" class="flex cursor-pointer items-center justify-center rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
                         Send to Warehouse
                     </button>
-                </div>
+                </div> --}}
             </div>
             {{-- Bulk Actions --}}
 

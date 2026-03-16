@@ -276,7 +276,6 @@ class SalesOrderController extends Controller
                         'berlaku_sampai' => $berlakuSampai,
                         'catatan_customer' => $ro->catatan_customer,
                         'aksi_url' => route('sales.request-order.show', $ro),
-                        'image_so' => $ro->image_so,
                         'image_po' => $ro->image_po,
                     ];
                 });
@@ -316,7 +315,6 @@ class SalesOrderController extends Controller
                     'berlaku_sampai' => $berlakuSampai,
                     'catatan_customer' => $ro->catatan_customer,
                     'aksi_url' => route('sales.request-order.show', $ro),
-                    'image_so' => $ro->image_so,
                     'image_po' => $ro->image_po,
                 ];
             });
