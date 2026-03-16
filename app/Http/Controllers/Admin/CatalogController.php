@@ -51,7 +51,12 @@ class CatalogController extends Controller
             $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
             
-            if (Str::endsWith($path, '.pdf')) {
+            // Handle client-side generated thumbnail if provided
+            if ($request->filled('catalog_cover_base64')) {
+                $base64Image = $request->input('catalog_cover_base64');
+                $catalog->catalog_cover = $this->saveBase64Cover($base64Image, $path);
+            } elseif (Str::endsWith($path, '.pdf')) {
+                // Fallback to server-side generation (might fail on some hosting)
                 $catalog->catalog_cover = $this->generateThumbnail($path);
             } else {
                 $catalog->catalog_cover = $path; // If it's an image, use it as cover
@@ -96,7 +101,12 @@ class CatalogController extends Controller
             $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
 
-            if (Str::endsWith($path, '.pdf')) {
+            // Handle client-side generated thumbnail if provided
+            if ($request->filled('catalog_cover_base64')) {
+                $base64Image = $request->input('catalog_cover_base64');
+                $catalog->catalog_cover = $this->saveBase64Cover($base64Image, $path);
+            } elseif (Str::endsWith($path, '.pdf')) {
+                // Fallback to server-side generation
                 $catalog->catalog_cover = $this->generateThumbnail($path);
             } else {
                 $catalog->catalog_cover = $path;
@@ -140,40 +150,40 @@ class CatalogController extends Controller
             
             // Hybrid approach: Use pdf.js inside Browsershot to render the PDF data
             $html = <<<HTML
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body { margin: 0; padding: 0; overflow: hidden; background: white; }
-        #pdf-canvas { width: 100%; height: auto; display: block; }
-    </style>
-</head>
-<body>
-    <canvas id="pdf-canvas"></canvas>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-        const pdfData = atob('$pdfBase64');
-        const loadingTask = pdfjsLib.getDocument({data: pdfData});
-        loadingTask.promise.then(pdf => {
-            return pdf.getPage(1);
-        }).then(page => {
-            const viewport = page.getViewport({scale: 2});
-            const canvas = document.getElementById('pdf-canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            return page.render({canvasContext: context, viewport: viewport}).promise;
-        }).then(() => {
-            document.body.id = 'ready';
-        }).catch(err => {
-            console.error(err);
-            document.body.id = 'error';
-        });
-    </script>
-</body>
-</html>
-HTML;
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { margin: 0; padding: 0; overflow: hidden; background: white; }
+                    #pdf-canvas { width: 100%; height: auto; display: block; }
+                </style>
+            </head>
+            <body>
+                <canvas id="pdf-canvas"></canvas>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+                <script>
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+                    const pdfData = atob('$pdfBase64');
+                    const loadingTask = pdfjsLib.getDocument({data: pdfData});
+                    loadingTask.promise.then(pdf => {
+                        return pdf.getPage(1);
+                    }).then(page => {
+                        const viewport = page.getViewport({scale: 2});
+                        const canvas = document.getElementById('pdf-canvas');
+                        const context = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        return page.render({canvasContext: context, viewport: viewport}).promise;
+                    }).then(() => {
+                        document.body.id = 'ready';
+                    }).catch(err => {
+                        console.error(err);
+                        document.body.id = 'error';
+                    });
+                </script>
+            </body>
+            </html>
+            HTML;
 
             $browsershot = Browsershot::html($html)
                 ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox'])
@@ -192,9 +202,42 @@ HTML;
                 return $thumbnailName;
             }
             
-            return null;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('PDF Thumbnail Error for ' . $filePath . ': ' . $e->getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Save base64 image as cover
+     */
+    private function saveBase64Cover($base64Data, $filePath)
+    {
+        try {
+            if (empty($base64Data)) return null;
+
+            // Remove header if present (e.g. data:image/png;base64,)
+            if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
+                $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
+                $type = strtolower($type[1]); // png, jpg, etc
+            } else {
+                $type = 'png';
+            }
+
+            $base64Data = base64_decode($base64Data);
+            if ($base64Data === false) return null;
+
+            $thumbnailName = 'covers/' . pathinfo($filePath, PATHINFO_FILENAME) . '.' . $type;
+            
+            if (!Storage::disk('public')->exists('covers')) {
+                Storage::disk('public')->makeDirectory('covers');
+            }
+
+            Storage::disk('public')->put($thumbnailName, $base64Data);
+
+            return $thumbnailName;
+        } catch (\Throwable $e) {
+            Log::error('Saving base64 cover failed: ' . $e->getMessage());
             return null;
         }
     }

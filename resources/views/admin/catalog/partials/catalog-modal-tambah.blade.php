@@ -82,6 +82,7 @@
                 <div class="mb-4">
                     <label for="catalog_file" class="mb-2 block text-sm font-medium">Catalog File (PDF)</label>
                     <input type="file" accept=".pdf" id="catalog_file" name="catalog_file" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:placeholder-gray-400">
+                    <input type="hidden" name="catalog_cover_base64" id="catalog_cover_base64">
                 </div>
             </div>
             <div class="flex justify-end p-2">
@@ -133,8 +134,10 @@
                         canvasContext: context,
                         viewport: viewport
                     }).promise.then(() => {
+                        const dataUrl = canvas.toDataURL('image/png');
+                        document.getElementById('catalog_cover_base64').value = dataUrl;
                         coverPreview.innerHTML = `
-                            <img src="${canvas.toDataURL()}" 
+                            <img src="${dataUrl}" 
                                  class="h-48 w-32 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                                  alt="Catalog Cover Preview" 
                                  onclick="openImagePreview(this.src)">
@@ -163,5 +166,6 @@
     document.getElementById('createCatalogModal').addEventListener('close', function() {
         document.getElementById('create_catalog_cover_preview').innerHTML = '';
         document.getElementById('catalog_file').value = '';
+        document.getElementById('catalog_cover_base64').value = '';
     });
 </script>

@@ -82,6 +82,7 @@
                 <div class="mb-4">
                     <label for="edit_catalog_file" class="mb-2 block text-sm font-medium">Catalog File (Leave blank to keep current)</label>
                     <input type="file" accept=".pdf" id="edit_catalog_file" name="catalog_file" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:placeholder-gray-400">
+                    <input type="hidden" name="catalog_cover_base64" id="edit_catalog_cover_base64">
                     <div id="current_file_info" class="mt-2 text-xs text-gray-500"></div>
                 </div>
             </div>
@@ -108,6 +109,7 @@
         document.getElementById('edit_catalog_name').value = catalog.catalog_name;
 
         document.getElementById('edit_catalog_file').value = '';
+        document.getElementById('edit_catalog_cover_base64').value = '';
         const fileInfo = document.getElementById('current_file_info');
         if (catalog.catalog_file) {
             fileInfo.innerHTML = `Current file: <span class="font-medium">${catalog.catalog_file}</span>`;
@@ -171,8 +173,10 @@
                         canvasContext: context,
                         viewport: viewport
                     }).promise.then(() => {
+                        const dataUrl = canvas.toDataURL('image/png');
+                        document.getElementById('edit_catalog_cover_base64').value = dataUrl;
                         coverPreview.innerHTML = `
-                            <img src="${canvas.toDataURL()}" 
+                            <img src="${dataUrl}" 
                                  class="h-48 w-32 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                                  alt="Catalog Cover Preview" 
                                  onclick="openImagePreview(this.src)">
@@ -200,5 +204,6 @@
     document.getElementById('editCatalogModal').addEventListener('close', function() {
         document.getElementById('edit_catalog_cover_preview').innerHTML = '';
         document.getElementById('edit_catalog_file').value = '';
+        document.getElementById('edit_catalog_cover_base64').value = '';
     });
 </script>
