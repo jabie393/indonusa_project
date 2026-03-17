@@ -6,7 +6,7 @@
                 <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                 </svg>
-                Tambah Catalog
+                Tambah Katalog
             </button>
         </div>
 
@@ -21,7 +21,7 @@
                             </path>
                         </svg>
                     </div>
-                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="catalogTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search" />
+                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="catalogTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Cari..." />
                 </div>
             </form>
         </div>
@@ -36,10 +36,10 @@
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="w-[50px] px-4 py-2">ID</th>
-                        <th class="text-nowrap px-4 py-2">Brand Name</th>
-                        <th class="text-nowrap px-4 py-2">Catalog Name</th>
-                        <th class="text-nowrap px-4 py-2">Catalog File</th>
-                        <th class="text-nowrap px-4 py-2">Catalog Cover</th>
+                        <th class="text-nowrap px-4 py-2">Nama Brand</th>
+                        <th class="text-nowrap px-4 py-2">Nama Katalog</th>
+                        <th class="text-nowrap px-4 py-2">File Katalog</th>
+                        <th class="text-nowrap px-4 py-2">Cover Katalog</th>
                         <th class="px-4 py-2 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -64,7 +64,7 @@
                                             File</span>
                                     </a>
                                 @else
-                                    <span class="text-gray-400">No File</span>
+                                    <span class="text-gray-400">Tidak ada file</span>
                                 @endif
                             </td>
                             <td class="px-4 py-2">
@@ -72,7 +72,7 @@
                                     <img src="{{ asset('files/' . $catalog->catalog_cover) }}" class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" alt="Catalog Cover" onclick="openImagePreview(this.src)" onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
                                 @else
                                     <div class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
-                                        No Image
+                                        Tidak ada gambar
                                     </div>
                                 @endif
                             </td>
@@ -115,9 +115,9 @@
         <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
+                    Menampilkan
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->firstItem() ?? 0 }}-{{ $catalogs->lastItem() ?? 0 }}</span>
-                    of
+                    dari
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->total() ?? $catalogs->count() }}</span>
                 </span>
                 <form method="GET" action="{{ route('catalog.index') }}">

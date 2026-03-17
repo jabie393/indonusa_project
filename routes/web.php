@@ -126,6 +126,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     // Catalog Manager
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog.index');
     Route::post('/catalog', [CatalogController::class, 'store'])->name('catalog.store');
+    Route::post('/catalog/upload', [CatalogController::class, 'upload'])->name('catalog.upload');
     Route::get('/catalog/{id}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
     Route::put('/catalog/{id}', [CatalogController::class, 'update'])->name('catalog.update');
     Route::delete('/catalog/{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');

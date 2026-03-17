@@ -36,35 +36,72 @@ class CatalogController extends Controller
         $request->validate([
             'brand_name' => 'required|string|max:255',
             'catalog_name' => 'required|string|max:255',
-            'catalog_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'catalog_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:102400',
+            'catalog_file_path' => 'nullable|string', // Path for pre-uploaded file
         ]);
 
         $catalog = new Catalog();
         $catalog->brand_name = $request->brand_name;
         $catalog->catalog_name = $request->catalog_name;
 
-        if ($request->hasFile('catalog_file')) {
+        $path = null;
+        if ($request->filled('catalog_file_path')) {
+            $path = $request->input('catalog_file_path');
+            $catalog->catalog_file = $path;
+        } elseif ($request->hasFile('catalog_file')) {
             $file = $request->file('catalog_file');
             $filename = time() . '_' . $file->getClientOriginalName();
             
             // Store using storage/app/public disk
             $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
-            
+        }
+
+        if ($path) {
             // Handle client-side generated thumbnail if provided
             if ($request->filled('catalog_cover_base64')) {
                 $base64Image = $request->input('catalog_cover_base64');
                 $catalog->catalog_cover = $this->saveBase64Cover($base64Image, $path);
             } elseif (Str::endsWith($path, '.pdf')) {
-                // Fallback to server-side generation (might fail on some hosting)
+                // Fallback to server-side generation
                 $catalog->catalog_cover = $this->generateThumbnail($path);
             } else {
-                $catalog->catalog_cover = $path; // If it's an image, use it as cover
+                $catalog->catalog_cover = $path;
             }
         }
 
         $catalog->save();
         return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Catalog created successfully.');
+    }
+
+    public function upload(Request $request)
+    {
+        try {
+            $request->validate([
+                'catalog_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:102400',
+            ]);
+
+            if ($request->hasFile('catalog_file')) {
+                $file = $request->file('catalog_file');
+                $filename = time() . '_' . $file->getClientOriginalName();
+                
+                // Store using storage/app/public disk
+                $path = $file->storeAs('catalogs', $filename, 'public');
+                
+                return response()->json([
+                    'success' => true,
+                    'path' => $path,
+                    'filename' => $filename
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No file uploaded'], 400);
     }
 
     public function edit($id)
@@ -78,14 +115,27 @@ class CatalogController extends Controller
         $request->validate([
             'brand_name' => 'required|string|max:255',
             'catalog_name' => 'required|string|max:255',
-            'catalog_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'catalog_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:102400',
+            'catalog_file_path' => 'nullable|string',
         ]);
 
         $catalog = Catalog::findOrFail($id);
         $catalog->brand_name = $request->brand_name;
         $catalog->catalog_name = $request->catalog_name;
 
-        if ($request->hasFile('catalog_file')) {
+        $path = null;
+        if ($request->filled('catalog_file_path')) {
+            // Delete old files from public disk
+            if ($catalog->catalog_file) {
+                Storage::disk('public')->delete($catalog->catalog_file);
+            }
+            if ($catalog->catalog_cover && $catalog->catalog_cover !== $catalog->catalog_file) {
+                Storage::disk('public')->delete($catalog->catalog_cover);
+            }
+
+            $path = $request->input('catalog_file_path');
+            $catalog->catalog_file = $path;
+        } elseif ($request->hasFile('catalog_file')) {
             // Delete old files from public disk
             if ($catalog->catalog_file) {
                 Storage::disk('public')->delete($catalog->catalog_file);
@@ -100,7 +150,9 @@ class CatalogController extends Controller
             // Store using storage/app/public disk
             $path = $file->storeAs('catalogs', $filename, 'public');
             $catalog->catalog_file = $path;
+        }
 
+        if ($path) {
             // Handle client-side generated thumbnail if provided
             if ($request->filled('catalog_cover_base64')) {
                 $base64Image = $request->input('catalog_cover_base64');
