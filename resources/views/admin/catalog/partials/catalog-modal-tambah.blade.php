@@ -86,7 +86,7 @@
                     </div>
                     <div class="mb-4 px-2">
                         <label for="catalog_file" class="mb-2 block text-sm font-medium">File Katalog (PDF)</label>
-                        <input type="file" accept=".pdf" id="catalog_file" name="catalog_file" class="file-input file-input-bordered file-input-primary w-full">
+                        <input type="file" accept=".pdf" id="catalog_file" name="catalog_file" class="file-input file-input-bordered file-input-primary w-full" required>
                         
                         <!-- Progress Bar Container -->
                         <div id="upload_progress_container" class="mt-4 hidden">

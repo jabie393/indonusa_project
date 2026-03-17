@@ -1,12 +1,18 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
-        <div class="p-4">
-            <button onclick="createCatalogModal.showModal()" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <div class="flex gap-2 p-4">
+            <button onclick="createCatalogModal.showModal()" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white shadow-sm transition-colors hover:bg-[#19426d]">
+                <svg class="mr-2 h-4 w-4" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                 </svg>
                 Tambah Katalog
+            </button>
+            <button onclick="bulkCatalogModal.showModal()" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white shadow-sm transition-colors hover:bg-[#19426d]">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Tambah Banyak
             </button>
         </div>
 
@@ -32,13 +38,13 @@
         <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTableCat" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="w-[50px] px-4 py-2">ID</th>
                         <th class="text-nowrap px-4 py-2">Nama Brand</th>
-                        <th class="text-nowrap px-4 py-2">Nama Katalog</th>
-                        <th class="text-nowrap px-4 py-2">File Katalog</th>
+                        <th class="w-[100px] text-nowrap px-4 py-2">Nama Katalog</th>
+                        <th class="text-nowrap px-4 py-2">Nama File</th>
                         <th class="text-nowrap px-4 py-2">Cover Katalog</th>
                         <th class="px-4 py-2 text-right">Aksi</th>
                     </tr>
@@ -48,43 +54,60 @@
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-2">{{ $catalog->id }}</td>
                             <td class="text-nowrap px-4 py-2">{{ $catalog->brand_name }}</td>
-                            <td class="text-nowrap px-4 py-2">{{ $catalog->catalog_name }}</td>
-                            <td class="text-nowrap px-4 py-2">
+                            <td class="px-4 py-2"><span class="truncate max-w-[300px] inline-block">{{ $catalog->catalog_name }}</span></td>
+                            <td class="px-4 py-2">
                                 @if ($catalog->catalog_file)
-                                    <a href="{{ asset('files/' . $catalog->catalog_file) }}" target="_blank" class="group flex w-fit items-center justify-center rounded-lg bg-blue-50 p-2 text-blue-700 transition-all hover:bg-blue-600 hover:text-white dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
-                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
-                                            </path>
+                                    <div class="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-500">
+                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                                             <polyline points="14 2 14 8 20 8"></polyline>
-                                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                                            <line x1="10" y1="9" x2="8" y2="9"></line>
                                         </svg>
-                                        <span class="overflow-hidden text-xs font-semibold transition-all duration-300 ease-in-out max-w-xs pl-2 opacity-100">Lihat
-                                            File</span>
-                                    </a>
+                                        <span class="truncate max-w-[300px] inline-block text-xs font-medium text-gray-600 " title="{{ $catalog->catalog_file }}">
+                                            {{ basename($catalog->catalog_file) }}
+                                        </span>
+                                    </div>
                                 @else
-                                    <span class="text-gray-400">Tidak ada file</span>
+                                    <span class="text-xs italic text-gray-400">Tidak ada file</span>
                                 @endif
                             </td>
                             <td class="px-4 py-2">
                                 @if ($catalog->catalog_cover)
                                     <img src="{{ asset('files/' . $catalog->catalog_cover) }}" class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" alt="Catalog Cover" onclick="openImagePreview(this.src)" onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
                                 @else
-                                    <div class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
+                                    <div class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-center text-xs text-gray-400">
                                         Tidak ada gambar
                                     </div>
                                 @endif
                             </td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
+                                    <div class="pointer-events-none invisible h-9 w-40 opacity-0">Placeholder</div>
                                     <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+
+                                        @if ($catalog->catalog_file)
+                                            {{-- Lihat --}}
+                                            <a href="{{ asset('files/' . $catalog->catalog_file) }}" target="_blank" class="group flex h-full cursor-pointer items-center justify-center bg-indigo-600 p-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye h-4 w-4">
+                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"></path>
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                            </a>
+                                            {{-- Unduh --}}
+                                            <a href="{{ asset('files/' . $catalog->catalog_file) }}" download class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download h-4 w-4">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Unduh</span>
+                                            </a>
+                                        @endif
+
                                         {{-- Edit --}}
                                         <button onclick="openEditModal({{ $catalog->toJson() }})" class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4">
-                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
-                                                </path>
+                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
                                                 <path d="m15 5 4 4"></path>
                                             </svg>
                                             <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
@@ -140,6 +163,7 @@
     <!-- Modals -->
     @include('admin.catalog.partials.catalog-modal-tambah')
     @include('admin.catalog.partials.catalog-modal-edit')
+    @include('admin.catalog.partials.catalog-modal-bulk')
 
     <!-- Image Preview Modal -->
     <dialog id="image_preview_modal" class="modal">

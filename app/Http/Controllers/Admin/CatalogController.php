@@ -71,6 +71,15 @@ class CatalogController extends Controller
         }
 
         $catalog->save();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Catalog created successfully',
+                'catalog' => $catalog
+            ]);
+        }
+        
         return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Catalog created successfully.');
     }
 

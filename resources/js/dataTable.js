@@ -25,6 +25,13 @@ let dashTable3 = new DataTable('#dashTable3', {
     select: false,
     columnDefs:false,
 });
+let dashTableCat = new DataTable('#DataTableCat', {
+    ...commonConfig,
+    select: false,
+    autoWidth: false,
+    columnDefs: [{ width: '150px', targets: 2 }]
+
+});
 
 let datatableExcel = new DataTable('#DataTableExcel', {
     ...commonConfig,
