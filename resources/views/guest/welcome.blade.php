@@ -1,6 +1,6 @@
 <x-front-layout>
     <div id="hero" class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full flex-col items-center justify-center from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow">
-        <div class="max-w-(--breakpoint-xl) w-full mx-auto grid px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
+        <div class="max-w-(--breakpoint-xl) mx-auto grid w-full px-4 pb-8 md:grid-cols-12 lg:gap-12 lg:pb-16 xl:gap-0">
             <div class="md:order-0 er order-1 content-center justify-self-start md:col-span-7 md:text-start">
                 <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-white md:max-w-2xl md:text-5xl xl:text-6xl">PT INDONUSA JAYA BERSAMA
                 </h1>
@@ -10,18 +10,18 @@
                     </span>
                 </h1>
                 <!-- Marketplace Logos -->
-                <div class="w-full container flex flex-wrap justify-center lg:justify-start items-center gap-8 lg:gap-10 my-8">
-                    <a href="#" class="group block transition-all">
-                        <img src="{{ asset('images/snapon_logo.png') }}" alt="Snap-on" class="h-12 md:h-12 lg:h-14 w-auto object-contain  transition-all duration-500 group-hover:scale-110">
+                <div class="container my-8 flex w-full flex-wrap items-center justify-center gap-8 lg:justify-start lg:gap-10">
+                    <a href="https://snapon.com.sg/catalog" class="group block transition-all" target="_blank">
+                        <img src="{{ asset('images/snapon_logo.png') }}" alt="Snap-on" class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
                     </a>
-                    <a href="https://padiumk.id" target="_blank" class="group block transition-all">
-                        <img src="{{ asset('images/padiumk_logo.png') }}" alt="Padi UMK" class="h-12 md:h-12 lg:h-14 w-auto object-contain  transition-all duration-500  group-hover:scale-110">
+                    <a href="https://padiumkm.id/store/668e31b0e383eae3fa79f723" target="_blank" class="group block transition-all">
+                        <img src="{{ asset('images/padiumk_logo.png') }}" alt="Padi UMK" class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
                     </a>
-                    <a href="https://www.inaproc.id" target="_blank" class="group block transition-all">
-                        <img src="{{ asset('images/inaproc_logo.png') }}" alt="Inaproc" class="h-12 md:h-12 lg:h-14 w-auto object-contain  transition-all duration-500  group-hover:scale-110">
+                    <a href="https://katalog.inaproc.id/indonusa-jaya-bersama" target="_blank" class="group block transition-all">
+                        <img src="{{ asset('images/inaproc_logo.png') }}" alt="Inaproc" class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
                     </a>
-                    <a href="https://www.mbizmarket.co.id" target="_blank" class="group block transition-all">
-                        <img src="{{ asset('images/mbizmarket_logo.png') }}" alt="Mbizmarket" class="h-12 md:h-12 lg:h-14 w-auto object-contain  transition-all duration-500  group-hover:scale-110">
+                    <a href="https://www.mbizmarket.co.id/p/wwwindonusajayabersamacom" target="_blank" class="group block transition-all">
+                        <img src="{{ asset('images/mbizmarket_logo.png') }}" alt="Mbizmarket" class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
                     </a>
                 </div>
             </div>
@@ -29,10 +29,10 @@
                 <img src="{{ asset('images/transparent_1762594045_7576.svg') }}" alt="">
             </div>
         </div>
-        
-    
+
+
     </div>
-    
+
 
 
     <div class="duration-750 starting:opacity-0 flex min-h-[181px] w-full flex-col items-center justify-center bg-[#E5E7EB] opacity-100 transition-opacity lg:grow" id="about">
@@ -67,8 +67,7 @@
             </div>
         </div>
     </div>
-    <div class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center gap-10 from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow"
-        id="layanan">
+    <div class="duration-750 starting:opacity-0 bg-linear-to-r flex min-h-[768px] w-full items-center justify-center gap-10 from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow" id="layanan">
         <div class="max-w-(--breakpoint-xl) mx-auto flex min-h-[600px] flex-col items-center px-4 py-9 lg:px-6">
             <div class="max-w-(--breakpoint-md) mb-8 text-center lg:mb-16">
                 <h1 class="mb-4 text-4xl font-bold tracking-tight text-white md:text-6xl">Layanan Kami</h1>
