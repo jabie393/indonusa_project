@@ -68,6 +68,10 @@
                                 class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
                         </li>
                         <li>
+                            <a href="{{ route('catalogs') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Catalog</a>
+                        </li>
+                        <li>
                             @auth
                                 <a href="{{ url('/dashboard') }}"
                                     class="lg:border-1 block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:hidden lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">

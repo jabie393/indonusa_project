@@ -27,6 +27,7 @@ use App\Http\Controllers\Admin\ImportStockExcelController;
 use App\Http\Controllers\Auth\ConfirmLoginController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\CatalogController;
+use App\Http\Controllers\Guest\GuestCatalogController;
 
 // === Guest Routes === //
 Route::get('/', function () {
@@ -58,6 +59,10 @@ Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang
 Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])->name('keranjang.kurangi');
 Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
 Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
+
+Route::get('/catalogs', [GuestCatalogController::class, 'index'])->name('catalogs');
+
+
 // === End guest routes === //
 
 // === Admin Routes === //

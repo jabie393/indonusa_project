@@ -20,16 +20,56 @@
         <form id="bulkUploadForm" onsubmit="event.preventDefault(); processBulkUpload();" class="flex flex-col overflow-hidden">
         <div class="space-y-6 overflow-y-auto p-6">
             <!-- Instructions and Global Settings -->
-            <div class="flex flex-col gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800 md:flex-row md:items-end">
+            <div class="flex flex-col gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800 md:flex-row ">
                 <div class="flex-1">
                     <label class="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">Pilih File PDF (Bisa banyak sekaligus)</label>
                     <input type="file" id="bulk_file_input" multiple accept=".pdf" class="file-input file-input-bordered file-input-primary w-full shadow-sm">
                 </div>
-                <div class="flex-1">
+                <div class="flex-1" x-data="{
+                    open: false,
+                    search: '',
+                    brands: {{ $brands->toJson() }},
+                    get filteredBrands() {
+                        return this.brands.filter(i => i.toLowerCase().includes(this.search.toLowerCase()))
+                    }
+                }">
                     <label class="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300">Atur Brand untuk Semua (Opsional)</label>
                     <div class="join w-full shadow-sm">
-                        <input type="text" id="global_brand_name" placeholder="Ketik nama brand..." class="input input-bordered join-item w-full">
+                        <div class="relative flex-1">
+                            <input type="text" id="global_brand_name" x-model="search" @click="open = true" @click.away="open = false" @keydown.escape="open = false" placeholder="Pilih atau ketik brand baru..." class="input input-bordered join-item w-full transition-all" autocomplete="off">
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" class="no-scrollbar absolute z-[60] mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white shadow-xl dark:border-gray-600 dark:bg-gray-800">
+
+                                <template x-if="filteredBrands.length === 0 && search.length > 0">
+                                    <div class="px-4 py-3 text-sm italic text-gray-500">
+                                        Tekan enter untuk buat baru "<span x-text="search" class="text-primary font-bold"></span>"
+                                    </div>
+                                </template>
+
+                                <template x-for="brand in filteredBrands" :key="brand">
+                                    <div @click="search = brand; open = false" class="hover:bg-primary flex cursor-pointer items-center justify-between px-4 py-2 text-sm transition-colors hover:text-white text-black dark:text-white">
+                                        <span x-text="brand"></span>
+                                        <svg x-show="search === brand" class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                </template>
+
+                                <div x-show="filteredBrands.length > 0" class="border-t border-gray-100 dark:border-gray-700"></div>
+                            </div>
+                        </div>
                         <button type="button" onclick="applyGlobalBrand()" class="btn btn-primary join-item px-4">Terapkan</button>
+                    </div>
+
+                    <!-- Quick Badges -->
+                    <div class="mt-3 flex flex-wrap items-center gap-1.5">
+                        <span class="mr-1 text-[10px] font-bold uppercase tracking-wider opacity-40">Tersedia:</span>
+                        <template x-for="brand in brands.slice(0, 10)" :key="brand">
+                            <button type="button" @click="search = brand" class="badge badge-sm badge-outline hover:badge-primary cursor-pointer px-3 py-2.5 font-medium transition-all duration-300 text-black dark:text-white" :class="search === brand ? 'badge-primary text-white' : ''">
+                                <span x-text="brand"></span>
+                            </button>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -124,6 +164,7 @@
                     <div class="flex flex-col gap-1">
                         <input type="text" class="input text-black dark:text-white input-bordered input-sm w-full brand-input" 
                             value="${globalBrand}" 
+                            list="brand_list"
                             onchange="updateQueueItem('${id}', 'brand', this.value)" 
                             oninput="hideInputError(this); updateQueueItem('${id}', 'brand', this.value)" 
                             placeholder="Nama Brand" required>
@@ -424,7 +465,11 @@
             </tr>
         `;
         document.getElementById('bulk_action_bar').classList.add('hidden');
-        document.getElementById('global_brand_name').value = '';
+        const globalBrandInput = document.getElementById('global_brand_name');
+        if (globalBrandInput) {
+            globalBrandInput.value = '';
+            globalBrandInput.dispatchEvent(new Event('input'));
+        }
         document.getElementById('bulk_file_input').value = '';
 
         const startBtn = document.getElementById('start_bulk_upload_btn');
@@ -448,6 +493,13 @@
         if (!isUploading) resetBulkModal();
     });
 </script>
+
+<!-- Brand Datalist for individual rows -->
+<datalist id="brand_list">
+    @foreach($brands as $brand)
+        <option value="{{ $brand }}">
+    @endforeach
+</datalist>
 
 <style>
     @keyframes pulse-slow {
