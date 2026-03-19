@@ -4,7 +4,7 @@
 @endphp
 <header class="bg-linear-to-r sticky left-0 top-0 z-50 w-full bg-white">
     <nav class="px-4 py-2.5 lg:px-6">
-        <div class="max-w-(--breakpoint-xl) mx-auto flex flex-wrap items-center justify-between">
+        <div class="max-w-(--breakpoint-2xl) mx-auto flex flex-wrap items-center justify-between">
             <a href="/" class="flex items-center">
                 <x-application-logo class="mr-3 h-6 sm:h-9"></x-application-logo>
                 <span class="hidden self-center whitespace-nowrap text-sm font-semibold text-black md:block md:text-xl">INDONUSA JAYA BERSAMA</span>
@@ -13,10 +13,7 @@
                 <div class="flex items-center lg:order-2">
                     @if ($jumlahKeranjang > 0)
                         <a href="{{ route('keranjang.index') }}" class="relative mr-3">
-                            <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.35 2.7A1 1 0 007.5 17h9a1 1 0 00.85-1.53L17 13M7 13V6a1 1 0 011-1h6a1 1 0 011 1v7"></path>
-                            </svg>
+                            <svg width="27px" height="27px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#225A96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
                             <span class="absolute -right-2 -top-2 rounded-full bg-red-600 px-1.5 py-0.5 text-xs text-white">{{ $jumlahKeranjang }}</span>
                         </a>
                     @endif

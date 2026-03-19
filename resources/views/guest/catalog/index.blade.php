@@ -2,10 +2,10 @@
     <div id="hero" class="duration-750 starting:opacity-0 bg-linear-to-r relative flex min-h-[300px] w-full items-center justify-center overflow-hidden from-[#225A97] to-[#0D223A] opacity-100 transition-opacity lg:grow">
         <img src="{{ asset('images/katalog_bg.png') }}" alt="" class="absolute inset-0 h-full w-full object-cover mix-blend-overlay">
         <div class="absolute inset-0 bg-black/20"></div>
-        <div class="max-w-(--breakpoint-xl) relative z-10 mx-auto flex w-full flex-wrap items-start justify-start px-4">
+        <div class="max-w-(--breakpoint-2xl) relative z-10 mx-auto flex w-full flex-wrap items-start justify-start px-4">
             <div class="md:order-0 order-1 content-center justify-self-start md:col-span-12 md:text-start">
-                <h1 class="mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight text-white md:text-5xl xl:text-6xl">KATALOG</h1>
-                <p class="text-xl font-medium text-white/90">Temukan katalog produk kami</p>
+                <h1 class="mb-4 text-4xl font-extrabold uppercase leading-none tracking-tight tracking-wider text-white md:text-5xl xl:text-6xl">KATALOG</h1>
+                <p class="text-xl font-medium italic text-white/90">Temukan katalog produk kami</p>
             </div>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <footer class="w-full">
     <div class="mt-8 w-full bg-black p-4 sm:p-6">
-        <div class="max-w-(--breakpoint-xl) mx-auto">
+        <div class="max-w-(--breakpoint-2xl) mx-auto">
             <div class="md:flex md:justify-between">
                 <div class="flex-center mb-6 flex md:mb-0">
                     <a href="/" class="flex items-start">
