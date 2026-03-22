@@ -159,11 +159,11 @@
                                 <input type="text"
                                     class="@error('sales_order_number') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="sales_order_number" name="sales_order_number"
-                                    value="{{ old('sales_order_number') }}" placeholder="Masukkan No. SO">
+                                    value="{{ old('sales_order_number', App\Models\RequestOrder::generateSalesOrderNumber()) }}" placeholder="No. SO akan diisi otomatis" readonly>
                                 @error('sales_order_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Nomor Sales Order</small>
+                                <small class="text-muted dark:text-gray-400">Nomor Sales Order (Otomatis, tidak bisa diubah)</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">

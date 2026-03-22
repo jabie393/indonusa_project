@@ -119,31 +119,6 @@
                             <td class="px-4 py-3">
                                 <div class="flex flex-col gap-1">
                                     <span>{{ $row['no_sales_order'] ?? '-' }}</span>
-                                    <div id="image-so-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
-                                        @if (isset($row['image_so']) && $row['image_so'])
-                                            <div class="group relative inline-block">
-                                                <a href="{{ Storage::url($row['image_so']) }}" target="_blank">
-                                                    <img src="{{ Storage::url($row['image_so']) }}" alt="SO Image" class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
-                                                </a>
-                                                <button class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100" onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'so')" title="Hapus">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M18 6 6 18" />
-                                                        <path d="m6 6 12 12" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        @elseif($row['type'] === 'request_order')
-                                            <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-blue-500 bg-white px-2 py-1 text-[10px] font-semibold text-blue-600 shadow-sm transition-colors hover:bg-blue-50">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                    <polyline points="17 8 12 3 7 8" />
-                                                    <line x1="12" x2="12" y1="3" y2="15" />
-                                                </svg>
-                                                Upload SO
-                                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'so')">
-                                            </label>
-                                        @endif
-                                    </div>
                                 </div>
                             </td>
                             <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
@@ -687,9 +662,6 @@
             if (imageType === 'po') {
                 endpoint = `/request-order/${id}/upload-image-po`;
                 fieldName = 'image_po';
-            } else if (imageType === 'so') {
-                endpoint = `/request-order/${id}/upload-image-so`;
-                fieldName = 'image_so';
             } else {
                 endpoint = `/sales-order/${id}/upload-image`;
                 fieldName = 'image';
@@ -700,7 +672,6 @@
 
             let containerId = '';
             if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
-            else if (imageType === 'so') containerId = `image-so-preview-${id}-${type}`;
             else containerId = `image-preview-aksi-${id}-${type}`;
 
             const container = document.getElementById(containerId);
@@ -771,7 +742,6 @@
                 if (result.isConfirmed) {
                     let endpoint = '';
                     if (imageType === 'po') endpoint = `/request-order/${id}/upload-image-po`;
-                    else if (imageType === 'so') endpoint = `/request-order/${id}/upload-image-so`;
                     else endpoint = `/sales-order/${id}/upload-image`;
 
                     const formData = new FormData();

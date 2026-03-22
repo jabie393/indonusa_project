@@ -57,7 +57,6 @@
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="selectCol px-4 py-2"></th>
                         <th class="px-4 py-2">Customer</th>
                         <th class="px-4 py-2">No. DO</th>
                         <th class="px-4 py-2">No. SO</th>
@@ -71,7 +70,6 @@
                 <tbody class="h-min-[300px]">
                     @foreach ($orders as $order)
                         <tr class="dark:border-gray-700">
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white"></td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                 {{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">

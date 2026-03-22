@@ -135,6 +135,11 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">History Approval Supervisor</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Approval Supervisor</p>
                     </div>
+                @elseif (request()->routeIs('catalog.*'))
+                    <div class="text-gray-100">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Catalog</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Daftar Catalog</p>
+                    </div>
                 @endif
             @endif
         </div>

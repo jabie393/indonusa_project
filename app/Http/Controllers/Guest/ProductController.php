@@ -15,6 +15,15 @@ class ProductController extends Controller
     public function barang($id)
     {
         $barang = Barang::find($id);
-        return view('guest.order.product', compact('barang'));
+
+        $relatedGoods = collect();
+        if ($barang && $barang->kategori) {
+            $relatedGoods = Barang::where('kategori', $barang->kategori)
+                ->where('id', '!=', $barang->id)
+                ->take(6)
+                ->get();
+        }
+
+        return view('guest.order.product', compact('barang', 'relatedGoods'));
     }
 }

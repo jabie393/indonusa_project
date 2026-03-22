@@ -60,7 +60,6 @@
             <table id="warehouseTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="selectCol px-4 py-3"></th>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>
                         <th scope="col" class="px-4 py-3">Nama Barang</th>
@@ -80,7 +79,6 @@
                 <tbody class="h-min-[300px]">
                     @forelse ($goods as $barang)
                         <tr class="dark:border-gray-700">
-                            <td class="px-4 py-3"></td>
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row"
                                 class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">

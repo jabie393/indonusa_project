@@ -68,5 +68,6 @@ class DatabaseSeeder extends Seeder
         $this->call(OrderSeeder::class);
         $this->call(BarangHistoriesSeeder::class);
         $this->call(TodayMovementsSeeder::class);
+        $this->call(CatalogSeeder::class);
     }
 }
