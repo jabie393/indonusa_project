@@ -45,8 +45,6 @@
                                     <span class="inline-block rounded bg-blue-100 px-2 inset-ring py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-200">Sent Penawaran</span>
                                 @elseif($item['type'] === 'custom_penawaran')
                                     <span class="inline-block rounded bg-cyan-100 px-2 inset-ring py-1 text-xs font-semibold text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">Custom Penawaran</span>
-                                @elseif($item['type'] === 'defect_report')
-                                    <span class="inline-block rounded bg-yellow-100 px-2 inset-ring py-1 text-xs font-semibold text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Defect Report</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3">{{ $item['number'] }}</td>

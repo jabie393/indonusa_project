@@ -34,11 +34,6 @@
                     class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Semua Barang
                 </a>
-                <a href="{{ route('warehouse.index', ['status' => 'defect']) }}"
-                    class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
-                    Pengajuan Defect
-                </a>
-                <div class="h-6 w-px bg-white/20 mx-1"></div>
                 <a href="{{ route('supply-orders.index') }}"
                     class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Supply Orders

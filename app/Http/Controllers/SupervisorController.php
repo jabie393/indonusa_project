@@ -75,40 +75,8 @@ class SupervisorController extends Controller
             ];
         });
 
-        // Defect Report (BarangHistory, status change by supervisor)
-        $drQuery = \App\Models\BarangHistory::with(['barang', 'user'])
-            ->whereIn('new_status', ['masuk', 'ditolak_supervisor'])
-            ->whereHas('user', function($q) {
-                $q->where('role', 'Supervisor');
-            });
-
-        if ($search) {
-            $drQuery->where(function($q) use ($search) {
-                $q->where('kode_barang', 'LIKE', "%{$search}%")
-                  ->orWhere('nama_barang', 'LIKE', "%{$search}%")
-                  ->orWhereHas('user', function($sq) use ($search) {
-                      $sq->where('name', 'LIKE', "%{$search}%");
-                  });
-            });
-        }
-
-        $defectReports = $drQuery->get()->map(function($bh) {
-            return [
-                'type' => 'defect_report',
-                'id' => $bh->barang_id,
-                'number' => $bh->kode_barang,
-                'customer' => $bh->nama_barang ?? '-',
-                'sales' => $bh->user->name ?? '-',
-                'grand_total' => '-',
-                'status' => $bh->new_status === 'masuk' ? 'approved' : ($bh->new_status === 'ditolak_supervisor' ? 'rejected' : $bh->new_status),
-                'reason' => $bh->note ?? '-',
-                'approved_at' => $bh->changed_at ? $bh->changed_at->format('d-m-Y H:i') : '-',
-                'raw_date' => $bh->changed_at,
-            ];
-        });
-
         // Gabungkan dan urutkan berdasarkan tanggal terbaru
-        $all = $requestOrders->concat($customPenawarans)->concat($defectReports)->sortByDesc(function($item) {
+        $all = $requestOrders->concat($customPenawarans)->sortByDesc(function($item) {
             return $item['raw_date'] ? (string) $item['raw_date'] : '';
         })->values();
 

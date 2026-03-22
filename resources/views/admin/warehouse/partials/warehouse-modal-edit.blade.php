@@ -71,14 +71,7 @@
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
                                         readonly>
                                 </div>
-                                <div>
-                                    <label for="stok_diajukan"
-                                        class="mb-2 block text-sm font-bold text-primary-600 dark:text-primary-400">Jumlah
-                                        Stok yang Diajukan Rusak</label>
-                                    <input type="number" name="stok_diajukan" id="stok_diajukan"
-                                        class="block w-full rounded-lg border-2 border-primary-500 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:bg-gray-800 dark:text-white"
-                                        placeholder="Jumlah unit..." required min="1">
-                                </div>
+
                             </div>
                             <div class="space-y-4">
                                 <div>
@@ -88,23 +81,7 @@
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
                                         readonly>
                                 </div>
-                                <div>
-                                    <label for="harga_diajukan"
-                                        class="mb-2 block text-sm font-bold text-primary-600 dark:text-primary-400">Harga
-                                        yang
-                                        Diajukan (Special Price for Defect)</label>
-                                    <input type="number" name="harga_diajukan" id="harga_diajukan"
-                                        class="block w-full rounded-lg border-2 border-primary-500 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:bg-gray-800 dark:text-white"
-                                        placeholder="Harga baru..." required>
-                                </div>
-                                <div>
-                                    <label for="alasan_pengajuan"
-                                        class="mb-2 block text-sm font-bold text-primary-600 dark:text-primary-400">Alasan
-                                        Pengajuan</label>
-                                    <textarea name="alasan_pengajuan" id="alasan_pengajuan" rows="3"
-                                        class="block w-full rounded-lg border-2 border-primary-500 bg-white p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:bg-gray-800 dark:text-white"
-                                        placeholder="Jelaskan alasan pengajuan barang rusak..." required></textarea>
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -119,8 +96,7 @@
             </div>
             <div class="">
                 <button type="submit"
-                    class="relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Ajukan
-                    Perubahan Harga & Laporkan Rusak
+                    class="relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Simpan Perubahan
                 </button>
             </div>
         </form>
