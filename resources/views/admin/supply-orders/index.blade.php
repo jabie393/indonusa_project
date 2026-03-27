@@ -52,11 +52,6 @@
                     class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Semua Barang
                 </a>
-                <a href="{{ route('warehouse.index', ['status' => 'defect']) }}"
-                    class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
-                    Pengajuan Defect
-                </a>
-                <div class="h-6 w-px bg-white/20 mx-1"></div>
                 <a href="{{ route('supply-orders.index') }}"
                     class="bg-white text-[#225A97] flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Supply Orders
@@ -88,7 +83,6 @@
                         <th scope="col" class="px-4 py-3">Stok</th>
                         <th scope="col" class="px-4 py-3">Satuan</th>
                         <th scope="col" class="px-4 py-3">Lokasi</th>
-                        <th scope="col" class="px-4 py-3">Harga</th>
                         <th scope="col" class="px-4 py-3">Status Barang</th>
                         <th scope="col" class="px-4 py-3">Tipe Request</th>
                         <th scope="col" class="px-4 py-3">Aksi</th>
@@ -110,7 +104,6 @@
                             <td class="px-4 py-3">{{ $barang->stok }}</td>
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
-                            <td class="px-4 py-3">{{ $barang->harga }}</td>
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass =

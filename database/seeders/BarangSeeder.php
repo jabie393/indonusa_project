@@ -59,22 +59,6 @@ class BarangSeeder extends Seeder
             ],
             [
                 'tipe_request' => 'primary',
-                'kode_barang' => 'HTL-12345',
-                'status_barang' => 'ditinjau_supervisor',
-                'nama_barang' => 'Kunci Inggris 12 Inch',
-                'kategori' => 'HANDTOOLS',
-                'stok' => 15,
-                'harga' => 125000,
-                'satuan' => 'Pcs',
-                'lokasi' => 'Rak D1',
-                'status_listing' => 'listing',
-                'deskripsi' => 'Adjustable wrench carbon steel.',
-                'diskon_percent' => 0,
-                'form' => '4',
-                'alasan_pengajuan' => 'Penambahan alat bengkel'
-            ],
-            [
-                'tipe_request' => 'primary',
                 'kode_barang' => 'MSC-37281',
                 'status_barang' => 'ditolak',
                 'nama_barang' => 'Pulpen Biru 0.5',

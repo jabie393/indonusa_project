@@ -139,7 +139,7 @@ class OrderSeeder extends Seeder
 
         $orderItem2 = OrderItem::create([
             'order_id' => $order2->id,
-            'barang_id' => 4, // Kunci Inggris (from BarangSeeder)
+            'barang_id' => 3, // Buble Wrap (from BarangSeeder)
             'quantity' => 10,
             'delivered_quantity' => 5,
             'status_item' => 'partially_delivered'

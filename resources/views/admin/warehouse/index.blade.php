@@ -36,11 +36,7 @@
                         class="{{ $currentStatus === 'masuk' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Semua Barang
                     </a>
-                    <a href="{{ route('warehouse.index', ['status' => 'defect', 'search' => request('search')]) }}"
-                        class="{{ $currentStatus === 'defect' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
-                        Pengajuan Defect
-                    </a>
-                    <div class="h-6 w-px bg-white/20 mx-1"></div>
+
                     <a href="{{ route('supply-orders.index') }}"
                         class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Supply Orders
@@ -71,10 +67,10 @@
                         <th scope="col" class="px-4 py-3">Stok</th>
                         <th scope="col" class="px-4 py-3">Satuan</th>
                         <th scope="col" class="px-4 py-3">Lokasi</th>
-                        <th scope="col" class="px-4 py-3">Harga</th>
-                        @if (session('warehouse_filter_status') === 'defect')
-                            <th scope="col" class="px-4 py-3">Status</th>
+                        @if (Auth::user() && Auth::user()->role === 'General Affair')
+                            <th scope="col" class="px-4 py-3">Harga</th>
                         @endif
+
                         @if (Auth::user() && Auth::user()->role === 'Warehouse')
                             <th scope="col" class="w-fit px-4 py-3 text-right">Aksi</th>
                         @endif
@@ -93,35 +89,10 @@
                             <td class="px-4 py-3">{{ $barang->stok }}</td>
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
-                            <td class="text-nowrap px-4 py-3">Rp{{ number_format($barang->harga, 0, ',', '.') }}</td>
-                            @if (session('warehouse_filter_status') === 'defect')
-                                <td class="px-4 py-3">
-                                    @php
-                                        $statusClass =
-                                            [
-                                                'ditinjau_supervisor' =>
-                                                    'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                                'ditolak_supervisor' =>
-                                                    'bg-red-50 text-red-800 inset-ring inset-ring-red-600',
-                                                'completed' =>
-                                                    'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            ][$barang->status_barang] ??
-                                            'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
-
-                                        $statusLabel =
-                                            [
-                                                'ditinjau_supervisor' => 'Ditinjau',
-                                                'ditolak_supervisor' => 'Ditolak Supervisor',
-                                                'completed' => 'Selesai',
-                                            ][$barang->status_barang] ?? $barang->status_barang;
-                                    @endphp
-                                    <div class="flex flex-col items-center justify-center gap-1">
-                                        <span class="{{ $statusClass }} badge whitespace-nowrap">
-                                            {{ $statusLabel }}
-                                        </span>
-                                    </div>
-                                </td>
+                            @if (Auth::user() && Auth::user()->role === 'General Affair')
+                                <td class="text-nowrap px-4 py-3">Rp{{ number_format($barang->harga, 0, ',', '.') }}</td>
                             @endif
+
                             @if (Auth::user() && Auth::user()->role === 'Warehouse')
                                 <td class="w-fit px-4 py-3 text-right">
                                     <div class="relative flex min-h-[40px] w-fit items-center justify-center">
@@ -129,105 +100,14 @@
                                         <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
                                         <div
                                             class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            @if (session('warehouse_filter_status', 'masuk') === 'masuk')
-                                                <button
-                                                    class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-amber-600 p-2 text-sm font-medium text-white hover:bg-amber-700 focus:outline-none focus:ring-4 focus:ring-amber-300 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800"
-                                                    title="Ajukan Barang Rusak" data-id="{{ $barang->id }}"
-                                                    data-status="{{ $barang->status_listing }}"
-                                                    data-kode="{{ $barang->kode_barang }}"
-                                                    data-nama="{{ $barang->nama_barang }}"
-                                                    data-kategori="{{ $barang->kategori }}"
-                                                    data-stok="{{ $barang->stok }}"
-                                                    data-satuan="{{ $barang->satuan }}"
-                                                    data-lokasi="{{ $barang->lokasi }}"
-                                                    data-harga="{{ $barang->harga }}"
-                                                    data-deskripsi="{{ $barang->deskripsi }}"
-                                                    data-gambar="{{ $barang->gambar }}">
-                                                    <svg class="h-4 w-4" fill="currentColor" height="64px"
-                                                        width="64px" version="1.1" id="Capa_1"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                        viewBox="0 0 271.264 271.264" xml:space="preserve">
-                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                            stroke-linejoin="round"></g>
-                                                        <g id="SVGRepo_iconCarrier">
-                                                            <path
-                                                                d="M157.655,243.023v-71.985c27.26-7.387,52.179-31.393,49.308-65.275l-10-101.255C196.711,1.95,194.559,0,191.988,0h-47.955 l-12.52,26.719l21.958,9.223c1.967,0.825,3.538,2.44,4.311,4.43c0.772,1.989,0.703,4.241-0.19,6.178l-17.733,38.42 c-1.29,2.793-4.11,4.597-7.186,4.597h-0.003c-1.147,0-2.26-0.245-3.308-0.729c-3.96-1.827-5.696-6.537-3.868-10.498l14.3-30.983 l-22.001-9.241c-1.976-0.829-3.55-2.452-4.32-4.452c-0.77-1.999-0.689-4.259,0.22-6.199L126.561,0H79.323 c-2.571,0-4.723,1.95-4.976,4.509L64.342,105.821c-1.515,17.403,3.411,32.937,14.247,44.921 c8.595,9.507,20.936,16.634,35.066,20.317v71.964c-25.016,3.741-42.726,18.776-43.51,19.452c-1.584,1.364-2.152,3.569-1.425,5.529 c0.728,1.959,2.597,3.26,4.688,3.26h124.494c2.09,0,3.96-1.3,4.688-3.26c0.727-1.96,0.159-4.165-1.425-5.529 C200.381,261.799,182.671,246.765,157.655,243.023z">
-                                                            </path>
-                                                        </g>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Ajukan</span>
-                                                </button>
-                                            @elseif(session('warehouse_filter_status') === 'defect')
-                                                @if ($barang->status_barang === 'ditolak_supervisor')
-                                                    {{-- Tombol Note --}}
-                                                    <button
-                                                        class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                        title="Lihat Alasan Penolakan"
-                                                        data-catatan="{{ $barang->catatan }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                            height="24" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-sticky-note h-4 w-4">
-                                                            <path
-                                                                d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
-                                                            </path>
-                                                            <path d="M15 3v6h6"></path>
-                                                        </svg>
-                                                        <span
-                                                            class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
-                                                    </button>
 
-                                                    {{-- Tombol Ajukan Ulang --}}
-                                                    <button
-                                                        class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-600 p-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
-                                                        title="Ajukan Ulang" data-id="{{ $barang->id }}"
-                                                        data-status="{{ $barang->status_listing }}"
-                                                        data-kode="{{ $barang->kode_barang }}"
-                                                        data-nama="{{ $barang->nama_barang }}"
-                                                        data-kategori="{{ $barang->kategori }}"
-                                                        data-stok="{{ $barang->parent->stok ?? 0 }}"
-                                                        data-stok-defect="{{ $barang->stok }}"
-                                                        data-satuan="{{ $barang->satuan }}"
-                                                        data-lokasi="{{ $barang->lokasi }}"
-                                                        data-harga="{{ $barang->harga }}"
-                                                        data-deskripsi="{{ $barang->deskripsi }}"
-                                                        data-gambar="{{ $barang->gambar }}"
-                                                        data-alasan="{{ $barang->alasan_pengajuan }}"
-                                                        data-is-re-submission="true">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                            height="24" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-pencil h-4 w-4">
-                                                            <path
-                                                                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
-                                                            </path>
-                                                            <path d="m15 5 4 4"></path>
-                                                        </svg>
-                                                        <span
-                                                            class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Ajukan
-                                                            Ulang</span>
-                                                    </button>
-                                                @endif
-                                            @endif
                                             <form action="{{ route('warehouse.destroy', $barang->id) }}"
                                                 method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                @php
-                                                    $isDefectFilter = session('warehouse_filter_status') === 'defect';
-                                                    $confirmFunction = $isDefectFilter
-                                                        ? 'confirmCancel'
-                                                        : 'confirmDelete';
-                                                    $btnLabel = $isDefectFilter ? 'Batalkan' : 'Hapus';
-                                                @endphp
                                                 <button type="button"
                                                     class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                    onclick="{{ $confirmFunction }}(() => this.closest('form').submit())">
+                                                    onclick="confirmDelete(() => this.closest('form').submit())">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                         stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -241,7 +121,7 @@
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
                                                     <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">{{ $btnLabel }}</span>
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
                                                 </button>
                                             </form>
                                         </div>
@@ -288,7 +168,6 @@
             'kategoriList' => $kategoriList,
             'barang' => $barang,
         ])
-        @include('admin.warehouse.partials.warehouse-modal-show-note')
         @vite(['resources/js/warehouse.js'])
     </div>
 </x-app-layout>

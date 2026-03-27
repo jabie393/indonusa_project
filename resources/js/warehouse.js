@@ -107,10 +107,7 @@ function openEditModal(
     lokasi,
     harga,
     deskripsi = "",
-    gambar = null,
-    isReSubmission = false,
-    alasan = "",
-    stokDefect = "1",
+    gambar = null
 ) {
     document.getElementById("edit_id").value = id;
     document.getElementById("edit_kode_barang").value = kode_barang;
@@ -122,30 +119,7 @@ function openEditModal(
     // Update modal title
     const modalTitle = document.getElementById("editBarangModalTitle");
     if (modalTitle) {
-        modalTitle.innerText = isReSubmission
-            ? "Ajukan Kembali Barang Rusak (Defect)"
-            : "Ajukan Barang Rusak (Defect)";
-    }
-
-    // Handle proposed fields
-    const proposedPriceField = document.getElementById("harga_diajukan");
-    const proposedReasonField = document.getElementById("alasan_pengajuan");
-    const proposedStockField = document.getElementById("stok_diajukan");
-
-    if (isReSubmission) {
-        if (proposedPriceField) proposedPriceField.value = harga;
-        if (proposedReasonField) proposedReasonField.value = alasan;
-        if (proposedStockField) {
-            proposedStockField.value = stokDefect;
-            proposedStockField.max = stok;
-        }
-    } else {
-        if (proposedPriceField) proposedPriceField.value = "";
-        if (proposedReasonField) proposedReasonField.value = "";
-        if (proposedStockField) {
-            proposedStockField.value = "1";
-            proposedStockField.max = stok;
-        }
+        modalTitle.innerText = "Edit Barang";
     }
 
     // Preview gambar jika ada
@@ -191,9 +165,6 @@ $(document).on("click", ".edit-barang-btn", function (e) {
     const harga = $(this).data("harga");
     const deskripsi = $(this).data("deskripsi");
     const gambar = $(this).data("gambar");
-    const isReSubmission = $(this).data("is-re-submission") || false;
-    const alasan = $(this).data("alasan") || "";
-    const stokDefect = $(this).data("stok-defect") || "1";
 
     // Call your modal function
     openEditModal(
@@ -207,10 +178,7 @@ $(document).on("click", ".edit-barang-btn", function (e) {
         lokasi,
         harga,
         deskripsi,
-        gambar,
-        isReSubmission,
-        alasan,
-        stokDefect,
+        gambar
     );
 });
 
@@ -255,24 +223,3 @@ if (document.getElementById("gambar")) {
     };
 }
 
-// Handler untuk tombol Note (Alasan Penolakan)
-$(document).on("click", ".note-btn", function (e) {
-    e.preventDefault();
-    const catatan =
-        $(this).data("catatan") || "Tidak ada alasan yang diberikan.";
-    $("#catatanContent").text(catatan);
-
-    const noteModal = document.getElementById("noteModal");
-    if (noteModal && typeof noteModal.showModal === "function") {
-        noteModal.showModal();
-    }
-});
-
-// Handler untuk tombol tutup modal Note
-document.getElementById("closeNoteModal").onclick = function (e) {
-    e.preventDefault();
-    const noteModal = document.getElementById("noteModal");
-    if (noteModal && typeof noteModal.close === "function") {
-        noteModal.close();
-    }
-};

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        \Illuminate\Support\Facades\DB::statement("ALTER TABLE goods MODIFY COLUMN status_barang ENUM('ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor', 'ditolak_supervisor') DEFAULT 'ditinjau'");
+        \Illuminate\Support\Facades\DB::statement("ALTER TABLE goods MODIFY COLUMN status_barang ENUM('ditinjau', 'masuk', 'ditolak') DEFAULT 'ditinjau'");
     }
 
     /**
@@ -19,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        \Illuminate\Support\Facades\DB::statement("ALTER TABLE goods MODIFY COLUMN status_barang ENUM('ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor') DEFAULT 'ditinjau'");
+        \Illuminate\Support\Facades\DB::statement("ALTER TABLE goods MODIFY COLUMN status_barang ENUM('ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor', 'ditolak_supervisor') DEFAULT 'ditinjau'");
     }
 };
