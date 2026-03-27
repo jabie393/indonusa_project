@@ -58,7 +58,7 @@
         </div>
         <div class="overflow-x-auto">
             <table id="warehouseTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="bg-gray-50 text-xs text-nowrap uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3">Status Listing</th>
                         <th scope="col" class="px-4 py-3">Kode Barang</th>

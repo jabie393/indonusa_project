@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
     Route::resource('/customer', CustomerController::class);
+    Route::patch('/customer/{id}/status', [CustomerController::class, 'updateStatus'])->name('customer.status.update');
     Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
 });
 // End of General

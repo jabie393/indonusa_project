@@ -73,10 +73,14 @@ class CustomerController extends Controller
             'pics.*.email' => 'nullable|email',
             'pics.*.position' => 'nullable|string',
             'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
+            'status' => 'nullable|in:0,1',
         ]);
 
         DB::beginTransaction();
         try {
+            // Map 1/0 from checkbox to active/inactive for database enum
+            $status = $request->input('status') == '1' ? 'active' : 'inactive';
+
             // Buat customer baru
             $customer = Customer::create([
                 'nama_customer' => $validatedData['name'],
@@ -92,6 +96,7 @@ class CustomerController extends Controller
                 'kode_pos' => $validatedData['kode_pos'] ?? null,
                 'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
                 'created_by' => auth()->id(),
+                'status' => $status,
             ]);
 
             // Proses setiap PIC yang dikirim
@@ -177,11 +182,15 @@ class CustomerController extends Controller
             'pics.*.email' => 'nullable|email',
             'pics.*.position' => 'nullable|string',
             'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
+            'status' => 'nullable|in:0,1',
         ]);
 
         DB::beginTransaction();
         try {
             $customer = Customer::findOrFail($validatedData['id']);
+
+            // Map 1/0 from checkbox to active/inactive for database enum
+            $status = $request->input('status') == '1' ? 'active' : 'inactive';
 
             $customer->update([
                 'nama_customer' => $validatedData['name'],
@@ -196,6 +205,7 @@ class CustomerController extends Controller
                 'provinsi' => $validatedData['provinsi'] ?? null,
                 'kode_pos' => $validatedData['kode_pos'] ?? null,
                 'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
+                'status' => $status,
             ]);
 
             // Logic Sinkronisasi PIC One-to-Many
@@ -279,5 +289,27 @@ class CustomerController extends Controller
     {
         $pics = Pic::where('customer_id', $id)->get();
         return response()->json($pics);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:active,inactive'
+        ]);
+
+        try {
+            $customer = Customer::findOrFail($id);
+            $customer->update(['status' => $request->status]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status customer berhasil diperbarui.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

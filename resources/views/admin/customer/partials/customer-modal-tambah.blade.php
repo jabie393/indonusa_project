@@ -1,6 +1,6 @@
 <!-- Create Customer Modal -->
 <dialog id="createCustomerModal" class="modal">
-    <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Customer </h3>
@@ -21,11 +21,12 @@
                 <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
                     @csrf
-                    <div class="col-span-2 mb-4">
+                    <input type="hidden" name="status" value="1">
+                    <div class="col-span-1 mb-4">
                         <label for="createName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
                         <input type="text" id="createName" name="name" placeholder="Nama" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
-                    <div class="col-span-2 mb-4">
+                    <div class="col-span-1 mb-4">
                         <label for="npwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
                             NPWP</label>
                         <input type="text" id="npwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">

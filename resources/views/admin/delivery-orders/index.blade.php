@@ -55,7 +55,7 @@
 
         <div class="overflow-x-auto">
             <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead class="bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="px-4 py-2">Customer</th>
                         <th class="px-4 py-2">No. DO</th>

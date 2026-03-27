@@ -1,6 +1,6 @@
 <!-- Edit Customer Modal -->
 <dialog id="editCustomerModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow  dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Edit Customer </h3>
@@ -21,11 +21,44 @@
             <input type="hidden" id="editCustomerId" name="id">
             <div class="h-full overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
-                    <div class="col-span-2 mb-4">
+                    <div class="col-span-2 mb-2 flex items-center justify-between overflow-hidden rounded-2xl border border-blue-100 bg-blue-50/30 p-5 dark:border-gray-600 dark:bg-gray-800/30">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#225A97] to-[#0D223A] text-white shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <polyline points="16 11 18 13 22 9" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-[#225A97] dark:text-blue-400">Status Akun Customer</p>
+                                <p class="text-[11px] text-gray-400 dark:text-gray-400">Ubah status aktif customer untuk mengontrol akses transaksi.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="relative inline-flex items-center gap-3">
+                                <span class="text-xs font-bold text-red-500">Non-Aktif</span>
+                                <label class="toggle text-base-content">
+                                    <input type="checkbox" id="editStatus" name="status" value="1"/>
+                                    <svg aria-label="disabled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                    <svg aria-label="enabled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <g stroke-linejoin="round" stroke-linecap="round" stroke-width="4" fill="none" stroke="currentColor">
+                                            <path d="M20 6 9 17l-5-5"></path>
+                                        </g>
+                                    </svg>
+                                </label>
+                                <span class="text-xs font-bold text-green-500">Aktif</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-1 mb-4">
                         <label for="editName" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama</label>
                         <input type="text" id="editName" name="name" placeholder="Nama" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
-                    <div class="col-span-2 mb-4">
+                    <div class="col-span-1 mb-4">
                         <label for="editNpwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
                             NPWP</label>
                         <input type="text" id="editNpwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -214,6 +247,12 @@
         document.getElementById('editKodePos').value = customer.kode_pos || '';
         document.getElementById('editTelepon').value = customer.telepon || '';
         document.getElementById('editEmail').value = customer.email || '';
+
+        // Populate Status Toggle
+        const statusToggle = document.getElementById('editStatus');
+        if (statusToggle) {
+            statusToggle.checked = (customer.status === 'active' || customer.status === 'Active');
+        }
 
         // Reset PIC Container
         const container = document.getElementById('edit-pic-container');

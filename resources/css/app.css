@@ -193,12 +193,3 @@
 div.dt-container div.grid-x{
   margin:0;
 }
-
-/* checkbox */
-[type='checkbox']:checked, [type='radio']:checked {
-    background-color: green;
-}
-
-table.dataTable input.dt-select-checkbox:checked:after {
-    display: none;
-}

@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-       
+
         <div class="p-4">
             <button onclick="createCustomerModal.showModal()" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
                 <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -36,13 +36,14 @@
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="selectCol px-4 py-2"></th>
-                        <th class="px-4 py-2 text-nowrap">Nama</th>
-                        <th class="px-4 py-2 text-nowrap">Kategori</th>
-                        <th class="px-4 py-2 text-nowrap">No. NPWP</th>
-                        <th class="px-4 py-2 text-nowrap">Term Of Payment</th>
+                        <th class="text-nowrap px-4 py-2">Nama</th>
+                        <th class="text-nowrap px-4 py-2">Kategori</th>
+                        <th class="text-nowrap px-4 py-2">No. NPWP</th>
+                        <th class="text-nowrap px-4 py-2">Term Of Payment</th>
                         <th class="px-4 py-2">Kredit Limit</th>
                         <th class="px-4 py-2">PIC</th>
                         <th class="px-4 py-2">Kotak</th>
+                        <th class="text-nowrap px-4 py-2">Status</th>
                         <th class="px-4 py-2">Aksi</th>
                     </tr>
                 </thead>
@@ -52,12 +53,12 @@
 
                             <td class="px-4 py-2">{{ $customer->id }}</td>
                             <td class="text-nowrap px-4 py-2">{{ $customer->nama_customer }}</td>
-                            <td class="px-4 py-2 text-nowrap">{{ $customer->tipe_customer }}</td>
-                            <td class="px-4 py-2 text-nowrap">{{ $customer->npwp ?? '-' }}</td>
-                            <td class="px-4 py-2 text-nowrap">
+                            <td class="text-nowrap px-4 py-2">{{ $customer->tipe_customer }}</td>
+                            <td class="text-nowrap px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-2">
                                 {{ $customer->term_of_payments !== null ? $customer->term_of_payments . ' Hari' : '-' }}
                             </td>
-                            <td class="px-4 py-2 text-nowrap">{{ $customer->kredit_limit ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
                             <td class="px-4 py-2">
                                 @if ($customer->pics && $customer->pics->count() > 0)
                                     @foreach ($customer->pics as $pic)
@@ -71,45 +72,41 @@
                             </td>
                             <td class="px-4 py-2">No.
                                 Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}</td>
+                            <td class="px-4 py-2">
+                                    <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
+                                        class="select select-xs min-w-24 h-8 text-nowrap border-none font-bold transition-all duration-300 inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }}">
+                                        <option class="hover:bg-green-100 text-green-800" value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }}>
+                                            Aktif</option>
+                                        <option class="hover:bg-red-100 text-red-800" value="inactive" {{ strtolower($customer->status) != 'active' ? 'selected' : '' }}>
+                                            Non-Aktif</option>
+                                    </select>
+                            </td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
-                                    <div
-                                        class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                    <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Edit --}}
-                                        <button onclick="openEditModal({{ $customer->toJson() }})"
-                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil h-4 w-4">
-                                                <path
-                                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                        <button onclick="openEditModal({{ $customer->toJson() }})" class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4">
+                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
                                                 </path>
                                                 <path d="m15 5 4 4"></path>
                                             </svg>
-                                            <span
-                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                         </button>
                                         {{-- Delete --}}
                                         <form action="" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button"
-                                                class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                onclick="confirmDelete(() => this.closest('form').submit())">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
+                                            <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="confirmDelete(() => this.closest('form').submit())">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
                                                     <path d="M10 11v6"></path>
                                                     <path d="M14 11v6"></path>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
                                                     <path d="M3 6h18"></path>
                                                     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                 </svg>
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
                                             </button>
                                         </form>
                                     </div>
@@ -120,8 +117,7 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-            aria-label="Table navigation">
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing
@@ -150,4 +146,64 @@
     <!-- Modals -->
     @include('admin.customer.partials.customer-modal-tambah')
     @include('admin.customer.partials.customer-modal-edit')
+
+    <script>
+        function updateCustomerStatus(id, newStatus) {
+            Swal.fire({
+                title: 'Sedang memproses...',
+                allowOutsideClick: false,
+                customClass: {
+                    popup: 'rounded-2xl!',
+                },
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: "{{ route('customer.status.update', ['id' => ':id']) }}".replace(':id', id),
+                type: 'PATCH',
+                data: {
+                    status: newStatus,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: true,
+                            customClass: {
+                                popup: 'rounded-2xl!',
+                            },
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message,
+                            customClass: {
+                                popup: 'rounded-2xl!',
+                            },
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan sistem.',
+                        customClass: {
+                            popup: 'rounded-2xl!',
+                        },
+                    });
+                }
+            });
+        }
+    </script>
 </x-app-layout>
