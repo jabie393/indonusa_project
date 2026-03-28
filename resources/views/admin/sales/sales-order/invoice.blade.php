@@ -151,7 +151,7 @@
     </div>
 
     {{-- Hidden form untuk Excel --}}
-    <form id="excel-form" action="{{ route('sales.sales-order.invoice-excel', $rowId) }}" method="POST" style="display:none;">
+    <form id="excel-form" action="{{ $invoiceExcelRoute }}" method="POST" style="display:none;">
         @csrf
         <input type="hidden" name="row_type" value="{{ $rowType }}">
         <input type="hidden" name="inv_number" id="ef_inv_number">
