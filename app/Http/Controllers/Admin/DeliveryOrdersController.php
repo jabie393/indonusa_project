@@ -11,6 +11,35 @@ use Illuminate\Support\Facades\Schema;
 
 class DeliveryOrdersController extends Controller
 {
+    /**
+     * Delivery Orders untuk Sales (read-only, filter by sales_id)
+     */
+    public function salesIndex(Request $request)
+    {
+        $search  = $request->input('search', '');
+        $perPage = $request->input('perPage', 10);
+
+        $query = \App\Models\Order::with(['items.barang', 'requestOrder.sales', 'customer'])
+            ->whereHas('requestOrder', function ($q) {
+                $q->where('sales_id', \Illuminate\Support\Facades\Auth::id());
+            });
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number',  'like', "%$search%")
+                  ->orWhere('do_number',    'like', "%$search%")
+                  ->orWhere('customer_name','like', "%$search%")
+                  ->orWhereHas('requestOrder', function ($q2) use ($search) {
+                      $q2->where('no_po',               'like', "%$search%")
+                         ->orWhere('sales_order_number', 'like', "%$search%");
+                  });
+            });
+        }
+
+        $orders = $query->latest()->paginate($perPage)->appends($request->query());
+
+        return view('admin.sales.delivery-orders.index', compact('orders'));
+    }
     // Tampilkan daftar orders yang statusnya 'sent_to_warehouse'
     public function index(Request $request)
     {

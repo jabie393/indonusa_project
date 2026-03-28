@@ -209,6 +209,10 @@ Route::middleware(['auth'])->group(function () {
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
+    // Delivery Orders (read-only untuk Sales)
+    Route::get('/sales/delivery-orders', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'salesIndex'])->name('sales.delivery-orders.index');
+    Route::get('/sales/delivery-orders/{id}/items', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getItems'])->name('sales.delivery-orders.items');
+    Route::get('/sales/delivery-orders/{id}/history', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getHistory'])->name('sales.delivery-orders.history');
     // Customer Routes for Sales (Consolidated to global customer.store)
     
     // Request Order Routes

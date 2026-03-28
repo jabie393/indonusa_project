@@ -293,7 +293,7 @@
             {{-- Warehouse --}}
             <li>
                 <a href="{{ route('warehouse.index') }}"
-                    class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                    class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') || request()->routeIs('sales.delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31"
                         fill="none"
                         class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
@@ -302,9 +302,25 @@
                             fill="currentColor" />
                     </svg>
                     <span
-                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Warehouse</span>
+                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') || request()->routeIs('sales.delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Warehouse</span>
                 </a>
-            </li>
+
+                    @if (in_array(auth()->user()->role, ['Sales']))
+                        <ul class="pt-2">
+                            <li class="flex items-center justify-end">
+                                <svg width="24" height="24" class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 7V6a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <a href="{{ route('sales.delivery-orders.index') }}"
+                                   class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg {{ request()->routeIs('sales.delivery-orders.*') ? 'shadow-lg' : '' }}">
+                                    <span>Delivery Orders</span>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
+                </li>
 
             @if (auth()->user()->role === 'General Affair')
                 {{-- Sales Order (GA) --}}
