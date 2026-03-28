@@ -106,6 +106,11 @@ Route::middleware(['auth'])->group(function () {
 
 // General Affair
 Route::middleware(['auth', 'role:General Affair'])->group(function () {
+    // Sales Order (read-only untuk GA)
+    Route::get('/ga/sales-order', [App\Http\Controllers\Admin\SalesOrderController::class, 'gaIndex'])->name('ga.sales-order.index');
+    Route::get('/ga/sales-order/search', [App\Http\Controllers\Admin\SalesOrderController::class, 'gaSearch'])->name('ga.sales-order.search');
+    Route::get('/ga/sales-order/{id}/invoice', [App\Http\Controllers\Admin\SalesOrderController::class, 'showInvoice'])->name('ga.sales-order.invoice');
+    Route::post('/ga/sales-order/{id}/invoice-excel', [App\Http\Controllers\Admin\SalesOrderController::class, 'downloadInvoiceExcel'])->name('ga.sales-order.invoice-excel');
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     // Excel Import
