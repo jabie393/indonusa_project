@@ -125,7 +125,7 @@
 								</div>
 							</td>
 							<td class="px-4 py-3">
-								@if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
+								@if (!empty($row['berlaku_sampai'])  && $row['berlaku_sampai'] !== '-')
 									{{ $row['berlaku_sampai'] }}
 								@else
 									-
