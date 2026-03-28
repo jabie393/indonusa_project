@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barang;
+use App\Exports\QuotationsReportExportSales;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SalesDashboardController extends Controller
 {
@@ -213,5 +215,10 @@ class SalesDashboardController extends Controller
             'svc_data'   => $svcData,
             'selectedYear' => $selectedYear,
         ]);
+    }
+
+    public function exportQuotations()
+    {
+        return Excel::download(new QuotationsReportExportSales(), "My_Quotations_Report_" . now()->format('Ymd') . ".xlsx");
     }
 }

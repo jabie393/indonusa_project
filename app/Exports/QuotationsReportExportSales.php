@@ -8,8 +8,9 @@ use App\Models\Order;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Illuminate\Support\Facades\Auth;
 
-class QuotationsReportExport implements FromCollection, WithHeadings, WithMapping
+class QuotationsReportExportSales implements FromCollection, WithHeadings, WithMapping
 {
     private $rowNumber = 0;
 
@@ -18,13 +19,16 @@ class QuotationsReportExport implements FromCollection, WithHeadings, WithMappin
     */
     public function collection()
     {
-        // 1. Get Orders first as the primary filter
+        $userId = Auth::id();
+
+        // 1. Get Orders first as the primary filter, filtered by sales_id
         $orders = Order::with([
             'requestOrder.sales',
             'customer',
             'items.barang',
             'requestOrder.items.barang'
         ])
+        ->where('sales_id', $userId)
         ->whereIn('status', ['completed', 'not_completed'])
         ->latest()
         ->get();

@@ -10,14 +10,15 @@
                     </svg>
                     Quotation
                 </a>
-                {{-- <div id="bulk-actions" class="hidden flex-row items-center space-x-2" data-delete-url="{{ route('sales.request-order.bulk-delete') }}" data-sent-url="{{ route('sales.request-order.bulk-send-to-warehouse') }}">
-                    <button id="bulk-delete" class="flex cursor-pointer items-center justify-center rounded-lg bg-red-700 px-4 py-2 font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300">
-                        Delete Selected (<span id="selected-count">0</span>)
-                    </button>
-                    <button id="bulk-send" class="flex cursor-pointer items-center justify-center rounded-lg bg-blue-700 px-4 py-2 font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                        Send to Warehouse
-                    </button>
-                </div> --}}
+
+                <div class="flex gap-2">
+                    <a href="{{ route('dashboard.sales.export.quotations') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Report Penawaran
+                    </a>
+                </div>
             </div>
             {{-- Bulk Actions --}}
 
