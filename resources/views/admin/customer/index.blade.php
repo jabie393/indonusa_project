@@ -71,7 +71,9 @@
                                 @endif
                             </td>
                             <td class="px-4 py-2">No.
-                                Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}</td>
+                                Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}
+                            </td>
+                            @if (in_array(auth()->user()->role, ['Supervisor']))
                             <td class="px-4 py-2">
                                     <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
                                         class="select select-xs min-w-24 h-8 text-nowrap border-none font-bold transition-all duration-300 inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }}">
@@ -81,6 +83,27 @@
                                             Non-Aktif</option>
                                     </select>
                             </td>
+                            @elseif (in_array(auth()->user()->role, ['Sales', 'General Affair']))
+                            <td class="px-4 py-2">
+                                @php
+                                    $statusClass =
+                                        [
+                                            'active' => 'bg-green-100 text-green-800 inset-ring inset-ring-green-600',
+                                            'inactive' => 'bg-red-100 text-red-800 inset-ring inset-ring-red-600',
+                                        ][$customer->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                    $statusLabel =
+                                        [
+                                            'active' => 'Aktif',
+                                            'inactive' => 'Non-Aktif',
+                                        ][$customer->status] ?? $customer->status;
+                                @endphp
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $statusLabel }}
+                                    </span>
+                                </div>
+                            </td>
+                            @endif
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>

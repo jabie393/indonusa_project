@@ -37,7 +37,7 @@
             <!-- DOWNLOAD REPORTS -->
             <div class="flex gap-2">
                 <div class="dropdown dropdown-end">
-                    <label tabindex="0" class="btn btn-outline btn-primary capitalize">
+                    <label tabindex="0" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M16 10l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -48,7 +48,7 @@
                         <li><a href="{{ route('dashboard.supervisor.export.performance', ['type' => 'monthly']) }}">Monthly Performance</a></li>
                     </ul>
                 </div>
-                <a href="{{ route('dashboard.supervisor.export.quotations') }}" class="btn btn-primary capitalize">
+                <a href="{{ route('dashboard.supervisor.export.quotations') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>

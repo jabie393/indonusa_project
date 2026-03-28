@@ -273,6 +273,9 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Dashboard Chart Data for Sales
     Route::get('/admin/dashboard/sales/data', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'chartData'])
         ->name('dashboard.sales.chart.data');
+
+    Route::get('/admin/dashboard/sales/export-quotations', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'exportQuotations'])
+        ->name('dashboard.sales.export.quotations');
 });
 // End of Sales
 

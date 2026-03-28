@@ -190,7 +190,12 @@ class CustomerController extends Controller
             $customer = Customer::findOrFail($validatedData['id']);
 
             // Map 1/0 from checkbox to active/inactive for database enum
-            $status = $request->input('status') == '1' ? 'active' : 'inactive';
+            // Only update status if the user is a Supervisor
+            if (auth()->user()->role === 'Supervisor') {
+                $status = $request->input('status') == '1' ? 'active' : 'inactive';
+            } else {
+                $status = $customer->status;
+            }
 
             $customer->update([
                 'nama_customer' => $validatedData['name'],
