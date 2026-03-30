@@ -30,6 +30,31 @@
                     </div>
                 </div>
 
+                <div id="returnStockContainer" class="hidden mb-5">
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
+                        Opsi Pembatalan
+                    </label>
+                    <div class="flex flex-col gap-3 mb-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="cancel_option" value="cancel_rest" class="radio radio-primary radio-sm border-gray-300 dark:border-gray-600" checked onchange="toggleReturnItems(false)">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Batalkan Sisa Pengiriman</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="radio" name="cancel_option" value="cancel_return" class="radio radio-primary radio-sm border-gray-300 dark:border-gray-600" onchange="toggleReturnItems(true)">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Kembalikan Stok Terkirim</span>
+                        </label>
+                    </div>
+
+                    <div id="returnItemsList" class="hidden">
+                        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
+                            Jumlah Stok Dikembalikan
+                        </label>
+                        <div class="space-y-2 max-h-48 overflow-y-auto pr-1" id="returnItemsWrapper">
+                            <!-- items injected here -->
+                        </div>
+                    </div>
+                </div>
+
                 <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
                     Alasan Penolakan <span class="text-rose-500">*</span>
                 </label>
@@ -62,6 +87,15 @@
 </dialog>
 
 <script>
+    function toggleReturnItems(show) {
+        const list = document.getElementById('returnItemsList');
+        if (show) {
+            list.classList.remove('hidden');
+        } else {
+            list.classList.add('hidden');
+        }
+    }
+
     /**
      * Buka modal tolak.
      * @param {string} type  - 'request_order', 'custom', 'delivery_order', 'supply_order'
@@ -103,10 +137,43 @@
             (item) => item.delivered_quantity > 0,
         ) : false;
 
-        if (hasDeliveries) {
+        const returnStockContainer = document.getElementById('returnStockContainer');
+        const returnItemsWrapper = document.getElementById('returnItemsWrapper');
+
+        if (hasDeliveries && type === 'delivery_order') {
             document.getElementById('tolakNote').textContent = 'Order ' + nomor + ' memiliki pengiriman yang sudah berjalan. Order akan ditandai sebagai Selesai untuk membatalkan sisanya.';
+            if (returnStockContainer) {
+                returnStockContainer.classList.remove('hidden');
+                document.querySelector('input[name="cancel_option"][value="cancel_rest"]').checked = true;
+                toggleReturnItems(false);
+
+                returnItemsWrapper.innerHTML = '';
+                items.forEach((item) => {
+                    const deliveredQty = parseInt(item.delivered_quantity) || 0;
+                    if (deliveredQty > 0) {
+                        const itemName = item.barang ? item.barang.nama_barang : (item.nama_barang ? item.nama_barang : 'Barang');
+                        returnItemsWrapper.innerHTML += `
+                            <div class="flex items-center justify-between gap-4 p-3 rounded-xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 text-sm">
+                                <div class="flex-1 text-gray-700 dark:text-gray-300">
+                                    <p class="font-medium">` + itemName + `</p>
+                                    <p class="text-xs text-gray-500 mt-1">Maksimal: ` + deliveredQty + `</p>
+                                </div>
+                                <div class="w-24 shrink-0">
+                                    <input type="number" name="return_items[` + item.id + `]" class="input input-bordered input-sm w-full return-qty-input focus:border-primary-500" value="` + deliveredQty + `" min="0" max="` + deliveredQty + `">
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
         } else {
             document.getElementById('tolakNote').textContent = 'Apakah Anda yakin ingin menolak order ' + nomor + '?';
+            if (returnStockContainer) {
+                returnStockContainer.classList.add('hidden');
+                returnItemsWrapper.innerHTML = '';
+                document.querySelector('input[name="cancel_option"][value="cancel_rest"]').checked = true;
+                toggleReturnItems(false);
+            }
         }
     }
 
@@ -129,6 +196,27 @@
             document.getElementById('modalTolakReason').focus();
             return;
         }
+
+        const cancelReturnRadio = document.querySelector('input[name="cancel_option"][value="cancel_return"]');
+        if (cancelReturnRadio && cancelReturnRadio.checked && !document.getElementById('returnStockContainer').classList.contains('hidden')) {
+            const returnInputs = document.querySelectorAll('.return-qty-input');
+            let hasError = false;
+            returnInputs.forEach((input) => {
+                const val = parseInt(input.value) || 0;
+                const max = parseInt(input.getAttribute('max')) || 0;
+                if (val > max) {
+                    alert('Jumlah pengembalian tidak boleh melebihi jumlah terkirim (' + max + ').');
+                    input.focus();
+                    hasError = true;
+                } else if (val < 0) {
+                    alert('Jumlah pengembalian tidak valid.');
+                    input.focus();
+                    hasError = true;
+                }
+            });
+            if (hasError) return;
+        }
+
         document.getElementById('modalTolakError').classList.add('hidden');
         document.getElementById('formTolakGlobal').submit();
     }

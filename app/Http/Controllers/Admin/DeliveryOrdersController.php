@@ -156,26 +156,82 @@ class DeliveryOrdersController extends Controller
         $hasDeliveries = $order->items->contains(fn($item) => $item->delivered_quantity > 0);
 
         if ($hasDeliveries) {
-            // Case: Partial Delivery already happened. We just finalize the order.
-            // Items with delivered_quantity > 0 are marked as delivered (finalized).
-            foreach ($order->items as $item) {
-                if ($item->delivered_quantity > 0) {
-                    if ($item->delivered_quantity < $item->quantity) {
-                        $item->status_item = 'partially_delivered';
-                    } else {
-                        $item->status_item = 'delivered';
+            $cancelOption = $request->input('cancel_option');
+            $returnItems = $request->input('return_items', []);
+
+            if ($cancelOption === 'cancel_return') {
+                foreach ($order->items as $item) {
+                    if (isset($returnItems[$item->id]) && $item->delivered_quantity > 0) {
+                        $returnQty = (int) $returnItems[$item->id];
+                        
+                        if ($returnQty > $item->delivered_quantity) {
+                            $returnQty = $item->delivered_quantity; 
+                        }
+
+                        if ($returnQty > 0) {
+                            $item->delivered_quantity -= $returnQty;
+                            
+                            if ($item->barang) {
+                                $barang = $item->barang;
+                                $barang->stok += $returnQty;
+                                $barang->save();
+
+                                \App\Models\BarangHistory::create([
+                                    'barang_id'   => $barang->id,
+                                    'kode_barang' => $barang->kode_barang,
+                                    'nama_barang' => $barang->nama_barang,
+                                    'kategori'    => $barang->kategori,
+                                    'stok'        => $barang->stok,
+                                    'satuan'      => $barang->satuan,
+                                    'lokasi'      => $barang->lokasi,
+                                    'harga'       => $barang->harga,
+                                    'old_status'  => $barang->status_barang,
+                                    'new_status'  => $barang->status_barang,
+                                    'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
+                                    'note'        => 'Stock bertambah (' . $returnQty . ') dari pengembalian DO: ' . ($order->do_number ?? $order->order_number),
+                                ]);
+                            }
+                        }
                     }
-                } else {
-                    $item->status_item = 'cancel';
+
+                    if ($item->delivered_quantity > 0) {
+                        if ($item->delivered_quantity < $item->quantity) {
+                            $item->status_item = 'partially_delivered';
+                        } else {
+                            $item->status_item = 'delivered';
+                        }
+                    } else {
+                        $item->status_item = 'cancel';
+                    }
+                    $item->save();
                 }
-                $item->save();
+
+                $order->status = 'completed';
+                $order->reason = $request->input('reason');
+                $order->save();
+
+                $message = 'Order telah dibatalkan sisanya, stok terkirim telah dikembalikan, dan DO ditandai Selesai.';
+            } else {
+                // Case: cancel_rest (default)
+                foreach ($order->items as $item) {
+                    if ($item->delivered_quantity > 0) {
+                        if ($item->delivered_quantity < $item->quantity) {
+                            $item->status_item = 'partially_delivered';
+                        } else {
+                            $item->status_item = 'delivered';
+                        }
+                    } else {
+                        $item->status_item = 'cancel';
+                    }
+                    $item->save();
+                }
+
+                $order->status = 'completed';
+                $order->reason = $request->input('reason');
+                $order->save();
+
+                $message = 'Order (sebagian) telah dibatalkan sisanya dan ditandai Selesai.';
             }
-
-            $order->status = 'completed';
-            $order->reason = $request->input('reason');
-            $order->save();
-
-            $message = 'Order (sebagian) telah dibatalkan sisanya dan ditandai Selesai.';
         } else {
             // Case: No deliveries yet, full rejection
             $order->status = 'rejected_warehouse';
