@@ -9,8 +9,10 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\WithStyles;
 
-class QuotationsReportExportSales implements FromCollection, WithHeadings, WithMapping
+class QuotationsReportExportSales implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     private $rowNumber = 0;
 
@@ -66,6 +68,26 @@ class QuotationsReportExportSales implements FromCollection, WithHeadings, WithM
             'Quantity',
             'Subtotal',
             'Status',
+        ];
+    }
+
+    /**
+     * @param Worksheet $sheet
+     * @return array
+     */
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => [
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => 'FFFFFF']
+                ],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '70AD47'],
+                ],
+            ],
         ];
     }
 

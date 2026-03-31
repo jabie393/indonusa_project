@@ -200,6 +200,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('dashboard.supervisor.export.performance');
     Route::get('/admin/dashboard/supervisor/export-quotations', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportQuotations'])
         ->name('dashboard.supervisor.export.quotations');
+    Route::get('/admin/dashboard/supervisor/export-semua-barang', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportSemuaBarang'])
+        ->name('dashboard.supervisor.export.semua-barang');
 
 
     // Supervisor History (all approval processes)

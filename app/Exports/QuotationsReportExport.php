@@ -8,6 +8,7 @@ use App\Models\Order;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class QuotationsReportExport implements FromCollection, WithHeadings, WithMapping
 {
@@ -62,6 +63,26 @@ class QuotationsReportExport implements FromCollection, WithHeadings, WithMappin
             'Quantity',
             'Subtotal',
             'Status',
+        ];
+    }
+
+    /**
+     * @param Worksheet $sheet
+     * @return array
+     */
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => [
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => 'FFFFFF']
+                ],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '70AD47'],
+                ],
+            ],
         ];
     }
 

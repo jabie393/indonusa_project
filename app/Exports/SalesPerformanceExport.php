@@ -7,8 +7,10 @@ use App\Models\RequestOrder;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SalesPerformanceExport implements FromCollection, WithHeadings, WithMapping
+class SalesPerformanceExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     protected $type; // weekly or monthly
 
@@ -35,6 +37,26 @@ class SalesPerformanceExport implements FromCollection, WithHeadings, WithMappin
             'Not Completed Orders',
             'Success Rate (%)',
             'Total Revenue',
+        ];
+    }
+
+    /**
+     * @param Worksheet $sheet
+     * @return array
+     */
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => [
+                'font' => [
+                    'bold' => true,
+                    'color' => ['rgb' => 'FFFFFF']
+                ],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '70AD47'],
+                ],
+            ],
         ];
     }
 

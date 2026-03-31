@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesPerformanceExport;
 use App\Exports\QuotationsReportExport;
+use App\Exports\SemuaBarangExport;
 use Illuminate\Support\Facades\DB;
 
 class SupervisorDashboardController extends Controller
@@ -265,5 +266,9 @@ class SupervisorDashboardController extends Controller
     public function exportQuotations()
     {
         return Excel::download(new QuotationsReportExport(), "All_Quotations_Report_" . now()->format('Ymd') . ".xlsx");
+    }
+    public function exportSemuaBarang()
+    {
+        return Excel::download(new SemuaBarangExport(), "All_Barang_Report_" . now()->format('Ymd') . ".xlsx");
     }
 }
