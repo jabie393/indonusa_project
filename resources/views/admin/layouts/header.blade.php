@@ -140,6 +140,11 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Catalog</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Daftar Catalog</p>
                     </div>
+                @elseif (request()->routeIs('sales.delivery-orders.*'))
+                    <div class="text-gray-100">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Delivery Orders</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Pesanan Siap Dikirim</p>
+                    </div>
                 @endif
             @endif
         </div>

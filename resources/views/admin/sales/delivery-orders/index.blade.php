@@ -20,17 +20,28 @@
         </div>
 
         <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
-                <h3 class="flex items-center gap-2 text-xl font-semibold text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                        <path d="m3.3 7 8.7 5 8.7-5"/>
-                        <path d="M12 22V12"/>
-                    </svg>
-                    Delivery Orders
-                </h3>
-            </div>
+            <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+            @if (Auth::user() && in_array(Auth::user()->role, ['Sales']))
+                @php
+                    $currentStatus = session('warehouse_filter_status', 'masuk');
+                    $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                @endphp
+                <div class="flex items-center space-x-2">
+                    <a href="{{ route('warehouse.index', ['status' => 'masuk', 'search' => request('search')]) }}"
+                        class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                        Semua Barang
+                    </a>
+                    <a href="{{ route('sales.delivery-orders.index') }}"
+                        class="bg-white text-[#225A97] hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                        Delivery Orders
+                        @if ($deliveryOrderCount > 0)
+                            <span
+                                class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
+                        @endif
+                    </a>
+                </div>
+            @endif
+        </div>
 
             <div class="overflow-x-auto">
                 <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">

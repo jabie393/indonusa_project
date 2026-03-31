@@ -25,7 +25,7 @@
 
     <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-            @if (Auth::user() && Auth::user()->role === 'Warehouse')
+            @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
                 @php
                     $currentStatus = session('warehouse_filter_status', 'masuk');
                     $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
@@ -36,7 +36,7 @@
                         class="{{ $currentStatus === 'masuk' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Semua Barang
                     </a>
-
+                    @if (Auth::user() && Auth::user()->role === 'Warehouse')
                     <a href="{{ route('supply-orders.index') }}"
                         class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Supply Orders
@@ -53,6 +53,17 @@
                                 class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
                         @endif
                     </a>
+                    @endif
+                    @if (Auth::user() && Auth::user()->role === 'Sales')
+                    <a href="{{ route('sales.delivery-orders.index') }}"
+                        class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                        Delivery Orders
+                        @if ($deliveryOrderCount > 0)
+                            <span
+                                class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
+                        @endif
+                    </a>
+                    @endif
                 </div>
             @endif
         </div>

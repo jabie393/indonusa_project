@@ -296,7 +296,7 @@
                     class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') || request()->routeIs('sales.delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31"
                         fill="none"
-                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') || request()->routeIs('sales.delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
                         <path
                             d="M6.21582 14.4103H10.0143V18.1884H6.21582V14.4103ZM6.21582 23.2138H10.0143V19.4356H6.21582V23.2138ZM6.21582 28.227H10.0143V24.4489H6.21582V28.227ZM11.1416 23.2138H14.9299V19.4356H11.1314V23.2138H11.1416ZM11.1416 28.227H14.9299V24.4489H11.1314V28.227H11.1416ZM16.0674 24.4489V28.227H19.8658V24.4489H16.0674ZM25.8986 9.71182L13.0307 2.49463L0.172852 9.73603L0.975195 11.7341L2.61035 10.8017V28.2392H4.45879V10.729H21.6229V28.2634H23.4713V10.8259L25.1064 11.7341L25.8986 9.71182Z"
                             fill="currentColor" />
@@ -304,22 +304,6 @@
                     <span
                         class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') || request()->routeIs('sales.delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Warehouse</span>
                 </a>
-
-                    @if (in_array(auth()->user()->role, ['Sales']))
-                        <ul class="pt-2">
-                            <li class="flex items-center justify-end">
-                                <svg width="24" height="24" class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M3 7V6a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path d="M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                <a href="{{ route('sales.delivery-orders.index') }}"
-                                   class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg {{ request()->routeIs('sales.delivery-orders.*') ? 'shadow-lg' : '' }}">
-                                    <span>Delivery Orders</span>
-                                </a>
-                            </li>
-                        </ul>
-                    @endif
                 </li>
 
             @if (auth()->user()->role === 'General Affair')

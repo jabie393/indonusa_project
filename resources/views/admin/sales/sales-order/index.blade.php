@@ -101,15 +101,17 @@
                                                 </button>
                                             </div>
                                         @elseif($row['type'] === 'request_order')
-                                            <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                    <polyline points="17 8 12 3 7 8" />
-                                                    <line x1="12" x2="12" y1="3" y2="15" />
-                                                </svg>
-                                                Upload PO
-                                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
-                                            </label>
+                                            @if (($row['customer_status'] ?? 'active') === 'active')
+                                                <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                        <polyline points="17 8 12 3 7 8" />
+                                                        <line x1="12" x2="12" y1="3" y2="15" />
+                                                    </svg>
+                                                    Upload PO
+                                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
+                                                </label>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -122,7 +124,16 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $row['customer_name'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col">
+                                    <span>{{ $row['customer_name'] ?? '-' }}</span>
+                                    @if (($row['customer_status'] ?? 'active') === 'inactive')
+                                        <span class="mt-1 text-[10px] font-bold uppercase tracking-wider text-red-600">
+                                            (Non Aktif)
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
                             <td class="px-4 py-3 text-right">Rp {{ number_format($row['total'] ?? 0, 0, ',', '.') }}</td>
                             <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
@@ -172,19 +183,21 @@
 
                                         @if ($row['type'] === 'sales_order')
                                             <div id="image-preview-aksi-{{ $row['id'] }}-sales_order">
-                                                @if (isset($row['image']) && $row['image'])
+                                                @if ($row['image_url'])
                                                     <div class="group relative inline-block">
                                                         <a href="{{ $row['image_url'] }}" target="_blank">
                                                             <img src="{{ $row['image_url'] }}" alt="SO Image" class="h-8 w-8 rounded border border-gray-300 object-cover shadow-sm" />
                                                         </a>
-                                                        <button class="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100" onclick="handleDeleteImage('sales_order', {{ $row['id'] }}, 'main')" title="Ganti">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M18 6 6 18" />
-                                                                <path d="m6 6 12 12" />
-                                                            </svg>
-                                                        </button>
+                                                        @if (($row['customer_status'] ?? 'active') === 'active')
+                                                            <button class="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100" onclick="handleDeleteImage('sales_order', {{ $row['id'] }}, 'main')" title="Ganti">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M18 6 6 18" />
+                                                                    <path d="m6 6 12 12" />
+                                                                </svg>
+                                                            </button>
+                                                        @endif
                                                     </div>
-                                                @else
+                                                @elseif (($row['customer_status'] ?? 'active') === 'active')
                                                     <label class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -198,17 +211,19 @@
                                             </div>
                                         @endif
                                         {{-- Action Dropdown --}}
-                                        <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" popovertarget="popover-{{ $row['id'] }}" style="anchor-name:--anchor-{{ $row['id'] }}">
-                                            <svg width="24px" height="24px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-three-dots-vertical h-4 w-4">
-                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                <g id="SVGRepo_iconCarrier">
-                                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
-                                                    </path>
-                                                </g>
-                                            </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Aksi</span>
-                                        </button>
+                                        @if (($row['customer_status'] ?? 'active') === 'active')
+                                            <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" popovertarget="popover-{{ $row['id'] }}" style="anchor-name:--anchor-{{ $row['id'] }}">
+                                                <svg width="24px" height="24px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-three-dots-vertical h-4 w-4">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
+                                                        </path>
+                                                    </g>
+                                                </svg>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Aksi</span>
+                                            </button>
+                                        @endif
 
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $row['id'] }}" style="position-anchor:--anchor-{{ $row['id'] }}">
                                             {{-- <li>

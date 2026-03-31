@@ -1,6 +1,17 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
+            @if (($requestOrder->customer->status ?? 'active') === 'inactive')
+                <div class="mb-6 flex items-center justify-between rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
+                    <div class="flex items-center">
+                        <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span class="font-bold uppercase tracking-widest">Customer Non Aktif:</span>
+                        <span class="ml-2">Semua tindakan untuk order ini dinonaktifkan sementara.</span>
+                    </div>
+                </div>
+            @endif
 
             @if (session('success'))
                 <div class="mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300" role="alert">
@@ -659,81 +670,83 @@
                                             </div>
                                         </div>
                                     @endif
-
-                                    {{-- Top Row: Edit & PDF --}}
-                                    <div class="grid grid-cols-2 gap-3">
-                                        {{-- Edit Button (Sales Only) --}}
-                                        @if (Auth::user()->role === 'Sales')
-                                            <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-200 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                </svg>
-                                                <span>Edit</span>
-                                            </a>
-                                        @endif
-
-                                        @php
-                                            $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
-                                            $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
-                                        @endphp
-
-                                        @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
-                                            {{-- PDF Button (Enabled) --}}
-                                            <a href="{{ route($pdfRoute, $requestOrder->id) }}" target="_blank" class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                                <span>Dokumen PDF</span>
-                                            </a>
-                                        @else
-                                            {{-- PDF Button (Disabled) --}}
-                                            <button disabled class="flex cursor-not-allowed items-center justify-center space-x-2 rounded-xl bg-gray-200 py-2.5 text-xs font-bold text-gray-400 opacity-60 dark:bg-gray-700">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                </svg>
-                                                <span>PDF Locked</span>
-                                            </button>
-                                        @endif
-                                    </div>
-
-                                    {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
-                                    @if (!$requestOrder->order && Auth::user()->role === 'Sales')
-                                        <form action="{{ route('sales.request-order.sent-to-warehouse', $requestOrder->id) }}" method="POST" class="w-full">
-                                            @csrf
-                                            <button type="submit" class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-200 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                                                </svg>
-                                                <span class="uppercase tracking-widest">Kirim ke Warehouse</span>
-                                            </button>
-                                        </form>
-                                    @endif
-
-                                    {{-- Warning Text if Locked --}}
-                                    @if (!$canDownloadPdf)
-                                        <div class="mt-2 flex items-center justify-center space-x-1.5 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-900/10">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                            </svg>
-                                            <span class="text-[10px] font-bold uppercase tracking-tighter text-amber-700">Menunggu Persetujuan Supervisor</span>
-                                        </div>
-                                    @endif
-
-                                    {{-- Dangerous Actions (Sales Only) --}}
-                                    @if (Auth::user()->role === 'Sales')
-                                        <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
-                                            <form id="deleteRequestOrderForm" action="{{ route('sales.request-order.destroy', $requestOrder->id) }}" method="POST" class="w-full">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" id="btnDeleteRequestOrder" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                    
+                                    @if (($requestOrder->customer->status ?? 'active') === 'active')
+                                        {{-- Top Row: Edit & PDF --}}
+                                        <div class="grid grid-cols-2 gap-3">
+                                            {{-- Edit Button (Sales Only) --}}
+                                            @if (Auth::user()->role === 'Sales')
+                                                <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}" class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-200 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                                     </svg>
-                                                    <span class="uppercase tracking-widest">Hapus Request Order</span>
+                                                    <span>Edit</span>
+                                                </a>
+                                            @endif
+
+                                            @php
+                                                $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
+                                                $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
+                                            @endphp
+
+                                            @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
+                                                {{-- PDF Button (Enabled) --}}
+                                                <a href="{{ route($pdfRoute, $requestOrder->id) }}" target="_blank" class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                    <span>Dokumen PDF</span>
+                                                </a>
+                                            @else
+                                                {{-- PDF Button (Disabled) --}}
+                                                <button disabled class="flex cursor-not-allowed items-center justify-center space-x-2 rounded-xl bg-gray-200 py-2.5 text-xs font-bold text-gray-400 opacity-60 dark:bg-gray-700">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                    <span>PDF Locked</span>
+                                                </button>
+                                            @endif
+                                        </div>
+
+                                        {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
+                                        @if (!$requestOrder->order && Auth::user()->role === 'Sales')
+                                            <form action="{{ route('sales.request-order.sent-to-warehouse', $requestOrder->id) }}" method="POST" class="w-full">
+                                                @csrf
+                                                <button type="submit" class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-200 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 01-1 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                                    </svg>
+                                                    <span class="uppercase tracking-widest">Kirim ke Warehouse</span>
                                                 </button>
                                             </form>
-                                        </div>
+                                        @endif
+
+                                        {{-- Warning Text if Locked --}}
+                                        @if (!$canDownloadPdf)
+                                            <div class="mt-2 flex items-center justify-center space-x-1.5 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-900/10">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-amber-700">Menunggu Persetujuan Supervisor</span>
+                                            </div>
+                                        @endif
+
+                                        {{-- Dangerous Actions (Sales Only) --}}
+                                        @if (Auth::user()->role === 'Sales')
+                                            <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
+                                                <form id="deleteRequestOrderForm" action="{{ route('sales.request-order.destroy', $requestOrder->id) }}" method="POST" class="w-full">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" id="btnDeleteRequestOrder" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        <span class="uppercase tracking-widest">Hapus Request Order</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @endif
                                     @endif
                                 </div>
                             </div>

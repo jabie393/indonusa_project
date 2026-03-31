@@ -51,6 +51,7 @@ class SalesOrderController extends Controller
             'status'         => $ro->status,
             'berlaku_sampai' => $berlakuSampai,
             'image_po'       => $ro->image_po,
+            'customer_status'=> $ro->customer->status ?? 'active',
             'aksi_url'       => '#',
         ];
     }
@@ -72,11 +73,11 @@ class SalesOrderController extends Controller
                       ->orWhere('customer_name',     'like', "%$search%")
                       ->orWhere('no_po',             'like', "%$search%");
                 })
-                ->with(['items'])
+                ->with(['items', 'customer'])
                 ->get()
                 ->map(fn($ro) => $this->mapRequestOrderRow($ro));
         } else {
-            $requestOrders = \App\Models\RequestOrder::with(['order', 'items'])
+            $requestOrders = \App\Models\RequestOrder::with(['order', 'items', 'customer'])
                 ->latest()
                 ->paginate(20)
                 ->appends($request->query());
@@ -331,7 +332,7 @@ class SalesOrderController extends Controller
                       ->orWhere('no_po',             'like', "%$search%");
                 })
                 ->where('sales_id', Auth::id())
-                ->with('items')
+                ->with(['items', 'customer'])
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                     'catatan_customer' => $ro->catatan_customer,
@@ -340,7 +341,7 @@ class SalesOrderController extends Controller
                 ]));
         } else {
             $requestOrders = \App\Models\RequestOrder::where('sales_id', Auth::id())
-                ->with(['order', 'items'])
+                ->with(['order', 'items', 'customer'])
                 ->latest()
                 ->paginate(20)
                 ->appends(request()->query());
@@ -470,7 +471,7 @@ class SalesOrderController extends Controller
 
     public function show($id)
     {
-        $requestOrder = RequestOrder::with('items.barang', 'sales', 'customPenawaran', 'order')->findOrFail($id);
+        $requestOrder = RequestOrder::with('items.barang', 'sales', 'customPenawaran', 'order', 'customer')->findOrFail($id);
 
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed  = array_map('strtolower', ['Supervisor', 'Admin']);
