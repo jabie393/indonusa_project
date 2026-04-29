@@ -181,13 +181,9 @@
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="catatan_customer"
                                     class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
-                                @php
-                                    $pdfDefault =
-                                        "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
-                                @endphp
                                 <textarea
                                     class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', $pdfDefault) }}</textarea>
+                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer') }}</textarea>
                                 @error('catatan_customer')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

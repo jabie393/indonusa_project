@@ -161,15 +161,12 @@
                 </table>
             </div>
 
-            <!-- INTRO TEXT: show salutation then the editable note -->
+            <!-- INTRO TEXT: show only the editable note -->
             <div class="mt-2 text-[9pt]">
-                <p class="border-b border-black pb-1">Dengan Hormat,</p>
-                <p class="mt-1">&nbsp;</p>
                 @php
                     $noteToShow =
                         $pdfNote ??
-                        ($requestOrder->catatan_customer ??
-                            'Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:');
+                        ($requestOrder->catatan_customer ?? '');
                 @endphp
                 <p>{!! nl2br(e($noteToShow)) !!}</p>
             </div>

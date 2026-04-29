@@ -163,12 +163,8 @@
 
             <!-- INTRO TEXT -->
             <div class="mt-2 text-[9pt]">
-                <p class="border-b border-black pb-1">Dengan Hormat,</p>
-                <p class="mt-1">&nbsp;</p>
                 @if ($customPenawaran->intro_text)
                     <p class="whitespace-pre-wrap">{{ $customPenawaran->intro_text }}</p>
-                @else
-                    <p>Dengan ini kami mengajukan penawaran harga sebagai berikut :</p>
                 @endif
             </div>
 
