@@ -176,6 +176,7 @@
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
                             <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang
                             </th>
+                            
                             <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Satuan</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Harga</th>
