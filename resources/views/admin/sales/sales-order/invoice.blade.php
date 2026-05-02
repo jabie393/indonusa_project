@@ -228,8 +228,26 @@
                     <title>Invoice</title>
                     <style>
                         * { margin: 0; padding: 0; box-sizing: border-box; }
-                        body { font-family: 'Times New Roman', serif; padding: 32px; background: white; color: #000000; }
+                        html, body { width: 100%; min-height: 100%; background: #ffffff !important; color: #000000 !important; font-family: 'Times New Roman', serif; }
+                        body { padding: 32px; }
                         table { border-collapse: collapse; }
+                        #print-container, #print-container * {
+                            color: #000000 !important;
+                            background-color: #ffffff !important;
+                            background: #ffffff !important;
+                            text-shadow: none !important;
+                            fill: #000000 !important;
+                        }
+                        #print-container { background: #ffffff !important; }
+                        #print-container thead tr, #print-container thead th {
+                            background: #1A3A6B !important;
+                            color: #ffffff !important;
+                        }
+                        #print-container thead th {
+                            border-color: #000000 !important;
+                        }
+                        th, td { border-color: #000000 !important; }
+                        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
                         @media print {
                             body { padding: 20px; }
                             @page { margin: 1cm; size: A4; }
@@ -237,7 +255,9 @@
                     </style>
                 </head>
                 <body>
-                    ${invoiceContent}
+                    <div id="print-container">
+                        ${invoiceContent}
+                    </div>
                 </body>
                 </html>
             `);
