@@ -41,11 +41,10 @@ return new class extends Migration
             $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
         });
+        
     }
 
-    /**
-     * Reverse the migrations.
-     */
+    
     public function down(): void
     {
         Schema::dropIfExists('request_orders');
