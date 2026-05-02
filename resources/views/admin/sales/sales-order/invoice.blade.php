@@ -52,6 +52,7 @@
                                 <tbody>
                                     @foreach ($items as $i => $item)
                                         <tr>
+                                            
                                             <td style="padding:12px; border:1px solid #000000; text-align: center; color: #000000;">{{ $i + 1 }}</td>
                                             <td style="padding:12px; border:1px solid #000000; text-align: left; color: #000000;">{{ $item['nama_barang'] ?? ($item['description'] ?? '-') }}</td>
                                             <td style="padding:12px; border:1px solid #000000; text-align: left; font-size:16px; color: #000000;">{{ $item['deskripsi'] ?? '-' }}</td>
