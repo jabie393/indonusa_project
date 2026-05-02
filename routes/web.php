@@ -234,6 +234,9 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/request-order/{requestOrder}/upload-image-so', [RequestOrderController::class, 'deleteImageSO'])->name('request-order.delete-image-so');
     Route::post('/request-order/{requestOrder}/upload-image-po', [RequestOrderController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
     Route::delete('/request-order/{requestOrder}/upload-image-po', [RequestOrderController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
+    Route::post('/request-order/{requestOrder}/upload-pdf-po', [RequestOrderController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
+    Route::delete('/request-order/{requestOrder}/upload-pdf-po', [RequestOrderController::class, 'deletePdfPO'])->name('request-order.delete-pdf-po');
+    Route::post('/request-order/{requestOrder}/update-no-po', [RequestOrderController::class, 'updateNoPO'])->name('request-order.update-no-po');
 
     // Custom Penawaran Routes (Child of Request Order)
     Route::get('/custom-penawaran', [CustomPenawaranController::class, 'index'])->name('sales.custom-penawaran.index');

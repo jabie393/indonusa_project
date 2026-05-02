@@ -51,6 +51,7 @@ class SalesOrderController extends Controller
             'status'         => $ro->status,
             'berlaku_sampai' => $berlakuSampai,
             'image_po'       => $ro->image_po,
+            'pdf_po'         => $ro->pdf_po,
             'customer_status'=> $ro->customer->status ?? 'active',
             'aksi_url'       => '#',
         ];

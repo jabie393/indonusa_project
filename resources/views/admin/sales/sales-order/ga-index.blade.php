@@ -85,13 +85,25 @@
 							<td class="px-4 py-3">
     <div class="flex flex-col gap-1">
         <span>{{ $row['no_po'] ?? '-' }}</span>
-        @if (!empty($row['image_po']))
-            <a href="{{ Storage::url($row['image_po']) }}" target="_blank">
-                <img src="{{ Storage::url($row['image_po']) }}"
-                     alt="PO Image"
-                     class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
-            </a>
-        @endif
+        <div class="flex gap-1">
+            @if (!empty($row['image_po']))
+                <a href="{{ Storage::url($row['image_po']) }}" target="_blank">
+                    <img src="{{ Storage::url($row['image_po']) }}"
+                         alt="PO Image"
+                         class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
+                </a>
+            @endif
+            @if (!empty($row['pdf_po']))
+                <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank">
+                    <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50 transition-transform hover:scale-110">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                </a>
+            @endif
+        </div>
     </div>
 </td>
 							<td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>

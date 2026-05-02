@@ -805,6 +805,46 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    public function uploadPdfPO(Request $request, RequestOrder $requestOrder)
+    {
+        if ($request->hasFile('pdf_po')) {
+            $path = $request->file('pdf_po')->store('request-order-pdf-po', 'public');
+            if ($requestOrder->pdf_po) {
+                Storage::disk('public')->delete($requestOrder->pdf_po);
+            }
+            $requestOrder->pdf_po = $path;
+            $requestOrder->save();
+            return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
+    }
+
+    public function updateNoPO(Request $request, RequestOrder $requestOrder)
+    {
+        $validated = $request->validate([
+            'no_po' => 'nullable|string|max:255',
+        ]);
+
+        $requestOrder->no_po = $validated['no_po'] ?? null;
+        $requestOrder->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'No.PO berhasil disimpan',
+            'no_po' => $requestOrder->no_po,
+        ]);
+    }
+
+    public function deletePdfPO(RequestOrder $requestOrder)
+    {
+        if ($requestOrder->pdf_po) {
+            Storage::disk('public')->delete($requestOrder->pdf_po);
+            $requestOrder->pdf_po = null;
+            $requestOrder->save();
+        }
+        return response()->json(['status' => 'success']);
+    }
+
     protected function processSentToWarehouse(RequestOrder $ro)
     {
         DB::transaction(function () use ($ro) {

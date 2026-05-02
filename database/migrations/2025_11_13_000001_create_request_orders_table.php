@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('no_po')->nullable();
             $table->string('sales_order_number')->nullable();
             $table->string('image_so')->nullable();
+            $table->string('pdf_po')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();

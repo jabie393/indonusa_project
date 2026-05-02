@@ -86,7 +86,25 @@
                         <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                             <td class="px-4 py-3">
                                 <div class="flex flex-col gap-1">
-                                    <span>{{ $row['no_po'] ?? '-' }}</span>
+                                    @if ($row['type'] === 'request_order')
+                                        <div class="flex flex-col gap-2">
+                                            <input
+                                                type="text"
+                                                id="no-po-input-{{ $row['id'] }}"
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-700 dark:text-white"
+                                                value="{{ $row['no_po'] ?? '' }}"
+                                                placeholder="Masukkan No.PO"
+                                                onblur="saveNoPO({{ $row['id'] }}, this.value)"
+                                                onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }"
+                                            />
+                                            <div class="flex items-center justify-between gap-2">
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">No.PO dapat diedit langsung di sini.</span>
+                                                <span id="no-po-status-{{ $row['id'] }}" class="hidden text-xs font-semibold text-green-600 dark:text-green-400">Tersimpan</span>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span>{{ $row['no_po'] ?? '-' }}</span>
+                                    @endif
                                     <div id="image-po-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
                                         @if (isset($row['image_po']) && $row['image_po'])
                                             <div class="group relative inline-block">
@@ -102,16 +120,47 @@
                                             </div>
                                         @elseif($row['type'] === 'request_order')
                                             @if (($row['customer_status'] ?? 'active') === 'active')
-                                                <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                        <polyline points="17 8 12 3 7 8" />
-                                                        <line x1="12" x2="12" y1="3" y2="15" />
-                                                    </svg>
-                                                    Upload PO
-                                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
-                                                </label>
+                                                <div class="flex flex-col gap-1">
+                                                    <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" x2="12" y1="3" y2="15" />
+                                                        </svg>
+                                                        Upload PO
+                                                        <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
+                                                    </label>
+                                                    <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-purple-500 bg-white px-2 py-1 text-[10px] font-semibold text-purple-600 shadow-sm transition-colors hover:bg-purple-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" x2="12" y1="3" y2="15" />
+                                                        </svg>
+                                                        Upload PDF
+                                                        <input type="file" class="hidden" accept="application/pdf" onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'pdf_po')">
+                                                    </label>
+                                                </div>
                                             @endif
+                                        @endif
+                                    </div>
+                                    <div id="pdf-po-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
+                                        @if (isset($row['pdf_po']) && $row['pdf_po'])
+                                            <div class="group relative inline-block">
+                                                <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank">
+                                                    <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
+                                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                                        </svg>
+                                                    </div>
+                                                </a>
+                                                <button class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100" onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'pdf_po')" title="Hapus">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M18 6 6 18" />
+                                                        <path d="m6 6 12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                         @endif
                                     </div>
                                 </div>
@@ -659,15 +708,29 @@
             if (!input.files.length) return;
             const file = input.files[0];
 
-            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                Swal.fire('Format Salah!', 'Format file harus JPG, JPEG, atau PNG', 'error');
-                input.value = '';
-                return;
-            }
-            if (file.size > 2 * 1024 * 1024) {
-                Swal.fire('File Terlalu Besar!', 'Ukuran file maksimal 2MB', 'error');
-                input.value = '';
-                return;
+            // Validasi tipe file
+            if (imageType === 'pdf_po') {
+                if (file.type !== 'application/pdf') {
+                    Swal.fire('Format Salah!', 'Format file harus PDF', 'error');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                    Swal.fire('File Terlalu Besar!', 'Ukuran file PDF maksimal 5MB', 'error');
+                    input.value = '';
+                    return;
+                }
+            } else {
+                if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                    Swal.fire('Format Salah!', 'Format file harus JPG, JPEG, atau PNG', 'error');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    Swal.fire('File Terlalu Besar!', 'Ukuran file maksimal 2MB', 'error');
+                    input.value = '';
+                    return;
+                }
             }
 
             const formData = new FormData();
@@ -677,6 +740,9 @@
             if (imageType === 'po') {
                 endpoint = `/request-order/${id}/upload-image-po`;
                 fieldName = 'image_po';
+            } else if (imageType === 'pdf_po') {
+                endpoint = `/request-order/${id}/upload-pdf-po`;
+                fieldName = 'pdf_po';
             } else {
                 endpoint = `/sales-order/${id}/upload-image`;
                 fieldName = 'image';
@@ -687,6 +753,7 @@
 
             let containerId = '';
             if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
+            else if (imageType === 'pdf_po') containerId = `pdf-po-preview-${id}-${type}`;
             else containerId = `image-preview-aksi-${id}-${type}`;
 
             const container = document.getElementById(containerId);
@@ -705,13 +772,28 @@
                     if (data.status === 'success') {
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: 'Gambar berhasil diupload.',
+                            text: imageType === 'pdf_po' ? 'PDF berhasil diupload.' : 'Gambar berhasil diupload.',
                             icon: 'success',
                             timer: 1500,
                             showConfirmButton: false
                         });
 
-                        if (imageType === 'po' || imageType === 'so') {
+                        if (imageType === 'pdf_po') {
+                            container.innerHTML = `
+                            <div class="relative inline-block group">
+                                <a href="${data.image_url}" target="_blank">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                        </svg>
+                                    </div>
+                                </a>
+                                <button class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" onclick="handleDeleteImage('${type}', ${id}, '${imageType}')" title="Hapus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                </button>
+                            </div>`;
+                        } else if (imageType === 'po' || imageType === 'so') {
                             container.innerHTML = `
                             <div class="relative inline-block group">
                                 <a href="${data.image_url}" target="_blank">
@@ -743,9 +825,42 @@
                 });
         }
 
+        function saveNoPO(id, value) {
+            const trimmedValue = value.trim();
+            const statusEl = document.getElementById(`no-po-status-${id}`);
+            const inputEl = document.getElementById(`no-po-input-${id}`);
+
+            if (!inputEl) return;
+
+            const formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('no_po', trimmedValue);
+
+            fetch(`/request-order/${id}/update-no-po`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        statusEl.classList.remove('hidden');
+                        statusEl.textContent = 'Tersimpan';
+                        setTimeout(() => statusEl.classList.add('hidden'), 2500);
+                    } else {
+                        Swal.fire('Gagal!', data.message || 'Tidak dapat menyimpan No.PO', 'error');
+                    }
+                })
+                .catch(() => {
+                    Swal.fire('Gagal!', 'Terjadi kesalahan sistem saat menyimpan No.PO', 'error');
+                });
+        }
+
         function handleDeleteImage(type, id, imageType) {
             Swal.fire({
-                title: 'Hapus gambar?',
+                title: 'Hapus file?',
                 text: "Tindakan ini tidak dapat dibatalkan!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -757,6 +872,7 @@
                 if (result.isConfirmed) {
                     let endpoint = '';
                     if (imageType === 'po') endpoint = `/request-order/${id}/upload-image-po`;
+                    else if (imageType === 'pdf_po') endpoint = `/request-order/${id}/upload-pdf-po`;
                     else endpoint = `/sales-order/${id}/upload-image`;
 
                     const formData = new FormData();
@@ -775,7 +891,7 @@
                             if (data.status === 'success') {
                                 Swal.fire({
                                     title: 'Terhapus!',
-                                    text: 'Gambar telah dihapus.',
+                                    text: 'File telah dihapus.',
                                     icon: 'success',
                                     timer: 1500,
                                     showConfirmButton: false
@@ -783,6 +899,7 @@
 
                                 let containerId = '';
                                 if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
+                                else if (imageType === 'pdf_po') containerId = `pdf-po-preview-${id}-${type}`;
                                 else if (imageType === 'so') containerId = `image-so-preview-${id}-${type}`;
                                 else containerId = `image-preview-aksi-${id}-${type}`;
 
@@ -795,6 +912,8 @@
                                         Upload PO
                                         <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'po')">
                                     </label>`;
+                                } else if (imageType === 'pdf_po') {
+                                    container.innerHTML = '';
                                 } else if (imageType === 'so') {
                                     container.innerHTML = `
                                     <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-500 text-blue-600 rounded-md text-[10px] font-semibold hover:bg-blue-50 transition-colors shadow-sm">
@@ -811,7 +930,7 @@
                                     </label>`;
                                 }
                             } else {
-                                Swal.fire('Gagal!', data.message || 'Gagal menghapus gambar', 'error');
+                                Swal.fire('Gagal!', data.message || 'Gagal menghapus file', 'error');
                             }
                         })
                         .catch(() => {
