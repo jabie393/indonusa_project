@@ -6,82 +6,96 @@
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Panel : Preview Invoice (id="invoice-preview", class="print-area") -->
                 <div class="lg:col-span-2">
-                    <div id="invoice-preview" class="print-area" style="font-family: Arial, sans-serif; padding: 32px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div id="invoice-preview" class="print-area" style="font-family: 'Times New Roman', serif; padding: 32px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
-                                <span style="font-size:28px; font-weight:bold; color:#003399; text-decoration:underline;">INVOICE</span>
-                                <div class="mt-6">
-                                    <span style="font-weight:bold;">Invoice To:</span><br>
-                                    <p id="preview_customer" style="font-weight: bold; font-size: 13px; margin: 0 0 4px 0;">{{ strtoupper($customerName) }}</p>
-                                    <p id="preview_address" style="margin: 0 0 8px 0; line-height: 1.4; color: #374151;">{{ $customerAddress ?: '-' }}</p>
-                                    <span id="preview-npwp">NPWP: <span>{{ old('inv_npwp', $customerNpwp) }}</span></span>
+                                <span style="font-size:32px; font-weight:bold; color:#000000; text-decoration:underline;">INVOICE</span>
+                                <div style="margin-top: 24px;">
+                                    <span style="font-weight:bold; font-size: 16px; font-family: 'Times New Roman', serif; display: block; margin-bottom: 8px;">Invoice To:</span>
+                                    <p id="preview_customer" style="font-weight: bold; font-size: 16px; font-family: 'Times New Roman', serif; margin: 0 0 4px 0;">{{ strtoupper($customerName) }}</p>
+                                    <p id="preview_address" style="margin: 0 0 8px 0; line-height: 1.6; color: #000000; font-size: 16px; font-family: 'Times New Roman', serif;">{{ $customerAddress ?: '-' }}</p>
+                                    <span id="preview-npwp" style="font-size: 16px; color: #000000; font-family: 'Times New Roman', serif;">NPWP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span>{{ old('inv_npwp', $customerNpwp) }}</span></span>
                                 </div>
                             </div>
-                            <div style="text-align:right; min-width:220px;">
-                                <div>Date: <span id="preview-date">{{ date('d/m/y') }}</span></div>
-                                <div>No Invoice: <span id="preview-number">{{ $invoiceNumber }}</span></div>
-                                <div>PO No: <span id="preview-po">{{ $noPoDisplay }}</span></div>
+                            <div style="text-align:left; min-width:240px;">
+                                <table style="font-size: 16px; font-family: 'Times New Roman', serif; border-collapse: collapse; width: 100%; color: #000000;">
+                                    <tr>
+                                        <td style="padding: 4px 0; font-weight: bold;">Date</td>
+                                        <td style="padding: 4px 0;">:</td>
+                                        <td style="padding: 4px 0 4px 12px;"><span id="preview-date">{{ date('d/m/y') }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 0; font-weight: bold;">No Invoice</td>
+                                        <td style="padding: 4px 0;">:</td>
+                                        <td style="padding: 4px 0 4px 12px;"><span id="preview-number">{{ $invoiceNumber }}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 0; font-weight: bold;">PO No</td>
+                                        <td style="padding: 4px 0;">:</td>
+                                        <td style="padding: 4px 0 4px 12px;"><span id="preview-po">{{ $noPoDisplay }}</span></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                        <div class="mt-8">
-                            <table style="width:100%; border-collapse:collapse;">
+                        <div style="margin-top: 32px;">
+                            <table style="width:100%; border-collapse:collapse; font-size: 16px; font-family: 'Times New Roman', serif; color: #000000;">
                                 <thead>
                                     <tr style="background:#1A3A6B; color:white;">
-                                        <th style="padding:8px; border:1px solid #1A3A6B;">No</th>
-                                        <th style="padding:8px; border:1px solid #1A3A6B;">Description</th>
-                                        <th style="padding:8px; border:1px solid #1A3A6B;">Qty</th>
-                                        <th style="padding:8px; border:1px solid #1A3A6B;">Unit Price</th>
-                                        <th style="padding:8px; border:1px solid #1A3A6B;">Total</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: center; width: 5%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">No</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: left; width: 20%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">Nama Barang</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: left; width: 25%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">Deskripsi</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: center; width: 10%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">Qty</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: right; width: 20%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">Unit Price</th>
+                                        <th style="padding:12px; border:2px solid #000000; text-align: right; width: 20%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($items as $i => $item)
                                         <tr>
-                                            <td style="padding:8px; border:1px solid #ddd;">{{ $i + 1 }}</td>
-                                            <td style="padding:8px; border:1px solid #ddd;">{{ $item['nama_barang'] ?? ($item['description'] ?? '-') }}</td>
-                                            <td style="padding:8px; border:1px solid #ddd; text-align:right;">{{ $item['qty'] ?? ($item['quantity'] ?? 0) }}</td>
-                                            <td style="padding:8px; border:1px solid #ddd; text-align:right;">{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}</td>
-                                            <td style="padding:8px; border:1px solid #ddd; text-align:right;">{{ number_format($item['subtotal'] ?? 0, 0, ',', '.') }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: center; color: #000000;">{{ $i + 1 }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: left; color: #000000;">{{ $item['nama_barang'] ?? ($item['description'] ?? '-') }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: left; font-size:16px; color: #000000;">{{ $item['deskripsi'] ?? '-' }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: center; color: #000000;">{{ $item['qty'] ?? ($item['quantity'] ?? 0) }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['subtotal'] ?? 0, 0, ',', '.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot>
-                                    <tr style="background:#1A3A6B; height:6px;">
-                                        <td colspan="5"></td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
-                        <div class="mt-8 flex justify-end">
-                            <table style="min-width:320px;">
+                        <div style="margin-top: 32px; display: flex; justify-content: flex-end;">
+                            <table style="min-width:300px; font-family: 'Times New Roman', serif; font-size: 16px; border-collapse: collapse; color: #000000;">
                                 <tr>
-                                    <td style="text-align:right;">Subtotal:</td>
-                                    <td style="text-align:right; font-weight:bold;">{{ number_format($subtotal ?? 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px 0; text-align: right; width: 60%;">Subtotal</td>
+                                    <td style="padding: 8px 0;">:</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right; width: 40%; font-weight:bold;">{{ number_format($subtotal ?? 0, 0, ',', '.') }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;">DPP:</td>
-                                    <td style="text-align:right;">{{ $tax > 0 ? number_format(round(($subtotal * 100) / 111), 0, ',', '.') : '0' }}</td>
+                                    <td style="padding: 8px 0; text-align: right;">DPP</td>
+                                    <td style="padding: 8px 0;">:</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ $tax > 0 ? number_format(round(($subtotal * 100) / 111), 0, ',', '.') : '0' }}</td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;">PPN:</td>
-                                    <td style="text-align:right;">{{ number_format($tax ?? 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px 0; text-align: right;">PPN (Tax)</td>
+                                    <td style="padding: 8px 0;">:</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ number_format($tax ?? 0, 0, ',', '.') }}</td>
                                 </tr>
-                                <tr style="border-top:3px solid #1A3A6B;">
-                                    <td style="text-align:right; font-size:16px; font-weight:bold;">Total:</td>
-                                    <td style="text-align:right; font-size:16px; font-weight:bold;">{{ number_format($grandTotal ?? 0, 0, ',', '.') }}</td>
+                                <tr style="border-top:3px solid #000000;">
+                                    <td style="padding: 10px 0; text-align: right; font-size:18px; font-weight:bold;">Total</td>
+                                    <td style="padding: 10px 0; font-weight:bold;">:</td>
+                                    <td style="padding: 10px 0 10px 12px; text-align: right; font-size:18px; font-weight:bold;">{{ number_format($grandTotal ?? 0, 0, ',', '.') }}</td>
                                 </tr>
                             </table>
                         </div>
-                        <div class="mt-8 flex justify-between">
-                            <div style="border:2px solid #e53e3e; border-radius:8px; padding:16px; max-width:320px;">
-                                <span style="color:#e53e3e; font-weight:bold;">PAYMENT INFORMATION</span><br>
-                                <span id="preview-payment-note">• BCA a/c. 7881213501<br> a/n. PT. Indonusa Jaya Bersama<br><br>Thank you for your support.<br>We look forward to serve you again</span>
+                        <div style="margin-top: 32px; display: flex; justify-content: space-between;">
+                            <div style="border:3px solid #000000; border-radius:8px; padding:12px; max-width:340px; font-family: 'Times New Roman', serif; font-size: 16px; color: #000000;">
+                                <span style="color:#000000; font-weight:bold; font-size: 16px;">PAYMENT INFORMATION</span><br>
+                                <span id="preview-payment-note" style="line-height: 1.6; color: #000000; font-size: 16px;">• BCA a/c. 7881213501<br> a/n. PT. Indonusa Jaya Bersama<br><br>Thank you for your support.<br>We look forward to serve you again</span>
                             </div>
-                            <div style="text-align:right; min-width:220px;">
-                                <span style="font-weight:bold; font-size:16px;">PT. Indonusa Jaya Bersama</span><br>
-                                <div style="height:60px;"></div>
-                                <span style="font-size:14px; font-weight:bold; text-decoration:underline;">Alimul Imam.S.AP</span><br>
-                                <span style="font-size:13px;">(Tanda Tangan)</span>
+                            <div style="text-align:center; min-width:240px; font-family: 'Times New Roman', serif; font-size: 16px; color: #000000;">
+                                <span style="font-weight:bold; font-size:18px; color: #000000;">PT. Indonusa Jaya Bersama</span><br>
+                                <div style="height:50px;"></div>
+                                <span style="font-weight:bold; text-decoration:underline; color: #000000; font-size: 16px;">Alimul Imam, S.AP</span><br>
                             </div>
                         </div>
                     </div>
@@ -117,13 +131,13 @@
                             </div>
                             <div class="space-y-3 p-6">
                                 <label class="block text-sm font-semibold">No Invoice</label>
-                                <input type="text" id="inv_number" name="inv_number" class="w-full rounded border-gray-300 p-2" value="{{ $invoiceNumber }}">
+                                <input type="text" id="inv_number" name="inv_number" class="w-full rounded border-gray-300 bg-gray-100 p-2 text-gray-600 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400" value="{{ $invoiceNumber }}" readonly>
 
                                 <label class="block text-sm font-semibold">Tanggal Invoice</label>
                                 <input type="date" id="inv_date" name="inv_date" class="w-full rounded border-gray-300 p-2" value="{{ date('Y-m-d') }}">
 
                                 <label class="block text-sm font-semibold">NPWP</label>
-                                <input type="text" id="inv_npwp" name="inv_npwp" class="w-full rounded border-gray-300 p-2" value="{{ $customerNpwp }}" minlength="15" maxlength="16">
+                                <input type="text" id="inv_npwp" name="inv_npwp" class="w-full rounded border-gray-300 bg-gray-100 p-2 text-gray-600 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400" value="{{ $customerNpwp }}" minlength="15" maxlength="16" readonly>
 
                                 <label class="block text-sm font-semibold">PO No</label>
                                 <input type="text" id="inv_po_no" name="inv_po_no" class="w-full rounded border-gray-300 p-2" value="{{ $noPoDisplay }}">
@@ -171,7 +185,7 @@
         function updatePreview() {
             document.getElementById('preview-number').textContent = document.getElementById('inv_number').value;
             document.getElementById('preview-date').textContent = formatDate(document.getElementById('inv_date').value);
-            document.getElementById('preview-npwp').innerHTML = 'NPWP: <span>' + document.getElementById('inv_npwp').value + '</span>';
+            document.getElementById('preview-npwp').innerHTML = 'NPWP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span>' + document.getElementById('inv_npwp').value + '</span>';
             document.getElementById('preview-po').textContent = document.getElementById('inv_po_no').value;
             document.getElementById('preview-payment-note').innerHTML = document.getElementById('inv_payment_note').value.replace(/\n/g, '<br>');
             document.getElementById('preview_address').textContent = document.getElementById('ef_inv_address').value || '-';
@@ -213,7 +227,7 @@
                     <title>Invoice</title>
                     <style>
                         * { margin: 0; padding: 0; box-sizing: border-box; }
-                        body { font-family: Arial, sans-serif; padding: 32px; background: white; }
+                        body { font-family: 'Times New Roman', serif; padding: 32px; background: white; color: #000000; }
                         table { border-collapse: collapse; }
                         @media print {
                             body { padding: 20px; }

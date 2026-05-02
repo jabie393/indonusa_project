@@ -148,10 +148,12 @@ class SalesOrderController extends Controller
         }
 
         $items = $ro->items->map(function ($item) {
+            $barangData = \App\Models\Barang::find($item->barang_id);
             return [
                 'nama_barang' => $item->nama_barang_custom
-                    ?? optional(\App\Models\Barang::find($item->barang_id))->nama_barang
+                    ?? optional($barangData)->nama_barang
                     ?? '-',
+                'deskripsi' => optional($barangData)->deskripsi ?? '-',
                 'qty'      => $item->quantity ?? 1,
                 'harga'    => $item->harga ?? 0,
                 'subtotal' => $item->subtotal ?? 0,
