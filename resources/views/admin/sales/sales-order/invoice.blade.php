@@ -237,6 +237,7 @@
                             background: #ffffff !important;
                             text-shadow: none !important;
                             fill: #000000 !important;
+                            
                         }
                         #print-container { background: #ffffff !important; }
                         #print-container thead tr, #print-container thead th {
