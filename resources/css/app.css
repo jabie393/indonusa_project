@@ -12,7 +12,7 @@
 
 @theme {
   --font-sans:
-    Figtree, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    "Plus Jakarta Sans", Figtree, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-primary-50: #eff6ff;
@@ -26,6 +26,112 @@
   --color-primary-800: #1e40af;
   --color-primary-900: #1e3a8a;
   --color-primary-950: #172554;
+
+  --color-brand-navy: #0D223A;
+  --color-brand-accent: #3b82f6;
+  --color-brand-surface: #f9f9f9;
+  --brand-gradient: linear-gradient(135deg, #225A97 0%, #153a63 50%, #0D223A 100%);
+  --color-brand-50: #f0f5fa;
+  --color-brand-100: #e1ebf4;
+  --color-brand-200: #c5d9e9;
+  --color-brand-300: #9abbd9;
+  --color-brand-400: #6a97c4;
+  --color-brand-500: #487aaf;
+  --color-brand-600: #356091;
+  --color-brand-700: #2b4d75;
+  --color-brand-800: #264262;
+  --color-brand-900: #233852;
+  --color-brand-950: #0a2342;
+}
+
+@utility card-shadow {
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+}
+
+@utility hero-shadow {
+  box-shadow: 0 30px 60px -15px rgba(13, 34, 58, 0.2);
+}
+
+@utility blob-bg {
+  background: radial-gradient(circle at 10% 20%, rgba(218, 218, 218, 0.2) 0%, rgba(255, 255, 255, 0) 50%);
+}
+
+@utility brand-gradient {
+  background: var(--brand-gradient);
+}
+
+@utility hero-gradient {
+  background: radial-gradient(circle at top left, #225A97 0%, #153a63 45%, #0D223A 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@utility bg-gradient-navy {
+  background: linear-gradient(135deg, #0a2342 0%, #173d6b 50%, #06152a 100%);
+}
+
+@utility icon-wrapper {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Reveal on Scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: blur(8px);
+  will-change: opacity, transform, filter;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reveal-delay-100 { transition-delay: 100ms; }
+.reveal-delay-200 { transition-delay: 200ms; }
+.reveal-delay-300 { transition-delay: 300ms; }
+.reveal-delay-400 { transition-delay: 400ms; }
+.reveal-delay-500 { transition-delay: 500ms; }
+
+.reveal-left { transform: translateX(-40px); }
+.reveal-right { transform: translateX(40px); }
+.reveal-up { transform: translateY(40px); }
+.reveal-scale { transform: scale(0.95); }
+
+/* Premium Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  /* Use a more specific selector or !important if needed to override reveal's transition */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-8px) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition-delay: 0ms !important; /* Critical: remove the reveal delay on hover */
 }
 
 /*
@@ -193,3 +299,30 @@
 div.dt-container div.grid-x{
   margin:0;
 }
+
+/* Reveal on Scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-property: opacity, transform, filter;
+  filter: blur(8px);
+  will-change: opacity, transform, filter;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+.reveal-delay-100 { transition-delay: 100ms; }
+.reveal-delay-200 { transition-delay: 200ms; }
+.reveal-delay-300 { transition-delay: 300ms; }
+.reveal-delay-400 { transition-delay: 400ms; }
+.reveal-delay-500 { transition-delay: 500ms; }
+
+.reveal-left { transform: translateX(-40px); }
+.reveal-right { transform: translateX(40px); }
+.reveal-up { transform: translateY(40px); }
+.reveal-scale { transform: scale(0.95); }

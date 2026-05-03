@@ -13,8 +13,9 @@
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -22,16 +23,12 @@
         @endif
     </head>
 
-    <body class="flex min-h-screen flex-col items-center text-[#1b1b18] lg:justify-center">
+    <body class="flex min-h-screen flex-col items-center font-sans text-[#1b1b18] lg:justify-center">
         {{-- Header --}}
         @include('guest.layouts.header')
 
         {{-- Main Content --}}
         {{ $slot }}
-
-        @if (Route::has('login'))
-            <div class="h-14.5 hidden lg:block"></div>
-        @endif
 
         @include('guest.layouts.footer')
     </body>

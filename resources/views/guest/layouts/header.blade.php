@@ -57,10 +57,6 @@
                                 Us</a>
                         </li>
                         <li>
-                            <a href="{{ url('/#layanan') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Layanan</a>
-                        </li>
-                        <li>
                             <a href="{{ route('order') }}"
                                 class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
                         </li>
