@@ -4,8 +4,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="PT Indonusa Jaya Bersama - One Stop Solution for Building Materials & Hardware Tools. Supplier of quality laboratory equipment, material testing systems, and more.">
+        <meta name="keywords" content="Indonusa Jaya Bersama, building materials, hardware tools, laboratory equipment, Surabaya distributor">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'PT Indonusa Jaya Bersama') }} - One Stop Solution</title>
         <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
 
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
@@ -17,7 +19,6 @@
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @else
         @endif
     </head>
 
@@ -33,7 +34,6 @@
         @endif
 
         @include('guest.layouts.footer')
-        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     </body>
 
 </html>

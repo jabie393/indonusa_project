@@ -5,6 +5,7 @@ import "flowbite";
 
 import "./darkmode.js";
 import "./order-modal.js";
+import "./sweetalert.js";
 
 window.Alpine = Alpine;
 

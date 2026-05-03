@@ -4,10 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Login to PT Indonusa Jaya Bersama Warehouse Management System. Access your account to manage stock, orders, and more.">
+    <meta name="keywords" content="Indonusa Jaya Bersama, login, warehouse management, Surabaya">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-id" content="{{ auth()->id() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'PT Indonusa Jaya Bersama') }} - Login</title>
     <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
 
     <!-- Fonts -->

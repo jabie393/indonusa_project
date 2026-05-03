@@ -49,7 +49,7 @@
         </div>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Attempt to fetch modal data; route returns 200 JSON when a pending login exists
