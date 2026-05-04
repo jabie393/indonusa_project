@@ -1087,11 +1087,22 @@ document.addEventListener("DOMContentLoaded", function () {
                             resp.headers || [],
                             mapping
                         );
+
+                        // Filter out rows where stok is 0
+                        const stokColIndex = mapping["stok"];
+                        let filteredRows = cleanedRows;
+                        if (stokColIndex !== null && stokColIndex !== undefined) {
+                            filteredRows = cleanedRows.filter((row) => {
+                                const stokVal = parseInt(row[stokColIndex] || 0);
+                                return stokVal > 0;
+                            });
+                        }
+
                         if (importFilePathInput)
                             importFilePathInput.value = resp.path || "";
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
                         renderDataTableFromPreviewAll(
-                            cleanedRows,
+                            filteredRows,
                             mapping,
                             resp.headers || []
                         );
