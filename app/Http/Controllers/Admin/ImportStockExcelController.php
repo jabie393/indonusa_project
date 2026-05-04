@@ -142,12 +142,23 @@ class ImportStockExcelController extends Controller
                     }
 
                     $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
-                    $harga = isset($r['harga']) ? (float)$r['harga'] : 0;
+
+                    // Lewati jika stok adalah 0 atau kurang
+                    if ($stok <= 0) {
+                        continue;
+                    }
 
                     // Cek apakah barang dengan kode tersebut sudah ada
                     $existingBarang = Barang::where('kode_barang', $kode)->first();
 
                     if ($existingBarang) {
+                        // Jika harga beli kosong dan stok > 0, gunakan harga dari database
+                        if (!isset($r['harga']) || $r['harga'] === '' || $r['harga'] === null) {
+                            $harga = ($stok > 0) ? (float)$existingBarang->harga : 0;
+                        } else {
+                            $harga = (float)$r['harga'];
+                        }
+
                         // --- LOGIKA ADD STOCK (Replicate) ---
                         // Copy data baru dengan stok baru dan status_barang 'ditinjau'
                         $copyData = $existingBarang->replicate();

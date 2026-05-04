@@ -688,8 +688,20 @@ document.addEventListener("DOMContentLoaded", function () {
                             importFilePathInput.value = resp.path || "";
                         const mapping = autoMapHeaders(resp.headers || []);
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
+
+                        // Filter out rows where stok is 0
+                        const stokColIndex = mapping["stok"];
+                        let filteredRows = cleanedRows;
+                        if (stokColIndex !== null && stokColIndex !== undefined) {
+                            filteredRows = cleanedRows.filter((rowObj) => {
+                                const r = rowObj.data || rowObj;
+                                const stokVal = parseInt(r[stokColIndex] || 0);
+                                return stokVal > 0;
+                            });
+                        }
+
                         renderDataTableFromPreviewAll(
-                            cleanedRows,
+                            filteredRows,
                             mapping,
                             resp.headers || []
                         );

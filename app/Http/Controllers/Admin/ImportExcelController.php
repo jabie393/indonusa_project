@@ -124,6 +124,11 @@ class ImportExcelController extends Controller
 
                     $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
 
+                    // Lewati jika stok adalah 0 atau kurang
+                    if ($stok <= 0) {
+                        continue;
+                    }
+
                     $payload = [
                         'tipe_request' => 'primary',
                         'status_barang' => 'ditinjau',
@@ -241,6 +246,11 @@ class ImportExcelController extends Controller
             }
 
             $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
+
+            // Lewati jika stok adalah 0 atau kurang
+            if ($stok <= 0) {
+                continue;
+            }
 
             $payload = [
                 'tipe_request' => 'primary',
