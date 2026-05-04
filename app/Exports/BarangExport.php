@@ -21,7 +21,7 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     public function columnFormats(): array
     {
         return [
-            'E' => '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)',
+            'F' => '_("Rp"* #,##0_);_("Rp"* (#,##0);_("Rp"* "-"_);_(@_)',
         ];
     }
 
@@ -33,6 +33,7 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
         return [
             'Kode Barang',
             'Nama Barang',
+            'Deskripsi',
             'Kategori',
             'Stok',
             'Harga Beli',
@@ -45,12 +46,13 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
     public function collection()
     {
         return Barang::where('status_barang', 'masuk')
-            ->select('kode_barang', 'nama_barang', 'kategori')
+            ->select('kode_barang', 'nama_barang', 'deskripsi', 'kategori')
             ->get()
             ->map(function ($barang) {
                 return [
                     $barang->kode_barang,
                     $barang->nama_barang,
+                    $barang->deskripsi,
                     $barang->kategori,
                     '', // Stok (empty for user to fill)
                     '', // Harga Beli (empty for user to fill)
@@ -88,7 +90,7 @@ class BarangExport implements FromCollection, WithHeadings, ShouldAutoSize, With
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
                 $table = new \PhpOffice\PhpSpreadsheet\Worksheet\Table(
-                    "A1:E{$highestRow}",
+                    "A1:F{$highestRow}",
                     'BarangTable'
                 );
                 $sheet->addTable($table);

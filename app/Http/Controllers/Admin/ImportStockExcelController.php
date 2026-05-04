@@ -160,8 +160,15 @@ class ImportStockExcelController extends Controller
                         }
 
                         // --- LOGIKA ADD STOCK (Replicate) ---
-                        // Copy data baru dengan stok baru dan status_barang 'ditinjau'
+                        // Copy data as NEW record (history tracking)
                         $copyData = $existingBarang->replicate();
+                        
+                        $deskripsi = $r['deskripsi'] ?? $existingBarang->deskripsi;
+                        if (empty($deskripsi)) {
+                            $deskripsi = $existingBarang->nama_barang; // Fallback
+                        }
+                        
+                        $copyData->deskripsi = $deskripsi;
                         $copyData->stok = $stok;
                         $copyData->harga = $harga;
                         $copyData->status_barang = 'ditinjau';

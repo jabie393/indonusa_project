@@ -113,7 +113,8 @@
                         <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="w-[15%] px-4 py-3">Kode Barang</th>
-                                <th class="w-[30%] px-4 py-3">Nama Barang</th>
+                                <th class="w-[20%] px-4 py-3">Nama Barang</th>
+                                <th class="w-[20%] px-4 py-3">Deskripsi</th>
                                 <th class="w-[15%] px-4 py-3">Kategori</th>
                                 <th class="w-[10%] px-4 py-3">Stok</th>
                                 <th class="w-[15%] px-4 py-3">Harga Beli</th>
@@ -135,7 +136,15 @@
                                 <td>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        readonly>
+                                        readonly placeholder="Deskripsi" required>
+                                </td>
+                                <td>
+                                    <select
+                                        class="block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                                        @foreach (\App\Models\Barang::KATEGORI as $cat)
+                                            <option value="{{ $cat }}">{{ $cat }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                                 <td>
                                     <input type="number" name="" id=""
