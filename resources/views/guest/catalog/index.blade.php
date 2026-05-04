@@ -20,7 +20,6 @@
                     <h2 class="text-xl font-bold text-slate-900">Filter by brands</h2>
                     <p class="mt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">BROWSE OUR PARTNERS</p>
                 </div>
-
                 <div class="scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent flex max-h-[calc(100vh-300px)] flex-row gap-1 overflow-x-auto pb-4 lg:flex-col lg:overflow-y-auto lg:pb-0">
                     <a href="{{ route('catalogs') }}"
                        class="{{ !request('brand') ? 'bg-[#0D223A] text-white shadow-md' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200">
