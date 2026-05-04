@@ -65,14 +65,16 @@ window.confirmApprove = function (callback, text = "Apakah Anda yakin ingin meny
 };
 
 // Global listener for approve-form
-$(document).on("submit", ".approve-form", function (e) {
-    e.preventDefault();
-    const form = this;
-    const text = $(this).data("confirm-text") || "Apakah Anda yakin ingin menyetujui data ini?";
-    const btnText = $(this).data("confirm-button-text") || "Ya, Setujui";
-    window.confirmApprove(() => {
-        form.submit();
-    }, text, btnText);
+document.addEventListener("submit", function (e) {
+    const target = e.target;
+    if (target && target.classList.contains("approve-form")) {
+        e.preventDefault();
+        const text = target.getAttribute("data-confirm-text") || "Apakah Anda yakin ingin menyetujui data ini?";
+        const btnText = target.getAttribute("data-confirm-button-text") || "Ya, Setujui";
+        window.confirmApprove(() => {
+            target.submit();
+        }, text, btnText);
+    }
 });
 
 // Success alert
