@@ -21,6 +21,15 @@
                              alt="tokopedia"
                              class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
                     </a>
+                    <a href="https://siplah.tokoladang.co.id/m/pt-indonusa-jaya-bersama.56746?page=1&etalase=-1"
+                       class="group block transition-all"
+                       target="_blank"
+                       rel="noopener noreferrer">
+
+                        <img src="{{ asset('images/siplah.png') }}"
+                             alt="siplah"
+                             class="h-12 w-auto object-contain transition-all duration-500 group-hover:scale-110 md:h-12 lg:h-14">
+                    </a>
                     <a href="https://padiumkm.id/store/668e31b0e383eae3fa79f723"
                        target="_blank"
                        rel="noopener noreferrer"
@@ -125,10 +134,10 @@
                 <div class="space-y-4 text-lg leading-relaxed text-gray-600"
                      data-purpose="company-description">
                     <p>
-                        <strong class="text-brand-900">PT Indonusa Jaya Bersama</strong> didirikan pada tahun 2020 dengan kantor pusat di Surabaya, distributor yang mengkhususkan diri dalam menyediakan peralatan laboratorium, sistem pengujian material, alat uji kualitas, meubeller, MHE, kimia, dan otomotif.
+                        Berdiri sejak tahun 2020 dengan kantor pusat di Surabaya, <strong class="text-brand-900">PT Indonusa Jaya Bersama</strong> merupakan distributor terkemuka yang berfokus pada penyediaan solusi laboratorium komprehensif. Kami mengkhususkan diri dalam pengadaan peralatan laboratorium, sistem pengujian material (material testing systems), instrumen kontrol kualitas, furnitur laboratorium (meubeller), Material Handling Equipment (MHE), serta produk kimia dan otomotif.
                     </p>
                     <p>
-                        Didukung oleh teknisi ahli, kami menyediakan pasokan dan perbaikan dengan kualitas terbaik dan harga yang kompetitif untuk pelanggan di seluruh Indonesia.
+                        Didukung oleh tenaga teknisi ahli berpengalaman, kami berkomitmen untuk menghadirkan layanan pasokan dan pemeliharaan berkualitas tinggi dengan harga kompetitif guna mendukung operasional pelanggan di seluruh wilayah Indonesia.
                     </p>
                 </div>
                 <!-- Statistics Grid -->

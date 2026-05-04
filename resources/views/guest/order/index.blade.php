@@ -14,37 +14,6 @@
         </div>
     </div>
 
-    <!-- Marketplace Logos -->
-    <div class="reveal reveal-up reveal-delay-200 max-w-(--breakpoint-2xl) container mx-auto my-8 flex flex-wrap items-center justify-center gap-8 px-6 lg:justify-between lg:gap-10 lg:px-10">
-        <a href="https://snapon.com.sg/catalog"
-           class="group block transition-all"
-           target="_blank">
-            <img src="{{ asset('images/snapon.png') }}"
-                 alt="Snap-on"
-                 class="h-8 w-auto object-contain opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 md:h-10 lg:h-12">
-        </a>
-        <a href="https://padiumkm.id/store/668e31b0e383eae3fa79f723"
-           target="_blank"
-           class="group block transition-all">
-            <img src="{{ asset('images/padiumk.png') }}"
-                 alt="Padi UMK"
-                 class="h-8 w-auto object-contain opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 md:h-10 lg:h-12">
-        </a>
-        <a href="https://katalog.inaproc.id/indonusa-jaya-bersama"
-           target="_blank"
-           class="group block transition-all">
-            <img src="{{ asset('images/inaproc.png') }}"
-                 alt="Inaproc"
-                 class="h-8 w-auto object-contain opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 md:h-10 lg:h-12">
-        </a>
-        <a href="https://www.mbizmarket.co.id/p/wwwindonusajayabersamacom"
-           target="_blank"
-           class="group block transition-all">
-            <img src="{{ asset('images/mbizmarket.png') }}"
-                 alt="Mbizmarket"
-                 class="h-8 w-auto object-contain opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-100 group-hover:grayscale-0 md:h-10 lg:h-12">
-        </a>
-    </div>
 
     <div class="max-w-(--breakpoint-2xl) container mx-auto flex w-full flex-col gap-10 px-4 py-8 lg:flex-row">
         <!-- Sidebar Filter (Kategori) -->
