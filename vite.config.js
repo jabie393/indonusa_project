@@ -32,6 +32,7 @@ export default defineConfig({
                 "resources/js/excel-stock-upload.js",
                 "resources/js/request-order.js",
                 "resources/js/custom-penawaran.js",
+                "resources/js/reveal.js",
             ],
             refresh: true,
         }),
