@@ -180,7 +180,6 @@
 										Tidak ada data
 									@endif
 								</p>
-
 								<p class="mt-1 text-sm">
 									@if ($search)
 										Coba ubah kata kunci pencarian atau <a href="{{ route('ga.sales-order.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
