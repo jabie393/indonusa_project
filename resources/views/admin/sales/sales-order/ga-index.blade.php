@@ -33,6 +33,14 @@
 				</svg>
 				Daftar Sales Order
 			</h3>
+			<a href="{{ route('ga.sales-order.export', ['search' => $search]) }}" class="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-300 transition hover:bg-emerald-600">
+				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+					<polyline points="7 10 12 15 17 10"></polyline>
+					<line x1="12" y1="15" x2="12" y2="3"></line>
+				</svg>
+				Export Excel
+			</a>
 		</div>
 
 		<div class="border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
@@ -172,7 +180,7 @@
 										Tidak ada data
 									@endif
 								</p>
-								
+
 								<p class="mt-1 text-sm">
 									@if ($search)
 										Coba ubah kata kunci pencarian atau <a href="{{ route('ga.sales-order.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>

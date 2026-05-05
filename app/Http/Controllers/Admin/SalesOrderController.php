@@ -19,6 +19,7 @@ use App\Models\Barang;
 use App\Models\DeliveryBatch;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InvoiceExport;
+use App\Exports\GaSalesOrderExport;
 
 class SalesOrderController extends Controller
 {
@@ -94,6 +95,17 @@ class SalesOrderController extends Controller
             'isSearch'    => $isSearch,
             'salesOrders' => $salesOrders ?? null,
         ]);
+    }
+
+    /**
+     * Export General Affair sales order data to Excel.
+     */
+    public function exportGaSalesOrders(Request $request)
+    {
+        $search = $request->input('search', null);
+        $filename = 'ga_sales_orders_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new GaSalesOrderExport($search), $filename);
     }
 
     /**
