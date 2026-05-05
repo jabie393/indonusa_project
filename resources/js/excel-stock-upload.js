@@ -32,12 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return null;
         };
 
-        // Hardcode mapping berdasarkan header standar: Kode Barang, Nama Barang, Kategori, Stok
         map["kode_barang"] = 0;
         map["nama_barang"] = 1;
-        map["kategori"] = 2;
-        map["stok"] = 3;
-        map["harga"] = 4;
+        map["deskripsi"] = 2;
+        map["kategori"] = 3;
+        map["stok"] = 4;
+        map["harga"] = 5;
 
         // Mapping sudah hardcode, skip ensure unique
 
@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const required = [
             "KODE BARANG",
             "NAMA BARANG",
+            "DESKRIPSI",
             "KATEGORI",
             "STOK",
             "HARGA BELI",
@@ -297,27 +298,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 2: kategori
-            const tdKategori = newRow.children[2];
-            if (tdKategori) {
-                let inp = tdKategori.querySelector("input");
+            // 2: deskripsi
+            const tdDeskripsi = newRow.children[2];
+            if (tdDeskripsi) {
+                let inp = tdDeskripsi.querySelector("input");
                 if (!inp) {
                     inp = document.createElement("input");
                     inp.type = "text";
-                    tdKategori.appendChild(inp);
+                    tdDeskripsi.appendChild(inp);
                 }
-                const v = (getVal("kategori") || "").toString().trim();
+                const v = getVal("deskripsi") || "";
                 inp.value = v;
 
                 if (isKnown) {
                     const hidden = document.createElement("input");
                     hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][kategori]`;
+                    hidden.name = `rows[${rowIndex}][deskripsi]`;
                     hidden.value = v;
-                    tdKategori.appendChild(hidden);
+                    tdDeskripsi.appendChild(hidden);
                 } else {
                     inp.readOnly = true;
-                    // Apply style: border red & cursor not allowed
                     inp.classList.add(
                         "border-red-500",
                         "focus:border-red-500",
@@ -327,12 +327,62 @@ document.addEventListener("DOMContentLoaded", function () {
                         "dark:bg-gray-700",
                         "text-gray-500"
                     );
-                    inp.title = "Barang belum terdaftar";
                 }
             }
 
-            // 3: stok
-            const tdStok = newRow.children[3];
+            // 3: kategori (select exists in template). Try to set select or fallback hidden
+            const tdKategori = newRow.children[3];
+            if (tdKategori) {
+                const sel = tdKategori.querySelector("select");
+                const v = (getVal("kategori") || "").toString().trim();
+                if (sel) {
+                    // try match option text or value
+                    let matched = false;
+                    Array.from(sel.options).forEach((opt) => {
+                        if (
+                            !matched &&
+                            opt.value &&
+                            opt.value.toString().toLowerCase() ===
+                                v.toLowerCase()
+                        ) {
+                            sel.value = opt.value;
+                            matched = true;
+                        }
+                    });
+                    if (!matched) {
+                        Array.from(sel.options).forEach((opt) => {
+                            if (
+                                !matched &&
+                                opt.text &&
+                                opt.text.toString().toLowerCase() ===
+                                    v.toLowerCase()
+                            ) {
+                                sel.value = opt.value;
+                                matched = true;
+                            }
+                        });
+                    }
+
+                    if (isKnown) {
+                        const hidden = document.createElement("input");
+                        hidden.type = "hidden";
+                        hidden.name = `rows[${rowIndex}][kategori]`;
+                        hidden.value = sel.value || v;
+                        tdKategori.appendChild(hidden);
+                    } else {
+                        sel.disabled = true;
+                        sel.classList.add(
+                            "border-red-500",
+                            "bg-gray-100",
+                            "dark:bg-gray-700",
+                            "cursor-not-allowed"
+                        );
+                    }
+                }
+            }
+
+            // 4: stok
+            const tdStok = newRow.children[4];
             if (tdStok) {
                 let inp = tdStok.querySelector("input");
                 if (!inp) {
@@ -364,8 +414,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 4: harga
-            const tdHarga = newRow.children[4];
+            // 5: harga
+            const tdHarga = newRow.children[5];
             if (tdHarga) {
                 let inp = tdHarga.querySelector("input");
                 if (!inp) {
@@ -397,8 +447,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 5: aksi
-            const aksiTd = newRow.children[5];
+            // 6: aksi
+            const aksiTd = newRow.children[6];
             if (aksiTd) {
                 const removeBtn = aksiTd.querySelector("button.remove-row");
                 if (removeBtn) {
@@ -533,6 +583,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             const required = [
                                 "KODE BARANG",
                                 "NAMA BARANG",
+                                "DESKRIPSI",
                                 "KATEGORI",
                                 "STOK",
                                 "HARGA BELI",
@@ -908,16 +959,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     fieldName = "nama_barang";
                     break;
                 case 2:
-                    fieldName = "kategori";
+                    fieldName = "deskripsi";
                     break;
                 case 3:
-                    fieldName = "stok";
+                    fieldName = "kategori";
                     break;
                 case 4:
+                    fieldName = "stok";
+                    break;
+                case 5:
                     fieldName = "harga";
                     break;
                 default:
-                    return; // skip kode_barang (0), aksi (5)
+                    return; // skip kode_barang (0), aksi (6)
             }
 
             const value = (inp.value || "").toString().trim();
