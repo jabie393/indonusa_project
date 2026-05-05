@@ -150,7 +150,7 @@
                                 @error('no_po')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Nomor Purchase Order</small>
+                                <small class="text-muted dark:text-gray-400">Nomor Purchase Order. Harus unik, tidak boleh sama dengan penawaran lain.</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -183,7 +183,7 @@
                                     class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
                                 <textarea
                                     class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer') }}</textarea>
+                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
                                 @error('catatan_customer')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -194,7 +194,7 @@
 
                     <!-- Items Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm"
-                        id="barangSection" style="display: flex;">
+                        id="barangSection" style="display: flex; flex-direction: column;">
                         <div
                             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
@@ -212,7 +212,7 @@
                             </h3>
                         </div>
 
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto overflow-y-auto" style="max-height: 600px;">
                             <div id="discountWarning" class="alert alert-warning m-4" style="display:none;">
                                 Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
                                 Supervisor.

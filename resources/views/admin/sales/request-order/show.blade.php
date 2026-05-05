@@ -508,7 +508,7 @@
                                 Detail Barang
                             </h2>
                         </div>
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto overflow-y-auto" style="max-height: 600px;">
                             <table class="w-full text-left text-sm">
                                 <thead class="bg-gray-50 text-xs font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
                                     <tr class="border-b border-gray-100 dark:border-gray-700">

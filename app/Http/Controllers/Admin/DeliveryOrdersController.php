@@ -442,6 +442,7 @@ class DeliveryOrdersController extends Controller
                         'quantity_sent' => $item->quantity_sent,
                     ];
                 }),
+                'pdf_url' => route('delivery-orders.batch-pdf', $batch->id),
             ];
         });
 
