@@ -19,45 +19,88 @@
         @media print {
             @page {
                 size: A4;
-                margin: 0;
+                margin: 1.27cm;
             }
 
             * {
                 box-shadow: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             body {
                 background: #ffffff;
+                margin: 0;
+            }
+        }
+
+        /* Footer styling for the last page only */
+        .footer-logo {
+            margin-top: 2rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        @media print {
+            .footer-logo {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+            }
+        }
+
+        /* Page break indicator for browser preview */
+        @media screen {
+            .page-break-preview {
+                width: 21cm;
+                min-height: 29.7cm;
+                background-image: linear-gradient(to bottom, #ffffff 29.68cm, #cbd5e1 29.68cm, #cbd5e1 29.7cm, #ffffff 29.7cm);
+                background-size: 100% 29.7cm;
+                position: relative;
+                margin: 2rem auto;
+            }
+            
+            .page-break-preview::after {
+                content: "PAGE BREAK";
+                position: absolute;
+                top: 29.7cm;
+                left: -60px;
+                font-size: 8pt;
+                color: #94a3b8;
+                transform: rotate(-90deg);
+                transform-origin: top left;
+                pointer-events: none;
             }
         }
     </style>
 </head>
 
-<body class="m-0 flex justify-center bg-slate-200 p-0 print:bg-white">
+<body class="m-0 flex flex-col items-center bg-slate-200 p-0 print:bg-white">
 
-    <!-- A4 PAGE WRAPPER (FIXED HEIGHT) -->
-    <div class="relative h-[29.7cm] w-full max-w-[21cm] overflow-hidden bg-white shadow-md print:m-0 print:h-[29.7cm] print:w-[21cm] print:shadow-none">
+    @php
+        // Helper function to get base64 encoded image from public/images
+        $getPublicImageBase64 = function ($filename) {
+            try {
+                $path = public_path('images/' . $filename);
+                if (file_exists($path) && is_readable($path)) {
+                    $mime = mime_content_type($path);
+                    $data = base64_encode(file_get_contents($path));
+                    return 'data:' . $mime . ';base64,' . $data;
+                }
+            } catch (\Exception $e) {
+                // Log error if needed
+            }
+            return '';
+        };
+    @endphp
 
-        <!-- INNER MARGINS (1.27 cm) -->
-        <div class="relative h-full w-full p-[1.27cm] text-[11pt] leading-[1.08]"
+    <!-- A4 PAGE WRAPPER -->
+    <div class="page-break-preview bg-white shadow-md print:m-0 print:w-full print:shadow-none">
+
+        <!-- INNER CONTENT -->
+        <div class="content-wrapper relative h-full w-full p-[1.27cm] text-[11pt] leading-[1.08] z-1 print:p-0"
              style="font-family: 'Tinos', serif;">
-
-            @php
-                // Helper function to get base64 encoded image from public/images
-                $getPublicImageBase64 = function ($filename) {
-                    try {
-                        $path = public_path('images/' . $filename);
-                        if (file_exists($path) && is_readable($path)) {
-                            $mime = mime_content_type($path);
-                            $data = base64_encode(file_get_contents($path));
-                            return 'data:' . $mime . ';base64,' . $data;
-                        }
-                    } catch (\Exception $e) {
-                        // Log error if needed
-                    }
-                    return '';
-                };
-            @endphp
 
             <!-- WATERMARK IMAGE -->
             @if ($getPublicImageBase64('LogoText_transparent.png'))
@@ -124,23 +167,23 @@
                     <tbody>
 
                         <tr>
-                            <td class="w-[75pt]"><strong>To</strong></td>
+                            <td class="w-[75pt]">To</td>
                             <td class="w-[170pt]">---</td>
-                            <td class=""><strong>Date</strong></td>
+                            <td class="">Date</td>
                             <td class="">---</td>
                         </tr>
 
                         <tr>
-                            <td class=""><strong>Up</strong></td>
+                            <td class="">Up</td>
                             <td class="">---</td>
-                            <td class=""><strong>Our Ref</strong></td>
+                            <td class="">Our Ref</td>
                             <td class="">---</td>
                         </tr>
 
                         <tr>
-                            <td class=""><strong>Subject</strong></td>
+                            <td class="">Subject</td>
                             <td class="">Penawaran ---</td>
-                            <td class="w-[75pt]"><strong>Email</strong></td>
+                            <td class="w-[75pt]">Email</td>
                             <td class="w-[180pt]">---</td>
                         </tr>
 
@@ -218,7 +261,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="border-b border-r border-black px-2">Tax</td>
+                            <td class="border-b border-r border-black px-2">PPN</td>
                             <td class="border-b border-black px-2 text-right">
                                 <div class="flex justify-between">
                                     <span>Rp</span>
@@ -239,8 +282,8 @@
                 </table>
             </div>
 
-            <!-- SIGNATURE -->
-            <div class="ml-auto mt-8 w-fit text-center text-[9pt]">
+            <!-- SIGNATURE (Ensures block stays together and moves to next page if space is insufficient) -->
+            <div class="ml-auto mt-8 w-fit text-center text-[9pt]" style="page-break-inside: avoid; break-inside: avoid;">
                 <p>Hormat Kami</p>
                 <p>PT. INDONUSA JAYA BERSAMA</p>
 
@@ -255,9 +298,15 @@
                 <p class="mt-1">Alimul Imam S.AP</p>
             </div>
 
-        </div>
-    </div>
+            <!-- FOOTER LOGO (Last page only) -->
+            <div class="footer-logo pointer-events-none mt-10">
+                <img src="{{ $getPublicImageBase64('footer_logo.png') }}"
+                     alt="Footer"
+                     class="mx-auto h-20 object-contain" />
+            </div>
 
-</body>
+        </div>
+
+    </body>
 
 </html>

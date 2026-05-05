@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\CustomPenawaran;
 use App\Models\CustomPenawaranItem;
 use App\Models\Order;
 use App\Models\OrderItem;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class CustomPenawaranController extends Controller
@@ -23,9 +23,9 @@ class CustomPenawaranController extends Controller
     public function index(Request $request)
     {
         try {
-            if (\Illuminate\Support\Facades\Schema::hasTable('custom_penawarans') && 
+            if (\Illuminate\Support\Facades\Schema::hasTable('custom_penawarans') &&
                 \Illuminate\Support\Facades\Schema::hasColumn('custom_penawarans', 'expired_at')) {
-                
+
                 CustomPenawaran::whereIn('status', ['open', 'sent'])
                     ->whereNotNull('expired_at')
                     ->where('expired_at', '<', now())
@@ -33,7 +33,7 @@ class CustomPenawaranController extends Controller
                     ->update(['status' => 'expired']);
             }
         } catch (\Throwable $e) {
-            Log::warning('Custom Penawaran Expiry update failed: ' . $e->getMessage());
+            Log::warning('Custom Penawaran Expiry update failed: '.$e->getMessage());
         }
 
         $query = CustomPenawaran::where('sales_id', Auth::id())
@@ -42,10 +42,10 @@ class CustomPenawaranController extends Controller
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('penawaran_number', 'like', "%{$search}%")
-                  ->orWhere('to', 'like', "%{$search}%")
-                  ->orWhere('subject', 'like', "%{$search}%");
+                    ->orWhere('to', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%");
             });
         }
 
@@ -62,6 +62,7 @@ class CustomPenawaranController extends Controller
     {
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
+
         return view('admin.sales.custom-penawaran.create', compact('salesUsers', 'currentUserName'));
     }
 
@@ -75,7 +76,7 @@ class CustomPenawaranController extends Controller
             'auth_id' => Auth::id(),
             'auth_email' => Auth::user()->email ?? null,
             'request' => $request->all(),
-            'items_count' => count($request->input('items', []))
+            'items_count' => count($request->input('items', [])),
         ]);
 
         $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
@@ -146,7 +147,7 @@ class CustomPenawaranController extends Controller
                     'diskon' => $itemData['diskon'] ?? 0,
                     'keterangan' => $itemData['keterangan'] ?? null,
                     // Pastikan images selalu array dan path tanpa awalan 'public/'
-                    'images' => !empty($itemImages) ? array_map(function($img){
+                    'images' => ! empty($itemImages) ? array_map(function ($img) {
                         return str_replace('public/', '', $img);
                     }, $itemImages) : null,
                 ]);
@@ -166,12 +167,14 @@ class CustomPenawaranController extends Controller
             // TODO: Implementasi notifikasi/approval Supervisor
 
             Log::info('Custom Penawaran Returning Redirect To Show', ['id' => $penawaran->id]);
+
             return redirect()->route('sales.custom-penawaran.show', $penawaran->id)
                 ->with(['title' => 'Berhasil', 'text' => "Penawaran {$penawaran->penawaran_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Custom Penawaran Store Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors('Gagal membuat penawaran: ' . $e->getMessage())->withInput();
+
+            return back()->withErrors('Gagal membuat penawaran: '.$e->getMessage())->withInput();
         }
     }
 
@@ -181,13 +184,14 @@ class CustomPenawaranController extends Controller
     public function show(CustomPenawaran $customPenawaran)
     {
         // Allow owner (Sales) or Supervisor/Admin to view the penawaran
-            $userRole = trim(strtolower(Auth::user()->role ?? ''));
-            $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-            if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
-                abort(403);
-            }
+        $userRole = trim(strtolower(Auth::user()->role ?? ''));
+        $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
+        if ($customPenawaran->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
+            abort(403);
+        }
 
         $customPenawaran->load('items', 'sales');
+
         return view('admin.sales.custom-penawaran.show', compact('customPenawaran'));
     }
 
@@ -203,6 +207,7 @@ class CustomPenawaranController extends Controller
         $customPenawaran->load('items');
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
+
         return view('admin.sales.custom-penawaran.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
     }
 
@@ -278,7 +283,7 @@ class CustomPenawaranController extends Controller
                 }
 
                 // If no new images, use existing images from the validated data
-                if (empty($itemImages) && isset($validated['items'][$i]['existing_images']) && !empty($validated['items'][$i]['existing_images'])) {
+                if (empty($itemImages) && isset($validated['items'][$i]['existing_images']) && ! empty($validated['items'][$i]['existing_images'])) {
                     $itemImages = $validated['items'][$i]['existing_images'];
                 }
 
@@ -294,19 +299,19 @@ class CustomPenawaranController extends Controller
                     'subtotal' => $itemSubtotal,
                     'diskon' => $itemData['diskon'] ?? 0,
                     'keterangan' => $itemData['keterangan'] ?? null,
-                    'images' => !empty($itemImages) ? array_map(function($img){
+                    'images' => ! empty($itemImages) ? array_map(function ($img) {
                         return str_replace('public/', '', $img);
                     }, $itemImages) : null,
                 ]);
             }
 
             $customPenawaran->update([
-                'subtotal'    => $subtotal,
+                'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-                'status'      => 'pending_approval',
+                'status' => 'pending_approval',
                 'approved_by' => null,
                 'approved_at' => null,
-                'reason'      => null,
+                'reason' => null,
             ]);
 
             DB::commit();
@@ -315,7 +320,8 @@ class CustomPenawaranController extends Controller
                 ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal mengubah penawaran: ' . $e->getMessage())->withInput();
+
+            return back()->withErrors('Gagal mengubah penawaran: '.$e->getMessage())->withInput();
         }
     }
 
@@ -344,7 +350,7 @@ class CustomPenawaranController extends Controller
 
                 // Delete custom penawaran items
                 $customPenawaran->items()->delete();
-                
+
                 // Delete the custom penawaran itself
                 $customPenawaran->delete();
             });
@@ -352,12 +358,12 @@ class CustomPenawaranController extends Controller
             return redirect()->route('sales.custom-penawaran.index')->with([
                 'success' => 'Penawaran berhasil dihapus.',
                 'title' => 'Terhapus!',
-                'text' => 'Penawaran Kustom dan data terkait telah berhasil dihapus dari sistem.'
+                'text' => 'Penawaran Kustom dan data terkait telah berhasil dihapus dari sistem.',
             ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus penawaran: ' . $e->getMessage())->with([
+            return back()->withErrors('Gagal menghapus penawaran: '.$e->getMessage())->with([
                 'title' => 'Gagal!',
-                'text' => 'Terjadi kesalahan saat mencoba menghapus data.'
+                'text' => 'Terjadi kesalahan saat mencoba menghapus data.',
             ]);
         }
     }
@@ -372,12 +378,12 @@ class CustomPenawaranController extends Controller
     {
         // Role check is already done by route middleware 'role:Supervisor'
         $action = $request->input('action');
-        if (!in_array($customPenawaran->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
+        if (! in_array($customPenawaran->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
             return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
         }
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($customPenawaran->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
             abort(403);
         }
         if ($action === 'approve') {
@@ -386,6 +392,7 @@ class CustomPenawaranController extends Controller
             $customPenawaran->approved_at = now();
             $customPenawaran->reason = null;
             $customPenawaran->save();
+
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
         } elseif ($action === 'reject') {
             $validated = $request->validate([
@@ -394,27 +401,57 @@ class CustomPenawaranController extends Controller
             $customPenawaran->status = 'rejected_supervisor';
             $customPenawaran->reason = $validated['reason'];
             $customPenawaran->save();
+
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
         }
+
         return back()->withErrors('Aksi tidak valid.');
     }
+
     public function pdf(CustomPenawaran $customPenawaran)
     {
         // Only owner (Sales) or Supervisor/Admin can view, but enforce approval rule:
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($customPenawaran->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
             abort(403);
         }
 
         // PDF hanya bisa didownload jika status approved_supervisor, kecuali Supervisor/Admin
         if ($customPenawaran->status !== 'approved_supervisor') {
-            if (!in_array($userRole, $allowed)) {
+            if (! in_array($userRole, $allowed)) {
                 return back()->withErrors('PDF hanya dapat didownload setelah disetujui oleh Supervisor.');
             }
         }
 
-        return view('admin.pdf.custom-penawaran-pdf', compact('customPenawaran'));
+        $html = view('admin.pdf.custom-penawaran-pdf', compact('customPenawaran'))->render();
+
+        $footerLogoPath = public_path('images/footer_logo.png');
+        $footerLogoBase64 = '';
+        if (file_exists($footerLogoPath)) {
+            $mime = mime_content_type($footerLogoPath);
+            $data = base64_encode(file_get_contents($footerLogoPath));
+            $footerLogoBase64 = 'data:'.$mime.';base64,'.$data;
+        }
+
+        $footerHtml = '
+        <div style="width: 100%; text-align: center; margin-bottom: 5mm; -webkit-print-color-adjust: exact; font-size: 10px;">
+            <img src="'.$footerLogoBase64.'" style="height: 70px; object-fit: contain; margin: 0 auto;" />
+        </div>';
+
+        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+            ->format('A4')
+            ->margins(12.7, 12.7, 25.4, 12.7)
+            ->showBrowserHeaderAndFooter()
+            ->headerHtml('<div></div>')
+            ->footerHtml($footerHtml)
+            ->showBackground()
+            ->writeOptionsToFile()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Custom-Penawaran-'.$customPenawaran->penawaran_number.'.pdf"');
     }
 
     /**
@@ -427,7 +464,7 @@ class CustomPenawaranController extends Controller
             abort(403);
         }
 
-        if (!in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor'])) {
+        if (! in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor'])) {
             return back()->withErrors('Hanya Custom Penawaran yang open, approved, atau approved supervisor dapat dikirim ke Warehouse.');
         }
 
@@ -441,10 +478,10 @@ class CustomPenawaranController extends Controller
 
         DB::beginTransaction();
         try {
-            Log::info('Starting sentToWarehouse for custom penawaran ID: ' . $customPenawaran->id);
+            Log::info('Starting sentToWarehouse for custom penawaran ID: '.$customPenawaran->id);
 
             $order = Order::create([
-                'order_number' => 'DO-' . strtoupper(Str::random(8)),
+                'order_number' => 'DO-'.strtoupper(Str::random(8)),
                 'sales_id' => Auth::id(),
                 'supervisor_id' => $customPenawaran->status === 'approved' ? Auth::id() : null, // assuming if approved, supervisor is current user or something
                 'custom_penawaran_id' => $customPenawaran->id,
@@ -455,13 +492,13 @@ class CustomPenawaranController extends Controller
                 'catatan_customer' => $customPenawaran->intro_text,
             ]);
 
-            Log::info('Order created with ID: ' . $order->id);
+            Log::info('Order created with ID: '.$order->id);
 
             foreach ($customPenawaran->items as $item) {
                 if (is_null($item->harga) || is_null($item->subtotal) || $item->qty <= 0) {
-                    throw new \Exception('Item data invalid: harga, subtotal, or qty is invalid for item ID ' . $item->id);
+                    throw new \Exception('Item data invalid: harga, subtotal, or qty is invalid for item ID '.$item->id);
                 }
-                Log::info('Creating OrderItem for item ID: ' . $item->id . ', qty: ' . $item->qty . ', harga: ' . $item->harga . ', subtotal: ' . $item->subtotal);
+                Log::info('Creating OrderItem for item ID: '.$item->id.', qty: '.$item->qty.', harga: '.$item->harga.', subtotal: '.$item->subtotal);
                 OrderItem::create([
                     'order_id' => $order->id,
                     'barang_id' => null, // Custom Penawaran items might not have barang_id
@@ -487,10 +524,12 @@ class CustomPenawaranController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Error in sentToWarehouse: ' . $e->getMessage());
-            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage());
+            \Log::error('Error in sentToWarehouse: '.$e->getMessage());
+
+            return back()->withErrors('Gagal mengirim ke Warehouse: '.$e->getMessage());
         }
     }
+
     /**
      * Bulk Hapus Custom Penawarans
      */
@@ -514,13 +553,16 @@ class CustomPenawaranController extends Controller
             }
 
             DB::commit();
+
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Custom Penawaran Bulk Delete Error', ['message' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Gagal menghapus penawaran: ' . $e->getMessage()]);
+
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus penawaran: '.$e->getMessage()]);
         }
     }
+
     /**
      * Bulk Send to Warehouse for Custom Penawarans
      */
@@ -538,17 +580,17 @@ class CustomPenawaranController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($penawaran && in_array($penawaran->status, ['open', 'approved', 'approved_supervisor']) && !$penawaran->order) {
-                    // For Custom Penawaran, we don't have a processSentToWarehouse method yet, 
+                if ($penawaran && in_array($penawaran->status, ['open', 'approved', 'approved_supervisor']) && ! $penawaran->order) {
+                    // For Custom Penawaran, we don't have a processSentToWarehouse method yet,
                     // we'll use the logic from sentToWarehouse but adapted or just call it if it was refactored.
                     // Instead of refactoring now, I'll just check if I can reuse sentToWarehouse logic.
                     // Actually, let's just do it simply.
-                    
+
                     // Logic from sentToWarehouse (line 391)
                     if ($penawaran->items->isNotEmpty()) {
-                        DB::transaction(function() use ($penawaran) {
+                        DB::transaction(function () use ($penawaran) {
                             $order = Order::create([
-                                'order_number' => 'DO-' . strtoupper(Str::random(8)),
+                                'order_number' => 'DO-'.strtoupper(Str::random(8)),
                                 'sales_id' => Auth::id(),
                                 'supervisor_id' => $penawaran->status === 'approved' ? Auth::id() : null,
                                 'custom_penawaran_id' => $penawaran->id,
@@ -581,6 +623,7 @@ class CustomPenawaranController extends Controller
         if ($successCount > 0) {
             return response()->json(['success' => true, 'count' => $successCount]);
         }
+
         return response()->json(['success' => false, 'message' => 'No items were processed.']);
     }
 
@@ -594,11 +637,11 @@ class CustomPenawaranController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('penawaran_number', 'like', "%{$search}%")
-                  ->orWhere('to', 'like', "%{$search}%")
-                  ->orWhere('subject', 'like', "%{$search}%")
-                  ->orWhereHas('sales', function ($subQ) use ($search) {
-                      $subQ->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('to', 'like', "%{$search}%")
+                    ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhereHas('sales', function ($subQ) use ($search) {
+                        $subQ->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -614,12 +657,12 @@ class CustomPenawaranController extends Controller
     {
         $ids = $request->input('ids', []);
         $action = $request->input('action'); // 'approve' or 'reject'
-        
+
         if (empty($ids)) {
             return response()->json(['success' => false, 'message' => 'No items selected.']);
         }
 
-        if (!in_array($action, ['approve', 'reject'])) {
+        if (! in_array($action, ['approve', 'reject'])) {
             return response()->json(['success' => false, 'message' => 'Invalid action.']);
         }
 
@@ -628,7 +671,7 @@ class CustomPenawaranController extends Controller
             $penawarans = CustomPenawaran::whereIn('id', $ids)
                 ->where('status', 'pending_approval')
                 ->get();
-            
+
             if ($penawarans->isEmpty()) {
                 return response()->json(['success' => false, 'message' => 'No valid items found for approval/rejection.']);
             }
@@ -638,37 +681,40 @@ class CustomPenawaranController extends Controller
                 $userRole = trim(strtolower(Auth::user()->role ?? ''));
                 $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
                 // Check if supervisor or admin
-                if (!in_array($userRole, $allowed) && $penawaran->sales_id !== Auth::id()) {
-                     continue; // Skip unauthorized
+                if (! in_array($userRole, $allowed) && $penawaran->sales_id !== Auth::id()) {
+                    continue; // Skip unauthorized
                 }
-                
+
                 if ($action === 'approve') {
                     $penawaran->status = 'approved_supervisor';
                     $penawaran->approved_by = Auth::id();
                     $penawaran->approved_at = now();
                     $penawaran->reason = null;
                 } else {
-                     // note: bulk reject usually needs a reason, but for bulk we might just set a generic one or empty
-                     // For now let's set a generic reason if not provided, or handle it differently.
-                     // The user requested bulk action.
-                     $reason = $request->input('reason', 'Bulk rejected by supervisor');
-                     $penawaran->status = 'rejected_supervisor';
-                     $penawaran->reason = $reason;
+                    // note: bulk reject usually needs a reason, but for bulk we might just set a generic one or empty
+                    // For now let's set a generic reason if not provided, or handle it differently.
+                    // The user requested bulk action.
+                    $reason = $request->input('reason', 'Bulk rejected by supervisor');
+                    $penawaran->status = 'rejected_supervisor';
+                    $penawaran->reason = $reason;
                 }
                 $penawaran->save();
             }
 
             DB::commit();
-            
+
             $message = $action === 'approve' ? 'Items approved successfully.' : 'Items rejected successfully.';
+
             return response()->json(['success' => true, 'message' => $message]);
 
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Custom Penawaran Bulk Approval Error', ['message' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+
+            return response()->json(['success' => false, 'message' => 'Error: '.$e->getMessage()]);
         }
     }
+
     /**
      * Kirim Custom Penawaran ke Penawaran (Request Order)
      */
@@ -691,51 +737,53 @@ class CustomPenawaranController extends Controller
             $tanggalBerlaku = now()->addDays(14);
             $requestOrder = \App\Models\RequestOrder::create([
                 'custom_penawaran_id' => $customPenawaran->id,
-                'request_number'      => 'REQ-' . strtoupper(\Str::random(8)),
-                'nomor_penawaran'     => $nomorPenawaran,
-                'sales_id'            => $customPenawaran->sales_id,
-                'customer_name'       => $customPenawaran->to,
-                'subject'             => $customPenawaran->subject,
-                'tanggal_kebutuhan'   => $customPenawaran->date,
-                'tanggal_berlaku'     => $tanggalBerlaku,
-                'expired_at'          => $tanggalBerlaku,
-                'catatan_customer'    => $customPenawaran->intro_text,
-                'subtotal'            => $customPenawaran->subtotal,
-                'tax'                 => $customPenawaran->tax ?? 0,
-                'grand_total'         => $customPenawaran->grand_total,
-                'no_po'               => null,
-                'sales_order_number'  => null,
+                'request_number' => 'REQ-'.strtoupper(\Str::random(8)),
+                'nomor_penawaran' => $nomorPenawaran,
+                'sales_id' => $customPenawaran->sales_id,
+                'customer_name' => $customPenawaran->to,
+                'subject' => $customPenawaran->subject,
+                'tanggal_kebutuhan' => $customPenawaran->date,
+                'tanggal_berlaku' => $tanggalBerlaku,
+                'expired_at' => $tanggalBerlaku,
+                'catatan_customer' => $customPenawaran->intro_text,
+                'subtotal' => $customPenawaran->subtotal,
+                'tax' => $customPenawaran->tax ?? 0,
+                'grand_total' => $customPenawaran->grand_total,
+                'no_po' => null,
+                'sales_order_number' => null,
             ]);
             \App\Models\Order::create([
-                'order_number'      => 'ORD-' . strtoupper(uniqid()),
-                'sales_id'          => $customPenawaran->sales_id,
-                'request_order_id'  => $requestOrder->id,
-                'customer_name'     => $customPenawaran->to,
-                'status'            => 'open',
+                'order_number' => 'ORD-'.strtoupper(uniqid()),
+                'sales_id' => $customPenawaran->sales_id,
+                'request_order_id' => $requestOrder->id,
+                'customer_name' => $customPenawaran->to,
+                'status' => 'open',
                 'tanggal_kebutuhan' => $customPenawaran->date,
-                'catatan_customer'  => $customPenawaran->intro_text,
+                'catatan_customer' => $customPenawaran->intro_text,
             ]);
             foreach ($customPenawaran->items as $cpItem) {
                 \App\Models\RequestOrderItem::create([
-                    'request_order_id'   => $requestOrder->id,
-                    'barang_id'          => null,
+                    'request_order_id' => $requestOrder->id,
+                    'barang_id' => null,
                     'nama_barang_custom' => $cpItem->nama_barang,
-                    'kategori_barang'    => $cpItem->keterangan ?? 'Custom',
-                    'quantity'           => $cpItem->qty,
-                    'harga'              => $cpItem->harga,
-                    'subtotal'           => $cpItem->subtotal,
-                    'diskon_percent'     => $cpItem->diskon ?? 0,
-                    'images'             => $cpItem->images,
+                    'kategori_barang' => $cpItem->keterangan ?? 'Custom',
+                    'quantity' => $cpItem->qty,
+                    'harga' => $cpItem->harga,
+                    'subtotal' => $cpItem->subtotal,
+                    'diskon_percent' => $cpItem->diskon ?? 0,
+                    'images' => $cpItem->images,
                 ]);
             }
             $customPenawaran->update(['status' => 'sent_to_penawaran']);
             \DB::commit();
+
             // Redirect langsung ke halaman penawaran sales
             return redirect()->route('sales.request-order.show', $requestOrder->id)
                 ->with('success', "Berhasil dikirim ke Penawaran: {$requestOrder->request_number}");
         } catch (\Throwable $e) {
             \DB::rollBack();
-            return back()->withErrors('Gagal: ' . $e->getMessage());
+
+            return back()->withErrors('Gagal: '.$e->getMessage());
         }
     }
 }

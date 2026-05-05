@@ -347,7 +347,17 @@ class DeliveryOrdersController extends Controller
     public function pdf($id)
     {
         $orders = Order::with('items.barang')->findOrFail($id);
-        return view('admin.pdf.delivery-order-pdf', compact('orders'));
+        $html = view('admin.pdf.delivery-order-pdf', compact('orders'))->render();
+
+        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+            ->format('A4')
+            ->margins(12.7, 12.7, 12.7, 12.7)
+            ->showBackground()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Delivery-Order-' . $orders->order_number . '.pdf"');
     }
 
     public function getItems($id)
@@ -446,6 +456,16 @@ class DeliveryOrdersController extends Controller
         // We reuse the variable name 'orders' to maintain compatibility with the template if possible, 
         // but we'll adapt the template or create a new one.
         // Actually, let's pass the batch specifically.
-        return view('admin.pdf.delivery-batch-pdf', compact('batch', 'order'));
+        $html = view('admin.pdf.delivery-batch-pdf', compact('batch', 'order'))->render();
+
+        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+            ->format('A4')
+            ->margins(12.7, 12.7, 12.7, 12.7)
+            ->showBackground()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Delivery-Batch-' . $batch->batch_number . '.pdf"');
     }
 }

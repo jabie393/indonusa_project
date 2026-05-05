@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
 use App\Models\Customer;
-use App\Models\RequestOrder;
-use App\Models\RequestOrderItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\RequestOrder;
+use App\Models\RequestOrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RequestOrderController extends Controller
 {
     public function supervisorApprove(Request $request, $id)
     {
         $order = Order::where('request_order_id', $id)->first();
-        if (!$order) {
+        if (! $order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
         $order->update([
@@ -29,6 +29,7 @@ class RequestOrderController extends Controller
             'supervisor_id' => Auth::id(),
             'approved_at' => now(),
         ]);
+
         return redirect()->back()->with(['title' => 'Berhasil!', 'text' => 'Request order berhasil di-approve oleh supervisor.']);
     }
 
@@ -38,19 +39,19 @@ class RequestOrderController extends Controller
             'reason' => 'required|string|min:5|max:500',
         ], [
             'reason.required' => 'Alasan penolakan wajib diisi.',
-            'reason.min'      => 'Alasan penolakan minimal 5 karakter.',
+            'reason.min' => 'Alasan penolakan minimal 5 karakter.',
         ]);
 
         $order = Order::where('request_order_id', $id)->first();
-        if (!$order) {
+        if (! $order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
 
         $order->update([
-            'status'        => 'rejected_supervisor',
+            'status' => 'rejected_supervisor',
             'supervisor_id' => Auth::id(),
-            'approved_at'   => now(),
-            'reason'        => $request->reason,
+            'approved_at' => now(),
+            'reason' => $request->reason,
         ]);
 
         $requestOrder = RequestOrder::find($id);
@@ -70,7 +71,7 @@ class RequestOrderController extends Controller
                 ->where('expired_at', '>', now())
                 ->whereRaw('TIMESTAMPDIFF(DAY, created_at, expired_at) <= 8')
                 ->where('sales_id', Auth::id())
-                ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw("DATE_ADD(NOW(), INTERVAL 14 DAY)")]);
+                ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw('DATE_ADD(NOW(), INTERVAL 14 DAY)')]);
         }
 
         $query = RequestOrder::with(['items.barang', 'sales', 'order.items.barang'])
@@ -148,7 +149,7 @@ class RequestOrderController extends Controller
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
-            'nama_barang_custom'   => 'nullable|array',
+            'nama_barang_custom' => 'nullable|array',
             'nama_barang_custom.*' => 'nullable|string|max:255',
         ]);
 
@@ -156,7 +157,9 @@ class RequestOrderController extends Controller
         $maxDiskon = 0;
         foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
-            if ($qty <= 0) continue;
+            if ($qty <= 0) {
+                continue;
+            }
 
             $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
@@ -195,29 +198,29 @@ class RequestOrderController extends Controller
                 }
             }
 
-            $headerSubtotal = array_reduce($items, fn($carry, $item) => $carry + $item['subtotal'], 0);
+            $headerSubtotal = array_reduce($items, fn ($carry, $item) => $carry + $item['subtotal'], 0);
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
             $salesOrderNumber = RequestOrder::generateSalesOrderNumber();
             $requestOrder = RequestOrder::create([
-                'request_number'     => 'REQ-' . strtoupper(Str::random(8)),
-                'nomor_penawaran'    => $nomorPenawaran,
+                'request_number' => 'REQ-'.strtoupper(Str::random(8)),
+                'nomor_penawaran' => $nomorPenawaran,
                 'sales_order_number' => $salesOrderNumber,
-                'no_po'              => $validated['no_po'] ?? null,
-                'sales_id'           => $validated['pic_id'],
-                'customer_name'      => $validated['customer_name'],
-                'customer_id'        => $validated['customer_id'] ?? null,
-                'subject'            => $validated['subject'],
-                'kategori_barang'    => $validated['kategori_barang'][0] ?? null,
-                'tanggal_kebutuhan'  => $validated['tanggal_kebutuhan'] ?? null,
-                'tanggal_berlaku'    => $tanggalBerlaku,
-                'expired_at'         => $tanggalBerlaku,
-                'catatan_customer'   => $validated['catatan_customer'] ?? null,
-                'supporting_images'  => !empty($supportingImages) ? $supportingImages : null,
-                'subtotal'           => $headerSubtotal,
-                'tax'                => $headerTax,
-                'grand_total'        => $headerGrandTotal,
+                'no_po' => $validated['no_po'] ?? null,
+                'sales_id' => $validated['pic_id'],
+                'customer_name' => $validated['customer_name'],
+                'customer_id' => $validated['customer_id'] ?? null,
+                'subject' => $validated['subject'],
+                'kategori_barang' => $validated['kategori_barang'][0] ?? null,
+                'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
+                'tanggal_berlaku' => $tanggalBerlaku,
+                'expired_at' => $tanggalBerlaku,
+                'catatan_customer' => $validated['catatan_customer'] ?? null,
+                'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
+                'subtotal' => $headerSubtotal,
+                'tax' => $headerTax,
+                'grand_total' => $headerGrandTotal,
             ]);
 
             foreach ($items as $item) {
@@ -233,12 +236,12 @@ class RequestOrderController extends Controller
 
                 $itemData = [
                     'request_order_id' => $requestOrder->id,
-                    'barang_id'        => $item['barang_id'],
-                    'kategori_barang'  => $item['kategori_barang'] ?? null,
-                    'quantity'         => $item['quantity'],
-                    'harga'            => $item['harga'],
-                    'subtotal'         => $item['subtotal'],
-                    'images'           => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'barang_id' => $item['barang_id'],
+                    'kategori_barang' => $item['kategori_barang'] ?? null,
+                    'quantity' => $item['quantity'],
+                    'harga' => $item['harga'],
+                    'subtotal' => $item['subtotal'],
+                    'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
@@ -254,7 +257,7 @@ class RequestOrderController extends Controller
 
             foreach ($items as $item) {
                 $barangId = $item['barang_id'] ?? null;
-                $qty      = (int) ($item['quantity'] ?? 0);
+                $qty = (int) ($item['quantity'] ?? 0);
                 if ($barangId && $qty > 0) {
                     \App\Models\Barang::where('id', $barangId)
                         ->where('stok', '>=', $qty)
@@ -265,16 +268,16 @@ class RequestOrderController extends Controller
             $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
 
             $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
-            if (!$existingOrder) {
+            if (! $existingOrder) {
                 Order::create([
-                    'order_number'      => 'ORD-' . strtoupper(Str::random(8)),
-                    'sales_id'          => $requestOrder->sales_id,
-                    'customer_name'     => $requestOrder->customer_name,
-                    'customer_id'       => $requestOrder->customer_id,
-                    'request_order_id'  => $requestOrder->id,
-                    'status'            => $orderStatus,
+                    'order_number' => 'ORD-'.strtoupper(Str::random(8)),
+                    'sales_id' => $requestOrder->sales_id,
+                    'customer_name' => $requestOrder->customer_name,
+                    'customer_id' => $requestOrder->customer_id,
+                    'request_order_id' => $requestOrder->id,
+                    'status' => $orderStatus,
                     'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                    'catatan_customer'  => $requestOrder->catatan_customer,
+                    'catatan_customer' => $requestOrder->catatan_customer,
                 ]);
             } else {
                 $existingOrder->update(['status' => $orderStatus]);
@@ -292,8 +295,9 @@ class RequestOrderController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
+
             return back()
-                ->withErrors('Gagal membuat Request Order: ' . $e->getMessage())
+                ->withErrors('Gagal membuat Request Order: '.$e->getMessage())
                 ->withInput()
                 ->with(['title' => 'Gagal', 'text' => 'Gagal membuat Request Order!']);
         }
@@ -303,7 +307,7 @@ class RequestOrderController extends Controller
     {
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Warehouse', 'Admin']);
-        if ($requestOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($requestOrder->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
             abort(403);
         }
 
@@ -313,7 +317,8 @@ class RequestOrderController extends Controller
                 if ($diffDays <= 8 && \Illuminate\Support\Carbon::parse($requestOrder->expired_at)->greaterThan(now())) {
                     $requestOrder->update(['expired_at' => now()->addDays(14)]);
                 }
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         $requestOrder->refresh();
@@ -325,7 +330,7 @@ class RequestOrderController extends Controller
     public function pdf(RequestOrder $requestOrder)
     {
         $requestOrder->loadMissing('items', 'order');
-        if (!$requestOrder->canDownloadPdf()) {
+        if (! $requestOrder->canDownloadPdf()) {
             $status = $requestOrder->order?->status;
             if ($requestOrder->hasDiscountOver20()) {
                 if ($status === 'pending') {
@@ -335,6 +340,7 @@ class RequestOrderController extends Controller
                     return redirect()->back()->withErrors('PDF tidak dapat didownload, ditolak oleh supervisor.');
                 }
             }
+
             return redirect()->back()->withErrors('PDF tidak dapat didownload.');
         }
 
@@ -355,7 +361,34 @@ class RequestOrderController extends Controller
 
         $pdfNote = request()->query('pdf_note', $requestOrder->catatan_customer ?? null);
 
-        return view('admin.pdf.request-order-pdf', compact('requestOrder', 'pdfNote'));
+        $html = view('admin.pdf.request-order-pdf', compact('requestOrder', 'pdfNote'))->render();
+
+        $footerLogoPath = public_path('images/footer_logo.png');
+        $footerLogoBase64 = '';
+        if (file_exists($footerLogoPath)) {
+            $mime = mime_content_type($footerLogoPath);
+            $data = base64_encode(file_get_contents($footerLogoPath));
+            $footerLogoBase64 = 'data:'.$mime.';base64,'.$data;
+        }
+
+        $footerHtml = '
+        <div style="width: 100%; text-align: center; margin-bottom: 5mm; -webkit-print-color-adjust: exact; font-size: 10px;">
+            <img src="'.$footerLogoBase64.'" style="height: 70px; object-fit: contain; margin: 0 auto;" />
+        </div>';
+
+        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+            ->format('A4')
+            ->margins(12.7, 12.7, 25.4, 12.7)
+            ->showBrowserHeaderAndFooter()
+            ->headerHtml('<div></div>')
+            ->footerHtml($footerHtml)
+            ->showBackground()
+            ->writeOptionsToFile()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Penawaran-'.$requestOrder->request_number.'.pdf"');
     }
 
     public function edit(RequestOrder $requestOrder)
@@ -370,7 +403,8 @@ class RequestOrderController extends Controller
                 if ($diffDays <= 8 && \Illuminate\Support\Carbon::parse($requestOrder->expired_at)->greaterThan(now())) {
                     $requestOrder->update(['expired_at' => now()->addDays(14)]);
                 }
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         $requestOrder->loadMissing('customPenawaran', 'items.barang');
@@ -425,22 +459,22 @@ class RequestOrderController extends Controller
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
-            'nama_barang_custom'   => 'nullable|array',
+            'nama_barang_custom' => 'nullable|array',
             'nama_barang_custom.*' => 'nullable|string|max:255',
-            'existing_item_images'       => 'nullable|array',
-            'existing_item_images.*'     => 'nullable|array',
-            'existing_item_images.*.*'   => 'nullable|string',
+            'existing_item_images' => 'nullable|array',
+            'existing_item_images.*' => 'nullable|array',
+            'existing_item_images.*.*' => 'nullable|string',
         ]);
 
         foreach ($validated['barang_id'] as $i => $barangId) {
-            $isCustom = empty($barangId) && (!empty($validated['nama_barang_custom'][$i] ?? null));
-            $isRegular = !empty($barangId);
-            if (!$isCustom && !$isRegular) {
-                return back()->withErrors(["barang_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i+1)])
+            $isCustom = empty($barangId) && (! empty($validated['nama_barang_custom'][$i] ?? null));
+            $isRegular = ! empty($barangId);
+            if (! $isCustom && ! $isRegular) {
+                return back()->withErrors(["barang_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
                     ->withInput();
             }
             if (($isCustom || $isRegular) && empty($validated['kategori_barang'][$i])) {
-                return back()->withErrors(["kategori_barang.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i+1)])
+                return back()->withErrors(["kategori_barang.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i + 1)])
                     ->withInput();
             }
         }
@@ -458,7 +492,7 @@ class RequestOrderController extends Controller
 
         // "Pernah diapprove" = supervisor_id sudah terisi di order
         // Ini lebih reliable daripada cek status, karena status bisa berubah-ubah
-        $pernahDiapprove = !empty($existingOrder?->supervisor_id);
+        $pernahDiapprove = ! empty($existingOrder?->supervisor_id);
 
         // Atau status saat ini memang sudah melewati tahap supervisor
         $sudahApprove = $pernahDiapprove || in_array($statusSekarang, [
@@ -472,7 +506,9 @@ class RequestOrderController extends Controller
         $items = [];
         foreach ($validated['barang_id'] as $i => $barangId) {
             $qty = (int) $validated['quantity'][$i];
-            if ($qty <= 0) continue;
+            if ($qty <= 0) {
+                continue;
+            }
 
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
 
@@ -490,16 +526,16 @@ class RequestOrderController extends Controller
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
-                'original_index'     => $i,
-                'barang_id'          => empty($barangId) ? null : (int) $barangId,
+                'original_index' => $i,
+                'barang_id' => empty($barangId) ? null : (int) $barangId,
                 'nama_barang_custom' => empty($barangId)
                     ? ($validated['nama_barang_custom'][$i] ?? null)
                     : null,
-                'kategori_barang'    => $validated['kategori_barang'][$i] ?? null,
-                'quantity'           => $qty,
-                'harga'              => $harga,
-                'diskon_percent'     => $diskon,
-                'subtotal'           => $subtotal,
+                'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
+                'quantity' => $qty,
+                'harga' => $harga,
+                'diskon_percent' => $diskon,
+                'subtotal' => $subtotal,
             ];
         }
 
@@ -520,7 +556,7 @@ class RequestOrderController extends Controller
                 }
             }
 
-            $headerSubtotal = array_reduce($items, function($carry, $item) {
+            $headerSubtotal = array_reduce($items, function ($carry, $item) {
                 return $carry + $item['subtotal'];
             }, 0);
 
@@ -537,7 +573,7 @@ class RequestOrderController extends Controller
                 'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
                 'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
                 'catatan_customer' => $validated['catatan_customer'] ?? null,
-                'supporting_images' => !empty($supportingImages) ? $supportingImages : null,
+                'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
@@ -557,20 +593,20 @@ class RequestOrderController extends Controller
                 }
                 if (empty($itemImagePaths)) {
                     $existingImgs = $request->input("existing_item_images.{$origIdx}", []);
-                    if (!empty($existingImgs)) {
+                    if (! empty($existingImgs)) {
                         $itemImagePaths = array_values(array_filter($existingImgs));
                     }
                 }
 
                 $itemData = [
-                    'request_order_id'   => $requestOrder->id,
-                    'barang_id'          => $item['barang_id'],
+                    'request_order_id' => $requestOrder->id,
+                    'barang_id' => $item['barang_id'],
                     'nama_barang_custom' => $item['nama_barang_custom'] ?? null,
-                    'kategori_barang'    => $item['kategori_barang'] ?? null,
-                    'quantity'           => $item['quantity'],
-                    'harga'              => $item['harga'],
-                    'subtotal'           => $item['subtotal'],
-                    'images'             => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'kategori_barang' => $item['kategori_barang'] ?? null,
+                    'quantity' => $item['quantity'],
+                    'harga' => $item['harga'],
+                    'subtotal' => $item['subtotal'],
+                    'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
@@ -609,7 +645,7 @@ class RequestOrderController extends Controller
             if ($maxDiskonBaru <= 20) {
                 // Skenario A: diskon aman, tidak perlu approve
                 $orderStatus = 'open';
-            } elseif ($sudahApprove && !$diskonBaruMelampauiBatas) {
+            } elseif ($sudahApprove && ! $diskonBaruMelampauiBatas) {
                 // Skenario B: sudah pernah diapprove dan diskon tidak baru melampaui batas
                 // → pertahankan status yang ada, tidak perlu approve ulang
                 $orderStatus = $statusSekarang;
@@ -629,14 +665,14 @@ class RequestOrderController extends Controller
                 $existingOrder->update($updateData);
             } else {
                 \App\Models\Order::create([
-                    'order_number'      => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
-                    'sales_id'          => $requestOrder->sales_id,
-                    'customer_name'     => $requestOrder->customer_name,
-                    'customer_id'       => $requestOrder->customer_id,
-                    'request_order_id'  => $requestOrder->id,
-                    'status'            => $orderStatus,
+                    'order_number' => 'ORD-'.strtoupper(\Illuminate\Support\Str::random(8)),
+                    'sales_id' => $requestOrder->sales_id,
+                    'customer_name' => $requestOrder->customer_name,
+                    'customer_id' => $requestOrder->customer_id,
+                    'request_order_id' => $requestOrder->id,
+                    'status' => $orderStatus,
                     'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                    'catatan_customer'  => $requestOrder->catatan_customer,
+                    'catatan_customer' => $requestOrder->catatan_customer,
                 ]);
             }
 
@@ -648,7 +684,8 @@ class RequestOrderController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            return back()->withErrors('Gagal mengubah Request Order: ' . $e->getMessage())
+
+            return back()->withErrors('Gagal mengubah Request Order: '.$e->getMessage())
                 ->withInput()
                 ->with(['title' => 'Gagal', 'text' => 'Gagal mengubah Request Order!']);
         }
@@ -666,11 +703,12 @@ class RequestOrderController extends Controller
 
         try {
             $this->processSentToWarehouse($requestOrder);
+
             return redirect()->route('sales.request-order.index')
-                ->with('success', "Request Order berhasil dikirim ke Warehouse.")
+                ->with('success', 'Request Order berhasil dikirim ke Warehouse.')
                 ->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage())
+            return back()->withErrors('Gagal mengirim ke Warehouse: '.$e->getMessage())
                 ->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
         }
     }
@@ -694,12 +732,12 @@ class RequestOrderController extends Controller
             return redirect()->route('sales.request-order.index')->with([
                 'success' => 'Request Order berhasil dihapus.',
                 'title' => 'Terhapus!',
-                'text' => 'Request Order dan data terkait telah berhasil dihapus dari sistem.'
+                'text' => 'Request Order dan data terkait telah berhasil dihapus dari sistem.',
             ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage())->with([
+            return back()->withErrors('Gagal menghapus Request Order: '.$e->getMessage())->with([
                 'title' => 'Gagal!',
-                'text' => 'Terjadi kesalahan saat mencoba menghapus data.'
+                'text' => 'Terjadi kesalahan saat mencoba menghapus data.',
             ]);
         }
     }
@@ -723,9 +761,11 @@ class RequestOrderController extends Controller
             }
 
             DB::commit();
+
             return response()->json(['success' => true]);
         } catch (\Throwable $e) {
             DB::rollBack();
+
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
@@ -744,16 +784,17 @@ class RequestOrderController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($ro && !$ro->order) {
+                if ($ro && ! $ro->order) {
                     $this->processSentToWarehouse($ro);
                     $successCount++;
                 }
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         return response()->json([
             'success' => $successCount > 0,
-            'count' => $successCount
+            'count' => $successCount,
         ]);
     }
 
@@ -766,8 +807,10 @@ class RequestOrderController extends Controller
             }
             $requestOrder->image_so = $path;
             $requestOrder->save();
+
             return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
         }
+
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
@@ -778,6 +821,7 @@ class RequestOrderController extends Controller
             $requestOrder->image_so = null;
             $requestOrder->save();
         }
+
         return response()->json(['status' => 'success']);
     }
 
@@ -790,8 +834,10 @@ class RequestOrderController extends Controller
             }
             $requestOrder->image_po = $path;
             $requestOrder->save();
+
             return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
         }
+
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
@@ -802,6 +848,7 @@ class RequestOrderController extends Controller
             $requestOrder->image_po = null;
             $requestOrder->save();
         }
+
         return response()->json(['status' => 'success']);
     }
 
@@ -814,8 +861,10 @@ class RequestOrderController extends Controller
             }
             $requestOrder->pdf_po = $path;
             $requestOrder->save();
+
             return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
         }
+
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
@@ -842,6 +891,7 @@ class RequestOrderController extends Controller
             $requestOrder->pdf_po = null;
             $requestOrder->save();
         }
+
         return response()->json(['status' => 'success']);
     }
 
@@ -852,47 +902,47 @@ class RequestOrderController extends Controller
 
             if ($existingOrder) {
                 $existingOrder->update([
-                    'status'    => 'sent_to_warehouse',
+                    'status' => 'sent_to_warehouse',
                     'do_number' => $existingOrder->do_number
-                        ?? ('DO-' . strtoupper(Str::random(8))),
+                        ?? ('DO-'.strtoupper(Str::random(8))),
                 ]);
 
                 if ($existingOrder->items()->count() === 0) {
                     foreach ($ro->items as $reqItem) {
                         OrderItem::create([
-                            'order_id'           => $existingOrder->id,
-                            'barang_id'          => $reqItem->barang_id,
-                            'quantity'           => $reqItem->quantity,
+                            'order_id' => $existingOrder->id,
+                            'barang_id' => $reqItem->barang_id,
+                            'quantity' => $reqItem->quantity,
                             'delivered_quantity' => 0,
-                            'status_item'        => 'pending',
-                            'harga'              => $reqItem->harga,
-                            'subtotal'           => $reqItem->subtotal,
+                            'status_item' => 'pending',
+                            'harga' => $reqItem->harga,
+                            'subtotal' => $reqItem->subtotal,
                         ]);
                     }
                 }
             } else {
                 $order = Order::create([
-                    'order_number'      => 'ORD-' . strtoupper(Str::random(8)),
-                    'do_number'         => 'DO-' . strtoupper(Str::random(8)),
-                    'sales_id'          => Auth::id(),
-                    'supervisor_id'     => $ro->approved_by ?? null,
-                    'request_order_id'  => $ro->id,
-                    'status'            => 'sent_to_warehouse',
-                    'customer_name'     => $ro->customer_name,
-                    'customer_id'       => $ro->customer_id,
+                    'order_number' => 'ORD-'.strtoupper(Str::random(8)),
+                    'do_number' => 'DO-'.strtoupper(Str::random(8)),
+                    'sales_id' => Auth::id(),
+                    'supervisor_id' => $ro->approved_by ?? null,
+                    'request_order_id' => $ro->id,
+                    'status' => 'sent_to_warehouse',
+                    'customer_name' => $ro->customer_name,
+                    'customer_id' => $ro->customer_id,
                     'tanggal_kebutuhan' => $ro->tanggal_kebutuhan,
-                    'catatan_customer'  => $ro->catatan_customer,
+                    'catatan_customer' => $ro->catatan_customer,
                 ]);
 
                 foreach ($ro->items as $reqItem) {
                     OrderItem::create([
-                        'order_id'           => $order->id,
-                        'barang_id'          => $reqItem->barang_id,
-                        'quantity'           => $reqItem->quantity,
+                        'order_id' => $order->id,
+                        'barang_id' => $reqItem->barang_id,
+                        'quantity' => $reqItem->quantity,
                         'delivered_quantity' => 0,
-                        'status_item'        => 'pending',
-                        'harga'              => $reqItem->harga,
-                        'subtotal'           => $reqItem->subtotal,
+                        'status_item' => 'pending',
+                        'harga' => $reqItem->harga,
+                        'subtotal' => $reqItem->subtotal,
                     ]);
                 }
             }
