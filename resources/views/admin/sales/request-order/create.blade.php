@@ -1,16 +1,6 @@
 <x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        {{-- <div class="flex flex-col items-center justify-end space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
 
-            <div>
-                <a href="{{ route('sales.request-order.index') }}" class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4">
-                        <path d="m12 19-7-7 7-7"></path>
-                        <path d="M19 12H5"></path>
-                    </svg> Kembali
-                </a>
-            </div>
-        </div> --}}
 
         @if ($errors->any())
             <div class="alert alert-danger alert-dismissible fade show"
@@ -215,10 +205,11 @@
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="catatan_customer"
-                                    class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
-                                <textarea
-                                    class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                       class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
+                                <textarea class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                          id="catatan_customer"
+                                          name="catatan_customer"
+                                          rows="4">{{ old('catatan_customer', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
                                 @error('catatan_customer')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -228,7 +219,7 @@
 
 
                     <!-- Items Section -->
-                    <div class="card bg-light max-h-[80vh] bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm"
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 max-h-[80vh] rounded-2xl shadow-sm"
                          id="barangSection"
                          style="display: flex;">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
@@ -263,25 +254,25 @@
                                    id="itemsTable">
                                 <thead>
                                     <tr class="">
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[150px]">
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Kategori Barang</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[150px]">
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Kode Barang</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[250px]">
+                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Nama Barang</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[100px]">
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Diskon (%)</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[200px]">
+                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Keterangan</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[100px]">
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Jumlah</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[180px]">
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Harga Satuan</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[150px]">
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Gambar</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[180px]">
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Harga Setelah Diskon</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 px-4 py-2 text-sm font-semibold text-black border border-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 min-w-[80px]">
+                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Aksi</th>
                                     </tr>
                                 </thead>
@@ -351,12 +342,11 @@
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number"
+                                            <input type="text"
                                                    name="harga[]"
                                                    class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   min="0"
-                                                   step="0.01"
-                                                   value="">
+                                                   value=""
+                                                   placeholder="0">
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <div class="upload-btn-container relative">
@@ -425,869 +415,932 @@
                         <button type="button"
                                 id="addRow"
                                 class="btn inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm m-5 border-none bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                                Tambah Barang
+                            Tambah Barang
                         </button>
-                        
+
                     </div>
 
-                        <!-- Summary Section -->
-                        <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
-                            <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-                                <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                    <i class="fas fa-calculator"></i> Ringkasan Penawaran
-                                </h3>
-                            </div>
-                            <div class="p-5">
-                                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Sub
-                                                    Total</p>
-                                                <p class="text-2xl font-bold text-gray-900 dark:text-white"
-                                                   id="summarySubtotal">Rp 0</p>
-                                            </div>
-                                            <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
-                                                <svg class="h-6 w-6 text-blue-600 dark:text-blue-300"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
-                                                    </path>
-                                                </svg>
-                                            </div>
+                    <!-- Summary Section -->
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
+                        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                                <i class="fas fa-calculator"></i> Ringkasan Penawaran
+                            </h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Sub
+                                                Total</p>
+                                            <p class="text-2xl font-bold text-gray-900 dark:text-white"
+                                               id="summarySubtotal">Rp 0</p>
+                                        </div>
+                                        <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                            <svg class="h-6 w-6 text-blue-600 dark:text-blue-300"
+                                                 fill="none"
+                                                 stroke="currentColor"
+                                                 viewBox="0 0 24 24">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width="2"
+                                                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                                                </path>
+                                            </svg>
                                         </div>
                                     </div>
-                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <div class="mb-1 flex items-center justify-start">
-                                                    <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600"
-                                                         style="width: fit-content;">
-                                                        <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">
-                                                            Pajak/PPN</p>
-                                                        <input type="number"
-                                                               id="tax_rate"
-                                                               name="tax_rate"
-                                                               value="11"
-                                                               class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white"
-                                                               min="0"
-                                                               max="100">
-                                                        <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
-                                                    </div>
+                                </div>
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="mb-1 flex items-center justify-start">
+                                                <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600"
+                                                     style="width: fit-content;">
+                                                    <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">
+                                                        Pajak/PPN</p>
+                                                    <input type="number"
+                                                           id="tax_rate"
+                                                           name="tax_rate"
+                                                           value="11"
+                                                           class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white"
+                                                           min="0"
+                                                           max="100">
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">%</span>
                                                 </div>
-                                                <p class="text-2xl font-bold text-gray-900 dark:text-white"
-                                                   id="summaryPPN">Rp 0</p>
                                             </div>
-                                            <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
-                                                <svg class="h-6 w-6 text-green-600 dark:text-green-300"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M9 14l6-6m-6 0l6 6m-6-6v12"></path>
-                                                </svg>
-                                            </div>
+                                            <p class="text-2xl font-bold text-gray-900 dark:text-white"
+                                               id="summaryPPN">Rp 0</p>
+                                        </div>
+                                        <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
+                                            <svg class="h-6 w-6 text-green-600 dark:text-green-300"
+                                                 fill="none"
+                                                 stroke="currentColor"
+                                                 viewBox="0 0 24 24">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width="2"
+                                                      d="M9 14l6-6m-6 0l6 6m-6-6v12"></path>
+                                            </svg>
                                         </div>
                                     </div>
-                                    <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand
-                                                    Total</p>
-                                                <p class="text-2xl font-bold text-green-600 dark:text-green-400"
-                                                   id="summaryGrandTotal">Rp 0</p>
-                                            </div>
-                                            <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
-                                                <svg class="h-6 w-6 text-purple-600 dark:text-purple-300"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
-                                                    </path>
-                                                </svg>
-                                            </div>
+                                </div>
+                                <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand
+                                                Total</p>
+                                            <p class="text-2xl font-bold text-green-600 dark:text-green-400"
+                                               id="summaryGrandTotal">Rp 0</p>
+                                        </div>
+                                        <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
+                                            <svg class="h-6 w-6 text-purple-600 dark:text-purple-300"
+                                                 fill="none"
+                                                 stroke="currentColor"
+                                                 viewBox="0 0 24 24">
+                                                <path stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width="2"
+                                                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+                                                </path>
+                                            </svg>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Supporting Images Section -->
-                        <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md"
-                             id="imagesSection"
-                             style="display: none;">
-                            <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
-                                <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                    <i class="fas fa-images"></i> Gambar Pendukung Penawaran
-                                </h3>
+                    <!-- Supporting Images Section -->
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md"
+                         id="imagesSection"
+                         style="display: none;">
+                        <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
+                                <i class="fas fa-images"></i> Gambar Pendukung Penawaran
+                            </h3>
+                        </div>
+                        <div class="p-5">
+                            <div class="mb-3">
+                                <label for="supporting_images"
+                                       class="form-label text-gray-700 dark:text-gray-300">Unggah Gambar
+                                    <span class="text-muted dark:text-gray-400">(Foto barang, contoh produk,
+                                        desain,
+                                        dll)</span></label>
+                                <div class="input-group">
+                                    <input type="file"
+                                           class="form-control barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                           id="supporting_images"
+                                           name="supporting_images[]"
+                                           multiple
+                                           accept="image/*">
+                                    <small class="text-muted d-block mt-2 dark:text-gray-400">Format: JPG, PNG, GIF
+                                        | Ukuran maksimal: 5MB per gambar</small>
+                                </div>
+                                @error('supporting_images.*')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="p-5">
-                                <div class="mb-3">
-                                    <label for="supporting_images"
-                                           class="form-label text-gray-700 dark:text-gray-300">Unggah Gambar
-                                        <span class="text-muted dark:text-gray-400">(Foto barang, contoh produk,
-                                            desain,
-                                            dll)</span></label>
-                                    <div class="input-group">
-                                        <input type="file"
-                                               class="form-control barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                               id="supporting_images"
-                                               name="supporting_images[]"
-                                               multiple
-                                               accept="image/*">
-                                        <small class="text-muted d-block mt-2 dark:text-gray-400">Format: JPG, PNG, GIF
-                                            | Ukuran maksimal: 5MB per gambar</small>
-                                    </div>
-                                    @error('supporting_images.*')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
 
-                                <div id="imagePreview"
-                                     class="row g-2">
-                                    <!-- Preview images will be displayed here -->
-                                </div>
+                            <div id="imagePreview"
+                                 class="row g-2">
+                                <!-- Preview images will be displayed here -->
                             </div>
                         </div>
-                        <!-- Action Buttons -->
+                    </div>
+                    <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4">
                         <a href="{{ route('sales.request-order.index') }}"
                            class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                            Batal
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-x mr-2 h-4 w-4">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg> Batal
                         </a>
                         <button type="submit"
                                 class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]"
                                 id="submitBtn"
                                 disabled>
-                            Buat Request Order
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-save mr-2 h-4 w-4">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg> Buat Request Order
                         </button>
                     </div>
 
-                    </div>
-                    <!-- Hidden Financial Totals -->
-                    <input type="hidden"
-                           name="subtotal"
-                           id="hiddenSubtotal"
-                           value="0">
-                    <input type="hidden"
-                           name="tax"
-                           id="hiddenTax"
-                           value="0">
-                    <input type="hidden"
-                           name="grand_total"
-                           id="hiddenGrandTotal"
-                           value="0">
-
-                    
-                </form>
             </div>
+            <!-- Hidden Financial Totals -->
+            <input type="hidden"
+                   name="subtotal"
+                   id="hiddenSubtotal"
+                   value="0">
+            <input type="hidden"
+                   name="tax"
+                   id="hiddenTax"
+                   value="0">
+            <input type="hidden"
+                   name="grand_total"
+                   id="hiddenGrandTotal"
+                   value="0">
+
+
+            </form>
         </div>
+    </div>
 
-        <script>
-            // Filter barang berdasarkan kategori yang dipilih
-            function filterBarangByKategori(selectKategori) {
-                var tr = selectKategori.closest('tr');
-                var kategori = selectKategori.value;
-                var barangSelect = tr.querySelector('.barang-select');
+    <script>
+        // Filter barang berdasarkan kategori yang dipilih
+        function filterBarangByKategori(selectKategori) {
+            var tr = selectKategori.closest('tr');
+            var kategori = selectKategori.value;
+            var barangSelect = tr.querySelector('.barang-select');
 
-                Array.from(barangSelect.options).forEach(function(opt) {
-                    if (opt.value === '') {
-                        // Selalu tampilkan placeholder
-                        opt.style.display = '';
-                    } else if (kategori && opt.getAttribute('data-kategori') === kategori) {
-                        // Tampilkan hanya barang yang sesuai kategori
-                        opt.style.display = '';
-                    } else if (!kategori) {
-                        // Jika tidak ada kategori dipilih, tampilkan semua
-                        opt.style.display = '';
+            Array.from(barangSelect.options).forEach(function(opt) {
+                if (opt.value === '') {
+                    // Selalu tampilkan placeholder
+                    opt.style.display = '';
+                } else if (kategori && opt.getAttribute('data-kategori') === kategori) {
+                    // Tampilkan hanya barang yang sesuai kategori
+                    opt.style.display = '';
+                } else if (!kategori) {
+                    // Jika tidak ada kategori dipilih, tampilkan semua
+                    opt.style.display = '';
+                } else {
+                    // Sembunyikan yang tidak sesuai
+                    opt.style.display = 'none';
+                }
+            });
+            barangSelect.selectedIndex = 0;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Attach event listener ke semua kategori select yang sudah ada
+            document.querySelectorAll('.kategori-barang-select').forEach(function(sel) {
+                sel.addEventListener('change', function() {
+                    filterBarangByKategori(this);
+                });
+            });
+        });
+
+        // Observer untuk kategori select baru yang ditambahkan
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            const kategoriSelect = node.querySelector('.kategori-barang-select');
+                            if (kategoriSelect) {
+                                kategoriSelect.addEventListener('change', function() {
+                                    filterBarangByKategori(this);
+                                });
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const tbody = document.getElementById('itemRows');
+            if (tbody) {
+                observer.observe(tbody, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+        });
+    </script>
+
+
+    <script>
+        // Update kategori barang otomatis saat barang dipilih
+        function updateKategoriBarang(select) {
+            var kategoriInput = select.closest('tr').querySelector('.kategori-barang-display');
+            var selectedOption = select.options[select.selectedIndex];
+            kategoriInput.value = selectedOption.getAttribute('data-kategori') || '';
+        }
+        // Populate customer data from select dropdown
+        function populateCustomerData(customerId) {
+            const customerSelect = document.getElementById('customer_id');
+            const selectedOption = customerSelect.options[customerSelect.selectedIndex];
+
+            if (!customerId) {
+                document.getElementById('customer_name').value = '';
+                document.getElementById('customer_email').value = '';
+                document.getElementById('customer_telepon').value = '';
+                document.getElementById('customer_kota').value = '';
+                return;
+            }
+
+            document.getElementById('customer_name').value = selectedOption.textContent.split('(')[0].trim();
+            document.getElementById('customer_email').value = selectedOption.dataset.email || '';
+            document.getElementById('customer_telepon').value = selectedOption.dataset.telepon || '';
+            document.getElementById('customer_kota').value = selectedOption.dataset.kota || '';
+        }
+
+        // Handle Add Customer Form Submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const addCustomerForm = document.getElementById('addCustomerForm');
+            const addCustomerModal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
+
+            addCustomerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                document.querySelectorAll('.invalid-feedback').forEach(el => {
+                    el.textContent = '';
+                    el.previousElementSibling.classList.remove('is-invalid');
+                });
+
+                const formData = new FormData(this);
+
+                try {
+                    const response = await fetch('{{ route('customer.store') }}', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Add new customer to dropdown
+                        const customerSelect = document.getElementById('customer_id');
+                        const newOption = document.createElement('option');
+                        newOption.value = data.customer.id;
+                        newOption.textContent = data.customer.nama_customer + (data.customer.email ?
+                            ' (' + data.customer.email + ')' : '');
+                        newOption.dataset.email = data.customer.email || '';
+                        newOption.dataset.telepon = data.customer.telepon || '';
+                        newOption.dataset.kota = data.customer.kota || '';
+                        newOption.selected = true;
+                        customerSelect.appendChild(newOption);
+
+                        // Populate fields with new customer data
+                        populateCustomerData(data.customer.id);
+
+                        // Reset form and close modal
+                        addCustomerForm.reset();
+                        addCustomerModal.hide();
+
+                        // Show success message
+                        showAlert('success', 'Customer berhasil ditambahkan!');
                     } else {
-                        // Sembunyikan yang tidak sesuai
-                        opt.style.display = 'none';
+                        showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
                     }
-                });
-                barangSelect.selectedIndex = 0;
-            }
+                } catch (error) {
+                    if (error.response) {
+                        // Handle validation errors
+                        const errors = error.response.data.errors || {};
+                        Object.keys(errors).forEach(field => {
+                            const errorElement = document.getElementById('error-' + field);
+                            const inputElement = document.getElementById('modal' +
+                                capitalizeFirst(field));
 
-            document.addEventListener('DOMContentLoaded', function() {
-                // Attach event listener ke semua kategori select yang sudah ada
-                document.querySelectorAll('.kategori-barang-select').forEach(function(sel) {
-                    sel.addEventListener('change', function() {
-                        filterBarangByKategori(this);
-                    });
-                });
-            });
-
-            // Observer untuk kategori select baru yang ditambahkan
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.addedNodes.length) {
-                        mutation.addedNodes.forEach(function(node) {
-                            if (node.nodeType === 1) { // Element node
-                                const kategoriSelect = node.querySelector('.kategori-barang-select');
-                                if (kategoriSelect) {
-                                    kategoriSelect.addEventListener('change', function() {
-                                        filterBarangByKategori(this);
-                                    });
+                            if (errorElement) {
+                                errorElement.textContent = errors[field][0];
+                                if (inputElement) {
+                                    inputElement.classList.add('is-invalid');
                                 }
                             }
                         });
+                    } else {
+                        showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
                     }
-                });
+                }
             });
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const tbody = document.getElementById('itemRows');
-                if (tbody) {
-                    observer.observe(tbody, {
-                        childList: true,
-                        subtree: true
-                    });
-                }
-            });
-        </script>
-
-
-        <script>
-            // Update kategori barang otomatis saat barang dipilih
-            function updateKategoriBarang(select) {
-                var kategoriInput = select.closest('tr').querySelector('.kategori-barang-display');
-                var selectedOption = select.options[select.selectedIndex];
-                kategoriInput.value = selectedOption.getAttribute('data-kategori') || '';
-            }
-            // Populate customer data from select dropdown
-            function populateCustomerData(customerId) {
-                const customerSelect = document.getElementById('customer_id');
-                const selectedOption = customerSelect.options[customerSelect.selectedIndex];
-
-                if (!customerId) {
-                    document.getElementById('customer_name').value = '';
-                    document.getElementById('customer_email').value = '';
-                    document.getElementById('customer_telepon').value = '';
-                    document.getElementById('customer_kota').value = '';
-                    return;
-                }
-
-                document.getElementById('customer_name').value = selectedOption.textContent.split('(')[0].trim();
-                document.getElementById('customer_email').value = selectedOption.dataset.email || '';
-                document.getElementById('customer_telepon').value = selectedOption.dataset.telepon || '';
-                document.getElementById('customer_kota').value = selectedOption.dataset.kota || '';
+            // Helper function to capitalize field names
+            function capitalizeFirst(str) {
+                return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
+                    .toUpperCase());
             }
 
-            // Handle Add Customer Form Submission
-            document.addEventListener('DOMContentLoaded', function() {
-                const addCustomerForm = document.getElementById('addCustomerForm');
-                const addCustomerModal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
-
-                addCustomerForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-
-                    // Clear previous errors
-                    document.querySelectorAll('.invalid-feedback').forEach(el => {
-                        el.textContent = '';
-                        el.previousElementSibling.classList.remove('is-invalid');
-                    });
-
-                    const formData = new FormData(this);
-
-                    try {
-                        const response = await fetch('{{ route('customer.store') }}', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            // Add new customer to dropdown
-                            const customerSelect = document.getElementById('customer_id');
-                            const newOption = document.createElement('option');
-                            newOption.value = data.customer.id;
-                            newOption.textContent = data.customer.nama_customer + (data.customer.email ?
-                                ' (' + data.customer.email + ')' : '');
-                            newOption.dataset.email = data.customer.email || '';
-                            newOption.dataset.telepon = data.customer.telepon || '';
-                            newOption.dataset.kota = data.customer.kota || '';
-                            newOption.selected = true;
-                            customerSelect.appendChild(newOption);
-
-                            // Populate fields with new customer data
-                            populateCustomerData(data.customer.id);
-
-                            // Reset form and close modal
-                            addCustomerForm.reset();
-                            addCustomerModal.hide();
-
-                            // Show success message
-                            showAlert('success', 'Customer berhasil ditambahkan!');
-                        } else {
-                            showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
-                        }
-                    } catch (error) {
-                        if (error.response) {
-                            // Handle validation errors
-                            const errors = error.response.data.errors || {};
-                            Object.keys(errors).forEach(field => {
-                                const errorElement = document.getElementById('error-' + field);
-                                const inputElement = document.getElementById('modal' +
-                                    capitalizeFirst(field));
-
-                                if (errorElement) {
-                                    errorElement.textContent = errors[field][0];
-                                    if (inputElement) {
-                                        inputElement.classList.add('is-invalid');
-                                    }
-                                }
-                            });
-                        } else {
-                            showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
-                        }
-                    }
-                });
-
-                // Helper function to capitalize field names
-                function capitalizeFirst(str) {
-                    return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
-                        .toUpperCase());
-                }
-
-                // Helper function to show alert
-                function showAlert(type, message) {
-                    const alertDiv = document.createElement('div');
-                    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-                    alertDiv.innerHTML = `
+            // Helper function to show alert
+            function showAlert(type, message) {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                alertDiv.innerHTML = `
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 `;
-                    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
-                }
-            });
+                document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
+            }
+        });
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const kategoriSelect = document.getElementById('kategori_barang');
-                const barangSection = document.getElementById('barangSection');
-                const imagesSection = document.getElementById('imagesSection');
-                const addRowBtn = document.getElementById('addRow');
-                const submitBtn = document.getElementById('submitBtn');
-                const itemRows = document.getElementById('itemRows');
-                const supportingImagesInput = document.getElementById('supporting_images');
-                const imagePreview = document.getElementById('imagePreview');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to initialize thousand separator
+                                            function initThousandSeparator(input) {
+                                                if (!input) return;
 
-                // Filter barang by selected kategori
-                window.filterBarangByCategory = function(kategoriValue) {
-                    const barangSelects = document.querySelectorAll('.barang-select');
-                    let hasVisibleOptions = false;
+                                                // Format initial value
+                                                if (input.value) {
+                                                    let value = input.value.replace(/[^0-9.]/g, '');
+                                                    if (value) {
+                                                        let parts = value.split('.');
+                                                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                        input.value = parts.join('.');
+                                                    }
+                                                }
 
-                    barangSelects.forEach(select => {
-                        const options = select.querySelectorAll('option');
-                        options.forEach(option => {
-                            if (option.value === '') {
-                                option.style.display = 'block'; // Always show placeholder
-                            } else if (option.dataset.kategori === kategoriValue) {
-                                option.style.display = 'block';
-                                hasVisibleOptions = true;
-                            } else {
-                                option.style.display = 'none';
-                            }
-                        });
-                        select.value = ''; // Reset selection
-                    });
+                                                input.addEventListener('input', function(e) {
+                                                    // Save cursor position
+                                                    let cursorPosition = this.selectionStart;
+                                                    let originalLength = this.value.length;
 
-                    // Show/hide sections based on kategori selection
-                    // Determine visibility of addRowBtn based on visible options
-                    function anyBarangOptionVisible() {
-                        const firstSelect = document.querySelector('.barang-select');
-                        if (!firstSelect) return false;
-                        return Array.from(firstSelect.options).some(opt => opt.value === '' || opt.style.display !==
-                            'none');
-                    }
+                                                    let value = this.value.replace(/[^0-9.]/g, '');
+                                                    if (value) {
+                                                        let parts = value.split('.');
+                                                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                        this.value = parts.join('.');
+                                                    }
 
-                    if (kategoriValue) {
-                        barangSection.style.display = 'block';
-                        imagesSection.style.display = 'block';
-                    } else {
-                        // if there are any visible barang options (e.g., no kategori list), keep sections visible
-                        const visible = anyBarangOptionVisible();
-                        barangSection.style.display = visible ? 'block' : 'none';
-                        imagesSection.style.display = visible ? 'block' : 'none';
-                    }
+                                                    // Adjust cursor position
+                                                    let newLength = this.value.length;
+                                                    cursorPosition = cursorPosition + (newLength - originalLength);
+                                                    this.setSelectionRange(cursorPosition, cursorPosition);
+                                                });
+                                            }
 
-                    addRowBtn.style.display = anyBarangOptionVisible() ? 'inline-block' : 'none';
+            const kategoriSelect = document.getElementById('kategori_barang');
+            const barangSection = document.getElementById('barangSection');
+            const imagesSection = document.getElementById('imagesSection');
+            const addRowBtn = document.getElementById('addRow');
+            const submitBtn = document.getElementById('submitBtn');
+            const itemRows = document.getElementById('itemRows');
+            const supportingImagesInput = document.getElementById('supporting_images');
+            const imagePreview = document.getElementById('imagePreview');
 
-                    updateSubmitState();
-                };
+            // Filter barang by selected kategori
+            window.filterBarangByCategory = function(kategoriValue) {
+                const barangSelects = document.querySelectorAll('.barang-select');
+                let hasVisibleOptions = false;
 
-                // Update submit button state depending on kategori selection or any selected barang
-                function updateSubmitState() {
-                    const hasKategori = kategoriSelect && kategoriSelect.value;
-                    const anyBarangSelected = Array.from(document.querySelectorAll('.barang-select')).some(s => s
-                        .value && s.value !== '');
-                    submitBtn.disabled = !(hasKategori || anyBarangSelected);
-                }
-
-                // Handle barang selection change
-                function handleBarangChange(select) {
-                    const option = select.options[select.selectedIndex];
-                    const row = select.closest('.item-row');
-                    const namaDisplay = row.querySelector('.barang-nama-display');
-                    const quantityInput = row.querySelector('.quantity-input');
-                    const diskonInput = row.querySelector('.diskon-input');
-                    const hargaInput = row.querySelector('.harga-input');
-                    const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
-
-                    if (option.value) {
-                        namaDisplay.value = option.dataset.nama || '';
-
-                        // Set quantity to 1 otomatis
-                        if (quantityInput) quantityInput.value = 1;
-
-                        // Base price from barang
-                        const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
-                        const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
-
-                        // Determine which diskon to use: existing input value (if non-zero) or default from barang
-                        let useDiskon = defaultDiskon;
-                        if (diskonInput) {
-                            const currentVal = parseFloat(diskonInput.value);
-                            if (!isNaN(currentVal) && currentVal !== 0) {
-                                useDiskon = currentVal;
-                            } else {
-                                diskonInput.value = defaultDiskon;
-                            }
-                        }
-
-                        // Compute jual price (base + 30%)
-                        const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                        // Harga satuan tetap tanpa diskon
-                        if (hargaInput) hargaInput.value = hargaJual;
-
-                        // Hitung harga setelah diskon otomatis (qty * harga satuan * (1 - diskon/100))
-                        const qty = parseInt(quantityInput.value) || 1;
-                        const hargaSetelahDiskon = qty * hargaJual * (1 - (useDiskon / 100));
-                        if (hargaSetelahDiskonDisplay) {
-                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
-                                'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }) :
-                                '0';
-                        }
-                    } else {
-                        namaDisplay.value = '';
-                        if (quantityInput) quantityInput.value = 1;
-                        if (diskonInput) diskonInput.value = 0;
-                        if (hargaInput) hargaInput.value = 0;
-                        if (hargaSetelahDiskonDisplay) hargaSetelahDiskonDisplay.value = '0';
-                    }
-                    updateKeteranganState(select.closest('tr'));
-                    calculateTotals();
-                }
-
-                // Get barang options HTML
-                function getBarangOptionsHTML() {
-                    const firstSelect = document.querySelector('.barang-select');
-                    return firstSelect.innerHTML;
-                }
-
-                // Calculate harga setelah diskon, PPN, and totals
-                function calculateTotals() {
-                    let subTotal = 0;
-                    let totalPPN = 0;
-                    let grandTotal = 0;
-
-                    document.querySelectorAll('.item-row').forEach(row => {
-                        const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
-                        const hargaSatuan = parseFloat(row.querySelector('.harga-input').value) || 0;
-                        const diskon = parseFloat(row.querySelector('.diskon-input').value) || 0;
-
-                        // Harga setelah diskon
-                        const hargaSetelahDiskon = +(qty * hargaSatuan * (1 - (diskon / 100))).toFixed(2);
-
-                        // Update display harga setelah diskon
-                        const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
-                        if (hargaSetelahDiskonDisplay) {
-                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
-                                'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                }) :
-                                '0';
-                        }
-
-                        // Add to subtotal
-                        subTotal += hargaSetelahDiskon;
-
-                    });
-
-                    const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
-                    totalPPN = +(subTotal * (taxRate / 100)).toFixed(2);
-                    grandTotal = subTotal + totalPPN;
-
-                    // Update table total (harga setelah diskon total)
-                    document.getElementById('totalAmount').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-                    // Update summary section
-                    document.getElementById('summarySubtotal').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-                    document.getElementById('summaryPPN').textContent = 'Rp ' + totalPPN.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
-
-                    document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString(
-                        'en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-
-                    // Update hidden inputs for submission
-                    document.getElementById('hiddenSubtotal').value = subTotal.toFixed(2);
-                    document.getElementById('hiddenTax').value = totalPPN.toFixed(2);
-                    document.getElementById('hiddenGrandTotal').value = grandTotal.toFixed(2);
-                }
-
-                // =============================================
-                // VALIDASI STOK REAL-TIME
-                // =============================================
-                function updateStokInfo(row) {
-                    const barangSelect = row.querySelector('.barang-select');
-                    const qtyInput = row.querySelector('.quantity-input');
-                    const stokInfo = row.querySelector('.stok-info');
-                    if (!barangSelect || !qtyInput || !stokInfo) return;
-
-                    const stokOk = stokInfo.querySelector('.stok-ok');
-                    const stokWarn = stokInfo.querySelector('.stok-warn');
-                    const stokAngka = stokInfo.querySelector('.stok-angka');
-                    const selectedOption = barangSelect.options[barangSelect.selectedIndex];
-
-                    if (!selectedOption || !selectedOption.value) {
-                        stokInfo.classList.add('hidden');
-                        qtyInput.classList.remove('border-red-500', 'border-green-500');
-                        return;
-                    }
-
-                    const stokTersedia = parseInt(selectedOption.getAttribute('data-stok') ?? '0') || 0;
-                    const satuan = selectedOption.getAttribute('data-satuan') || '';
-                    const qty = parseInt(qtyInput.value) || 0;
-
-                    stokInfo.classList.remove('hidden');
-
-                    if (qty > stokTersedia) {
-                        if (stokOk) {
-                            stokOk.classList.add('hidden');
-                            stokOk.textContent = '';
-                        }
-                        if (stokWarn) stokWarn.classList.remove('hidden');
-                        if (stokAngka) stokAngka.textContent = stokTersedia + (satuan ? ' ' + satuan : '');
-                        qtyInput.classList.add('border-red-500');
-                        qtyInput.classList.remove('border-green-500');
-                    } else if (qty > 0) {
-                        if (stokOk) {
-                            stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : '');
-                            stokOk.classList.remove('hidden');
-                        }
-                        if (stokWarn) stokWarn.classList.add('hidden');
-                        qtyInput.classList.remove('border-red-500');
-                        qtyInput.classList.add('border-green-500');
-                    } else {
-                        if (stokOk) {
-                            stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : '');
-                            stokOk.classList.remove('hidden');
-                        }
-                        if (stokWarn) stokWarn.classList.add('hidden');
-                        qtyInput.classList.remove('border-red-500', 'border-green-500');
-                    }
-                }
-
-                // Helper: preview for item images
-                function handleItemImagePreview(row) {
-                    const fileInput = row.querySelector('.item-images-input');
-                    const preview = row.querySelector('.item-images-preview');
-                    const uploadBtn = row.querySelector('.upload-btn-container');
-                    if (!fileInput || !preview) return;
-
-
-                    fileInput.addEventListener('change', function() {
-                        // Clear existing previews
-                        preview.innerHTML = '';
-                        if (this.files.length > 0) {
-                            uploadBtn.style.display = 'none';
+                barangSelects.forEach(select => {
+                    const options = select.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (option.value === '') {
+                            option.style.display = 'block'; // Always show placeholder
+                        } else if (option.dataset.kategori === kategoriValue) {
+                            option.style.display = 'block';
+                            hasVisibleOptions = true;
                         } else {
-                            uploadBtn.style.display = 'block';
+                            option.style.display = 'none';
                         }
+                    });
+                    select.value = ''; // Reset selection
+                });
 
-                        const files = Array.from(this.files || []);
-                        if (files.length === 0) return;
+                // Show/hide sections based on kategori selection
+                // Determine visibility of addRowBtn based on visible options
+                function anyBarangOptionVisible() {
+                    const firstSelect = document.querySelector('.barang-select');
+                    if (!firstSelect) return false;
+                    return Array.from(firstSelect.options).some(opt => opt.value === '' || opt.style.display !==
+                        'none');
+                }
 
-                        files.forEach((file, index) => {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const imgContainer = document.createElement('div');
-                                imgContainer.className = 'relative inline-block';
-                                imgContainer.innerHTML = `
+                if (kategoriValue) {
+                    barangSection.style.display = 'block';
+                    imagesSection.style.display = 'block';
+                } else {
+                    // if there are any visible barang options (e.g., no kategori list), keep sections visible
+                    const visible = anyBarangOptionVisible();
+                    barangSection.style.display = visible ? 'block' : 'none';
+                    imagesSection.style.display = visible ? 'block' : 'none';
+                }
+
+                addRowBtn.style.display = anyBarangOptionVisible() ? 'inline-block' : 'none';
+
+                updateSubmitState();
+            };
+
+            // Update submit button state depending on kategori selection or any selected barang
+            function updateSubmitState() {
+                const hasKategori = kategoriSelect && kategoriSelect.value;
+                const anyBarangSelected = Array.from(document.querySelectorAll('.barang-select')).some(s => s
+                    .value && s.value !== '');
+                submitBtn.disabled = !(hasKategori || anyBarangSelected);
+            }
+
+            // Handle barang selection change
+            function handleBarangChange(select) {
+                const option = select.options[select.selectedIndex];
+                const row = select.closest('.item-row');
+                const namaDisplay = row.querySelector('.barang-nama-display');
+                const quantityInput = row.querySelector('.quantity-input');
+                const diskonInput = row.querySelector('.diskon-input');
+                const hargaInput = row.querySelector('.harga-input');
+                const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+
+                if (option.value) {
+                    namaDisplay.value = option.dataset.nama || '';
+
+                    // Set quantity to 1 otomatis
+                    if (quantityInput) quantityInput.value = 1;
+
+                    // Base price from barang
+                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
+                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
+
+                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
+                    let useDiskon = defaultDiskon;
+                    if (diskonInput) {
+                        const currentVal = parseFloat(diskonInput.value);
+                        if (!isNaN(currentVal) && currentVal !== 0) {
+                            useDiskon = currentVal;
+                        } else {
+                            diskonInput.value = defaultDiskon;
+                        }
+                    }
+
+                    // Compute jual price (base + 30%)
+                    const hargaJual = +(baseHarga * 1.3).toFixed(2);
+                    // Harga satuan tetap tanpa diskon
+                    if (hargaInput) {
+                        hargaInput.value = hargaJual.toLocaleString('en-US');
+                        // Trigger input event to format if needed
+                        hargaInput.dispatchEvent(new Event('input'));
+                    }
+
+                    // Hitung harga setelah diskon otomatis (qty * harga satuan * (1 - diskon/100))
+                    const qty = parseInt(quantityInput.value) || 1;
+                    const hargaSetelahDiskon = qty * hargaJual * (1 - (useDiskon / 100));
+                    if (hargaSetelahDiskonDisplay) {
+                        hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                            'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) :
+                            '0';
+                    }
+                } else {
+                    namaDisplay.value = '';
+                    if (quantityInput) quantityInput.value = 1;
+                    if (diskonInput) diskonInput.value = 0;
+                    if (hargaInput) hargaInput.value = 0;
+                    if (hargaSetelahDiskonDisplay) hargaSetelahDiskonDisplay.value = '0';
+                }
+                updateKeteranganState(select.closest('tr'));
+                calculateTotals();
+            }
+
+            // Get barang options HTML
+            function getBarangOptionsHTML() {
+                const firstSelect = document.querySelector('.barang-select');
+                return firstSelect.innerHTML;
+            }
+
+            // Calculate harga setelah diskon, PPN, and totals
+            function calculateTotals() {
+                let subTotal = 0;
+                let totalPPN = 0;
+                let grandTotal = 0;
+
+                document.querySelectorAll('.item-row').forEach(row => {
+                    const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
+                    const hargaSatuan = parseFloat(row.querySelector('.harga-input').value.replace(/,/g, '')) || 0;
+                    const diskon = parseFloat(row.querySelector('.diskon-input').value) || 0;
+
+                    // Harga setelah diskon
+                    const hargaSetelahDiskon = +(qty * hargaSatuan * (1 - (diskon / 100))).toFixed(2);
+
+                    // Update display harga setelah diskon
+                    const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+                    if (hargaSetelahDiskonDisplay) {
+                        hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                            'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }) :
+                            '0';
+                    }
+
+                    // Add to subtotal
+                    subTotal += hargaSetelahDiskon;
+
+                });
+
+                const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
+                totalPPN = +(subTotal * (taxRate / 100)).toFixed(2);
+                grandTotal = subTotal + totalPPN;
+
+                // Update table total (harga setelah diskon total)
+                document.getElementById('totalAmount').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                // Update summary section
+                document.getElementById('summarySubtotal').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                document.getElementById('summaryPPN').textContent = 'Rp ' + totalPPN.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString(
+                    'en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                // Update hidden inputs for submission
+                document.getElementById('hiddenSubtotal').value = subTotal.toFixed(2);
+                document.getElementById('hiddenTax').value = totalPPN.toFixed(2);
+                document.getElementById('hiddenGrandTotal').value = grandTotal.toFixed(2);
+            }
+
+            // =============================================
+            // VALIDASI STOK REAL-TIME
+            // =============================================
+            function updateStokInfo(row) {
+                const barangSelect = row.querySelector('.barang-select');
+                const qtyInput = row.querySelector('.quantity-input');
+                const stokInfo = row.querySelector('.stok-info');
+                if (!barangSelect || !qtyInput || !stokInfo) return;
+
+                const stokOk = stokInfo.querySelector('.stok-ok');
+                const stokWarn = stokInfo.querySelector('.stok-warn');
+                const stokAngka = stokInfo.querySelector('.stok-angka');
+                const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+
+                if (!selectedOption || !selectedOption.value) {
+                    stokInfo.classList.add('hidden');
+                    qtyInput.classList.remove('border-red-500', 'border-green-500');
+                    return;
+                }
+
+                const stokTersedia = parseInt(selectedOption.getAttribute('data-stok') ?? '0') || 0;
+                const satuan = selectedOption.getAttribute('data-satuan') || '';
+                const qty = parseInt(qtyInput.value) || 0;
+
+                stokInfo.classList.remove('hidden');
+
+                if (qty > stokTersedia) {
+                    if (stokOk) {
+                        stokOk.classList.add('hidden');
+                        stokOk.textContent = '';
+                    }
+                    if (stokWarn) stokWarn.classList.remove('hidden');
+                    if (stokAngka) stokAngka.textContent = stokTersedia + (satuan ? ' ' + satuan : '');
+                    qtyInput.classList.add('border-red-500');
+                    qtyInput.classList.remove('border-green-500');
+                } else if (qty > 0) {
+                    if (stokOk) {
+                        stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : '');
+                        stokOk.classList.remove('hidden');
+                    }
+                    if (stokWarn) stokWarn.classList.add('hidden');
+                    qtyInput.classList.remove('border-red-500');
+                    qtyInput.classList.add('border-green-500');
+                } else {
+                    if (stokOk) {
+                        stokOk.textContent = 'Stok tersedia: ' + stokTersedia + (satuan ? ' ' + satuan : '');
+                        stokOk.classList.remove('hidden');
+                    }
+                    if (stokWarn) stokWarn.classList.add('hidden');
+                    qtyInput.classList.remove('border-red-500', 'border-green-500');
+                }
+            }
+
+            // Helper: preview for item images
+            function handleItemImagePreview(row) {
+                const fileInput = row.querySelector('.item-images-input');
+                const preview = row.querySelector('.item-images-preview');
+                const uploadBtn = row.querySelector('.upload-btn-container');
+                if (!fileInput || !preview) return;
+
+
+                fileInput.addEventListener('change', function() {
+                    // Clear existing previews
+                    preview.innerHTML = '';
+                    if (this.files.length > 0) {
+                        uploadBtn.style.display = 'none';
+                    } else {
+                        uploadBtn.style.display = 'block';
+                    }
+
+                    const files = Array.from(this.files || []);
+                    if (files.length === 0) return;
+
+                    files.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const imgContainer = document.createElement('div');
+                            imgContainer.className = 'relative inline-block';
+                            imgContainer.innerHTML = `
                                 <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
                                 <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
                                     ✕
                                 </button>
                             `;
-                                preview.appendChild(imgContainer);
+                            preview.appendChild(imgContainer);
 
-                                // Add click handler to remove button
-                                const removeBtn = imgContainer.querySelector('.remove-image-btn');
-                                removeBtn.addEventListener('click', function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    const removeIndex = parseInt(this.dataset.index);
-                                    const dataTransfer = new DataTransfer();
+                            // Add click handler to remove button
+                            const removeBtn = imgContainer.querySelector('.remove-image-btn');
+                            removeBtn.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                const removeIndex = parseInt(this.dataset.index);
+                                const dataTransfer = new DataTransfer();
 
-                                    Array.from(fileInput.files).forEach((file, i) => {
-                                        if (i !== removeIndex) {
-                                            dataTransfer.items.add(file);
-                                        }
-                                    });
-
-                                    fileInput.files = dataTransfer.files;
-                                    fileInput.dispatchEvent(new Event('change', {
-                                        bubbles: true
-                                    }));
+                                Array.from(fileInput.files).forEach((file, i) => {
+                                    if (i !== removeIndex) {
+                                        dataTransfer.items.add(file);
+                                    }
                                 });
-                            };
-                            reader.readAsDataURL(file);
-                        });
+
+                                fileInput.files = dataTransfer.files;
+                                fileInput.dispatchEvent(new Event('change', {
+                                    bubbles: true
+                                }));
+                            });
+                        };
+                        reader.readAsDataURL(file);
                     });
+                });
+            }
+
+            // Add row
+            addRowBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const tbody = document.getElementById('itemRows');
+                const firstRow = tbody.querySelector('tr');
+                const newRow = firstRow.cloneNode(true);
+
+                // Reset stok info di row baru
+                const stokInfoNew = newRow.querySelector('.stok-info');
+                if (stokInfoNew) {
+                    stokInfoNew.classList.add('hidden');
+                    const stokOkNew = stokInfoNew.querySelector('.stok-ok');
+                    const stokWarnNew = stokInfoNew.querySelector('.stok-warn');
+                    if (stokOkNew) {
+                        stokOkNew.textContent = '';
+                        stokOkNew.classList.add('hidden');
+                    }
+                    if (stokWarnNew) stokWarnNew.classList.add('hidden');
+                }
+                const newQtyInput = newRow.querySelector('.quantity-input');
+                if (newQtyInput) newQtyInput.classList.remove('border-red-500', 'border-green-500');
+
+                // Reset all inputs dan selects di baris baru
+                newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
+                    inp.value = '';
+                });
+                // Ensure keterangan input is cleared and disabled by default
+                const keteranganNew = newRow.querySelector('.keterangan-input');
+                if (keteranganNew) {
+                    keteranganNew.value = '';
+                    keteranganNew.disabled = true;
+                    keteranganNew.required = false;
                 }
 
-                // Add row
-                addRowBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const tbody = document.getElementById('itemRows');
-                    const firstRow = tbody.querySelector('tr');
-                    const newRow = firstRow.cloneNode(true);
+                // Set default PPN to 0 for new rows
+                const ppnNew = newRow.querySelector('.ppn-input');
+                if (ppnNew) {
+                    ppnNew.value = '0';
+                }
 
-                    // Reset stok info di row baru
-                    const stokInfoNew = newRow.querySelector('.stok-info');
-                    if (stokInfoNew) {
-                        stokInfoNew.classList.add('hidden');
-                        const stokOkNew = stokInfoNew.querySelector('.stok-ok');
-                        const stokWarnNew = stokInfoNew.querySelector('.stok-warn');
-                        if (stokOkNew) {
-                            stokOkNew.textContent = '';
-                            stokOkNew.classList.add('hidden');
-                        }
-                        if (stokWarnNew) stokWarnNew.classList.add('hidden');
-                    }
-                    const newQtyInput = newRow.querySelector('.quantity-input');
-                    if (newQtyInput) newQtyInput.classList.remove('border-red-500', 'border-green-500');
-
-                    // Reset all inputs dan selects di baris baru
-                    newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
-                        inp.value = '';
-                    });
-                    // Ensure keterangan input is cleared and disabled by default
-                    const keteranganNew = newRow.querySelector('.keterangan-input');
-                    if (keteranganNew) {
-                        keteranganNew.value = '';
-                        keteranganNew.disabled = true;
-                        keteranganNew.required = false;
-                    }
-
-                    // Set default PPN to 0 for new rows
-                    const ppnNew = newRow.querySelector('.ppn-input');
-                    if (ppnNew) {
-                        ppnNew.value = '0';
-                    }
-
-                    newRow.querySelectorAll('select').forEach(sel => {
-                        sel.selectedIndex = 0;
-                    });
-
-                    // Hapus preview gambar
-                    const preview = newRow.querySelector('.item-images-preview');
-                    if (preview) preview.innerHTML = '';
-
-                    // Reset file input
-                    const fileInput = newRow.querySelector('.item-images-input');
-                    if (fileInput) fileInput.value = '';
-
-                    // Reset upload button visibility di baris baru
-                    const uploadBtnContainer = newRow.querySelector('.upload-btn-container');
-                    if (uploadBtnContainer) uploadBtnContainer.style.display = 'block';
-
-                    // Hapus preview gambar yang ter-clone
-                    const clonedPreview = newRow.querySelector('.item-images-preview');
-                    if (clonedPreview) clonedPreview.innerHTML = '';
-
-                    // Update index file input name
-                    const idx = document.querySelectorAll('.item-row').length;
-                    if (fileInput) fileInput.name = `item_images[${idx}][]`;
-
-                    tbody.appendChild(newRow);
-
-                    // Attach events ke baris baru
-                    attachRowEvents(newRow);
-                    handleItemImagePreview(newRow);
-                    updateRemoveButtons();
-                    calculateTotals();
+                newRow.querySelectorAll('select').forEach(sel => {
+                    sel.selectedIndex = 0;
                 });
 
-                // Attach events to row
-                function attachRowEvents(row) {
-                    const barangSelect = row.querySelector('.barang-select');
-                    barangSelect.addEventListener('change', function() {
-                        handleBarangChange(this);
-                        updateSubmitState();
+                // Hapus preview gambar
+                const preview = newRow.querySelector('.item-images-preview');
+                if (preview) preview.innerHTML = '';
+
+                // Reset file input
+                const fileInput = newRow.querySelector('.item-images-input');
+                if (fileInput) fileInput.value = '';
+
+                // Reset upload button visibility di baris baru
+                const uploadBtnContainer = newRow.querySelector('.upload-btn-container');
+                if (uploadBtnContainer) uploadBtnContainer.style.display = 'block';
+
+                // Hapus preview gambar yang ter-clone
+                const clonedPreview = newRow.querySelector('.item-images-preview');
+                if (clonedPreview) clonedPreview.innerHTML = '';
+
+                // Update index file input name
+                const idx = document.querySelectorAll('.item-row').length;
+                if (fileInput) fileInput.name = `item_images[${idx}][]`;
+
+                tbody.appendChild(newRow);
+
+                // Attach events ke baris baru
+                attachRowEvents(newRow);
+                handleItemImagePreview(newRow);
+                updateRemoveButtons();
+                calculateTotals();
+            });
+
+            // Attach events to row
+            function attachRowEvents(row) {
+                const barangSelect = row.querySelector('.barang-select');
+                barangSelect.addEventListener('change', function() {
+                    handleBarangChange(this);
+                    updateSubmitState();
+                    updateStokInfo(row);
+                });
+
+                // Event untuk quantity input - hitung harga setelah diskon saat quantity berubah
+                const quantityInput = row.querySelector('.quantity-input');
+                if (quantityInput) {
+                    quantityInput.addEventListener('change', function() {
+                        const qty = parseInt(this.value) || 1;
+                        const hargaInput = row.querySelector('.harga-input');
+                        const hargaSetelahDiskonDisplay = row.querySelector(
+                            '.harga-setelah-diskon-display');
+
+                        if (hargaInput && hargaSetelahDiskonDisplay) {
+                            const hargaSatuan = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
+                            const diskonInput = row.querySelector('.diskon-input');
+                            const diskon = parseFloat(diskonInput.value) || 0;
+                            const hargaSetelahDiskon = qty * hargaSatuan * (1 - (diskon / 100));
+                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) :
+                                '0';
+                        }
+                        calculateTotals();
                         updateStokInfo(row);
                     });
+                    quantityInput.addEventListener('input', function() {
+                        updateStokInfo(row);
+                    });
+                }
 
-                    // Event untuk quantity input - hitung harga setelah diskon saat quantity berubah
-                    const quantityInput = row.querySelector('.quantity-input');
-                    if (quantityInput) {
-                        quantityInput.addEventListener('change', function() {
-                            const qty = parseInt(this.value) || 1;
-                            const hargaInput = row.querySelector('.harga-input');
-                            const hargaSetelahDiskonDisplay = row.querySelector(
-                                '.harga-setelah-diskon-display');
+                // Event untuk PPN input
+                const ppnInput = row.querySelector('.ppn-input');
+                if (ppnInput) {
+                    ppnInput.addEventListener('change', calculateTotals);
+                }
 
-                            if (hargaInput && hargaSetelahDiskonDisplay) {
-                                const hargaSatuan = parseFloat(hargaInput.value) || 0;
-                                const diskonInput = row.querySelector('.diskon-input');
-                                const diskon = parseFloat(diskonInput.value) || 0;
-                                const hargaSetelahDiskon = qty * hargaSatuan * (1 - (diskon / 100));
-                                hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
-                                    'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }) :
-                                    '0';
-                            }
-                            calculateTotals();
-                            updateStokInfo(row);
-                        });
-                        quantityInput.addEventListener('input', function() {
-                            updateStokInfo(row);
-                        });
-                    }
-
-                    // Event untuk PPN input
-                    const ppnInput = row.querySelector('.ppn-input');
-                    if (ppnInput) {
-                        ppnInput.addEventListener('change', calculateTotals);
-                    }
-
-                    row.querySelector('.harga-input').addEventListener('change', calculateTotals);
-                    row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
-                    const diskonInput = row.querySelector('.diskon-input');
-                    if (diskonInput) {
-                        const updateHargaFromDiskon = function() {
-                            // Update harga setelah diskon display, harga satuan tetap
-                            const select = row.querySelector('.barang-select');
-                            const quantityInput = row.querySelector('.quantity-input');
-                            const hargaInput = row.querySelector('.harga-input');
-                            const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
-                            if (select && select.value && hargaInput && hargaSetelahDiskonDisplay) {
-                                const qty = parseInt(quantityInput.value) || 1;
-                                const hargaSatuan = parseFloat(hargaInput.value) || 0;
-                                const d = parseFloat(this.value) || 0;
-                                const hargaSetelahDiskon = qty * hargaSatuan * (1 - (d / 100));
-                                hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
-                                    'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }) :
-                                    '0';
-                            }
-                            calculateTotals();
-                            updateDiscountWarning();
-                            updateKeteranganState(row);
-                        };
-                        diskonInput.addEventListener('change', updateHargaFromDiskon);
-                        diskonInput.addEventListener('input', updateHargaFromDiskon);
-                    }
-                    row.querySelector('.remove-row').addEventListener('click', function() {
-                        row.remove();
-                        updateRemoveButtons();
+                row.querySelector('.harga-input').addEventListener('change', calculateTotals);
+                initThousandSeparator(row.querySelector('.harga-input'));
+                row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
+                const diskonInput = row.querySelector('.diskon-input');
+                if (diskonInput) {
+                    const updateHargaFromDiskon = function() {
+                        // Update harga setelah diskon display, harga satuan tetap
+                        const select = row.querySelector('.barang-select');
+                        const quantityInput = row.querySelector('.quantity-input');
+                        const hargaInput = row.querySelector('.harga-input');
+                        const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+                        if (select && select.value && hargaInput && hargaSetelahDiskonDisplay) {
+                            const qty = parseInt(quantityInput.value) || 1;
+                            const hargaSatuan = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
+                            const d = parseFloat(this.value) || 0;
+                            const hargaSetelahDiskon = qty * hargaSatuan * (1 - (d / 100));
+                            hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
+                                'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                }) :
+                                '0';
+                        }
                         calculateTotals();
-                        // reindex file input names after removal
-                        document.querySelectorAll('.item-row').forEach((r, i) => {
-                            const fi = r.querySelector('.item-images-input');
-                            if (fi) fi.name = `item_images[${i}][]`;
-                        });
-                        updateSubmitState();
+                        updateDiscountWarning();
+                        updateKeteranganState(row);
+                    };
+                    diskonInput.addEventListener('change', updateHargaFromDiskon);
+                    diskonInput.addEventListener('input', updateHargaFromDiskon);
+                }
+                row.querySelector('.remove-row').addEventListener('click', function() {
+                    row.remove();
+                    updateRemoveButtons();
+                    calculateTotals();
+                    // reindex file input names after removal
+                    document.querySelectorAll('.item-row').forEach((r, i) => {
+                        const fi = r.querySelector('.item-images-input');
+                        if (fi) fi.name = `item_images[${i}][]`;
                     });
+                    updateSubmitState();
+                });
+            }
+
+            function updateDiscountWarning() {
+                const warning = document.getElementById('discountWarning');
+                const anyHigh = Array.from(document.querySelectorAll('.diskon-input')).some(inp => {
+                    const v = parseFloat(inp.value) || 0;
+                    return v > 20;
+                });
+                if (anyHigh) {
+                    warning.style.display = 'block';
+                } else {
+                    warning.style.display = 'none';
+                }
+            }
+            // Enable/disable and require keterangan input depending on diskon value for a specific row
+            function updateKeteranganState(row) {
+                if (!row) return;
+                const disk = row.querySelector('.diskon-input');
+                const ket = row.querySelector('.keterangan-input');
+                if (!disk || !ket) return;
+                const val = parseFloat(disk.value) || 0;
+                if (val > 20) {
+                    ket.disabled = false;
+                    ket.required = true;
+                } else {
+                    ket.disabled = true;
+                    ket.required = false;
+                    ket.value = '';
+                }
+            }
+
+            // Update remove buttons visibility - always show delete button
+            function updateRemoveButtons() {
+                const rows = document.querySelectorAll('.item-row');
+                rows.forEach((row) => {
+                    const btn = row.querySelector('.remove-row');
+                    if (!btn) return;
+                    btn.style.display = 'inline-block';
+                });
+            }
+
+            // Handle supporting images upload and preview
+            supportingImagesInput.addEventListener('change', function() {
+                imagePreview.innerHTML = ''; // Clear previous previews
+                const files = this.files;
+
+                if (files.length === 0) {
+                    return;
                 }
 
-                function updateDiscountWarning() {
-                    const warning = document.getElementById('discountWarning');
-                    const anyHigh = Array.from(document.querySelectorAll('.diskon-input')).some(inp => {
-                        const v = parseFloat(inp.value) || 0;
-                        return v > 20;
-                    });
-                    if (anyHigh) {
-                        warning.style.display = 'block';
-                    } else {
-                        warning.style.display = 'none';
-                    }
-                }
-                // Enable/disable and require keterangan input depending on diskon value for a specific row
-                function updateKeteranganState(row) {
-                    if (!row) return;
-                    const disk = row.querySelector('.diskon-input');
-                    const ket = row.querySelector('.keterangan-input');
-                    if (!disk || !ket) return;
-                    const val = parseFloat(disk.value) || 0;
-                    if (val > 20) {
-                        ket.disabled = false;
-                        ket.required = true;
-                    } else {
-                        ket.disabled = true;
-                        ket.required = false;
-                        ket.value = '';
-                    }
-                }
+                Array.from(files).forEach((file, index) => {
+                    const reader = new FileReader();
 
-                // Update remove buttons visibility - always show delete button
-                function updateRemoveButtons() {
-                    const rows = document.querySelectorAll('.item-row');
-                    rows.forEach((row) => {
-                        const btn = row.querySelector('.remove-row');
-                        if (!btn) return;
-                        btn.style.display = 'inline-block';
-                    });
-                }
-
-                // Handle supporting images upload and preview
-                supportingImagesInput.addEventListener('change', function() {
-                    imagePreview.innerHTML = ''; // Clear previous previews
-                    const files = this.files;
-
-                    if (files.length === 0) {
-                        return;
-                    }
-
-                    Array.from(files).forEach((file, index) => {
-                        const reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            const col = document.createElement('div');
-                            col.className = 'col-md-3 col-sm-4 col-6';
-                            col.innerHTML = `
+                    reader.onload = function(e) {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-3 col-sm-4 col-6';
+                        col.innerHTML = `
                             <div class="card">
                                 <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 150px; object-fit: cover;">
                                 <div class="card-body p-2">
@@ -1296,48 +1349,61 @@
                                 </div>
                             </div>
                         `;
-                            imagePreview.appendChild(col);
-                        };
+                        imagePreview.appendChild(col);
+                    };
 
-                        reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                });
+            });
+
+            // Initialize
+            document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
+            // Initialize thousand separator for existing inputs
+            document.querySelectorAll('.harga-input').forEach(input => initThousandSeparator(input));
+
+            // Form submission sanitization
+            const requestOrderForm = document.getElementById('requestOrderForm');
+            if (requestOrderForm) {
+                requestOrderForm.addEventListener('submit', function() {
+                    document.querySelectorAll('.harga-input').forEach(input => {
+                        input.value = input.value.replace(/,/g, '');
                     });
                 });
+            }
 
-                // Initialize
-                document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
-                // Initialize item image previews for existing rows
-                document.querySelectorAll('.item-row').forEach(row => handleItemImagePreview(row));
-                // If any rows already have a selected barang, set harga to barang.harga * 1.3
-                document.querySelectorAll('.item-row').forEach(row => {
-                    const select = row.querySelector('.barang-select');
-                    if (select && select.value) {
-                        handleBarangChange(select);
-                    }
-                });
-                // Ensure keterangan inputs reflect current diskon state on page load
-                document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
-                document.querySelectorAll('.item-row').forEach(row => updateStokInfo(row));
-                updateRemoveButtons();
-                document.getElementById('tax_rate').addEventListener('input', calculateTotals);
-                calculateTotals();
-                updateSubmitState();
-                updateDiscountWarning();
+            // Initialize item image previews for existing rows
+            document.querySelectorAll('.item-row').forEach(row => handleItemImagePreview(row));
+            // If any rows already have a selected barang, set harga to barang.harga * 1.3
+            document.querySelectorAll('.item-row').forEach(row => {
+                const select = row.querySelector('.barang-select');
+                if (select && select.value) {
+                    handleBarangChange(select);
+                }
             });
-        </script>
+            // Ensure keterangan inputs reflect current diskon state on page load
+            document.querySelectorAll('.item-row').forEach(row => updateKeteranganState(row));
+            document.querySelectorAll('.item-row').forEach(row => updateStokInfo(row));
+            updateRemoveButtons();
+            document.getElementById('tax_rate').addEventListener('input', calculateTotals);
+            calculateTotals();
+            updateSubmitState();
+            updateDiscountWarning();
+        });
+    </script>
 
-        <style>
-            .form-label {
-                font-weight: 500;
-                margin-bottom: 0.5rem;
-            }
+    <style>
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
 
-            .dark .form-label {
-                color: #d1d5db;
-            }
+        .dark .form-label {
+            color: #d1d5db;
+        }
 
 
-            .card-header {
-                padding: 1rem;
-            }
-        </style>
+        .card-header {
+            padding: 1rem;
+        }
+    </style>
 </x-app-layout>

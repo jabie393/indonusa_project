@@ -256,9 +256,10 @@
                                        class="form-label dark:text-gray-300">Tanggal
                                     Kebutuhan</label>
                                 <input type="date"
-                                    class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="tanggal_kebutuhan" name="tanggal_kebutuhan"
-                                    value="{{ old('tanggal_kebutuhan', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) }}">
+                                       class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                       id="tanggal_kebutuhan"
+                                       name="tanggal_kebutuhan"
+                                       value="{{ old('tanggal_kebutuhan', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) }}">
                                 @if ($dariCustomPenawaran && $cp->date)
                                     <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
                                         Auto-terisi dari tanggal Custom Penawaran. Bisa diubah jika perlu.
@@ -270,11 +271,13 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="tanggal_berlaku" class="form-label dark:text-gray-300">Masa Berlaku</label>
+                                <label for="tanggal_berlaku"
+                                       class="form-label dark:text-gray-300">Masa Berlaku</label>
                                 <input type="datetime-local"
-                                    class="@error('tanggal_berlaku') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="tanggal_berlaku" name="tanggal_berlaku"
-                                    value="{{ old('tanggal_berlaku', $requestOrder->tanggal_berlaku ? $requestOrder->tanggal_berlaku->format('Y-m-d\TH:i') : '') }}">
+                                       class="@error('tanggal_berlaku') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                       id="tanggal_berlaku"
+                                       name="tanggal_berlaku"
+                                       value="{{ old('tanggal_berlaku', $requestOrder->tanggal_berlaku ? $requestOrder->tanggal_berlaku->format('Y-m-d\TH:i') : '') }}">
                                 @error('tanggal_berlaku')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -282,10 +285,12 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="catatan_customer" class="form-label dark:text-gray-300">Catatan</label>
-                                <textarea
-                                    class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', $requestOrder->catatan_customer ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                <label for="catatan_customer"
+                                       class="form-label dark:text-gray-300">Catatan</label>
+                                <textarea class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                          id="catatan_customer"
+                                          name="catatan_customer"
+                                          rows="4">{{ old('catatan_customer', $requestOrder->catatan_customer ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
                                 @error('catatan_customer')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -449,12 +454,10 @@
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
+                                                <input type="text"
                                                        name="harga[]"
                                                        class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       min="0"
-                                                       step="0.01"
-                                                       value="{{ is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? '' : old('harga', $item->harga) }}"
+                                                       value="{{ number_format(is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? 0 : old('harga', $item->harga), 2, '.', ',') }}"
                                                        readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -595,12 +598,10 @@
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
+                                                <input type="text"
                                                        name="harga[]"
                                                        class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       min="0"
-                                                       step="0.01"
-                                                       value="0"
+                                                       value="0.00"
                                                        readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -780,6 +781,43 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-4 pt-4">
+                        <a href="{{ route('sales.request-order.show', $requestOrder->id) }}"
+                           class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-x mr-2 h-4 w-4">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg> Batal
+                        </a>
+                        <button type="submit"
+                                class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-save mr-2 h-4 w-4">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                <polyline points="7 3 7 8 15 8"></polyline>
+                            </svg> Simpan Perubahan
+                        </button>
+                        
+                    </div>
             </div>
 
 
@@ -798,133 +836,12 @@
                    id="hiddenGrandTotal"
                    value="{{ $requestOrder->grand_total ?? 0 }}">
 
-            <!-- Action Buttons -->
-            <div class="flex justify-end gap-4">
-                <button type="submit"
-                        class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round"
-                         class="lucide lucide-save mr-2 h-4 w-4">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg> Simpan Perubahan
-                </button>
-                <a href="{{ route('sales.request-order.show', $requestOrder->id) }}"
-                   class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="24"
-                         height="24"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2"
-                         stroke-linecap="round"
-                         stroke-linejoin="round"
-                         class="lucide lucide-x mr-2 h-4 w-4">
-                        <path d="M18 6 6 18"></path>
-                        <path d="m6 6 12 12"></path>
-                    </svg> Batal
-                </a>
-            </div>
+
             </form>
         </div>
     </div>
     </div>
 
-    <!-- Modal Tambah Customer Baru -->
-    {{-- <div class="modal fade" id="addCustomerModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content overflow-hidden rounded-2xl border-none shadow-2xl dark:bg-gray-800">
-                <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 text-white">
-                    <h5 class="flex items-center gap-2 text-lg font-semibold"><i class="fas fa-user-plus"></i> Tambah Customer Baru</h5>
-                    <button type="button" class="text-white hover:text-gray-200" data-bs-dismiss="modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x h-6 w-6">
-                            <path d="M18 6 6 18"></path>
-                            <path d="m6 6 12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-                <form id="addCustomerForm" method="POST">
-                    @csrf
-                    <div class="space-y-4 p-6">
-                        <div id="addCustomerAlert"></div>
-
-                        <!-- Nama Customer -->
-                        <div>
-                            <label for="modalNamaCustomer" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Customer <span class="text-red-500">*</span></label>
-                            <input type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalNamaCustomer" name="nama_customer" required>
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Nama lengkap pelanggan</p>
-                            <div class="invalid-feedback text-xs text-red-500" id="error-nama_customer"></div>
-                        </div>
-
-                        <!-- Email & Telepon -->
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="modalEmail" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                                <input type="email" class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalEmail" name="email">
-                                <div class="invalid-feedback text-xs text-red-500" id="error-email"></div>
-                            </div>
-                            <div>
-                                <label for="modalTelepon" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Telepon</label>
-                                <input type="tel" class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalTelepon" name="telepon">
-                                <div class="invalid-feedback text-xs text-red-500" id="error-telepon"></div>
-                            </div>
-                        </div>
-
-                        <!-- Tipe Customer & Alamat -->
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="modalTipeCustomer" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Tipe Customer <span class="text-red-500">*</span></label>
-                                <select class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalTipeCustomer" name="tipe_customer" required>
-                                    <option value="">-- Pilih Tipe --</option>
-                                    @foreach ($customerTypes as $type)
-                                        <option value="{{ $type }}">{{ ucfirst($type) }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback text-xs text-red-500" id="error-tipe_customer"></div>
-                            </div>
-                            <div>
-                                <label for="modalAlamatPenagihan" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat Penagihan</label>
-                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalAlamatPenagihan" name="alamat_penagihan" rows="2"></textarea>
-                                <div class="invalid-feedback text-xs text-red-500" id="error-alamat_penagihan"></div>
-                            </div>
-                            <div>
-                                <label for="modalAlamatPengiriman" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat Pengiriman</label>
-                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalAlamatPengiriman" name="alamat_pengiriman" rows="2"></textarea>
-                                <div class="invalid-feedback text-xs text-red-500" id="error-alamat_pengiriman"></div>
-                            </div>
-                        </div>
-
-                        <!-- PIC & Catatan -->
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="modalNamaPic" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Nama PIC</label>
-                                <input type="text" class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalNamaPic" name="nama_pic">
-                                <div class="invalid-feedback text-xs text-red-500" id="error-nama_pic"></div>
-                            </div>
-                            <div>
-                                <label for="modalCatatan" class="form-label block text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
-                                <textarea class="mt-1 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" id="modalCatatan" name="catatan" rows="2"></textarea>
-                                <div class="invalid-feedback text-xs text-red-500" id="error-catatan"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-end gap-3 rounded-b-2xl bg-gray-50 p-6 dark:bg-gray-700/50">
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="rounded-lg bg-[#225A97] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-[#225A97] dark:hover:bg-[#1c4d81] dark:focus:ring-primary-800">Simpan Customer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> --}}
 
 
     <script>
@@ -1101,11 +1018,17 @@
                     // Compute jual price (base + 30%) then apply diskon if any
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
                     const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
-                    if (hargaInput) hargaInput.value = finalHarga;
+                    if (hargaInput) {
+                        hargaInput.value = finalHarga.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                        initThousandSeparator(hargaInput);
+                    }
                 } else {
                     namaDisplay.value = '';
                     if (diskonInput) diskonInput.value = 0;
-                    if (hargaInput) hargaInput.value = 0;
+                    if (hargaInput) hargaInput.value = '0.00';
                 }
                 calculateTotals();
             }
@@ -1142,11 +1065,15 @@
 
                     // Apply markup 30%
                     const markupHarga = baseHarga * 1.3;
-                    hargaInput.value = markupHarga.toFixed(2);
+                    hargaInput.value = markupHarga.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    initThousandSeparator(hargaInput);
                     baseDiskonInput.value = defaultDiskon;
                 } else {
                     namaDisplay.value = '';
-                    hargaInput.value = 0;
+                    hargaInput.value = '0.00';
                     baseDiskonInput.value = 0;
                 }
                 calculateTotals();
@@ -1159,7 +1086,8 @@
 
                 document.querySelectorAll('.item-row').forEach(row => {
                     const qty = parseInt(row.querySelector('.quantity-input').value) || 0;
-                    const markupHarga = parseFloat(row.querySelector('.harga-input').value) || 0;
+                    const hargaInputVal = row.querySelector('.harga-input').value.replace(/,/g, '') || 0;
+                    const markupHarga = parseFloat(hargaInputVal) || 0;
                     const diskonPercent = parseFloat(row.querySelector('.diskon-input').value) || 0;
 
                     const hargaSetelahDiskon = +(markupHarga * (1 - (diskonPercent / 100))).toFixed(2);
@@ -1236,7 +1164,7 @@
                         <input type="number" name="quantity[]" class="quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="number" name="harga[]" class="harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" step="0.01" value="0" readonly>
+                        <input type="text" name="harga[]" class="harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="0.00" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                         <div class="upload-btn-container relative">
@@ -1310,7 +1238,39 @@
                     reindexItemImageInputs();
                 });
 
+                initThousandSeparator(row.querySelector('.harga-input'));
                 handleItemImagePreview(row);
+            }
+
+            function initThousandSeparator(input) {
+                if (!input) return;
+
+                const formatValue = (val) => {
+                    let value = val.replace(/[^0-9.]/g, '');
+                    if (value) {
+                        let parts = value.split('.');
+                        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (parts.length > 1) {
+                            parts[1] = parts[1].substring(0, 2);
+                        }
+                        return parts.join('.');
+                    }
+                    return '';
+                };
+
+                // Format initial value
+                if (input.value) {
+                    input.value = formatValue(input.value);
+                }
+
+                input.addEventListener('input', function(e) {
+                    let cursorPosition = this.selectionStart;
+                    let originalLength = this.value.length;
+                    this.value = formatValue(this.value);
+                    let newLength = this.value.length;
+                    cursorPosition = cursorPosition + (newLength - originalLength);
+                    this.setSelectionRange(cursorPosition, cursorPosition);
+                });
             }
 
             function updateDiscountWarning() {
@@ -1388,7 +1348,6 @@
                 document.querySelectorAll('.item-row').forEach((row, i) => {
                     const fileInput = row.querySelector('.item-images-input');
                     if (fileInput) fileInput.name = `item_images[${i}][]`;
-                    nput.name = `item_images[${i}][]`;
                 });
             }
 
@@ -1432,6 +1391,17 @@
             });
 
             updateRemoveButtons();
+
+            // Form submission sanitization
+            const editRequestOrderForm = document.getElementById('requestOrderForm');
+            if (editRequestOrderForm) {
+                editRequestOrderForm.addEventListener('submit', function() {
+                    document.querySelectorAll('.harga-input').forEach(input => {
+                        input.value = input.value.replace(/,/g, '');
+                    });
+                });
+            }
+
             document.getElementById('tax_rate').addEventListener('input', calculateTotals);
             calculateTotals();
             updateDiscountWarning();
