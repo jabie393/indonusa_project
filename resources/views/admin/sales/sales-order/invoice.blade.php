@@ -2,14 +2,103 @@
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
 
-            {{-- Breadcrumb/back button --}}
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            @if(empty($batch) && !empty($batches) && $batches->isNotEmpty())
+                <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                    <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Partial Invoice Batch</h2>
+                    <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                        This request order was shipped in multiple partial batches. Print each batch invoice separately below.
+                    </p>
+                    <div class="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900">
+                        <table class="w-full border-collapse text-sm">
+                            <thead class="bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Batch</th>
+                                    <th class="px-4 py-3 text-left">Tanggal</th>
+                                    <th class="px-4 py-3 text-left">Item Terkirim</th>
+                                    <th class="px-4 py-3 text-right">Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($batches as $batchItem)
+                                    <tr class="border-t border-slate-200 dark:border-slate-700">
+                                        <td class="px-4 py-3">Batch #{{ $batchItem->batch_number }}</td>
+                                        <td class="px-4 py-3">{{ optional($batchItem->created_at)->format('Y-m-d H:i') }}</td>
+                                        <td class="px-4 py-3">
+                                            <ul class="list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
+                                                @foreach ($batchItem->items as $item)
+                                                    <li>{{ $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            @php
+                                                $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair'
+                                                    ? route('ga.sales-order.batch.invoice', $batchItem->id)
+                                                    : route('delivery-orders.batch.invoice', $batchItem->id);
+                                            @endphp
+                                            <a href="{{ $batchInvoiceUrl }}" target="_blank" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">
+                                                Invoice
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @else
+                {{-- Breadcrumb/back button --}}
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Panel : Preview Invoice (id="invoice-preview", class="print-area") -->
                 <div class="lg:col-span-2">
                     <div id="invoice-preview" class="print-area" style="font-family: 'Times New Roman', serif; padding: 32px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                             <div>
                                 <span style="font-size:32px; font-weight:bold; color:#000000; text-decoration:underline;">INVOICE</span>
+                                @if(!empty($batch))
+                                    <div style="margin-top: 8px; font-size: 14px; font-weight: 700; color: #0D223A;">
+                                        Partial shipment invoice for Batch #{{ $batch->batch_number }}
+                                    </div>
+                                @elseif(!empty($batches) && $batches->isNotEmpty())
+                                    <div style="margin-top: 8px; font-size: 14px; font-weight: 700; color: #0D223A;">
+                                        This request order was shipped in multiple partial batches. Please print each batch invoice separately below.
+                                    </div>
+                                    <div style="margin-top: 16px; border:1px solid #d1d5db; border-radius:12px; overflow:hidden;">
+                                        <table style="width:100%; border-collapse:collapse; font-family: 'Times New Roman', serif; font-size:14px;">
+                                            <thead style="background:#f1f5f9; color:#0f172a;">
+                                                <tr>
+                                                    <th style="padding:12px; border-bottom:1px solid #cbd5e1; text-align:left;">Batch</th>
+                                                    <th style="padding:12px; border-bottom:1px solid #cbd5e1; text-align:left;">Tanggal</th>
+                                                    <th style="padding:12px; border-bottom:1px solid #cbd5e1; text-align:left;">Item Terkirim</th>
+                                                    <th style="padding:12px; border-bottom:1px solid #cbd5e1; text-align:right;">Invoice</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($batches as $batchItem)
+                                                    <tr style="border-top:1px solid #e2e8f0;">
+                                                        <td style="padding:12px; vertical-align:top;">Batch #{{ $batchItem->batch_number }}</td>
+                                                        <td style="padding:12px; vertical-align:top;">{{ optional($batchItem->created_at)->format('Y-m-d H:i') }}</td>
+                                                        <td style="padding:12px; vertical-align:top;">
+                                                            <ul style="margin:0; padding-left:18px; color:#0f172a; list-style:disc;">
+                                                                @foreach ($batchItem->items as $item)
+                                                                    <li style="margin-bottom:4px;">{{ $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
+                                                                @endforeach
+                                                            </ul>
+                                                        </td>
+                                                        <td style="padding:12px; vertical-align:top; text-align:right;">
+                                                            @php
+                                                                $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair'
+                                                                    ? route('ga.sales-order.batch.invoice', $batchItem->id)
+                                                                    : route('delivery-orders.batch.invoice', $batchItem->id);
+                                                            @endphp
+                                                            <a href="{{ $batchInvoiceUrl }}" target="_blank" style="display:inline-block; padding:10px 16px; border-radius:8px; background:#0f172a; color:#ffffff; text-decoration:none; font-weight:700;">Invoice</a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                @endif
                                 <div style="margin-top: 24px;">
                                     <span style="font-weight:bold; font-size: 16px; font-family: 'Times New Roman', serif; display: block; margin-bottom: 8px;">Invoice To:</span>
                                     <p id="preview_customer" style="font-weight: bold; font-size: 16px; font-family: 'Times New Roman', serif; margin: 0 0 4px 0;">{{ strtoupper($customerName) }}</p>
@@ -158,12 +247,31 @@
                         </div>
 
                     </div>
+
+                @if (!empty($batches) && $batches->isNotEmpty())
+                    <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+                            <h2 class="flex items-center font-semibold text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+                                </svg>
+                                Partial Invoice Batch
+                            </h2>
+                        </div>
+                        <div class="space-y-3 p-6">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">This order contains partial warehouse shipments. Print the invoice for each partial batch separately.</p>
+                            @foreach ($batches as $batchItem)
+                                <a href="{{ route('ga.sales-order.batch.invoice', $batchItem->id) }}" target="_blank" class="block rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white">Batch #{{ $batchItem->batch_number }} - Cetak Invoice</a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
                 </div>
-
-
             </div>
         </div>
     </div>
+    @endif
 
     {{-- Hidden form untuk Excel --}}
     <form id="excel-form" action="{{ $invoiceExcelRoute }}" method="POST" style="display:none;">

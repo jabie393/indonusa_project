@@ -476,7 +476,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </ul>
                                 </td>
                                 <td class="px-4 py-3 text-right">
-                                    <a href="/delivery-orders/batch/${batch.id}/pdf" target="_blank" class="flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">Cetak PDF</a>
+                                    <a href="${batch.pdf_url}" target="_blank" class="flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">Cetak DO</a>
                                 </td>
                             `;
                             historyTableBody.appendChild(tr);

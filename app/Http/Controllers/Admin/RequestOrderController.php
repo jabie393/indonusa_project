@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class RequestOrderController extends Controller
@@ -125,12 +126,17 @@ class RequestOrderController extends Controller
 
     public function store(Request $request)
     {
+        // Trim no_po sebelum validasi untuk menghindari duplikat dengan whitespace berbeda
+        if ($request->filled('no_po')) {
+            $request->merge(['no_po' => trim($request->input('no_po'))]);
+        }
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
             'pic_id' => 'required|integer|exists:users,id',
             'subject' => 'required|string|max:255',
-            'no_po' => 'nullable|string|max:255',
+            'no_po' => 'nullable|string|max:255|unique:request_orders,no_po',
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
             'barang_id' => 'required|array|min:1',
@@ -151,6 +157,8 @@ class RequestOrderController extends Controller
             'item_images.*.*' => 'nullable|image|max:5120',
             'nama_barang_custom' => 'nullable|array',
             'nama_barang_custom.*' => 'nullable|string|max:255',
+        ], [
+            'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
         ]);
 
         $items = [];
@@ -434,12 +442,17 @@ class RequestOrderController extends Controller
             abort(403);
         }
 
+        // Trim no_po sebelum validasi untuk menghindari duplikat dengan whitespace berbeda
+        if ($request->filled('no_po')) {
+            $request->merge(['no_po' => trim($request->input('no_po'))]);
+        }
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
             'pic_id' => 'required|integer|exists:users,id',
             'subject' => 'required|string|max:255',
-            'no_po' => 'nullable|string|max:255',
+            'no_po' => 'nullable|string|max:255|unique:request_orders,no_po,'.$requestOrder->id,
             'sales_order_number' => 'nullable|string|max:255',
             'tanggal_kebutuhan' => 'nullable|date',
             'catatan_customer' => 'nullable|string',
@@ -464,6 +477,8 @@ class RequestOrderController extends Controller
             'existing_item_images' => 'nullable|array',
             'existing_item_images.*' => 'nullable|array',
             'existing_item_images.*.*' => 'nullable|string',
+        ], [
+            'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
         ]);
 
         foreach ($validated['barang_id'] as $i => $barangId) {
