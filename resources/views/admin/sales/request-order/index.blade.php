@@ -76,7 +76,12 @@
                             <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->customer_name }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->items->count() }} item(s)</td>
-                            <td class="text-nowrap px-4 py-3">Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($ro->grand_total, 0, '.', ',') }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-center">
                                 @php
                                     $stokKurangItems = [];

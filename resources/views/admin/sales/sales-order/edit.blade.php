@@ -143,7 +143,7 @@
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="items[{{ $loop->index }}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan jika diskon > 20%" value="{{ $item->keterangan }}">
                                             </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, '.', ',') }}</td>
                                             <td class="border border-gray-300 px-4 py-2 text-center">
                                                 <div class="upload-btn-container relative">
                                                     <input type="file" name="items[{{ $loop->index }}][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
@@ -244,7 +244,7 @@
                                     <div class="flex items-center justify-between">
                                         <div class="w-full">
                                             <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Sub Total</p>
-                                            <input type="text" id="subtotal-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp {{ number_format($salesOrder->subtotal, 0, ',', '.') }}">
+                                            <input type="text" id="subtotal-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp {{ number_format($salesOrder->subtotal, 0, '.', ',') }}">
                                             <input type="hidden" id="subtotal-value" name="subtotal" value="{{ $salesOrder->subtotal }}">
                                         </div>
                                     </div>
@@ -262,7 +262,7 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" id="tax" name="tax" value="{{ $salesOrder->tax }}">
-                                            <input type="text" id="tax_display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp {{ number_format($salesOrder->tax, 0, ',', '.') }}">
+                                            <input type="text" id="tax_display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="Rp {{ number_format($salesOrder->tax, 0, '.', ',') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@
                                     <div class="flex items-center justify-between">
                                         <div class="w-full">
                                             <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Grand Total</p>
-                                            <input type="text" id="grand-total-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-green-600 focus:ring-0 dark:text-green-400" value="Rp {{ number_format($salesOrder->grand_total, 0, ',', '.') }}">
+                                            <input type="text" id="grand-total-display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-green-600 focus:ring-0 dark:text-green-400" value="Rp {{ number_format($salesOrder->grand_total, 0, '.', ',') }}">
                                             <input type="hidden" id="grand-total-value" name="grand_total" value="{{ $salesOrder->grand_total }}">
                                         </div>
                                     </div>

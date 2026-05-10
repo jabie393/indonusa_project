@@ -103,7 +103,7 @@
                                 @endif
                             </td>
                             <td class="text-nowrap px-4 py-4 text-right font-semibold">
-                                Rp {{ number_format($penawaran->grand_total ?? 0, 0, ',', '.') }}
+                                Rp {{ number_format($penawaran->grand_total ?? 0, 0, '.', ',') }}
                             </td>
                             <td class="px-4 py-4 text-center">
                                 {{ \Carbon\Carbon::parse($penawaran->created_at)->format('d F Y') }}

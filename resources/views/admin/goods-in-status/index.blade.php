@@ -48,7 +48,12 @@
                             <td class="px-4 py-3">{{ $barang->stok }}</td>
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
-                            <td class="px-4 py-3">{{ $barang->harga }}</td>
+                            <td class="px-4 py-3 text-nowrap font-medium text-slate-700">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass =

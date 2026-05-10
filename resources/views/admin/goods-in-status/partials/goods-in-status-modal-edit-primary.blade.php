@@ -1,126 +1,320 @@
+<style>
+    :root {
+        --gradient-header: linear-gradient(to right, #225A97, #0D223A);
+        --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
+        --field: #f8fafc;
+        --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    }
+</style>
+
 <dialog id="editBarangModalPrimary" class="modal">
-    <div class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">
-                Edit Barang
-            </h3>
-            <div class="modal-action m-0">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </form>
+    <div
+        class="modal-box relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 max-h-[95vh]">
+
+        <!-- Header -->
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                        <path d="M12 22V12"></path>
+                        <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                        <path d="m7.5 4.27 9 5.15"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-semibold leading-tight">Edit Detail Barang</h1>
+                    <p class="text-xs text-white/80">Perbarui informasi produk di dalam sistem</p>
+                </div>
             </div>
-        </div>
+            <form method="dialog">
+                <button aria-label="Tutup" class="rounded-xl p-1.5 transition hover:bg-white/10" type="submit">
+                    <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </form>
+        </header>
 
-        <form id="editBarangForm" method="POST" class="flex h-full flex-col space-y-4 overflow-hidden p-4" enctype="multipart/form-data">
-            <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <!-- Form Content -->
+        <form id="editBarangForm" method="POST" enctype="multipart/form-data"
+            class="grid flex-1 gap-8 overflow-y-auto p-7 md:grid-cols-[1fr_1.4fr]">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="id" id="edit_id">
 
-                    <div class="md:col-span-2">
-                        <!-- Gambar Barang -->
-                        <div class="md:col-span-1">
-                            <div class="mb-4">
-
-                                <label for="edit_gambar" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
-                                    Barang
-                                </label>
-                                <input type="file" name="gambar" id="edit_gambar" class="hidden" accept="image/*" />
-
-                                <div id="edit_gambar_preview" class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
-                                    {{-- Input Gambar Dari js --}}
+            <!-- Left Column: Media & Core -->
+            <div class="space-y-6">
+                <!-- Image Upload Section -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <rect height="18" rx="2" ry="2" width="18" x="3" y="3"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        Gambar Barang
+                    </label>
+                    <div id="edit_gambar_preview" class="group relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 transition hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl">
+                        <input id="edit_gambar" name="gambar" type="file" class="hidden" accept="image/*" />
+                        <label id="edit_gambar_label" for="edit_gambar" class="relative flex h-full w-full cursor-pointer flex-col items-center justify-center">
+                            <!-- Existing Image Preview -->
+                            <img id="edit_image_display" src="" alt="Gambar Barang" class="absolute inset-0 h-full w-full object-contain hidden z-10" />
+                            
+                            <!-- Placeholder / Upload UI -->
+                            <div id="edit_upload_placeholder" class="flex flex-col items-center gap-2 text-slate-400 group-hover:text-blue-500 z-20">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-blue-100 group-hover:text-blue-600">
+                                    <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 3v12"></path>
+                                        <path d="m17 8-5-5-5 5"></path>
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    </svg>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div class="space-y-4">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="id" id="edit_id">
-                                <div>
-                                    <label for="edit_status_listing" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status
-                                        Listing</label>
-                                    <select name="status_listing" id="edit_status_listing" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                        <option value="listing">Listing</option>
-                                        <option value="non listing">Non Listing</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="edit_kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                                    <select name="kategori" id="edit_kategori" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" data-initial-kategori="{{ $barang->kategori }}" data-initial-kode="{{ $barang->kode_barang }}" required>
-                                        <option value="" disabled>Pilih Kategori</option>
-                                        @foreach ($kategoriList as $kategori)
-                                            <option value="{{ $kategori }}" {{ $barang->kategori == $kategori ? 'selected' : '' }}>
-                                                {{ $kategori }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="edit_kode_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
-                                        Barang</label>
-                                    <div class="relative">
-                                        <input type="text" name="kode_barang" id="edit_kode_barang" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
-                                        <button type="button" id="editRefreshKodeBarang" class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <!-- Warning container untuk kode barang -->
-                                    <div id="kode-barang-warning-container"></div>
-                                </div>
-                                <div>
-                                    <label for="edit_nama_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
-                                        Barang</label>
-                                    <input type="text" name="nama_barang" id="edit_nama_barang" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </div>
+                                <p class="text-sm font-semibold text-slate-700">Ganti gambar</p>
+                                <p class="text-xs text-slate-400">Klik atau seret file</p>
                             </div>
 
-                            <div class="space-y-4">
-                                <div>
-                                    <label for="edit_stok" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
-                                    <input type="number" name="stok" id="edit_stok" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </div>
-
-                                <div>
-                                    <label for="edit_satuan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
-                                    <input type="text" name="satuan" id="edit_satuan" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </div>
-                                <div>
-                                    <label for="edit_lokasi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
-                                    <input type="text" name="lokasi" id="edit_lokasi" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </div>
-
-                                <div>
-                                    <label for="edit_harga" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
-                                    <input type="number" name="harga" id="edit_harga" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </div>
+                            <!-- Hover Overlay (Glassmorphism) -->
+                            <div id="edit_image_overlay" class="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100 backdrop-blur-[2px] hidden">
+                                <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" class="text-white">
+                                    <path d="M12 3v12"></path>
+                                    <path d="m17 8-5-5-5 5"></path>
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                </svg>
+                                <span class="mt-2 text-xs font-bold uppercase tracking-wider text-white">Upload Baru</span>
                             </div>
-                        </div>
-                    </div>
-                    <div class="h-full sm:col-span-1">
-                        <label for="edit_deskripsi" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
-                        <textarea name="deskripsi" id="edit_deskripsi" class="block h-[90%] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
+                        </label>
                     </div>
                 </div>
 
+                <!-- Status Listing -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_status_listing">Status Listing</label>
+                    <select
+                        class="w-full appearance-none border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="edit_status_listing" name="status_listing" required>
+                        <option value="listing">🟢 Listing</option>
+                        <option value="non listing">🔴 Non Listing</option>
+                    </select>
+                </div>
             </div>
-            <div class="">
-                <button type="submit" class="relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Update
-                </button>
+
+            <!-- Right Column: Details -->
+            <div class="space-y-5">
+                <!-- Nama Barang -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_nama_barang">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                            <path d="M12 22V12"></path>
+                            <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                            <path d="m7.5 4.27 9 5.15"></path>
+                        </svg>
+                        Nama Barang
+                    </label>
+                    <input
+                        class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="edit_nama_barang" name="nama_barang" type="text" required />
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_deskripsi">Deskripsi</label>
+                    <textarea
+                        class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition resize-none rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="edit_deskripsi" name="deskripsi" rows="3"></textarea>
+                </div>
+
+                <!-- Grid Details -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <!-- Kategori -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_kategori">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
+                                <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
+                            </svg>
+                            Kategori
+                        </label>
+                        <select
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="edit_kategori" name="kategori" required>
+                            <option disabled value="">Pilih kategori</option>
+                            @foreach ($kategoriList as $kategori)
+                                <option value="{{ $kategori }}">{{ $kategori }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Stok -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_stok">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
+                            </svg>
+                            Stok
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="edit_stok" name="stok" type="number" required />
+                    </div>
+
+                    <!-- Satuan -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_satuan">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"></path>
+                                <path d="m14.5 12.5 2-2"></path>
+                                <path d="m11.5 9.5 2-2"></path>
+                                <path d="m8.5 6.5 2-2"></path>
+                                <path d="m17.5 15.5 2-2"></path>
+                            </svg>
+                            Satuan
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="edit_satuan" name="satuan" type="text" required />
+                    </div>
+
+                    <!-- Lokasi -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_lokasi">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Lokasi
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="edit_lokasi" name="lokasi" type="text" required />
+                    </div>
+
+                    <!-- Kode Barang -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_kode_barang">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                <line x1="4" x2="20" y1="9" y2="9"></line>
+                                <line x1="4" x2="20" y1="15" y2="15"></line>
+                                <line x1="10" x2="8" y1="3" y2="21"></line>
+                                <line x1="16" x2="14" y1="3" y2="21"></line>
+                            </svg>
+                            Kode Barang
+                        </label>
+                        <div class="relative">
+                            <input
+                                class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-mono text-slate-600 outline-none transition pr-10 rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                id="edit_kode_barang" name="kode_barang" type="text" readonly />
+                            <button aria-label="Refresh kode" id="editRefreshKodeBarang"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-blue-100 hover:text-blue-600"
+                                type="button">
+                                <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                    <path d="M21 3v5h-5"></path>
+                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                    <path d="M8 16H3v5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="edit_harga_display">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <line x1="12" x2="12" y1="2" y2="22"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            Harga
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                            <input
+                                class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                id="edit_harga_display" type="text" required />
+                            <input type="hidden" name="harga" id="edit_harga" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
 
+        <!-- Footer -->
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum memperbarui.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button
+                        class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button
+                    class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
+                    form="editBarangForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
+    </div>
 </dialog>
+
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const displayInput = document.getElementById('edit_harga_display');
+        const hiddenInput = document.getElementById('edit_harga');
+
+        if (displayInput && hiddenInput) {
+            const formatValue = (val) => {
+                let value = val.toString().replace(/\D/g, '');
+                return value ? parseInt(value).toLocaleString('en-US') : '';
+            };
+
+            displayInput.addEventListener('input', function() {
+                let rawValue = this.value.replace(/\D/g, '');
+                hiddenInput.value = rawValue;
+                this.value = formatValue(this.value);
+            });
+
+            // Sync display when hidden input is changed programmatically
+            const originalValueSetter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+            Object.defineProperty(hiddenInput, 'value', {
+                set: function(val) {
+                    originalValueSetter.call(this, val);
+                    displayInput.value = formatValue(val.toString());
+                },
+                get: function() {
+                    return Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').get.call(this);
+                },
+                configurable: true
+            });
+        }
+    });
+
     window.CSRF_TOKEN = "{{ csrf_token() }}";
     window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
 </script>

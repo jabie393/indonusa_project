@@ -7,6 +7,10 @@ import "./darkmode.js";
 import "./order-modal.js";
 import "./reveal.js";
 import "./sweetalert.js";
+import 'datatables.net-fixedheader-dt';
+import Swal from "sweetalert2";
+
+window.Swal = Swal;
 
 window.Alpine = Alpine;
 

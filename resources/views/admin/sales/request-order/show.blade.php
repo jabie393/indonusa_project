@@ -565,10 +565,10 @@
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5 text-gray-600 dark:text-gray-400">
-                                                <span class="text-xs">Rp</span> {{ number_format($displayHarga, 0, ',', '.') }}
+                                                <span class="text-xs">Rp</span> {{ number_format($displayHarga, 0, '.', ',') }}
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5 font-bold text-gray-900 dark:text-white">
-                                                <span class="text-xs">Rp</span> {{ number_format($computedSubtotal, 0, ',', '.') }}
+                                                <span class="text-xs">Rp</span> {{ number_format($computedSubtotal, 0, '.', ',') }}
                                             </td>
                                             <td class="px-6 py-5 text-center">
                                                 @php
@@ -620,7 +620,7 @@
                                         <td colspan="4" class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Keseluruhan</td>
                                         <td class="whitespace-nowrap px-6 py-4">
                                             <span class="text-xl font-black text-[#225A97] dark:text-blue-400">
-                                                <span class="mt-1 align-top text-xs font-bold">Rp</span> {{ number_format($total, 0, ',', '.') }}
+                                                <span class="mt-1 align-top text-xs font-bold">Rp</span> {{ number_format($total, 0, '.', ',') }}
                                             </span>
                                         </td>
                                         <td></td>
@@ -791,7 +791,7 @@
                                     <div class="flex items-center justify-between text-sm">
                                         <span class="font-medium text-gray-500 dark:text-gray-400">Sub-Total Barang</span>
                                         <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($requestOrder->subtotal, 0, ',', '.') }}
+                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($requestOrder->subtotal, 0, '.', ',') }}
                                         </span>
                                     </div>
 
@@ -804,7 +804,7 @@
                                             </span>
                                         </div>
                                         <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($requestOrder->tax, 0, ',', '.') }}
+                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($requestOrder->tax, 0, '.', ',') }}
                                         </span>
                                     </div>
 
@@ -817,7 +817,7 @@
                                         <div class="flex items-baseline justify-between">
                                             <span class="align-top text-xs font-bold text-[#225A97] dark:text-blue-400">Rp</span>
                                             <span class="text-3xl font-black tracking-tighter text-[#225A97] dark:text-blue-400">
-                                                {{ number_format($requestOrder->grand_total, 0, ',', '.') }}
+                                                {{ number_format($requestOrder->grand_total, 0, '.', ',') }}
                                             </span>
                                         </div>
                                     </div>

@@ -1,6 +1,5 @@
-import Swal from "sweetalert2";
 
-window.Swal = Swal;
+
 
 // Delete alert
 window.confirmDelete = function (callback) {

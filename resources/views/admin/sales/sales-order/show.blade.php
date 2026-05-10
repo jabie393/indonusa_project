@@ -154,7 +154,7 @@
                                                 {{ $item->satuan }}
                                             </td>
                                             <td class="px-4 py-3 text-right text-sm text-gray-700 dark:text-gray-300">
-                                                {{ number_format($item->harga, 0, ',', '.') }}
+                                                {{ number_format($item->harga, 0, '.', ',') }}
                                             </td>
                                             <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
                                                 {{ $item->diskon }}%
@@ -163,7 +163,7 @@
                                                 {{ $item->keterangan ?? '-' }}
                                             </td>
                                             <td class="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">
-                                                {{ number_format($item->subtotal, 0, ',', '.') }}
+                                                {{ number_format($item->subtotal, 0, '.', ',') }}
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 @if ($item->images && count($item->images) > 0)
@@ -202,17 +202,17 @@
                             <div class="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Sub Total</p>
                                 <p class="mt-2 text-2xl font-bold text-blue-600 dark:text-blue-400">
-                                    Rp {{ number_format($salesOrder->subtotal, 0, ',', '.') }}</p>
+                                    Rp {{ number_format($salesOrder->subtotal, 0, '.', ',') }}</p>
                             </div>
                             <div class="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pajak/PPN</p>
                                 <p class="mt-2 text-2xl font-bold text-green-600 dark:text-green-400">
-                                    Rp {{ number_format($salesOrder->tax, 0, ',', '.') }}</p>
+                                    Rp {{ number_format($salesOrder->tax, 0, '.', ',') }}</p>
                             </div>
                             <div class="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Grand Total</p>
                                 <p class="mt-2 text-2xl font-bold text-purple-600 dark:text-purple-400">
-                                    Rp {{ number_format($salesOrder->grand_total, 0, ',', '.') }}</p>
+                                    Rp {{ number_format($salesOrder->grand_total, 0, '.', ',') }}</p>
                             </div>
                         </div>
                     </div>

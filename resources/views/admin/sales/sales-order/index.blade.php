@@ -184,7 +184,12 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-right">Rp {{ number_format($row['total'] ?? 0, 0, ',', '.') }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($row['total'], 0, '.', ',') }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
                             <td class="px-4 py-3 text-center">
                                 @php
@@ -701,7 +706,7 @@
         }
 
         function formatCurrency(amount) {
-            return new Intl.NumberFormat('id-ID').format(amount);
+            return new Intl.NumberFormat('en-US').format(amount);
         }
 
         function handleUploadImage(input, type, id, imageType) {

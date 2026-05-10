@@ -76,7 +76,7 @@
                             @if (in_array(auth()->user()->role, ['Supervisor']))
                             <td class="px-4 py-2">
                                     <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
-                                        class="select select-xs min-w-24 h-8 text-nowrap border-none font-bold transition-all duration-300 inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }}">
+                                        class="select select-xs min-w-24 h-8 text-nowrap border-none font-bold transition-all duration-300 inset-ring bg-slate-50 dark:bg-gray-800 {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }}">
                                         <option class="hover:bg-green-100 text-green-800" value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }}>
                                             Aktif</option>
                                         <option class="hover:bg-red-100 text-red-800" value="inactive" {{ strtolower($customer->status) != 'active' ? 'selected' : '' }}>

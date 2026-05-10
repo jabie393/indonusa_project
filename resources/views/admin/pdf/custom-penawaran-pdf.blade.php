@@ -230,13 +230,13 @@
                                 <td class="border px-2 py-1">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($item->harga, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($item->harga, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                                 <td class="border px-2 py-1">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($item->subtotal, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                                 <td class="border px-2 py-1 text-center">
@@ -294,7 +294,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->subtotal, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -303,7 +303,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->tax, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -312,7 +312,7 @@
                                 <td class="border-black px-2 text-white">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->grand_total, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>

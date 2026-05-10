@@ -307,7 +307,7 @@
                                             <td class="whitespace-nowrap px-6 py-5">
                                                 <div class="flex items-baseline font-medium text-gray-700 dark:text-gray-300">
                                                     <span class="mr-1 text-[10px] font-bold text-gray-400">Rp</span>
-                                                    <span class="text-sm">{{ number_format($item->harga, 0, ',', '.') }}</span>
+                                                    <span class="text-sm">{{ number_format($item->harga, 0, '.', ',') }}</span>
                                                 </div>
                                             </td>
                                             <td class="whitespace-nowrap px-6 py-5">
@@ -316,7 +316,7 @@
                                                 @endphp
                                                 <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
                                                     <span class="mr-1 text-[10px] font-bold opacity-60">Rp</span>
-                                                    <span class="text-sm tracking-tight">{{ number_format($totalSetelahDiskon, 0, ',', '.') }}</span>
+                                                    <span class="text-sm tracking-tight">{{ number_format($totalSetelahDiskon, 0, '.', ',') }}</span>
                                                 </div>
                                             </td>
                                             <td class="px-6 py-5 text-center">
@@ -376,7 +376,7 @@
                                         <td class="whitespace-nowrap px-6 py-5">
                                             <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
                                                 <span class="mr-1 text-xs opacity-70">Rp</span>
-                                                <span class="text-xl tracking-tighter">{{ number_format($customPenawaran->subtotal, 0, ',', '.') }}</span>
+                                                <span class="text-xl tracking-tighter">{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}</span>
                                             </div>
                                         </td>
                                         <td></td>
@@ -511,7 +511,7 @@
                                     <div class="flex items-center justify-between text-sm">
                                         <span class="font-medium text-gray-500 dark:text-gray-400">Sub-Total Penawaran</span>
                                         <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->subtotal, 0, ',', '.') }}
+                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
                                         </span>
                                     </div>
 
@@ -524,7 +524,7 @@
                                             </span>
                                         </div>
                                         <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->tax, 0, ',', '.') }}
+                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
                                         </span>
                                     </div>
 
@@ -537,7 +537,7 @@
                                         <div class="flex items-baseline justify-between">
                                             <span class="align-top text-xs font-bold text-[#225A97] dark:text-blue-400">Rp</span>
                                             <span class="text-3xl font-black tracking-tighter text-[#225A97] dark:text-blue-400">
-                                                {{ number_format($customPenawaran->grand_total, 0, ',', '.') }}
+                                                {{ number_format($customPenawaran->grand_total, 0, '.', ',') }}
                                             </span>
                                         </div>
                                     </div>

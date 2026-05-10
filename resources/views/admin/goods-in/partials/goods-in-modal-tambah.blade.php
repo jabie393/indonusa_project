@@ -1,176 +1,339 @@
+<style>
+    :root {
+        --gradient-header: linear-gradient(to right, #225A97, #0D223A);
+        --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
+        --field: #f8fafc;
+        --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    }
+</style>
+
 <dialog id="tambahBarang" class="modal">
     <div
-        class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">
-                Tambah Barang
-            </h3>
-            <div class="modal-action m-0">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button
-                        class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </form>
+        class="modal-box relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 max-h-[95vh]">
+
+        <!-- Header -->
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                        <path d="M12 22V12"></path>
+                        <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                        <path d="m7.5 4.27 9 5.15"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-semibold leading-tight">Tambah Barang</h1>
+                    <p class="text-xs text-white/80">Lengkapi detail produk untuk inventaris baru</p>
+                </div>
             </div>
-        </div>
+            <form method="dialog">
+                <button aria-label="Tutup" class="rounded-xl p-1.5 transition hover:bg-white/10" type="submit">
+                    <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </form>
+        </header>
 
-        <form action="{{ route('goods-in.store') }}" method="POST"
-            class="flex h-full flex-col space-y-4 overflow-auto p-4" enctype="multipart/form-data">
-            <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-                    @csrf
-                    <div class="md:col-span-2">
-                        <!-- Gambar Barang -->
-                        <div class="md:col-span-1">
-                            <div class="mb-4">
+        <!-- Form Content -->
+        <form action="{{ route('goods-in.store') }}" method="POST" enctype="multipart/form-data"
+            class="grid flex-1 gap-8 overflow-y-auto p-7 md:grid-cols-[1fr_1.4fr]" id="add-item-form">
+            @csrf
 
-                                <label for="gambar"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
-                                    Barang
-                                </label>
-                                <input type="file" name="gambar" id="gambar" class="hidden" accept="image/*" />
-
-                                <div id="gambar_preview"
-                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
-                                    <input id="gambar" type="file" class="hidden" accept="image/*" />
-                                    <label id="gambar_label" for="gambar" class="m-auto cursor-pointer">
-                                        <img class="mx-auto hidden h-full max-h-48 max-w-48" id="modified_image"
-                                            src="" alt="" />
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor"
-                                            class="mx-auto mb-4 h-8 w-8 text-gray-700">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
-                                        </svg>
-                                        <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-700">Upload picture
-                                        </h5>
-                                    </label>
-                                </div>
+            <!-- Left Column: Media & Status -->
+            <div class="space-y-6">
+                <!-- Image Upload Section -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 5h6"></path>
+                            <path d="M19 2v6"></path>
+                            <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"></path>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                            <circle cx="9" cy="9" r="2"></circle>
+                        </svg>
+                        Gambar Barang
+                    </label>
+                    <div class="group relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 transition hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl"
+                        id="image-dropzone">
+                        <div class="flex flex-col items-center gap-2 text-slate-400 group-hover:text-blue-500"
+                            id="upload-placeholder">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-blue-100 group-hover:text-blue-600">
+                                <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3v12"></path>
+                                    <path d="m17 8-5-5-5 5"></path>
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                </svg>
                             </div>
+                            <p class="text-sm font-semibold text-slate-700">Upload gambar</p>
+                            <p class="text-xs">PNG, JPG hingga 5MB</p>
                         </div>
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div class="space-y-4">
-                                <div>
-                                    <label for="status_listing"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Status
-                                        Listing</label>
-                                    <select name="status_listing" id="status_listing"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                        <option value="listing">Listing</option>
-                                        <option value="non listing">Non Listing</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="nama_barang"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
-                                        Barang</label>
-                                    <input type="text" name="nama_barang" id="nama_barang"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </div>
-                                <div>
-                                    <label for="kategori" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
-                                    <select name="kategori" id="kategori" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                        <option value="" disabled selected>Pilih Kategori</option>
-                                        @foreach ($kategoriList as $kategori)
-                                            <option value="{{ $kategori }}">{{ $kategori }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="relative">
-                                    <label for="kode_barang" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
-                                        Barang</label>
-                                    <div class="relative">
-                                        <input type="text" name="kode_barang" id="kode_barang"
-                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            readonly>
-                                        <button type="button" id="refreshKodeBarang"
-                                            class="absolute inset-y-0 right-0 flex items-center pr-3">
-                                            <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                                                viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path
-                                                    d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16"
-                                                    stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    <!-- Warning container untuk kode barang -->
-                                    <div id="kode-barang-warning-container"></div>
-                                </div>
-                            </div>
-
-                            <div class="space-y-4">
-
-                                <div>
-                                    <label for="stok"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok</label>
-                                    <input type="number" name="stok" id="stok"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </div>
-                                <div>
-                                    <label for="satuan"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Satuan</label>
-                                    <input type="text" name="satuan" id="satuan"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </div>
-                                <div>
-                                    <label for="lokasi"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lokasi</label>
-                                    <input type="text" name="lokasi" id="lokasi"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </div>
-                                <div>
-                                    <label for="harga"
-                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga</label>
-                                    <input type="number" name="harga" id="harga"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                </div>
-                            </div>
-                        </div>
+                        <img id="image-preview" class="absolute inset-0 h-full w-full object-contain hidden" src="" alt="Preview">
+                        <input accept="image/*" name="gambar" id="gambar" class="absolute inset-0 opacity-0 cursor-pointer"
+                            type="file" />
                     </div>
+                </div>
 
-
-                    <div class="h-full sm:col-span-1">
-
-                        <label for="deskripsi"
-                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
-                        <textarea name="deskripsi" id="deskripsi"
-                            class="block h-[90%] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                            rows="3" placeholder="Deskripsi barang (opsional)"></textarea>
+                <!-- Status Listing Dropdown -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500" for="status_listing">Status
+                        Listing</label>
+                    <div class="relative">
+                        <select
+                            class="w-full appearance-none border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="status_listing" name="status_listing" required>
+                            <option value="listing">🟢 Listing</option>
+                            <option value="non listing">🔴 Non Listing</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
-            <div class="">
+            <!-- Right Column: Detail Information -->
+            <div class="space-y-5">
+                <!-- Nama Barang -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="nama_barang">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                            <path d="M12 22V12"></path>
+                            <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                            <path d="m7.5 4.27 9 5.15"></path>
+                        </svg>
+                        Nama Barang
+                    </label>
+                    <input
+                        class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="nama_barang" name="nama_barang" placeholder="cth. Kopi Arabika 250g" type="text" required />
+                </div>
 
-                <button type="submit"
-                    class="relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Tambah
-                </button>
+                <!-- Deskripsi -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="deskripsi">Deskripsi</label>
+                    <textarea
+                        class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition resize-none rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="deskripsi" name="deskripsi" placeholder="Tulis deskripsi singkat tentang barang (opsional)…"
+                        rows="3"></textarea>
+                </div>
+
+                <!-- Secondary Details Grid -->
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <!-- Kategori -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="kategori">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
+                                <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
+                            </svg>
+                            Kategori
+                        </label>
+                        <select
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="kategori" name="kategori" required>
+                            <option disabled selected value="">Pilih kategori</option>
+                            @foreach ($kategoriList as $kategori)
+                                <option value="{{ $kategori }}">{{ $kategori }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Stok -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="stok">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
+                            </svg>
+                            Stok
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="stok" name="stok" placeholder="0" type="number" required />
+                    </div>
+
+                    <!-- Satuan -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="satuan">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"></path>
+                                <path d="m14.5 12.5 2-2"></path>
+                                <path d="m11.5 9.5 2-2"></path>
+                                <path d="m8.5 6.5 2-2"></path>
+                                <path d="m17.5 15.5 2-2"></path>
+                            </svg>
+                            Satuan
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="satuan" name="satuan" placeholder="pcs, kg, box…" type="text" required />
+                    </div>
+
+                    <!-- Lokasi -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="lokasi">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Lokasi
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="lokasi" name="lokasi" placeholder="Gudang A — Rak 3" type="text" required />
+                    </div>
+
+                    <!-- Kode Barang -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="kode_barang">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <line x1="4" x2="20" y1="9" y2="9"></line>
+                                <line x1="4" x2="20" y1="15" y2="15"></line>
+                                <line x1="10" x2="8" y1="3" y2="21"></line>
+                                <line x1="16" x2="14" y1="3" y2="21"></line>
+                            </svg>
+                            Kode Barang
+                        </label>
+                        <div class="relative">
+                            <input
+                                class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-mono focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition pr-10 rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                id="kode_barang" name="kode_barang" type="text" readonly />
+                            <button aria-label="Generate kode baru" id="refreshKodeBarang"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-blue-100 hover:text-blue-600"
+                                type="button">
+                                <svg fill="none" height="16" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+                                    <path d="M21 3v5h-5"></path>
+                                    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+                                    <path d="M8 16H3v5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="kode-barang-warning-container"></div>
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="harga_display">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <line x1="12" x2="12" y1="2" y2="22"></line>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                            Harga
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                            <input
+                                class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                id="harga_display" placeholder="0" type="text" required />
+                            <input type="hidden" name="harga" id="harga" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
+
+        <!-- Footer -->
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button
+                        class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button
+                    class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
+                    form="add-item-form" style="background-image: var(--gradient-brand)" type="submit">
+                    Tambah Barang
+                </button>
+            </div>
+        </footer>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
 </dialog>
 
 <script>
     window.CSRF_TOKEN = "{{ csrf_token() }}";
     window.CHECK_KODE_BARANG_URL = "{{ route('check.kode.barang') }}";
+
+    // Image preview logic
+    const gambarInput = document.getElementById('gambar');
+    const imagePreview = document.getElementById('image-preview');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+
+    if (gambarInput) {
+        gambarInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    uploadPlaceholder.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // Harga formatting logic
+    const hargaDisplay = document.getElementById('harga_display');
+    const hargaHidden = document.getElementById('harga');
+
+    if (hargaDisplay && hargaHidden) {
+        hargaDisplay.addEventListener('input', function(e) {
+            // Remove all non-digits
+            let value = this.value.replace(/\D/g, '');
+            
+            // Update hidden input
+            hargaHidden.value = value;
+            
+            // Format for display
+            if (value !== '') {
+                this.value = parseInt(value).toLocaleString('en-US');
+            } else {
+                this.value = '';
+            }
+        });
+    }
 </script>
 
 @vite(['resources/js/checker.js'])

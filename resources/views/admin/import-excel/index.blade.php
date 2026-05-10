@@ -96,13 +96,13 @@
                             <tr>
                                 <th class="min-w-[180px] px-4 py-3">Kode Barang</th>
                                 <th class="min-w-[200px] px-4 py-3">Nama Barang</th>
+                                <th class="min-w-[200px] px-4 py-3">Deskripsi</th>
                                 <th class="min-w-[200px] px-4 py-3">Kategori</th>
                                 <th class="min-w-[150px] px-4 py-3">Stok</th>
                                 <th class="min-w-[200px] px-4 py-3">Harga</th>
                                 <th class="min-w-[150px] px-4 py-3">Satuan</th>
                                 <th class="min-w-[150px] px-4 py-3">Status Listing</th>
                                 <th class="min-w-[150px] px-4 py-3">Gambar</th>
-                                <th class="min-w-[200px] px-4 py-3">Deskripsi</th>
                                 <th class="px-4 py-3">Aksi</th>
                             </tr>
                         </thead>
@@ -130,6 +130,9 @@
                                     <input type="text" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                                 </td>
                                 <td>
+                                    <input type="text" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
+                                </td>
+                                <td>
                                     <select name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                                         <option value="" disabled selected>Pilih Kategori</option>
                                         @foreach ($kategoriList as $kategori)
@@ -141,7 +144,11 @@
                                     <input type="number" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                                 </td>
                                 <td>
-                                    <input type="number" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
+                                    <div class="relative">
+                                        <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                                        <input class="w-full border text-gray-900 border-gray-300 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="0" type="text" required />
+                                        <input type="hidden" name="" id="" />
+                                    </div>
                                 </td>
                                 <td>
                                     <input type="text" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
@@ -161,9 +168,7 @@
                                     </div>
                                     <div class="item-images-preview mt-2 flex flex-wrap gap-2 space-y-2"></div>
                                 </td>
-                                <td>
-                                    <input type="text" name="" id="" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
-                                </td>
+
                                 <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">

@@ -80,8 +80,8 @@
                 <td style="text-align: center; border: 1px solid #ddd;">{{ $i + 1 }}</td>
                 <td colspan="5" style="border: 1px solid #ddd;">{{ $item['nama_barang'] ?? ($item['description'] ?? '-') }}</td>
                 <td style="text-align: center; border: 1px solid #ddd;">{{ $item['qty'] ?? ($item['quantity'] ?? 0) }}</td>
-                <td style="text-align: right; border: 1px solid #ddd;">{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}</td>
-                <td style="text-align: right; border: 1px solid #ddd;">{{ number_format($item['subtotal'] ?? 0, 0, ',', '.') }}</td>
+                <td style="text-align: right; border: 1px solid #ddd;">{{ number_format($item['harga'] ?? 0, 0, '.', ',') }}</td>
+                <td style="text-align: right; border: 1px solid #ddd;">{{ number_format($item['subtotal'] ?? 0, 0, '.', ',') }}</td>
             </tr>
         @endforeach
     </tbody>
@@ -93,22 +93,22 @@
         <tr>
             <td colspan="7"></td>
             <td style="text-align: right; font-weight: bold;">Subtotal</td>
-            <td style="text-align: right;">{{ number_format($subtotal, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($subtotal, 0, '.', ',') }}</td>
         </tr>
         <tr>
             <td colspan="7"></td>
             <td style="text-align: right; font-weight: bold;">DPP</td>
-            <td style="text-align: right;">{{ number_format($dpp, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($dpp, 0, '.', ',') }}</td>
         </tr>
         <tr>
             <td colspan="7"></td>
             <td style="text-align: right; font-weight: bold;">PPN</td>
-            <td style="text-align: right;">{{ number_format($tax, 0, ',', '.') }}</td>
+            <td style="text-align: right;">{{ number_format($tax, 0, '.', ',') }}</td>
         </tr>
         <tr style="border-top: 2px solid #000;">
             <td colspan="7"></td>
             <td style="text-align: right; font-weight: bold;">Total</td>
-            <td style="text-align: right; font-weight: bold;">{{ number_format($grandTotal, 0, ',', '.') }}</td>
+            <td style="text-align: right; font-weight: bold;">{{ number_format($grandTotal, 0, '.', ',') }}</td>
         </tr>
 
         <tr>

@@ -261,7 +261,7 @@
                                             Rp
                                         </span>
                                         <span>
-                                            {{ number_format($displayHarga, 2, ',', '.') }}
+                                            {{ number_format($displayHarga, 2, '.', ',') }}
                                         </span>
                                     </div>
                                 </td>
@@ -271,7 +271,7 @@
                                             Rp
                                         </span>
                                         <span>
-                                            {{ number_format($computedSubtotal, 2, ',', '.') }}
+                                            {{ number_format($computedSubtotal, 2, '.', ',') }}
                                         </span>
                                     </div>
                                 </td>
@@ -337,7 +337,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($finalSubtotal, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($finalSubtotal, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -346,7 +346,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($finalTax, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($finalTax, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -355,7 +355,7 @@
                                 <td class="border-black px-2 text-white">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($finalGrandTotal, 0, ',', '.') }}</span>
+                                        <span>{{ number_format($finalGrandTotal, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>

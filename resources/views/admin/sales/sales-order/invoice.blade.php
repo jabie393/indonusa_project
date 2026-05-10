@@ -57,8 +57,8 @@
                                             <td style="padding:12px; border:1px solid #000000; text-align: left; color: #000000;">{{ $item['nama_barang'] ?? ($item['description'] ?? '-') }}</td>
                                             <td style="padding:12px; border:1px solid #000000; text-align: left; font-size:16px; color: #000000;">{{ $item['deskripsi'] ?? '-' }}</td>
                                             <td style="padding:12px; border:1px solid #000000; text-align: center; color: #000000;">{{ $item['qty'] ?? ($item['quantity'] ?? 0) }}</td>
-                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['harga'] ?? 0, 0, ',', '.') }}</td>
-                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['subtotal'] ?? 0, 0, ',', '.') }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['harga'] ?? 0, 0, '.', ',') }}</td>
+                                            <td style="padding:12px; border:1px solid #000000; text-align: right; color: #000000;">{{ number_format($item['subtotal'] ?? 0, 0, '.', ',') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -69,22 +69,22 @@
                                 <tr>
                                     <td style="padding: 8px 0; text-align: right; width: 60%;">Subtotal</td>
                                     <td style="padding: 8px 0;">:</td>
-                                    <td style="padding: 8px 0 8px 12px; text-align: right; width: 40%; font-weight:bold;">{{ number_format($subtotal ?? 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right; width: 40%; font-weight:bold;">{{ number_format($subtotal ?? 0, 0, '.', ',') }}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; text-align: right;">DPP</td>
                                     <td style="padding: 8px 0;">:</td>
-                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ $tax > 0 ? number_format(round(($subtotal * 100) / 111), 0, ',', '.') : '0' }}</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ $tax > 0 ? number_format(round(($subtotal * 100) / 111), 0, '.', ',') : '0' }}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; text-align: right;">PPN (Tax)</td>
                                     <td style="padding: 8px 0;">:</td>
-                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ number_format($tax ?? 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 8px 0 8px 12px; text-align: right;">{{ number_format($tax ?? 0, 0, '.', ',') }}</td>
                                 </tr>
                                 <tr style="border-top:3px solid #000000;">
                                     <td style="padding: 10px 0; text-align: right; font-size:18px; font-weight:bold;">Total</td>
                                     <td style="padding: 10px 0; font-weight:bold;">:</td>
-                                    <td style="padding: 10px 0 10px 12px; text-align: right; font-size:18px; font-weight:bold;">{{ number_format($grandTotal ?? 0, 0, ',', '.') }}</td>
+                                    <td style="padding: 10px 0 10px 12px; text-align: right; font-size:18px; font-weight:bold;">{{ number_format($grandTotal ?? 0, 0, '.', ',') }}</td>
                                 </tr>
                             </table>
                         </div>

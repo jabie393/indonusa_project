@@ -384,66 +384,98 @@ document.addEventListener("DOMContentLoaded", function () {
             // 4: stok
             const tdStok = newRow.children[4];
             if (tdStok) {
-                let inp = tdStok.querySelector("input");
-                if (!inp) {
-                    inp = document.createElement("input");
-                    inp.type = "number";
-                    tdStok.appendChild(inp);
+                const displayInput = tdStok.querySelector('input[type="text"]');
+                const hiddenInput = tdStok.querySelector('input[type="hidden"]');
+                
+                let v = getVal("stok") || "0";
+                if (typeof v === "string") {
+                    v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
-                const v = getVal("stok") || 0;
-                inp.value = v;
-
+                
+                if (displayInput) {
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.addEventListener('input', function(e) {
+                        let rawValue = this.value.replace(/\D/g, "");
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                    });
+                }
+                
                 if (isKnown) {
-                    const hidden = document.createElement("input");
-                    hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][stok]`;
-                    hidden.value = v;
-                    tdStok.appendChild(hidden);
+                    if (hiddenInput) {
+                        hiddenInput.name = `rows[${rowIndex}][stok]`;
+                        hiddenInput.value = v;
+                    } else {
+                        // Fallback
+                        let inp = tdStok.querySelector("input");
+                        if (inp) {
+                            inp.value = v;
+                            inp.name = `rows[${rowIndex}][stok]`;
+                        }
+                    }
                 } else {
-                    inp.readOnly = true;
-                    inp.classList.add(
-                        "border-red-500",
-                        "focus:border-red-500",
-                        "focus:ring-red-500",
-                        "cursor-not-allowed",
-                        "bg-gray-100",
-                        "dark:bg-gray-700",
-                        "text-gray-500"
-                    );
-                    inp.title = "Barang belum terdaftar";
+                    if (displayInput) {
+                        displayInput.readOnly = true;
+                        displayInput.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "cursor-not-allowed",
+                            "bg-gray-100",
+                            "dark:bg-gray-700",
+                            "text-gray-500"
+                        );
+                        displayInput.title = "Barang belum terdaftar";
+                    }
                 }
             }
 
             // 5: harga
             const tdHarga = newRow.children[5];
             if (tdHarga) {
-                let inp = tdHarga.querySelector("input");
-                if (!inp) {
-                    inp = document.createElement("input");
-                    inp.type = "number";
-                    tdHarga.appendChild(inp);
+                const displayInput = tdHarga.querySelector('input[type="text"]');
+                const hiddenInput = tdHarga.querySelector('input[type="hidden"]');
+                
+                let v = getVal("harga") || "0";
+                if (typeof v === "string") {
+                    v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
-                const v = getVal("harga") || "";
-                inp.value = v;
-
+                
+                if (displayInput) {
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.addEventListener('input', function(e) {
+                        let rawValue = this.value.replace(/\D/g, "");
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                    });
+                }
+                
                 if (isKnown) {
-                    const hidden = document.createElement("input");
-                    hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][harga]`;
-                    hidden.value = v;
-                    tdHarga.appendChild(hidden);
+                    if (hiddenInput) {
+                        hiddenInput.name = `rows[${rowIndex}][harga]`;
+                        hiddenInput.value = v;
+                    } else {
+                        // Fallback
+                        let inp = tdHarga.querySelector("input");
+                        if (inp) {
+                            inp.value = v;
+                            inp.name = `rows[${rowIndex}][harga]`;
+                        }
+                    }
                 } else {
-                    inp.readOnly = true;
-                    inp.classList.add(
-                        "border-red-500",
-                        "focus:border-red-500",
-                        "focus:ring-red-500",
-                        "cursor-not-allowed",
-                        "bg-gray-100",
-                        "dark:bg-gray-700",
-                        "text-gray-500"
-                    );
-                    inp.title = "Barang belum terdaftar";
+                    if (displayInput) {
+                        displayInput.readOnly = true;
+                        displayInput.classList.add(
+                            "border-red-500",
+                            "focus:border-red-500",
+                            "focus:ring-red-500",
+                            "cursor-not-allowed",
+                            "bg-gray-100",
+                            "dark:bg-gray-700",
+                            "text-gray-500"
+                        );
+                        displayInput.title = "Barang belum terdaftar";
+                    }
                 }
             }
 

@@ -1,11 +1,17 @@
 @import 'flowbite/src/themes/default' layer(base);
 @import 'tailwindcss';
+@import url('datatables.net-fixedheader-dt');
+
 
 @plugin '@tailwindcss/forms';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source "../node_modules/flowbite";
+
+@plugin "daisyui" {
+  themes: light --default;
+}
 
 @custom-variant dark (&:is(.dark *));
 @custom-variant dark (&:where(.dark, .dark *));

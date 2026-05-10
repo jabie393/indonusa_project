@@ -52,7 +52,12 @@
                             <td class="px-4">{{ $barang->stok }}</td>
                             <td class="px-4">{{ $barang->satuan }}</td>
                             <td class="px-4">{{ $barang->lokasi }}</td>
-                            <td class="px-4">{{ $barang->harga }}</td>
+                            <td class="px-4 text-nowrap font-medium text-slate-700">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                </div>
+                            </td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>

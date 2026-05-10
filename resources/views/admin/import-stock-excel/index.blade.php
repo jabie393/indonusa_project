@@ -152,9 +152,11 @@
                                         required>
                                 </td>
                                 <td>
-                                    <input type="number" name="" id=""
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required step="0.01">
+                                    <div class="relative">
+                                        <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                                        <input class="w-full border text-gray-900 border-gray-300 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="0" type="text" required />
+                                        <input type="hidden" name="" id="" />
+                                    </div>
                                 </td>
                                 <td>
                                     <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">

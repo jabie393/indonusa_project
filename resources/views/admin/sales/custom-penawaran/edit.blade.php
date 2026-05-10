@@ -144,7 +144,7 @@
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="items[{{ $index }}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Keterangan diskon" value="{{ $item->keterangan ?? '' }}">
                                             </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, '.', ',') }}</td>
                                             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
                                                     <input type="file" name="items[{{ $index }}][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" multiple accept="image/*">
@@ -270,7 +270,7 @@
                                                 </div>
                                             </div>
                                             <input type="hidden" id="tax" name="tax" value="{{ old('tax', $customPenawaran->tax) }}">
-                                            <input type="text" id="tax_display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="{{ 'Rp ' . number_format($customPenawaran->tax, 0, ',', '.') }}">
+                                            <input type="text" id="tax_display" readonly class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white" value="{{ 'Rp ' . number_format($customPenawaran->tax, 0, '.', ',') }}">
                                         </div>
                                         <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
                                             <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -359,7 +359,7 @@
 
             // Format currency
             function formatCurrency(value) {
-                return new Intl.NumberFormat('id-ID', {
+                return new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0

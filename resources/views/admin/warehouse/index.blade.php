@@ -94,7 +94,12 @@
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             @if (Auth::user() && Auth::user()->role === 'General Affair')
-                                <td class="text-nowrap px-4 py-3">Rp{{ number_format($barang->harga, 0, ',', '.') }}</td>
+                                <td class="px-4 py-3 text-nowrap font-medium text-slate-700">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                </div>
+                            </td>
                             @endif
 
                             @if (Auth::user() && Auth::user()->role === 'Warehouse')

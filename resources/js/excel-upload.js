@@ -447,8 +447,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 tdNama.appendChild(hidden);
             }
 
-            // 2: kategori (select exists in template). Try to set select or fallback hidden
-            const tdKategori = newRow.children[2];
+            // 2: Deskripsi
+            const tdDeskripsi = newRow.children[2];
+            if (tdDeskripsi) {
+                let inp = tdDeskripsi.querySelector("input");
+                if (!inp) {
+                    inp = document.createElement("input");
+                    inp.type = "text";
+                    inp.className =
+                        "block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400";
+                    tdDeskripsi.appendChild(inp);
+                }
+                const v = getVal("deskripsi") || "";
+                inp.value = v;
+
+                // Hidden input for submission
+                const hidden = document.createElement("input");
+                hidden.type = "hidden";
+                hidden.name = `rows[${rowIndex}][deskripsi]`;
+                hidden.value = v;
+                tdDeskripsi.appendChild(hidden);
+            }
+
+            // 3: kategori (select exists in template). Try to set select or fallback hidden
+            const tdKategori = newRow.children[3];
             if (tdKategori) {
                 const sel = tdKategori.querySelector("select");
                 const v = (getVal("kategori") || "").toString().trim();
@@ -494,46 +516,74 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 3: stok
-            const tdStok = newRow.children[3];
+            // 4: stok
+            const tdStok = newRow.children[4];
             if (tdStok) {
-                let inp = tdStok.querySelector("input");
-                if (!inp) {
-                    inp = document.createElement("input");
-                    inp.type = "number";
-                    tdStok.appendChild(inp);
+                const displayInput = tdStok.querySelector('input[type="text"]');
+                const hiddenInput = tdStok.querySelector('input[type="hidden"]');
+                
+                let v = getVal("stok") || "0";
+                if (typeof v === "string") {
+                    v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
-                const v = getVal("stok") || 0;
-                inp.value = v;
-                const hidden = document.createElement("input");
-                hidden.type = "hidden";
-                hidden.name = `rows[${rowIndex}][stok]`;
-                hidden.value = v;
-                tdStok.appendChild(hidden);
+                
+                if (displayInput) {
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.addEventListener('input', function(e) {
+                        let rawValue = this.value.replace(/\D/g, "");
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                    });
+                }
+                
+                if (hiddenInput) {
+                    hiddenInput.name = `rows[${rowIndex}][stok]`;
+                    hiddenInput.value = v;
+                } else {
+                    // Fallback to basic input if premium structure missing
+                    let inp = tdStok.querySelector("input");
+                    if (inp) {
+                        inp.value = v;
+                        inp.name = `rows[${rowIndex}][stok]`;
+                    }
+                }
             }
 
-            // 4: harga
-            const tdHarga = newRow.children[4];
+            // 5: harga
+            const tdHarga = newRow.children[5];
             if (tdHarga) {
-                let inp = tdHarga.querySelector("input");
-                if (!inp) {
-                    inp = document.createElement("input");
-                    inp.type = "text";
-                    tdHarga.appendChild(inp);
+                const displayInput = tdHarga.querySelector('input[type="text"]');
+                const hiddenInput = tdHarga.querySelector('input[type="hidden"]');
+                
+                let v = getVal("harga") || "0";
+                if (typeof v === "string") {
+                    v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
-                let v = getVal("harga") || "";
-                if (typeof v === "string")
-                    v = v.replace(/[^\d\.,-]/g, "").replace(",", ".");
-                inp.value = v;
-                const hidden = document.createElement("input");
-                hidden.type = "hidden";
-                hidden.name = `rows[${rowIndex}][harga]`;
-                hidden.value = v;
-                tdHarga.appendChild(hidden);
+                
+                if (displayInput) {
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.addEventListener('input', function(e) {
+                        let rawValue = this.value.replace(/\D/g, "");
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                    });
+                }
+                
+                if (hiddenInput) {
+                    hiddenInput.name = `rows[${rowIndex}][harga]`;
+                    hiddenInput.value = v;
+                } else {
+                    // Fallback
+                    let inp = tdHarga.querySelector("input");
+                    if (inp) {
+                        inp.value = v;
+                        inp.name = `rows[${rowIndex}][harga]`;
+                    }
+                }
             }
 
-            // 5: satuan
-            const tdSatuan = newRow.children[5];
+            // 6: satuan
+            const tdSatuan = newRow.children[6];
             if (tdSatuan) {
                 let inp = tdSatuan.querySelector("input");
                 if (!inp) {
@@ -550,8 +600,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 tdSatuan.appendChild(hidden);
             }
 
-            // 6: status_listing
-            const tdStatus = newRow.children[6];
+            // 7: status_listing
+            const tdStatus = newRow.children[7];
             if (tdStatus) {
                 const sel = tdStatus.querySelector("select");
                 const v = (getVal("status_listing") || "listing")
@@ -576,8 +626,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 7: Gambar
-            const tdGambar = newRow.children[7];
+            // 8: Gambar
+            const tdGambar = newRow.children[8];
             if (tdGambar) {
                 const fileInput = tdGambar.querySelector('input[type="file"]');
                 if (fileInput) {
@@ -592,28 +642,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     );
                     if (uploadBtn) uploadBtn.style.display = "block";
                 }
-            }
-
-            // 8: Deskripsi
-            const tdDeskripsi = newRow.children[8];
-            if (tdDeskripsi) {
-                let inp = tdDeskripsi.querySelector("input");
-                if (!inp) {
-                    inp = document.createElement("input");
-                    inp.type = "text";
-                    inp.className =
-                        "block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400";
-                    tdDeskripsi.appendChild(inp);
-                }
-                const v = getVal("deskripsi") || "";
-                inp.value = v;
-
-                // Hidden input for submission
-                const hidden = document.createElement("input");
-                hidden.type = "hidden";
-                hidden.name = `rows[${rowIndex}][deskripsi]`;
-                hidden.value = v;
-                tdDeskripsi.appendChild(hidden);
             }
 
             // 9: aksi - keep remove button functional
