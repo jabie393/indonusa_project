@@ -148,7 +148,7 @@
                     </div>
 
                     <!-- Items Table -->
-                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 max-h-[80vh] overflow-y-auto rounded-2xl shadow-sm">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -172,17 +172,17 @@
                             <table id=""
                                    class="h-full w-full border-collapse">
                                 <thead>
-                                    <tr class="bg-gray-200 dark:bg-gray-700">
-                                        <th class="min-w-[50px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">No</th>
-                                        <th class="min-w-[250px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Qty</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Satuan</th>
-                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
-                                        <th class="min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
-                                        <th class="min-w-[200px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
-                                        <th class="min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
-                                        <th class="min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
-                                        <th class="min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
+                                    <tr class="">
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[50px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">No</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[250px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Qty</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Satuan</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[200px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
+                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
