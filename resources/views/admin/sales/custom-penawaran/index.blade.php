@@ -70,36 +70,24 @@
                             <td class="text-nowrap px-4 py-4">{{ $penawaran->our_ref }}</td>
                             <td class="px-4 py-4 text-center">
                                 @php
-                                    $discountCounts = $penawaran->items
-                                        ->pluck('diskon')
-                                        ->groupBy(function ($d) {
-                                            return $d;
-                                        })
-                                        ->map(function ($g, $k) {
-                                            return ['percent' => $k, 'count' => $g->count()];
-                                        })
-                                        ->values();
+                                    $discounts = $penawaran->items->pluck('diskon')->map(fn($d) => (float)($d ?? 0));
+                                    $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
+                                    $hasAbove = $discounts->contains(fn($d) => $d > 20);
                                 @endphp
-                                @if ($discountCounts->isEmpty())
-                                    <span class="text-gray-300 dark:text-gray-600">-</span>
+                                @if ($hasBelow && $hasAbove)
+                                    <span class="badge bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600 inline-flex items-center px-2 py-0.5 text-xs font-bold">
+                                        &lt;20% &amp; &gt;20%
+                                    </span>
+                                @elseif ($hasAbove)
+                                    <span class="badge bg-red-50 text-red-700 inset-ring inset-ring-red-600 inline-flex items-center px-2 py-0.5 text-xs font-bold">
+                                        &gt;20%
+                                    </span>
+                                @elseif ($hasBelow)
+                                    <span class="badge bg-green-50 text-green-700 inset-ring inset-ring-green-600 inline-flex items-center px-2 py-0.5 text-xs font-bold">
+                                        &lt;20%
+                                    </span>
                                 @else
-                                    <div class="flex flex-col items-center gap-1">
-                                        @php $displayed = false; @endphp
-                                        @foreach ($discountCounts as $dc)
-                                            @php $dk = (float) $dc['percent']; @endphp
-                                            @if ($dk > 0)
-                                                <div class="flex flex-col items-center">
-                                                    <span class="{{ $dk > 20 ? 'badge bg-red-50 text-red-700 inset-ring inset-ring-red-600' : 'badge bg-green-50 text-green-700 inset-ring inset-ring-green-600' }} inline-flex items-center px-2 py-0.5 text-xs font-bold">
-                                                        {{ $dk }}%{{ $dc['count'] > 1 ? ' x' . $dc['count'] : '' }}
-                                                    </span>
-                                                </div>
-                                                @php $displayed = true; @endphp
-                                            @endif
-                                        @endforeach
-                                        @if (!$displayed)
-                                            <span class="text-gray-300 dark:text-gray-600">-</span>
-                                        @endif
-                                    </div>
+                                    <span class="text-gray-300 dark:text-gray-600">-</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
@@ -146,15 +134,15 @@
                                     $statusLabel =
                                         [
                                             'draft' => 'Draft',
-                                            'pending_approval' => 'Menunggu Approve Supervisor',
+                                            'pending_approval' => 'Waiting for Supervisor Approval',
                                             'open' => 'Open',
-                                            'sent_to_warehouse' => 'Terkirim ke Gudang',
-                                            'sent_to_penawaran' => 'Terkirim ke Penawaran',
-                                            'approved' => 'Disetujui/Open',
-                                            'rejected' => 'Ditolak',
-                                            'expired' => 'Kadaluarsa',
-                                            'approved_supervisor' => 'Disetujui Supervisor',
-                                            'rejected_supervisor' => 'Ditolak Supervisor',
+                                            'sent_to_warehouse' => 'Sent to Warehouse',
+                                            'sent_to_penawaran' => 'Sent to Quotation',
+                                            'approved' => 'Approved / Open',
+                                            'rejected' => 'Rejected',
+                                            'expired' => 'Expired',
+                                            'approved_supervisor' => 'Approved by Supervisor',
+                                            'rejected_supervisor' => 'Rejected by Supervisor',
                                         ][$penawaran->status] ?? $penawaran->status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">

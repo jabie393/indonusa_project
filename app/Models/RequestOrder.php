@@ -111,13 +111,13 @@ class RequestOrder extends Model
         $labels = [
             'pending' => 'Pending',
             'open' => 'Open',
-            'sent_to_supervisor' => 'Dikirim ke Supervisor',
-            'approved_supervisor' => 'Disetujui Supervisor',
-            'rejected_supervisor' => 'Ditolak Supervisor',
-            'sent_to_warehouse' => 'Dikirim ke Gudang',
-            'approved_warehouse' => 'Disetujui Gudang',
-            'rejected_warehouse' => 'Ditolak Gudang',
-            'completed' => 'Selesai',
+            'sent_to_supervisor' => 'Waiting for Supervisor Approval',
+            'approved_supervisor' => 'Approved by Supervisor',
+            'rejected_supervisor' => 'Rejected by Supervisor',
+            'sent_to_warehouse' => 'Sent to Warehouse',
+            'approved_warehouse' => 'Approved by Warehouse',
+            'rejected_warehouse' => 'Rejected by Warehouse',
+            'completed' => 'Completed',
             'not_completed' => 'Partial Delivery',
         ];
         if (!$status) {

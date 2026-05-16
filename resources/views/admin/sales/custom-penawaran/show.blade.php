@@ -118,16 +118,16 @@
                                                         'pending_approval' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
                                                         'draft' => 'bg-gray-50 text-gray-600 ring-gray-600/20',
                                                         'sent' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
-                                                        'approved' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-                                                        'rejected' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+                                                        'approved_supervisor' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+                                                        'rejected_supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
                                                     ][$customPenawaran->status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
                                                 $statusLabel =
                                                     [
-                                                        'pending_approval' => 'Pending Approval',
+                                                        'pending_approval' => 'Waiting for Supervisor Approval',
                                                         'draft' => 'Draft',
-                                                        'sent' => 'Terkirim',
-                                                        'approved' => 'Disetujui',
-                                                        'rejected' => 'Ditolak',
+                                                        'sent' => 'Sent',
+                                                        'approved_supervisor' => 'Approved by Supervisor',
+                                                        'rejected_supervisor' => 'Rejected by Supervisor',
                                                     ][$customPenawaran->status] ?? strtoupper($customPenawaran->status);
                                             @endphp
                                             <div>

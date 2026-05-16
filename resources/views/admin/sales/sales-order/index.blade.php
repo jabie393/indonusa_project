@@ -67,18 +67,18 @@
             <table class="w-full">
                 <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No.PO</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. SO</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah Item</th>
-                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total</th>
-                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Diskon</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Berlaku Sampai</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No.PO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. Request</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. Penawaran</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. SO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Tanggal</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Customer</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Jumlah Item</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Total</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Diskon</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Status</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Berlaku Sampai</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -97,9 +97,8 @@
                                                 onblur="saveNoPO({{ $row['id'] }}, this.value)"
                                                 onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }"
                                             />
-                                            <div class="flex items-center justify-between gap-2">
+                                            <div class="flex items-center justify-between gap-2 flex-wrap">
                                                 <span class="text-xs text-gray-500 dark:text-gray-400">No.PO dapat diedit langsung di sini.</span>
-                                                <span id="no-po-status-{{ $row['id'] }}" class="hidden text-xs font-semibold text-green-600 dark:text-green-400">Tersimpan</span>
                                             </div>
                                         </div>
                                     @else
@@ -196,15 +195,15 @@
                                     $statusClass =
                                         [
                                             'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Dikirim ke Gudang' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Gudang' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Gudang' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Selesai' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Tidak Selesai' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Sent to Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Approved by Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Approved by Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
                                         ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
@@ -533,14 +532,14 @@
         function getStatusLabel(status) {
             const labels = {
                 'pending': 'Pending',
-                'in_process': 'Dalam Proses',
-                'shipped': 'Dikirim',
-                'completed': 'Selesai',
-                'cancelled': 'Dibatalkan',
+                'in_process': 'In Process',
+                'shipped': 'Shipped',
+                'completed': 'Completed',
+                'cancelled': 'Cancelled',
                 'draft': 'Draft',
-                'sent': 'Terkirim',
-                'approved': 'Disetujui',
-                'rejected': 'Ditolak',
+                'sent': 'Sent',
+                'approved': 'Approved',
+                'rejected': 'Rejected',
             };
             return labels[status] || status;
         }
@@ -716,23 +715,51 @@
             // Validasi tipe file
             if (imageType === 'pdf_po') {
                 if (file.type !== 'application/pdf') {
-                    Swal.fire('Format Salah!', 'Format file harus PDF', 'error');
+                    Swal.fire({
+                        title: 'Format Salah!',
+                        text: 'Format file harus PDF',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                     input.value = '';
                     return;
                 }
                 if (file.size > 5 * 1024 * 1024) {
-                    Swal.fire('File Terlalu Besar!', 'Ukuran file PDF maksimal 5MB', 'error');
+                    Swal.fire({
+                        title: 'File Terlalu Besar!',
+                        text: 'Ukuran file PDF maksimal 5MB',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                     input.value = '';
                     return;
                 }
             } else {
                 if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                    Swal.fire('Format Salah!', 'Format file harus JPG, JPEG, atau PNG', 'error');
+                    Swal.fire({
+                        title: 'Format Salah!',
+                        text: 'Format file harus JPG, JPEG, atau PNG',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                     input.value = '';
                     return;
                 }
                 if (file.size > 2 * 1024 * 1024) {
-                    Swal.fire('File Terlalu Besar!', 'Ukuran file maksimal 2MB', 'error');
+                    Swal.fire({
+                        title: 'File Terlalu Besar!',
+                        text: 'Ukuran file maksimal 2MB',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                     input.value = '';
                     return;
                 }
@@ -780,7 +807,10 @@
                             text: imageType === 'pdf_po' ? 'PDF berhasil diupload.' : 'Gambar berhasil diupload.',
                             icon: 'success',
                             timer: 1500,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            customClass: {
+                                popup: 'rounded-2xl!'
+                            }
                         });
 
                         if (imageType === 'pdf_po') {
@@ -820,19 +850,32 @@
                             </div>`;
                         }
                     } else {
-                        Swal.fire('Gagal!', data.message || 'Upload gagal', 'error');
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: data.message || 'Upload gagal',
+                            icon: 'error',
+                            customClass: {
+                                popup: 'rounded-2xl!'
+                            }
+                        });
                         container.innerHTML = originalContent;
                     }
                 })
                 .catch(() => {
-                    Swal.fire('Gagal!', 'Terjadi kesalahan sistem', 'error');
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan sistem',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                     container.innerHTML = originalContent;
                 });
         }
 
         function saveNoPO(id, value) {
             const trimmedValue = value.trim();
-            const statusEl = document.getElementById(`no-po-status-${id}`);
             const inputEl = document.getElementById(`no-po-input-${id}`);
 
             if (!inputEl) return;
@@ -851,97 +894,127 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        statusEl.classList.remove('hidden');
-                        statusEl.textContent = 'Tersimpan';
-                        setTimeout(() => statusEl.classList.add('hidden'), 2500);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Tersimpan!',
+                            text: 'No.PO berhasil diperbarui.',
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            customClass: {
+                                popup: 'rounded-2xl!'
+                            }
+                        });
                     } else {
-                        Swal.fire('Gagal!', data.message || 'Tidak dapat menyimpan No.PO', 'error');
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: data.message || 'Tidak dapat menyimpan No.PO',
+                            icon: 'error',
+                            customClass: {
+                                popup: 'rounded-2xl!'
+                            }
+                        });
                     }
                 })
                 .catch(() => {
-                    Swal.fire('Gagal!', 'Terjadi kesalahan sistem saat menyimpan No.PO', 'error');
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan sistem saat menyimpan No.PO',
+                        icon: 'error',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
                 });
         }
 
         function handleDeleteImage(type, id, imageType) {
-            Swal.fire({
-                title: 'Hapus file?',
-                text: "Tindakan ini tidak dapat dibatalkan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let endpoint = '';
-                    if (imageType === 'po') endpoint = `/request-order/${id}/upload-image-po`;
-                    else if (imageType === 'pdf_po') endpoint = `/request-order/${id}/upload-pdf-po`;
-                    else endpoint = `/sales-order/${id}/upload-image`;
+            window.confirmDelete(() => {
+                let endpoint = '';
+                if (imageType === 'po') endpoint = `/request-order/${id}/upload-image-po`;
+                else if (imageType === 'pdf_po') endpoint = `/request-order/${id}/upload-pdf-po`;
+                else endpoint = `/sales-order/${id}/upload-image`;
 
-                    const formData = new FormData();
-                    formData.append('_token', '{{ csrf_token() }}');
-                    formData.append('_method', 'DELETE');
+                const formData = new FormData();
+                formData.append('_token', '{{ csrf_token() }}');
+                formData.append('_method', 'DELETE');
 
-                    fetch(endpoint, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'Accept': 'application/json'
-                            },
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                Swal.fire({
-                                    title: 'Terhapus!',
-                                    text: 'File telah dihapus.',
-                                    icon: 'success',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-
-                                let containerId = '';
-                                if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
-                                else if (imageType === 'pdf_po') containerId = `pdf-po-preview-${id}-${type}`;
-                                else if (imageType === 'so') containerId = `image-so-preview-${id}-${type}`;
-                                else containerId = `image-preview-aksi-${id}-${type}`;
-
-                                const container = document.getElementById(containerId);
-
-                                if (imageType === 'po') {
-                                    container.innerHTML = `
-                                    <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-500 text-green-600 rounded-md text-[10px] font-semibold hover:bg-green-50 transition-colors shadow-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                                        Upload PO
-                                        <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'po')">
-                                    </label>`;
-                                } else if (imageType === 'pdf_po') {
-                                    container.innerHTML = '';
-                                } else if (imageType === 'so') {
-                                    container.innerHTML = `
-                                    <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-500 text-blue-600 rounded-md text-[10px] font-semibold hover:bg-blue-50 transition-colors shadow-sm">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                                        Upload SO
-                                        <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'so')">
-                                    </label>`;
-                                } else {
-                                    container.innerHTML = `
-                                    <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-700 rounded-md text-[9px] font-semibold hover:bg-gray-50 transition-colors shadow-xs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                                        Gambar
-                                        <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'main')">
-                                    </label>`;
+                fetch(endpoint, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                title: 'Terhapus!',
+                                text: 'File telah dihapus.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                customClass: {
+                                    popup: 'rounded-2xl!'
                                 }
+                            });
+
+                            let containerId = '';
+                            if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
+                            else if (imageType === 'pdf_po') containerId = `pdf-po-preview-${id}-${type}`;
+                            else if (imageType === 'so') containerId = `image-so-preview-${id}-${type}`;
+                            else containerId = `image-preview-aksi-${id}-${type}`;
+
+                            const container = document.getElementById(containerId);
+
+                            if (imageType === 'po') {
+                                container.innerHTML = `
+                                <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-green-500 text-green-600 rounded-md text-[10px] font-semibold hover:bg-green-50 transition-colors shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                    Upload PO
+                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'po')">
+                                </label>`;
+                            } else if (imageType === 'pdf_po') {
+                                container.innerHTML = '';
+                            } else if (imageType === 'so') {
+                                container.innerHTML = `
+                                <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-500 text-blue-600 rounded-md text-[10px] font-semibold hover:bg-blue-50 transition-colors shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                    Upload SO
+                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'so')">
+                                </label>`;
                             } else {
-                                Swal.fire('Gagal!', data.message || 'Gagal menghapus file', 'error');
+                                container.innerHTML = `
+                                <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-700 rounded-md text-[9px] font-semibold hover:bg-gray-50 transition-colors shadow-xs">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                                    Gambar
+                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'main')">
+                                </label>`;
                             }
-                        })
-                        .catch(() => {
-                            Swal.fire('Gagal!', 'Terjadi kesalahan sistem', 'error');
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: data.message || 'Gagal menghapus file',
+                                icon: 'error',
+                                customClass: {
+                                    popup: 'rounded-2xl!'
+                                }
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Terjadi kesalahan sistem',
+                            icon: 'error',
+                            customClass: {
+                                popup: 'rounded-2xl!'
+                            }
                         });
-                }
+                    });
             });
         }
     </script>
