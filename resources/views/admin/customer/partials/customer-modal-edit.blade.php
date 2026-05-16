@@ -190,8 +190,8 @@
                 <input type="tel" name="pics[${index}][phone]" value="${(phone || '')}" placeholder="08xxxxxxxx" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
             </div>
             <div class="col-span-1">
-                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email <span class="text-red-500">*</span></label>
-                <input type="email" name="pics[${index}][email]" value="${(email || '')}" placeholder="email@example.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Email (Opsional)</label>
+                <input type="email" name="pics[${index}][email]" value="${(email || '')}" placeholder="email@example.com" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
             </div>
             <div class="col-span-1">
                 <label class="mb-1 block text-xs font-medium text-gray-700 dark:text-gray-300">Posisi/Jabatan <span class="text-red-500">*</span></label>
