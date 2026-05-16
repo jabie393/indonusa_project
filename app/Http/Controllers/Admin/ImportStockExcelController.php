@@ -133,65 +133,62 @@ class ImportStockExcelController extends Controller
         if (is_array($formRows) && count($formRows) > 0) {
             DB::beginTransaction();
             try {
-                foreach ($formRows as $i => $r) {
-                    // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok
-                    $kode = $r['kode_barang'] ?? null;
-                    if (empty($kode)) {
-                        // Jika kode kosong di excel, generate baru (kasus item baru tanpa kode)
-                        $kode = 'IMP' . substr(uniqid(), -6);
-                    }
-
-                    $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
-
-                    // Lewati jika stok adalah 0 atau kurang
-                    if ($stok <= 0) {
-                        continue;
-                    }
-
-                    // Cek apakah barang dengan kode tersebut sudah ada
-                    $existingBarang = Barang::where('kode_barang', $kode)->first();
-
-                    if ($existingBarang) {
-                        // Jika harga beli kosong dan stok > 0, gunakan harga dari database
-                        if (!isset($r['harga']) || $r['harga'] === '' || $r['harga'] === null) {
-                            $harga = ($stok > 0) ? (float)$existingBarang->harga : 0;
-                        } else {
-                            $harga = (float)$r['harga'];
+                $lastBarang = null;
+                Barang::withoutEvents(function () use ($formRows, &$created, &$lastBarang) {
+                    foreach ($formRows as $i => $r) {
+                        $kode = $r['kode_barang'] ?? null;
+                        if (empty($kode)) {
+                            $kode = 'IMP' . substr(uniqid(), -6);
                         }
 
-                        // --- LOGIKA ADD STOCK (Replicate) ---
-                        // Copy data as NEW record (history tracking)
-                        $copyData = $existingBarang->replicate();
-                        
-                        $deskripsi = $r['deskripsi'] ?? $existingBarang->deskripsi;
-                        if (empty($deskripsi)) {
-                            $deskripsi = $existingBarang->nama_barang; // Fallback
-                        }
-                        
-                        $copyData->deskripsi = $deskripsi;
-                        $copyData->stok = $stok;
-                        $copyData->harga = $harga;
-                        $copyData->status_barang = 'ditinjau';
-                        $copyData->tipe_request = 'new_stock';
-                        $copyData->form = Auth::id();
+                        $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
 
-                        // Generate kode_barang unik untuk request ini (Code#1, Code#2, dst)
-                        $originalKode = $existingBarang->kode_barang;
-                        $newKode = $originalKode;
-                        $idx = 1;
-                        while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
-                            $newKode = $originalKode . '#' . $idx;
-                            $idx++;
+                        if ($stok <= 0) {
+                            continue;
                         }
-                        $copyData->kode_barang = $newKode;
-                        $copyData->save();
 
-                        $created++;
-                    } else {
-                        // --- SKIP NEW ITEMS ---
-                        // Item tidak ada di database, abaikan sesuai request
-                        // $errors[] = "Kode $kode tidak ditemukan - Skipped.";
+                        $existingBarang = Barang::where('kode_barang', $kode)->first();
+
+                        if ($existingBarang) {
+                            if (!isset($r['harga']) || $r['harga'] === '' || $r['harga'] === null) {
+                                $harga = ($stok > 0) ? (float)$existingBarang->harga : 0;
+                            } else {
+                                $harga = (float)$r['harga'];
+                            }
+
+                            $copyData = $existingBarang->replicate();
+
+                            $deskripsi = $r['deskripsi'] ?? $existingBarang->deskripsi;
+                            if (empty($deskripsi)) {
+                                $deskripsi = $existingBarang->nama_barang;
+                            }
+
+                            $copyData->deskripsi = $deskripsi;
+                            $copyData->stok = $stok;
+                            $copyData->harga = $harga;
+                            $copyData->status_barang = 'ditinjau';
+                            $copyData->tipe_request = 'new_stock';
+                            $copyData->form = Auth::id();
+
+                            $originalKode = $existingBarang->kode_barang;
+                            $newKode = $originalKode;
+                            $idx = 1;
+                            while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
+                                $newKode = $originalKode . '#' . $idx;
+                                $idx++;
+                            }
+                            $copyData->kode_barang = $newKode;
+                            $copyData->save();
+
+                            $created++;
+                            $lastBarang = $copyData;
+                        }
                     }
+                });
+
+                // Trigger notifikasi hanya SEKALI di akhir proses
+                if ($lastBarang) {
+                    event(new \App\Events\BarangStatusUpdated($lastBarang));
                 }
 
                 DB::commit();
