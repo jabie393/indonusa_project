@@ -262,16 +262,16 @@
                                 @php
                                     $statusClass =
                                         [
-                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Dikirim ke Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Dikirim ke Gudang' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Disetujui Gudang' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Ditolak Gudang' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Selesai' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Tidak Selesai' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Not Completed' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
                                         ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">

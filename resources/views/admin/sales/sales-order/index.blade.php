@@ -194,7 +194,7 @@
                                 @php
                                     $statusClass =
                                         [
-                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'Open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
                                             'Sent to Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                             'Approved by Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
