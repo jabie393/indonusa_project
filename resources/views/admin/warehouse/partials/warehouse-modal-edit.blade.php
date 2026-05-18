@@ -32,16 +32,17 @@
                         <div class="md:col-span-1">
                             <div class="mb-4">
 
-                                <label for="edit_gambar"
+                                <label for="edit_gambar" id="edit_gambar_label"
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
                                     Barang
-                                </label>
+                                
                                 <input type="file" name="gambar" id="edit_gambar" class="hidden" accept="image/*" />
 
                                 <div id="edit_gambar_preview"
-                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center">
+                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center relative overflow-hidden">
                                     {{-- Input Gambar Dari js --}}
                                 </div>
+                                </label>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">

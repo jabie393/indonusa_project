@@ -75,26 +75,13 @@ class WarehouseController extends Controller
     {
         $barang = Barang::findOrFail($id);
 
-
-
-        $validated = $request->validate([
-            'status_listing' => 'required|in:listing,non listing',
-            'kode_barang' => 'required|string|max:255',
-            'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|in:' . implode(',', Barang::KATEGORI),
-            'stok' => 'required|integer',
-            'satuan' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
-            'harga' => 'required|numeric',
+        $request->validate([
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deskripsi' => 'nullable|string',
         ]);
 
-        $oldGambar = $barang->gambar;
-
-        $barang->update($validated);
-
         if ($request->hasFile('gambar')) {
+            $oldGambar = $barang->gambar;
+            
             $folder = 'barang/' . $barang->id;
             $path = $request->file('gambar')->store($folder, 'public');
             $barang->gambar = $path;
@@ -105,7 +92,7 @@ class WarehouseController extends Controller
             }
         }
 
-        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diupdate!']);
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Foto barang berhasil diupdate!']);
     }
 
     public function destroy($id)
