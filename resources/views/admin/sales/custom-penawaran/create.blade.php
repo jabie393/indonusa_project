@@ -173,16 +173,16 @@
                                    class="h-full w-full border-collapse">
                                 <thead>
                                     <tr class="">
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[50px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">No</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[250px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Nama Barang</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Qty</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Satuan</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Harga (Rp)</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[100px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Diskon (%)</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[200px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Keterangan</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[180px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[150px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Gambar</th>
-                                        <th class="sticky top-0 z-20 bg-gray-200 dark:bg-gray-700 min-w-[80px] border border-gray-300 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:text-gray-100">Aksi</th>
+                                        <th class="sticky top-0 z-20 min-w-[50px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">No</th>
+                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama Barang</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Satuan</th>
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
+                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
@@ -224,14 +224,15 @@
                                             @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number"
-                                                   name="items[0][harga]"
-                                                   class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="0"
-                                                   value="{{ old('items.0.harga') }}"
-                                                   step="0.01"
-                                                   min="0"
-                                                   required>
+                                            <div class="relative flex items-center">
+                                                <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                                <input type="text"
+                                                       name="items[0][harga]"
+                                                       class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       placeholder="0"
+                                                       value="{{ old('items.0.harga') }}"
+                                                       required>
+                                            </div>
                                             @error('items.0.harga')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
@@ -268,11 +269,11 @@
                                                        multiple
                                                        accept="image/*">
                                                 <button type="button"
-                                                        class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
-                                                    Upload Gambar
+                                                        class="rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
+                                                    Upload
                                                 </button>
                                             </div>
-                                            <div class="item-images-preview mt-2 flex flex-wrap gap-2 space-y-2"></div>
+                                            <div class="item-images-preview flex flex-wrap gap-2 space-y-2 justify-center"></div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <button type="button"
@@ -505,16 +506,49 @@
 
             // Format currency
             function formatCurrency(value) {
-                return new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0
+                return 'Rp ' + new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
                 }).format(value);
             }
 
             // Parse currency
             function parseCurrency(value) {
                 return parseInt(value.replace(/\D/g, '')) || 0;
+            }
+
+            function formatInputPrice(input) {
+                let selectionStart = input.selectionStart;
+                let oldLength = input.value.length;
+                let value = input.value;
+                let cleanValue = value.replace(/[^0-9.]/g, '');
+
+                const dotIndex = cleanValue.indexOf('.');
+                if (dotIndex !== -1) {
+                    cleanValue = cleanValue.substring(0, dotIndex + 1) + cleanValue.substring(dotIndex + 1).replace(/\./g, '');
+                }
+
+                let parts = cleanValue.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+                let formattedValue = parts.join('.');
+                input.value = formattedValue;
+
+                let newLength = formattedValue.length;
+                let newStart = selectionStart + (newLength - oldLength);
+                input.setSelectionRange(newStart, newStart);
+            }
+
+            function formatNumberWithCommas(value) {
+                if (!value) return '';
+                let cleanValue = value.toString().replace(/[^0-9.]/g, '');
+                const dotIndex = cleanValue.indexOf('.');
+                if (dotIndex !== -1) {
+                    cleanValue = cleanValue.substring(0, dotIndex + 1) + cleanValue.substring(dotIndex + 1).replace(/\./g, '');
+                }
+                let parts = cleanValue.split('.');
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return parts.join('.');
             }
 
             // Calculate subtotal for a single item
@@ -525,7 +559,7 @@
                 const subtotalDisplay = row.querySelector('.item-subtotal');
 
                 const qty = parseInt(qtyInput.value) || 0;
-                const harga = parseFloat(hargaInput.value) || 0;
+                const harga = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
                 const diskonPercent = parseFloat(diskonInput.value) || 0;
 
                 // Hitung subtotal dengan diskon: (qty * harga) * (1 - diskon%)
@@ -634,8 +668,11 @@
                     placeholder="Unit" required>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="number" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="0" step="0.01" min="0" required>
+                <div class="relative flex items-center">
+                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                    <input type="text" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                        placeholder="0" required>
+                </div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="number" name="items[${itemCount}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -650,11 +687,11 @@
                 <div class="relative upload-btn-container">
                     <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                         multiple accept="image/*">
-                    <button type="button" class="upload-button bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold dark:bg-blue-600 dark:hover:bg-blue-700">
-                        Upload Gambar
+                    <button type="button" class="upload-button rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
+                        Upload
                     </button>
                 </div>
-                <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
+                <div class="item-images-preview flex flex-wrap gap-2 justify-center"></div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <button type="button" class="btn btn-remove-item rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
@@ -679,9 +716,12 @@
                 const keteranganInput = newRow.querySelector('.item-keterangan');
                 const removeBtn = newRow.querySelector('.btn-remove-item');
 
-                qtyInput.addEventListener('change', calculateTotals);
-                hargaInput.addEventListener('change', calculateTotals);
-                diskonInput.addEventListener('change', function() {
+                qtyInput.addEventListener('input', calculateTotals);
+                hargaInput.addEventListener('input', function() {
+                    formatInputPrice(this);
+                    calculateTotals();
+                });
+                diskonInput.addEventListener('input', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
                     if (diskonVal > 20) {
                         keteranganInput.required = true;
@@ -735,7 +775,7 @@
                 });
             }
 
-            // Event listeners for existing items
+            // Format and attach event listeners for existing items
             document.querySelectorAll('.item-row').forEach(row => {
                 const qtyInput = row.querySelector('.item-qty');
                 const hargaInput = row.querySelector('.item-harga');
@@ -743,9 +783,16 @@
                 const keteranganInput = row.querySelector('.item-keterangan');
                 const removeBtn = row.querySelector('.btn-remove-item');
 
-                qtyInput.addEventListener('change', calculateTotals);
-                hargaInput.addEventListener('change', calculateTotals);
-                diskonInput.addEventListener('change', function() {
+                if (hargaInput.value) {
+                    hargaInput.value = formatNumberWithCommas(hargaInput.value);
+                }
+
+                qtyInput.addEventListener('input', calculateTotals);
+                hargaInput.addEventListener('input', function() {
+                    formatInputPrice(this);
+                    calculateTotals();
+                });
+                diskonInput.addEventListener('input', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
                     if (diskonVal > 20) {
                         keteranganInput.required = true;
@@ -771,6 +818,16 @@
 
             // Tax input change
             document.getElementById('tax').addEventListener('change', calculateTotals);
+
+            // Clean up comma formatting before submitting to Laravel validation
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (form) {
+                    form.querySelectorAll('.item-harga').forEach(input => {
+                        input.value = input.value.replace(/,/g, '');
+                    });
+                }
+            });
 
             // Initial calculation
             calculateTotals();

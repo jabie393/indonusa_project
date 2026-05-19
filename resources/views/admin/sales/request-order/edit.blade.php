@@ -454,11 +454,14 @@
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="harga[]"
-                                                       class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       value="{{ number_format(is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? 0 : old('harga', $item->harga), 2, '.', ',') }}"
-                                                       readonly>
+                                                <div class="relative flex items-center">
+                                                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                                                    <input type="text"
+                                                           name="harga[]"
+                                                           class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           value="{{ number_format(is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? 0 : old('harga', $item->harga), 2, '.', ',') }}"
+                                                           readonly>
+                                                </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
@@ -598,11 +601,14 @@
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="harga[]"
-                                                       class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       value="0.00"
-                                                       readonly>
+                                                <div class="relative flex items-center">
+                                                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                                                    <input type="text"
+                                                           name="harga[]"
+                                                           class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           value="0.00"
+                                                           readonly>
+                                                </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
@@ -1393,14 +1399,14 @@
             updateRemoveButtons();
 
             // Form submission sanitization
-            const editRequestOrderForm = document.getElementById('requestOrderForm');
-            if (editRequestOrderForm) {
-                editRequestOrderForm.addEventListener('submit', function() {
-                    document.querySelectorAll('.harga-input').forEach(input => {
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (form) {
+                    form.querySelectorAll('.harga-input').forEach(input => {
                         input.value = input.value.replace(/,/g, '');
                     });
-                });
-            }
+                }
+            });
 
             document.getElementById('tax_rate').addEventListener('input', calculateTotals);
             calculateTotals();

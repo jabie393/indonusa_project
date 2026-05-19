@@ -342,11 +342,14 @@
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text"
-                                                   name="harga[]"
-                                                   class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   value=""
-                                                   placeholder="0">
+                                            <div class="relative flex items-center">
+                                                <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                                                <input type="text"
+                                                       name="harga[]"
+                                                       class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       value=""
+                                                       placeholder="0">
+                                            </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <div class="upload-btn-container relative">
@@ -583,7 +586,7 @@
                                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                 <polyline points="17 21 17 13 7 13 7 21"></polyline>
                                 <polyline points="7 3 7 8 15 8"></polyline>
-                            </svg> Buat Request Order
+                            </svg> Buat Quotation
                         </button>
                     </div>
 
@@ -1362,14 +1365,14 @@
             document.querySelectorAll('.harga-input').forEach(input => initThousandSeparator(input));
 
             // Form submission sanitization
-            const requestOrderForm = document.getElementById('requestOrderForm');
-            if (requestOrderForm) {
-                requestOrderForm.addEventListener('submit', function() {
-                    document.querySelectorAll('.harga-input').forEach(input => {
+            document.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (form) {
+                    form.querySelectorAll('.harga-input').forEach(input => {
                         input.value = input.value.replace(/,/g, '');
                     });
-                });
-            }
+                }
+            });
 
             // Initialize item image previews for existing rows
             document.querySelectorAll('.item-row').forEach(row => handleItemImagePreview(row));
