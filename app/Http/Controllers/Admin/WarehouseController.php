@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use App\Models\GoodsReceipt;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
@@ -150,5 +151,15 @@ class WarehouseController extends Controller
         } while (Barang::where('kode_barang', $kodeBarang)->exists());
 
         return $kodeBarang;
+    }
+
+    public function getLogs($id)
+    {
+        $logs = GoodsReceipt::with(['supplier', 'approver'])
+            ->where('good_id', $id)
+            ->orderBy('received_at', 'desc')
+            ->get();
+
+        return response()->json($logs);
     }
 }

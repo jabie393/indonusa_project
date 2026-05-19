@@ -116,25 +116,41 @@ class SupplyOrdersController extends Controller
             if ($barangUtama) {
                 $barangUtama->stok += $barang->stok;
                 $barangUtama->save();
+
+                // Buat record GoodsReceipt
+                \App\Models\GoodsReceipt::create([
+                    'good_id' => $barangUtama->id,
+                    'supplier_id' => $barang->form, // User yang input (GA)
+                    'received_at' => now(),
+                    'approved_by' => Auth::id(), // User yang approve (Warehouse)
+                    'quantity' => $barang->stok,
+                    'unit_cost' => $barang->harga,
+                ]);
+
+                $barang->status_barang = 'masuk';
+                $barang->save();
+
+                // Hapus record new_stock tanpa memicu event model
+                Barang::withoutEvents(function () use ($barang) {
+                    $barang->delete();
+                });
+            } else {
+                // Jika barang utama tidak ditemukan, jadikan barang request ini sebagai primary
+                $barang->kode_barang = $kodeUtama;
+                $barang->tipe_request = 'primary';
+                $barang->status_barang = 'masuk';
+                $barang->save();
+
+                // Buat record GoodsReceipt
+                \App\Models\GoodsReceipt::create([
+                    'good_id' => $barang->id,
+                    'supplier_id' => $barang->form, // User yang input (GA)
+                    'received_at' => now(),
+                    'approved_by' => Auth::id(), // User yang approve (Warehouse)
+                    'quantity' => $barang->stok,
+                    'unit_cost' => $barang->harga,
+                ]);
             }
-
-            // Buat record GoodsReceipt
-            \App\Models\GoodsReceipt::create([
-                'good_id' => $barangUtama ? $barangUtama->id : $barang->id,
-                'supplier_id' => $barang->form, // User yang input (GA)
-                'received_at' => now(),
-                'approved_by' => Auth::id(), // User yang approve (Warehouse)
-                'quantity' => $barang->stok,
-                'unit_cost' => $barang->harga,
-            ]);
-
-            $barang->status_barang = 'masuk';
-            $barang->save();
-
-            // Hapus record new_stock tanpa memicu event model
-            Barang::withoutEvents(function () use ($barang) {
-                $barang->delete();
-            });
         }
     }
 }
