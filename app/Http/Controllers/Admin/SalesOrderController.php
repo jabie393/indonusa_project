@@ -67,6 +67,7 @@ class SalesOrderController extends Controller
         $search   = $request->input('search', '');
         $isSearch = $request->filled('search');
         $results  = collect();
+        $perPage  = (int) $request->input('perPage', 20);
 
         if ($isSearch) {
             $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
@@ -82,7 +83,7 @@ class SalesOrderController extends Controller
         } else {
             $requestOrders = \App\Models\RequestOrder::with(['order', 'items', 'customer'])
                 ->latest()
-                ->paginate(20)
+                ->paginate($perPage)
                 ->appends($request->query());
 
             $results     = $requestOrders->map(fn($ro) => $this->mapRequestOrderRow($ro));
@@ -519,6 +520,7 @@ class SalesOrderController extends Controller
         $search   = $request->input('search', '');
         $results  = collect();
         $isSearch = $request->filled('search');
+        $perPage  = (int) $request->input('perPage', 20);
 
         if ($isSearch) {
             $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
@@ -540,7 +542,7 @@ class SalesOrderController extends Controller
             $requestOrders = \App\Models\RequestOrder::where('sales_id', Auth::id())
                 ->with(['order', 'items', 'customer'])
                 ->latest()
-                ->paginate(20)
+                ->paginate($perPage)
                 ->appends(request()->query());
 
             $results = $requestOrders->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [

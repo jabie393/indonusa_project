@@ -206,25 +206,25 @@
 
             </div>
 
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Riwayat Request Order</h1>
                 </div>
-                <div class="overflow-x-auto">
-                    <table id="dashTable"
-                           class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">No. Request Order</th>
-                                <th class="px-4 py-3">No. Sales Order</th>
-                                <th class="px-4 py-3">Tanggal</th>
-                                <th class="px-4 py-3">Nama Pelanggan</th>
-                                <th class="px-4 py-3">Jumlah Item</th>
-                                <th class="px-4 py-3">Status</th>
-                                <th class="px-4 py-3">Action</th>
+                                <th class="text-nowrap px-4 py-3">No. Request Order</th>
+                                <th class="text-nowrap px-4 py-3">No. Sales Order</th>
+                                <th class="text-nowrap px-4 py-3">Tanggal</th>
+                                <th class="text-nowrap px-4 py-3">Nama Pelanggan</th>
+                                <th class="text-nowrap px-4 py-3">Jumlah Item</th>
+                                <th class="text-nowrap px-4 py-3">Status</th>
+                                <th class="text-nowrap px-4 py-3 text-right no-sort">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-nowrap">
                             @forelse($salesOrders as $order)
                                 <tr>
                                     <td class="px-4 py-3">
@@ -285,5 +285,5 @@
     </div>
 
     {{-- Kelola data Chart ada di JS --}}
-    @vite(['resources/js/chart-dashboard-sales.js'])
+    @vite(['resources/js/chart-dashboard-sales.js', 'resources/js/table-sort.js'])
 </x-app-layout>

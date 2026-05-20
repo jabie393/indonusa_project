@@ -1,17 +1,14 @@
 <x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
         <div class="p-4">
             <button onclick="createCustomerModal.showModal()"
-                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                <svg class="mr-2 h-3.5 w-3.5"
-                     fill="currentColor"
-                     viewbox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg"
-                     aria-hidden="true">
-                    <path clip-rule="evenodd"
-                          fill-rule="evenodd"
-                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true">
+                    <path clip-rule="evenodd" fill-rule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                 </svg>
                 Tambah Customer
             </button>
@@ -19,56 +16,48 @@
 
         <div class="p-4">
             {{-- Search --}}
-            <form action="{{ route('customer.index') }}"
-                  method="GET"
-                  class="block pl-2">
-                <label for="topbar-search"
-                       class="sr-only">Search</label>
+            <form action="{{ route('customer.index') }}" method="GET" class="block pl-2">
+                <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
-                             fill="currentColor"
-                             viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
                             </path>
                         </svg>
                     </div>
-                    <input type="search"
-                           name="search"
-                           id="topbar-search dt-search-0"
-                           aria-controls="warehouseTable"
-                           value="{{ request('search') }}"
-                           class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                           placeholder="Search" />
+                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        value="{{ request('search') }}"
+                        class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                        placeholder="Search" />
                 </div>
             </form>
         </div>
 
     </div>
 
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+    <div
+        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
-        <div class="overflow-x-auto">
-            <table id="DataTable"
-                   class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table class="sortable w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                <thead
+                    class="sticky top-0 z-30 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="selectCol px-4 py-2"></th>
-                        <th class="text-nowrap px-4 py-2">Nama</th>
-                        <th class="text-nowrap px-4 py-2">Kategori</th>
-                        <th class="text-nowrap px-4 py-2">No. NPWP</th>
-                        <th class="text-nowrap px-4 py-2">Term Of Payment</th>
-                        <th class="px-4 py-2">Kredit Limit</th>
-                        <th class="px-4 py-2">PIC</th>
-                        <th class="px-4 py-2">Kotak</th>
-                        <th class="text-nowrap px-4 py-2">Status</th>
-                        <th class="px-4 py-2">Action</th>
+                        <th class="selectCol text-nowrap px-4 py-3"></th>
+                        <th class="text-nowrap px-4 py-3">Nama</th>
+                        <th class="text-nowrap px-4 py-3">Kategori</th>
+                        <th class="text-nowrap px-4 py-3">No. NPWP</th>
+                        <th class="text-nowrap px-4 py-3">Term Of Payment</th>
+                        <th class="text-nowrap px-4 py-3">Kredit Limit</th>
+                        <th class="text-nowrap px-4 py-3">PIC</th>
+                        <th class="text-nowrap px-4 py-3">Kotak</th>
+                        <th class="text-nowrap px-4 py-3">Status</th>
+                        <th class="text-nowrap px-4 py-3">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-nowrap">
                     @foreach ($customers as $customer)
                         <tr class="dark:border-gray-700">
 
@@ -79,7 +68,12 @@
                             <td class="text-nowrap px-4 py-2">
                                 {{ $customer->term_of_payments !== null ? $customer->term_of_payments . ' Hari' : '-' }}
                             </td>
-                            <td class="text-nowrap px-4 py-2">{{ $customer->kredit_limit ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-2">
+                                <div class="flex h-full items-center justify-between">
+                                    <span>Rp</span>
+                                    {{ $customer->kredit_limit !== null && is_numeric($customer->kredit_limit) ? number_format($customer->kredit_limit, 0, '.', ',') : $customer->kredit_limit ?? '-' }}
+                                </div>
+                            </td>
                             <td class="px-4 py-2">
                                 @if ($customer->pics && $customer->pics->count() > 0)
                                     @foreach ($customer->pics as $pic)
@@ -97,14 +91,12 @@
                             @if (in_array(auth()->user()->role, ['Supervisor']))
                                 <td class="px-4 py-2">
                                     <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
-                                            class="select select-xs inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }} h-8 min-w-24 text-nowrap border-none bg-slate-50 font-bold transition-all duration-300 dark:bg-gray-800">
-                                        <option class="text-green-800 hover:bg-green-100"
-                                                value="active"
-                                                {{ strtolower($customer->status) == 'active' ? 'selected' : '' }}>
+                                        class="select select-xs inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }} h-8 min-w-24 text-nowrap border-none bg-slate-50 font-bold transition-all duration-300 dark:bg-gray-800">
+                                        <option class="text-green-800 hover:bg-green-100" value="active"
+                                            {{ strtolower($customer->status) == 'active' ? 'selected' : '' }}>
                                             Aktif</option>
-                                        <option class="text-red-800 hover:bg-red-100"
-                                                value="inactive"
-                                                {{ strtolower($customer->status) != 'active' ? 'selected' : '' }}>
+                                        <option class="text-red-800 hover:bg-red-100" value="inactive"
+                                            {{ strtolower($customer->status) != 'active' ? 'selected' : '' }}>
                                             Non-Aktif</option>
                                     </select>
                                 </td>
@@ -113,9 +105,11 @@
                                     @php
                                         $statusClass =
                                             [
-                                                'active' => 'bg-green-100 text-green-800 inset-ring inset-ring-green-600',
+                                                'active' =>
+                                                    'bg-green-100 text-green-800 inset-ring inset-ring-green-600',
                                                 'inactive' => 'bg-red-100 text-red-800 inset-ring inset-ring-red-600',
-                                            ][$customer->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                            ][$customer->status] ??
+                                            'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                         $statusLabel =
                                             [
                                                 'active' => 'Aktif',
@@ -132,52 +126,42 @@
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
-                                    <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                    <div
+                                        class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Edit --}}
                                         <button onclick="openEditModal({{ $customer->toJson() }})"
-                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="24"
-                                                 height="24"
-                                                 viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 stroke-width="2"
-                                                 stroke-linecap="round"
-                                                 stroke-linejoin="round"
-                                                 class="lucide lucide-pencil h-4 w-4">
-                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-pencil h-4 w-4">
+                                                <path
+                                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
                                                 </path>
                                                 <path d="m15 5 4 4"></path>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                            <span
+                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                         </button>
                                         {{-- Delete --}}
-                                        <form action=""
-                                              method="POST"
-                                              style="display:inline;">
+                                        <form action="" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                    onclick="confirmDelete(() => this.closest('form').submit())">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                onclick="confirmDelete(() => this.closest('form').submit())">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
                                                     <path d="M10 11v6"></path>
                                                     <path d="M14 11v6"></path>
                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
                                                     <path d="M3 6h18"></path>
                                                     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                             </button>
                                         </form>
                                     </div>
@@ -188,26 +172,25 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-             aria-label="Table navigation">
+        <nav id="pagination-nav"
+            class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customers->firstItem() ?? 0 }}-{{ $customers->lastItem() ?? 0 }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $customers->firstItem() ?? 0 }}-{{ $customers->lastItem() ?? 0 }}</span>
                     of
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $customers->total() ?? $customers->count() }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $customers->total() ?? $customers->count() }}</span>
                 </span>
-                <form method="GET"
-                      action="{{ route('customer.index') }}">
-                    <input type="hidden"
-                           name="search"
-                           value="{{ request('search') }}">
-                    <select name="perPage"
-                            onchange="this.form.submit()"
-                            class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                <form method="GET" action="{{ route('customer.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()"
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}"
-                                    {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
+                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
                             </option>
                         @endforeach
                     </select>
@@ -284,4 +267,5 @@
             });
         }
     </script>
+    @vite(['resources/js/table-sort.js'])
 </x-app-layout>

@@ -1,35 +1,28 @@
 <x-app-layout>
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-4">
-            <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+            <div
+                class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                 {{-- Tambah barang modal --}}
                 <a href="{{ route('sales.request-order.create') }}"
-                   class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                    <svg class="mr-2 h-3.5 w-3.5"
-                         fill="currentColor"
-                         viewbox="0 0 20 20"
-                         xmlns="http://www.w3.org/2000/svg"
-                         aria-hidden="true">
-                        <path clip-rule="evenodd"
-                              fill-rule="evenodd"
-                              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                    <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                     </svg>
                     Quotation
                 </a>
 
                 <div class="flex gap-2">
                     <a href="{{ route('dashboard.sales.export.quotations') }}"
-                       class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             class="mr-1 h-5 w-5"
-                             fill="none"
-                             viewBox="0 0 24 24"
-                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
                         Report Penawaran
                     </a>
@@ -42,73 +35,52 @@
         <div class="p-4">
 
             {{-- Search --}}
-            <form action="{{ route('sales.request-order.index') }}"
-                  method="GET"
-                  class="block pl-2">
-                <label for="topbar-search"
-                       class="sr-only">Search</label>
+            <form action="{{ route('sales.request-order.index') }}" method="GET" class="block pl-2">
+                <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-64 md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
-                             fill="currentColor"
-                             viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
                             </path>
                         </svg>
                     </div>
-                    <input type="search"
-                           name="search"
-                           id="topbar-search dt-search-0"
-                           aria-controls="warehouseTable"
-                           value="{{ request('search') }}"
-                           class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                           placeholder="Search" />
+                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        value="{{ request('search') }}"
+                        class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                        placeholder="Search" />
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+    <div
+        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
-        <div class="overflow-x-auto">
-            <table id="DataTable"
-                   class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table id=""
+                class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead
+                    class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col"
-                            class="selectCol px-4 py-3"></th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">No. Request</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">No. Penawaran</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">No. PO</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">No. Sales Order</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Tanggal</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Nama Customer</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Jumlah Item</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Total</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Stok</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Diskon</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Status</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Berlaku Sampai</th>
-                        <th scope="col"
-                            class="text-nowrap px-4 py-3">Action</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">#</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">No. Request</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">No. Penawaran</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">No. PO</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">No. Sales Order</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Tanggal</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Nama Customer</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Jumlah Item</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Total</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Diskon</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Status</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Berlaku Sampai</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-nowrap">
                     @forelse($requestOrders as $ro)
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->id }}</td>
@@ -161,49 +133,52 @@
                                     <span class="text-xs text-gray-300 dark:text-gray-600">-</span>
                                 @elseif ($adaStokKurang)
                                     <div class="group relative inline-block">
-                                        <span class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 class="h-3 w-3 shrink-0"
-                                                 fill="none"
-                                                 viewBox="0 0 24 24"
-                                                 stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      stroke-width="2"
-                                                      d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                        <span
+                                            class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                                             </svg>
                                             Stok Kurang ({{ count($stokKurangItems) }})
                                         </span>
-                                        <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-lg border border-red-200 bg-white p-3 text-left text-xs opacity-0 shadow-lg transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 dark:border-gray-600 dark:bg-gray-800">
-                                            <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Item dengan stok kurang:</p>
+                                        <div
+                                            class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-72 -translate-x-1/2 rounded-lg border border-red-200 bg-white p-3 text-left text-xs opacity-0 shadow-lg transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 dark:border-gray-600 dark:bg-gray-800">
+                                            <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Item dengan
+                                                stok kurang:</p>
                                             @foreach ($stokKurangItems as $sk)
-                                                <div class="mb-1 border-b border-gray-100 pb-1 last:border-0 dark:border-gray-700">
-                                                    <p class="font-medium text-gray-800 dark:text-gray-200">{{ Str::limit($sk['nama'], 35) }}</p>
+                                                <div
+                                                    class="mb-1 border-b border-gray-100 pb-1 last:border-0 dark:border-gray-700">
+                                                    <p class="font-medium text-gray-800 dark:text-gray-200">
+                                                        {{ Str::limit($sk['nama'], 35) }}</p>
                                                     <p class="text-gray-500 dark:text-gray-400">
-                                                        Dibutuhkan: <span class="font-semibold text-gray-700 dark:text-gray-300">{{ $sk['qty'] }} {{ $sk['satuan'] }}</span>
+                                                        Dibutuhkan: <span
+                                                            class="font-semibold text-gray-700 dark:text-gray-300">{{ $sk['qty'] }}
+                                                            {{ $sk['satuan'] }}</span>
                                                     </p>
                                                     <p class="text-gray-500 dark:text-gray-400">
-                                                        Tersedia: <span class="font-semibold text-red-600">{{ $sk['stok'] }} {{ $sk['satuan'] }}</span>
-                                                        &nbsp;|&nbsp; Kurang: <span class="font-bold text-red-600">{{ $sk['kurang'] }} {{ $sk['satuan'] }}</span>
+                                                        Tersedia: <span
+                                                            class="font-semibold text-red-600">{{ $sk['stok'] }}
+                                                            {{ $sk['satuan'] }}</span>
+                                                        &nbsp;|&nbsp; Kurang: <span
+                                                            class="font-bold text-red-600">{{ $sk['kurang'] }}
+                                                            {{ $sk['satuan'] }}</span>
                                                     </p>
                                                 </div>
                                             @endforeach
                                             @if ($stokCukupCount > 0)
-                                                <p class="mt-1 text-green-600">{{ $stokCukupCount }} item lainnya stok cukup</p>
+                                                <p class="mt-1 text-green-600">{{ $stokCukupCount }} item lainnya stok
+                                                    cukup</p>
                                             @endif
                                         </div>
                                     </div>
                                 @else
-                                    <span class="inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-600 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="h-3 w-3 shrink-0"
-                                             fill="none"
-                                             viewBox="0 0 24 24"
-                                             stroke="currentColor">
-                                            <path stroke-linecap="round"
-                                                  stroke-linejoin="round"
-                                                  stroke-width="2"
-                                                  d="M5 13l4 4L19 7" />
+                                    <span
+                                        class="inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-600 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 13l4 4L19 7" />
                                         </svg>
                                         Stok Cukup
                                     </span>
@@ -216,15 +191,18 @@
                             @endphp
                             <td class="px-4 py-3 text-center">
                                 @if ($hasBelow && $hasAbove)
-                                    <span class="badge inset-ring inset-ring-orange-600 inline-flex items-center bg-orange-50 px-2 py-0.5 text-xs font-bold text-orange-700">
+                                    <span
+                                        class="badge inset-ring inset-ring-orange-600 inline-flex items-center bg-orange-50 px-2 py-0.5 text-xs font-bold text-orange-700">
                                         &lt;20% &amp; &gt;20%
                                     </span>
                                 @elseif ($hasAbove)
-                                    <span class="badge inset-ring inset-ring-red-600 inline-flex items-center bg-red-50 px-2 py-0.5 text-xs font-bold text-red-700">
+                                    <span
+                                        class="badge inset-ring inset-ring-red-600 inline-flex items-center bg-red-50 px-2 py-0.5 text-xs font-bold text-red-700">
                                         &gt;20%
                                     </span>
                                 @elseif ($hasBelow)
-                                    <span class="badge inset-ring inset-ring-green-600 inline-flex items-center bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">
+                                    <span
+                                        class="badge inset-ring inset-ring-green-600 inline-flex items-center bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">
                                         &lt;20%
                                     </span>
                                 @else
@@ -248,19 +226,29 @@
                                         'pending' => 'Pending',
                                     ];
 
-                                    $displayStatus = $orderStatus ? $statusLabelMap[$orderStatus] ?? $orderStatus : $ro->status;
+                                    $displayStatus = $orderStatus
+                                        ? $statusLabelMap[$orderStatus] ?? $orderStatus
+                                        : $ro->status;
 
                                     $statusClass =
                                         [
-                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Pending' =>
+                                                'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Sent to Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Sent to Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
+                                            'Sent to Supervisor' =>
+                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Supervisor' =>
+                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Supervisor' =>
+                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Warehouse' =>
+                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Warehouse' =>
+                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Warehouse' =>
+                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Partial Delivery' =>
+                                                'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
                                             'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                         ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                 @endphp
@@ -271,43 +259,56 @@
                                     @if ($orderStatus === 'not_completed' && $ro->order)
                                         @php
                                             $orderItems = $ro->order->items ?? collect();
-                                            $sudahDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) > 0);
-                                            $belumDikirim = $orderItems->filter(fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity && ($i->status_item ?? '') !== 'delivered');
+                                            $sudahDikirim = $orderItems->filter(
+                                                fn($i) => ($i->delivered_quantity ?? 0) > 0,
+                                            );
+                                            $belumDikirim = $orderItems->filter(
+                                                fn($i) => ($i->delivered_quantity ?? 0) < $i->quantity &&
+                                                    ($i->status_item ?? '') !== 'delivered',
+                                            );
                                         @endphp
                                         @if ($orderItems->count() > 0)
                                             <div class="group relative mt-1 inline-block w-full">
-                                                <span class="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         class="h-3 w-3 shrink-0"
-                                                         fill="none"
-                                                         viewBox="0 0 24 24"
-                                                         stroke="currentColor">
-                                                        <path stroke-linecap="round"
-                                                              stroke-linejoin="round"
-                                                              stroke-width="2"
-                                                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                <span
+                                                    class="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded border border-orange-200 bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-orange-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0"
+                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
-                                                    {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} item terkirim
+                                                    {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} item
+                                                    terkirim
                                                 </span>
-                                                <div class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
+                                                <div
+                                                    class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                                                     @if ($sudahDikirim->count() > 0)
                                                         <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
                                                         @foreach ($sudahDikirim as $item)
-                                                            <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
-                                                                <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                            <div
+                                                                class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                                                <span
+                                                                    class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
                                                                 <span class="ml-2 shrink-0 font-bold text-green-600">
-                                                                    {{ $item->delivered_quantity }}/{{ $item->quantity }} {{ $item->barang->satuan ?? '' }}
+                                                                    {{ $item->delivered_quantity }}/{{ $item->quantity }}
+                                                                    {{ $item->barang->satuan ?? '' }}
                                                                 </span>
                                                             </div>
                                                         @endforeach
                                                     @endif
                                                     @if ($belumDikirim->count() > 0)
-                                                        <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa Dikirim:</p>
+                                                        <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa
+                                                            Dikirim:</p>
                                                         @foreach ($belumDikirim as $item)
                                                             @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
-                                                            <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
-                                                                <span class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
-                                                                <span class="ml-2 shrink-0 font-bold text-orange-500">Sisa {{ $sisa }} {{ $item->barang->satuan ?? '' }}</span>
+                                                            <div
+                                                                class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
+                                                                <span
+                                                                    class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                                <span
+                                                                    class="ml-2 shrink-0 font-bold text-orange-500">Sisa
+                                                                    {{ $sisa }}
+                                                                    {{ $item->barang->satuan ?? '' }}</span>
                                                             </div>
                                                         @endforeach
                                                     @endif
@@ -327,98 +328,81 @@
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                    <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                    <div
+                                        class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
 
 
                                         {{-- Detail --}}
                                         <a href="{{ route('sales.request-order.show', $ro->id) }}"
-                                           class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                           title="Lihat Detail">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="24"
-                                                 height="24"
-                                                 viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 stroke-width="2"
-                                                 stroke-linecap="round"
-                                                 stroke-linejoin="round"
-                                                 class="lucide lucide-eye h-4 w-4">
-                                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
+                                            class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            title="Lihat Detail">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                class="lucide lucide-eye h-4 w-4">
+                                                <path
+                                                    d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
                                                 </path>
-                                                <circle cx="12"
-                                                        cy="12"
-                                                        r="3"></circle>
+                                                <circle cx="12" cy="12" r="3"></circle>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                            <span
+                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                         </a>
 
                                         {{-- If supervisor rejects --}}
                                         @if ($ro->status == 'Ditolak Supervisor')
                                             {{-- Note modal --}}
                                             <button type="button"
-                                                    class="note-btn group flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                    data-catatan="{{ $ro->reason ?? '' }}"
-                                                    title="Lihat Alasan Penolakan">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="lucide lucide-sticky-note h-4 w-4">
-                                                    <path d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
+                                                class="note-btn group flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                data-catatan="{{ $ro->reason ?? '' }}"
+                                                title="Lihat Alasan Penolakan">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-sticky-note h-4 w-4">
+                                                    <path
+                                                        d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
                                                     </path>
                                                     <path d="M15 3v6h6"></path>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
                                             </button>
                                         @endif
 
                                         {{-- Action Dropdown --}}
-                                        <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                popovertarget="popover-{{ $ro->id }}"
-                                                style="anchor-name:--anchor-{{ $ro->id }}">
-                                            <svg width="24px"
-                                                 height="24px"
-                                                 viewBox="0 0 16 16"
-                                                 xmlns="http://www.w3.org/2000/svg"
-                                                 fill="currentColor"
-                                                 class="bi bi-three-dots-vertical h-4 w-4">
-                                                <g id="SVGRepo_bgCarrier"
-                                                   stroke-width="0"></g>
-                                                <g id="SVGRepo_tracerCarrier"
-                                                   stroke-linecap="round"
-                                                   stroke-linejoin="round"></g>
+                                        <button
+                                            class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            popovertarget="popover-{{ $ro->id }}"
+                                            style="anchor-name:--anchor-{{ $ro->id }}">
+                                            <svg width="24px" height="24px" viewBox="0 0 16 16"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                class="bi bi-three-dots-vertical h-4 w-4">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                    stroke-linejoin="round"></g>
                                                 <g id="SVGRepo_iconCarrier">
-                                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
+                                                    <path
+                                                        d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
                                                     </path>
                                                 </g>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
+                                            <span
+                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
                                         </button>
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
-                                            popover
-                                            id="popover-{{ $ro->id }}"
+                                            popover id="popover-{{ $ro->id }}"
                                             style="position-anchor:--anchor-{{ $ro->id }}">
                                             {{-- Edit --}}
                                             <li>
                                                 <a href="{{ route('sales.request-order.edit', $ro->id) }}"
-                                                   class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         width="16"
-                                                         height="16"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2"
-                                                         stroke-linecap="round"
-                                                         stroke-linejoin="round"
-                                                         class="lucide lucide-pencil">
-                                                        <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                    class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                        height="16" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="lucide lucide-pencil">
+                                                        <path
+                                                            d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
                                                         </path>
                                                         <path d="m15 5 4 4"></path>
                                                     </svg>
@@ -430,19 +414,16 @@
                                                 {{-- PDF --}}
                                                 @if ($ro->canDownloadPdf())
                                                     <a href="{{ route('sales.request-order.pdf', $ro->id) }}"
-                                                       class="flex items-center gap-2 text-green-600 hover:bg-green-50"
-                                                       target="_blank">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             width="16"
-                                                             height="16"
-                                                             viewBox="0 0 24 24"
-                                                             fill="none"
-                                                             stroke="currentColor"
-                                                             stroke-width="2"
-                                                             stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             class="lucide lucide-file-text">
-                                                            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
+                                                        class="flex items-center gap-2 text-green-600 hover:bg-green-50"
+                                                        target="_blank">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-file-text">
+                                                            <path
+                                                                d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
+                                                            </path>
                                                             <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
                                                             <path d="M10 9H8"></path>
                                                             <path d="M16 13H8"></path>
@@ -451,26 +432,16 @@
                                                         PDF
                                                     </a>
                                                 @else
-                                                    <button type="button"
-                                                            disabled
-                                                            class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
-                                                            title="Menunggu Persetujuan Supervisor">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             width="16"
-                                                             height="16"
-                                                             viewBox="0 0 24 24"
-                                                             fill="none"
-                                                             stroke="currentColor"
-                                                             stroke-width="2"
-                                                             stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             class="lucide lucide-lock">
-                                                            <rect x="3"
-                                                                  y="11"
-                                                                  width="18"
-                                                                  height="11"
-                                                                  rx="2"
-                                                                  ry="2"></rect>
+                                                    <button type="button" disabled
+                                                        class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
+                                                        title="Menunggu Persetujuan Supervisor">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-lock">
+                                                            <rect x="3" y="11" width="18" height="11"
+                                                                rx="2" ry="2"></rect>
                                                             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                                         </svg>
                                                         PDF
@@ -480,23 +451,18 @@
 
                                             {{-- Delete --}}
                                             <form action="{{ route('sales.request-order.destroy', $ro->id) }}"
-                                                  method="POST">
+                                                method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <li>
                                                     <button type="button"
-                                                            onclick="confirmDelete(() => this.closest('form').submit())"
-                                                            class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                                             width="16"
-                                                             height="16"
-                                                             viewBox="0 0 24 24"
-                                                             fill="none"
-                                                             stroke="currentColor"
-                                                             stroke-width="2"
-                                                             stroke-linecap="round"
-                                                             stroke-linejoin="round"
-                                                             class="lucide lucide-trash2">
+                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="lucide lucide-trash2">
                                                             <path d="M10 11v6"></path>
                                                             <path d="M14 11v6"></path>
                                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
@@ -517,26 +483,25 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-             aria-label="Table navigation">
+        <nav id="pagination-nav"
+            class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $requestOrders->firstItem() ?? 0 }}-{{ $requestOrders->lastItem() ?? 0 }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $requestOrders->firstItem() ?? 0 }}-{{ $requestOrders->lastItem() ?? 0 }}</span>
                     of
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $requestOrders->total() ?? $requestOrders->count() }}</span>
+                    <span
+                        class="font-semibold text-gray-900 dark:text-white">{{ $requestOrders->total() ?? $requestOrders->count() }}</span>
                 </span>
-                <form method="GET"
-                      action="{{ route('sales.request-order.index') }}">
-                    <input type="hidden"
-                           name="search"
-                           value="{{ request('search') }}">
-                    <select name="perPage"
-                            onchange="this.form.submit()"
-                            class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                <form method="GET" action="{{ route('sales.request-order.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()"
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}"
-                                    {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
                     </select>
                 </form>
@@ -547,6 +512,6 @@
             </div>
         </nav>
     </div>
-    @vite(['resources/js/request-order.js'])
+    @vite(['resources/js/request-order.js', 'resources/js/table-sort.js'])
     @include('admin.sales.request-order.partials.modal-show-note')
 </x-app-layout>

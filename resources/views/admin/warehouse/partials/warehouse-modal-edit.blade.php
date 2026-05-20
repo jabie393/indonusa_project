@@ -1,111 +1,161 @@
+<style>
+    :root {
+        --gradient-header: linear-gradient(to right, #225A97, #0D223A);
+        --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
+        --field: #f8fafc;
+        --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+    }
+</style>
+
 <dialog id="editBarangModal" class="modal">
     <div
-        class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 id="editBarangModalTitle" class="text-lg font-semibold text-white">
-                Ajukan Barang Rusak (Defect)
-            </h3>
-            <div class="modal-action m-0">
-                <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button
-                        class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </form>
+        class="modal-box relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 max-h-[95vh]">
+
+        <!-- Header -->
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
+                        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                        <path d="M12 22V12"></path>
+                        <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                        <path d="m7.5 4.27 9 5.15"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 id="editBarangModalTitle" class="text-lg font-semibold leading-tight">Edit Barang</h1>
+                    <p class="text-xs text-white/80">Ubah gambar barang</p>
+                </div>
             </div>
-        </div>
+            <form method="dialog">
+                <button aria-label="Tutup" class="rounded-xl p-1.5 transition hover:bg-white/10" type="submit">
+                    <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </form>
+        </header>
 
-        <form id="editBarangForm" method="POST" class="flex h-full flex-col space-y-4 overflow-hidden p-4"
-            enctype="multipart/form-data">
-            <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <!-- Form Content -->
+        <form id="editBarangForm" method="POST" enctype="multipart/form-data"
+            class="grid flex-1 gap-8 overflow-y-auto p-7 md:grid-cols-[1fr_1.4fr]">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="id" id="edit_id">
 
-                    <div class="md:col-span-2">
-                        <!-- Gambar Barang -->
-                        <div class="md:col-span-1">
-                            <div class="mb-4">
-
-                                <label for="edit_gambar" id="edit_gambar_label"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Gambar
-                                    Barang
-                                
-                                <input type="file" name="gambar" id="edit_gambar" class="hidden" accept="image/*" />
-
-                                <div id="edit_gambar_preview"
-                                    class="mx-auto mb-4 flex h-48 w-48 cursor-pointer items-center rounded-lg border-2 border-dashed border-gray-400 bg-gray-100 text-center relative overflow-hidden">
-                                    {{-- Input Gambar Dari js --}}
-                                </div>
-                                </label>
+            <!-- Left Column: Image Upload Section -->
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 5h6"></path>
+                            <path d="M19 2v6"></path>
+                            <path d="M21 11.5V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7.5"></path>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                            <circle cx="9" cy="9" r="2"></circle>
+                        </svg>
+                        Gambar Barang
+                    </label>
+                    <div class="group relative flex aspect-square cursor-pointer flex-col items-center justify-center overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 transition hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl"
+                        id="edit_image-dropzone">
+                        <div class="flex flex-col items-center gap-2 text-slate-400 group-hover:text-blue-500"
+                            id="edit_upload-placeholder">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition group-hover:bg-blue-100 group-hover:text-blue-600">
+                                <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3v12"></path>
+                                    <path d="m17 8-5-5-5 5"></path>
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                </svg>
                             </div>
+                            <p class="text-sm font-semibold text-slate-700">Upload gambar baru</p>
+                            <p class="text-xs">PNG, JPG hingga 5MB</p>
                         </div>
-                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <div class="space-y-4">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="id" id="edit_id">
-
-                                <div>
-                                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kode
-                                        Barang</label>
-                                    <input type="text" id="edit_kode_barang"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
-                                        readonly>
-                                </div>
-                                <div>
-                                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Nama
-                                        Barang</label>
-                                    <input type="text" id="edit_nama_barang"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
-                                        readonly>
-                                </div>
-                                <div>
-                                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Stok
-                                        Saat Ini</label>
-                                    <input type="text" id="edit_stok"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
-                                        readonly>
-                                </div>
-
-                            </div>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Harga
-                                        Saat Ini</label>
-                                    <input type="text" id="edit_harga_tampil"
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
-                                        readonly>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h-full sm:col-span-1">
-                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Deskripsi</label>
-                        <textarea id="edit_deskripsi"
-                            class="block h-[90%] w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white"
-                            rows="3" readonly></textarea>
+                        <img id="edit_image-preview" class="absolute inset-0 h-full w-full object-contain hidden" src="" alt="Preview">
+                        <input accept="image/*" name="gambar" id="edit_gambar" class="absolute inset-0 opacity-0 cursor-pointer"
+                            type="file" />
                     </div>
                 </div>
-
             </div>
-            <div class="">
-                <button type="submit"
-                    class="relative w-full rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">Simpan Perubahan
-                </button>
+
+            <!-- Right Column: Detail Information (Read-Only) -->
+            <div class="space-y-5">
+                <!-- Kode Barang -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="edit_kode_barang">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <line x1="4" x2="20" y1="9" y2="9"></line>
+                            <line x1="4" x2="20" y1="15" y2="15"></line>
+                            <line x1="10" x2="8" y1="3" y2="21"></line>
+                            <line x1="16" x2="14" y1="3" y2="21"></line>
+                        </svg>
+                        Kode Barang
+                    </label>
+                    <input
+                        class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-mono outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-not-allowed"
+                        id="edit_kode_barang" type="text" readonly />
+                </div>
+
+                <!-- Nama Barang -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="edit_nama_barang">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                            <path d="M12 22V12"></path>
+                            <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                        </svg>
+                        Nama Barang
+                    </label>
+                    <input
+                        class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-not-allowed"
+                        id="edit_nama_barang" type="text" readonly />
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="edit_deskripsi">Deskripsi</label>
+                    <textarea
+                        class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm outline-none transition resize-none rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-not-allowed"
+                        id="edit_deskripsi" rows="4" readonly></textarea>
+                </div>
             </div>
         </form>
-    </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
 
+        <!-- Footer -->
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button
+                        class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button
+                    class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
+                    form="editBarangForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
+    </div>
 </dialog>
 
 <script>

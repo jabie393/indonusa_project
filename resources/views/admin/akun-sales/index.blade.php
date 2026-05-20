@@ -45,22 +45,21 @@
         </div>
     </div>
 
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+    <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
-        <div class="overflow-x-auto">
-            <table id="DataTable"
-                   class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table id="" class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-2">Nama</th>
-                        <th class="px-4 py-2">Email</th>
-                        <th class="px-4 py-2">Penjualan Sukses</th>
-                        <th class="px-4 py-2">Total Barang Terjual</th>
-                        <th class="px-4 py-2">Action</th>
+                        <th class="px-4 py-2 text-nowrap">Nama</th>
+                        <th class="px-4 py-2 text-nowrap">Email</th>
+                        <th class="px-4 py-2 text-nowrap">Penjualan Sukses</th>
+                        <th class="px-4 py-2 text-nowrap">Total Barang Terjual</th>
+                        <th class="px-4 py-2 no-sort text-nowrap">Action</th>
                     </tr>
                 </thead>
-                <tbody class="h-min-[300px]">
+                <tbody class="text-nowrap">
                     @foreach ($salesUsers as $user)
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-2">{{ $user->name }}</td>
@@ -132,7 +131,7 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+        <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
              aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -148,7 +147,7 @@
                            value="{{ request('search') }}">
                     <select name="perPage"
                             onchange="this.form.submit()"
-                            class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                            class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}"
                                     {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
@@ -166,5 +165,5 @@
 
     <!-- Modals -->
     @include('components.akun-sales-modal')
-    @vite(['resources/js/akun-sales.js'])
+    @vite(['resources/js/akun-sales.js', 'resources/js/table-sort.js'])
 </x-app-layout>

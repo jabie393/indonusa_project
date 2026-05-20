@@ -258,23 +258,24 @@
             </div>
 
             {{-- Tables --}}
-            <div class="col-span-8 w-full rounded-2xl shadow-md">
-                <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
+            <div
+                class="col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
                     <h1 class="text-lg font-bold text-white">Menunggu Persetujuan Penawaran</h1>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <div id="tableContainer1" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">No Penawaran</th>
-                                <th class="px-4 py-3">Customer</th>
-                                <th class="px-4 py-3">Tanggal</th>
-                                <th class="px-4 py-3">Total</th>
-                                <th class="px-4 py-3">Sales</th>
-                                <th class="px-4 py-3">Action</th>
+                                <th class="text-nowrap px-4 py-3">No Penawaran</th>
+                                <th class="text-nowrap px-4 py-3">Customer</th>
+                                <th class="text-nowrap px-4 py-3">Tanggal</th>
+                                <th class="text-nowrap px-4 py-3">Total</th>
+                                <th class="text-nowrap px-4 py-3">Sales</th>
+                                <th class="text-nowrap px-4 py-3 text-right no-sort">Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-nowrap">
                             @forelse($pendingOrders as $order)
                                 <tr class="border-b hover:bg-gray-50 dark:border-gray-700">
                                     <td class="px-4 py-3 font-medium">{{ $order->nomor_penawaran }}</td>
@@ -282,7 +283,7 @@
                                     <td class="px-4 py-3">{{ $order->created_at->format('d/m/Y') }}</td>
                                     <td class="px-4 py-3">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</td>
                                     <td class="px-4 py-3">{{ $order->sales?->name }}</td>
-                                    <td class="px-4 py-3">
+                                    <td class="px-4 py-3 text-right">
                                         <a href="{{ route('admin.request-order.show', $order->id) }}"
                                            class="inline-flex items-center rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Review</a>
                                     </td>
@@ -291,6 +292,11 @@
                                 <tr>
                                     <td colspan="6"
                                         class="px-4 py-10 text-center">Tidak ada antrean persetujuan.</td>
+                                    <td class="hidden"></td>
+                                    <td class="hidden"></td>
+                                    <td class="hidden"></td>
+                                    <td class="hidden"></td>
+                                    <td class="hidden"></td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -298,21 +304,21 @@
                 </div>
             </div>
 
-            <div class="col-span-8 w-full overflow-hidden rounded-2xl shadow-md">
-                <div class="w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
+            <div class="col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
                     <h1 class="text-lg font-bold text-white">Performa Sales</h1>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <div id="tableContainer2" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">Nama Sales</th>
-                                <th class="px-4 py-3 text-center">Total Penawaran</th>
-                                <th class="px-4 py-3 text-center">Disetujui</th>
-                                <th class="px-4 py-3">Akurasi (%)</th>
+                                <th class="text-nowrap px-4 py-3">Nama Sales</th>
+                                <th class="text-nowrap px-4 py-3 text-center">Total Penawaran</th>
+                                <th class="text-nowrap px-4 py-3 text-center">Disetujui</th>
+                                <th class="text-nowrap px-4 py-3 no-sort">Akurasi (%)</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-nowrap">
                             @foreach ($salesPerfData as $perf)
                                 <tr class="border-b hover:bg-gray-50 dark:border-gray-700">
                                     <td class="px-4 py-3 font-medium">{{ $perf['name'] }}</td>
@@ -334,20 +340,20 @@
                 </div>
             </div>
 
-            <div class="col-span-8 w-full overflow-hidden rounded-2xl shadow-md">
-                <div class="w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
+            <div class="col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
                     <h1 class="text-lg font-bold text-white">Aktivitas Pelanggan Terbaru</h1>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                        <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <div id="tableContainer3" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="px-4 py-3">Customer</th>
-                                <th class="px-4 py-3">Pesanan Terakhir</th>
-                                <th class="px-4 py-3 text-center">Status</th>
+                                <th class="text-nowrap px-4 py-3">Customer</th>
+                                <th class="text-nowrap px-4 py-3">Pesanan Terakhir</th>
+                                <th class="text-nowrap px-4 py-3 text-center no-sort">Status</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="text-nowrap">
                             @foreach ($customerActivity as $order)
                                 <tr class="border-b hover:bg-gray-50 dark:border-gray-700">
                                     <td class="px-4 py-3 font-medium">{{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
@@ -366,5 +372,5 @@
         </div>
     </div>
 
-    @vite(['resources/js/chart-dashboard-supervisor.js'])
+    @vite(['resources/js/chart-dashboard-supervisor.js', 'resources/js/table-sort.js'])
 </x-app-layout>

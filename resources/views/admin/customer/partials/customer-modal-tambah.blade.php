@@ -51,7 +51,10 @@
                     </div>
                     <div class="col-span-2 mb-4">
                         <label for="kredit_limit" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kredit Limit</label>
-                        <input type="text" id="kredit_limit" name="kredit_limit" placeholder="Kredit Limit" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <div class="relative flex items-center">
+                            <span class="absolute left-3 text-sm font-medium text-gray-500 dark:text-gray-400">Rp</span>
+                            <input type="text" id="kredit_limit" name="kredit_limit" placeholder="Kredit Limit" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        </div>
                     </div>
                     <div class="col-span-2 mb-4">
                         <label for="alamat_penagihan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Alamat Penagihan</label>
@@ -138,6 +141,17 @@
         const addPicBtn = document.getElementById('add-pic-btn');
         const npwpInput = document.getElementById('npwp');
         const npwpWarning = document.getElementById('npwpWarning');
+        const kreditLimitInput = document.getElementById('kredit_limit');
+
+        function formatNumberString(val) {
+            let clean = val.replace(/\D/g, '');
+            if (!clean) return '';
+            return parseInt(clean, 10).toLocaleString('en-US');
+        }
+
+        kreditLimitInput.addEventListener('input', function() {
+            this.value = formatNumberString(this.value);
+        });
 
         npwpInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
@@ -185,10 +199,15 @@
         // Form Submission Validation
         const createForm = document.querySelector('form[action="{{ route('customer.store') }}"]');
         createForm.addEventListener('submit', function(e) {
+            // Strip formatting from kredit_limit before sending
+            kreditLimitInput.value = kreditLimitInput.value.replace(/\D/g, '');
+
             if (npwpInput.value.length > 0 && npwpInput.value.length < 15) {
                 e.preventDefault();
                 npwpInput.focus();
                 npwpWarning.classList.remove('hidden');
+                // Reformat back
+                kreditLimitInput.value = formatNumberString(kreditLimitInput.value);
             }
         });
     });

@@ -188,94 +188,88 @@
 
             </div>
 
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Pending Orders </h1>
                 </div>
-                <table id="dashTable"
-                       class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col"
-                                class="px-4 py-3">SO No</th>
-                            <th scope="col"
-                                class="px-4 py-3">Customer</th>
-                            <th scope="col"
-                                class="px-4 py-3">Date</th>
-                            <th scope="col"
-                                class="px-4 py-3">Amount</th>
-                            <th scope="col"
-                                class="px-4 py-3">Sales</th>
-                            <th scope="col"
-                                class="px-4 py-3">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        <tr>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="tableContainer1" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="text-nowrap px-4 py-3">SO No</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Customer</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Date</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Amount</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Sales</th>
+                                <th scope="col" class="text-nowrap px-4 py-3 text-right no-sort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            <tr>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Sales Performance</h1>
                 </div>
-                <table id="dashTable2"
-                       class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col"
-                                class="px-4 py-3">Nama Sales</th>
-                            <th scope="col"
-                                class="px-4 py-3">Target</th>
-                            <th scope="col"
-                                class="px-4 py-3">Achieved</th>
-                            <th scope="col"
-                                class="px-4 py-3">Berapa %</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        <tr>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="tableContainer2" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="text-nowrap px-4 py-3">Nama Sales</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Target</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Achieved</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Berapa %</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            <tr>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="p-5 text-lg font-bold text-white lg:text-2xl">Customer Activity</h1>
                 </div>
-                <table id="dashTable3"
-                       class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col"
-                                class="px-4 py-3">Customer</th>
-                            <th scope="col"
-                                class="px-4 py-3">Status Order Terakhir</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        <tr>
-                            <td class="px-4 py-3">-</td>
-                            <td class="px-4 py-3">-</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div id="tableContainer3" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="text-nowrap px-4 py-3">Customer</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Status Order Terakhir</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            <tr>
+                                <td class="px-4 py-3">-</td>
+                                <td class="px-4 py-3">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </div>
     </div>
 
     {{-- Kelola data Chart ada di JS --}}
-    @vite(['resources/js/chart-dashboard-anonymous.js'])
+    @vite(['resources/js/chart-dashboard-anonymous.js', 'resources/js/table-sort.js'])
 </x-app-layout>

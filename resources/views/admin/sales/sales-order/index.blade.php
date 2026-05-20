@@ -1,67 +1,50 @@
 <x-app-layout>
 
-
     <div>
         @if (session('title'))
-        <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
-            <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
-            @if (session('text'))
-            <p class="mt-1 text-sm text-green-700 dark:text-green-400">{{ session('text') }}</p>
-            @endif
-        </div>
+            <div
+                class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
+                <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
+                @if (session('text'))
+                    <p class="mt-1 text-sm text-green-700 dark:text-green-400">{{ session('text') }}</p>
+                @endif
+            </div>
         @endif
 
         @if ($errors->any())
-        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/30">
-            <p class="font-semibold text-red-800 dark:text-red-300">Terjadi kesalahan:</p>
-            <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-400">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/30">
+                <p class="font-semibold text-red-800 dark:text-red-300">Terjadi kesalahan:</p>
+                <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-400">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
     </div>
 
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+    <div
+        class="relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                    <line x1="4"
-                        x2="4"
-                        y1="15"
-                        y2="21"></line>
-                    <line x1="12"
-                        x2="12"
-                        y1="15"
-                        y2="21"></line>
-                    <line x1="20"
-                        x2="20"
-                        y1="15"
-                        y2="21"></line>
+                    <line x1="4" x2="4" y1="15" y2="21"></line>
+                    <line x1="12" x2="12" y1="15" y2="21"></line>
+                    <line x1="20" x2="20" y1="15" y2="21"></line>
                 </svg>
                 Daftar Sales Order
             </h3>
         </div>
 
-        <div class="border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
+        <div class="shrink-0 border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
             <div class="flex flex-col gap-2 md:flex-row">
                 <div class="relative flex-1">
-                    <input type="text"
-                        id="searchInput"
+                    <input type="text" id="searchInput"
                         placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..."
-                        value="{{ $search }}"
-                        autocomplete="off"
+                        value="{{ $search }}" autocomplete="off"
                         class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
 
                     <!-- Search Results Dropdown -->
@@ -70,364 +53,335 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button type="button"
-                        id="searchBtn"
+                    <button type="button" id="searchBtn"
                         class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2 font-semibold text-white hover:bg-[#19426d]">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <circle cx="11"
-                                cy="11"
-                                r="8"></circle>
+                            <circle cx="11" cy="11" r="8"></circle>
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
                         Cari
                     </button>
                     @if ($search)
-                    <a href="{{ route('sales.sales-order.index') }}"
-                        class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
-                        Reset
-                    </a>
+                        <a href="{{ route('sales.sales-order.index') }}"
+                            class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
+                            Reset
+                        </a>
                     @endif
                 </div>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table class="sortable w-full" id="">
+                <thead class="sticky top-0 z-30 border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No.PO</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. SO</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
-                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah Item</th>
-                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total</th>
-                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Diskon</th>
-                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Berlaku Sampai</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Action</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            No.PO</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            No. Request</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            No. Penawaran</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            No. SO</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Tanggal</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Customer</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Jumlah Item</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Total</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Diskon</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Status</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Berlaku Sampai</th>
+                        <th
+                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-nowrap">
                     @forelse ($results as $row)
-                    <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col gap-1">
-                                @if ($row['type'] === 'request_order')
-                                <div class="flex flex-col gap-2">
-                                    <input type="text"
-                                        id="no-po-input-{{ $row['id'] }}"
-                                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-700 dark:text-white"
-                                        value="{{ $row['no_po'] ?? '' }}"
-                                        placeholder="Masukkan No.PO"
-                                        onblur="saveNoPO({{ $row['id'] }}, this.value)"
-                                        onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }" />
-                                    <div class="flex flex-wrap items-center justify-between gap-2">
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">No.PO dapat diedit langsung di sini.</span>
-                                    </div>
-                                </div>
-                                @else
-                                <span>{{ $row['no_po'] ?? '-' }}</span>
-                                @endif
-                                <div id="image-po-preview-{{ $row['id'] }}-{{ $row['type'] }}"
-                                    class="mt-1">
-                                    @if (isset($row['image_po']) && $row['image_po'])
-                                    <div class="group relative inline-block">
-                                        <a href="{{ Storage::url($row['image_po']) }}"
-                                            target="_blank">
-                                            <img src="{{ Storage::url($row['image_po']) }}"
-                                                alt="PO Image"
-                                                class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
-                                        </a>
-                                        <button class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
-                                            onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'po')"
-                                            title="Delete">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="3"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M18 6 6 18" />
-                                                <path d="m6 6 12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    @elseif($row['type'] === 'request_order')
-                                    @if (($row['customer_status'] ?? 'active') === 'active')
-                                    <div class="flex flex-col gap-1">
-                                        <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                <polyline points="17 8 12 3 7 8" />
-                                                <line x1="12"
-                                                    x2="12"
-                                                    y1="3"
-                                                    y2="15" />
-                                            </svg>
-                                            Upload PO
-                                            <input type="file"
-                                                class="hidden"
-                                                accept="image/jpeg,image/png,image/jpg"
-                                                onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
-                                        </label>
-                                        <label class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-purple-500 bg-white px-2 py-1 text-[10px] font-semibold text-purple-600 shadow-sm transition-colors hover:bg-purple-50">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                <polyline points="17 8 12 3 7 8" />
-                                                <line x1="12"
-                                                    x2="12"
-                                                    y1="3"
-                                                    y2="15" />
-                                            </svg>
-                                            Upload PDF
-                                            <input type="file"
-                                                class="hidden"
-                                                accept="application/pdf"
-                                                onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'pdf_po')">
-                                        </label>
-                                    </div>
-                                    @endif
-                                    @endif
-                                </div>
-                                <div id="pdf-po-preview-{{ $row['id'] }}-{{ $row['type'] }}"
-                                    class="mt-1">
-                                    @if (isset($row['pdf_po']) && $row['pdf_po'])
-                                    <div class="group relative inline-block">
-                                        <a href="{{ Storage::url($row['pdf_po']) }}"
-                                            target="_blank">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="text-red-600">
-                                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                                </svg>
+                        <tr
+                            class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1">
+                                    @if ($row['type'] === 'request_order')
+                                        <div class="flex flex-col gap-2">
+                                            <input type="text" id="no-po-input-{{ $row['id'] }}"
+                                                class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-700 dark:text-white"
+                                                value="{{ $row['no_po'] ?? '' }}" placeholder="Masukkan No.PO"
+                                                onblur="saveNoPO({{ $row['id'] }}, this.value)"
+                                                onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }" />
+                                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">No.PO dapat
+                                                    diedit langsung di sini.</span>
                                             </div>
-                                        </a>
-                                        <button class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
-                                            onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'pdf_po')"
-                                            title="Delete">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="12"
-                                                height="12"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="3"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M18 6 6 18" />
-                                                <path d="m6 6 12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $row['no_penawaran'] ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col gap-1">
-                                <span>{{ $row['no_sales_order'] ?? '-' }}</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col">
-                                <span>{{ $row['customer_name'] ?? '-' }}</span>
-                                @if (($row['customer_status'] ?? 'active') === 'inactive')
-                                <span class="mt-1 text-[10px] font-bold uppercase tracking-wider text-red-600">
-                                    (Non Aktif)
-                                </span>
-                                @endif
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
-                        <td class="px-4 py-3 text-right">
-                            <div class="flex w-full items-center justify-between">
-                                <span>Rp</span>
-                                <span>{{ number_format($row['total'], 0, '.', ',') }}</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
-                        <td class="px-4 py-3 text-center">
-                            @php
-                            $statusClass =
-                            [
-                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                            'Open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                            'Sent to Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                            'Approved by Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                            'Sent to Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                            'Approved by Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-                            ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
-                            @endphp
-                            <div class="flex items-center justify-center gap-2">
-                                <span class="{{ $statusClass }} badge">
-                                    {{ $row['status'] }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-3">
-                            @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
-                            {{ $row['berlaku_sampai'] }}
-                            @elseif (!empty($row['request_order']) && !empty($row['request_order']['tanggal_berlaku_formatted']))
-                            {{ $row['request_order']['tanggal_berlaku_formatted'] }}
-                            @else
-                            -
-                            @endif
-                        </td>
-                        <td class="w-fit px-4 py-3 text-right">
-                            <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                    {{-- Lihat Detail --}}
-                                    <a href="{{ $row['aksi_url'] }}"
-                                        class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="14"
-                                            height="14"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-                                            <circle cx="12"
-                                                cy="12"
-                                                r="3" />
-                                        </svg>
-                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
-                                    </a>
-
-                                    @if ($row['type'] === 'sales_order')
-                                    <div id="image-preview-aksi-{{ $row['id'] }}-sales_order">
-                                        @if ($row['image_url'])
-                                        <div class="group relative inline-block">
-                                            <a href="{{ $row['image_url'] }}"
-                                                target="_blank">
-                                                <img src="{{ $row['image_url'] }}"
-                                                    alt="SO Image"
-                                                    class="h-8 w-8 rounded border border-gray-300 object-cover shadow-sm" />
-                                            </a>
-                                            @if (($row['customer_status'] ?? 'active') === 'active')
-                                            <button class="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
-                                                onclick="handleDeleteImage('sales_order', {{ $row['id'] }}, 'main')"
-                                                title="Ganti">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="10"
-                                                    height="10"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="3"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M18 6 6 18" />
-                                                    <path d="m6 6 12 12" />
-                                                </svg>
-                                            </button>
-                                            @endif
                                         </div>
-                                        @elseif (($row['customer_status'] ?? 'active') === 'active')
-                                        <label class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                width="10"
-                                                height="10"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                <polyline points="17 8 12 3 7 8" />
-                                                <line x1="12"
-                                                    x2="12"
-                                                    y1="3"
-                                                    y2="15" />
-                                            </svg>
-                                            Gambar
-                                            <input type="file"
-                                                class="hidden"
-                                                accept="image/jpeg,image/png,image/jpg"
-                                                onchange="handleUploadImage(this, 'sales_order', {{ $row['id'] }}, 'main')">
-                                        </label>
+                                    @else
+                                        <span>{{ $row['no_po'] ?? '-' }}</span>
+                                    @endif
+                                    <div id="image-po-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
+                                        @if (isset($row['image_po']) && $row['image_po'])
+                                            <div class="group relative inline-block">
+                                                <a href="{{ Storage::url($row['image_po']) }}" target="_blank">
+                                                    <img src="{{ Storage::url($row['image_po']) }}" alt="PO Image"
+                                                        class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
+                                                </a>
+                                                <button
+                                                    class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+                                                    onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'po')"
+                                                    title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                        height="12" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path d="M18 6 6 18" />
+                                                        <path d="m6 6 12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @elseif($row['type'] === 'request_order')
+                                            @if (($row['customer_status'] ?? 'active') === 'active')
+                                                <div class="flex flex-col gap-1">
+                                                    <label
+                                                        class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                            height="12" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" x2="12" y1="3"
+                                                                y2="15" />
+                                                        </svg>
+                                                        Upload PO
+                                                        <input type="file" class="hidden"
+                                                            accept="image/jpeg,image/png,image/jpg"
+                                                            onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
+                                                    </label>
+                                                    <label
+                                                        class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-purple-500 bg-white px-2 py-1 text-[10px] font-semibold text-purple-600 shadow-sm transition-colors hover:bg-purple-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                            height="12" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" x2="12" y1="3"
+                                                                y2="15" />
+                                                        </svg>
+                                                        Upload PDF
+                                                        <input type="file" class="hidden" accept="application/pdf"
+                                                            onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'pdf_po')">
+                                                    </label>
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
+                                    <div id="pdf-po-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
+                                        @if (isset($row['pdf_po']) && $row['pdf_po'])
+                                            <div class="group relative inline-block">
+                                                <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank">
+                                                    <div
+                                                        class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                            height="16" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="text-red-600">
+                                                            <path
+                                                                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                            </path>
+                                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                                        </svg>
+                                                    </div>
+                                                </a>
+                                                <button
+                                                    class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100"
+                                                    onclick="handleDeleteImage('{{ $row['type'] }}', {{ $row['id'] }}, 'pdf_po')"
+                                                    title="Delete">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12"
+                                                        height="12" viewBox="0 0 24 24" fill="none"
+                                                        stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path d="M18 6 6 18" />
+                                                        <path d="m6 6 12 12" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $row['no_penawaran'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1">
+                                    <span>{{ $row['no_sales_order'] ?? '-' }}</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col">
+                                    <span>{{ $row['customer_name'] ?? '-' }}</span>
+                                    @if (($row['customer_status'] ?? 'active') === 'inactive')
+                                        <span class="mt-1 text-[10px] font-bold uppercase tracking-wider text-red-600">
+                                            (Non Aktif)
+                                        </span>
                                     @endif
-                                    {{-- Action Dropdown --}}
-                                    @if (($row['customer_status'] ?? 'active') === 'active')
-                                    <button class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                        popovertarget="popover-{{ $row['id'] }}"
-                                        style="anchor-name:--anchor-{{ $row['id'] }}">
-                                        <svg width="24px"
-                                            height="24px"
-                                            viewBox="0 0 16 16"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="currentColor"
-                                            class="bi bi-three-dots-vertical h-4 w-4">
-                                            <g id="SVGRepo_bgCarrier"
-                                                stroke-width="0"></g>
-                                            <g id="SVGRepo_tracerCarrier"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"></g>
-                                            <g id="SVGRepo_iconCarrier">
-                                                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                        <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
-                                    </button>
-                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <div class="flex w-full items-center justify-between">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($row['total'], 0, '.', ',') }}</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
+                            <td class="px-4 py-3 text-center">
+                                @php
+                                    $statusClass =
+                                        [
+                                            'Waiting for Supervisor Approval' =>
+                                                'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Sent to Supervisor' =>
+                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Approved by Supervisor' =>
+                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Rejected by Supervisor' =>
+                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Warehouse' =>
+                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Approved by Warehouse' =>
+                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Rejected by Warehouse' =>
+                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Partial Delivery' =>
+                                                'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
+                                        ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                @endphp
+                                <div class="flex items-center justify-center gap-2">
+                                    <span class="{{ $statusClass }} badge">
+                                        {{ $row['status'] }}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
+                                    {{ $row['berlaku_sampai'] }}
+                                @elseif (!empty($row['request_order']) && !empty($row['request_order']['tanggal_berlaku_formatted']))
+                                    {{ $row['request_order']['tanggal_berlaku_formatted'] }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="w-fit px-4 py-3 text-right">
+                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                    <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
+                                    <div
+                                        class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        {{-- Lihat Detail --}}
+                                        <a href="{{ $row['aksi_url'] }}"
+                                            class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                                <circle cx="12" cy="12" r="3" />
+                                            </svg>
+                                            <span
+                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                        </a>
 
-                                    <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
-                                        popover
-                                        id="popover-{{ $row['id'] }}"
-                                        style="position-anchor:--anchor-{{ $row['id'] }}">
-                                        {{-- <li>
+                                        @if ($row['type'] === 'sales_order')
+                                            <div id="image-preview-aksi-{{ $row['id'] }}-sales_order">
+                                                @if ($row['image_url'])
+                                                    <div class="group relative inline-block">
+                                                        <a href="{{ $row['image_url'] }}" target="_blank">
+                                                            <img src="{{ $row['image_url'] }}" alt="SO Image"
+                                                                class="h-8 w-8 rounded border border-gray-300 object-cover shadow-sm" />
+                                                        </a>
+                                                        @if (($row['customer_status'] ?? 'active') === 'active')
+                                                            <button
+                                                                class="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+                                                                onclick="handleDeleteImage('sales_order', {{ $row['id'] }}, 'main')"
+                                                                title="Ganti">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                                                    height="10" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="3"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M18 6 6 18" />
+                                                                    <path d="m6 6 12 12" />
+                                                                </svg>
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                @elseif (($row['customer_status'] ?? 'active') === 'active')
+                                                    <label
+                                                        class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="10"
+                                                            height="10" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                            <polyline points="17 8 12 3 7 8" />
+                                                            <line x1="12" x2="12" y1="3"
+                                                                y2="15" />
+                                                        </svg>
+                                                        Gambar
+                                                        <input type="file" class="hidden"
+                                                            accept="image/jpeg,image/png,image/jpg"
+                                                            onchange="handleUploadImage(this, 'sales_order', {{ $row['id'] }}, 'main')">
+                                                    </label>
+                                                @endif
+                                            </div>
+                                        @endif
+                                        {{-- Action Dropdown --}}
+                                        @if (($row['customer_status'] ?? 'active') === 'active')
+                                            <button
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                popovertarget="popover-{{ $row['id'] }}"
+                                                style="anchor-name:--anchor-{{ $row['id'] }}">
+                                                <svg width="24px" height="24px" viewBox="0 0 16 16"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                    class="bi bi-three-dots-vertical h-4 w-4">
+                                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                        stroke-linejoin="round"></g>
+                                                    <g id="SVGRepo_iconCarrier">
+                                                        <path
+                                                            d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
+                                                        </path>
+                                                    </g>
+                                                </svg>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
+                                            </button>
+                                        @endif
+
+                                        <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
+                                            popover id="popover-{{ $row['id'] }}"
+                                            style="position-anchor:--anchor-{{ $row['id'] }}">
+                                            {{-- <li>
                                                 <a href="{{ route('sales.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
@@ -439,152 +393,156 @@
                                         </a>
                                         </li> --}}
 
-                                        @php
-                                        $sudahDikirim = in_array($row['status'], ['sent_to_warehouse', 'completed', 'not_completed', 'Dikirim ke Gudang', 'Disetujui Gudang', 'Selesai', 'Tidak Selesai']);
-                                        @endphp
+                                            @php
+                                                $sudahDikirim = in_array($row['status'], [
+                                                    'sent_to_warehouse',
+                                                    'completed',
+                                                    'not_completed',
+                                                    'Dikirim ke Gudang',
+                                                    'Disetujui Gudang',
+                                                    'Selesai',
+                                                    'Tidak Selesai',
+                                                ]);
+                                            @endphp
 
-                                        @if (!$sudahDikirim)
-                                        @if ($row['type'] === 'sales_order')
-                                        <form method="POST"
-                                            action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}"
-                                            data-confirm-text="Kirim Sales Order ini ke Warehouse?"
-                                            data-confirm-button-text="Ya, Kirim"
-                                            class="approve-form w-full">
-                                            @csrf
-                                            <li>
-                                                <button type="submit"
-                                                    class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        width="14"
-                                                        height="14"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                        <path d="m3.3 7 8.7 5 8.7-5" />
-                                                        <path d="M12 22V12" />
-                                                    </svg>
-                                                    Send to Warehouse
-                                                </button>
-                                            </li>
-                                        </form>
-                                        @elseif ($row['type'] === 'request_order')
-                                        <form method="POST"
-                                            action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}"
-                                            data-confirm-text="Kirim Request Order ini ke Warehouse?"
-                                            data-confirm-button-text="Ya, Kirim"
-                                            class="approve-form w-full">
-                                            @csrf
-                                            <li>
-                                                <button type="submit"
-                                                    class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        width="14"
-                                                        height="14"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        stroke-width="2.5"
-                                                        stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                        <path d="m3.3 7 8.7 5 8.7-5" />
-                                                        <path d="M12 22V12" />
-                                                    </svg>
-                                                    Send to Warehouse
-                                                </button>
-                                            </li>
-                                        </form>
-                                        @endif
-                                        @endif
-                                    </ul>
+                                            @if (!$sudahDikirim)
+                                                @if ($row['type'] === 'sales_order')
+                                                    <form method="POST"
+                                                        action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}"
+                                                        data-confirm-text="Kirim Sales Order ini ke Warehouse?"
+                                                        data-confirm-button-text="Ya, Kirim"
+                                                        class="approve-form w-full">
+                                                        @csrf
+                                                        <li>
+                                                            <button type="submit"
+                                                                class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2.5"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                                                    <path d="m3.3 7 8.7 5 8.7-5" />
+                                                                    <path d="M12 22V12" />
+                                                                </svg>
+                                                                Send to Warehouse
+                                                            </button>
+                                                        </li>
+                                                    </form>
+                                                @elseif ($row['type'] === 'request_order')
+                                                    <form method="POST"
+                                                        action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}"
+                                                        data-confirm-text="Kirim Request Order ini ke Warehouse?"
+                                                        data-confirm-button-text="Ya, Kirim"
+                                                        class="approve-form w-full">
+                                                        @csrf
+                                                        <li>
+                                                            <button type="submit"
+                                                                class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="14"
+                                                                    height="14" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2.5"
+                                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path
+                                                                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                                                    <path d="m3.3 7 8.7 5 8.7-5" />
+                                                                    <path d="M12 22V12" />
+                                                                </svg>
+                                                                Send to Warehouse
+                                                            </button>
+                                                        </li>
+                                                    </form>
+                                                @endif
+                                            @endif
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     @empty
-                    <tr>
-                        <td colspan="12"
-                            class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                width="48"
-                                height="48"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
-                                <circle cx="11"
-                                    cy="11"
-                                    r="8"></circle>
-                                <path d="m21 21-4.35-4.35"></path>
-                            </svg>
-                            <p class="text-lg font-semibold">
-                                @if ($search)
-                                Tidak ada hasil untuk pencarian "{{ $search }}"
-                                @else
-                                Tidak ada data
-                                @endif
-                            </p>
-                            <p class="mt-1 text-sm">
-                                @if ($search)
-                                Coba ubah kata kunci pencarian atau <a href="{{ route('sales.sales-order.index') }}"
-                                    class="text-blue-600 hover:underline">reset pencarian</a>
-                                @else
-                                Mulai buat sales order baru dengan klik tombol di atas
-                                @endif
-                            </p>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="12" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.35-4.35"></path>
+                                </svg>
+                                <p class="text-lg font-semibold">
+                                    @if ($search)
+                                        Tidak ada hasil untuk pencarian "{{ $search }}"
+                                    @else
+                                        Tidak ada data
+                                    @endif
+                                </p>
+                                <p class="mt-1 text-sm">
+                                    @if ($search)
+                                        Coba ubah kata kunci pencarian atau <a
+                                            href="{{ route('sales.sales-order.index') }}"
+                                            class="text-blue-600 hover:underline">reset pencarian</a>
+                                    @else
+                                        Mulai buat sales order baru dengan klik tombol di atas
+                                    @endif
+                                </p>
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
-        @if (!$isSearch && $salesOrders && $salesOrders->hasPages())
-        <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-600">
-            {{ $salesOrders->links() }}
-        </div>
+        @if (!$isSearch && $salesOrders)
+        <nav id="pagination-nav"
+            class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->firstItem() ?? 0 }}-{{ $salesOrders->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
+                </span>
+                <form method="GET"
+                    action="{{ route('sales.sales-order.index') }}">
+                    <input type="hidden"
+                        name="search"
+                        value="{{ request('search') }}">
+                    <select name="perPage"
+                        onchange="this.form.submit()"
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        @foreach ([10, 20, 50, 100] as $size)
+                        <option value="{{ $size }}"
+                            {{ request('perPage', 20) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                        @endforeach
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+            </div>
+            <div>
+                {{ $salesOrders->links() }}
+            </div>
+        </nav>
         @endif
     </div>
 
-    {{-- $penawaranQuery section dihapus, sudah digabung ke tabel utama --}}
-
     <!-- Modal Detail Penawaran -->
-    <div id="penawaranModal"
-        class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 p-4">
-        <div class="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-800">
+    <div id="penawaranModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 p-4">
+        <div
+            class="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-800">
             <!-- Header -->
             <div class="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
                 <h2 class="text-2xl font-bold">Detail Penawaran</h2>
-                <button id="closeModal"
-                    class="rounded-full p-2 text-white transition hover:bg-blue-700">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2">
-                        <line x1="18"
-                            y1="6"
-                            x2="6"
-                            y2="18"></line>
-                        <line x1="6"
-                            y1="6"
-                            x2="18"
-                            y2="18"></line>
+                <button id="closeModal" class="rounded-full p-2 text-white transition hover:bg-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 </button>
             </div>
 
             <!-- Content -->
-            <div id="modalContent"
-                class="flex-1 overflow-y-auto p-6">
+            <div id="modalContent" class="flex-1 overflow-y-auto p-6">
                 <!-- Will be filled by JavaScript -->
             </div>
         </div>
@@ -631,8 +589,7 @@
             // Trigger actual search
             const form = document.createElement('form');
             form.method = 'GET';
-            form.action = '{{ route('
-            sales.sales - order.index ') }}';
+            form.action = '{{ route('sales.sales-order.index') }}';
             form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
             document.body.appendChild(form);
             form.submit();
@@ -753,8 +710,7 @@
             if (query) {
                 const form = document.createElement('form');
                 form.method = 'GET';
-                form.action = '{{ route('
-                sales.sales - order.index ') }}';
+                form.action = '{{ route('sales.sales-order.index') }}';
                 form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
                 document.body.appendChild(form);
                 form.submit();
@@ -859,11 +815,11 @@
                             </div>
 
                             ${data.intro_text ? `
-                                                                                                                    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                                                                                                                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Teks Pembuka</h3>
-                                                                                                                        <p class="text-gray-700 dark:text-gray-300">${data.intro_text}</p>
-                                                                                                                    </div>
-                                                                                                                ` : ''}
+                                    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Teks Pembuka</h3>
+                                        <p class="text-gray-700 dark:text-gray-300">${data.intro_text}</p>
+                                    </div>
+                                ` : ''}
 
                             <div class="mb-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Detail Items</h3>
@@ -994,7 +950,8 @@
 
             const container = document.getElementById(containerId);
             const originalContent = container.innerHTML;
-            container.innerHTML = `<div class="flex items-center justify-center p-2"><svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>`;
+            container.innerHTML =
+                `<div class="flex items-center justify-center p-2"><svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>`;
 
             fetch(endpoint, {
                     method: 'POST',
@@ -1008,7 +965,8 @@
                     if (data.status === 'success') {
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: imageType === 'pdf_po' ? 'PDF berhasil diupload.' : 'Gambar berhasil diupload.',
+                            text: imageType === 'pdf_po' ? 'PDF berhasil diupload.' :
+                                'Gambar berhasil diupload.',
                             icon: 'success',
                             timer: 1500,
                             showConfirmButton: false,
@@ -1222,4 +1180,5 @@
             });
         }
     </script>
+    @vite(['resources/js/table-sort.js'])
 </x-app-layout>

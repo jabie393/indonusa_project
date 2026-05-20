@@ -22,8 +22,8 @@
         @endif
     </div>
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+    <div class="relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
@@ -43,7 +43,7 @@
             </a>
         </div>
 
-        <div class="border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
+        <div class="shrink-0 border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
             <div class="flex flex-col gap-2 md:flex-row">
                 <div class="relative flex-1">
                     <input type="text" id="searchInput" placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..." value="{{ $search }}" autocomplete="off" class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -69,25 +69,25 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full">
-                <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table class="sortable w-full">
+                <thead class="sticky top-0 z-30 text-nowrap border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No.PO</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. SO</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah Item</th>
-                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total</th>
-                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Diskon</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Berlaku Sampai</th>
-                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No.PO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. Request</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. Penawaran</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">No. SO</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap" data-type="date">Tanggal</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Customer</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Jumlah Item</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Total</th>
+                        <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Diskon</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Status</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap">Berlaku Sampai</th>
+                        <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300 text-nowrap no-sort">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-nowrap">
                     @forelse ($results as $row)
                     <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                         <td class="px-4 py-3">
@@ -125,136 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl bg-white shadow-md dark:bg-gray-800">
-                                <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-                                    <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            width="24"
-                                            height="24"
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                                            <line x1="4"
-                                                x2="4"
-                                                y1="15"
-                                                y2="21"></line>
-                                            <line x1="12"
-                                                x2="12"
-                                                y1="15"
-                                                y2="21"></line>
-                                            <line x1="20"
-                                                x2="20"
-                                                y1="15"
-                                                y2="21"></line>
-                                        </svg>
-                                        Daftar Sales Order
-                                    </h3>
-                                </div>
 
-                                <div class="border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
-                                    <div class="flex flex-col gap-2 md:flex-row">
-                                        <div class="relative flex-1">
-                                            <input type="text"
-                                                id="searchInput"
-                                                placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..."
-                                                value="{{ $search }}"
-                                                autocomplete="off"
-                                                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-
-                                            <!-- Search Results Dropdown -->
-                                            <div id="searchResults"
-                                                class="absolute left-0 right-0 top-full z-50 mt-1 hidden max-h-96 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg dark:border-gray-500 dark:bg-gray-600">
-                                            </div>
-                                        </div>
-                                        <div class="flex gap-2">
-                                            <button type="button"
-                                                id="searchBtn"
-                                                class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2 font-semibold text-white hover:bg-[#19426d]">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    stroke-width="2"
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <circle cx="11"
-                                                        cy="11"
-                                                        r="8"></circle>
-                                                    <path d="m21 21-4.35-4.35"></path>
-                                                </svg>
-                                                Cari
-                                            </button>
-                                            @if ($search)
-                                            <a href="{{ route('ga.sales-order.index') }}"
-                                                class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
-                                                Reset
-                                            </a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="overflow-x-auto">
-                                    <table class="w-full">
-                                        <thead class="border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
-                                            <tr>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No.PO</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Request</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Penawaran</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. SO</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Tanggal</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
-                                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Jumlah Item</th>
-                                                <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Total</th>
-                                                <th class="px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">Diskon</th>
-                                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                                                <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Berlaku Sampai</th>
-                                                <th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse ($results as $row)
-                                            <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
-                                                <td class="px-4 py-3">
-                                                    <div class="flex flex-col gap-1">
-                                                        <span>{{ $row['no_po'] ?? '-' }}</span>
-                                                        <div class="flex gap-1">
-                                                            @if (!empty($row['image_po']))
-                                                            <a href="{{ Storage::url($row['image_po']) }}"
-                                                                target="_blank">
-                                                                <img src="{{ Storage::url($row['image_po']) }}"
-                                                                    alt="PO Image"
-                                                                    class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
-                                                            </a>
-                                                            @endif
-                                                            @if (!empty($row['pdf_po']))
-                                                            <a href="{{ Storage::url($row['pdf_po']) }}"
-                                                                target="_blank">
-                                                                <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50 transition-transform hover:scale-110">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                                        width="16"
-                                                                        height="16"
-                                                                        viewBox="0 0 24 24"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        stroke-width="2"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"
-                                                                        class="text-red-600">
-                                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                                                    </svg>
-                                                                </div>
-                                                            </a>
-                                                            @endif
-                                                        </div>
-                                                    </div>
                                                 </td>
                                                 <td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>
                                                 <td class="px-4 py-3">{{ $row['no_penawaran'] ?? '-' }}</td>
@@ -360,10 +231,29 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                @if (!$isSearch && $salesOrders && $salesOrders->hasPages())
-                                <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-600">
-                                    {{ $salesOrders->links() }}
-                                </div>
+                                @if (!$isSearch && $salesOrders)
+                                <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                                            Showing
+                                            <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->firstItem() ?? 0 }}-{{ $salesOrders->lastItem() ?? 0 }}</span>
+                                            of
+                                            <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
+                                        </span>
+                                        <form method="GET" action="{{ route('ga.sales-order.index') }}">
+                                            <input type="hidden" name="search" value="{{ request('search') }}">
+                                            <select name="perPage" onchange="this.form.submit()" class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                                @foreach ([10, 25, 50, 100] as $size)
+                                                    <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                                                @endforeach
+                                            </select>
+                                        </form>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                                    </div>
+                                    <div>
+                                        {{ $salesOrders->links() }}
+                                    </div>
+                                </nav>
                                 @endif
                             </div>
 
@@ -408,8 +298,7 @@
                                     // Trigger actual search
                                     const form = document.createElement('form');
                                     form.method = 'GET';
-                                    form.action = '{{ route('
-                                    ga.sales - order.index ') }}';
+                                    form.action = '{{ route('ga.sales-order.index') }}';
                                     form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
                                     document.body.appendChild(form);
                                     form.submit();
@@ -470,8 +359,7 @@
                                     if (query) {
                                         const form = document.createElement('form');
                                         form.method = 'GET';
-                                        form.action = '{{ route('
-                                        ga.sales - order.index ') }}';
+                                        form.action = '{{ route('ga.sales-order.index') }}';
                                         form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
                                         document.body.appendChild(form);
                                         form.submit();
@@ -493,4 +381,5 @@
                                     }
                                 });
                             </script>
+                            @vite(['resources/js/table-sort.js'])
 </x-app-layout>

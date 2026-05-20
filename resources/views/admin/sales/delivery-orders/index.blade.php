@@ -19,8 +19,10 @@
             </div>
         </div>
 
-        <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+    <div
+        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="shrink-0 flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
             @if (Auth::user() && in_array(Auth::user()->role, ['Sales']))
                 @php
                     $currentStatus = session('warehouse_filter_status', 'masuk');
@@ -43,21 +45,21 @@
             @endif
         </div>
 
-            <div class="overflow-x-auto">
-                <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th class="px-4 py-2">Customer</th>
-                            <th class="px-4 py-2">No. DO</th>
-                            <th class="px-4 py-2">No. SO</th>
-                            <th class="px-4 py-2">No. PO</th>
-                            <th class="px-4 py-2">Nama Sales</th>
-                            <th class="px-4 py-2">Status</th>
-                            <th class="px-4 py-2">Dibuat</th>
-                            <th class="px-4 py-2">Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th class="text-nowrap px-4 py-3">Customer</th>
+                        <th class="text-nowrap px-4 py-3">No. DO</th>
+                        <th class="text-nowrap px-4 py-3">No. SO</th>
+                        <th class="text-nowrap px-4 py-3">No. PO</th>
+                        <th class="text-nowrap px-4 py-3">Nama Sales</th>
+                        <th class="text-nowrap px-4 py-3">Status</th>
+                        <th class="text-nowrap px-4 py-3">Dibuat</th>
+                        <th class="text-nowrap px-4 py-3 text-right">Detail</th>
+                    </tr>
+                </thead>
+                <tbody class="text-nowrap">
                         @foreach ($orders as $order)
                             <tr class="dark:border-gray-700">
                                 <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
@@ -139,38 +141,39 @@
                     </tbody>
                 </table>
             </div>
-            <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
-                aria-label="Table navigation">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                        Showing
-                        <span class="font-semibold text-gray-900 dark:text-white">{{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }}</span>
-                        of
-                        <span class="font-semibold text-gray-900 dark:text-white">{{ $orders->total() }}</span>
-                    </span>
-                    <form method="GET" action="{{ route('sales.delivery-orders.index') }}">
-                        <input type="hidden" name="search" value="{{ request('search') }}">
-                        <select name="perPage" onchange="this.form.submit()"
-                            class="ml-2 block rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500">
-                            <option value="10" {{ request('perPage', 10) == 10 ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </form>
-                    <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
-                </div>
-                <div>
-                    {{ $orders->links() }}
-                </div>
-            </nav>
-        </div>
+        <nav id="pagination-nav"
+            class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            aria-label="Table navigation">
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                    Showing
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }}</span>
+                    of
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ $orders->total() }}</span>
+                </span>
+                <form method="GET" action="{{ route('sales.delivery-orders.index') }}">
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                    <select name="perPage" onchange="this.form.submit()"
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        <option value="10" {{ request('perPage', 10) == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ request('perPage') == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ request('perPage') == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('perPage') == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                </form>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+            </div>
+            <div>
+                {{ $orders->links() }}
+            </div>
+        </nav>
+    </div>
 
-        <!-- Modals -->
-        @include('admin.delivery-orders.partials.delivery-orders-modal-show')
-        @include('admin.delivery-orders.partials.delivery-orders-detail-modal-show')
-        @include('admin.delivery-orders.partials.delivery-orders-history-modal')
+    <!-- Modals -->
+    @include('admin.delivery-orders.partials.delivery-orders-modal-show')
+    @include('admin.delivery-orders.partials.delivery-orders-detail-modal-show')
+    @include('admin.delivery-orders.partials.delivery-orders-history-modal')
 
-        @vite(['resources/js/delivery-orders.js'])
+    @vite(['resources/js/delivery-orders.js', 'resources/js/table-sort.js'])
 
-    </x-app-layout>
+</x-app-layout>

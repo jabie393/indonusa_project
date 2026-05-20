@@ -94,7 +94,10 @@
             </div>
             <div class="col-span-2 mb-4">
                 <label for="editKreditLimit" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kredit Limit</label>
-                <input type="text" id="editKreditLimit" name="kredit_limit" placeholder="Kredit Limit" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                <div class="relative flex items-center">
+                    <span class="absolute left-3 text-sm font-medium text-gray-500 dark:text-gray-400">Rp</span>
+                    <input type="text" id="editKreditLimit" name="kredit_limit" placeholder="Kredit Limit" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                </div>
             </div>
             <div class="col-span-2 mb-4">
                 <label for="editAlamatPenagihan" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Alamat
@@ -214,6 +217,12 @@
             addEditPicRow();
         });
 
+        // Kredit Limit formatting
+        $('#editKreditLimit').on('input', function() {
+            let clean = this.value.replace(/\D/g, '');
+            this.value = clean.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        });
+
         // NPWP Validation
         $('#editNpwp').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
@@ -227,11 +236,16 @@
 
         // Form Submission Validation
         $('#editCustomerForm').on('submit', function(e) {
+            const editKreditLimitInput = document.getElementById('editKreditLimit');
+            editKreditLimitInput.value = editKreditLimitInput.value.replace(/\D/g, '');
+
             const npwp = $('#editNpwp').val();
             if (npwp.length > 0 && npwp.length < 15) {
                 e.preventDefault();
                 $('#editNpwp').focus();
                 $('#editNpwpWarning').removeClass('hidden');
+                // Reformat back
+                editKreditLimitInput.value = editKreditLimitInput.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
         });
     });
@@ -250,7 +264,10 @@
         document.getElementById('editTipeCustomer').value = customer.tipe_customer ? customer.tipe_customer
             .toLowerCase() : 'pribadi';
         document.getElementById('editTermOfPayments').value = customer.term_of_payments || '';
-        document.getElementById('editKreditLimit').value = customer.kredit_limit || '';
+        
+        const rawLimit = customer.kredit_limit || '';
+        document.getElementById('editKreditLimit').value = rawLimit.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        
         document.getElementById('editAlamatPenagihan').value = customer.alamat_penagihan || '';
         document.getElementById('editAlamatPengiriman').value = customer.alamat_pengiriman || '';
         document.getElementById('editKota').value = customer.kota || '';

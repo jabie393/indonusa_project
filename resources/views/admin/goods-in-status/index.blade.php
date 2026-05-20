@@ -31,36 +31,36 @@ use App\Models\Barang; ?>
             </form>
         </div>
     </div>
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="overflow-x-auto">
-            <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-            </div>
-            <table id="DataTable" data-order='[]' class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+    <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+        </div>
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table id="" class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col"
-                            class="px-4 py-3">Status Listing</th>
+                            class="px-4 py-3 text-nowrap">Status Listing</th>
                         <th scope="col"
-                            class="px-4 py-3">Kode Barang</th>
+                            class="px-4 py-3 text-nowrap">Kode Barang</th>
                         <th scope="col"
-                            class="px-4 py-3">Nama Barang</th>
+                            class="px-4 py-3 text-nowrap">Nama Barang</th>
                         <th scope="col"
-                            class="px-4 py-3">Kategori</th>
+                            class="px-4 py-3 text-nowrap">Kategori</th>
                         <th scope="col"
-                            class="px-4 py-3">Stok</th>
+                            class="px-4 py-3 text-nowrap">Stok</th>
                         <th scope="col"
-                            class="px-4 py-3">Satuan</th>
+                            class="px-4 py-3 text-nowrap">Satuan</th>
                         <th scope="col"
-                            class="px-4 py-3">Lokasi</th>
+                            class="px-4 py-3 text-nowrap">Lokasi</th>
                         <th scope="col"
-                            class="px-4 py-3">Harga</th>
+                            class="px-4 py-3 text-nowrap">Harga</th>
                         <th scope="col"
-                            class="px-4 py-3">Status Barang</th>
+                            class="px-4 py-3 text-nowrap">Status Barang</th>
                         <th scope="col"
-                            class="px-4 py-3">Action</th>
+                            class="px-4 py-3 text-nowrap no-sort text-center">Action</th>
                     </tr>
                 </thead>
-                <tbody class="h-min-[300px]">
+                <tbody class="text-nowrap">
                     @forelse ($goods as $barang)
                     <tr class="border-b dark:border-gray-700">
                         <td class="px-4 py-3">{{ $barang->status_listing }}</td>
@@ -330,7 +330,7 @@ use App\Models\Barang; ?>
             </table>
         </div>
 
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+        <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
             aria-label="Table navigation">
             <div class="flex items-center space-x-2">
 
@@ -347,7 +347,7 @@ use App\Models\Barang; ?>
                         value="{{ request('search') }}">
                     <select name="perPage"
                         onchange="this.form.submit()"
-                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                        class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
                         <option value="{{ $size }}"
                             {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
@@ -371,6 +371,6 @@ use App\Models\Barang; ?>
     ])
     @include('admin.goods-in-status.partials.goods-in-status-modal-edit-new-stock')
     @include('admin.goods-in-status.partials.goods-in-status-modal-show-note')
-    @vite(['resources/js/goods-in-status.js'])
+    @vite(['resources/js/goods-in-status.js', 'resources/js/table-sort.js'])
 
 </x-app-layout>

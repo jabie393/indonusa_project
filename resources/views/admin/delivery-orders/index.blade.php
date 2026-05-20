@@ -22,9 +22,10 @@
         </div>
     </div>
 
-    <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div
+        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div
-            class="flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
+            class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
                 $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
                 $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
@@ -53,21 +54,21 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+            <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="px-4 py-2">Customer</th>
-                        <th class="px-4 py-2">No. DO</th>
-                        <th class="px-4 py-2">No. SO</th>
-                        <th class="px-4 py-2">No. PO</th>
-                        <th class="px-4 py-2">Nama Sales</th>
-                        <th class="px-4 py-2">Status</th>
-                        <th class="px-4 py-2">Dibuat</th>
-                        <th class="px-4 py-2">Detail</th>
+                        <th class="text-nowrap px-4 py-3">Customer</th>
+                        <th class="text-nowrap px-4 py-3">No. DO</th>
+                        <th class="text-nowrap px-4 py-3">No. SO</th>
+                        <th class="text-nowrap px-4 py-3">No. PO</th>
+                        <th class="text-nowrap px-4 py-3">Nama Sales</th>
+                        <th class="text-nowrap px-4 py-3">Status</th>
+                        <th class="text-nowrap px-4 py-3">Dibuat</th>
+                        <th class="text-nowrap px-4 py-3 text-right">Detail</th>
                     </tr>
                 </thead>
-                <tbody class="h-min-[300px]">
+                <tbody class="text-nowrap">
                     @foreach ($orders as $order)
                         <tr class="dark:border-gray-700">
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
@@ -110,9 +111,9 @@
                                 {{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-9 opacity-0">Placeholder</div>
+                                    <div class="pointer-events-none invisible h-9 w-24 opacity-0">Placeholder</div>
                                     <div
-                                        class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                         <button type="button"
                                             class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             data-order-id="{{ $order->id }}"
@@ -223,7 +224,8 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+        <nav id="pagination-nav"
+            class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
             aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -237,7 +239,7 @@
                 <form method="GET" action="{{ route('delivery-orders.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <select name="perPage" onchange="this.form.submit()"
-                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                        class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}"
                                 {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
@@ -259,6 +261,6 @@
     @include('admin.delivery-orders.partials.delivery-orders-history-modal')
     @include('admin.delivery-orders.partials.delivery-orders-modal-reject')
 
-    @vite(['resources/js/delivery-orders.js'])
+    @vite(['resources/js/delivery-orders.js', 'resources/js/table-sort.js'])
 
 </x-app-layout>

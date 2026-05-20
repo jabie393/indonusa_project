@@ -1244,8 +1244,7 @@
 
                 window.location.href = fallback;
             } catch (e) {
-                window.location.href = '{{ route('
-                admin.sent_penawaran ') }}';
+                window.location.href = '{{ route('admin.sent_penawaran') }}';
             }
         }
     </script>

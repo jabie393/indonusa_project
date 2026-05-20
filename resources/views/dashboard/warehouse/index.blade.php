@@ -143,34 +143,37 @@
                 </div>
             </div>
 
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Low Stock Items Table</h1>
                 </div>
-                <table id="dashTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">Item</th>
-                            <th scope="col" class="px-4 py-3">Stock</th>
-                            <th scope="col" class="px-4 py-3">Minimum</th>
-                            <th scope="col" class="px-4 py-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        @forelse($allLowStockItems as $item)
+                <div id="tableContainer1" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <td class="px-4 py-3">{{ $item->nama_barang }}</td>
-                                <td class="px-4 py-3">{{ $item->stok }}</td>
-                                <td class="px-4 py-3">20</td>
-                                <td class="px-4 py-3">{{ $item->stok <= 0 ? 'Out' : 'Low' }}</td>
+                                <th scope="col" class="text-nowrap px-4 py-3">Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Stock</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Minimum</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Status</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td class="px-4 py-3" colspan="4">Tidak ada barang stok rendah</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            @forelse($allLowStockItems as $item)
+                                <tr>
+                                    <td class="px-4 py-3">{{ $item->nama_barang }}</td>
+                                    <td class="px-4 py-3">{{ $item->stok }}</td>
+                                    <td class="px-4 py-3">20</td>
+                                    <td class="px-4 py-3">{{ $item->stok <= 0 ? 'Out' : 'Low' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="px-4 py-3" colspan="4">Tidak ada barang stok rendah</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
@@ -207,79 +210,85 @@
                 </div>
 
             </div>
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Recent Inbound Items</h1>
                 </div>
-                <table id="dashTable2" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">Date</th>
-                            <th scope="col" class="px-4 py-3">Item</th>
-                            <th scope="col" class="px-4 py-3">Qty</th>
-                            <th scope="col" class="px-4 py-3">Supplier</th>
-                            <th scope="col" class="px-4 py-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        @forelse($recentInbound as $in)
+                <div id="tableContainer2" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <td class="px-4 py-3">{{ $in->created_at->format('d M Y') }}</td>
-                                <td class="px-4 py-3">{{ $in->nama_barang }}</td>
-                                <td class="px-4 py-3">{{ $in->stok ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ optional($in->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
-                                <td class="px-4 py-3">{{ $in->status ?? 'Complete' }}</td>
+                                <th scope="col" class="text-nowrap px-4 py-3">Date</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Qty</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Supplier</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Status</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">Tidak ada data inbound</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            @forelse($recentInbound as $in)
+                                <tr>
+                                    <td class="px-4 py-3">{{ $in->created_at->format('d M Y') }}</td>
+                                    <td class="px-4 py-3">{{ $in->nama_barang }}</td>
+                                    <td class="px-4 py-3">{{ $in->stok ?? '-' }}</td>
+                                    <td class="px-4 py-3">{{ optional($in->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
+                                    <td class="px-4 py-3">{{ $in->status ?? 'Complete' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">Tidak ada data inbound</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 w-full rounded-2xl shadow-md">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div
+                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 ">Recent Outbound Items</h1>
                 </div>
-                <table id="dashTable3" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-4 py-3">Date</th>
-                            <th scope="col" class="px-4 py-3">Item</th>
-                            <th scope="col" class="px-4 py-3">Qty</th>
-                            <th scope="col" class="px-4 py-3">Seller</th>
-                            <th scope="col" class="px-4 py-3">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="h-min-[300px]">
-                        @forelse($recentOutbound as $out)
+                <div id="tableContainer3" class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
+                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <td class="px-4 py-3">{{ optional($out->changed_at)->format('d M Y') ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ $out->nama_barang }}</td>
-                                <td class="px-4 py-3">{{ $out->stok ?? '-' }}</td>
-                                <td class="px-4 py-3">{{ optional($out->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
-                                <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Keluar') }}</td>
+                                <th scope="col" class="text-nowrap px-4 py-3">Date</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Qty</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Seller</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Status</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">-</td>
-                                <td class="px-4 py-3">Tidak ada data outbound</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="text-nowrap">
+                            @forelse($recentOutbound as $out)
+                                <tr>
+                                    <td class="px-4 py-3">{{ optional($out->changed_at)->format('d M Y') ?? '-' }}</td>
+                                    <td class="px-4 py-3">{{ $out->nama_barang }}</td>
+                                    <td class="px-4 py-3">{{ $out->stok ?? '-' }}</td>
+                                    <td class="px-4 py-3">{{ optional($out->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
+                                    <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Keluar') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">-</td>
+                                    <td class="px-4 py-3">Tidak ada data outbound</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- Kelola data Chart ada di JS --}}
-    @vite(['resources/js/chart-dashboard-warehouse.js'])
+    @vite(['resources/js/chart-dashboard-warehouse.js', 'resources/js/table-sort.js'])
 </x-app-layout>

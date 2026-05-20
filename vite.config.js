@@ -32,6 +32,7 @@ export default defineConfig({
                 "resources/js/request-order.js",
                 "resources/js/custom-penawaran.js",
                 "resources/js/reveal.js",
+                "resources/js/table-sort.js",
             ],
             refresh: true,
         }),

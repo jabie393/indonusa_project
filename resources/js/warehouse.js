@@ -109,12 +109,23 @@ function openEditModal(
     deskripsi = "",
     gambar = null
 ) {
-    document.getElementById("edit_id").value = id;
-    document.getElementById("edit_kode_barang").value = kode_barang;
-    document.getElementById("edit_nama_barang").value = nama_barang;
-    document.getElementById("edit_stok").value = stok;
-    document.getElementById("edit_harga_tampil").value = harga;
-    document.getElementById("edit_deskripsi").value = deskripsi;
+    const editIdEl = document.getElementById("edit_id");
+    if (editIdEl) editIdEl.value = id;
+
+    const editKodeEl = document.getElementById("edit_kode_barang");
+    if (editKodeEl) editKodeEl.value = kode_barang;
+
+    const editNamaEl = document.getElementById("edit_nama_barang");
+    if (editNamaEl) editNamaEl.value = nama_barang;
+
+    const editStokEl = document.getElementById("edit_stok");
+    if (editStokEl) editStokEl.value = stok;
+
+    const editHargaEl = document.getElementById("edit_harga_tampil");
+    if (editHargaEl) editHargaEl.value = harga;
+
+    const editDeskripsiEl = document.getElementById("edit_deskripsi");
+    if (editDeskripsiEl) editDeskripsiEl.value = deskripsi;
 
     // Update modal title
     const modalTitle = document.getElementById("editBarangModalTitle");
@@ -123,19 +134,18 @@ function openEditModal(
     }
 
     // Preview gambar jika ada
-    const gambarPreview = document.getElementById("edit_gambar_preview");
-    if (gambar && gambar !== "") {
-        gambarPreview.innerHTML = `
-            <img src="files/${gambar}" alt="Gambar Barang" class="mx-auto relative z-2 h-full object-cover rounded-lg" />
-        `;
-    } else {
-        gambarPreview.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full w-full">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mx-auto mb-4 h-8 w-8 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l1.259 1.259m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
-                <p class="text-xs text-gray-400">Tidak ada gambar</p>
-            </div>`;
+    const editImagePreview = document.getElementById("edit_image-preview");
+    const editUploadPlaceholder = document.getElementById("edit_upload-placeholder");
+    if (editImagePreview && editUploadPlaceholder) {
+        if (gambar && gambar !== "") {
+            editImagePreview.src = "files/" + gambar;
+            editImagePreview.classList.remove('hidden');
+            editUploadPlaceholder.classList.add('hidden');
+        } else {
+            editImagePreview.src = "";
+            editImagePreview.classList.add('hidden');
+            editUploadPlaceholder.classList.remove('hidden');
+        }
     }
 
     // Set form action
@@ -183,24 +193,27 @@ $(document).on("click", ".edit-barang-btn", function (e) {
 });
 
 // Wait until the file input is changed
-document.getElementById("edit_gambar").onchange = function () {
-    const reader = new FileReader();
-    reader.onload = function () {
-        // Update the preview image src
-        const previewImg = document.querySelector("#edit_gambar_preview img");
-        if (previewImg) {
-            previewImg.src = reader.result;
+const editGambar = document.getElementById("edit_gambar");
+if (editGambar) {
+    editGambar.onchange = function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const previewImg = document.getElementById("edit_image-preview");
+                const placeholder = document.getElementById("edit_upload-placeholder");
+                if (previewImg) {
+                    previewImg.src = reader.result;
+                    previewImg.classList.remove('hidden');
+                }
+                if (placeholder) {
+                    placeholder.classList.add('hidden');
+                }
+            };
+            reader.readAsDataURL(file);
         }
-        // Optionally set a hidden input for the modified image
-        const hiddenInput = document.getElementById("modified_image");
-        if (hiddenInput) {
-            hiddenInput.value = reader.result;
-        }
-        // Re-init overlay and hover for new image
-        initImagePreviewOverlay("edit_gambar_preview", "edit_gambar_label");
     };
-    reader.readAsDataURL(this.files[0]);
-};
+}
 
 if (document.getElementById("gambar")) {
     document.getElementById("gambar").onchange = function () {
