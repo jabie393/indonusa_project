@@ -370,7 +370,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     btn.type = "button";
                     btn.className =
                         "btn remove-row rounded-md bg-red-500 text-white";
-                    btn.innerText = "Hapus";
+                    btn.innerText = "Delete";
                     td.appendChild(btn);
                 } else {
                     const inp = document.createElement("input");

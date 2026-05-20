@@ -103,7 +103,7 @@ $(document).ready(function() {
             if (data.status === 'success') {
                 document.getElementById('image-so-preview-' + id).innerHTML =
                     `<a href="${data.image_url}" target="_blank"><img src="${data.image_url}" alt="SO Image" style="width:50px;height:50px;object-fit:cover;border-radius:4px;border:1px solid #ccc;display:inline-block;vertical-align:middle;" /></a>` +
-                    `<button class='inline-block ml-2 text-xs text-blue-600 hover:underline' onclick='removeImageSO(${id})'>Hapus</button>`;
+                    `<button class='inline-block ml-2 text-xs text-blue-600 hover:underline' onclick='removeImageSO(${id})'>Delete</button>`;
             } else {
                 alert(data.message || 'Upload gagal');
             }

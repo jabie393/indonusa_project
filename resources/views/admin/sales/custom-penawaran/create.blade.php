@@ -182,7 +182,7 @@
                                         <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
                                         <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
                                         <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
-                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Aksi</th>
+                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
@@ -269,11 +269,11 @@
                                                        multiple
                                                        accept="image/*">
                                                 <button type="button"
-                                                        class="rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
+                                                        class="rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
                                                     Upload
                                                 </button>
                                             </div>
-                                            <div class="item-images-preview flex flex-wrap gap-2 space-y-2 justify-center"></div>
+                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2"></div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <button type="button"

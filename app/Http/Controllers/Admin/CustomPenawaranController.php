@@ -405,7 +405,7 @@ class CustomPenawaranController extends Controller
             return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
         }
 
-        return back()->withErrors('Aksi tidak valid.');
+        return back()->withErrors('Action tidak valid.');
     }
 
     public function pdf(CustomPenawaran $customPenawaran)

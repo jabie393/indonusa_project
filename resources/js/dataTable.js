@@ -47,7 +47,7 @@ let datatableExcel = new DataTable('#DataTableExcel', {
 table.on('draw', function () {
     const headers = document.querySelectorAll('#warehouseTable thead th div span');
     headers.forEach(span => {
-        if (span.textContent.trim() === 'Aksi') {
+        if (span.textContent.trim() === 'Action') {
             span.classList.add('text-center'); // Add your desired class
             // th.classList.remove('old-class'); // Remove unwanted class if needed
         }
@@ -58,7 +58,7 @@ table.on('draw', function () {
 setTimeout(() => {
     const headers = document.querySelectorAll('#warehouseTable thead th div span');
     headers.forEach(span => {
-        if (span.textContent.trim() === 'Aksi') {
+        if (span.textContent.trim() === 'Action') {
             span.classList.add('text-center');
         }
     });

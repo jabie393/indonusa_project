@@ -167,21 +167,26 @@
                                             </td>
                                             <td class="px-4 py-3 text-center">
                                                 @if ($item->images && count($item->images) > 0)
-                                                    <div class="flex flex-wrap gap-2 justify-center">
+                                                    <div class="flex flex-wrap justify-center gap-2">
                                                         @foreach ($item->images as $image)
-                                                            <a href="{{ asset('storage/' . $image) }}" target="_blank" class="inline-block">
-                                                                <img src="{{ asset('storage/' . $image) }}" alt="Gambar barang" class="w-12 h-12 object-cover rounded border border-gray-300 hover:border-blue-500 cursor-pointer">
+                                                            <a href="{{ asset('storage/' . $image) }}"
+                                                               target="_blank"
+                                                               class="inline-block">
+                                                                <img src="{{ asset('storage/' . $image) }}"
+                                                                     alt="Gambar barang"
+                                                                     class="h-12 w-12 cursor-pointer rounded border border-gray-300 object-cover hover:border-blue-500">
                                                             </a>
                                                         @endforeach
                                                     </div>
                                                 @else
-                                                    <span class="text-gray-400 text-sm">Tidak ada gambar</span>
+                                                    <span class="text-sm text-gray-400">Tidak ada gambar</span>
                                                 @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="9" class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
+                                            <td colspan="9"
+                                                class="px-4 py-6 text-center text-gray-500 dark:text-gray-400">
                                                 Tidak ada barang dalam sales order ini
                                             </td>
                                         </tr>
@@ -231,12 +236,12 @@
                             @if ($salesOrder->sales)
                                 <div class="mb-4">
                                     <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">SALES</p>
-                                    <p class="text-gray-900 dark:text-white font-semibold">{{ $salesOrder->sales->name }}</p>
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $salesOrder->sales->name }}</p>
                                 </div>
                             @endif
                             <div>
                                 <p class="text-xs font-semibold text-gray-600 dark:text-gray-400">DIBUAT</p>
-                                <p class="text-gray-900 dark:text-white font-semibold">
+                                <p class="font-semibold text-gray-900 dark:text-white">
                                     {{ $salesOrder->created_at->format('d/m/Y H:i') }}</p>
                             </div>
                         </div>
@@ -246,21 +251,27 @@
                     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
                             <div>
-                                <h3 class="font-semibold text-white">Aksi</h3>
+                                <h3 class="font-semibold text-white">Action</h3>
                             </div>
                         </div>
                         <div class="space-y-2 p-4">
-                            <a href="{{ route('sales.sales-order.edit', $salesOrder) }}" class="inline-block w-full rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-700">
+                            <a href="{{ route('sales.sales-order.edit', $salesOrder) }}"
+                               class="inline-block w-full rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-700">
                                 Edit
                             </a>
-                            <form action="{{ route('sales.sales-order.destroy', $salesOrder) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sales order ini?');">
+                            <form action="{{ route('sales.sales-order.destroy', $salesOrder) }}"
+                                  method="POST"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus sales order ini?');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="inline-block w-full rounded-lg bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">
-                                    Hapus
+                                <button type="submit"
+                                        class="inline-block w-full rounded-lg bg-red-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-red-700">
+                                    Delete
                                 </button>
                             </form>
-                            <a href="{{ route('sales.sales-order.index') }}" class="inline-block w-full rounded-lg bg-gray-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-gray-700">
+                            <a href="{{ route('sales.sales-order.index') }}"
+                               class="inline-block w-full rounded-lg bg-gray-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-gray-700">
                                 Kembali
                             </a>
                         </div>

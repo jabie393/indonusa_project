@@ -1,24 +1,45 @@
 <x-app-layout>
 
-    <div class="p-4 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <a href="{{ route('dashboard.supervisor.export.semua-barang') }}" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white p-4 shadow-md dark:bg-gray-800">
+        <a href="{{ route('dashboard.supervisor.export.semua-barang') }}"
+           class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="mr-1 h-5 w-5"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Report Semua Barang
         </a>
-        <div >
+        <div>
             {{-- Search --}}
-            <form action="{{ route('warehouse.index') }}" method="GET" class="block pl-2">
-                <label for="topbar-search" class="sr-only">Search</label>
+            <form action="{{ route('warehouse.index') }}"
+                  method="GET"
+                  class="block pl-2">
+                <label for="topbar-search"
+                       class="sr-only">Search</label>
                 <div class="relative md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
+                             fill="currentColor"
+                             viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
                             </path>
                         </svg>
                     </div>
-                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}" class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Search" />
+                    <input type="search"
+                           name="search"
+                           id="topbar-search dt-search-0"
+                           aria-controls="warehouseTable"
+                           value="{{ request('search') }}"
+                           class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                           placeholder="Search" />
                 </div>
             </form>
         </div>
@@ -33,17 +54,20 @@
                     $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
                 @endphp
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('warehouse.index', ['status' => 'masuk', 'search' => request('search')]) }}" class="{{ $currentStatus === 'masuk' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    <a href="{{ route('warehouse.index', ['status' => 'masuk', 'search' => request('search')]) }}"
+                       class="{{ $currentStatus === 'masuk' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Semua Barang
                     </a>
                     @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                        <a href="{{ route('supply-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
+                        <a href="{{ route('supply-orders.index') }}"
+                           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                             Supply Orders
                             @if ($supplyOrderCount > 0)
                                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $supplyOrderCount }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('delivery-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
+                        <a href="{{ route('delivery-orders.index') }}"
+                           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                             Delivery Orders
                             @if ($deliveryOrderCount > 0)
                                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
@@ -51,7 +75,8 @@
                         </a>
                     @endif
                     @if (Auth::user() && Auth::user()->role === 'Sales')
-                        <a href="{{ route('sales.delivery-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
+                        <a href="{{ route('sales.delivery-orders.index') }}"
+                           class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                             Delivery Orders
                             @if ($deliveryOrderCount > 0)
                                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
@@ -62,22 +87,32 @@
             @endif
         </div>
         <div class="overflow-x-auto">
-            <table id="warehouseTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="warehouseTable"
+                   class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-4 py-3">Status Listing</th>
-                        <th scope="col" class="px-4 py-3">Kode Barang</th>
-                        <th scope="col" class="px-4 py-3">Nama Barang</th>
-                        <th scope="col" class="px-4 py-3">Kategori</th>
-                        <th scope="col" class="px-4 py-3">Stok</th>
-                        <th scope="col" class="px-4 py-3">Satuan</th>
-                        <th scope="col" class="px-4 py-3">Lokasi</th>
+                        <th scope="col"
+                            class="px-4 py-3">Status Listing</th>
+                        <th scope="col"
+                            class="px-4 py-3">Kode Barang</th>
+                        <th scope="col"
+                            class="px-4 py-3">Nama Barang</th>
+                        <th scope="col"
+                            class="px-4 py-3">Kategori</th>
+                        <th scope="col"
+                            class="px-4 py-3">Stok</th>
+                        <th scope="col"
+                            class="px-4 py-3">Satuan</th>
+                        <th scope="col"
+                            class="px-4 py-3">Lokasi</th>
                         @if (Auth::user() && Auth::user()->role === 'General Affair')
-                            <th scope="col" class="px-4 py-3">Harga</th>
+                            <th scope="col"
+                                class="px-4 py-3">Harga</th>
                         @endif
 
                         @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                            <th scope="col" class="w-fit px-4 py-3 text-right">Aksi</th>
+                            <th scope="col"
+                                class="w-fit px-4 py-3 text-right">Action</th>
                         @endif
                     </tr>
                 </thead>
@@ -85,7 +120,8 @@
                     @forelse ($goods as $barang)
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            <td scope="row"
+                                class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->kode_barang }}
                             </td>
                             <td class="px-4 py-3">{{ $barang->nama_barang }}</td>
@@ -94,12 +130,12 @@
                             <td class="px-4 py-3">{{ $barang->satuan }}</td>
                             <td class="px-4 py-3">{{ $barang->lokasi }}</td>
                             @if (Auth::user() && Auth::user()->role === 'General Affair')
-                                <td class="px-4 py-3 text-nowrap font-medium text-slate-700">
-                                <div class="flex justify-between items-center w-full">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
-                                </div>
-                            </td>
+                                <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
+                                    <div class="flex w-full items-center justify-between">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                    </div>
+                                </td>
                             @endif
 
                             @if (Auth::user() && Auth::user()->role === 'Warehouse')
@@ -109,18 +145,32 @@
                                         <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
                                         <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
 
-                                            <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('warehouse.destroy', $barang->id) }}"
+                                                  method="POST"
+                                                  style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="button" class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onclick="confirmDelete(() => this.closest('form').submit())">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4" aria-hidden="true">
+                                                <button type="button"
+                                                        class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                        onclick="confirmDelete(() => this.closest('form').submit())">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         width="24"
+                                                         height="24"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2"
+                                                         stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="lucide lucide-trash2 lucide-trash-2 h-4 w-4"
+                                                         aria-hidden="true">
                                                         <path d="M10 11v6"></path>
                                                         <path d="M14 11v6"></path>
                                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
                                                         <path d="M3 6h18"></path>
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
-                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Hapus</span>
+                                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
                                         </div>
@@ -133,7 +183,8 @@
                 </tbody>
             </table>
         </div>
-        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+        <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+             aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                     Showing
@@ -141,11 +192,17 @@
                     of
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $goods->total() ?? $goods->count() }}</span>
                 </span>
-                <form method="GET" action="{{ route('warehouse.index') }}">
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
+                <form method="GET"
+                      action="{{ route('warehouse.index') }}">
+                    <input type="hidden"
+                           name="search"
+                           value="{{ request('search') }}">
+                    <select name="perPage"
+                            onchange="this.form.submit()"
+                            class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                            <option value="{{ $size }}"
+                                    {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                         @endforeach
                     </select>
                 </form>

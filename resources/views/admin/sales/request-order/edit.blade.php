@@ -353,7 +353,7 @@
                                         <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
                                             Harga Setelah Diskon</th>
                                         <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">
-                                            Aksi</th>
+                                            Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="itemRows">
@@ -455,7 +455,7 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="relative flex items-center">
-                                                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                                                    <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
                                                     <input type="text"
                                                            name="harga[]"
                                                            class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -602,7 +602,7 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="relative flex items-center">
-                                                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
+                                                    <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
                                                     <input type="text"
                                                            name="harga[]"
                                                            class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -822,7 +822,7 @@
                                 <polyline points="7 3 7 8 15 8"></polyline>
                             </svg> Simpan Perubahan
                         </button>
-                        
+
                     </div>
             </div>
 

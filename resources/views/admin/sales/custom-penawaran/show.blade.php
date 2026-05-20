@@ -4,77 +4,106 @@
             @php $orderStatus = $customPenawaran->status; @endphp
 
             @if ($orderStatus === 'rejected_supervisor')
-                {{-- BANNER MERAH: Ditolak --}}
-                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-rose-100 bg-rose-50 shadow-sm dark:border-rose-900/30 dark:bg-rose-900/10">
-                    <div class="flex flex-col items-center gap-6 p-5 md:flex-row">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-rose-900/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                        </div>
-                        <div class="flex-grow text-center md:text-left">
-                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-rose-700">Penawaran Ditolak Supervisor</h4>
-                            <div class="mt-2 space-y-1">
-                                <p class="text-sm font-medium text-rose-600 dark:text-rose-300">
-                                    <span class="mr-1 text-[10px] font-black uppercase opacity-50">Alasan:</span>
-                                    {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
-                                </p>
-                                @if ($customPenawaran->supervisor)
-                                    <p class="text-[10px] font-bold uppercase tracking-tighter text-rose-400">
-                                        Oleh {{ $customPenawaran->supervisor->name }}
-                                        @if ($customPenawaran->approved_at)
-                                            &middot; {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
-                                        @endif
-                                    </p>
+            {{-- BANNER MERAH: Ditolak --}}
+            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-rose-100 bg-rose-50 shadow-sm dark:border-rose-900/30 dark:bg-rose-900/10">
+                <div class="flex flex-col items-center gap-6 p-5 md:flex-row">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-rose-900/20">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-8 w-8 text-rose-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div class="flex-grow text-center md:text-left">
+                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-rose-700">Penawaran Ditolak Supervisor</h4>
+                        <div class="mt-2 space-y-1">
+                            <p class="text-sm font-medium text-rose-600 dark:text-rose-300">
+                                <span class="mr-1 text-[10px] font-black uppercase opacity-50">Alasan:</span>
+                                {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
+                            </p>
+                            @if ($customPenawaran->supervisor)
+                            <p class="text-[10px] font-bold uppercase tracking-tighter text-rose-400">
+                                Oleh {{ $customPenawaran->supervisor->name }}
+                                @if ($customPenawaran->approved_at)
+                                &middot; {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
                                 @endif
-                            </div>
-                        </div>
-                        <div class="shrink-0">
-                            @if (Auth::user()->role === 'Sales')
-                                <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}" class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Perbaiki & Ajukan Ulang
-                                </a>
+                            </p>
                             @endif
                         </div>
                     </div>
+                    <div class="shrink-0">
+                        @if (Auth::user()->role === 'Sales')
+                        <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}"
+                            class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                            Perbaiki & Ajukan Ulang
+                        </a>
+                        @endif
+                    </div>
                 </div>
+            </div>
             @elseif ($orderStatus === 'sent_to_supervisor')
-                {{-- BANNER KUNING: Menunggu persetujuan --}}
-                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-amber-100 bg-amber-50 shadow-sm dark:border-amber-900/30 dark:bg-amber-900/10">
-                    <div class="flex items-center gap-5 p-5">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-amber-900/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 animate-pulse text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-amber-700">Dalam Peninjauan Supervisor</h4>
-                            <p class="mt-1 text-sm font-medium text-amber-600 dark:text-amber-300">
-                                Penawaran mengandung diskon besar (>20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
-                            </p>
-                        </div>
+            {{-- BANNER KUNING: Menunggu persetujuan --}}
+            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-amber-100 bg-amber-50 shadow-sm dark:border-amber-900/30 dark:bg-amber-900/10">
+                <div class="flex items-center gap-5 p-5">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-amber-900/20">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-8 w-8 animate-pulse text-amber-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-amber-700">Dalam Peninjauan Supervisor</h4>
+                        <p class="mt-1 text-sm font-medium text-amber-600 dark:text-amber-300">
+                            Penawaran mengandung diskon besar (>20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                        </p>
                     </div>
                 </div>
+            </div>
             @elseif ($orderStatus === 'approved_supervisor')
-                {{-- BANNER HIJAU: Disetujui --}}
-                <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
-                    <div class="flex items-center gap-5 p-5">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-emerald-900/20">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700">Verifikasi Disetujui</h4>
-                            <p class="mt-1 text-sm font-bold text-emerald-600 dark:text-emerald-300">
-                                Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
-                            </p>
-                        </div>
+            {{-- BANNER HIJAU: Disetujui --}}
+            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
+                <div class="flex items-center gap-5 p-5">
+                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-emerald-900/20">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-8 w-8 text-emerald-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700">Verifikasi Disetujui</h4>
+                        <p class="mt-1 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                            Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
+                        </p>
                     </div>
                 </div>
+            </div>
             @endif
             {{-- ============================================================
              END BANNER STATUS SUPERVISOR
@@ -87,8 +116,15 @@
                     <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
                         <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
                             <h2 class="flex items-center font-semibold text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-2 h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Detail Penawaran Kustom
                             </h2>
@@ -113,22 +149,22 @@
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Status</label>
                                             @php
-                                                $statusClass =
-                                                    [
-                                                        'pending_approval' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
-                                                        'draft' => 'bg-gray-50 text-gray-600 ring-gray-600/20',
-                                                        'sent' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
-                                                        'approved_supervisor' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-                                                        'rejected_supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
-                                                    ][$customPenawaran->status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
-                                                $statusLabel =
-                                                    [
-                                                        'pending_approval' => 'Waiting for Supervisor Approval',
-                                                        'draft' => 'Draft',
-                                                        'sent' => 'Sent',
-                                                        'approved_supervisor' => 'Approved by Supervisor',
-                                                        'rejected_supervisor' => 'Rejected by Supervisor',
-                                                    ][$customPenawaran->status] ?? strtoupper($customPenawaran->status);
+                                            $statusClass =
+                                            [
+                                            'pending_approval' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
+                                            'draft' => 'bg-gray-50 text-gray-600 ring-gray-600/20',
+                                            'sent' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
+                                            'approved_supervisor' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+                                            'rejected_supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+                                            ][$customPenawaran->status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
+                                            $statusLabel =
+                                            [
+                                            'pending_approval' => 'Waiting for Supervisor Approval',
+                                            'draft' => 'Draft',
+                                            'sent' => 'Sent',
+                                            'approved_supervisor' => 'Approved by Supervisor',
+                                            'rejected_supervisor' => 'Rejected by Supervisor',
+                                            ][$customPenawaran->status] ?? strtoupper($customPenawaran->status);
                                             @endphp
                                             <div>
                                                 <span class="{{ $statusClass }} inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter ring-1 ring-inset">
@@ -161,7 +197,8 @@
                                         </div>
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Email</label>
-                                            <p class="truncate text-sm font-medium tracking-tighter text-gray-600 dark:text-gray-400" title="{{ $customPenawaran->email }}">{{ $customPenawaran->email }}</p>
+                                            <p class="truncate text-sm font-medium tracking-tighter text-gray-600 dark:text-gray-400"
+                                                title="{{ $customPenawaran->email }}">{{ $customPenawaran->email }}</p>
                                         </div>
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Attention (Up)</label>
@@ -190,17 +227,17 @@
                                             <div class="flex items-center space-x-3">
                                                 <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $customPenawaran->expired_at ? $customPenawaran->expired_at->format('d M Y') : '-' }}</p>
                                                 @if ($customPenawaran->expired_at)
-                                                    @php
-                                                        $isExpired = now() > $customPenawaran->expired_at;
-                                                        $daysLeft = now()->diffInDays($customPenawaran->expired_at, false);
-                                                    @endphp
-                                                    @if ($isExpired)
-                                                        <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase text-red-700">Expired</span>
-                                                    @else
-                                                        <span class="{{ $daysLeft <= 3 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' }} inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase">
-                                                            {{ floor($daysLeft) }} Hari Lagi
-                                                        </span>
-                                                    @endif
+                                                @php
+                                                $isExpired = now() > $customPenawaran->expired_at;
+                                                $daysLeft = now()->diffInDays($customPenawaran->expired_at, false);
+                                                @endphp
+                                                @if ($isExpired)
+                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase text-red-700">Expired</span>
+                                                @else
+                                                <span class="{{ $daysLeft <= 3 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' }} inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase">
+                                                    {{ floor($daysLeft) }} Hari Lagi
+                                                </span>
+                                                @endif
                                                 @endif
                                             </div>
                                         </div>
@@ -212,48 +249,62 @@
 
                     <!-- Intro Text -->
                     @if ($customPenawaran->intro_text)
-                        <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                            <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                                <h2 class="flex items-center font-semibold text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                                    </svg>
-                                    Teks Pembuka
-                                </h2>
-                            </div>
-                            <div class="p-6">
-                                {!! nl2br(e($customPenawaran->intro_text)) !!}
-                            </div>
+                    <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+                            <h2 class="flex items-center font-semibold text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-2 h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M4 6h16M4 12h16M4 18h7" />
+                                </svg>
+                                Teks Pembuka
+                            </h2>
                         </div>
+                        <div class="p-6">
+                            {!! nl2br(e($customPenawaran->intro_text)) !!}
+                        </div>
+                    </div>
                     @endif
 
                     <!-- Rejection reason (visible when rejected and high discount items present) -->
                     @php
-                        $hasHighDiscount = $customPenawaran->items->where('diskon', '>', 20)->isNotEmpty();
+                    $hasHighDiscount = $customPenawaran->items->where('diskon', '>', 20)->isNotEmpty();
                     @endphp
                     @if ($customPenawaran->status === 'rejected' && $hasHighDiscount)
-                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
-                            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-red-600 p-4 md:flex-row md:space-x-4 md:space-y-0">
-                                <div>
-                                    <h2 class="mr-3 font-semibold text-white">Alasan Penolakan</h2>
-                                </div>
-                            </div>
-                            <div class="p-6 text-red-700 dark:text-red-300">
-                                @if ($customPenawaran->reason)
-                                    {!! nl2br(e($customPenawaran->reason)) !!}
-                                @else
-                                    <em>Alasan penolakan belum dicatat.</em>
-                                @endif
+                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
+                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-red-600 p-4 md:flex-row md:space-x-4 md:space-y-0">
+                            <div>
+                                <h2 class="mr-3 font-semibold text-white">Alasan Penolakan</h2>
                             </div>
                         </div>
+                        <div class="p-6 text-red-700 dark:text-red-300">
+                            @if ($customPenawaran->reason)
+                            {!! nl2br(e($customPenawaran->reason)) !!}
+                            @else
+                            <em>Alasan penolakan belum dicatat.</em>
+                            @endif
+                        </div>
+                    </div>
                     @endif
 
                     <!-- Items Table -->
                     <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
                         <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
                             <h2 class="flex items-center font-semibold text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-2 h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                 </svg>
                                 Detail Produk & Penawaran
                             </h2>
@@ -272,105 +323,118 @@
                                 </thead>
                                 <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                     @forelse($customPenawaran->items as $index => $item)
-                                        <tr class="group transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
-                                            <td class="px-6 py-5">
-                                                <div class="flex flex-col space-y-1">
-                                                    <span class="font-bold leading-tight text-gray-900 transition-colors group-hover:text-[#225A97] dark:text-white">
-                                                        {{ $item->nama_barang }}
-                                                    </span>
-                                                    @if ($item->keterangan)
-                                                        <span class="text-[10px] font-medium italic text-gray-500">Note: {{ $item->keterangan }}</span>
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-5 text-center">
-                                                @php $dk = $item->diskon ?? 0; @endphp
-                                                @if ($dk > 0)
-                                                    <div class="flex flex-col items-center">
-                                                        <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">
-                                                            {{ $dk }}%
-                                                        </span>
-                                                        @if ($dk > 20)
-                                                            <span class="mt-1 text-[8px] font-black uppercase italic tracking-[0.1em] text-rose-500">Need Approval</span>
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <span class="text-gray-300 dark:text-gray-600">-</span>
+                                    <tr class="group transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
+                                        <td class="px-6 py-5">
+                                            <div class="flex flex-col space-y-1">
+                                                <span class="font-bold leading-tight text-gray-900 transition-colors group-hover:text-[#225A97] dark:text-white">
+                                                    {{ $item->nama_barang }}
+                                                </span>
+                                                @if ($item->keterangan)
+                                                <span class="text-[10px] font-medium italic text-gray-500">Note: {{ $item->keterangan }}</span>
                                                 @endif
-                                            </td>
-                                            <td class="px-6 py-5 text-center">
-                                                <div class="flex flex-col">
-                                                    <span class="font-black text-gray-900 dark:text-white">{{ $item->qty }}</span>
-                                                    <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->satuan }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="whitespace-nowrap px-6 py-5">
-                                                <div class="flex items-baseline font-medium text-gray-700 dark:text-gray-300">
-                                                    <span class="mr-1 text-[10px] font-bold text-gray-400">Rp</span>
-                                                    <span class="text-sm">{{ number_format($item->harga, 0, '.', ',') }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="whitespace-nowrap px-6 py-5">
-                                                @php
-                                                    $totalSetelahDiskon = $item->qty * $item->harga * (1 - ($item->diskon ?? 0) / 100);
-                                                @endphp
-                                                <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
-                                                    <span class="mr-1 text-[10px] font-bold opacity-60">Rp</span>
-                                                    <span class="text-sm tracking-tight">{{ number_format($totalSetelahDiskon, 0, '.', ',') }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-5 text-center">
-                                                @php
-                                                    $images = $item->images;
-                                                    if (is_string($images)) {
-                                                        // Try to decode JSON string
-                                                        $decoded = json_decode($images, true);
-                                                        $images = is_array($decoded) ? $decoded : [];
-                                                    }
-                                                @endphp
-                                                @if ($images && count($images) > 0)
-                                                    <div class="flex items-center justify-center -space-x-2 overflow-hidden">
-                                                        @foreach (array_slice($images, 0, 3) as $image)
-                                                            @php
-                                                                if (is_null($image) || $image === '') {
-                                                                    $imgUrl = null;
-                                                                } elseif (str_starts_with($image, 'http')) {
-                                                                    $imgUrl = $image;
-                                                                } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                                }
-                                                            @endphp
-                                                            @if ($imgUrl)
-                                                                <button type="button" class="custom-penawaran-thumb inline-block transition-transform hover:scale-110 active:scale-95" data-full="{{ $imgUrl }}">
-                                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover shadow-sm ring-2 ring-white dark:ring-gray-800" src="{{ $imgUrl }}" alt="Item image">
-                                                                </button>
-                                                            @endif
-                                                        @endforeach
-                                                        @if (count($images) > 3)
-                                                            <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-black text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($images) - 3 }}</span>
-                                                        @endif
-                                                    </div>
-                                                @else
-                                                    <span class="text-[10px] font-bold uppercase text-gray-300 dark:text-gray-600">No Image</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-5 text-center">
+                                            @php $dk = $item->diskon ?? 0; @endphp
+                                            @if ($dk > 0)
+                                            <div class="flex flex-col items-center">
+                                                <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">
+                                                    {{ $dk }}%
+                                                </span>
+                                                @if ($dk > 20)
+                                                <span class="mt-1 text-[8px] font-black uppercase italic tracking-[0.1em] text-rose-500">Need Approval</span>
                                                 @endif
-                                            </td>
-                                        </tr>
+                                            </div>
+                                            @else
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-5 text-center">
+                                            <div class="flex flex-col">
+                                                <span class="font-black text-gray-900 dark:text-white">{{ $item->qty }}</span>
+                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->satuan }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-5">
+                                            <div class="flex items-baseline font-medium text-gray-700 dark:text-gray-300">
+                                                <span class="mr-1 text-[10px] font-bold text-gray-400">Rp</span>
+                                                <span class="text-sm">{{ number_format($item->harga, 0, '.', ',') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-5">
+                                            @php
+                                            $totalSetelahDiskon = $item->qty * $item->harga * (1 - ($item->diskon ?? 0) / 100);
+                                            @endphp
+                                            <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
+                                                <span class="mr-1 text-[10px] font-bold opacity-60">Rp</span>
+                                                <span class="text-sm tracking-tight">{{ number_format($totalSetelahDiskon, 0, '.', ',') }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-5 text-center">
+                                            @php
+                                            $images = $item->images;
+                                            if (is_string($images)) {
+                                            // Try to decode JSON string
+                                            $decoded = json_decode($images, true);
+                                            $images = is_array($decoded) ? $decoded : [];
+                                            }
+                                            @endphp
+                                            @if ($images && count($images) > 0)
+                                            <div class="flex items-center justify-center -space-x-2 overflow-hidden">
+                                                @foreach (array_slice($images, 0, 3) as $image)
+                                                @php
+                                                if (is_null($image) || $image === '') {
+                                                $imgUrl = null;
+                                                } elseif (str_starts_with($image, 'http')) {
+                                                $imgUrl = $image;
+                                                } else {
+                                                $imgUrl = asset('storage/' . ltrim($image, '/'));
+                                                }
+                                                @endphp
+                                                @if ($imgUrl)
+                                                <button type="button"
+                                                    class="custom-penawaran-thumb inline-block transition-transform hover:scale-110 active:scale-95"
+                                                    data-full="{{ $imgUrl }}">
+                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover shadow-sm ring-2 ring-white dark:ring-gray-800"
+                                                        src="{{ $imgUrl }}"
+                                                        alt="Item image">
+                                                </button>
+                                                @endif
+                                                @endforeach
+                                                @if (count($images) > 3)
+                                                <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-black text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($images) - 3 }}</span>
+                                                @endif
+                                            </div>
+                                            @else
+                                            <span class="text-[10px] font-bold uppercase text-gray-300 dark:text-gray-600">No Image</span>
+                                            @endif
+                                        </td>
+                                    </tr>
                                     @empty
-                                        <tr>
-                                            <td colspan="6" class="px-6 py-16 text-center">
-                                                <div class="flex flex-col items-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="mb-2 h-12 w-12 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                                    </svg>
-                                                    <p class="text-sm font-medium italic text-gray-400">Belum ada item barang yang ditambahkan.</p>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td colspan="6"
+                                            class="px-6 py-16 text-center">
+                                            <div class="flex flex-col items-center">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="mb-2 h-12 w-12 text-gray-200"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                </svg>
+                                                <p class="text-sm font-medium italic text-gray-400">Belum ada item barang yang ditambahkan.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
                                     @endforelse
                                 </tbody>
                                 <tfoot class="bg-gray-50/80 dark:bg-gray-700/50">
                                     <tr class="border-t border-gray-100 dark:border-gray-700">
-                                        <td colspan="4" class="px-6 py-5 text-right">
+                                        <td colspan="4"
+                                            class="px-6 py-5 text-right">
                                             <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total Produk Sub-Total</span>
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-5">
@@ -391,105 +455,181 @@
                 <div class="gap-2 lg:col-span-1">
                     <div class="sticky top-5 space-y-6">
                         <!-- Action Card -->
-                        <!-- Panel Aksi -->
+                        <!-- Panel Action -->
                         <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
                             <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
                                 <h2 class="flex items-center font-semibold text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="mr-2 h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                                     </svg>
-                                    Panel Aksi
+                                    Panel Action
                                 </h2>
                             </div>
                             <div class="p-6">
                                 <div class="flex flex-col gap-4">
                                     {{-- Approval Actions for Supervisor --}}
                                     @if (in_array($customPenawaran->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
-                                        <div class="space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
-                                            <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
-                                            <div class="grid grid-cols-2 gap-3">
-                                                <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}" method="POST" class="w-full">
-                                                    @csrf
-                                                    <button type="submit" name="action" value="approve" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-700 hover:shadow-none dark:shadow-none">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                        <span>Approve</span>
-                                                    </button>
-                                                </form>
-                                                <button type="button" onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-100 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    <div class="space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
+                                        <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}"
+                                                method="POST"
+                                                class="w-full">
+                                                @csrf
+                                                <button type="submit"
+                                                    name="action"
+                                                    value="approve"
+                                                    class="flex w-full items-center justify-center space-x-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-700 hover:shadow-none dark:shadow-none">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-4 w-4"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor">
+                                                        <path stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M5 13l4 4L19 7" />
                                                     </svg>
-                                                    <span>Tolak</span>
+                                                    <span>Approve</span>
                                                 </button>
-                                            </div>
+                                            </form>
+                                            <button type="button"
+                                                onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')"
+                                                class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-100 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                <span>Reject</span>
+                                            </button>
                                         </div>
+                                    </div>
                                     @endif
 
                                     {{-- Standard Actions --}}
                                     <div class="grid grid-cols-2 gap-3">
                                         {{-- Edit (Sales Only) --}}
                                         @if (Auth::user()->role === 'Sales')
-                                            <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}" class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-100 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                                </svg>
-                                                <span>Edit</span>
-                                            </a>
+                                        <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}"
+                                            class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-100 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                            <span>Edit</span>
+                                        </a>
                                         @endif
 
                                         {{-- PDF --}}
                                         @php
-                                            $isExpired = $customPenawaran->isExpired();
-                                            $canDownload = in_array($customPenawaran->status, ['open', 'approved']) && !$isExpired;
-                                            $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-penawaran.pdf' : 'admin.custom-penawaran.pdf';
+                                        $isExpired = $customPenawaran->isExpired();
+                                        $canDownload = in_array($customPenawaran->status, ['open', 'approved']) && !$isExpired;
+                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-penawaran.pdf' : 'admin.custom-penawaran.pdf';
                                         @endphp
                                         @if ($canDownload && Auth::user()->role !== 'Supervisor')
-                                            <a href="{{ route($pdfRoute, $customPenawaran->id) }}" target="_blank" class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                                </svg>
-                                                <span>Dokumen PDF</span>
-                                            </a>
+                                        <a href="{{ route($pdfRoute, $customPenawaran->id) }}"
+                                            target="_blank"
+                                            class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <span>Dokumen PDF</span>
+                                        </a>
                                         @else
-                                            <button disabled class="flex cursor-not-allowed items-center justify-center space-x-2 rounded-xl bg-gray-200 py-2.5 text-xs font-bold text-gray-400 opacity-60 dark:bg-gray-700" title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                </svg>
-                                                <span>PDF Locked</span>
-                                            </button>
+                                        <button disabled
+                                            class="flex cursor-not-allowed items-center justify-center space-x-2 rounded-xl bg-gray-200 py-2.5 text-xs font-bold text-gray-400 opacity-60 dark:bg-gray-700"
+                                            title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-4 w-4"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                            <span>PDF Locked</span>
+                                        </button>
                                         @endif
                                     </div>
 
                                     {{-- Primary Warehouse Action (Sales Only) --}}
                                     @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
-                                        <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $customPenawaran->id) }}" method="POST" class="w-full">
-                                            @csrf
-                                            <button type="submit" class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-100 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                                                </svg>
-                                                <span class="uppercase tracking-widest">Kirim ke Warehouse</span>
-                                            </button>
-                                        </form>
+                                    <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $customPenawaran->id) }}"
+                                        method="POST"
+                                        class="w-full">
+                                        @csrf
+                                        <button type="submit"
+                                            class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-100 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-5 w-5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                <path stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                            </svg>
+                                            <span class="uppercase tracking-widest">Send to Warehouse</span>
+                                        </button>
+                                    </form>
                                     @endif
 
                                     {{-- Dangerous Actions (Sales Only) --}}
                                     @if (Auth::user()->role === 'Sales')
-                                        <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
-                                            <form id="deleteCustomPenawaranForm" action="{{ route('sales.custom-penawaran.destroy', $customPenawaran->id) }}" method="POST" class="w-full">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="button" id="btnDeleteCustomPenawaran" class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                    </svg>
-                                                    <span class="uppercase tracking-widest">Hapus Penawaran Kustom</span>
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
+                                        <form id="deleteCustomPenawaranForm"
+                                            action="{{ route('sales.custom-penawaran.destroy', $customPenawaran->id) }}"
+                                            method="POST"
+                                            class="w-full">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button"
+                                                id="btnDeleteCustomPenawaran"
+                                                class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-4 w-4"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor">
+                                                    <path stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                <span class="uppercase tracking-widest">Delete Penawaran Kustom</span>
+                                            </button>
+                                        </form>
+                                    </div>
                                     @endif
                                 </div>
                             </div>
@@ -499,8 +639,15 @@
                         <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                             <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
                                 <h2 class="flex items-center font-semibold text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="mr-2 h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                     </svg>
                                     Ringkasan Penawaran
                                 </h2>
@@ -546,15 +693,29 @@
                                 <!-- Metadata Footer -->
                                 <div class="mt-8 space-y-3 border-t border-gray-100 pt-6 dark:border-gray-700">
                                     <div class="flex items-center text-[11px]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-3.5 w-3.5 text-gray-400"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                         </svg>
                                         <span class="mr-auto font-medium uppercase tracking-tighter text-gray-400">Dibuat</span>
                                         <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
                                     </div>
                                     <div class="flex items-center text-[11px]">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-3.5 w-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-3.5 w-3.5 text-gray-400"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                         </svg>
                                         <span class="mr-auto font-medium uppercase tracking-tighter text-gray-400">Diperbarui</span>
                                         <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
@@ -569,9 +730,14 @@
     </div>
     </div>
     <!-- Image modal (lightbox) -->
-    <div id="image-modal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-70">
-        <button id="image-modal-close" class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
-        <img id="image-modal-img" src="" alt="Gambar" class="max-h-[90%] max-w-[95%] rounded shadow-lg">
+    <div id="image-modal"
+        class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-70">
+        <button id="image-modal-close"
+            class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
+        <img id="image-modal-img"
+            src=""
+            alt="Gambar"
+            class="max-h-[90%] max-w-[95%] rounded shadow-lg">
     </div>
 
     <script>

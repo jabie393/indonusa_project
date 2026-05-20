@@ -182,7 +182,7 @@
                                         <th class="sticky top-0 z-10 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
                                         <th class="sticky top-0 z-10 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
                                         <th class="sticky top-0 z-10 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
-                                        <th class="sticky top-0 z-10 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Aksi</th>
+                                        <th class="sticky top-0 z-10 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
@@ -216,16 +216,16 @@
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                 <div class="relative flex items-center">
-                                                     <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
-                                                     <input type="text"
-                                                            name="items[{{ $index }}][harga]"
-                                                            class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                            placeholder="0"
-                                                            value="{{ $item->harga }}"
-                                                            required>
-                                                 </div>
-                                             </td>
+                                                <div class="relative flex items-center">
+                                                    <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                                    <input type="text"
+                                                           name="items[{{ $index }}][harga]"
+                                                           class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           placeholder="0"
+                                                           value="{{ $item->harga }}"
+                                                           required>
+                                                </div>
+                                            </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number"
                                                        name="items[{{ $index }}][diskon]"
@@ -248,11 +248,11 @@
                                                 <div class="upload-btn-container relative">
                                                     <input type="file"
                                                            name="items[{{ $index }}][images][]"
-                                                           class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0 w-0"
+                                                           class="item-images-input absolute inset-0 h-full w-0 w-full cursor-pointer opacity-0"
                                                            multiple
                                                            accept="image/*">
                                                     <button type="button"
-                                                            class="upload-button rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold"
+                                                            class="upload-button rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]"
                                                             style="{{ $item->images && count($item->images) > 0 ? 'display: none;' : '' }}">
                                                         Upload
                                                     </button>
@@ -265,7 +265,7 @@
                                                                value="{{ $image }}">
                                                     @endforeach
                                                 @endif
-                                                <div class="item-images-preview flex flex-wrap gap-2 justify-center">
+                                                <div class="item-images-preview flex flex-wrap justify-center gap-2">
                                                     @if ($item->images && count($item->images) > 0)
                                                         @foreach ($item->images as $image)
                                                             <div class="relative inline-block">
@@ -371,11 +371,11 @@
                                                            multiple
                                                            accept="image/*">
                                                     <button type="button"
-                                                            class="upload-button rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
+                                                            class="upload-button rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
                                                         Upload
                                                     </button>
                                                 </div>
-                                                <div class="item-images-preview flex flex-wrap gap-2 justify-center"></div>
+                                                <div class="item-images-preview flex flex-wrap justify-center gap-2"></div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                                                 <button type="button"
@@ -592,23 +592,24 @@
                     maximumFractionDigits: 2
                 }).format(value);
             }
+
             function formatInputPrice(input) {
                 let selectionStart = input.selectionStart;
                 let oldLength = input.value.length;
                 let value = input.value;
                 let cleanValue = value.replace(/[^0-9.]/g, '');
-                
+
                 const dotIndex = cleanValue.indexOf('.');
                 if (dotIndex !== -1) {
                     cleanValue = cleanValue.substring(0, dotIndex + 1) + cleanValue.substring(dotIndex + 1).replace(/\./g, '');
                 }
-                
+
                 let parts = cleanValue.split('.');
                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                
+
                 let formattedValue = parts.join('.');
                 input.value = formattedValue;
-                
+
                 let newLength = formattedValue.length;
                 let newStart = selectionStart + (newLength - oldLength);
                 input.setSelectionRange(newStart, newStart);

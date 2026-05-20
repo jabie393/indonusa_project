@@ -105,7 +105,7 @@
                         <th scope="col"
                             class="text-nowrap px-4 py-3">Berlaku Sampai</th>
                         <th scope="col"
-                            class="text-nowrap px-4 py-3">Aksi</th>
+                            class="text-nowrap px-4 py-3">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -398,7 +398,7 @@
                                                     </path>
                                                 </g>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Aksi</span>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
                                         </button>
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
                                             popover
@@ -503,7 +503,7 @@
                                                             <path d="M3 6h18"></path>
                                                             <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                         </svg>
-                                                        Hapus
+                                                        Delete
                                                     </button>
                                                 </li>
                                             </form>
