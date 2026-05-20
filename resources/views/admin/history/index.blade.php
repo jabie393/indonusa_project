@@ -23,7 +23,7 @@
         <div class="bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div class="overflow-x-auto">
-            <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+            <table id="DataTable" data-order='[[0, "desc"]]' class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="px-4 py-3">Tanggal</th>

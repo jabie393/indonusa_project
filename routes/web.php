@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\AkunSalesController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\PicsController;
-use App\Http\Controllers\Admin\GoodsReceiptsController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController;
@@ -98,6 +97,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/check-email', [GeneralController::class, 'checkEmail'])->name('check.email');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
+    Route::get('/warehouse/{id}/logs', [WarehouseController::class, 'getLogs'])->name('warehouse.logs');
     Route::resource('/customer', CustomerController::class);
     Route::patch('/customer/{id}/status', [CustomerController::class, 'updateStatus'])->name('customer.status.update');
     Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
@@ -130,8 +130,6 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/akun-sales', AkunSalesController::class);
     Route::resource('/pics', PicsController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-    Route::get('/goods-receipts', [GoodsReceiptsController::class, 'index'])->name('goods-receipts.index');
-    Route::get('/goods-receipts/{id}/logs', [GoodsReceiptsController::class, 'getLogs'])->name('goods-receipts.logs');
 
     // Dashboard Chart Data for GA
     Route::get('/admin/dashboard/general-affair/data', [\App\Http\Controllers\Admin\Dashboard\GeneralAffairDashboardController::class, 'chartData'])

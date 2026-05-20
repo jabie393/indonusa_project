@@ -13,7 +13,9 @@ class GoodsInStatusController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::whereIn('status_barang', ['ditinjau', 'ditolak']);
+        $goods = Barang::whereIn('status_barang', ['ditinjau', 'ditolak'])
+            ->orderByRaw("FIELD(status_barang, 'ditolak', 'ditinjau')")
+            ->latest();
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {

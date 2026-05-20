@@ -106,69 +106,76 @@ class ImportExcelController extends Controller
         if (is_array($formRows) && count($formRows) > 0) {
             DB::beginTransaction();
             try {
-                foreach ($formRows as $i => $r) {
-                    // setiap $r biasanya berisi keys: kode_barang, nama_barang, kategori, stok, harga, satuan, status_listing, lokasi, gambar...
-                    $kode = $r['kode_barang'] ?? null;
-                    if (empty($kode)) {
-                        $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
-                    }
+                $lastBarang = null;
 
-                    $hargaRaw = $r['harga'] ?? null;
-                    if ($hargaRaw !== null && $hargaRaw !== '') {
-                        $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
-                        $clean = str_replace(',', '.', $clean);
-                        $harga = floatval($clean);
-                    } else {
-                        $harga = 0;
-                    }
+                // Gunakan withoutEvents agar tidak nyepam notifikasi per barang
+                Barang::withoutEvents(function () use ($formRows, $request, &$created, &$lastBarang) {
+                    foreach ($formRows as $i => $r) {
+                        $kode = $r['kode_barang'] ?? null;
+                        if (empty($kode)) {
+                            $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+                        }
 
-                    $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
+                        $hargaRaw = $r['harga'] ?? null;
+                        if ($hargaRaw !== null && $hargaRaw !== '') {
+                            $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
+                            $clean = str_replace(',', '.', $clean);
+                            $harga = floatval($clean);
+                        } else {
+                            $harga = 0;
+                        }
 
-                    // Lewati jika stok adalah 0 atau kurang
-                    if ($stok <= 0) {
-                        continue;
-                    }
+                        $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
 
-                    $payload = [
-                        'tipe_request' => 'primary',
-                        'status_barang' => 'ditinjau',
-                        'status_listing' => $r['status_listing'] ?? 'listing',
-                        'kode_barang' => $kode,
-                        'nama_barang' => $r['nama_barang'] ?? 'Unnamed',
-                        'kategori' => $r['kategori'] ?? null,
-                        'stok' => $stok,
-                        'satuan' => $r['satuan'] ?? 'pcs',
-                        'harga' => $harga,
-                        'deskripsi' => $r['deskripsi'] ?? 'Deskripsi otomatis',
-                        'gambar' => $r['gambar'] ?? null,
-                        'form' => Auth::id(),
-                    ];
+                        if ($stok <= 0) {
+                            continue;
+                        }
 
-                    // create barang first so we have id to store images under folder barang/{id}
-                    $barang = Barang::create($payload);
+                        $payload = [
+                            'tipe_request' => 'primary',
+                            'status_barang' => 'ditinjau',
+                            'status_listing' => $r['status_listing'] ?? 'listing',
+                            'kode_barang' => $kode,
+                            'nama_barang' => $r['nama_barang'] ?? 'Unnamed',
+                            'kategori' => $r['kategori'] ?? null,
+                            'stok' => $stok,
+                            'satuan' => $r['satuan'] ?? 'pcs',
+                            'harga' => $harga,
+                            'deskripsi' => $r['deskripsi'] ?? 'Deskripsi otomatis',
+                            'gambar' => $r['gambar'] ?? null,
+                            'form' => Auth::id(),
+                        ];
 
-                    // store any uploaded images for this row: input name expected rows[{$i}][images][]
-                    try {
-                        $savedPaths = [];
-                        $files = $request->file("rows.{$i}.images");
-                        if (is_array($files) && count($files) > 0) {
-                            foreach ($files as $f) {
-                                if ($f && $f->isValid()) {
-                                    $folder = 'barang/' . $barang->id;
-                                    $path = $f->store($folder, 'public');
-                                    $savedPaths[] = $path;
+                        $barang = Barang::create($payload);
+
+                        try {
+                            $savedPaths = [];
+                            $files = $request->file("rows.{$i}.images");
+                            if (is_array($files) && count($files) > 0) {
+                                foreach ($files as $f) {
+                                    if ($f && $f->isValid()) {
+                                        $folder = 'barang/' . $barang->id;
+                                        $path = $f->store($folder, 'public');
+                                        $savedPaths[] = $path;
+                                    }
                                 }
                             }
+                            if (!empty($savedPaths)) {
+                                $barang->gambar = $savedPaths[0];
+                                $barang->save();
+                            }
+                        } catch (\Throwable $ex) {
+                            \Log::warning("Failed storing images for imported row {$i}: " . $ex->getMessage());
                         }
-                        // if any images saved, set gambar to first file (same behavior as GoodsInController)
-                        if (!empty($savedPaths)) {
-                            $barang->gambar = $savedPaths[0];
-                            $barang->save();
-                        }
-                    } catch (\Throwable $ex) {
-                        \Log::warning("Failed storing images for imported row {$i}: ".$ex->getMessage());
+
+                        $created++;
+                        $lastBarang = $barang;
                     }
-                    $created++;
+                });
+
+                // Trigger notifikasi hanya SEKALI di akhir proses
+                if ($lastBarang) {
+                    event(new \App\Events\BarangStatusUpdated($lastBarang));
                 }
 
                 DB::commit();
@@ -216,83 +223,92 @@ class ImportExcelController extends Controller
         $created = 0;
         $errors = [];
 
-        for ($i = 1; $i < count($sheet); $i++) {
-            $row = $sheet[$i];
+        $lastBarang = null;
+        Barang::withoutEvents(function () use ($sheet, $mapping, $request, &$created, &$errors, &$lastBarang) {
+            for ($i = 1; $i < count($sheet); $i++) {
+                $row = $sheet[$i];
 
-            $data = [];
-            $fields = ['kategori','nama_barang','deskripsi','stok','satuan','harga','gambar','status_listing'];
+                $data = [];
+                $fields = ['kategori', 'nama_barang', 'deskripsi', 'stok', 'satuan', 'harga', 'gambar', 'status_listing'];
 
-            foreach ($fields as $field) {
-                if (isset($mapping[$field]) && $mapping[$field] !== '') {
-                    $colIndex = (int)$mapping[$field];
-                    $value = $row[$colIndex] ?? null;
-                    if (is_string($value)) $value = trim($value);
-                    $data[$field] = $value;
+                foreach ($fields as $field) {
+                    if (isset($mapping[$field]) && $mapping[$field] !== '') {
+                        $colIndex = (int)$mapping[$field];
+                        $value = $row[$colIndex] ?? null;
+                        if (is_string($value)) $value = trim($value);
+                        $data[$field] = $value;
+                    }
                 }
-            }
 
-            $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
-            if (empty($kode)) {
-                $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
-            }
+                $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
+                if (empty($kode)) {
+                    $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+                }
 
-            $hargaRaw = $data['harga'] ?? null;
-            if ($hargaRaw !== null) {
-                $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
-                $clean = str_replace(',', '.', $clean);
-                $harga = floatval($clean);
-            } else {
-                $harga = 0;
-            }
+                $hargaRaw = $data['harga'] ?? null;
+                if ($hargaRaw !== null) {
+                    $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
+                    $clean = str_replace(',', '.', $clean);
+                    $harga = floatval($clean);
+                } else {
+                    $harga = 0;
+                }
 
-            $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
+                $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
 
-            // Lewati jika stok adalah 0 atau kurang
-            if ($stok <= 0) {
-                continue;
-            }
+                // Lewati jika stok adalah 0 atau kurang
+                if ($stok <= 0) {
+                    continue;
+                }
 
-            $payload = [
-                'tipe_request' => 'primary',
-                'status_barang' => 'ditinjau',
-                'status_listing' => $data['status_listing'] ?? 'listing',
-                'kode_barang' => $kode,
-                'nama_barang' => $data['nama_barang'] ?? 'Unnamed',
-                'kategori' => $data['kategori'] ?? null,
-                'stok' => $stok,
-                'satuan' => $data['satuan'] ?? 'pcs',
-                'harga' => $harga,
-                'deskripsi' => $data['deskripsi'] ?? 'Deskripsi otomatis',
-                'gambar' => $data['gambar'] ?? null,
-                'form' => Auth::id(),
-            ];
+                $payload = [
+                    'tipe_request' => 'primary',
+                    'status_barang' => 'ditinjau',
+                    'status_listing' => $data['status_listing'] ?? 'listing',
+                    'kode_barang' => $kode,
+                    'nama_barang' => $data['nama_barang'] ?? 'Unnamed',
+                    'kategori' => $data['kategori'] ?? null,
+                    'stok' => $stok,
+                    'satuan' => $data['satuan'] ?? 'pcs',
+                    'harga' => $harga,
+                    'deskripsi' => $data['deskripsi'] ?? 'Deskripsi otomatis',
+                    'gambar' => $data['gambar'] ?? null,
+                    'form' => Auth::id(),
+                ];
 
-            try {
-                $barang = Barang::create($payload);
-                // try store uploaded files for this row if any (name rows[{$i}][images][])
                 try {
-                    $savedPaths = [];
-                    $files = $request->file("rows.{$i}.images");
-                    if (is_array($files) && count($files) > 0) {
-                        foreach ($files as $f) {
-                            if ($f && $f->isValid()) {
-                                $folder = 'barang/' . $barang->id;
-                                $path = $f->store($folder, 'public');
-                                $savedPaths[] = $path;
+                    $barang = Barang::create($payload);
+                    // try store uploaded files for this row if any (name rows[{$i}][images][])
+                    try {
+                        $savedPaths = [];
+                        $files = $request->file("rows.{$i}.images");
+                        if (is_array($files) && count($files) > 0) {
+                            foreach ($files as $f) {
+                                if ($f && $f->isValid()) {
+                                    $folder = 'barang/' . $barang->id;
+                                    $path = $f->store($folder, 'public');
+                                    $savedPaths[] = $path;
+                                }
                             }
                         }
+                        if (!empty($savedPaths)) {
+                            $barang->gambar = $savedPaths[0];
+                            $barang->save();
+                        }
+                    } catch (\Throwable $ex) {
+                        \Log::warning("Failed storing images for legacy-import row {$i}: " . $ex->getMessage());
                     }
-                    if (!empty($savedPaths)) {
-                        $barang->gambar = $savedPaths[0];
-                        $barang->save();
-                    }
-                } catch (\Throwable $ex) {
-                    \Log::warning("Failed storing images for legacy-import row {$i}: ".$ex->getMessage());
+                    $created++;
+                    $lastBarang = $barang;
+                } catch (\Exception $e) {
+                    $errors[] = "Baris $i: " . $e->getMessage();
                 }
-                $created++;
-            } catch (\Exception $e) {
-                $errors[] = "Baris $i: " . $e->getMessage();
             }
+        });
+
+        // Trigger notifikasi hanya SEKALI di akhir proses legacy import
+        if ($lastBarang) {
+            event(new \App\Events\BarangStatusUpdated($lastBarang));
         }
 
         $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);
