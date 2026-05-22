@@ -1,6 +1,6 @@
 @import 'flowbite/src/themes/default' layer(base);
 @import 'tailwindcss';
-@import url('datatables.net-fixedheader-dt');
+@import 'datatables.net-fixedheader-dt/css/fixedHeader.dataTables.css';
 
 
 @plugin '@tailwindcss/forms';
