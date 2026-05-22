@@ -181,9 +181,9 @@
                                 <tr>
                                     <td class="border px-2 py-1 text-center">{{ $iteration++ }}</td>
                                     <td class="border px-2 py-1">{{ $item->nama_barang }}</td>
-                                    <td class="border px-2 py-1 text-center">-UBAH-</td>
+                                    <td class="border px-2 py-1">{{ $item->barang?->deskripsi }}</td>
                                     <td class="border px-2 py-1 text-center">{{ $item->delivered_quantity }}</td>
-                                    <td class="border px-2 py-1 text-center">-UBAH-</td>
+                                    <td class="border px-2 py-1 text-center"></td>
                                 </tr>
                             @endif
                         @endforeach
