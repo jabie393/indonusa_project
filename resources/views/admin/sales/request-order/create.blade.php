@@ -288,24 +288,78 @@
                                             </select>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <select name="barang_id[]"
-                                                    class="form-control barang-select @error('barang_id.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                    required
-                                                    onchange="updateKategoriBarang(this)">
-                                                <option value="">Pilih Barang</option>
-                                                @foreach ($goods as $b)
-                                                    <option value="{{ $b->id }}"
-                                                            data-kode="{{ $b->kode_barang }}"
-                                                            data-nama="{{ $b->nama_barang }}"
-                                                            data-kategori="{{ $b->kategori }}"
-                                                            data-stok="{{ $b->stok }}"
-                                                            data-satuan="{{ $b->satuan ?? '' }}"
-                                                            data-harga="{{ $b->harga ?? 0 }}"
-                                                            data-diskon="{{ $b->diskon_percent ?? 0 }}">
-                                                        {{ $b->kode_barang }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            <div class="relative barang-dropdown-container">
+                                                <!-- Trigger Button -->
+                                                <button type="button" class="flex items-center justify-between w-full px-3 py-2 border border-subtle rounded-lg bg-surface text-body-sm text-on-surface-variant hover:border-primary transition-all dropdown-toggle-btn">
+                                                    <span class="flex gap-2">
+                                                        <span class="selected-barang-label text-nowrap">Pilih Barang</span>
+                                                    </span>
+                                                    <span class="text-[4px] w-[16px] h-[16px]">
+                                                        <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="currentColor"></path> </g></svg>
+                                                    </span>
+                                                </button>
+
+                                                <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
+                                                <select name="barang_id[]"
+                                                        class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
+                                                        required
+                                                        onchange="updateKategoriBarang(this)">
+                                                    <option value="">Pilih Barang</option>
+                                                    @foreach ($goods as $b)
+                                                        <option value="{{ $b->id }}"
+                                                                data-kode="{{ $b->kode_barang }}"
+                                                                data-nama="{{ $b->nama_barang }}"
+                                                                data-kategori="{{ $b->kategori }}"
+                                                                data-stok="{{ $b->stok }}"
+                                                                data-satuan="{{ $b->satuan ?? '' }}"
+                                                                data-harga="{{ $b->harga ?? 0 }}"
+                                                                data-diskon="{{ $b->diskon_percent ?? 0 }}">
+                                                            {{ $b->kode_barang }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+        
+                                                <!-- Dropdown Menu -->
+                                                <div class="fixed w-[600px] bg-white border border-subtle rounded-xl shadow-2xl z-[9999] overflow-hidden hidden dropdown-menu-container">
+                                                    <!-- Search Header -->
+                                                    <div class="p-3 border-b border-subtle bg-surface-container-low">
+                                                        <div class="relative">
+                                                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></span>
+                                                            <input class="w-full pl-10 pr-4 py-2 bg-white border border-subtle rounded-lg text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none search-barang-input" placeholder="Cari kode atau nama barang..." type="text">
+                                                        </div>
+                                                    </div>
+                                                    <!-- Dropdown Table -->
+                                                    <div class="max-h-[300px] overflow-y-auto">
+                                                        <table class="w-full text-left">
+                                                            <thead class="sticky top-0 border-b border-subtle bg-white">
+                                                                <tr>
+                                                                    <th class="px-4 py-2 font-table-header text-[11px] text-on-surface-variant uppercase tracking-wider">Kode Barang</th>
+                                                                    <th class="px-4 py-2 font-table-header text-[11px] text-on-surface-variant uppercase tracking-wider">Nama Barang</th>
+                                                                    <th class="px-4 py-2 font-table-header text-[11px] text-on-surface-variant uppercase tracking-wider">Description</th>
+                                                                    <th class="w-8"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-subtle/30 barang-options-body">
+                                                                @foreach ($goods as $b)
+                                                                    <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row"
+                                                                        data-id="{{ $b->id }}"
+                                                                        data-kode="{{ $b->kode_barang }}"
+                                                                        data-nama="{{ $b->nama_barang }}"
+                                                                        data-kategori="{{ $b->kategori }}"
+                                                                        data-deskripsi="{{ $b->deskripsi ?? '' }}">
+                                                                        <td class="px-4 py-3 text-body-sm font-semibold text-nowrap">{{ $b->kode_barang }}</td>
+                                                                        <td class="px-4 py-3 text-body-sm text-nowrap">{{ $b->nama_barang }}</td>
+                                                                        <td class="px-4 py-3 text-[12px] text-on-surface-variant">{{ $b->deskripsi ?? '-' }}</td>
+                                                                        <td class="pr-4 text-primary text-right select-check-icon">
+                                                                            <span class="material-symbols-outlined text-[18px] checked-icon hidden"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></span>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <input type="text"
@@ -351,7 +405,7 @@
                                                        placeholder="0">
                                             </div>
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
                                             <div class="upload-btn-container relative">
                                                 <input type="file"
                                                        name="item_images[0][]"
@@ -359,11 +413,11 @@
                                                        multiple
                                                        accept="image/*">
                                                 <button type="button"
-                                                        class="rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-600">
+                                                        class="rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
                                                     Upload
                                                 </button>
                                             </div>
-                                            <div class="item-images-preview mt-2 flex flex-wrap gap-2"></div>
+                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2"></div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <input type="text"
@@ -617,22 +671,58 @@
             var kategori = selectKategori.value;
             var barangSelect = tr.querySelector('.barang-select');
 
-            Array.from(barangSelect.options).forEach(function(opt) {
-                if (opt.value === '') {
-                    // Selalu tampilkan placeholder
-                    opt.style.display = '';
-                } else if (kategori && opt.getAttribute('data-kategori') === kategori) {
-                    // Tampilkan hanya barang yang sesuai kategori
-                    opt.style.display = '';
-                } else if (!kategori) {
-                    // Jika tidak ada kategori dipilih, tampilkan semua
-                    opt.style.display = '';
+            if (barangSelect) {
+                Array.from(barangSelect.options).forEach(function(opt) {
+                    if (opt.value === '') {
+                        // Selalu tampilkan placeholder
+                        opt.style.display = '';
+                    } else if (kategori && opt.getAttribute('data-kategori') === kategori) {
+                        // Tampilkan hanya barang yang sesuai kategori
+                        opt.style.display = '';
+                    } else if (!kategori) {
+                        // Jika tidak ada kategori dipilih, tampilkan semua
+                        opt.style.display = '';
+                    } else {
+                        // Sembunyikan yang tidak sesuai
+                        opt.style.display = 'none';
+                    }
+                });
+                barangSelect.selectedIndex = 0;
+                barangSelect.dispatchEvent(new Event('change'));
+            }
+
+            // Sync custom dropdown options visibility
+            var dropdownRows = tr.querySelectorAll('.barang-option-row');
+            dropdownRows.forEach(function(row) {
+                var rowKategori = row.getAttribute('data-kategori');
+                if (!kategori || rowKategori === kategori) {
+                    row.style.display = '';
                 } else {
-                    // Sembunyikan yang tidak sesuai
-                    opt.style.display = 'none';
+                    row.style.display = 'none';
                 }
             });
-            barangSelect.selectedIndex = 0;
+
+            // Clear search input
+            var searchInput = tr.querySelector('.search-barang-input');
+            if (searchInput) {
+                searchInput.value = '';
+            }
+
+            // Reset label button text
+            var labelSpan = tr.querySelector('.selected-barang-label');
+            if (labelSpan) {
+                labelSpan.textContent = 'Pilih Barang';
+            }
+
+            // Hide check icons
+            var checkIcons = tr.querySelectorAll('.checked-icon');
+            checkIcons.forEach(icon => icon.classList.add('hidden'));
+
+            // Remove selected row backgrounds
+            var optionRows = tr.querySelectorAll('.barang-option-row');
+            optionRows.forEach(row => {
+                row.classList.remove('bg-secondary-container/10', 'hover:bg-secondary-container/20');
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1173,6 +1263,22 @@
                     sel.selectedIndex = 0;
                 });
 
+                // Reset custom dropdown state for the cloned row
+                const selectedLabel = newRow.querySelector('.selected-barang-label');
+                if (selectedLabel) selectedLabel.textContent = 'Pilih Barang';
+
+                const dropdownMenu = newRow.querySelector('.dropdown-menu-container');
+                if (dropdownMenu) dropdownMenu.classList.add('hidden');
+
+                newRow.querySelectorAll('.barang-option-row').forEach(row => {
+                    row.classList.remove('bg-secondary-container/10', 'hover:bg-secondary-container/20');
+                    row.style.display = '';
+                });
+
+                newRow.querySelectorAll('.checked-icon').forEach(icon => {
+                    icon.classList.add('hidden');
+                });
+
                 // Hapus preview gambar
                 const preview = newRow.querySelector('.item-images-preview');
                 if (preview) preview.innerHTML = '';
@@ -1197,6 +1303,7 @@
 
                 // Attach events ke baris baru
                 attachRowEvents(newRow);
+                attachCustomDropdownEvents(newRow);
                 handleItemImagePreview(newRow);
                 updateRemoveButtons();
                 calculateTotals();
@@ -1318,13 +1425,20 @@
                 }
             }
 
-            // Update remove buttons visibility - always show delete button
+            // Disable remove button when only one row remains
             function updateRemoveButtons() {
                 const rows = document.querySelectorAll('.item-row');
+                const isSingleRow = rows.length <= 1;
                 rows.forEach((row) => {
                     const btn = row.querySelector('.remove-row');
                     if (!btn) return;
                     btn.style.display = 'inline-block';
+                    btn.disabled = isSingleRow;
+                    if (isSingleRow) {
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
                 });
             }
 
@@ -1359,8 +1473,137 @@
                 });
             });
 
+            // Custom Dropdown Event Handlers
+            function attachCustomDropdownEvents(row) {
+                const container = row.querySelector('.barang-dropdown-container');
+                if (!container) return;
+
+                const toggleBtn = container.querySelector('.dropdown-toggle-btn');
+                const menu = container.querySelector('.dropdown-menu-container');
+                const searchInput = container.querySelector('.search-barang-input');
+                const optionRows = container.querySelectorAll('.barang-option-row');
+                const backingSelect = row.querySelector('.barang-select');
+
+                // Open/close menu on button click
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    // Close all other dropdown menus
+                    document.querySelectorAll('.dropdown-menu-container').forEach(m => {
+                        if (m !== menu) {
+                            m.classList.add('hidden');
+                        }
+                    });
+                    menu.classList.toggle('hidden');
+                    if (!menu.classList.contains('hidden')) {
+                        const rect = toggleBtn.getBoundingClientRect();
+                        const menuWidth = Math.max(240, Math.min(600, window.innerWidth - 24));
+                        const left = Math.min(rect.left, window.innerWidth - menuWidth - 12);
+                        menu.style.width = menuWidth + 'px';
+                        menu.style.top = (rect.bottom + 4) + 'px';
+                        menu.style.left = Math.max(12, left) + 'px';
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                        searchInput.focus();
+                    }
+                });
+
+                // Handle search input filtering
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    const kategoriSelect = row.querySelector('.kategori-barang-select');
+                    const kategori = kategoriSelect ? kategoriSelect.value : '';
+
+                    optionRows.forEach(optRow => {
+                        const kode = (optRow.getAttribute('data-kode') || '').toLowerCase();
+                        const nama = (optRow.getAttribute('data-nama') || '').toLowerCase();
+                        const deskripsi = (optRow.getAttribute('data-deskripsi') || '').toLowerCase();
+                        const optKategori = optRow.getAttribute('data-kategori');
+
+                        const matchesKategori = !kategori || optKategori === kategori;
+                        const matchesQuery = !query || kode.includes(query) || nama.includes(query) || deskripsi.includes(query);
+
+                        if (matchesKategori && matchesQuery) {
+                            optRow.style.display = '';
+                        } else {
+                            optRow.style.display = 'none';
+                        }
+                    });
+                });
+
+                // Prevent click on search input from closing menu
+                searchInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                // Option row selection click handler
+                optionRows.forEach(optRow => {
+                    optRow.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const id = this.getAttribute('data-id');
+                        const kode = this.getAttribute('data-kode');
+                        const selectedKategori = this.getAttribute('data-kategori') || '';
+                        const kategoriSelect = row.querySelector('.kategori-barang-select');
+
+                        if (kategoriSelect && !kategoriSelect.value && selectedKategori) {
+                            kategoriSelect.value = selectedKategori;
+                        }
+
+                        // Set backing select value and trigger change event
+                        backingSelect.value = id;
+                        backingSelect.dispatchEvent(new Event('change', { bubbles: true }));
+
+                        // Update toggle button text/label
+                        const labelSpan = container.querySelector('.selected-barang-label');
+                        if (labelSpan) {
+                            labelSpan.textContent = kode;
+                        }
+
+                        // Remove active class and hide check icons for all other rows
+                        optionRows.forEach(r => {
+                            r.classList.remove('bg-secondary-container/10', 'hover:bg-secondary-container/20');
+                            const icon = r.querySelector('.checked-icon');
+                            if (icon) icon.classList.add('hidden');
+                        });
+
+                        // Set active styling and show check icon for selected row
+                        this.classList.add('bg-secondary-container/10', 'hover:bg-secondary-container/20');
+                        const checkIcon = this.querySelector('.checked-icon');
+                        if (checkIcon) checkIcon.classList.remove('hidden');
+
+                        // Hide dropdown menu
+                        menu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.barang-dropdown-container')) {
+                    document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                }
+            });
+
+            // Close dropdowns when scrolling outside of the dropdown/menu area
+            document.addEventListener('scroll', function(e) {
+                const target = e.target;
+                const isInsideDropdown =
+                    target instanceof Element &&
+                    (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container'));
+
+                if (!isInsideDropdown) {
+                    document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                }
+            }, true);
+
             // Initialize
-            document.querySelectorAll('.item-row').forEach(row => attachRowEvents(row));
+            document.querySelectorAll('.item-row').forEach(row => {
+                attachRowEvents(row);
+                attachCustomDropdownEvents(row);
+            });
             // Initialize thousand separator for existing inputs
             document.querySelectorAll('.harga-input').forEach(input => initThousandSeparator(input));
 
