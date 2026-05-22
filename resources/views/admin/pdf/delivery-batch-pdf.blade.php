@@ -151,9 +151,11 @@
                                 <td class="border px-2 py-1">
                                     {{ $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-') }}
                                 </td>
-                                <td class="border px-2 py-1 text-center">-UBAH-</td>
+                                <td class="border px-2 py-1">
+                                    {{ $item->orderItem->barang?->deskripsi }}
+                                </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity_sent }}</td>
-                                <td class="border px-2 py-1 text-center">-UBAH-</td>
+                                <td class="border px-2 py-1 text-center"></td>
                             </tr>
                         @endforeach
                     </tbody>
