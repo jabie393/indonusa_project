@@ -263,16 +263,8 @@ class RequestOrderController extends Controller
             $requestOrder->load('items');
             $maxDiskon = $requestOrder->items->max('diskon_percent') ?? 0;
 
-            foreach ($items as $item) {
-                $barangId = $item['barang_id'] ?? null;
-                $qty = (int) ($item['quantity'] ?? 0);
-                if ($barangId && $qty > 0) {
-                    \App\Models\Barang::where('id', $barangId)
-                        ->where('stok', '>=', $qty)
-                        ->decrement('stok', $qty);
-                }
-            }
-
+            // Jangan kurangi stok saat membuat penawaran.
+            // Pengurangan stok akan diproses ketika request order dikirim ke warehouse / DO dikirim.
             $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
 
             $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
