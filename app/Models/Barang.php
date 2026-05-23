@@ -48,20 +48,21 @@ class Barang extends Model
     ];
 
     protected $fillable = [
-        'tipe_request',
-        'status_barang',
+        'request_type',
+        'goods_status',
         'status_listing',
-        'kode_barang',
-        'nama_barang',
-        'kategori',
-        'stok',
-        'satuan',
-        'lokasi',
-        'harga',
-        'deskripsi',
-        'gambar',
-        'catatan',
-        'alasan_pengajuan',
+        'goods_code',
+        'goods_name',
+        'category',
+        'stock',
+        'unit',
+        'location',
+        'buy_price',
+        'selling_price',
+        'description',
+        'image',
+        'note',
+        'submission_reason',
         'form',
         'parent_id',
     ];
@@ -78,40 +79,51 @@ class Barang extends Model
 
     protected static function booted()
     {
+        static::saving(function ($barang) {
+            // Auto-markup +15% HANYA untuk barang baru tipe 'primary' jika harga jual kosong/0
+            if (!$barang->exists && $barang->request_type === 'primary') {
+                if (empty($barang->selling_price) || (float)$barang->selling_price === 0.0) {
+                    $barang->selling_price = round($barang->buy_price * 1.15, 2);
+                }
+            }
+        });
+
         static::updated(function ($barang) {
-            if ($barang->isDirty('status_barang')) {
+            if ($barang->isDirty('goods_status')) {
                 BarangHistory::create([
-                    'barang_id'   => $barang->id,
-                    'kode_barang' => $barang->kode_barang,
-                    'nama_barang' => $barang->nama_barang,
-                    'kategori'    => $barang->kategori,
-                    'stok'        => $barang->stok,
-                    'satuan'      => $barang->satuan,
-                    'lokasi'      => $barang->lokasi,
-                    'harga'       => $barang->harga,
-                    'old_status'  => $barang->getOriginal('status_barang'),
-                    'new_status'  => $barang->status_barang,
-                    'form'        => $barang->form,
-                    'changed_by'  => Auth::id(),
-                    'note'        => $barang->catatan ?? null,
+                    'goods_id'     => $barang->id,
+                    'goods_code'   => $barang->goods_code,
+                    'goods_name'   => $barang->goods_name,
+                    'category'     => $barang->category,
+                    'stock'        => $barang->stock,
+                    'unit'         => $barang->unit,
+                    'location'     => $barang->location,
+                    'buy_price'    => $barang->buy_price,
+                    'selling_price' => $barang->selling_price,
+                    'old_status'   => $barang->getOriginal('goods_status'),
+                    'new_status'   => $barang->goods_status,
+                    'form'         => $barang->form,
+                    'changed_by'   => Auth::id(),
+                    'note'         => $barang->note ?? null,
                 ]);
             }
         });
 
         static::deleted(function ($barang) {
             BarangHistory::create([
-                'barang_id'   => $barang->id,
-                'kode_barang' => $barang->kode_barang,
-                'nama_barang' => $barang->nama_barang,
-                'kategori'    => $barang->kategori,
-                'stok'        => $barang->stok,
-                'satuan'      => $barang->satuan,
-                'lokasi'      => $barang->lokasi,
-                'harga'       => $barang->harga,
-                'old_status'  => $barang->status_barang,
-                'new_status'  => 'dihapus',
-                'changed_by'  => Auth::id(),
-                'note'        => $barang->catatan ?? null,
+                'goods_id'     => $barang->id,
+                'goods_code'   => $barang->goods_code,
+                'goods_name'   => $barang->goods_name,
+                'category'     => $barang->category,
+                'stock'        => $barang->stock,
+                'unit'         => $barang->unit,
+                'location'     => $barang->location,
+                'buy_price'    => $barang->buy_price,
+                'selling_price' => $barang->selling_price,
+                'old_status'   => $barang->goods_status,
+                'new_status'   => 'dihapus',
+                'changed_by'   => Auth::id(),
+                'note'         => $barang->note ?? null,
             ]);
         });
     }
@@ -126,10 +138,9 @@ class Barang extends Model
         return $this->hasMany(BarangHistory::class);
     }
 
-    // Accessor for selling price (harga jual = harga + 30%)
+    // Accessor for selling price (harga jual = kolom selling_price di database)
     public function getHargaJualAttribute()
     {
-        $base = (float) ($this->attributes['harga'] ?? 0);
-        return round($base * 1.3, 2);
+        return (float) ($this->attributes['selling_price'] ?? 0);
     }
 }

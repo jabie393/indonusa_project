@@ -20,13 +20,13 @@ class WarehouseController extends Controller
 
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('status_barang', 'masuk');
+        $goods = Barang::where('goods_status', 'masuk');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
-                $q->where('nama_barang', 'like', "%{$query}%")
-                    ->orWhere('kode_barang', 'like', "%{$query}%")
-                    ->orWhere('kategori', 'like', "%{$query}%");
+                $q->where('goods_name', 'like', "%{$query}%")
+                    ->orWhere('goods_code', 'like', "%{$query}%")
+                    ->orWhere('category', 'like', "%{$query}%");
             });
         }
 
@@ -41,31 +41,31 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'kode_barang' => 'required|string|max:255|unique:goods,kode_barang',
-            'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|string|max:255',
-            'stok' => 'required|integer',
-            'satuan' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
-            'harga' => 'required|numeric',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deskripsi' => 'nullable|string',
+            'goods_code' => 'required|string|max:255|unique:goods,goods_code',
+            'goods_name' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'stock' => 'required|integer',
+            'unit' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'selling_price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable|string',
         ]);
 
-        if (empty($validated['deskripsi'])) {
-            $validated['deskripsi'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
+        if (empty($validated['description'])) {
+            $validated['description'] = '"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."';
         }
 
         $validated['form'] = Auth::id();
-        $validated['status_barang'] = 'masuk';
-        $validated['tipe_request'] = 'primary';
+        $validated['goods_status'] = 'masuk';
+        $validated['request_type'] = 'primary';
 
         $barang = Barang::create($validated);
 
-        if ($request->hasFile('gambar')) {
+        if ($request->hasFile('image')) {
             $folder = 'barang/' . $barang->id;
-            $path = $request->file('gambar')->store($folder, 'public');
-            $barang->gambar = $path;
+            $path = $request->file('image')->store($folder, 'public');
+            $barang->image = $path;
             $barang->save();
         }
 
@@ -77,15 +77,18 @@ class WarehouseController extends Controller
         $barang = Barang::findOrFail($id);
 
         $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if ($request->hasFile('gambar')) {
-            $oldGambar = $barang->gambar;
+        $fileKey = $request->hasFile('image') ? 'image' : ($request->hasFile('gambar') ? 'gambar' : null);
+
+        if ($fileKey) {
+            $oldGambar = $barang->image;
             
             $folder = 'barang/' . $barang->id;
-            $path = $request->file('gambar')->store($folder, 'public');
-            $barang->gambar = $path;
+            $path = $request->file($fileKey)->store($folder, 'public');
+            $barang->image = $path;
             $barang->save();
 
             if ($oldGambar && \Storage::disk('public')->exists($oldGambar)) {
@@ -148,7 +151,7 @@ class WarehouseController extends Controller
         do {
             $randomNumber = str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
             $kodeBarang = "{$singkatan}-{$randomNumber}";
-        } while (Barang::where('kode_barang', $kodeBarang)->exists());
+        } while (Barang::where('goods_code', $kodeBarang)->exists());
 
         return $kodeBarang;
     }

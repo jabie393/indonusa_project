@@ -52,7 +52,7 @@
     <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
-                $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
+                $supplyOrderCount = \App\Models\Barang::where('goods_status', 'ditinjau')->count();
                 $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
             @endphp
             <div class="flex items-center space-x-2">
@@ -109,23 +109,23 @@
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row"
                                 class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->kode_barang }}
+                                {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4 py-3">{{ $barang->nama_barang }}</td>
-                            <td class="px-4 py-3">{{ $barang->kategori }}</td>
-                            <td class="px-4 py-3">{{ $barang->stok }}</td>
-                            <td class="px-4 py-3">{{ $barang->satuan }}</td>
-                            <td class="px-4 py-3">{{ $barang->lokasi }}</td>
+                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
+                            <td class="px-4 py-3">{{ $barang->category }}</td>
+                            <td class="px-4 py-3">{{ $barang->stock }}</td>
+                            <td class="px-4 py-3">{{ $barang->unit }}</td>
+                            <td class="px-4 py-3">{{ $barang->location }}</td>
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass =
                                         [
                                             'ditinjau' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                        ][$barang->status_barang] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                        ][$barang->goods_status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
                                             'ditinjau' => 'Ditinjau',
-                                        ][$barang->status_barang] ?? $barang->status_barang;
+                                        ][$barang->goods_status] ?? $barang->goods_status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="{{ $statusClass }} badge">
@@ -134,12 +134,12 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3">
-                                @if ($barang->tipe_request == 'primary')
+                                @if ($barang->request_type == 'primary')
                                     Barang baru
-                                @elseif($barang->tipe_request == 'new_stock')
+                                @elseif($barang->request_type == 'new_stock')
                                     Stok baru
                                 @else
-                                    {{ $barang->tipe_request }}
+                                    {{ $barang->request_type }}
                                 @endif
                             </td>
                             <td class="w-fit px-4 py-3">
@@ -170,7 +170,7 @@
                                         {{-- Reject barang --}}
                                         <button type="button"
                                                 class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                onclick="openTolakModal('supply_order', '{{ $barang->id }}', '{{ $barang->nama_barang }}')">
+                                                onclick="openTolakModal('supply_order', '{{ $barang->id }}', '{{ $barang->goods_name }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                  class="h-4 w-4"
                                                  fill="none"

@@ -17,9 +17,9 @@ class HistoryController extends Controller
         $histories = BarangHistory::with('user')
             ->when($query, function ($q) use ($query) {
                 $q->where(function ($sub) use ($query) {
-                    $sub->where('kode_barang', 'like', "%{$query}%")
-                        ->orWhere('nama_barang', 'like', "%{$query}%")
-                        ->orWhere('kategori', 'like', "%{$query}%")
+                    $sub->where('goods_code', 'like', "%{$query}%")
+                        ->orWhere('goods_name', 'like', "%{$query}%")
+                        ->orWhere('category', 'like', "%{$query}%")
                         ->orWhere('note', 'like', "%{$query}%");
                 })
                     ->orWhereHas('user', function ($u) use ($query) {

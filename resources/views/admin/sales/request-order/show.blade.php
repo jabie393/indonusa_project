@@ -213,12 +213,12 @@
                             @forelse ($sudahDikirim as $item)
                             <div class="mb-2 flex items-center justify-between rounded-lg bg-green-50 px-3 py-2">
                                 <div>
-                                    <p class="text-xs font-bold text-gray-800">{{ $item->barang->nama_barang ?? '-' }}</p>
-                                    <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                    <p class="text-xs font-bold text-gray-800">{{ $item->barang->goods_name ?? '-' }}</p>
+                                    <p class="text-[10px] text-gray-500">{{ $item->barang->goods_code ?? '' }}</p>
                                 </div>
                                 <div class="ml-3 shrink-0 text-right">
                                     <span class="text-xs font-black text-green-600">{{ $item->delivered_quantity }}/{{ $item->quantity }}</span>
-                                    <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-400">{{ $item->barang->unit ?? '' }}</p>
                                 </div>
                             </div>
                             @empty
@@ -245,12 +245,12 @@
                             @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
                             <div class="mb-2 flex items-center justify-between rounded-lg bg-orange-50 px-3 py-2">
                                 <div>
-                                    <p class="text-xs font-bold text-gray-800">{{ $item->barang->nama_barang ?? '-' }}</p>
-                                    <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                    <p class="text-xs font-bold text-gray-800">{{ $item->barang->goods_name ?? '-' }}</p>
+                                    <p class="text-[10px] text-gray-500">{{ $item->barang->goods_code ?? '' }}</p>
                                 </div>
                                 <div class="ml-3 shrink-0 text-right">
                                     <span class="text-xs font-black text-orange-600">Sisa {{ $sisa }}</span>
-                                    <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-400">{{ $item->barang->unit ?? '' }}</p>
                                 </div>
                             </div>
                             @empty
@@ -338,15 +338,15 @@
                             <div class="mb-2 flex items-center justify-between rounded-lg bg-green-50 px-3 py-2 dark:bg-green-900/20">
                                 <div>
                                     <p class="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                        {{ $item->barang->nama_barang ?? '-' }}
+                                        {{ $item->barang->goods_name ?? '-' }}
                                     </p>
-                                    <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-500">{{ $item->barang->goods_code ?? '' }}</p>
                                 </div>
                                 <div class="ml-3 shrink-0 text-right">
                                     <span class="text-xs font-black text-green-600">
                                         {{ $item->delivered_quantity }}/{{ $item->quantity }}
                                     </span>
-                                    <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-400">{{ $item->barang->unit ?? '' }}</p>
                                 </div>
                             </div>
                             @empty
@@ -374,15 +374,15 @@
                             <div class="mb-2 flex items-center justify-between rounded-lg bg-orange-50 px-3 py-2 dark:bg-orange-900/20">
                                 <div>
                                     <p class="text-xs font-bold text-gray-800 dark:text-gray-200">
-                                        {{ $item->barang->nama_barang ?? '-' }}
+                                        {{ $item->barang->goods_name ?? '-' }}
                                     </p>
-                                    <p class="text-[10px] text-gray-500">{{ $item->barang->kode_barang ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-500">{{ $item->barang->goods_code ?? '' }}</p>
                                 </div>
                                 <div class="ml-3 shrink-0 text-right">
                                     <span class="text-xs font-black text-orange-600">
                                         Sisa {{ $sisa }}
                                     </span>
-                                    <p class="text-[10px] text-gray-400">{{ $item->barang->satuan ?? '' }}</p>
+                                    <p class="text-[10px] text-gray-400">{{ $item->barang->unit ?? '' }}</p>
                                 </div>
                             </div>
                             @empty
@@ -669,18 +669,18 @@
                                         <td class="px-6 py-5">
                                             <div class="flex flex-col space-y-1">
                                                 <span class="font-bold leading-tight text-gray-900 dark:text-white">
-                                                    {{ $item->barang->nama_barang ?? ($item->nama_barang_custom ?? 'N/A') }}
+                                                    {{ $item->barang->goods_name ?? ($item->nama_barang_custom ?? 'N/A') }}
                                                 </span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
-                                                        {{ $item->kategori_barang ?? ($item->barang->kategori ?? 'UMUM') }}
+                                                        {{ $item->kategori_barang ?? ($item->barang->category ?? 'UMUM') }}
                                                     </span>
-                                                    <span class="font-mono text-[10px] text-gray-400">CODE: {{ $item->barang->kode_barang ?? '-' }}</span>
+                                                    <span class="font-mono text-[10px] text-gray-400">CODE: {{ $item->barang->goods_code ?? '-' }}</span>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-5 text-center">
-                                            @php $dk = $item->diskon_percent ?? ($item->barang->diskon_percent ?? 0); @endphp
+                                            @php $dk = $item->diskon_percent ?? ($item->barang->discount_percent ?? 0); @endphp
                                             @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">

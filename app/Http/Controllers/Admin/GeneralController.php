@@ -52,24 +52,24 @@ class GeneralController extends Controller
     // Cek stok barang berdasarkan kode barang
     public function getStock($kode)
     {
-        $barang = Barang::where('kode_barang', $kode)->first();
+        $barang = Barang::where('goods_code', $kode)->first();
 
         return response()->json([
-            'stok' => $barang ? $barang->stok : 0
+            'stock' => $barang ? $barang->stock : 0
         ]);
     }
     public function checkKodeBarang(Request $request)
     {
         $request->validate([
-            'kode_barang' => 'required|string'
+            'goods_code' => 'required|string'
         ]);
 
-        $kodeBarang = $request->input('kode_barang');
-        $exists = Barang::where('kode_barang', $kodeBarang)->exists();
+        $kodeBarang = $request->input('goods_code');
+        $exists = Barang::where('goods_code', $kodeBarang)->exists();
 
         return response()->json([
             'valid' => !$exists,
-            'kode_barang' => $kodeBarang
+            'goods_code' => $kodeBarang
         ]);
     }
 

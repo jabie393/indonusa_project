@@ -59,7 +59,7 @@
                                     <td rowspan="{{ $o->items->count() }}">{{ $o->created_at->format('Y-m-d H:i') }}</td>
                                     <td rowspan="{{ $o->items->count() }}">{{ $o->customer_name ?? '-' }}</td>
                                 @endif
-                                <td>{{ $item->barang->nama_barang ?? '-' }}</td>
+                                <td>{{ $item->barang->goods_name ?? $item->barang->nama_barang ?? '-' }}</td>
                                 <td>{{ $item->quantity }}</td>
                                 @if ($i == 0)
                                     <td rowspan="{{ $o->items->count() }}">{{ $o->status }}</td>
@@ -73,7 +73,7 @@
                                                 'items' => $o->items
                                                     ->map(function ($it) {
                                                         return [
-                                                            'barang' => $it->barang ? ['nama_barang' => $it->barang->nama_barang] : null,
+                                                            'barang' => $it->barang ? ['goods_name' => $it->barang->goods_name] : null,
                                                             'quantity' => $it->quantity,
                                                             'status_item' => $it->status_item ?? null,
                                                         ];

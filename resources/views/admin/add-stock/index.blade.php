@@ -45,17 +45,17 @@
                         <tr class="border-b dark:border-gray-700">
                             <td class="px-4">{{ $barang->status_listing }}</td>
                             <td scope="row" class="whitespace-nowrap px-4 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->kode_barang }}
+                                {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4">{{ $barang->nama_barang }}</td>
-                            <td class="px-4">{{ $barang->kategori }}</td>
-                            <td class="px-4">{{ $barang->stok }}</td>
-                            <td class="px-4">{{ $barang->satuan }}</td>
-                            <td class="px-4">{{ $barang->lokasi }}</td>
+                            <td class="px-4">{{ $barang->goods_name }}</td>
+                            <td class="px-4">{{ $barang->category }}</td>
+                            <td class="px-4">{{ $barang->stock }}</td>
+                            <td class="px-4">{{ $barang->unit }}</td>
+                            <td class="px-4">{{ $barang->location }}</td>
                             <td class="px-4 text-nowrap font-medium text-slate-700">
                                 <div class="flex justify-between items-center w-full">
                                     <span>Rp</span>
-                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                    <span>{{ number_format($barang->selling_price, 0, '.', ',') }}</span>
                                 </div>
                             </td>
                             <td class="w-fit px-4 py-3 text-right">
@@ -67,13 +67,13 @@
                                         <button
                                             class="edit-barang-btn group flex cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                            data-kode="{{ $barang->kode_barang }}"
-                                            data-nama="{{ $barang->nama_barang }}"
-                                            data-kategori="{{ $barang->kategori }}" data-stok="{{ $barang->stok }}"
-                                            data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                            data-harga="{{ $barang->harga }}"
-                                            data-deskripsi="{{ $barang->deskripsi }}"
-                                            data-gambar="{{ $barang->gambar }}">
+                                            data-kode="{{ $barang->goods_code }}"
+                                            data-nama="{{ $barang->goods_name }}"
+                                            data-kategori="{{ $barang->category }}" data-stok="{{ $barang->stock }}"
+                                            data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
+                                            data-harga="{{ $barang->buy_price }}"
+                                            data-deskripsi="{{ $barang->description }}"
+                                            data-gambar="{{ $barang->image }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

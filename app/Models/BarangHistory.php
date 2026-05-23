@@ -11,14 +11,15 @@ class BarangHistory extends Model
     protected $table = 'goods_histories';
 
     protected $fillable = [
-        'barang_id',
-        'kode_barang',
-        'nama_barang',
-        'kategori',
-        'stok',
-        'satuan',
-        'lokasi',
-        'harga',
+        'goods_id',
+        'goods_code',
+        'goods_name',
+        'category',
+        'stock',
+        'unit',
+        'location',
+        'buy_price',
+        'selling_price',
         'old_status',
         'new_status',
         'changed_by',
@@ -37,7 +38,7 @@ class BarangHistory extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 
     // Relasi ke user yang mengubah

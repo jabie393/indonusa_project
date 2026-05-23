@@ -12,17 +12,17 @@ function openEditModal(
     gambar = null
 ) {
     // Set data ke elemen modal (bukan input)
-    document.getElementById("kode_barang").textContent = kode_barang ?? "-";
-    document.getElementById("nama_barang").textContent = nama_barang ?? "-";
-    document.getElementById("kategori").textContent = kategori ?? "-";
-    document.getElementById("lokasi").textContent = lokasi ?? "-";
+    document.getElementById("goods_code").textContent = kode_barang ?? "-";
+    document.getElementById("goods_name").textContent = nama_barang ?? "-";
+    document.getElementById("category").textContent = kategori ?? "-";
+    document.getElementById("location").textContent = lokasi ?? "-";
     document.getElementById("status_listing").textContent =
         status_listing ?? "-";
-    document.getElementById("harga").textContent = 
+    document.getElementById("buy_price").textContent = 
         harga && !isNaN(harga) ? `Rp ${parseInt(harga).toLocaleString('en-US')}` : (harga ?? "-");
-    document.getElementById("satuan").textContent = satuan ?? "-";
-    document.getElementById("current_stok").textContent = stok ?? "-";
-    document.getElementById("deskripsi").textContent = deskripsi ?? "-";
+    document.getElementById("unit").textContent = satuan ?? "-";
+    document.getElementById("current_stock").textContent = stok ?? "-";
+    document.getElementById("description").textContent = deskripsi ?? "-";
 
     // Preview gambar jika ada
     const gambarPreview = document.getElementById("gambar_preview");
@@ -41,7 +41,7 @@ function openEditModal(
 
     // Set value untuk form update stok
     document.getElementById("id").value = id;
-    document.getElementById("stok").value = "";
+    document.getElementById("stock").value = "";
     document.getElementById("unit_cost").value = "";
 
     // Set form action (jika perlu)

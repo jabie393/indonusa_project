@@ -241,7 +241,7 @@
                         @endphp
                         @forelse($requestOrder->items as $index => $item)
                             @php
-                                $displayHarga = $item->harga ?? round(optional($item->barang)->harga * 1.3, 2);
+                                $displayHarga = $item->harga ?? round(optional($item->barang)->selling_price * 1.3, 2);
                                 $computedSubtotal = round($displayHarga * $item->quantity * (1 - ($item->diskon_percent ?? 0) / 100), 2);
                                 $ppnAmount = round($computedSubtotal * (($item->ppn_percent ?? 0) / 100), 2);
                                 $total += $computedSubtotal;
@@ -250,10 +250,10 @@
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                 <td class="border px-2 py-1 text-center">
-                                    {{ optional($item->barang)->nama_barang ?? ($item->nama_barang_custom ?? '-') }}
+                                    {{ optional($item->barang)->goods_name ?? ($item->nama_barang_custom ?? '-') }}
                                 </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
-                                <td class="border px-2 py-1 text-center">{{ optional($item->barang)->satuan ?? '-' }}
+                                <td class="border px-2 py-1 text-center">{{ optional($item->barang)->unit ?? '-' }}
                                 </td>
                                 <td class="border px-2 py-1">
                                     <div class="flex justify-between">

@@ -12,12 +12,12 @@ return new class extends Migration {
     {
         Schema::create('goods', function (Blueprint $table) {
             $table->id();
-            $table->enum('tipe_request', ['primary', 'new_stock'])->default('primary');
-            $table->enum('status_barang', ['ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor'])->default('ditinjau');
+            $table->enum('request_type', ['primary', 'new_stock'])->default('primary');
+            $table->enum('goods_status', ['ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor'])->default('ditinjau');
             $table->string('status_listing')->default('listing');
-            $table->string('kode_barang')->unique();
-            $table->string('nama_barang');
-            $table->enum('kategori', [
+            $table->string('goods_code')->unique();
+            $table->string('goods_name');
+            $table->enum('category', [
                 'HANDTOOLS',
                 'ADHESIVE AND SEALANT',
                 'AUTOMOTIVE EQUIPMENT',
@@ -48,15 +48,16 @@ return new class extends Migration {
                 'MISCELLANEOUS',
                 'OTHER CATEGORIES'
             ])->nullable();
-            $table->integer('stok')->default(0);
-            $table->string('satuan');
-            $table->string('lokasi')->nullable();
-            $table->decimal('harga', 15, 2)->default(0);
-            $table->unsignedSmallInteger('diskon_percent')->default(0);
-            $table->text('deskripsi');
-            $table->string('gambar')->nullable();
-            $table->text('catatan')->nullable();
-            $table->text('alasan_pengajuan')->nullable();
+            $table->integer('stock')->default(0);
+            $table->string('unit');
+            $table->string('location')->nullable();
+            $table->decimal('buy_price', 15, 2)->default(0);
+            $table->decimal('selling_price', 15, 2)->default(0);
+            $table->unsignedSmallInteger('discount_percent')->default(0);
+            $table->text('description');
+            $table->string('image')->nullable();
+            $table->text('note')->nullable();
+            $table->text('submission_reason')->nullable();
             $table->string('form')->nullable();
             $table->timestamps();
         });

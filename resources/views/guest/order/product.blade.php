@@ -27,7 +27,7 @@
                       stroke-width="2"
                       d="M9 5l7 7-7 7" />
             </svg>
-            <span class="text-slate-700">{{ $barang->nama_barang ?? 'Detail Produk' }}</span>
+            <span class="text-slate-700">{{ $barang->goods_name ?? 'Detail Produk' }}</span>
         </nav>
     </div>
 
@@ -66,12 +66,12 @@
                 <div class="reveal reveal-left group relative flex aspect-square items-center justify-center overflow-hidden rounded-3xl border border-slate-100 bg-white p-8 shadow-xl">
                     <!-- Badge -->
                     <div class="absolute right-5 top-5 z-10 rounded-full bg-[#0D223A] px-3 py-1.5 text-[10px] font-bold text-white shadow-lg">
-                        {{ $barang->stok > 0 ? 'READY STOCK' : 'PRE-ORDER' }}
+                        {{ $barang->stock > 0 ? 'READY STOCK' : 'PRE-ORDER' }}
                     </div>
 
                     @if (!empty($barang->gambar))
                         <img src="{{ url('files/' . $barang->gambar) }}"
-                             alt="{{ $barang->nama_barang }}"
+                             alt="{{ $barang->goods_name }}"
                              class="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105" />
                     @else
                         <div class="flex flex-col items-center justify-center gap-3 text-slate-200">
@@ -92,11 +92,11 @@
                 <!-- Info Panel -->
                 <div class="reveal reveal-right flex flex-col justify-center">
                     <!-- Category Tag -->
-                    <span class="mb-3 text-[10px] font-black uppercase tracking-widest text-[#225A97]">{{ $barang->kategori ?? 'Uncategorized' }}</span>
+                    <span class="mb-3 text-[10px] font-black uppercase tracking-widest text-[#225A97]">{{ $barang->category ?? 'Uncategorized' }}</span>
 
                     <!-- Product Name -->
                     <h2 class="mb-4 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
-                        {{ $barang->nama_barang }}
+                        {{ $barang->goods_name }}
                     </h2>
 
 
@@ -111,7 +111,7 @@
                     <!-- Action Buttons -->
                     <div class="flex items-center gap-4">
                         <!-- WhatsApp / Pesan Button -->
-                        <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . '. Apakah masih tersedia?') }}"
+                        <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->goods_name . '. Apakah masih tersedia?') }}"
                            target="_blank"
                            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#225A97] px-6 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all duration-300 hover:bg-[#0D223A]">
                             <svg class="h-5 w-5"
@@ -133,10 +133,10 @@
                                    value="{{ $barang->id }}">
                             <input type="hidden"
                                    name="nama"
-                                   value="{{ $barang->nama_barang }}">
+                                   value="{{ $barang->goods_name }}">
                             <input type="hidden"
                                    name="harga"
-                                   value="{{ $barang->harga }}">
+                                   value="{{ $barang->selling_price }}">>
                             <input type="hidden"
                                    name="gambar"
                                    value="{{ $barang->gambar }}">
@@ -182,9 +182,9 @@
                 <div class="reveal reveal-up mb-8 flex items-end justify-between">
                     <div>
                         <p class="mb-1 text-[10px] font-black uppercase tracking-widest text-[#225A97]">PRODUK SERUPA</p>
-                        <h2 class="text-2xl font-extrabold text-slate-900">Kategori {{ $barang->kategori }}</h2>
+                        <h2 class="text-2xl font-extrabold text-slate-900">Kategori {{ $barang->category }}</h2>
                     </div>
-                    <a href="{{ route('order', ['category' => $barang->kategori]) }}"
+                    <a href="{{ route('order', ['category' => $barang->category]) }}"
                        class="flex items-center gap-1 text-sm font-bold text-slate-400 transition-colors hover:text-[#225A97]">
                         Lihat Semua
                         <svg class="h-4 w-4"
@@ -209,7 +209,7 @@
                             <div class="relative aspect-square overflow-hidden bg-slate-50">
                                 @if (!empty($related->gambar))
                                     <img src="{{ url('files/' . $related->gambar) }}"
-                                         alt="{{ $related->nama_barang }}"
+                                         alt="{{ $related->goods_name }}"
                                          class="h-full w-full object-contain p-4 transition-transform duration-700 group-hover:scale-105">
                                 @else
                                     <div class="flex h-full items-center justify-center">
@@ -226,14 +226,14 @@
                                 @endif
                                 <!-- Badge -->
                                 <div class="absolute right-3 top-3 rounded-full bg-[#0D223A] px-3 py-1 text-[10px] font-bold text-white shadow">
-                                    {{ $related->stok > 0 ? 'READY' : 'PRE-ORDER' }}
+                                    {{ $related->stock > 0 ? 'READY' : 'PRE-ORDER' }}
                                 </div>
                             </div>
 
                             <!-- Details -->
                             <div class="flex grow flex-col p-6">
-                                <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-[#225A97]">{{ $related->kategori ?? 'Uncategorized' }}</span>
-                                <h3 class="mb-4 line-clamp-2 text-base font-bold leading-snug text-slate-800">{{ $related->nama_barang }}</h3>
+                                <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-[#225A97]">{{ $related->category ?? 'Uncategorized' }}</span>
+                                <h3 class="mb-4 line-clamp-2 text-base font-bold leading-snug text-slate-800">{{ $related->goods_name }}</h3>
                                 <div class="mt-auto flex items-center justify-between border-t border-slate-50 pt-4">
                                     <!-- Cart Button -->
                                     <form action="{{ route('keranjang.tambah') }}"
@@ -246,7 +246,7 @@
                                                value="{{ $related->id }}">
                                         <input type="hidden"
                                                name="nama"
-                                               value="{{ $related->nama_barang }}">
+                                               value="{{ $related->goods_name }}">
                                         <input type="hidden"
                                                name="gambar"
                                                value="{{ $related->gambar }}">

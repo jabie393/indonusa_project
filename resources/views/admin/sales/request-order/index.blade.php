@@ -109,13 +109,13 @@
                                             continue;
                                         }
 
-                                        $stokGudang = (int) $barang->stok;
+                                        $stokGudang = (int) $barang->stock;
                                         $qtyDibutuhkan = (int) $roItem->quantity;
-                                        $satuan = $barang->satuan ?? '';
+                                        $satuan = $barang->unit ?? '';
 
                                         if ($qtyDibutuhkan > $stokGudang) {
                                             $stokKurangItems[] = [
-                                                'nama' => $barang->nama_barang,
+                                                'nama' => $barang->goods_name,
                                                 'stok' => $stokGudang,
                                                 'qty' => $qtyDibutuhkan,
                                                 'satuan' => $satuan,
@@ -288,10 +288,10 @@
                                                             <div
                                                                 class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
                                                                 <span
-                                                                    class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                                    class="text-gray-700">{{ Str::limit($item->barang->goods_name ?? '-', 28) }}</span>
                                                                 <span class="ml-2 shrink-0 font-bold text-green-600">
                                                                     {{ $item->delivered_quantity }}/{{ $item->quantity }}
-                                                                    {{ $item->barang->satuan ?? '' }}
+                                                                    {{ $item->barang->unit ?? '' }}
                                                                 </span>
                                                             </div>
                                                         @endforeach
@@ -304,11 +304,11 @@
                                                             <div
                                                                 class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
                                                                 <span
-                                                                    class="text-gray-700">{{ Str::limit($item->barang->nama_barang ?? '-', 28) }}</span>
+                                                                    class="text-gray-700">{{ Str::limit($item->barang->goods_name ?? '-', 28) }}</span>
                                                                 <span
                                                                     class="ml-2 shrink-0 font-bold text-orange-500">Sisa
                                                                     {{ $sisa }}
-                                                                    {{ $item->barang->satuan ?? '' }}</span>
+                                                                    {{ $item->barang->unit ?? '' }}</span>
                                                             </div>
                                                         @endforeach
                                                     @endif

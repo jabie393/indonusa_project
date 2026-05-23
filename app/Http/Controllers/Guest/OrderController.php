@@ -9,12 +9,12 @@ class OrderController extends Controller
 {
     public function index(\Illuminate\Http\Request $request)
     {
-        $allCategories = \App\Models\Barang::select('kategori')->distinct()->whereNotNull('kategori')->orderBy('kategori')->pluck('kategori');
+        $allCategories = \App\Models\Barang::select('category')->distinct()->whereNotNull('category')->orderBy('category')->pluck('category');
 
         $query = \App\Models\Barang::query();
 
         if ($request->filled('category')) {
-            $query->where('kategori', $request->category);
+            $query->where('category', $request->category);
         }
 
         $goods = $query->get();

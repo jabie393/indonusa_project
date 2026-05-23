@@ -35,16 +35,16 @@ class WarehouseDashboardController extends Controller
         }
 
         // query dasar untuk barang stok rendah (status 'masuk' + stok < threshold)
-        $baseLowQuery = Barang::where('status_barang', 'masuk')
-            ->where('stok', '<', $threshold);
+        $baseLowQuery = Barang::where('goods_status', 'masuk')
+            ->where('stock', '<', $threshold);
 
         $data = [
-            'totalBarang' => Barang::where('status_barang', 'masuk')->count(),
-            'totalStok' => Barang::where('status_barang', 'masuk')->sum('stok'),
+            'totalBarang' => Barang::where('goods_status', 'masuk')->count(),
+            'totalStok' => Barang::where('goods_status', 'masuk')->sum('stock'),
             // ambil 4 terendah untuk card
-            'lowStockItems' => (clone $baseLowQuery)->orderBy('stok', 'asc')->take(4)->get(),
+            'lowStockItems' => (clone $baseLowQuery)->orderBy('stock', 'asc')->take(4)->get(),
             // semua untuk tabel
-            'allLowStockItems' => (clone $baseLowQuery)->orderBy('stok', 'asc')->get(),
+            'allLowStockItems' => (clone $baseLowQuery)->orderBy('stock', 'asc')->get(),
         ];
 
         // recent inbound: prioritas date range jika ada, kalau tidak ambil semua (atau bisa pakai periode)
@@ -140,12 +140,12 @@ class WarehouseDashboardController extends Controller
         }
 
         // Stock Value Chart (SVC) - top items by stock (hanya status 'masuk')
-        $topItems = Barang::where('status_barang', 'masuk')
-            ->orderByDesc('stok')
+        $topItems = Barang::where('goods_status', 'masuk')
+            ->orderByDesc('stock')
             ->take(8)
             ->get();
-        $svcLabels = $topItems->pluck('nama_barang')->map(fn($v) => $v ?? '-')->toArray();
-        $svcData = $topItems->pluck('stok')->toArray();
+        $svcLabels = $topItems->pluck('goods_name')->map(fn($v) => $v ?? '-')->toArray();
+        $svcData = $topItems->pluck('stock')->toArray();
 
         $data['imc_labels'] = $months;
         $data['imc_masuk'] = $imcMasuk;
@@ -193,12 +193,12 @@ class WarehouseDashboardController extends Controller
             $imcYears = [now()->year];
         }
 
-        $topItems = Barang::where('status_barang', 'masuk')
-            ->orderByDesc('stok')
+        $topItems = Barang::where('goods_status', 'masuk')
+            ->orderByDesc('stock')
             ->take(8)
             ->get();
-        $svcLabels = $topItems->pluck('nama_barang')->map(fn($v) => $v ?? '-')->toArray();
-        $svcData = $topItems->pluck('stok')->toArray();
+        $svcLabels = $topItems->pluck('goods_name')->map(fn($v) => $v ?? '-')->toArray();
+        $svcData = $topItems->pluck('stock')->toArray();
 
         return response()->json([
             'imc_labels' => $months,

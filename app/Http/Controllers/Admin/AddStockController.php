@@ -13,12 +13,12 @@ class AddStockController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('status_barang', 'masuk');
+        $goods = Barang::where('goods_status', 'masuk');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
-                $q->where('nama_barang', 'like', "%{$query}%")
-                    ->orWhere('kode_barang', 'like', "%{$query}%");
+                $q->where('goods_name', 'like', "%{$query}%")
+                    ->orWhere('goods_code', 'like', "%{$query}%");
             });
         }
 
@@ -30,7 +30,7 @@ class AddStockController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'stok' => 'required|integer',
+            'stock' => 'required|integer',
             'unit_cost' => 'required|numeric|min:0',
         ]);
 
@@ -38,23 +38,23 @@ class AddStockController extends Controller
 
         // Copy data baru dengan stok baru dan status_barang 'ditinjau'
         $copyData = $barang->replicate();
-        $copyData->stok = $validated['stok'];
-        $copyData->harga = $validated['unit_cost'];
-        $copyData->status_barang = 'ditinjau';
-        $copyData->tipe_request = 'new_stock'; // Set tipe_request ke new_stock
+        $copyData->stock = $validated['stock'];
+        $copyData->buy_price = $validated['unit_cost'];
+        $copyData->goods_status = 'ditinjau';
+        $copyData->request_type = 'new_stock'; // Set tipe_request ke new_stock
 
         // Simpan id user yang submit ke kolom 'form'
         $copyData->form = Auth::id();
 
         // Generate kode_barang unik
-        $originalKode = $barang->kode_barang;
+        $originalKode = $barang->goods_code;
         $newKode = $originalKode;
         $i = 1;
-        while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
+        while (\App\Models\Barang::where('goods_code', $newKode)->exists()) {
             $newKode = $originalKode . '#' . $i;
             $i++;
         }
-        $copyData->kode_barang = $newKode;
+        $copyData->goods_code = $newKode;
 
         $copyData->save();
 

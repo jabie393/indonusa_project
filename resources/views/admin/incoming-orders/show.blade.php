@@ -13,7 +13,7 @@
                 <ul class="list-disc pl-6">
                     @foreach($order->items as $it)
                         <li>
-                            {{ $it->barang->nama_barang ?? 'Barang ID '.$it->barang_id }}
+                            {{ $it->barang->goods_name ?? $it->barang->nama_barang ?? 'Barang ID '.$it->barang_id }}
                             — qty: {{ $it->quantity }}
                         </li>
                     @endforeach

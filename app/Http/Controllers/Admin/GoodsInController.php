@@ -38,34 +38,35 @@ class GoodsInController extends Controller
 
         $validated = $request->validate([
             'status_listing' => 'required|in:listing,non listing',
-            'kode_barang' => 'required|string|max:255',
-            'nama_barang' => 'required|string|max:255',
-            'kategori' => 'required|in:' . implode(',', Barang::KATEGORI), // Validasi kategori
-            'stok' => 'required|integer',
-            'satuan' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:255',
-            'harga' => 'required|numeric',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'deskripsi' => 'nullable|string',
+            'goods_code' => 'required|string|max:255',
+            'goods_name' => 'required|string|max:255',
+            'category' => 'required|in:' . implode(',', Barang::KATEGORI), // Validasi kategori
+            'stock' => 'required|integer',
+            'unit' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
+            'buy_price' => 'required|numeric',
+            'selling_price' => 'nullable|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable|string',
         ]);
 
         // Set default deskripsi jika tidak diisi
-        if (empty($validated['deskripsi'])) {
-            $validated['deskripsi'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+        if (empty($validated['description'])) {
+            $validated['description'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
         }
 
         // Simpan id user yang submit ke kolom 'form'
         $validated['form'] = Auth::id();
 
-        $validated['status_barang'] = 'ditinjau';
-        $validated['tipe_request'] = 'primary'; // Set tipe_request primary
+        $validated['goods_status'] = 'ditinjau';
+        $validated['request_type'] = 'primary'; // Set tipe_request primary
 
         $barang = Barang::create($validated);
 
-        if ($request->hasFile('gambar')) {
+        if ($request->hasFile('image')) {
             $folder = 'barang/' . $barang->id;
-            $path = $request->file('gambar')->store($folder, 'public');
-            $barang->gambar = $path;
+            $path = $request->file('image')->store($folder, 'public');
+            $barang->image = $path;
             $barang->save();
         }
 

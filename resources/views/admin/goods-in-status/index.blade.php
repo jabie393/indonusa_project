@@ -39,7 +39,7 @@ use App\Models\Barang; ?>
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Satuan</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Lokasi</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Harga</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Harga Beli</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Status Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap no-sort text-center">Action</th>
                     </tr>
@@ -49,17 +49,17 @@ use App\Models\Barang; ?>
                         <tr class="border-b dark:border-gray-700">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->kode_barang }}
+                                {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4 py-3">{{ $barang->nama_barang }}</td>
-                            <td class="px-4 py-3">{{ $barang->kategori }}</td>
-                            <td class="px-4 py-3">{{ $barang->stok }}</td>
-                            <td class="px-4 py-3">{{ $barang->satuan }}</td>
-                            <td class="px-4 py-3">{{ $barang->lokasi }}</td>
+                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
+                            <td class="px-4 py-3">{{ $barang->category }}</td>
+                            <td class="px-4 py-3">{{ $barang->stock }}</td>
+                            <td class="px-4 py-3">{{ $barang->unit }}</td>
+                            <td class="px-4 py-3">{{ $barang->location }}</td>
                             <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
                                 <div class="flex w-full items-center justify-between">
                                     <span>Rp</span>
-                                    <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                    <span>{{ number_format($barang->buy_price, 0, '.', ',') }}</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -69,13 +69,13 @@ use App\Models\Barang; ?>
                                             'ditinjau' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'disetujui' => 'bg-green-100 text-green-800 inset-ring inset-ring-green-600',
                                             'ditolak' => 'bg-red-100 text-red-800 inset-ring inset-ring-red-600',
-                                        ][$barang->status_barang] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                        ][$barang->goods_status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
                                             'ditinjau' => 'Pending',
                                             'disetujui' => 'Approved',
                                             'ditolak' => 'Rejected',
-                                        ][$barang->status_barang] ?? $barang->status_barang;
+                                        ][$barang->goods_status] ?? $barang->goods_status;
                                 @endphp
                                 <div class="flex items-center justify-center gap-2">
                                     <span class="{{ $statusClass }} badge">
@@ -88,18 +88,20 @@ use App\Models\Barang; ?>
                                     <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
                                     <div
                                         class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                        @if ($barang->status_barang == 'ditinjau')
+                                        @if ($barang->goods_status == 'ditinjau')
                                             {{-- Edit barang modal --}}
                                             <button
                                                 class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                                data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                                data-kategori="{{ $barang->kategori }}"
-                                                data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                                data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                                data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
-                                                data-tipe_request="{{ $barang->tipe_request }}"
-                                                data-gambar="{{ $barang->gambar }}">
+                                                data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
+                                                data-kategori="{{ $barang->category }}"
+                                                data-stok="{{ is_numeric($barang->stock) ? $barang->stock : '' }}"
+                                                data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
+                                                data-harga="{{ $barang->buy_price }}"
+                                                data-harga_jual="{{ $barang->selling_price }}"
+                                                data-deskripsi="{{ $barang->description }}"
+                                                data-tipe_request="{{ $barang->request_type }}"
+                                                data-gambar="{{ $barang->image }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -133,11 +135,11 @@ use App\Models\Barang; ?>
                                                         class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
-                                        @elseif($barang->status_barang == 'ditolak')
+                                        @elseif($barang->goods_status == 'ditolak')
                                             {{-- Note modal --}}
                                             <button
                                                 class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                data-catatan="{{ $barang->catatan ?? '' }}">
+                                                data-catatan="{{ $barang->note ?? '' }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -154,13 +156,14 @@ use App\Models\Barang; ?>
                                             <button
                                                 class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                                data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                                data-kategori="{{ $barang->kategori }}"
-                                                data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                                data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                                data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
-                                                data-gambar="{{ $barang->gambar }}"
-                                                data-tipe_request="{{ $barang->tipe_request }}">
+                                                data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
+                                                data-kategori="{{ $barang->category }}"
+                                                data-stok="{{ is_numeric($barang->stock) ? $barang->stock : '' }}"
+                                                data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
+                                                data-harga="{{ $barang->buy_price }}"
+                                                data-harga_jual="{{ $barang->selling_price }}"
+                                                data-deskripsi="{{ $barang->description }}" data-gambar="{{ $barang->image }}"
+                                                data-tipe_request="{{ $barang->request_type }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -214,13 +217,15 @@ use App\Models\Barang; ?>
                                             <button
                                                 class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                                data-kode="{{ $barang->kode_barang }}" data-nama="{{ $barang->nama_barang }}"
-                                                data-kategori="{{ $barang->kategori }}"
-                                                data-stok="{{ is_numeric($barang->stok) ? $barang->stok : '' }}"
-                                                data-satuan="{{ $barang->satuan }}" data-lokasi="{{ $barang->lokasi }}"
-                                                data-harga="{{ $barang->harga }}" data-deskripsi="{{ $barang->deskripsi }}"
-                                                data-tipe_request="{{ $barang->tipe_request }}"
-                                                data-gambar="{{ $barang->gambar }}">
+                                                data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
+                                                data-kategori="{{ $barang->category }}"
+                                                data-stok="{{ is_numeric($barang->stock) ? $barang->stock : '' }}"
+                                                data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
+                                                data-harga="{{ $barang->buy_price }}"
+                                                data-harga_jual="{{ $barang->selling_price }}"
+                                                data-deskripsi="{{ $barang->description }}"
+                                                data-tipe_request="{{ $barang->request_type }}"
+                                                data-gambar="{{ $barang->image }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"

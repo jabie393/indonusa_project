@@ -19,7 +19,9 @@
                     <svg class="h-5 w-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
                         xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                        <path
+                            d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
+                        </path>
                         <path d="M12 22V12"></path>
                         <polyline points="3.29 7 12 12 20.71 7"></polyline>
                         <path d="m7.5 4.27 9 5.15"></path>
@@ -79,9 +81,10 @@
                             <p class="text-sm font-semibold text-slate-700">Upload gambar</p>
                             <p class="text-xs">PNG, JPG hingga 5MB</p>
                         </div>
-                        <img id="image-preview" class="absolute inset-0 h-full w-full object-contain hidden" src="" alt="Preview">
-                        <input accept="image/*" name="gambar" id="gambar" class="absolute inset-0 opacity-0 cursor-pointer"
-                            type="file" />
+                        <img id="image-preview" class="absolute inset-0 h-full w-full object-contain hidden" src=""
+                            alt="Preview">
+                        <input accept="image/*" name="image" id="gambar"
+                            class="absolute inset-0 opacity-0 cursor-pointer" type="file" />
                     </div>
                 </div>
 
@@ -105,11 +108,13 @@
                 <!-- Nama Barang -->
                 <div class="space-y-2">
                     <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="nama_barang">
+                        for="goods_name">
                         <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                            <path
+                                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
+                            </path>
                             <path d="M12 22V12"></path>
                             <polyline points="3.29 7 12 12 20.71 7"></polyline>
                             <path d="m7.5 4.27 9 5.15"></path>
@@ -118,7 +123,7 @@
                     </label>
                     <input
                         class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        id="nama_barang" name="nama_barang" placeholder="cth. Kopi Arabika 250g" type="text" required />
+                        id="goods_name" name="goods_name" placeholder="cth. Kopi Arabika 250g" type="text" required />
                 </div>
 
                 <!-- Deskripsi -->
@@ -131,89 +136,36 @@
                         rows="3"></textarea>
                 </div>
 
+                <!-- Kategori -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="category">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z">
+                            </path>
+                            <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
+                        </svg>
+                        Kategori
+                    </label>
+                    <select
+                        class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                        id="category" name="category" required>
+                        <option disabled selected value="">Pilih kategori</option>
+                        @foreach ($kategoriList as $kategori)
+                            <option value="{{ $kategori }}">{{ $kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Secondary Details Grid -->
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                    <!-- Kategori -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="kategori">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
-                                <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
-                            </svg>
-                            Kategori
-                        </label>
-                        <select
-                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="kategori" name="kategori" required>
-                            <option disabled selected value="">Pilih kategori</option>
-                            @foreach ($kategoriList as $kategori)
-                                <option value="{{ $kategori }}">{{ $kategori }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Stok -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="stok">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
-                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
-                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
-                            </svg>
-                            Stok
-                        </label>
-                        <input
-                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="stok" name="stok" placeholder="0" type="number" required />
-                    </div>
-
-                    <!-- Satuan -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="satuan">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"></path>
-                                <path d="m14.5 12.5 2-2"></path>
-                                <path d="m11.5 9.5 2-2"></path>
-                                <path d="m8.5 6.5 2-2"></path>
-                                <path d="m17.5 15.5 2-2"></path>
-                            </svg>
-                            Satuan
-                        </label>
-                        <input
-                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="satuan" name="satuan" placeholder="pcs, kg, box…" type="text" required />
-                    </div>
-
-                    <!-- Lokasi -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="lokasi">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            Lokasi
-                        </label>
-                        <input
-                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="lokasi" name="lokasi" placeholder="Gudang A — Rak 3" type="text" required />
-                    </div>
-
                     <!-- Kode Barang -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="kode_barang">
+                            for="goods_code">
                             <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -227,7 +179,7 @@
                         <div class="relative">
                             <input
                                 class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-mono focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition pr-10 rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                id="kode_barang" name="kode_barang" type="text" readonly />
+                                id="goods_code" name="goods_code" type="text" readonly />
                             <button aria-label="Generate kode baru" id="refreshKodeBarang"
                                 class="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition hover:bg-blue-100 hover:text-blue-600"
                                 type="button">
@@ -244,25 +196,114 @@
                         <div id="kode-barang-warning-container"></div>
                     </div>
 
-                    <!-- Harga -->
+                    <!-- Stok -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="harga_display">
+                            for="stock">
                             <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                                 xmlns="http://www.w3.org/2000/svg">
-                                <line x1="12" x2="12" y1="2" y2="22"></line>
-                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                <path
+                                    d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z">
+                                </path>
+                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12">
+                                </path>
+                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17">
+                                </path>
                             </svg>
-                            Harga
+                            Stok
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="stock" name="stock" placeholder="0" type="number" required />
+                    </div>
+
+                    <!-- Satuan -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="unit">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z">
+                                </path>
+                                <path d="m14.5 12.5 2-2"></path>
+                                <path d="m11.5 9.5 2-2"></path>
+                                <path d="m8.5 6.5 2-2"></path>
+                                <path d="m17.5 15.5 2-2"></path>
+                            </svg>
+                            Satuan
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="unit" name="unit" placeholder="pcs, kg, box…" type="text" required />
+                    </div>
+
+                    <!-- Lokasi -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="location">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0">
+                                </path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            Lokasi (Opsional)
+                        </label>
+                        <input
+                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            id="location" name="location" placeholder="Gudang A — Rak 3" type="text" />
+                    </div>
+
+
+
+                    <!-- Harga Beli -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="buy_price_display">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                <circle cx="12" cy="12" r="2"></circle>
+                                <path d="M6 12h.01M18 12h.01"></path>
+                            </svg>
+                            Harga Beli
                         </label>
                         <div class="relative">
                             <span
                                 class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
                             <input
                                 class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                id="harga_display" placeholder="0" type="text" required />
-                            <input type="hidden" name="harga" id="harga" />
+                                id="buy_price_display" placeholder="0" type="text" required />
+                            <input type="hidden" name="buy_price" id="buy_price" />
+                        </div>
+                    </div>
+
+                    <!-- Harga Jual -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="selling_price_display">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                <circle cx="12" cy="12" r="2"></circle>
+                                <path d="M6 12h.01M18 12h.01"></path>
+                            </svg>
+                            Harga Jual (Opsional)
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                            <input
+                                class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                id="selling_price_display" placeholder="Otomatis +15%" type="text" />
+                            <input type="hidden" name="selling_price" id="selling_price" />
                         </div>
                     </div>
                 </div>
@@ -270,8 +311,10 @@
         </form>
 
         <!-- Footer -->
-        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
-            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum menyimpan.</p>
+        <footer
+            class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum
+                menyimpan.</p>
             <div class="flex flex-1 justify-end gap-3 sm:flex-none">
                 <form method="dialog">
                     <button
@@ -300,11 +343,11 @@
     const uploadPlaceholder = document.getElementById('upload-placeholder');
 
     if (gambarInput) {
-        gambarInput.addEventListener('change', function() {
+        gambarInput.addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     imagePreview.src = e.target.result;
                     imagePreview.classList.remove('hidden');
                     uploadPlaceholder.classList.add('hidden');
@@ -314,18 +357,39 @@
         });
     }
 
-    // Harga formatting logic
-    const hargaDisplay = document.getElementById('harga_display');
-    const hargaHidden = document.getElementById('harga');
+    // Harga Beli formatting logic
+    const hargaDisplay = document.getElementById('buy_price_display');
+    const hargaHidden = document.getElementById('buy_price');
 
     if (hargaDisplay && hargaHidden) {
-        hargaDisplay.addEventListener('input', function(e) {
+        hargaDisplay.addEventListener('input', function (e) {
             // Remove all non-digits
             let value = this.value.replace(/\D/g, '');
-            
+
             // Update hidden input
             hargaHidden.value = value;
-            
+
+            // Format for display
+            if (value !== '') {
+                this.value = parseInt(value).toLocaleString('en-US');
+            } else {
+                this.value = '';
+            }
+        });
+    }
+
+    // Harga Jual formatting logic
+    const hargaJualDisplay = document.getElementById('selling_price_display');
+    const hargaJualHidden = document.getElementById('selling_price');
+
+    if (hargaJualDisplay && hargaJualHidden) {
+        hargaJualDisplay.addEventListener('input', function (e) {
+            // Remove all non-digits
+            let value = this.value.replace(/\D/g, '');
+
+            // Update hidden input
+            hargaJualHidden.value = value;
+
             // Format for display
             if (value !== '') {
                 this.value = parseInt(value).toLocaleString('en-US');

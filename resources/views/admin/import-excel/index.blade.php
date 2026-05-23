@@ -120,7 +120,8 @@
                                 <th class="min-w-[200px] px-4 py-3">Deskripsi</th>
                                 <th class="min-w-[200px] px-4 py-3">Kategori</th>
                                 <th class="min-w-[150px] px-4 py-3">Stok</th>
-                                <th class="min-w-[200px] px-4 py-3">Harga</th>
+                                <th class="min-w-[200px] px-4 py-3">Harga Beli</th>
+                                <th class="min-w-[200px] px-4 py-3">Harga Jual (Opsional)</th>
                                 <th class="min-w-[150px] px-4 py-3">Satuan</th>
                                 <th class="min-w-[150px] px-4 py-3">Status Listing</th>
                                 <th class="min-w-[150px] px-4 py-3">Gambar</th>
@@ -150,11 +151,13 @@
                                 <td>
                                     <input type="text"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        placeholder="cth. Kopi Arabika 250g"
                                         required>
                                 </td>
                                 <td>
                                     <input type="text" name="" id=""
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        placeholder="cth. Kopi bubuk premium dari biji pilihan"
                                         required>
                                 </td>
                                 <td>
@@ -170,8 +173,10 @@
                                 <td>
                                     <input type="number" name="" id=""
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        placeholder="0"
                                         required>
                                 </td>
+                                <!-- Harga Beli (Index 5) -->
                                 <td>
                                     <div class="relative">
                                         <span
@@ -182,9 +187,21 @@
                                         <input type="hidden" name="" id="" />
                                     </div>
                                 </td>
+                                <!-- Harga Jual (Index 6) -->
+                                <td>
+                                    <div class="relative">
+                                        <span
+                                            class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
+                                        <input
+                                            class="w-full rounded-lg border border-gray-300 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Otomatis +15%" type="text" />
+                                        <input type="hidden" name="" id="" />
+                                    </div>
+                                </td>
                                 <td>
                                     <input type="text" name="" id=""
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        placeholder="pcs, kg, box…"
                                         required>
                                 </td>
                                 <td>

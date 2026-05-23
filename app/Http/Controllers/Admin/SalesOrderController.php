@@ -123,8 +123,8 @@ class SalesOrderController extends Controller
                     $harga = $item->harga ?? 0;
 
                     return [
-                        'nama_barang' => optional($item->barang)->nama_barang ?? '-',
-                        'deskripsi' => optional($item->barang)->deskripsi ?? '-',
+                        'nama_barang' => optional($item->barang)->goods_name ?? '-',
+                        'deskripsi' => optional($item->barang)->description ?? '-',
                         'qty' => $quantity,
                         'harga' => $harga,
                         'subtotal' => round($quantity * $harga, 2),
@@ -137,9 +137,9 @@ class SalesOrderController extends Controller
             $barangData = \App\Models\Barang::find($item->barang_id);
             return [
                 'nama_barang' => $item->nama_barang_custom
-                    ?? optional($barangData)->nama_barang
+                    ?? optional($barangData)->goods_name
                     ?? '-',
-                'deskripsi' => optional($barangData)->deskripsi ?? '-',
+                'deskripsi' => optional($barangData)->description ?? '-',
                 'qty'      => $item->quantity ?? 1,
                 'harga'    => $item->harga ?? 0,
                 'subtotal' => $item->subtotal ?? 0,
@@ -157,9 +157,9 @@ class SalesOrderController extends Controller
 
             return [
                 'nama_barang' => $orderItem?->nama_barang_custom
-                    ?? optional($barang)->nama_barang
+                    ?? optional($barang)->goods_name
                     ?? '-',
-                'deskripsi' => optional($barang)->deskripsi ?? '-',
+                'deskripsi' => optional($barang)->description ?? '-',
                 'qty' => $quantity,
                 'harga' => $harga,
                 'subtotal' => round($quantity * $harga, 2),

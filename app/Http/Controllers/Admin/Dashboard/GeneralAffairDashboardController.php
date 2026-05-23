@@ -130,7 +130,7 @@ class GeneralAffairDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.nama_barang, request_order_items.nama_barang_custom) as item_name'), 
+                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
                 DB::raw('SUM(request_order_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
@@ -148,8 +148,8 @@ class GeneralAffairDashboardController extends Controller
 
 
         // 8. Low Stock
-        $lowStockItems = Barang::where('stok', '<=', $threshold)
-            ->orderBy('stok')
+        $lowStockItems = Barang::where('stock', '<=', $threshold)
+            ->orderBy('stock')
             ->take(5)
             ->get();
 
@@ -202,7 +202,7 @@ class GeneralAffairDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.nama_barang, request_order_items.nama_barang_custom) as item_name'), 
+                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
                 DB::raw('SUM(request_order_items.quantity) as total_qty')
             )
             ->groupBy('item_name')

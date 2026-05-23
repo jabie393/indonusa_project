@@ -32,12 +32,12 @@ document.addEventListener("DOMContentLoaded", function () {
             return null;
         };
 
-        map["kode_barang"] = 0;
-        map["nama_barang"] = 1;
-        map["deskripsi"] = 2;
-        map["kategori"] = 3;
-        map["stok"] = 4;
-        map["harga"] = 5;
+        map["goods_code"] = 0;
+        map["goods_name"] = 1;
+        map["description"] = 2;
+        map["category"] = 3;
+        map["stock"] = 4;
+        map["selling_price"] = 5;
 
         // Mapping sudah hardcode, skip ensure unique
 
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             // columns mapping based on table columns in blade:
-            // 0: kode_barang (readonly input)
+            // 0: goods_code (readonly input)
             const tdKode = newRow.children[0];
             if (tdKode) {
                 let inp = tdKode.querySelector("input");
@@ -224,10 +224,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
                 inp.readOnly = true;
                 const kodeVal =
-                    getVal("kode_barang") ||
+                    getVal("goods_code") ||
                     generateKodeFromCategory(
-                        getVal("kategori"),
-                        getVal("nama_barang"),
+                        getVal("category"),
+                        getVal("goods_name"),
                         rowIndex
                     );
                 inp.value = kodeVal;
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (isKnown) {
                     const hidden = document.createElement("input");
                     hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][kode_barang]`;
+                    hidden.name = `rows[${rowIndex}][goods_code]`;
                     hidden.value = kodeVal;
                     tdKode.appendChild(hidden);
 
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 1: nama_barang
+            // 1: goods_name
             const tdNama = newRow.children[1];
             if (tdNama) {
                 let inp = tdNama.querySelector("input");
@@ -273,13 +273,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     inp.type = "text";
                     tdNama.appendChild(inp);
                 }
-                const v = getVal("nama_barang") || "";
+                const v = getVal("goods_name") || "";
                 inp.value = v;
 
                 if (isKnown) {
                     const hidden = document.createElement("input");
                     hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][nama_barang]`;
+                    hidden.name = `rows[${rowIndex}][goods_name]`;
                     hidden.value = v;
                     tdNama.appendChild(hidden);
                 } else {
@@ -298,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 2: deskripsi
+            // 2: description
             const tdDeskripsi = newRow.children[2];
             if (tdDeskripsi) {
                 let inp = tdDeskripsi.querySelector("input");
@@ -307,13 +307,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     inp.type = "text";
                     tdDeskripsi.appendChild(inp);
                 }
-                const v = getVal("deskripsi") || "";
+                const v = getVal("description") || "";
                 inp.value = v;
 
                 if (isKnown) {
                     const hidden = document.createElement("input");
                     hidden.type = "hidden";
-                    hidden.name = `rows[${rowIndex}][deskripsi]`;
+                    hidden.name = `rows[${rowIndex}][description]`;
                     hidden.value = v;
                     tdDeskripsi.appendChild(hidden);
                 } else {
@@ -330,11 +330,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 3: kategori (select exists in template). Try to set select or fallback hidden
+            // 3: category (select exists in template). Try to set select or fallback hidden
             const tdKategori = newRow.children[3];
             if (tdKategori) {
                 const sel = tdKategori.querySelector("select");
-                const v = (getVal("kategori") || "").toString().trim();
+                const v = (getVal("category") || "").toString().trim();
                 if (sel) {
                     // try match option text or value
                     let matched = false;
@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (isKnown) {
                         const hidden = document.createElement("input");
                         hidden.type = "hidden";
-                        hidden.name = `rows[${rowIndex}][kategori]`;
+                        hidden.name = `rows[${rowIndex}][category]`;
                         hidden.value = sel.value || v;
                         tdKategori.appendChild(hidden);
                     } else {
@@ -381,13 +381,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 4: stok
+            // 4: stock
             const tdStok = newRow.children[4];
             if (tdStok) {
                 const displayInput = tdStok.querySelector('input[type="text"]');
                 const hiddenInput = tdStok.querySelector('input[type="hidden"]');
                 
-                let v = getVal("stok") || "0";
+                let v = getVal("stock") || "0";
                 if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
@@ -403,14 +403,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 if (isKnown) {
                     if (hiddenInput) {
-                        hiddenInput.name = `rows[${rowIndex}][stok]`;
+                        hiddenInput.name = `rows[${rowIndex}][stock]`;
                         hiddenInput.value = v;
                     } else {
                         // Fallback
                         let inp = tdStok.querySelector("input");
                         if (inp) {
                             inp.value = v;
-                            inp.name = `rows[${rowIndex}][stok]`;
+                            inp.name = `rows[${rowIndex}][stock]`;
                         }
                     }
                 } else {
@@ -430,13 +430,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // 5: harga
+            // 5: selling_price
             const tdHarga = newRow.children[5];
             if (tdHarga) {
                 const displayInput = tdHarga.querySelector('input[type="text"]');
                 const hiddenInput = tdHarga.querySelector('input[type="hidden"]');
                 
-                let v = getVal("harga") || "0";
+                let v = getVal("selling_price") || "0";
                 if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
@@ -452,14 +452,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 if (isKnown) {
                     if (hiddenInput) {
-                        hiddenInput.name = `rows[${rowIndex}][harga]`;
+                        hiddenInput.name = `rows[${rowIndex}][selling_price]`;
                         hiddenInput.value = v;
                     } else {
                         // Fallback
                         let inp = tdHarga.querySelector("input");
                         if (inp) {
                             inp.value = v;
-                            inp.name = `rows[${rowIndex}][harga]`;
+                            inp.name = `rows[${rowIndex}][selling_price]`;
                         }
                     }
                 } else {
@@ -917,10 +917,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // find visible nama and kategori in the row
             const namaEl = tr.children[1]?.querySelector(
-                'input, textarea, [name*="[nama_barang]"]'
+                'input, textarea, [name*="[goods_name]"]'
             );
-            const kategoriEl = tr.children[2]?.querySelector(
-                'select, input, [name*="[kategori]"]'
+            const kategoriEl = tr.children[3]?.querySelector(
+                'select, input, [name*="[category]"]'
             );
 
             const nama = namaEl ? (namaEl.value || "").toString().trim() : "";
@@ -945,15 +945,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 kodeVisible.value = newKode;
             }
 
-            // update or create hidden input rows[{i}][kode_barang]
+            // update or create hidden input rows[{i}][goods_code]
             let hiddenKode = tr.children[0]?.querySelector(
-                'input[type="hidden"][name*="[kode_barang]"]'
+                'input[type="hidden"][name*="[goods_code]"]'
             );
             if (!hiddenKode) {
                 hiddenKode = document.createElement("input");
                 hiddenKode.type = "hidden";
-                // try to reuse rowIndex in name; if existing rows used different naming fallback to generic rows[][kode_barang]
-                hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
+                // try to reuse rowIndex in name; if existing rows used different naming fallback to generic rows[][goods_code]
+                hiddenKode.name = `rows[${rowIndex}][goods_code]`;
                 tr.children[0].appendChild(hiddenKode);
             }
             hiddenKode.value = newKode;
@@ -988,22 +988,22 @@ document.addEventListener("DOMContentLoaded", function () {
             // Map column index to field name
             switch (colIndex) {
                 case 1:
-                    fieldName = "nama_barang";
+                    fieldName = "goods_name";
                     break;
                 case 2:
-                    fieldName = "deskripsi";
+                    fieldName = "description";
                     break;
                 case 3:
-                    fieldName = "kategori";
+                    fieldName = "category";
                     break;
                 case 4:
-                    fieldName = "stok";
+                    fieldName = "stock";
                     break;
                 case 5:
-                    fieldName = "harga";
+                    fieldName = "selling_price";
                     break;
                 default:
-                    return; // skip kode_barang (0), aksi (6)
+                    return; // skip goods_code (0), action (6)
             }
 
             const value = (inp.value || "").toString().trim();
@@ -1027,10 +1027,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             hidden.value = value;
 
-            // Special handling for kategori change (to update kode_barang)
-            if (fieldName === "kategori") {
+            // Special handling for category change (to update goods_code)
+            if (fieldName === "category") {
                 const namaEl = tr.children[1]?.querySelector(
-                    'input, textarea, [name*="[nama_barang]"]'
+                    'input, textarea, [name*="[goods_name]"]'
                 );
                 const nama = namaEl
                     ? (namaEl.value || "").toString().trim()
@@ -1045,12 +1045,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // update hidden kode
                 let hiddenKode = tr.children[0]?.querySelector(
-                    'input[type="hidden"][name*="[kode_barang]"]'
+                    'input[type="hidden"][name*="[goods_code]"]'
                 );
                 if (!hiddenKode) {
                     hiddenKode = document.createElement("input");
                     hiddenKode.type = "hidden";
-                    hiddenKode.name = `rows[${rowIndex}][kode_barang]`;
+                    hiddenKode.name = `rows[${rowIndex}][goods_code]`;
                     tr.children[0].appendChild(hiddenKode);
                 }
                 hiddenKode.value = newKode;

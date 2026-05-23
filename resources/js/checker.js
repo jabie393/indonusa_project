@@ -220,17 +220,17 @@ function generateKodeBarang(kategori, kodeBarangElement) {
 function validateKodeBarang(kodeBarangElement) {
     const kodeBarang = kodeBarangElement.value;
     const warningId =
-        kodeBarangElement.id === "kode_barang"
+        kodeBarangElement.id === "goods_code"
             ? "kode-barang-warning"
             : "edit-kode-barang-warning";
 
     // Tentukan container untuk warning
     let warningContainerId = null;
-    if (kodeBarangElement.id === "kode_barang") {
+    if (kodeBarangElement.id === "goods_code") {
         // Modal tambah barang
         warningContainerId = "kode-barang-warning-container";
     } else if (
-        kodeBarangElement.id === "edit_kode_barang" &&
+        kodeBarangElement.id === "edit_goods_code" &&
         kodeBarangElement.closest("#editBarangModalPrimary")
     ) {
         // Modal edit primary
@@ -239,9 +239,9 @@ function validateKodeBarang(kodeBarangElement) {
     // Untuk edit modal biasa, tetap null (gunakan cara lama)
 
     const submitButton =
-        kodeBarangElement.id === "kode_barang"
+        kodeBarangElement.id === "goods_code"
             ? document.querySelector('#tambahBarang button[type="submit"]')
-            : kodeBarangElement.id === "edit_kode_barang" &&
+            : kodeBarangElement.id === "edit_goods_code" &&
               kodeBarangElement.closest("#editBarangModalPrimary")
             ? document.querySelector(
                   '#editBarangModalPrimary button[type="submit"]'
@@ -255,7 +255,7 @@ function validateKodeBarang(kodeBarangElement) {
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": window.CSRF_TOKEN,
         },
-        body: JSON.stringify({ kode_barang: kodeBarang }),
+        body: JSON.stringify({ goods_code: kodeBarang }),
     })
         .then((response) => response.json())
         .then((data) => {
@@ -293,8 +293,8 @@ function validateKodeBarang(kodeBarangElement) {
 
 // Event listener untuk kategori
 document.addEventListener("DOMContentLoaded", function () {
-    const kategoriElement = document.getElementById("kategori");
-    const kodeBarangElement = document.getElementById("kode_barang");
+    const kategoriElement = document.getElementById("category");
+    const kodeBarangElement = document.getElementById("goods_code");
 
     if (kategoriElement && kodeBarangElement) {
         kategoriElement.addEventListener("change", function () {
@@ -307,8 +307,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const editButtons = document.querySelectorAll(".edit-barang-btn");
-    const editKategoriElement = document.getElementById("edit_kategori");
-    const editKodeBarangElement = document.getElementById("edit_kode_barang");
+    const editKategoriElement = document.getElementById("edit_category");
+    const editKodeBarangElement = document.getElementById("edit_goods_code");
 
     editButtons.forEach((button) => {
         button.addEventListener("click", function () {
@@ -365,7 +365,7 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
     if (!kategori) {
         // show inline warning instead of alert
         const warningId =
-            kategoriElementId === "kategori"
+            kategoriElementId === "category"
                 ? "kategori-warning"
                 : "edit-kategori-warning";
         // remove previous warning if exists
@@ -384,7 +384,7 @@ function handleRefreshKodeBarang(kategoriElementId, kodeBarangElementId) {
 
     // Hapus warning jika ada
     const warningId =
-        kodeBarangElementId === "kode_barang"
+        kodeBarangElementId === "goods_code"
             ? "kode-barang-warning"
             : "edit-kode-barang-warning";
     const warning = document.getElementById(warningId);
@@ -402,13 +402,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const refreshButtons = [
         {
             buttonId: "refreshKodeBarang",
-            kategoriId: "kategori",
-            kodeBarangId: "kode_barang",
+            kategoriId: "category",
+            kodeBarangId: "goods_code",
         },
         {
             buttonId: "editRefreshKodeBarang",
-            kategoriId: "edit_kategori",
-            kodeBarangId: "edit_kode_barang",
+            kategoriId: "edit_category",
+            kodeBarangId: "edit_goods_code",
         },
     ];
 
@@ -425,7 +425,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Validasi kode barang untuk modal #tambahBarang
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("input", function (e) {
-        if (e.target.id === "kode_barang") {
+        if (e.target.id === "goods_code") {
             validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
         }
     });
@@ -434,7 +434,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Validasi kode barang untuk modal #editBarangModal dan #editBarangModalPrimary
 document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("input", function (e) {
-        if (e.target.id === "edit_kode_barang") {
+        if (e.target.id === "edit_goods_code") {
             validateKodeBarang(e.target); // Panggil fungsi validateKodeBarang
         }
     });

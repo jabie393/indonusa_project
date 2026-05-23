@@ -38,7 +38,7 @@
             @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
                 @php
                     $currentStatus = session('warehouse_filter_status', 'masuk');
-                    $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
+                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'ditinjau')->count();
                     $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
                 @endphp
                 <div class="flex items-center space-x-2">
@@ -90,7 +90,7 @@
                         <th scope="col" class="text-nowrap px-4 py-3">Satuan</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Lokasi</th>
                         @if (Auth::user() && Auth::user()->role === 'General Affair')
-                            <th scope="col" class="text-nowrap px-4 py-3">Harga</th>
+                            <th scope="col" class="text-nowrap px-4 py-3">Harga Jual</th>
                         @endif
 
                         @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'General Affair']))
@@ -102,20 +102,19 @@
                     @forelse ($goods as $barang)
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row"
-                                class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->kode_barang }}
+                            <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
+                                {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4 py-3">{{ $barang->nama_barang }}</td>
-                            <td class="px-4 py-3">{{ $barang->kategori }}</td>
-                            <td class="px-4 py-3">{{ $barang->stok }}</td>
-                            <td class="px-4 py-3">{{ $barang->satuan }}</td>
-                            <td class="px-4 py-3">{{ $barang->lokasi }}</td>
+                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
+                            <td class="px-4 py-3">{{ $barang->category }}</td>
+                            <td class="px-4 py-3">{{ $barang->stock }}</td>
+                            <td class="px-4 py-3">{{ $barang->unit }}</td>
+                            <td class="px-4 py-3">{{ $barang->location }}</td>
                             @if (Auth::user() && Auth::user()->role === 'General Affair')
                                 <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
                                     <div class="flex w-full items-center justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($barang->harga, 0, '.', ',') }}</span>
+                                        <span>{{ number_format($barang->selling_price, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             @endif
@@ -131,22 +130,17 @@
                                             @if (Auth::user()->role === 'Warehouse')
                                                 <button type="button"
                                                     class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
-                                                    data-id="{{ $barang->id }}"
-                                                    data-status="{{ $barang->status_listing }}"
-                                                    data-kode="{{ $barang->kode_barang }}"
-                                                    data-nama="{{ $barang->nama_barang }}"
-                                                    data-kategori="{{ $barang->kategori }}"
-                                                    data-stok="{{ $barang->stok }}"
-                                                    data-satuan="{{ $barang->satuan }}"
-                                                    data-lokasi="{{ $barang->lokasi }}"
-                                                    data-harga="{{ $barang->harga }}"
-                                                    data-deskripsi="{{ $barang->deskripsi ?? '' }}"
-                                                    data-gambar="{{ $barang->gambar ?? '' }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" class="lucide lucide-edit-2 h-4 w-4"
-                                                        aria-hidden="true">
+                                                    data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
+                                                    data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
+                                                    data-kategori="{{ $barang->category }}" data-stok="{{ $barang->stock }}"
+                                                    data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
+                                                    data-harga="{{ $barang->selling_price }}"
+                                                    data-deskripsi="{{ $barang->description ?? '' }}"
+                                                    data-gambar="{{ $barang->image ?? '' }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-edit-2 h-4 w-4" aria-hidden="true">
                                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z">
                                                         </path>
                                                     </svg>
@@ -154,20 +148,18 @@
                                                         class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                                 </button>
 
-                                                @if ($barang->stok < 1)
-                                                    <form action="{{ route('warehouse.destroy', $barang->id) }}"
-                                                        method="POST" style="display:inline;">
+                                                @if ($barang->stock < 1)
+                                                    <form action="{{ route('warehouse.destroy', $barang->id) }}" method="POST"
+                                                        style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button"
                                                             class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                             onclick="confirmDelete(() => this.closest('form').submit())">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                height="24" viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2"
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-trash2 lucide-trash-2 h-4 w-4"
-                                                                aria-hidden="true">
+                                                                class="lucide lucide-trash2 lucide-trash-2 h-4 w-4" aria-hidden="true">
                                                                 <path d="M10 11v6"></path>
                                                                 <path d="M14 11v6"></path>
                                                                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6">
@@ -183,13 +175,12 @@
                                             @elseif (Auth::user()->role === 'General Affair')
                                                 <button
                                                     class="view-history-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                    data-id="{{ $barang->id }}"
-                                                    data-nama="{{ $barang->nama_barang }}"
-                                                    data-kode="{{ $barang->kode_barang }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" class="lucide lucide-history h-4 w-4">
+                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
+                                                    data-kode="{{ $barang->goods_code }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-history h-4 w-4">
                                                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
                                                         </path>
                                                         <path d="M3 3v5h5"></path>
@@ -227,8 +218,7 @@
                     <select name="perPage" onchange="this.form.submit()"
                         class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}"
-                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
                             </option>
                         @endforeach
                     </select>

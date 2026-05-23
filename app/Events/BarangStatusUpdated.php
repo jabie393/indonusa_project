@@ -24,10 +24,10 @@ class BarangStatusUpdated implements ShouldBroadcastNow, ShouldDispatchAfterComm
     public function __construct(Barang $barang)
     {
         $this->barangId = $barang->id;
-        $this->tipeRequest = $barang->tipe_request;
+        $this->tipeRequest = $barang->request_type;
 
         // Count pending items
-        $this->barangCount = Barang::where('status_barang', 'ditinjau')->count();
+        $this->barangCount = Barang::where('goods_status', 'ditinjau')->count();
     }
 
     /**

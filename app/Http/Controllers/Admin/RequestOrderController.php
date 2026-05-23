@@ -100,9 +100,9 @@ class RequestOrderController extends Controller
 
     public function create()
     {
-        $goods = Barang::where('tipe_request', 'primary')
-            ->where('stok', '>', 0)
-            ->orderBy('nama_barang')
+        $goods = Barang::where('request_type', 'primary')
+            ->where('stock', '>', 0)
+            ->orderBy('goods_name')
             ->get();
 
         $customers = Customer::where('status', 'active')
@@ -110,9 +110,9 @@ class RequestOrderController extends Controller
             ->get();
 
         $categories = Barang::distinct()
-            ->whereNotNull('kategori')
-            ->where('kategori', '!=', '')
-            ->pluck('kategori')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->pluck('category')
             ->sort()
             ->values();
 
@@ -169,7 +169,7 @@ class RequestOrderController extends Controller
                 continue;
             }
 
-            $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
+            $baseHarga = optional(Barang::find($barangId))->selling_price ?? 0;
             $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
             $hargaSatuan = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHargaSatuan;
@@ -409,16 +409,16 @@ class RequestOrderController extends Controller
 
         $requestOrder->loadMissing('customPenawaran', 'items.barang');
 
-        $goods = Barang::where('tipe_request', 'primary')
-            ->where('stok', '>', 0)
-            ->orderBy('nama_barang')
+        $goods = Barang::where('request_type', 'primary')
+            ->where('stock', '>', 0)
+            ->orderBy('goods_name')
             ->get();
 
         $customers = Customer::where('status', 'active')
             ->orderBy('nama_customer')
             ->get();
 
-        $categories = Barang::distinct()->whereNotNull('kategori')->where('kategori', '!=', '')->pluck('kategori')->sort()->values();
+        $categories = Barang::distinct()->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
 
         $salesUsers = \App\Models\User::where('role', 'Sales')
             ->orderBy('name')
@@ -524,7 +524,7 @@ class RequestOrderController extends Controller
                     ? (float) $validated['harga'][$i]
                     : 0;
             } else {
-                $baseHarga = optional(Barang::find($barangId))->harga ?? 0;
+                $baseHarga = optional(Barang::find($barangId))->selling_price ?? 0;
                 $computedHarga = round($baseHarga * 1.3, 2);
                 $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== ''
                     ? (float) $validated['harga'][$i]

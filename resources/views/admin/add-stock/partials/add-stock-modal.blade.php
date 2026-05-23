@@ -82,39 +82,39 @@
                     <div class="space-y-5">
                         <div class="space-y-2">
                             <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Nama Barang</label>
-                            <div class="text-lg font-bold text-slate-800" id="nama_barang">-</div>
+                            <div class="text-lg font-bold text-slate-800" id="goods_name">-</div>
                         </div>
 
                         <div class="space-y-2">
                             <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Deskripsi</label>
-                            <div class="min-h-[60px] text-sm leading-relaxed text-slate-600 italic" id="deskripsi">-</div>
+                            <div class="min-h-[60px] text-sm leading-relaxed text-slate-600 italic" id="description">-</div>
                         </div>
 
                         <!-- Detail Grid -->
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kategori</label>
-                                <p class="text-sm font-medium text-slate-700" id="kategori">-</p>
+                                <p class="text-sm font-medium text-slate-700" id="category">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Stok Saat Ini</label>
-                                <p class="text-sm font-bold text-blue-600" id="current_stok">-</p>
+                                <p class="text-sm font-bold text-blue-600" id="current_stock">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Satuan</label>
-                                <p class="text-sm font-medium text-slate-700" id="satuan">-</p>
+                                <p class="text-sm font-medium text-slate-700" id="unit">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Lokasi</label>
-                                <p class="text-sm font-medium text-slate-700" id="lokasi">-</p>
+                                <p class="text-sm font-medium text-slate-700" id="location">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kode Barang</label>
-                                <p class="text-sm font-mono font-bold text-slate-800" id="kode_barang">-</p>
+                                <p class="text-sm font-mono font-bold text-slate-800" id="goods_code">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
                                 <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Harga Beli</label>
-                                <p class="text-sm font-medium text-slate-700" id="harga">-</p>
+                                <p class="text-sm font-medium text-slate-700" id="buy_price">-</p>
                             </div>
                         </div>
                     </div>
@@ -140,8 +140,8 @@
                                 <input type="hidden" name="id" id="id">
                                 
                                 <div class="space-y-2">
-                                    <label for="stok" class="text-xs font-semibold text-slate-300">Stok Baru</label>
-                                    <input type="number" name="stok" id="stok"
+                                    <label for="stock" class="text-xs font-semibold text-slate-300">Stok Baru</label>
+                                    <input type="number" name="stock" id="stock"
                                         class="w-full rounded-xl border-0 bg-white/10 px-4 py-2.5 text-sm text-white ring-1 ring-white/20 focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                                         required min="0" placeholder="0">
                                 </div>
@@ -191,7 +191,8 @@
 
         if (displayInput && hiddenInput) {
             const formatValue = (val) => {
-                let value = val.toString().replace(/\D/g, '');
+                let cleanVal = val.toString().split('.')[0];
+                let value = cleanVal.replace(/\D/g, '');
                 return value ? parseInt(value).toLocaleString('en-US') : '';
             };
 

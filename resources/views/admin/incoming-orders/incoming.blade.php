@@ -23,7 +23,7 @@
                                 <button data-id="{{ $order->id }}" data-order-number="{{ $order->order_number }}" data-status="{{ $order->status }}" data-reason="{{ $order->reason }}"
                                     data-items='@json(
                                         $order->items->map(function ($it) {
-                                            return ['kode' => optional($it->barang)->kode_barang ?? null, 'nama' => optional($it->barang)->nama_barang ?? "Barang ID $it->barang_id", 'quantity' => $it->quantity];
+                                            return ['kode' => optional($it->barang)->goods_code ?? null, 'nama' => optional($it->barang)->goods_name ?? "Barang ID $it->barang_id", 'quantity' => $it->quantity];
                                         }))' class="open-order-detail cursor-pointer rounded bg-blue-500 px-3 py-1 text-white">Detail</button>
                                 <form action="{{ route('orders.approve', $order->id) }}" method="POST" class="inline-block">
                                     @csrf

@@ -19,7 +19,7 @@ class ImportExcelController extends Controller
         $goods = Barang::all();
         $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
 
-        $existingCodes = Barang::pluck('kode_barang')->toArray();
+        $existingCodes = Barang::pluck('goods_code')->toArray();
 
         return view('admin.import-excel.index', compact('goods', 'kategoriList', 'existingCodes'));
     }
@@ -111,38 +111,53 @@ class ImportExcelController extends Controller
                 // Gunakan withoutEvents agar tidak nyepam notifikasi per barang
                 Barang::withoutEvents(function () use ($formRows, $request, &$created, &$lastBarang) {
                     foreach ($formRows as $i => $r) {
-                        $kode = $r['kode_barang'] ?? null;
+                        $kode = $r['goods_code'] ?? null;
                         if (empty($kode)) {
                             $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
                         }
 
-                        $hargaRaw = $r['harga'] ?? null;
-                        if ($hargaRaw !== null && $hargaRaw !== '') {
-                            $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
+                        $hargaBeliRaw = $r['buy_price'] ?? null;
+                        if ($hargaBeliRaw !== null && $hargaBeliRaw !== '') {
+                            $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaBeliRaw);
                             $clean = str_replace(',', '.', $clean);
-                            $harga = floatval($clean);
+                            $hargaBeli = floatval($clean);
                         } else {
-                            $harga = 0;
+                            $hargaBeli = 0;
                         }
 
-                        $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
+                        $hargaJualRaw = $r['selling_price'] ?? null;
+                        if ($hargaJualRaw !== null && $hargaJualRaw !== '') {
+                            $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaJualRaw);
+                            $clean = str_replace(',', '.', $clean);
+                            $hargaJual = floatval($clean);
+                        } else {
+                            $hargaJual = 0;
+                        }
+
+                        // Auto-markup +15% jika kosong/0
+                        if ($hargaJual <= 0) {
+                            $hargaJual = round($hargaBeli * 1.15, 2);
+                        }
+
+                        $stok = isset($r['stock']) ? (int)$r['stock'] : 0;
 
                         if ($stok <= 0) {
                             continue;
                         }
 
                         $payload = [
-                            'tipe_request' => 'primary',
-                            'status_barang' => 'ditinjau',
+                            'request_type' => 'primary',
+                            'goods_status' => 'ditinjau',
                             'status_listing' => $r['status_listing'] ?? 'listing',
-                            'kode_barang' => $kode,
-                            'nama_barang' => $r['nama_barang'] ?? 'Unnamed',
-                            'kategori' => $r['kategori'] ?? null,
-                            'stok' => $stok,
-                            'satuan' => $r['satuan'] ?? 'pcs',
-                            'harga' => $harga,
-                            'deskripsi' => $r['deskripsi'] ?? 'Deskripsi otomatis',
-                            'gambar' => $r['gambar'] ?? null,
+                            'goods_code' => $kode,
+                            'goods_name' => $r['goods_name'] ?? 'Unnamed',
+                            'category' => $r['category'] ?? null,
+                            'stock' => $stok,
+                            'unit' => $r['unit'] ?? 'pcs',
+                            'buy_price' => $hargaBeli,
+                            'selling_price' => $hargaJual,
+                            'description' => $r['description'] ?? 'Deskripsi otomatis',
+                            'image' => $r['image'] ?? null,
                             'form' => Auth::id(),
                         ];
 
@@ -161,7 +176,7 @@ class ImportExcelController extends Controller
                                 }
                             }
                             if (!empty($savedPaths)) {
-                                $barang->gambar = $savedPaths[0];
+                                $barang->image = $savedPaths[0];
                                 $barang->save();
                             }
                         } catch (\Throwable $ex) {
@@ -218,7 +233,7 @@ class ImportExcelController extends Controller
         }
 
         $headers = array_map(function($h){ return is_null($h) ? '' : trim((string)$h); }, $sheet[0]);
-        $mapping = $request->input('mapping'); // contoh: ['nama_barang' => 1, 'kategori' => 0, ...]
+        $mapping = $request->input('mapping'); // contoh: ['goods_name' => 1, 'category' => 0, ...]
 
         $created = 0;
         $errors = [];
@@ -229,7 +244,7 @@ class ImportExcelController extends Controller
                 $row = $sheet[$i];
 
                 $data = [];
-                $fields = ['kategori', 'nama_barang', 'deskripsi', 'stok', 'satuan', 'harga', 'gambar', 'status_listing'];
+                $fields = ['category', 'goods_name', 'description', 'stock', 'unit', 'buy_price', 'selling_price', 'image', 'status_listing'];
 
                 foreach ($fields as $field) {
                     if (isset($mapping[$field]) && $mapping[$field] !== '') {
@@ -240,21 +255,34 @@ class ImportExcelController extends Controller
                     }
                 }
 
-                $kode = $request->input('mapping.kode_barang') !== null ? ($row[(int)$request->input('mapping.kode_barang')] ?? null) : null;
+                $kode = $request->input('mapping.goods_code') !== null ? ($row[(int)$request->input('mapping.goods_code')] ?? null) : null;
                 if (empty($kode)) {
                     $kode = 'IMP-' . str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
                 }
 
-                $hargaRaw = $data['harga'] ?? null;
-                if ($hargaRaw !== null) {
-                    $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaRaw);
+                $hargaBeliRaw = $data['buy_price'] ?? null;
+                if ($hargaBeliRaw !== null) {
+                    $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaBeliRaw);
                     $clean = str_replace(',', '.', $clean);
-                    $harga = floatval($clean);
+                    $hargaBeli = floatval($clean);
                 } else {
-                    $harga = 0;
+                    $hargaBeli = 0;
                 }
 
-                $stok = isset($data['stok']) ? (int)$data['stok'] : 0;
+                $hargaJualRaw = $data['selling_price'] ?? null;
+                if ($hargaJualRaw !== null && $hargaJualRaw !== '') {
+                    $clean = preg_replace('/[^\d\.,-]/', '', (string)$hargaJualRaw);
+                    $clean = str_replace(',', '.', $clean);
+                    $hargaJual = floatval($clean);
+                } else {
+                    $hargaJual = 0;
+                }
+
+                if ($hargaJual <= 0) {
+                    $hargaJual = round($hargaBeli * 1.15, 2);
+                }
+
+                $stok = isset($data['stock']) ? (int)$data['stock'] : 0;
 
                 // Lewati jika stok adalah 0 atau kurang
                 if ($stok <= 0) {
@@ -262,17 +290,18 @@ class ImportExcelController extends Controller
                 }
 
                 $payload = [
-                    'tipe_request' => 'primary',
-                    'status_barang' => 'ditinjau',
+                    'request_type' => 'primary',
+                    'goods_status' => 'ditinjau',
                     'status_listing' => $data['status_listing'] ?? 'listing',
-                    'kode_barang' => $kode,
-                    'nama_barang' => $data['nama_barang'] ?? 'Unnamed',
-                    'kategori' => $data['kategori'] ?? null,
-                    'stok' => $stok,
-                    'satuan' => $data['satuan'] ?? 'pcs',
-                    'harga' => $harga,
-                    'deskripsi' => $data['deskripsi'] ?? 'Deskripsi otomatis',
-                    'gambar' => $data['gambar'] ?? null,
+                    'goods_code' => $kode,
+                    'goods_name' => $data['goods_name'] ?? 'Unnamed',
+                    'category' => $data['category'] ?? null,
+                    'stock' => $stok,
+                    'unit' => $data['unit'] ?? 'pcs',
+                    'buy_price' => $hargaBeli,
+                    'selling_price' => $hargaJual,
+                    'description' => $data['description'] ?? 'Deskripsi otomatis',
+                    'image' => $data['image'] ?? null,
                     'form' => Auth::id(),
                 ];
 
@@ -292,7 +321,7 @@ class ImportExcelController extends Controller
                             }
                         }
                         if (!empty($savedPaths)) {
-                            $barang->gambar = $savedPaths[0];
+                            $barang->image = $savedPaths[0];
                             $barang->save();
                         }
                     } catch (\Throwable $ex) {

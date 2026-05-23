@@ -13,15 +13,15 @@ class GoodsInStatusController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::whereIn('status_barang', ['ditinjau', 'ditolak'])
-            ->orderByRaw("FIELD(status_barang, 'ditolak', 'ditinjau')")
+        $goods = Barang::whereIn('goods_status', ['ditinjau', 'ditolak'])
+            ->orderByRaw("FIELD(goods_status, 'ditolak', 'ditinjau')")
             ->latest();
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
-                $q->where('nama_barang', 'like', "%{$query}%")
-                    ->orWhere('kode_barang', 'like', "%{$query}%")
-                    ->orWhere('kategori', 'like', "%{$query}%");
+                $q->where('goods_name', 'like', "%{$query}%")
+                    ->orWhere('goods_code', 'like', "%{$query}%")
+                    ->orWhere('category', 'like', "%{$query}%");
             });
         }
         $goods = $goods->paginate($perPage)->appends($request->except('page'));
@@ -40,55 +40,57 @@ class GoodsInStatusController extends Controller
     {
         $barang = Barang::findOrFail($id);
 
-        if ($request->has('stok') && !$request->has('nama_barang')) {
+        if ($request->has('stock') && !$request->has('goods_name')) {
             // update stok & harga (untuk request baru/penambahan stok)
             $request->validate([
-                'stok' => 'required|integer',
-                'harga' => 'required|numeric|min:0',
+                'stock' => 'required|integer',
+                'buy_price' => 'required|numeric|min:0',
             ]);
-            $barang->stok = $request->stok;
-            $barang->harga = $request->harga; // Simpan harga beli baru
-            $barang->status_barang = 'ditinjau'; // ubah status_barang
-            $barang->catatan = null; // kosongkan kolom catatan
+            $barang->stock = $request->stock;
+            $barang->buy_price = $request->buy_price; // Simpan harga beli baru
+            $barang->goods_status = 'ditinjau'; // ubah status_barang
+            $barang->note = null; // kosongkan kolom catatan
             $barang->save();
         } else {
             // update full barang
             $request->validate([
                 'status_listing' => 'required|string',
-                'kode_barang' => 'required|string|max:255',
-                'nama_barang' => 'required|string|max:255',
-                'kategori' => 'required|in:' . implode(',', Barang::KATEGORI),
-                'stok' => 'required|integer',
-                'satuan' => 'required|string|max:255',
-                'lokasi' => 'required|string|max:255',
-                'harga' => 'required|numeric',
-                'deskripsi' => 'nullable|string',
-                'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'goods_code' => 'required|string|max:255',
+                'goods_name' => 'required|string|max:255',
+                'category' => 'required|in:' . implode(',', Barang::KATEGORI),
+                'stock' => 'required|integer',
+                'unit' => 'required|string|max:255',
+                'location' => 'nullable|string|max:255',
+                'buy_price' => 'required|numeric',
+                'selling_price' => 'nullable|numeric',
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
             $data = $request->only([
                 'status_listing',
-                'kode_barang',
-                'nama_barang',
-                'kategori',
-                'stok',
-                'satuan',
-                'lokasi',
-                'harga',
-                'deskripsi'
+                'goods_code',
+                'goods_name',
+                'category',
+                'stock',
+                'unit',
+                'location',
+                'buy_price',
+                'selling_price',
+                'description'
             ]);
 
-            $data['status_barang'] = 'ditinjau'; // ubah status_barang
-            $data['catatan'] = null; // kosongkan kolom catatan
+            $data['goods_status'] = 'ditinjau'; // ubah status_barang
+            $data['note'] = null; // kosongkan kolom catatan
 
-            $oldGambar = $barang->gambar;
+            $oldGambar = $barang->image;
 
             $barang->update($data);
 
-            if ($request->hasFile('gambar')) {
+            if ($request->hasFile('image')) {
                 $folder = 'barang/' . $barang->id;
-                $path = $request->file('gambar')->store($folder, 'public');
-                $barang->gambar = $path;
+                $path = $request->file('image')->store($folder, 'public');
+                $barang->image = $path;
                 $barang->save();
 
                 // Hapus gambar lama jika ada

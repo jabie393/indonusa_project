@@ -14,15 +14,15 @@ class SupplyOrdersController extends Controller
     {
         $perPage = $request->input('perPage', 10); // Default to 10
         $query = $request->input('search');
-        $goods = Barang::where('status_barang', 'ditinjau');
+        $goods = Barang::where('goods_status', 'ditinjau');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
-                $q->where('nama_barang', 'like', "%{$query}%")
-                    ->orWhere('kode_barang', 'like', "%{$query}%")
-                    ->orWhere('lokasi', 'like', "%{$query}%")
-                    ->orWhere('status_barang', 'like', "%{$query}%")
-                    ->orWhere('kategori', 'like', "%{$query}%");
+                $q->where('goods_name', 'like', "%{$query}%")
+                    ->orWhere('goods_code', 'like', "%{$query}%")
+                    ->orWhere('location', 'like', "%{$query}%")
+                    ->orWhere('goods_status', 'like', "%{$query}%")
+                    ->orWhere('category', 'like', "%{$query}%");
             });
         }
 
@@ -43,12 +43,11 @@ class SupplyOrdersController extends Controller
         return redirect()->back()->withErrors('Invalid action specified.');
     }
 
-    // Reject barang dengan alasan (catatan)
     public function reject(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
-        $barang->catatan = $request->input('reason') ?? $request->input('catatan');
-        $barang->status_barang = 'ditolak';
+        $barang->note = $request->input('reason') ?? $request->input('catatan');
+        $barang->goods_status = 'ditolak';
         $barang->save();
 
         if ($request->ajax()) {
@@ -83,8 +82,8 @@ class SupplyOrdersController extends Controller
         }
 
         Barang::whereIn('id', $ids)->update([
-            'status_barang' => 'ditolak',
-            'catatan' => $catatan
+            'goods_status' => 'ditolak',
+            'note' => $catatan
         ]);
 
         return response()->json(['success' => true]);
@@ -94,8 +93,8 @@ class SupplyOrdersController extends Controller
     {
         $barang = Barang::findOrFail($id);
 
-        if ($barang->tipe_request == 'primary') {
-            $barang->status_barang = 'masuk';
+        if ($barang->request_type == 'primary') {
+            $barang->goods_status = 'masuk';
             $barang->save();
 
             // Buat record GoodsReceipt untuk barang baru
@@ -104,17 +103,18 @@ class SupplyOrdersController extends Controller
                 'supplier_id' => $barang->form, // User yang input (GA)
                 'received_at' => now(),
                 'approved_by' => Auth::id(), // User yang approve (Warehouse)
-                'quantity' => $barang->stok,
-                'unit_cost' => $barang->harga,
+                'quantity' => $barang->stock,
+                'unit_cost' => $barang->buy_price,
             ]);
-        } elseif ($barang->tipe_request == 'new_stock') {
-            $kodeUtama = explode('#', $barang->kode_barang)[0];
-            $barangUtama = Barang::where('kode_barang', $kodeUtama)
-                ->where('tipe_request', 'primary')
+        } elseif ($barang->request_type == 'new_stock') {
+            $kodeUtama = explode('#', $barang->goods_code)[0];
+            $barangUtama = Barang::where('goods_code', $kodeUtama)
+                ->where('request_type', 'primary')
                 ->first();
 
             if ($barangUtama) {
-                $barangUtama->stok += $barang->stok;
+                $barangUtama->stock += $barang->stock;
+                $barangUtama->buy_price = $barang->buy_price; // Update buying price
                 $barangUtama->save();
 
                 // Buat record GoodsReceipt
@@ -123,11 +123,11 @@ class SupplyOrdersController extends Controller
                     'supplier_id' => $barang->form, // User yang input (GA)
                     'received_at' => now(),
                     'approved_by' => Auth::id(), // User yang approve (Warehouse)
-                    'quantity' => $barang->stok,
-                    'unit_cost' => $barang->harga,
+                    'quantity' => $barang->stock,
+                    'unit_cost' => $barang->buy_price,
                 ]);
 
-                $barang->status_barang = 'masuk';
+                $barang->goods_status = 'masuk';
                 $barang->save();
 
                 // Hapus record new_stock tanpa memicu event model
@@ -136,9 +136,9 @@ class SupplyOrdersController extends Controller
                 });
             } else {
                 // Jika barang utama tidak ditemukan, jadikan barang request ini sebagai primary
-                $barang->kode_barang = $kodeUtama;
-                $barang->tipe_request = 'primary';
-                $barang->status_barang = 'masuk';
+                $barang->goods_code = $kodeUtama;
+                $barang->request_type = 'primary';
+                $barang->goods_status = 'masuk';
                 $barang->save();
 
                 // Buat record GoodsReceipt
@@ -147,8 +147,8 @@ class SupplyOrdersController extends Controller
                     'supplier_id' => $barang->form, // User yang input (GA)
                     'received_at' => now(),
                     'approved_by' => Auth::id(), // User yang approve (Warehouse)
-                    'quantity' => $barang->stok,
-                    'unit_cost' => $barang->harga,
+                    'quantity' => $barang->stock,
+                    'unit_cost' => $barang->buy_price,
                 ]);
             }
         }

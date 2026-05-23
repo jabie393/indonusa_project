@@ -27,14 +27,15 @@ class BarangHistoriesSeeder extends Seeder
             $barang = $goods->isNotEmpty() ? $goods->random() : null;
 
             DB::table('goods_histories')->insert([
-                'barang_id'    => $barang->id ?? null,
-                'kode_barang'  => $barang->kode_barang ?? 'KD' . $faker->unique()->numerify('###'),
-                'nama_barang'  => $barang->nama_barang ?? $faker->word(),
-                'kategori'     => $barang->kategori ?? $faker->randomElement(['HANDTOOLS', 'MISCELLANEOUS', 'PACKAGING']),
-                'stok'         => $barang->stok ?? $faker->numberBetween(0, 200),
-                'satuan'       => $barang->satuan ?? $faker->randomElement(['pcs', 'box', 'Roll', 'Unit']),
-                'lokasi'       => $barang->lokasi ?? $faker->randomElement(['Rak A1', 'Rak B2', 'Gudang Utama']),
-                'harga'        => $barang->harga ?? $faker->randomFloat(2, 1000, 100000),
+                'goods_id'     => $barang->id ?? null,
+                'goods_code'   => $barang->goods_code ?? 'KD' . $faker->unique()->numerify('###'),
+                'goods_name'   => $barang->goods_name ?? $faker->word(),
+                'category'     => $barang->category ?? $faker->randomElement(['HANDTOOLS', 'MISCELLANEOUS', 'PACKAGING']),
+                'stock'        => $barang->stock ?? $faker->numberBetween(0, 200),
+                'unit'         => $barang->unit ?? $faker->randomElement(['pcs', 'box', 'Roll', 'Unit']),
+                'location'     => $barang->location ?? $faker->randomElement(['Rak A1', 'Rak B2', 'Gudang Utama']),
+                'buy_price'    => $barang->buy_price ?? $faker->randomFloat(2, 1000, 100000),
+                'selling_price' => $barang->selling_price ?? $faker->randomFloat(2, 1300, 130000),
                 'old_status'   => $faker->randomElement($oldStatuses),
                 'new_status'   => $faker->randomElement($newStatuses),
                 'changed_by'   => !empty($userIds) ? $faker->randomElement($userIds) : null,

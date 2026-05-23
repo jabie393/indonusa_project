@@ -279,9 +279,9 @@
                 items.forEach((item) => {
                     const deliveredQty = parseInt(item.delivered_quantity) || 0;
                     if (deliveredQty > 0) {
-                        const itemName = item.barang ? item.barang.nama_barang : (item.nama_barang ? item.nama_barang : 'Barang');
-                        const itemCode = item.barang ? item.barang.kode_barang : (item.kode_barang ? item.kode_barang : '-');
-                        const itemUnit = item.barang ? item.barang.satuan : (item.satuan ? item.satuan : '-');
+                        const itemName = item.barang ? item.barang.goods_name : (item.nama_barang ? item.nama_barang : 'Barang');
+                        const itemCode = item.barang ? item.barang.goods_code : (item.kode_barang ? item.kode_barang : '-');
+                        const itemUnit = item.barang ? item.barang.unit : (item.satuan ? item.satuan : '-');
                         
                         returnItemsWrapper.innerHTML += `
                             <tr class="text-sm">

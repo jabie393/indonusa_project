@@ -73,9 +73,9 @@ class DeliveryOrdersController extends Controller
                     }
                 });
 
-                // Search by barang name in items relation (barang has 'nama_barang')
+                // Search by barang name in items relation (barang has 'goods_name')
                 $q->orWhereHas('items.barang', function ($bq) use ($query) {
-                    $bq->where('nama_barang', 'like', "%{$query}%");
+                    $bq->where('goods_name', 'like', "%{$query}%");
                 });
             });
         }
@@ -98,21 +98,21 @@ class DeliveryOrdersController extends Controller
             // Deduct stock from goods table
             if ($item->barang) {
                 $barang = $item->barang;
-                $barang->stok -= $item->quantity;
+                $barang->stock -= $item->quantity;
                 $barang->save();
 
                 // Manual history logging for stock deduction
                 \App\Models\BarangHistory::create([
-                    'barang_id'   => $barang->id,
-                    'kode_barang' => $barang->kode_barang,
-                    'nama_barang' => $barang->nama_barang,
-                    'kategori'    => $barang->kategori,
-                    'stok'        => $barang->stok,
-                    'satuan'      => $barang->satuan,
-                    'lokasi'      => $barang->lokasi,
-                    'harga'       => $barang->harga,
-                    'old_status'  => $barang->status_barang,
-                    'new_status'  => $barang->status_barang, // status remains 'masuk' or same
+                    'goods_id'    => $barang->id,
+                    'goods_code'  => $barang->goods_code,
+                    'goods_name'  => $barang->goods_name,
+                    'category'    => $barang->category,
+                    'stock'       => $barang->stock,
+                    'unit'        => $barang->unit,
+                    'location'    => $barang->location,
+                    'selling_price' => $barang->selling_price,
+                    'old_status'  => $barang->goods_status,
+                    'new_status'  => $barang->goods_status, // status remains 'masuk' or same
                     'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
                     'note'        => 'Stock berkurang (' . $item->quantity . ') karena pengiriman penuh DO: ' . ($order->do_number ?? $order->order_number),
                 ]);
@@ -173,20 +173,20 @@ class DeliveryOrdersController extends Controller
                             
                             if ($item->barang) {
                                 $barang = $item->barang;
-                                $barang->stok += $returnQty;
+                                $barang->stock += $returnQty;
                                 $barang->save();
 
                                 \App\Models\BarangHistory::create([
-                                    'barang_id'   => $barang->id,
-                                    'kode_barang' => $barang->kode_barang,
-                                    'nama_barang' => $barang->nama_barang,
-                                    'kategori'    => $barang->kategori,
-                                    'stok'        => $barang->stok,
-                                    'satuan'      => $barang->satuan,
-                                    'lokasi'      => $barang->lokasi,
-                                    'harga'       => $barang->harga,
-                                    'old_status'  => $barang->status_barang,
-                                    'new_status'  => $barang->status_barang,
+                                    'goods_id'    => $barang->id,
+                                    'goods_code'  => $barang->goods_code,
+                                    'goods_name'  => $barang->goods_name,
+                                    'category'    => $barang->category,
+                                    'stock'       => $barang->stock,
+                                    'unit'        => $barang->unit,
+                                    'location'    => $barang->location,
+                                    'selling_price' => $barang->selling_price,
+                                    'old_status'  => $barang->goods_status,
+                                    'new_status'  => $barang->goods_status,
                                     'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
                                     'note'        => 'Stock bertambah (' . $returnQty . ') dari pengembalian DO: ' . ($order->do_number ?? $order->order_number),
                                 ]);
@@ -283,21 +283,21 @@ class DeliveryOrdersController extends Controller
                     // Deduct stock from goods table for partial delivery
                     if ($item->barang) {
                         $barang = $item->barang;
-                        $barang->stok -= $sentQuantity;
+                        $barang->stock -= $sentQuantity;
                         $barang->save();
 
                         // Manual history logging for partial stock deduction
                         \App\Models\BarangHistory::create([
-                            'barang_id'   => $barang->id,
-                            'kode_barang' => $barang->kode_barang,
-                            'nama_barang' => $barang->nama_barang,
-                            'kategori'    => $barang->kategori,
-                            'stok'        => $barang->stok,
-                            'satuan'      => $barang->satuan,
-                            'lokasi'      => $barang->lokasi,
-                            'harga'       => $barang->harga,
-                            'old_status'  => $barang->status_barang,
-                            'new_status'  => $barang->status_barang,
+                            'goods_id'    => $barang->id,
+                            'goods_code'  => $barang->goods_code,
+                            'goods_name'  => $barang->goods_name,
+                            'category'    => $barang->category,
+                            'stock'       => $barang->stock,
+                            'unit'        => $barang->unit,
+                            'location'    => $barang->location,
+                            'selling_price' => $barang->selling_price,
+                            'old_status'  => $barang->goods_status,
+                            'new_status'  => $barang->goods_status,
                             'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
                             'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . ($order->do_number ?? $order->order_number),
                         ]);
@@ -369,14 +369,14 @@ class DeliveryOrdersController extends Controller
             $items = $order->items->map(function ($item) {
                 return [
                     'id'           => $item->id,
-                    'kode_barang'  => $item->barang->kode_barang ?? '-',
-                    'nama_barang'  => $item->barang->nama_barang ?? '-',
+                    'goods_code'   => $item->barang->goods_code ?? '-',
+                    'goods_name'   => $item->barang->goods_name ?? '-',
                     'qty_pesanan'  => $item->quantity,
                     'quantity'     => $item->quantity, // for compatibility
                     'qty_terkirim' => $item->delivered_quantity ?? 0,
                     'delivered_quantity' => $item->delivered_quantity ?? 0, // for compatibility
-                    'stok_gudang'  => $item->barang ? ($item->barang->stok ?? 0) : 0,
-                    'satuan'       => $item->barang->satuan ?? '-',
+                    'stok_gudang'  => $item->barang ? ($item->barang->stock ?? 0) : 0,
+                    'satuan'       => $item->barang->unit ?? '-',
                     'status'       => $item->status_item ?? 'pending',
                 ];
             });
@@ -409,14 +409,14 @@ class DeliveryOrdersController extends Controller
 
                 $result->push([
                     'id'           => $existing->id,
-                    'kode_barang'  => $existing->barang->kode_barang ?? '-',
-                    'nama_barang'  => $existing->barang->nama_barang ?? '-',
+                    'goods_code'   => $existing->barang->goods_code ?? '-',
+                    'goods_name'   => $existing->barang->goods_name ?? '-',
                     'qty_pesanan'  => $existing->quantity,
                     'quantity'     => $existing->quantity, // for compatibility
                     'qty_terkirim' => $existing->delivered_quantity ?? 0,
                     'delivered_quantity' => $existing->delivered_quantity ?? 0, // for compatibility
-                    'stok_gudang'  => $existing->barang ? ($existing->barang->stok ?? 0) : 0,
-                    'satuan'       => $existing->barang->satuan ?? '-',
+                    'stok_gudang'  => $existing->barang ? ($existing->barang->stock ?? 0) : 0,
+                    'satuan'       => $existing->barang->unit ?? '-',
                     'status'       => $existing->status_item ?? 'pending',
                 ]);
             }
@@ -438,7 +438,7 @@ class DeliveryOrdersController extends Controller
                 'created_at' => $batch->created_at->format('Y-m-d H:i'),
                 'items' => $batch->items->map(function ($item) {
                     return [
-                        'nama_barang' => $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-'),
+                        'goods_name' => $item->orderItem->barang->goods_name ?? ($item->orderItem->goods_name ?? ($item->orderItem->nama_barang ?? '-')),
                         'quantity_sent' => $item->quantity_sent,
                     ];
                 }),

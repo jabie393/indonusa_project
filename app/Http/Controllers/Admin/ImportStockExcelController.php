@@ -93,7 +93,7 @@ class ImportStockExcelController extends Controller
                     $isKnown = false;
                     
                     if (!empty($kode)) {
-                        $isKnown = Barang::where('kode_barang', $kode)->exists();
+                        $isKnown = Barang::where('goods_code', $kode)->exists();
                     }
                     
                     // Append flag to row data (as extra column or property if object)
@@ -136,48 +136,48 @@ class ImportStockExcelController extends Controller
                 $lastBarang = null;
                 Barang::withoutEvents(function () use ($formRows, &$created, &$lastBarang) {
                     foreach ($formRows as $i => $r) {
-                        $kode = $r['kode_barang'] ?? null;
+                        $kode = $r['goods_code'] ?? null;
                         if (empty($kode)) {
                             $kode = 'IMP' . substr(uniqid(), -6);
                         }
 
-                        $stok = isset($r['stok']) ? (int)$r['stok'] : 0;
+                        $stok = isset($r['stock']) ? (int)$r['stock'] : 0;
 
                         if ($stok <= 0) {
                             continue;
                         }
 
-                        $existingBarang = Barang::where('kode_barang', $kode)->first();
+                        $existingBarang = Barang::where('goods_code', $kode)->first();
 
                         if ($existingBarang) {
-                            if (!isset($r['harga']) || $r['harga'] === '' || $r['harga'] === null) {
-                                $harga = ($stok > 0) ? (float)$existingBarang->harga : 0;
+                            if (!isset($r['selling_price']) || $r['selling_price'] === '' || $r['selling_price'] === null) {
+                                $harga = ($stok > 0) ? (float)$existingBarang->buy_price : 0;
                             } else {
-                                $harga = (float)$r['harga'];
+                                $harga = (float)$r['selling_price'];
                             }
 
                             $copyData = $existingBarang->replicate();
 
-                            $deskripsi = $r['deskripsi'] ?? $existingBarang->deskripsi;
+                            $deskripsi = $r['description'] ?? $existingBarang->description;
                             if (empty($deskripsi)) {
-                                $deskripsi = $existingBarang->nama_barang;
+                                $deskripsi = $existingBarang->goods_name;
                             }
 
-                            $copyData->deskripsi = $deskripsi;
-                            $copyData->stok = $stok;
-                            $copyData->harga = $harga;
-                            $copyData->status_barang = 'ditinjau';
-                            $copyData->tipe_request = 'new_stock';
+                            $copyData->description = $deskripsi;
+                            $copyData->stock = $stok;
+                            $copyData->buy_price = $harga;
+                            $copyData->goods_status = 'ditinjau';
+                            $copyData->request_type = 'new_stock';
                             $copyData->form = Auth::id();
 
-                            $originalKode = $existingBarang->kode_barang;
+                            $originalKode = $existingBarang->goods_code;
                             $newKode = $originalKode;
                             $idx = 1;
-                            while (\App\Models\Barang::where('kode_barang', $newKode)->exists()) {
+                            while (\App\Models\Barang::where('goods_code', $newKode)->exists()) {
                                 $newKode = $originalKode . '#' . $idx;
                                 $idx++;
                             }
-                            $copyData->kode_barang = $newKode;
+                            $copyData->goods_code = $newKode;
                             $copyData->save();
 
                             $created++;

@@ -41,10 +41,10 @@
                     @forelse ($histories as $history)
                         <tr class="border-b dark:border-gray-700">
                             <td class="px-4 py-3">{{ $history->changed_at ?? $history->created_at }}</td>
-                            <td class="px-4 py-3">{{ $history->kode_barang }}</td>
-                            <td class="px-4 py-3">{{ $history->nama_barang }}</td>
-                            <td class="px-4 py-3">{{ $history->kategori }}</td>
-                            <td class="px-4 py-3">{{ $history->stok }}</td>
+                            <td class="px-4 py-3">{{ $history->goods_code }}</td>
+                            <td class="px-4 py-3">{{ $history->goods_name }}</td>
+                            <td class="px-4 py-3">{{ $history->category }}</td>
+                            <td class="px-4 py-3">{{ $history->stock }}</td>
                             <td class="px-4 py-3">{{ $history->old_status }}</td>
                             <td class="px-4 py-3">{{ $history->new_status }}</td>
                             <td class="px-4 py-3">

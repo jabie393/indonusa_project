@@ -14,16 +14,17 @@ return new class extends Migration {
             $table->id();
 
             // Relasi ke tabel barang (bisa null jika barang sudah dihapus)
-            $table->unsignedBigInteger('barang_id')->nullable();
+            $table->unsignedBigInteger('goods_id')->nullable();
 
             // Simpan snapshot data barang
-            $table->string('kode_barang')->nullable();
-            $table->string('nama_barang')->nullable();
-            $table->string('kategori')->nullable();
-            $table->integer('stok')->nullable();
-            $table->string('satuan')->nullable();
-            $table->string('lokasi')->nullable();
-            $table->decimal('harga', 15, 2)->nullable();
+            $table->string('goods_code')->nullable();
+            $table->string('goods_name')->nullable();
+            $table->string('category')->nullable();
+            $table->integer('stock')->nullable();
+            $table->string('unit')->nullable();
+            $table->string('location')->nullable();
+            $table->decimal('buy_price', 15, 2)->nullable();
+            $table->decimal('selling_price', 15, 2)->nullable();
 
             // Status sebelum dan sesudah perubahan
             $table->enum('old_status', ['ditinjau', 'masuk', 'ditolak'])->nullable();

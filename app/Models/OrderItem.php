@@ -34,7 +34,7 @@ class OrderItem extends Model
     public function getNamaBarangAttribute()
     {
         if ($this->relationLoaded('barang') && $this->barang) {
-            return $this->barang->nama_barang;
+            return $this->barang->goods_name;
         }
 
         // jika tidak ada relasi, cek apakah ada kolom nama_barang tersimpan di model (mis. legacy)

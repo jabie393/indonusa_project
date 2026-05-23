@@ -26,7 +26,7 @@
                                         <td class="px-4 py-3">
                                             <ul class="list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
                                                 @foreach ($batchItem->items as $item)
-                                                    <li>{{ $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
+                                                    <li>{{ $item->orderItem->barang->goods_name ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
                                                 @endforeach
                                             </ul>
                                         </td>
@@ -83,7 +83,7 @@
                                                             <td style="padding:12px; vertical-align:top;">
                                                                 <ul style="margin:0; padding-left:18px; color:#0f172a; list-style:disc;">
                                                                     @foreach ($batchItem->items as $item)
-                                                                        <li style="margin-bottom:4px;">{{ $item->orderItem->barang->nama_barang ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
+                                                                        <li style="margin-bottom:4px;">{{ $item->orderItem->barang->goods_name ?? ($item->orderItem->nama_barang ?? '-') }} ({{ $item->quantity_sent }})</li>
                                                                     @endforeach
                                                                 </ul>
                                                             </td>

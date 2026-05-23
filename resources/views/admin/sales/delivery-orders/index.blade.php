@@ -106,8 +106,8 @@
                                         $itemsData = $order->items->map(function ($item) {
                                             return [
                                                 'id'                 => $item->id,
-                                                'kode_barang'        => $item->barang->kode_barang ?? $item->barang->kode ?? $item->kode_barang ?? $item->barang_id ?? '-',
-                                                'nama'               => $item->barang->nama ?? $item->barang->nama_barang ?? $item->nama_barang ?? '-',
+                                                'kode_barang'        => $item->barang->goods_code ?? $item->kode_barang ?? $item->barang_id ?? '-',
+                                                'nama'               => $item->barang->goods_name ?? $item->nama_barang ?? '-',
                                                 'quantity'           => $item->quantity,
                                                 'delivered_quantity' => $item->delivered_quantity ?? $item->quantity,
                                                 'status_item'        => $item->status_item ?? '-',

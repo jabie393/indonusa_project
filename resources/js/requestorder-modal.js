@@ -3,7 +3,7 @@
 // The trigger should have a data-order attribute containing JSON of the order
 
 function formatItemRow(idx, item) {
-    const barang = item?.barang?.nama_barang ?? '-';
+    const barang = item?.barang?.goods_name ?? item?.barang?.nama_barang ?? '-';
     const qty = item?.quantity ?? '-';
     const status = item?.status_item ?? '-';
     return `

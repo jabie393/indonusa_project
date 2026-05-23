@@ -112,10 +112,10 @@ function openEditModal(
     const editIdEl = document.getElementById("edit_id");
     if (editIdEl) editIdEl.value = id;
 
-    const editKodeEl = document.getElementById("edit_kode_barang");
+    const editKodeEl = document.getElementById("edit_kode_barang") || document.getElementById("edit_goods_code");
     if (editKodeEl) editKodeEl.value = kode_barang;
 
-    const editNamaEl = document.getElementById("edit_nama_barang");
+    const editNamaEl = document.getElementById("edit_nama_barang") || document.getElementById("edit_goods_name");
     if (editNamaEl) editNamaEl.value = nama_barang;
 
     const editStokEl = document.getElementById("edit_stok");

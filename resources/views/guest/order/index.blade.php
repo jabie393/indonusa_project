@@ -47,9 +47,9 @@
                     <a href="{{ route('product.barang', $barang->id) }}">
                         <!-- Image Box -->
                         <div class="relative aspect-square overflow-hidden bg-slate-50">
-                            @if (!empty($barang->gambar))
-                                <img src="{{ url('files/' . $barang->gambar) }}"
-                                     alt="{{ $barang->nama_barang }}"
+                            @if (!empty($barang->image))
+                                <img src="{{ url('files/' . $barang->image) }}"
+                                     alt="{{ $barang->goods_name }}"
                                      class="h-full w-full object-contain p-4 transition-transform duration-700 group-hover:scale-105">
                             @else
                                 <div class="flex h-full items-center justify-center">
@@ -67,18 +67,18 @@
 
                             <!-- Overlay Labels -->
                             <div class="absolute right-4 top-4 rounded-full bg-[#0D223A] px-3 py-1 text-[10px] font-bold text-white shadow-lg">
-                                {{ $barang->stok > 0 ? 'READY STOCK' : 'PRE-ORDER' }}
+                                {{ $barang->stock > 0 ? 'READY STOCK' : 'PRE-ORDER' }}
                             </div>
                         </div>
 
                         <!-- Details -->
                         <div class="flex grow flex-col p-8">
-                            <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary-600">{{ $barang->kategori ?? 'Uncategorized' }}</span>
-                            <h3 class="mb-4 line-clamp-2 h-12 text-xl font-bold leading-tight text-slate-800">{{ $barang->nama_barang }}</h3>
+                            <span class="mb-2 text-[10px] font-black uppercase tracking-widest text-primary-600">{{ $barang->category ?? 'Uncategorized' }}</span>
+                            <h3 class="mb-4 line-clamp-2 h-12 text-xl font-bold leading-tight text-slate-800">{{ $barang->goods_name }}</h3>
 
                             <div class="mt-auto flex items-center gap-3 border-t border-slate-50 pt-6">
                                 <!-- WhatsApp Button -->
-                                <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->nama_barang . '. Apakah masih tersedia?') }}"
+                                <a href="https://wa.me/6281234567890?text={{ urlencode('Halo, saya ingin memesan ' . $barang->goods_name . '. Apakah masih tersedia?') }}"
                                    target="_blank"
                                    class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#225A97] py-4 text-xs font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-[#0D223A]">
                                     <svg class="h-4 w-4"
@@ -100,13 +100,13 @@
                                            value="{{ $barang->id }}">
                                     <input type="hidden"
                                            name="nama"
-                                           value="{{ $barang->nama_barang }}">
+                                           value="{{ $barang->goods_name }}">
                                     <input type="hidden"
                                            name="harga"
-                                           value="{{ $barang->harga }}">
+                                           value="{{ $barang->selling_price }}">
                                     <input type="hidden"
                                            name="gambar"
-                                           value="{{ $barang->gambar }}">
+                                           value="{{ $barang->image }}">
                                     <button type="submit"
                                             class="rounded-xl bg-green-50 p-4 text-green-700 transition-all hover:bg-green-700 hover:text-white">
                                         <svg class="h-6 w-6"

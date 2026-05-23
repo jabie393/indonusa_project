@@ -121,7 +121,7 @@ class SalesDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.nama_barang, request_order_items.nama_barang_custom) as item_name'), 
+                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
                 DB::raw('SUM(request_order_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
@@ -139,8 +139,8 @@ class SalesDashboardController extends Controller
             ->get();
 
         // 6. Low Stock (for the filter if needed, although not explicitly shown in cards)
-        $lowStockItems = \App\Models\Barang::where('stok', '<=', $threshold)
-            ->orderBy('stok')
+        $lowStockItems = \App\Models\Barang::where('stock', '<=', $threshold)
+            ->orderBy('stock')
             ->take(5)
             ->get();
 
@@ -197,7 +197,7 @@ class SalesDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.nama_barang, request_order_items.nama_barang_custom) as item_name'), 
+                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
                 DB::raw('SUM(request_order_items.quantity) as total_qty')
             )
             ->groupBy('item_name')

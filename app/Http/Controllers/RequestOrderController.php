@@ -26,8 +26,8 @@ class RequestOrderController extends Controller
                 $q->where('order_number', 'like', "%{$query}%")
                     ->orWhere('customer_name', 'like', "%{$query}%")
                     ->orWhereHas('items.barang', function ($q2) use ($query) {
-                        $q2->where('nama_barang', 'like', "%{$query}%")
-                            ->orWhere('kode_barang', 'like', "%{$query}%");
+                        $q2->where('goods_name', 'like', "%{$query}%")
+                            ->orWhere('goods_code', 'like', "%{$query}%");
                     });
             });
         }
@@ -58,8 +58,8 @@ class RequestOrderController extends Controller
                 $q->where('order_number', 'like', "%{$query}%")
                     ->orWhere('customer_name', 'like', "%{$query}%")
                     ->orWhereHas('items.barang', function ($q2) use ($query) {
-                        $q2->where('nama_barang', 'like', "%{$query}%")
-                            ->orWhere('kode_barang', 'like', "%{$query}%");
+                        $q2->where('goods_name', 'like', "%{$query}%")
+                            ->orWhere('goods_code', 'like', "%{$query}%");
                     });
             });
         }
@@ -75,12 +75,12 @@ class RequestOrderController extends Controller
     public function create()
     {
         // 1) Semua barang
-        // $goods = Barang::orderBy('nama_barang')->get();
+        // $goods = Barang::orderBy('goods_name')->get();
 
         // 2) Hanya barang yang listing dan stok > 0 (rekomendasi)
-        $goods = Barang::where('tipe_request', 'primary')
-            ->where('stok', '>', 0)
-            ->orderBy('nama_barang')
+        $goods = Barang::where('request_type', 'primary')
+            ->where('stock', '>', 0)
+            ->orderBy('goods_name')
             ->get();
 
         // 🟢 ubah lokasi view ke folder admin
@@ -112,10 +112,10 @@ class RequestOrderController extends Controller
                 if (! $barang) {
                     throw new \Exception("Barang ID {$barangId} tidak ditemukan.");
                 }
-                if ($barang->stok < $qty) {
+                if ($barang->stock < $qty) {
                     $insufficient[$barangId] = [
-                        'nama' => $barang->nama_barang,
-                        'stok' => $barang->stok,
+                        'nama' => $barang->goods_name,
+                        'stok' => $barang->stock,
                         'req' => $qty,
                     ];
                 }
@@ -135,7 +135,7 @@ class RequestOrderController extends Controller
             // 💾 simpan tiap item ke tabel order_items
             foreach ($items as $barangId => $qty) {
                 $barang = Barang::find($barangId);
-                $status_item = $barang->stok >= $qty ? 'pending' : 'pending_stock';
+                $status_item = $barang->stock >= $qty ? 'pending' : 'pending_stock';
 
                 OrderItem::create([
                     'order_id' => $order->id,

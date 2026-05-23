@@ -27,7 +27,7 @@
         <div
             class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
-                $supplyOrderCount = \App\Models\Barang::where('status_barang', 'ditinjau')->count();
+                $supplyOrderCount = \App\Models\Barang::where('goods_status', 'ditinjau')->count();
                 $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
             @endphp
             <div class="flex items-center space-x-2">

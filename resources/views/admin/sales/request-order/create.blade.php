@@ -307,14 +307,14 @@
                                                     <option value="">Pilih Barang</option>
                                                     @foreach ($goods as $b)
                                                         <option value="{{ $b->id }}"
-                                                                data-kode="{{ $b->kode_barang }}"
-                                                                data-nama="{{ $b->nama_barang }}"
-                                                                data-kategori="{{ $b->kategori }}"
-                                                                data-stok="{{ $b->stok }}"
-                                                                data-satuan="{{ $b->satuan ?? '' }}"
-                                                                data-harga="{{ $b->harga ?? 0 }}"
-                                                                data-diskon="{{ $b->diskon_percent ?? 0 }}">
-                                                            {{ $b->kode_barang }}
+                                                                data-kode="{{ $b->goods_code }}"
+                                                                data-nama="{{ $b->goods_name }}"
+                                                                data-kategori="{{ $b->category }}"
+                                                                data-stok="{{ $b->stock }}"
+                                                                data-satuan="{{ $b->unit ?? '' }}"
+                                                                data-harga="{{ $b->selling_price ?? 0 }}"
+                                                                data-diskon="{{ $b->discount_percent ?? 0 }}">
+                                                            {{ $b->goods_code }}
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -343,13 +343,13 @@
                                                                 @foreach ($goods as $b)
                                                                     <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row"
                                                                         data-id="{{ $b->id }}"
-                                                                        data-kode="{{ $b->kode_barang }}"
-                                                                        data-nama="{{ $b->nama_barang }}"
-                                                                        data-kategori="{{ $b->kategori }}"
-                                                                        data-deskripsi="{{ $b->deskripsi ?? '' }}">
-                                                                        <td class="px-4 py-3 text-body-sm font-semibold text-nowrap">{{ $b->kode_barang }}</td>
-                                                                        <td class="px-4 py-3 text-body-sm text-nowrap">{{ $b->nama_barang }}</td>
-                                                                        <td class="px-4 py-3 text-[12px] text-on-surface-variant">{{ $b->deskripsi ?? '-' }}</td>
+                                                                        data-kode="{{ $b->goods_code }}"
+                                                                        data-nama="{{ $b->goods_name }}"
+                                                                        data-kategori="{{ $b->category }}"
+                                                                        data-deskripsi="{{ $b->description ?? '' }}">
+                                                                        <td class="px-4 py-3 text-body-sm font-semibold text-nowrap">{{ $b->goods_code }}</td>
+                                                                        <td class="px-4 py-3 text-body-sm text-nowrap">{{ $b->goods_name }}</td>
+                                                                        <td class="px-4 py-3 text-[12px] text-on-surface-variant">{{ $b->description ?? '-' }}</td>
                                                                         <td class="pr-4 text-primary text-right select-check-icon">
                                                                             <span class="material-symbols-outlined text-[18px] checked-icon hidden"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></span>
                                                                         </td>

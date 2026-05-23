@@ -92,7 +92,7 @@
                 <!-- Kode Barang -->
                 <div class="space-y-2">
                     <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="edit_kode_barang">
+                        for="edit_goods_code">
                         <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                             xmlns="http://www.w3.org/2000/svg">
@@ -105,13 +105,13 @@
                     </label>
                     <input
                         class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-mono outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-not-allowed"
-                        id="edit_kode_barang" type="text" readonly />
+                        id="edit_goods_code" type="text" readonly />
                 </div>
 
                 <!-- Nama Barang -->
                 <div class="space-y-2">
                     <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="edit_nama_barang">
+                        for="edit_goods_name">
                         <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                             xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +123,7 @@
                     </label>
                     <input
                         class="w-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white cursor-not-allowed"
-                        id="edit_nama_barang" type="text" readonly />
+                        id="edit_goods_name" type="text" readonly />
                 </div>
 
                 <!-- Deskripsi -->

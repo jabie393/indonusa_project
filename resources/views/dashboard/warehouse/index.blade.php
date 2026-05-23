@@ -128,12 +128,12 @@
                         @foreach ($lowStockItems as $item)
                             <div class="col-span-1 p-2 md:p-5">
                                 <div class="flex flex-col">
-                                    <h1 class="font-bold text-gray-900 dark:text-gray-100">{{ $item->nama_barang }}</h1>
-                                    <h1 class="text-sm text-gray-500 dark:text-gray-400">{{ $item->kode_barang ?? '-' }}</h1>
+                                    <h1 class="font-bold text-gray-900 dark:text-gray-100">{{ $item->goods_name }}</h1>
+                                    <h1 class="text-sm text-gray-500 dark:text-gray-400">{{ $item->goods_code ?? '-' }}</h1>
                                 </div>
                                 <div class="flex w-full flex-row items-end">
                                     <h1 class="w-full text-end text-4xl font-bold text-gray-900 dark:text-gray-100 md:text-6xl">
-                                        {{ $item->stok }}
+                                        {{ $item->stock }}
                                     </h1>
                                     <span class="w-full text-sm text-gray-500 dark:text-gray-400">Stok</span>
                                 </div>
@@ -161,10 +161,10 @@
                         <tbody class="text-nowrap">
                             @forelse($allLowStockItems as $item)
                                 <tr>
-                                    <td class="px-4 py-3">{{ $item->nama_barang }}</td>
-                                    <td class="px-4 py-3">{{ $item->stok }}</td>
+                                    <td class="px-4 py-3">{{ $item->goods_name }}</td>
+                                    <td class="px-4 py-3">{{ $item->stock }}</td>
                                     <td class="px-4 py-3">20</td>
-                                    <td class="px-4 py-3">{{ $item->stok <= 0 ? 'Out' : 'Low' }}</td>
+                                    <td class="px-4 py-3">{{ $item->stock <= 0 ? 'Out' : 'Low' }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -230,8 +230,8 @@
                             @forelse($recentInbound as $in)
                                 <tr>
                                     <td class="px-4 py-3">{{ $in->created_at->format('d M Y') }}</td>
-                                    <td class="px-4 py-3">{{ $in->nama_barang }}</td>
-                                    <td class="px-4 py-3">{{ $in->stok ?? '-' }}</td>
+                                    <td class="px-4 py-3">{{ $in->goods_name }}</td>
+                                    <td class="px-4 py-3">{{ $in->stock ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ optional($in->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
                                     <td class="px-4 py-3">{{ $in->status ?? 'Complete' }}</td>
                                 </tr>
@@ -268,8 +268,8 @@
                             @forelse($recentOutbound as $out)
                                 <tr>
                                     <td class="px-4 py-3">{{ optional($out->changed_at)->format('d M Y') ?? '-' }}</td>
-                                    <td class="px-4 py-3">{{ $out->nama_barang }}</td>
-                                    <td class="px-4 py-3">{{ $out->stok ?? '-' }}</td>
+                                    <td class="px-4 py-3">{{ $out->goods_name }}</td>
+                                    <td class="px-4 py-3">{{ $out->stock ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ optional($out->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
                                     <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Keluar') }}</td>
                                 </tr>

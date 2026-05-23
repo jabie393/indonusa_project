@@ -108,6 +108,7 @@ function openEditModal(params) {
         satuan,
         lokasi,
         harga,
+        selling_price,
         deskripsi = "",
         tipe_request = "primary",
         gambar = null,
@@ -116,13 +117,14 @@ function openEditModal(params) {
     if (tipe_request === "primary") {
         document.getElementById("edit_id").value = id;
         document.getElementById("edit_status_listing").value = status_listing;
-        document.getElementById("edit_kode_barang").value = kode_barang;
-        document.getElementById("edit_nama_barang").value = nama_barang;
-        document.getElementById("edit_kategori").value = kategori;
-        document.getElementById("edit_stok").value = stok;
-        document.getElementById("edit_satuan").value = satuan;
-        document.getElementById("edit_lokasi").value = lokasi;
-        document.getElementById("edit_harga").value = harga;
+        document.getElementById("edit_goods_code").value = kode_barang;
+        document.getElementById("edit_goods_name").value = nama_barang;
+        document.getElementById("edit_category").value = kategori;
+        document.getElementById("edit_stock").value = stok;
+        document.getElementById("edit_unit").value = satuan;
+        document.getElementById("edit_location").value = lokasi;
+        document.getElementById("edit_buy_price").value = harga;
+        document.getElementById("edit_selling_price").value = selling_price || "";
         document.getElementById("edit_deskripsi").value = deskripsi;
 
         // Preview gambar jika ada
@@ -149,23 +151,23 @@ function openEditModal(params) {
         const modal = document.getElementById("editBarangModalPrimary");
         if (modal?.showModal) modal.showModal();
     } else if (tipe_request === "new_stock") {
-        document.getElementById("edit_kode_barang_new_stock").textContent =
+        document.getElementById("edit_goods_code_new_stock").textContent =
             kode_barang ?? "-";
-        document.getElementById("edit_nama_barang_new_stock").textContent =
+        document.getElementById("edit_goods_name_new_stock").textContent =
             nama_barang ?? "-";
-        document.getElementById("edit_kategori_new_stock").textContent =
+        document.getElementById("edit_category_new_stock").textContent =
             kategori ?? "-";
-        document.getElementById("edit_lokasi_new_stock").textContent =
+        document.getElementById("edit_location_new_stock").textContent =
             lokasi ?? "-";
         document.getElementById("edit_status_listing_new_stock").textContent =
             status_listing ?? "-";
-        document.getElementById("edit_harga_new_stock").textContent = 
+        document.getElementById("edit_buy_price_new_stock").textContent = 
             harga && !isNaN(harga) ? `Rp ${parseInt(harga).toLocaleString('en-US')}` : (harga ?? "-");
-        document.getElementById("edit_satuan_new_stock").textContent =
+        document.getElementById("edit_unit_new_stock").textContent =
             satuan ?? "-";
-        document.getElementById("current_stok_new_stock").textContent =
+        document.getElementById("current_stock_new_stock").textContent =
             "Memeriksa...";
-        document.getElementById("edit_deskripsi_new_stock").textContent =
+        document.getElementById("edit_description_new_stock").textContent =
             deskripsi ?? "-";
         const gambarPreview = document.getElementById(
             "edit_gambar_preview_new_stock"
@@ -182,9 +184,9 @@ function openEditModal(params) {
             </div>`;
         }
         document.getElementById("edit_id_new_stock").value = id;
-        document.getElementById("edit_stok_new_stock").value =
+        document.getElementById("edit_stock_new_stock").value =
             stok && stok !== "-" ? stok : "";
-        document.getElementById("edit_harga_input_new_stock").value =
+        document.getElementById("edit_buy_price_input_new_stock").value =
             harga && harga !== "-" ? harga : "";
 
         // Ambil kode barang asli (tanpa # dan ekor angka)
@@ -194,11 +196,11 @@ function openEditModal(params) {
         fetch("/get-stock/" + kodeBarangInduk)
             .then((res) => res.json())
             .then((data) => {
-                document.getElementById("current_stok_new_stock").textContent =
-                    data.stok ?? "-";
+                document.getElementById("current_stock_new_stock").textContent =
+                    data.stock ?? "-";
             })
             .catch(() => {
-                document.getElementById("current_stok_new_stock").textContent =
+                document.getElementById("current_stock_new_stock").textContent =
                     "-";
             });
 
@@ -227,6 +229,7 @@ $(document).on("click", ".edit-barang-btn", function (e) {
         satuan: $(this).data("satuan"),
         lokasi: $(this).data("lokasi"),
         harga: $(this).data("harga"),
+        selling_price: $(this).data("harga_jual"),
         deskripsi: $(this).data("deskripsi"),
         tipe_request: $(this).data("tipe_request"),
         gambar: $(this).data("gambar"),

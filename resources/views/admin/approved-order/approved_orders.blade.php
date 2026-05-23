@@ -38,15 +38,15 @@
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ $loop->parent->iteration + ($orders->currentPage() - 1) * $orders->perPage() }}</td>
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ $order->order_number }}</td>
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">
-                                            @if (optional($item->barang)->kode_barang)
-                                                {{ optional($item->barang)->kode_barang }}@else-
+                                            @if (optional($item->barang)->goods_code)
+                                                {{ optional($item->barang)->goods_code }}@else-
                                             @endif
                                         </td>
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ optional($order->sales)->name ?? 'N/A' }}</td>
                                         <td class="px-4 py-3" rowspan="{{ $order->items->count() }}">{{ $order->customer_name ?? '-' }}</td>
                                     @endif
 
-                                    <td class="px-4 py-3">{{ optional($item->barang)->nama_barang ?? 'Barang #' . $item->barang_id }}</td>
+                                    <td class="px-4 py-3">{{ optional($item->barang)->goods_name ?? 'Barang #' . $item->barang_id }}</td>
                                     <td class="px-4 py-3">{{ $item->quantity }}</td>
 
                                     @if ($loop->first)

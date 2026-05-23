@@ -17,8 +17,8 @@ class ProductController extends Controller
         $barang = Barang::find($id);
 
         $relatedGoods = collect();
-        if ($barang && $barang->kategori) {
-            $relatedGoods = Barang::where('kategori', $barang->kategori)
+        if ($barang && $barang->category) {
+            $relatedGoods = Barang::where('category', $barang->category)
                 ->where('id', '!=', $barang->id)
                 ->take(6)
                 ->get();
