@@ -387,24 +387,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 const displayInput = tdStok.querySelector('input[type="text"]');
                 const hiddenInput = tdStok.querySelector('input[type="hidden"]');
                 
-                let v = getVal("stock") || "0";
+                let v = getVal("stock") || "";
                 if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
                 
                 if (displayInput) {
-                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.value = v && v !== "0" ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
                     displayInput.addEventListener('input', function(e) {
                         let rawValue = this.value.replace(/\D/g, "");
-                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        if (hiddenInput) hiddenInput.value = rawValue;
+                        this.value = rawValue && rawValue !== "0" ? rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+                        if (hiddenInput) hiddenInput.value = rawValue && rawValue !== "0" ? rawValue : "";
                     });
                 }
                 
                 if (isKnown) {
                     if (hiddenInput) {
                         hiddenInput.name = `rows[${rowIndex}][stock]`;
-                        hiddenInput.value = v;
+                        hiddenInput.value = v && v !== "0" ? v : "";
                     } else {
                         // Fallback
                         let inp = tdStok.querySelector("input");
@@ -436,24 +436,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 const displayInput = tdHarga.querySelector('input[type="text"]');
                 const hiddenInput = tdHarga.querySelector('input[type="hidden"]');
                 
-                let v = getVal("selling_price") || "0";
+                let v = getVal("selling_price") || "";
                 if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
                 
                 if (displayInput) {
-                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    displayInput.value = v && v !== "0" ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
                     displayInput.addEventListener('input', function(e) {
                         let rawValue = this.value.replace(/\D/g, "");
-                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        if (hiddenInput) hiddenInput.value = rawValue;
+                        this.value = rawValue && rawValue !== "0" ? rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+                        if (hiddenInput) hiddenInput.value = rawValue && rawValue !== "0" ? rawValue : "";
                     });
                 }
                 
                 if (isKnown) {
                     if (hiddenInput) {
                         hiddenInput.name = `rows[${rowIndex}][selling_price]`;
-                        hiddenInput.value = v;
+                        hiddenInput.value = v && v !== "0" ? v : "";
                     } else {
                         // Fallback
                         let inp = tdHarga.querySelector("input");
@@ -772,14 +772,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         const mapping = autoMapHeaders(resp.headers || []);
                         injectMappingInputs(mapping); // hidden mapping[...] inputs
 
-                        // Filter out rows where stok is 0
-                        const stokColIndex = mapping["stok"];
+                        // Filter out rows where stock is empty or 0
+                        const stokColIndex = mapping["stock"];
                         let filteredRows = cleanedRows;
                         if (stokColIndex !== null && stokColIndex !== undefined) {
                             filteredRows = cleanedRows.filter((rowObj) => {
                                 const r = rowObj.data || rowObj;
-                                const stokVal = parseInt(r[stokColIndex] || 0);
-                                return stokVal > 0;
+                                const stokVal = (r[stokColIndex] || "").toString().trim();
+                                // Skip if stock is empty or not a valid number, or is 0
+                                if (!stokVal || isNaN(parseInt(stokVal))) return false;
+                                return parseInt(stokVal) > 0;
                             });
                         }
 
@@ -1025,7 +1027,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 hidden.name = `rows[${rowIndex}][${fieldName}]`;
                 td.appendChild(hidden);
             }
-            hidden.value = value;
+            
+            // For numeric fields (stock, selling_price), remove formatting before storing in hidden input
+            let valueToStore = value;
+            if (fieldName === "stock" || fieldName === "selling_price") {
+                valueToStore = value.replace(/\D/g, ""); // Remove all non-digit characters
+                // Don't map 0 or empty values, set to empty string instead
+                if (!valueToStore || valueToStore === "0") {
+                    valueToStore = "";
+                }
+            }
+            
+            hidden.value = valueToStore;
 
             // Special handling for category change (to update goods_code)
             if (fieldName === "category") {
@@ -1065,4 +1078,32 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     })();
+
+    // Keep form submit as backup
+    if (submitButton && form) {
+        submitButton.addEventListener("click", function (e) {
+            if (uploadInProgress) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "info",
+                    title: "Tunggu",
+                    text: "Upload sedang berlangsung. Tunggu hingga selesai.",
+                });
+                return;
+            }
+            
+            // ensure file uploaded
+            if (!importFilePathInput || !importFilePathInput.value) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian",
+                    text: "Silakan unggah file Excel sebelum submit.",
+                });
+                return;
+            }
+            
+            // allow submit to proceed
+        }, { once: false });
+    }
 });

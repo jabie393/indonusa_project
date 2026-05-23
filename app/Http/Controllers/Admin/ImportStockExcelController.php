@@ -136,15 +136,22 @@ class ImportStockExcelController extends Controller
                 $lastBarang = null;
                 Barang::withoutEvents(function () use ($formRows, &$created, &$lastBarang) {
                     foreach ($formRows as $i => $r) {
+                        // Skip if stock is empty, null, or not a valid number
+                        $stokRaw = $r['stock'] ?? null;
+                        if ($stokRaw === null || $stokRaw === '' || trim((string)$stokRaw) === '') {
+                            continue;
+                        }
+                        
+                        $stok = (int)$stokRaw;
+
+                        // Skip if stock is 0 or negative
+                        if ($stok <= 0) {
+                            continue;
+                        }
+
                         $kode = $r['goods_code'] ?? null;
                         if (empty($kode)) {
                             $kode = 'IMP' . substr(uniqid(), -6);
-                        }
-
-                        $stok = isset($r['stock']) ? (int)$r['stock'] : 0;
-
-                        if ($stok <= 0) {
-                            continue;
                         }
 
                         $existingBarang = Barang::where('goods_code', $kode)->first();

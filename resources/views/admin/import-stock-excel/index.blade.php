@@ -202,7 +202,8 @@
                                                required />
                                         <input type="hidden"
                                                name=""
-                                               id="" />
+                                               id=""
+                                               required />
                                     </div>
                                 </td>
                                 <td>
