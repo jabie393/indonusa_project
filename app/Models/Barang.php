@@ -90,6 +90,13 @@ class Barang extends Model
 
         static::updated(function ($barang) {
             if ($barang->isDirty('goods_status')) {
+                $action = null;
+                if ($barang->goods_status === 'masuk') {
+                    $action = 'Barang di approve oleh admin warehouse dan berhasil masuk ke gudang';
+                } elseif ($barang->goods_status === 'ditolak') {
+                    $action = 'Barang ditolak oleh admin warehouse sesuai catatan penolakan';
+                }
+
                 BarangHistory::create([
                     'goods_id'     => $barang->id,
                     'goods_code'   => $barang->goods_code,
@@ -105,6 +112,7 @@ class Barang extends Model
                     'form'         => $barang->form,
                     'changed_by'   => Auth::id(),
                     'note'         => $barang->note ?? null,
+                    'action'       => $action,
                 ]);
             }
         });
