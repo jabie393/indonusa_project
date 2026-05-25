@@ -179,7 +179,7 @@
                                            required>
                                 </td>
                                 <td>
-                                    <select class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
+                                    <select disabled class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
                                         @foreach (\App\Models\Barang::KATEGORI as $cat)
                                             <option value="{{ $cat }}">{{ $cat }}</option>
                                         @endforeach

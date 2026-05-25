@@ -36,7 +36,7 @@
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Satuan</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Lokasi</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Harga</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Harga Jual</th>
                         <th scope="col" class="px-4 py-3 text-center no-sort text-nowrap">Action</th>
                     </tr>
                 </thead>

@@ -36,6 +36,9 @@ return new class extends Migration {
             // Yang request pertama kali
             $table->string('form')->nullable();
 
+            // Deskripsi aksi
+            $table->text('action')->nullable();
+
             // Catatan tambahan
             $table->text('note')->nullable();
 

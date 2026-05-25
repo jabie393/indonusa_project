@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 use App\Models\GoodsReceipt;
+use App\Models\BarangHistory;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
@@ -75,6 +76,38 @@ class WarehouseController extends Controller
     public function update(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
+        // If selling_price is present, handle price update (General Affair)
+        if ($request->has('selling_price')) {
+            $validated = $request->validate([
+                'selling_price' => 'required|numeric',
+                'note' => 'nullable|string',
+            ]);
+
+            $oldPrice = $barang->selling_price;
+            $barang->selling_price = $validated['selling_price'];
+            $barang->save();
+
+            BarangHistory::create([
+                'goods_id' => $barang->id,
+                'goods_code' => $barang->goods_code,
+                'goods_name' => $barang->goods_name,
+                'category' => $barang->category,
+                'stock' => $barang->stock,
+                'unit' => $barang->unit,
+                'location' => $barang->location,
+                'buy_price' => $barang->buy_price,
+                'selling_price' => $barang->selling_price,
+                'old_status' => $barang->goods_status,
+                'new_status' => $barang->goods_status,
+                'changed_by' => Auth::id(),
+                'note' => $validated['note'] ?? 'Perubahan harga jual dari ' . ($oldPrice ?? 0) . ' ke ' . $barang->selling_price,
+                'action' => 'harga jual diubah dari Rp ' . number_format($oldPrice ?? 0, 0, ',', '.') . ' ke Rp ' . number_format($barang->selling_price, 0, ',', '.'),
+                'form' => Auth::id(),
+                'changed_at' => now(),
+            ]);
+
+            return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Harga jual berhasil diupdate!']);
+        }
 
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

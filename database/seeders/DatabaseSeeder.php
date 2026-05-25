@@ -64,10 +64,10 @@ class DatabaseSeeder extends Seeder
             'role' => 'Finance',
         ]);
 
-        $this->call(BarangSeeder::class);
-        $this->call(OrderSeeder::class);
-        $this->call(BarangHistoriesSeeder::class);
-        $this->call(TodayMovementsSeeder::class);
+        // $this->call(BarangSeeder::class);
+        // $this->call(OrderSeeder::class);
+        // $this->call(BarangHistoriesSeeder::class);
+        // $this->call(TodayMovementsSeeder::class);
         $this->call(CatalogSeeder::class);
     }
 }

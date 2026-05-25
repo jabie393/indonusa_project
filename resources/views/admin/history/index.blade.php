@@ -34,6 +34,7 @@
                         <th class="px-4 py-3 text-nowrap">Status Lama</th>
                         <th class="px-4 py-3 text-nowrap">Status Baru</th>
                         <th class="px-4 py-3 text-nowrap">Diubah Oleh</th>
+                        <th class="px-4 py-3 text-nowrap">Aksi</th>
                         <th class="px-4 py-3 text-nowrap">Catatan</th>
                     </tr>
                 </thead>
@@ -54,6 +55,7 @@
                                     {{ $history->changed_by }}
                                 @endif
                             </td>
+                            <td class="px-4 py-3">{{ $history->action }}</td>
                             <td class="px-4 py-3">{{ $history->note }}</td>
                         </tr>
                     @empty

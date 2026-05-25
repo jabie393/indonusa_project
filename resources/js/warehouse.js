@@ -325,3 +325,33 @@ $(document).on("click", ".view-history-btn", function (e) {
     fetchLogs(id, nama, kode);
 });
 
+// Open edit selling price modal for General Affair
+function openEditSellingPriceModal(id, nama, kode, harga) {
+    const modal = document.getElementById("editSellingPriceModal");
+    const idEl = document.getElementById("edit_price_id");
+    const namaEl = document.getElementById("edit_price_nama");
+    const kodeEl = document.getElementById("edit_price_kode");
+    const hargaEl = document.getElementById("edit_selling_price");
+
+    if (idEl) idEl.value = id;
+    if (namaEl) namaEl.textContent = nama;
+    if (kodeEl) kodeEl.textContent = kode;
+    if (hargaEl) hargaEl.value = harga || 0;
+
+    const form = document.getElementById("editSellingPriceForm");
+    if (form) form.action = "/warehouse/" + id;
+
+    if (modal && typeof modal.showModal === "function") {
+        modal.showModal();
+    }
+}
+
+$(document).on("click", ".edit-selling-price-btn", function (e) {
+    e.preventDefault();
+    const id = $(this).data("id");
+    const nama = $(this).data("nama");
+    const kode = $(this).data("kode");
+    const harga = $(this).data("harga");
+    openEditSellingPriceModal(id, nama, kode, harga);
+});
+

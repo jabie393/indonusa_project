@@ -174,6 +174,25 @@
                                                 @endif
                                             @elseif (Auth::user()->role === 'General Affair')
                                                 <button
+                                                    class="edit-selling-price-btn group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
+                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
+                                                    data-kode="{{ $barang->goods_code }}" data-harga="{{ $barang->selling_price }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+                                                        <path d="M12 1v4"></path>
+                                                        <path d="M12 19v4"></path>
+                                                        <path d="M4.2 4.2l2.8 2.8"></path>
+                                                        <path d="M17 17l2.8 2.8"></path>
+                                                        <path d="M20 12h4"></path>
+                                                        <path d="M-2 12h4"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Ubah
+                                                        Harga</span>
+                                                </button>
+
+                                                <button
                                                     class="view-history-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                     data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kode="{{ $barang->goods_code }}">
@@ -238,6 +257,7 @@
         ])
         @if (Auth::user() && Auth::user()->role === 'General Affair')
             @include('admin.warehouse.partials.warehouse-modal-history')
+            @include('admin.warehouse.partials.warehouse-modal-edit-price')
         @endif
         @vite(['resources/js/warehouse.js', 'resources/js/table-sort.js'])
     </div>
