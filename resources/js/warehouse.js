@@ -336,7 +336,10 @@ function openEditSellingPriceModal(id, nama, kode, harga) {
     if (idEl) idEl.value = id;
     if (namaEl) namaEl.textContent = nama;
     if (kodeEl) kodeEl.textContent = kode;
-    if (hargaEl) hargaEl.value = harga || 0;
+    if (hargaEl) {
+        const numericHarga = parseFloat(harga) || 0;
+        hargaEl.value = formatNumberWithCommas(numericHarga.toString());
+    }
 
     const form = document.getElementById("editSellingPriceForm");
     if (form) form.action = "/warehouse/" + id;
@@ -344,6 +347,54 @@ function openEditSellingPriceModal(id, nama, kode, harga) {
     if (modal && typeof modal.showModal === "function") {
         modal.showModal();
     }
+}
+
+function formatNumberWithCommas(value) {
+    if (!value) return "";
+
+    // Keep only digits and a single decimal point.
+    let cleaned = value.toString().replace(/[^0-9.]/g, "");
+    const firstDotIndex = cleaned.indexOf(".");
+    if (firstDotIndex !== -1) {
+        cleaned =
+            cleaned.slice(0, firstDotIndex + 1) +
+            cleaned.slice(firstDotIndex + 1).replace(/\./g, "");
+    }
+
+    const [integerPart, decimalPart] = cleaned.split(".");
+    const formattedInteger = (integerPart || "0").replace(
+        /\B(?=(\d{3})+(?!\d))/g,
+        ","
+    );
+
+    if (cleaned.endsWith(".") && decimalPart === undefined) {
+        return `${formattedInteger}.`;
+    }
+
+    return decimalPart !== undefined
+        ? `${formattedInteger}.${decimalPart}`
+        : formattedInteger;
+}
+
+const editSellingPriceInput = document.getElementById("edit_selling_price");
+if (editSellingPriceInput) {
+    editSellingPriceInput.addEventListener("input", function () {
+        const currentValue = this.value;
+        const cursorFromEnd = currentValue.length - this.selectionStart;
+        this.value = formatNumberWithCommas(currentValue);
+        const nextPos = Math.max(0, this.value.length - cursorFromEnd);
+        this.setSelectionRange(nextPos, nextPos);
+    });
+}
+
+const editSellingPriceForm = document.getElementById("editSellingPriceForm");
+if (editSellingPriceForm) {
+    editSellingPriceForm.addEventListener("submit", function () {
+        const input = document.getElementById("edit_selling_price");
+        if (input) {
+            input.value = input.value.replace(/,/g, "");
+        }
+    });
 }
 
 $(document).on("click", ".edit-selling-price-btn", function (e) {
@@ -354,4 +405,3 @@ $(document).on("click", ".edit-selling-price-btn", function (e) {
     const harga = $(this).data("harga");
     openEditSellingPriceModal(id, nama, kode, harga);
 });
-
