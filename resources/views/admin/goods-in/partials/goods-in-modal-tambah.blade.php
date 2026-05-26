@@ -129,10 +129,10 @@
                 <!-- Deskripsi -->
                 <div class="space-y-2">
                     <label class="text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="deskripsi">Deskripsi</label>
+                        for="description">Deskripsi</label>
                     <textarea
                         class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition resize-none rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        id="deskripsi" name="deskripsi" placeholder="Tulis deskripsi singkat tentang barang (opsional)…"
+                        id="description" name="description" placeholder="Tulis deskripsi singkat tentang barang (opsional)…"
                         rows="3"></textarea>
                 </div>
 

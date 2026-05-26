@@ -129,7 +129,7 @@ class WarehouseController extends Controller
             }
         }
 
-        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Foto barang berhasil diupdate!']);
+        return redirect()->route('warehouse.index')->with(['title' => 'Berhasil', 'text' => 'Gambar barang berhasil diupdate!']);
     }
 
     public function destroy($id)

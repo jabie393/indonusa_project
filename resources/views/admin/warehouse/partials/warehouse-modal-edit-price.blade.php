@@ -34,13 +34,26 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex justify-end gap-2">
-                <form method="dialog">
-                    <button class="rounded-xl bg-gray-200 px-4 py-2 text-sm">Batal</button>
-                </form>
-                <button type="submit" class="rounded-xl bg-green-600 px-6 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer
+            class="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum memperbarui.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button
+                        class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button
+                    class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
+                    form="editSellingPriceForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
     </div>
 
     <form method="dialog" class="modal-backdrop"><button>close</button></form>

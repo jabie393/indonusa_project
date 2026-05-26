@@ -33,7 +33,7 @@
                         <th scope="col" class="px-4 py-3 text-nowrap">Kode Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Kategori</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Description</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Deskripsi</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Harga Jual</th>
                         <th scope="col" class="px-4 py-3 text-center no-sort text-nowrap">Action</th>

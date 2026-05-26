@@ -109,29 +109,40 @@ function openEditModal(
     deskripsi = "",
     gambar = null
 ) {
-    const editIdEl = document.getElementById("edit_id");
-    if (editIdEl) editIdEl.value = id;
+    // helper to set either input value or element textContent
+    function setEl(el, value) {
+        if (!el) return;
+        try {
+            if ("value" in el) el.value = value;
+            else el.textContent = value;
+        } catch (e) {
+            // fallback
+            el.textContent = value;
+        }
+    }
 
-    const editKodeEl = document.getElementById("edit_kode_barang") || document.getElementById("edit_goods_code");
-    if (editKodeEl) editKodeEl.value = kode_barang;
+    setEl(document.getElementById("edit_id"), id || "");
+    setEl(document.getElementById("edit_kode_barang") || document.getElementById("edit_goods_code"), kode_barang || "");
+    setEl(document.getElementById("edit_nama_barang") || document.getElementById("edit_goods_name"), nama_barang || "");
+    // stock element id in modal is `edit_stock`
+    setEl(document.getElementById("edit_stock") || document.getElementById("edit_stok"), stok !== undefined ? stok : "");
+    // other display-only fields
+    setEl(document.getElementById("edit_kategori"), kategori || "");
+    setEl(document.getElementById("edit_unit"), satuan || "");
+    setEl(document.getElementById("edit_location"), lokasi || "");
+    setEl(document.getElementById("edit_harga_tampil"), harga || "");
+    setEl(document.getElementById("edit_deskripsi"), deskripsi || "");
 
-    const editNamaEl = document.getElementById("edit_nama_barang") || document.getElementById("edit_goods_name");
-    if (editNamaEl) editNamaEl.value = nama_barang;
-
-    const editStokEl = document.getElementById("edit_stok");
-    if (editStokEl) editStokEl.value = stok;
-
-    const editHargaEl = document.getElementById("edit_harga_tampil");
-    if (editHargaEl) editHargaEl.value = harga;
-
-    const editDeskripsiEl = document.getElementById("edit_deskripsi");
-    if (editDeskripsiEl) editDeskripsiEl.value = deskripsi;
-
-    // Update modal title
+    // Update modal title: preserve any title set by the Blade template
     const modalTitle = document.getElementById("editBarangModalTitle");
     if (modalTitle) {
-        modalTitle.innerText = "Edit Barang";
+        // intentionally do not overwrite modalTitle.textContent so Blade's title remains (e.g. "Edit Gambar Barang")
     }
+
+    // subtitle and status (support display-only elements)
+    const subtitleEl = document.getElementById('edit_subtitle');
+    if (subtitleEl) subtitleEl.textContent = (nama_barang ? nama_barang : '') + (kode_barang ? ' (' + kode_barang + ')' : '');
+    setEl(document.getElementById('edit_status'), status_listing || '');
 
     // Preview gambar jika ada
     const editImagePreview = document.getElementById("edit_image-preview");
@@ -404,4 +415,29 @@ $(document).on("click", ".edit-selling-price-btn", function (e) {
     const kode = $(this).data("kode");
     const harga = $(this).data("harga");
     openEditSellingPriceModal(id, nama, kode, harga);
+});
+
+// Open detail modal for any role
+$(document).on('click', '.view-detail-btn', function (e) {
+    e.preventDefault();
+    const $el = $(this);
+    const data = {
+        id: $el.data('id'),
+        nama: $el.data('nama'),
+        kode: $el.data('kode'),
+        status: $el.data('status'),
+        kategori: $el.data('kategori'),
+        stok: $el.data('stok'),
+        satuan: $el.data('satuan'),
+        lokasi: $el.data('lokasi'),
+        deskripsi: $el.data('deskripsi'),
+        gambar: $el.data('gambar'),
+        buy_price: $el.data('buy_price'),
+        selling_price: $el.data('harga') || $el.data('selling_price')
+    };
+    if (typeof openDetailModal === 'function') {
+        openDetailModal(data);
+    } else {
+        console.warn('openDetailModal not found');
+    }
 });

@@ -34,11 +34,10 @@ use App\Models\Barang; ?>
                     <tr>
                         <th scope="col" class="px-4 py-3 text-nowrap">Status Listing</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Kode Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Kategori</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Deskripsi</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Satuan</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Lokasi</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Harga Beli</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Status Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap no-sort text-center">Action</th>
@@ -51,11 +50,10 @@ use App\Models\Barang; ?>
                             <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
                             <td class="px-4 py-3">{{ $barang->category }}</td>
+                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
+                            <td class="px-4 max-w-xs truncate">{{ $barang->description }}</td>
                             <td class="px-4 py-3">{{ $barang->stock }}</td>
-                            <td class="px-4 py-3">{{ $barang->unit }}</td>
-                            <td class="px-4 py-3">{{ $barang->location }}</td>
                             <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
                                 <div class="flex w-full items-center justify-between">
                                     <span>Rp</span>
@@ -139,7 +137,9 @@ use App\Models\Barang; ?>
                                             {{-- Note modal --}}
                                             <button
                                                 class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                data-catatan="{{ $barang->note ?? '' }}">
+                                                data-catatan="{{ $barang->note ?? '' }}"
+                                                data-nama="{{ $barang->goods_name }}"
+                                                data-kode="{{ $barang->goods_code }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -200,7 +200,10 @@ use App\Models\Barang; ?>
                                         @else
                                             {{-- Note modal --}}
                                             <button
-                                                class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
+                                                class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                data-catatan="{{ $barang->note ?? '' }}"
+                                                data-nama="{{ $barang->goods_name }}"
+                                                data-kode="{{ $barang->goods_code }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"

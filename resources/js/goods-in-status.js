@@ -238,12 +238,26 @@ $(document).on("click", ".edit-barang-btn", function (e) {
     openEditModal(params);
 });
 
-// Handler untuk tombol Note
+// Handler untuk tombol Note — gunakan openNoteModal jika tersedia to populate subtitle
 $(document).on("click", ".note-btn", function (e) {
     e.preventDefault();
-    const catatan = $(this).data("catatan") || "Tidak ada catatan";
-    $("#catatanContent").text(catatan);
+    const $btn = $(this);
+    const catatan = $btn.data("catatan") || $btn.data("note") || "Tidak ada catatan";
+    const nama = $btn.data("nama") || $btn.data("nama_barang") || "";
+    const kode = $btn.data("kode") || "";
 
+    if (typeof window.openNoteModal === "function") {
+        window.openNoteModal({ nama: nama, kode: kode, catatan: catatan });
+        return;
+    }
+
+    // Fallback: simple fill and show (also set subtitle)
+    $("#catatanContent").text(catatan);
+    const subtitleEl = document.getElementById("note_subtitle");
+    if (subtitleEl) {
+        const subtitleText = nama && kode ? (nama + ' (' + kode + ')') : (nama || kode || '');
+        subtitleEl.textContent = subtitleText;
+    }
     const noteModal = document.getElementById("noteModal");
     if (noteModal && typeof noteModal.showModal === "function") {
         noteModal.showModal();
