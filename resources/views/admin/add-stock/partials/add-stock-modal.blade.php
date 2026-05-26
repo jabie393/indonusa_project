@@ -113,8 +113,8 @@
                                 <p class="text-sm font-mono font-bold text-slate-800" id="goods_code">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Harga Beli</label>
-                                <p class="text-sm font-medium text-slate-700" id="buy_price">-</p>
+                                <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Harga Jual</label>
+                                <p class="text-sm font-medium text-slate-700" id="selling_price">-</p>
                             </div>
                         </div>
                     </div>

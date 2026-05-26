@@ -31,11 +31,10 @@
                     <tr>
                         <th scope="col" class="px-4 py-3 text-nowrap">Status Listing</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Kode Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Kategori</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Description</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Satuan</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Lokasi</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Harga Jual</th>
                         <th scope="col" class="px-4 py-3 text-center no-sort text-nowrap">Action</th>
                     </tr>
@@ -47,11 +46,10 @@
                             <td scope="row" class="whitespace-nowrap px-4 font-medium text-gray-900 dark:text-white">
                                 {{ $barang->goods_code }}
                             </td>
-                            <td class="px-4">{{ $barang->goods_name }}</td>
                             <td class="px-4">{{ $barang->category }}</td>
+                            <td class="px-4">{{ $barang->goods_name }}</td>
+                            <td class="px-4 max-w-xs truncate">{{ $barang->description }}</td>
                             <td class="px-4">{{ $barang->stock }}</td>
-                            <td class="px-4">{{ $barang->unit }}</td>
-                            <td class="px-4">{{ $barang->location }}</td>
                             <td class="px-4 text-nowrap font-medium text-slate-700">
                                 <div class="flex justify-between items-center w-full">
                                     <span>Rp</span>
@@ -71,7 +69,7 @@
                                             data-nama="{{ $barang->goods_name }}"
                                             data-kategori="{{ $barang->category }}" data-stok="{{ $barang->stock }}"
                                             data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
-                                            data-harga="{{ $barang->buy_price }}"
+                                            data-harga="{{ $barang->selling_price }}"
                                             data-deskripsi="{{ $barang->description }}"
                                             data-gambar="{{ $barang->image }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -82,7 +80,7 @@
                                                 <path d="M12 5v14"></path>
                                             </svg>
                                             <span
-                                                class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Tambah
+                                                class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Add
                                                 Stock</span>
                                         </button>
                                     </div>

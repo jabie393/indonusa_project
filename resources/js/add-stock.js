@@ -18,7 +18,7 @@ function openEditModal(
     document.getElementById("location").textContent = lokasi ?? "-";
     document.getElementById("status_listing").textContent =
         status_listing ?? "-";
-    document.getElementById("buy_price").textContent = 
+    document.getElementById("selling_price").textContent = 
         harga && !isNaN(harga) ? `Rp ${parseInt(harga).toLocaleString('en-US')}` : (harga ?? "-");
     document.getElementById("unit").textContent = satuan ?? "-";
     document.getElementById("current_stock").textContent = stok ?? "-";
