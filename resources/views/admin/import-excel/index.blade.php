@@ -111,6 +111,50 @@
                     </div>
 
                 </div>
+                <style>
+                    /* Apply overrides only when dark mode is active so light mode keeps default DataTables styles */
+                    .dark body table#DataTableExcel thead th,
+                    .dark table#DataTableExcel thead th,
+                    .dark .dataTables_wrapper table.dataTable thead th,
+                    .dark .dataTables_wrapper .dataTables_scrollHead table thead th,
+                    .dark .dataTables_wrapper .dataTables_scrollHead table thead th,
+                    .dark .dataTables_wrapper table.dataTable thead th,
+                    /* FixedColumns clones and cells in dark mode */
+                    .dark .dtfc-fixed-start,
+                    .dark .dtfc-fixed-end,
+                    .dark .dtfc-fixed-center,
+                    .dark .dtfc-fixed,
+                    .dark .DTFC_Cloned,
+                    .dark .DTFC_LeftWrapper,
+                    .dark .DTFC_RightWrapper {
+                        background-color: #374151 !important; /* gray-700 */
+                        color: #9CA3AF !important; /* gray-400 */
+                        border-color: rgba(255,255,255,0.04) !important;
+                    }
+
+                    /* FixedHeader / ScrollHead clones (dark mode only) */
+                    .dark .dataTables_fixedHeader thead th,
+                    .dark .dataTables_scrollHeadInner table thead th,
+                    .dark .dataTables_scrollHeadInner table thead td {
+                        background-color: #374151 !important;
+                        color: #9CA3AF !important;
+                        border-color: rgba(255,255,255,0.04) !important;
+                    }
+
+                    /* Dark-mode CSS variable override for FixedColumns only inside .dark */
+                    .dark :root[data-theme-dark] {
+                        --dtfc-thead-cell_background: #374151;
+                    }
+
+                    /* Remove DataTables header background-image in dark mode which may show white tile */
+                    .dark .dataTables_wrapper .sorting,
+                    .dark .dataTables_wrapper .sorting_asc,
+                    .dark .dataTables_wrapper .sorting_desc,
+                    .dark .dataTables_wrapper thead th {
+                        background-image: none !important;
+                    }
+                </style>
+
                 <div class="mb-3">
                     <table class="table w-full text-left text-sm text-gray-500 dark:text-gray-400" id="DataTableExcel">
                         <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -125,7 +169,7 @@
                                 <th class="min-w-[150px] px-4 py-3">Satuan</th>
                                 <th class="min-w-[150px] px-4 py-3">Status Listing</th>
                                 <th class="min-w-[150px] px-4 py-3">Gambar</th>
-                                <th class="px-4 py-3">Action</th>
+                                <th class="px-4 py-3 bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">Action</th>
                             </tr>
                         </thead>
                         <tbody class="overflow-x-scroll">
@@ -134,7 +178,7 @@
                                     <div class="relative">
                                         <input type="text"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                            readonly>
+                                            placeholder="Auto Generate" readonly>
                                         <button type="button"
                                             class="refresh-kode-barang-btn absolute inset-y-0 right-0 flex items-center pr-3">
                                             <svg class="h-5 w-5 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
@@ -161,10 +205,10 @@
                                         required>
                                 </td>
                                 <td>
-                                    <select name="" id=""
-                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        required>
-                                        <option value="" disabled selected>Pilih Kategori</option>
+                                    <select disabled name="" id=""
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-slate-500 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        required onchange="this.classList.remove('text-slate-500'); this.classList.add('text-slate-900', 'dark:text-white')">
+                                        <option disabled selected value="">Pilih Kategori</option>
                                         @foreach ($kategoriList as $kategori)
                                             <option value="{{ $kategori }}">{{ $kategori }}</option>
                                         @endforeach
@@ -226,7 +270,7 @@
                                 </td>
 
                                 <td>
-                                    <button type="button" class="btn remove-row rounded-md bg-red-500 text-white">
+                                    <button type="button" class="btn remove-row rounded-md bg-red-500 text-white dark:bg-red-600 dark:hover:bg-red-700 dark:text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

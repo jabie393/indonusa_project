@@ -143,6 +143,50 @@
                     </div>
 
                 </div>
+                <style>
+                    /* Apply overrides only when dark mode is active so light mode keeps default DataTables styles */
+                    .dark body table#DataTableExcel thead th,
+                    .dark table#DataTableExcel thead th,
+                    .dark .dataTables_wrapper table.dataTable thead th,
+                    .dark .dataTables_wrapper .dataTables_scrollHead table thead th,
+                    .dark .dataTables_wrapper .dataTables_scrollHead table thead th,
+                    .dark .dataTables_wrapper table.dataTable thead th,
+                    /* FixedColumns clones and cells in dark mode */
+                    .dark .dtfc-fixed-start,
+                    .dark .dtfc-fixed-end,
+                    .dark .dtfc-fixed-center,
+                    .dark .dtfc-fixed,
+                    .dark .DTFC_Cloned,
+                    .dark .DTFC_LeftWrapper,
+                    .dark .DTFC_RightWrapper {
+                        background-color: #374151 !important; /* gray-700 */
+                        color: #9CA3AF !important; /* gray-400 */
+                        border-color: rgba(255,255,255,0.04) !important;
+                    }
+
+                    /* FixedHeader / ScrollHead clones (dark mode only) */
+                    .dark .dataTables_fixedHeader thead th,
+                    .dark .dataTables_scrollHeadInner table thead th,
+                    .dark .dataTables_scrollHeadInner table thead td {
+                        background-color: #374151 !important;
+                        color: #9CA3AF !important;
+                        border-color: rgba(255,255,255,0.04) !important;
+                    }
+
+                    /* Dark-mode CSS variable override for FixedColumns only inside .dark */
+                    .dark :root[data-theme-dark] {
+                        --dtfc-thead-cell_background: #374151;
+                    }
+
+                    /* Remove DataTables header background-image in dark mode which may show white tile */
+                    .dark .dataTables_wrapper .sorting,
+                    .dark .dataTables_wrapper .sorting_asc,
+                    .dark .dataTables_wrapper .sorting_desc,
+                    .dark .dataTables_wrapper thead th {
+                        background-image: none !important;
+                    }
+                </style>
+
                 <div class="mb-3">
                     <table class="table w-full text-left text-sm text-gray-500 dark:text-gray-400"
                            id="DataTableExcel">
@@ -154,15 +198,15 @@
                                 <th class="w-[15%] px-4 py-3">Kategori</th>
                                 <th class="w-[10%] px-4 py-3">Stok</th>
                                 <th class="w-[15%] px-4 py-3">Harga Beli</th>
-                                <th class="w-[10%] px-4 py-3">Action</th>
+                                <th class="w-[10%] px-4 py-3 bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-400">Action</th>
                             </tr>
                         </thead>
                         <tbody class="overflow-x-scroll">
                             <tr>
                                 <td>
                                     <input type="text"
-                                           class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                           placeholder="Auto"
+                                           class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                           placeholder="Auto Generate"
                                            readonly>
                                 </td>
                                 <td>
@@ -179,7 +223,9 @@
                                            required>
                                 </td>
                                 <td>
-                                    <select disabled class="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:text-sm">
+                                    <select disabled class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-slate-500 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        required onchange="this.classList.remove('text-slate-400'); this.classList.add('text-slate-500', 'dark:text-white')">
+                                        <option value="" disabled selected>Pilih Kategori</option>
                                         @foreach (\App\Models\Barang::KATEGORI as $cat)
                                             <option value="{{ $cat }}">{{ $cat }}</option>
                                         @endforeach
@@ -207,8 +253,8 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <button type="button"
-                                            class="btn remove-row rounded-md bg-red-500 text-white">
+                                        <button type="button"
+                                            class="btn remove-row rounded-md bg-red-500 text-white dark:bg-red-600 dark:hover:bg-red-700 dark:text-white">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              width="24"
                                              height="24"

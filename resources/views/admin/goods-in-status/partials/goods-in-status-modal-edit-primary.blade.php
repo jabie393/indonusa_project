@@ -101,8 +101,13 @@
 
                 <!-- Status Listing -->
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="edit_status_listing">Status Listing</label>
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                            for="edit_status_listing">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 8H16M8 12H16M10 16H14M3.5 12C3.5 5.5 5.5 3.5 12 3.5C18.5 3.5 20.5 5.5 20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12Z" />
+                            </svg>
+                            Status Listing
+                        </label>
                     <select
                         class="w-full appearance-none border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                         id="edit_status_listing" name="status_listing" required>

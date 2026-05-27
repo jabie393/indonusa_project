@@ -145,11 +145,12 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     function generateKodeFromCategory(kategori, nama, rowIndex) {
-        // pakai singkatan kategori bila ada, jika tidak gunakan 2-3 huruf awal dari nama barang
-        let sing =
-            kategori && kategoriSingkatanLocal[kategori]
-                ? kategoriSingkatanLocal[kategori]
-                : "";
+        // pakai singkatan kategori bila ada (normalize key), jika tidak gunakan 2-3 huruf awal dari nama barang
+        let sing = "";
+        if (kategori) {
+            const key = String(kategori).trim().toUpperCase();
+            sing = kategoriSingkatanLocal[kategori] || kategoriSingkatanLocal[key] || "";
+        }
         if (!sing) {
             if (nama) {
                 const parts = String(nama).trim().split(/\s+/);
@@ -774,10 +775,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Get necessary data for generation
                 let kategori = "";
-                // Try getting category from select or hidden
-                const catSel = tr.querySelector("td:nth-child(3) select");
+                // Category cell is the 4th column (Kode=1, Nama=2, Deskripsi=3, Kategori=4)
+                const catSel = tr.querySelector("td:nth-child(4) select");
                 const catHidden = tr.querySelector(
-                    "td:nth-child(3) input[type='hidden']"
+                    "td:nth-child(4) input[type='hidden']"
                 );
                 if (catSel) kategori = catSel.value;
                 else if (catHidden) kategori = catHidden.value;
