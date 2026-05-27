@@ -89,7 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
             customClass: {
                 popup: "rounded-2xl!",
             },
+        }).then(() => {
+            if (window.sweetCallback && typeof window.sweetCallback === 'function') {
+                window.sweetCallback();
+                window.sweetCallback = null;
+            }
         });
+        window.sweetTitle = null;
+        window.sweetText = null;
     }
 
     // Error alert

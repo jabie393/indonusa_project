@@ -16,15 +16,15 @@
                 </form>
             </div>
         </div>
-        <form action="{{ route('catalog.store') }}" method="POST" enctype="multipart/form-data" class="relative h-full flex-col gap-4 overflow-hidden p-4">
+        <form id="createCatalogForm" action="{{ route('catalog.store') }}" method="POST" enctype="multipart/form-data" class="relative flex h-full flex-col gap-4 overflow-hidden p-4 min-h-0">
             @csrf
             <div class="grid grid-cols-5 gap-4">
-                <div id="create_catalog_cover_preview" class="mt-2 flex w-full h-full justify-center col-span-2 row-span-full">
-                    <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
+                <div id="create_catalog_cover_preview" class="flex w-full h-full justify-center col-span-2 row-span-full">
+                    <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 overflow-hidden">
                     Cover PDF akan muncul setelah upload
                     </div>
                 </div>
-                <div class="relative h-full overflow-auto text-black dark:text-gray-200 col-span-3 ">
+                <div class="relative overflow-auto flex-1 min-h-0 text-black dark:text-gray-200 col-span-3 ">
                     <div class="form-control relative w-full px-2" x-data="{
                         open: false,
                         search: '',
@@ -72,7 +72,7 @@
     
                         <!-- Quick Badges -->
                         <div class="mt-3 flex flex-wrap items-center gap-1.5">
-                            <span class="mr-1 text-[10px] font-bold uppercase tracking-wider opacity-40">Brand yang sudah ada:</span>
+                            <span class="mr-1 text-[10px] font-bold uppercase tracking-wider opacity-40">Tersedia:</span>
                             <template x-for="brand in brands.slice(0, 5)" :key="brand">
                                 <button type="button" @click="search = brand" class="badge badge-sm badge-outline hover:badge-primary cursor-pointer px-3 py-2.5 font-medium transition-all duration-300" :class="search === brand ? 'badge-primary' : ''">
                                     <span x-text="brand"></span>
@@ -91,7 +91,7 @@
                         <!-- Progress Bar Container -->
                         <div id="upload_progress_container" class="mt-4 hidden">
                             <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-medium text-primary">Sedang mengunggah...</span>
+                                <span id="upload_text" class="text-xs font-medium text-primary">Sedang mengunggah...</span>
                                 <span id="upload_percentage" class="text-xs font-medium text-primary">0%</span>
                             </div>
                             <progress id="upload_progress_bar" class="progress progress-primary w-full" value="0" max="100"></progress>
@@ -102,16 +102,23 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-end p-2 ">
-                <button type="submit" id="submit_btn" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2.5 font-semibold text-white hover:bg-[#19426d] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="submit_btn_text">Simpan</span>
-                </button>
-            </div>
         </form>
+
+            <footer class="sticky bottom-0 left-0 right-0 z-10 flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+                <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+                <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                    <form method="dialog">
+                        <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                            Batal
+                        </button>
+                    </form>
+                    <button id="submit_btn" class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl" form="createCatalogForm" style="background-image: var(--gradient-brand)" type="submit">
+                        <span id="submit_btn_text">Tambah Katalog</span>
+                    </button>
+                </div>
+            </footer>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
+    <div class="modal-backdrop" role="button" aria-label="Close dialog" onclick="document.getElementById('createCatalogModal').close()"></div>
 </dialog>
 
 <script>
@@ -129,9 +136,9 @@
         submitBtnText.innerText = 'Tunggu upload selesai...';
 
         // 1. Show Cover Preview
-        if (fileType === 'application/pdf') {
+                        if (fileType === 'application/pdf') {
             coverPreview.innerHTML = `
-                <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
+                <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
                     <span class="loading loading-spinner loading-xs mr-2"></span> Menyiapkan pratinjau...
                 </div>
             `;
@@ -145,29 +152,28 @@
                     return;
                 }
 
-                pdfjsLib.getDocument(typedarray).promise.then(pdf => {
-                    return pdf.getPage(1);
-                }).then(page => {
+                pdfjsLib.getDocument(typedarray).promise
+                .then(pdf => pdf.getPage(1))
+                .then(page => {
                     const viewport = page.getViewport({ scale: 1.5 });
                     const canvas = document.createElement('canvas');
                     const context = canvas.getContext('2d');
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
 
-                    return page.render({
-                        canvasContext: context,
-                        viewport: viewport
-                    }).promise.then(() => {
-                        const dataUrl = canvas.toDataURL('image/png');
-                        document.getElementById('catalog_cover_base64').value = dataUrl;
-                        coverPreview.innerHTML = `
-                            <img src="${dataUrl}" 
-                                 class="h-96 w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
-                                 alt="Catalog Cover Preview" 
-                                 onclick="openImagePreview(this.src)">
-                        `;
-                    });
-                }).catch(err => {
+                    return page.render({ canvasContext: context, viewport: viewport }).promise.then(() => ({ canvas }));
+                })
+                .then(({ canvas }) => {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    document.getElementById('catalog_cover_base64').value = dataUrl;
+                    coverPreview.innerHTML = `
+                        <img src="${dataUrl}" 
+                             class="h-full w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
+                             alt="Catalog Cover Preview" 
+                             onclick="openImagePreview(this.src)">
+                    `;
+                })
+                .catch(err => {
                     console.error('Error rendering PDF preview:', err);
                 });
             };
@@ -177,7 +183,7 @@
             reader.onload = function(e) {
                 coverPreview.innerHTML = `
                     <img src="${e.target.result}" 
-                         class="h-96 w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
+                         class="h-full w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                          alt="Catalog Cover Preview" 
                          onclick="openImagePreview(this.src)">
                 `;
@@ -220,10 +226,11 @@
                 progressPercent.innerText = '100% - Selesai';
                 progressBar.classList.remove('progress-primary');
                 progressBar.classList.add('progress-success');
+                document.getElementById('upload_text').style.display = 'none';
                 
                 // Re-enable submit button
                 submitBtn.disabled = false;
-                submitBtnText.innerText = 'Simpan';
+                submitBtnText.innerText = 'Simpan Katalog';
             } else {
                 let errorMsg = 'Upload gagal';
                 try {
@@ -244,7 +251,7 @@
                     confirmButtonColor: '#225A97'
                 });
 
-                submitBtnText.innerText = 'Simpan';
+                submitBtnText.innerText = 'Simpan Katalog';
                 progressContainer.classList.add('hidden');
                 submitBtn.disabled = false; // Re-enable so user can try again
             }
@@ -257,16 +264,16 @@
                 text: 'Terjadi kesalahan koneksi saat mengunggah.',
                 confirmButtonColor: '#225A97'
             });
-            submitBtnText.innerText = 'Simpan';
+            submitBtnText.innerText = 'Simpan Katalog';
         };
 
         xhr.send(formData);
     });
 
     // Reset preview when modal is closed
-    document.getElementById('createCatalogModal').addEventListener('close', function() {
+        document.getElementById('createCatalogModal').addEventListener('close', function() {
         document.getElementById('create_catalog_cover_preview').innerHTML = `
-            <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
+            <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 overflow-hidden">
             Cover PDF
             </div>
         `;
@@ -276,7 +283,19 @@
         document.getElementById('upload_progress_container').classList.add('hidden');
         document.getElementById('upload_progress_bar').classList.remove('progress-success');
         document.getElementById('upload_progress_bar').classList.add('progress-primary');
+        document.getElementById('upload_text').style.display = 'block';
         document.getElementById('submit_btn').disabled = false;
-        document.getElementById('submit_btn_text').innerText = 'Simpan';
+        document.getElementById('submit_btn_text').innerText = 'Simpan Katalog';
     });
+
+    // Close dialog when clicking outside the modal box
+    (function() {
+        const dialog = document.getElementById('createCatalogModal');
+        if (!dialog) return;
+        dialog.addEventListener('click', function(e) {
+            const box = this.querySelector('.modal-box');
+            if (!box) return;
+            if (!box.contains(e.target)) this.close();
+        });
+    })();
 </script>

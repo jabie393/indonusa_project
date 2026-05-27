@@ -127,10 +127,10 @@
                                     <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
 
                                         @if ($catalog->catalog_file)
-                                            {{-- Lihat --}}
+                                            {{-- View --}}
                                             <a href="{{ asset('files/' . $catalog->catalog_file) }}"
                                                target="_blank"
-                                               class="group flex h-full cursor-pointer items-center justify-center bg-indigo-600 p-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:bg-indigo-500 dark:hover:bg-indigo-600">
+                                               class="group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      width="24"
                                                      height="24"
@@ -146,9 +146,9 @@
                                                             cy="12"
                                                             r="3"></circle>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Lihat</span>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">View</span>
                                             </a>
-                                            {{-- Unduh --}}
+                                            {{-- Download --}}
                                             <a href="{{ asset('files/' . $catalog->catalog_file) }}"
                                                download
                                                class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600">
@@ -169,7 +169,7 @@
                                                           x2="12"
                                                           y2="3"></line>
                                                 </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Unduh</span>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Download</span>
                                             </a>
                                         @endif
 

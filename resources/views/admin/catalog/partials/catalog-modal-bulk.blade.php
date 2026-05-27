@@ -23,10 +23,10 @@
             </div>
         </div>
 
-        <form id="bulkUploadForm"
-              onsubmit="event.preventDefault(); processBulkUpload();"
-              class="flex flex-col overflow-hidden">
-            <div class="space-y-6 overflow-y-auto p-6">
+                <form id="bulkUploadForm"
+                            onsubmit="event.preventDefault(); processBulkUpload();"
+                            class="flex h-full flex-col overflow-hidden min-h-0">
+                        <div class="space-y-6 overflow-auto flex-1 p-6 min-h-0 pb-24">
                 <!-- Instructions and Global Settings -->
                 <div class="flex flex-col gap-4 rounded-xl border border-gray-100 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-800 md:flex-row">
                     <div class="flex-1">
@@ -98,15 +98,15 @@
                                     class="btn btn-primary join-item px-4">Terapkan</button>
                         </div>
 
-                        <!-- Quick Badges -->
+                        <!-- Quick Badges (match create modal) -->
                         <div class="mt-3 flex flex-wrap items-center gap-1.5">
                             <span class="mr-1 text-[10px] font-bold uppercase tracking-wider opacity-40">Tersedia:</span>
-                            <template x-for="brand in brands.slice(0, 10)"
+                            <template x-for="brand in brands.slice(0, 5)"
                                       :key="brand">
                                 <button type="button"
                                         @click="search = brand"
-                                        class="badge badge-sm badge-outline hover:badge-primary cursor-pointer px-3 py-2.5 font-medium text-black transition-all duration-300 dark:text-white"
-                                        :class="search === brand ? 'badge-primary text-white' : ''">
+                                        class="badge badge-sm badge-outline hover:badge-primary cursor-pointer px-3 py-2.5 font-medium transition-all duration-300"
+                                        :class="search === brand ? 'badge-primary' : ''">
                                     <span x-text="brand"></span>
                                 </button>
                             </template>
@@ -148,27 +148,23 @@
                     </table>
                 </div>
 
-                <!-- Global Action Bar -->
-                <div id="bulk_action_bar"
-                     class="animate-pulse-slow hidden items-center justify-between rounded-xl border border-dashed border-[#225A97]/20 bg-[#225A97]/5 p-4 dark:bg-blue-900/10">
-                    <div class="flex items-center gap-3">
-                        <div id="bulk_status_indicator"
-                             class="badge badge-primary px-4 py-3 font-bold transition-all duration-300">
-                            Menunggu...
-                        </div>
-                        <span id="bulk_progress_text"
-                              class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                            0 file berhasil dari 0 total
-                        </span>
-                    </div>
-                    <button type="submit"
-                            id="start_bulk_upload_btn"
-                            class="btn btn-primary hover:shadow-primary/20 px-8 shadow-lg transition-all">
-                        Mulai Unggah Semua
-                    </button>
-                </div>
+                <!-- Global Action Bar (moved to footer) -->
             </div>
-        </form>
+                </form>
+            <footer class="sticky bottom-0 left-0 right-0 z-10 flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+                <div id="bulk_action_bar" class="animate-pulse-slow w-full flex items-center justify-between gap-4">
+                    <div id="bulk_progress_section" class="hidden flex items-center gap-3">
+                        <div id="bulk_status_indicator" class="badge badge-primary px-4 py-3 font-bold transition-all duration-300">Menunggu...</div>
+                        <span id="bulk_progress_text" class="text-sm font-medium text-gray-600 dark:text-gray-300">0 file berhasil dari 0 total</span>
+                    </div>
+                    <div class="flex items-center gap-2 ml-auto">
+                        <form method="dialog" class="m-0">
+                            <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">Batal</button>
+                        </form>
+                        <button type="submit" id="start_bulk_upload_btn" form="bulkUploadForm" class="hidden btn hover:shadow-primary/20 rounded-xl px-8 shadow-lg transition-all text-white" style="background-image: var(--gradient-brand)">Mulai Unggah Semua</button>
+                    </div>
+                </div>
+            </footer>
     </div>
     <form method="dialog"
           class="modal-backdrop bg-black/60 backdrop-blur-sm">
@@ -189,7 +185,8 @@
         const emptyRow = document.getElementById('empty_queue_row');
 
         if (emptyRow) emptyRow.remove();
-        document.getElementById('bulk_action_bar').classList.remove('hidden');
+        const bulkBar = document.getElementById('bulk_action_bar');
+        if (bulkBar) bulkBar.classList.remove('hidden');
 
         files.forEach((file, index) => {
             const id = 'row_' + Date.now() + '_' + index;
@@ -264,7 +261,8 @@
     function updateActionStatus() {
         const total = bulkQueue.length;
         const success = bulkQueue.filter(i => i.status === 'Selesai').length;
-        document.getElementById('bulk_progress_text').innerText = `${success} file berhasil dari ${total} total`;
+        const progressText = document.getElementById('bulk_progress_text');
+        if (progressText) progressText.innerText = `${success} file berhasil dari ${total} total`;
     }
 
     function updateQueueItem(id, key, value) {
@@ -297,14 +295,17 @@
     }
 
     function updateActionBar() {
-        const bar = document.getElementById('bulk_action_bar');
+        const progressSection = document.getElementById('bulk_progress_section');
+        const uploadBtn = document.getElementById('start_bulk_upload_btn');
+        if (!progressSection || !uploadBtn) return;
+        
         if (bulkQueue.length > 0) {
-            bar.classList.remove('hidden');
-            bar.classList.add('flex');
+            progressSection.classList.remove('hidden');
+            uploadBtn.classList.remove('hidden');
             updateActionStatus();
         } else {
-            bar.classList.add('hidden');
-            bar.classList.remove('flex');
+            progressSection.classList.add('hidden');
+            uploadBtn.classList.add('hidden');
         }
     }
 
@@ -314,11 +315,6 @@
         // 1. Check if queue is empty
         const itemsToUpload = bulkQueue.filter(i => i.status !== 'Selesai' && i.status !== 'Gagal');
         if (itemsToUpload.length === 0) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Info',
-                text: 'Tidak ada file baru untuk diunggah.'
-            });
             return;
         }
 
@@ -332,10 +328,40 @@
             }
         });
 
+        // 2. Validate all items have brand and name
+        const emptyItems = bulkQueue.filter(i => i.status !== 'Selesai' && i.status !== 'Gagal' && (!i.brand || !i.name));
+        if (emptyItems.length > 0) {
+            emptyItems.forEach(item => {
+                const row = document.getElementById(item.id);
+                if (row) {
+                    if (!item.brand) {
+                        const brandInput = row.querySelector('.brand-input');
+                        brandInput.classList.add('border-error');
+                        const errorMsg = brandInput.nextElementSibling;
+                        if (errorMsg) errorMsg.classList.remove('hidden');
+                    }
+                    if (!item.name) {
+                        const nameInput = row.querySelector('.name-input');
+                        nameInput.classList.add('border-error');
+                        const errorMsg = nameInput.nextElementSibling;
+                        if (errorMsg) errorMsg.classList.remove('hidden');
+                    }
+                }
+            });
+            return;
+        }
+
+        // Show progress section and upload button
+        const progressSection = document.getElementById('bulk_progress_section');
+        const uploadBtn = document.getElementById('start_bulk_upload_btn');
+        if (progressSection) progressSection.classList.remove('hidden');
+        if (uploadBtn) uploadBtn.classList.remove('hidden');
 
         isUploading = true;
-        document.getElementById('start_bulk_upload_btn').disabled = true;
-        document.getElementById('bulk_status_indicator').innerText = 'Sedang Memproses...';
+        const startBtn = document.getElementById('start_bulk_upload_btn');
+        if (startBtn) startBtn.disabled = true;
+        const statusIndicator = document.getElementById('bulk_status_indicator');
+        if (statusIndicator) statusIndicator.innerText = 'Sedang Memproses...';
         document.querySelectorAll('.remove-btn').forEach(b => b.classList.add('hidden'));
         document.querySelectorAll('.brand-input, .name-input').forEach(i => i.disabled = true);
 
@@ -366,11 +392,31 @@
         }
 
         isUploading = false;
-        document.getElementById('start_bulk_upload_btn').disabled = false;
-        document.getElementById('start_bulk_upload_btn').innerText = 'Selesai - Segarkan Halaman';
-        document.getElementById('start_bulk_upload_btn').onclick = () => window.location.reload();
-        document.getElementById('bulk_status_indicator').innerText = 'Selesai';
-        document.getElementById('bulk_status_indicator').className = 'badge badge-success py-3 px-4 font-bold';
+        const finishBtn = document.getElementById('start_bulk_upload_btn');
+        if (finishBtn) {
+            finishBtn.disabled = false;
+            finishBtn.innerText = 'Simpan Katalog';
+            finishBtn.onclick = () => {
+                // Close modal first
+                document.getElementById('bulkCatalogModal').close();
+                
+                // Show success alert after modal closes
+                setTimeout(() => {
+                    window.sweetTitle = 'Berhasil';
+                    window.sweetText = 'Semua file katalog berhasil diunggah!';
+                    window.sweetCallback = () => {
+                        window.location.reload();
+                    };
+                    const event = new Event('DOMContentLoaded');
+                    document.dispatchEvent(event);
+                }, 300);
+            };
+        }
+        const finishStatus = document.getElementById('bulk_status_indicator');
+        if (finishStatus) {
+            finishStatus.innerText = 'Selesai';
+            finishStatus.className = 'badge badge-success py-3 px-4 font-bold';
+        }
     }
 
     function uploadFileItem(item) {
@@ -468,7 +514,9 @@
             const data = await resp.json();
             throw new Error(data.message || 'Gagal menyimpan database');
         }
-        return await resp.json();
+        
+        const data = await resp.json();
+        return data;
     }
 
     function updateRowUI(id, status, progress, success = false, failure = false) {
@@ -518,7 +566,10 @@
                 </td>
             </tr>
         `;
-        document.getElementById('bulk_action_bar').classList.add('hidden');
+        const progressSection = document.getElementById('bulk_progress_section');
+        if (progressSection) progressSection.classList.add('hidden');
+        const uploadBtn = document.getElementById('start_bulk_upload_btn');
+        if (uploadBtn) uploadBtn.classList.add('hidden');
         const globalBrandInput = document.getElementById('global_brand_name');
         if (globalBrandInput) {
             globalBrandInput.value = '';
@@ -527,12 +578,17 @@
         document.getElementById('bulk_file_input').value = '';
 
         const startBtn = document.getElementById('start_bulk_upload_btn');
-        startBtn.disabled = false;
-        startBtn.innerText = 'Mulai Unggah Semua';
-        startBtn.onclick = processBulkUpload;
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.innerText = 'Mulai Unggah Semua';
+            startBtn.onclick = processBulkUpload;
+        }
 
-        document.getElementById('bulk_status_indicator').innerText = 'Menunggu...';
-        document.getElementById('bulk_status_indicator').className = 'badge badge-primary py-3 px-4 font-bold';
+        const statusIndicator = document.getElementById('bulk_status_indicator');
+        if (statusIndicator) {
+            statusIndicator.innerText = 'Menunggu...';
+            statusIndicator.className = 'badge badge-primary py-3 px-4 font-bold';
+        }
     }
 
     // Helper to hide errors on input

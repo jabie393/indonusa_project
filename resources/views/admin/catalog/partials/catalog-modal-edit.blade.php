@@ -16,16 +16,16 @@
                 </form>
             </div>
         </div>
-        <form id="editCatalogForm" action="" method="POST" enctype="multipart/form-data" class="relative flex h-full flex-col space-y-4 overflow-hidden p-4">
+        <form id="editCatalogForm" action="" method="POST" enctype="multipart/form-data" class="relative flex h-full flex-col gap-4 overflow-hidden p-4 min-h-0">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-5 gap-4">
-                <div id="edit_catalog_cover_preview" class="mt-2 flex w-full h-full justify-center col-span-2 row-span-full">
-                    <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
-                        Cover PDF akan muncul setelah upload
+                <div id="edit_catalog_cover_preview" class="flex w-full h-full justify-center col-span-2 row-span-full">
+                    <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 overflow-hidden">
+                    Cover PDF akan muncul setelah upload
                     </div>
                 </div>
-                <div class="relative h-full overflow-auto text-black dark:text-gray-200 col-span-3">
+                <div class="relative overflow-auto flex-1 min-h-0 text-black dark:text-gray-200 col-span-3">
                     <div id="edit_brand_container" class="form-control relative w-full px-2" x-data="{
                         open: false,
                         search: '',
@@ -91,7 +91,7 @@
                         <!-- Progress Bar Container -->
                         <div id="edit_upload_progress_container" class="mt-4 hidden">
                             <div class="flex items-center justify-between mb-1">
-                                <span class="text-xs font-medium text-primary">Sedang mengunggah...</span>
+                                <span id="edit_upload_text" class="text-xs font-medium text-primary">Sedang mengunggah...</span>
                                 <span id="edit_upload_percentage" class="text-xs font-medium text-primary">0%</span>
                             </div>
                             <progress id="edit_upload_progress_bar" class="progress progress-primary w-full" value="0" max="100"></progress>
@@ -103,16 +103,23 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-end p-2 ">
-                <button type="submit" id="edit_submit_btn" class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2.5 font-semibold text-white hover:bg-[#19426d] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="edit_submit_btn_text">Simpan Perubahan</span>
-                </button>
-            </div>
         </form>
+
+            <footer class="sticky bottom-0 left-0 right-0 z-10 flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+                <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+                <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                    <form method="dialog">
+                        <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                            Batal
+                        </button>
+                    </form>
+                    <button id="edit_submit_btn" class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl" form="editCatalogForm" style="background-image: var(--gradient-brand)" type="submit">
+                        <span id="edit_submit_btn_text">Simpan Perubahan</span>
+                    </button>
+                </div>
+            </footer>
     </div>
-    <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-    </form>
+    <div class="modal-backdrop" role="button" aria-label="Close dialog" onclick="document.getElementById('editCatalogModal').close()"></div>
 </dialog>
 
 <script>
@@ -141,15 +148,15 @@
         if (catalog.catalog_cover) {
             coverPreview.innerHTML = `
                 <img src="/files/${catalog.catalog_cover}" 
-                     class="h-96 w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
+                     class="h-full w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                      alt="Catalog Cover" 
                      onclick="openImagePreview(this.src)" 
                      onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
             `;
         } else {
             coverPreview.innerHTML = `
-                <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 text-center">
-                    Tidak ada gambar
+                <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 overflow-hidden">
+                Cover PDF akan muncul setelah upload
                 </div>
             `;
         }
@@ -172,11 +179,11 @@
 
         // 1. Show Cover Preview
         if (fileType === 'application/pdf') {
-            coverPreview.innerHTML = `
-                <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
-                    <span class="loading loading-spinner loading-xs mr-2"></span> Menyiapkan pratinjau...
-                </div>
-            `;
+                coverPreview.innerHTML = `
+                    <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400">
+                        <span class="loading loading-spinner loading-xs mr-2"></span> Menyiapkan pratinjau...
+                    </div>
+                `;
             const reader = new FileReader();
             reader.onload = function() {
                 const typedarray = new Uint8Array(this.result);
@@ -196,7 +203,7 @@
                     canvas.height = viewport.height;
                     canvas.width = viewport.width;
 
-                    return page.render({
+                        return page.render({
                         canvasContext: context,
                         viewport: viewport
                     }).promise.then(() => {
@@ -204,7 +211,7 @@
                         document.getElementById('edit_catalog_cover_base64').value = dataUrl;
                         coverPreview.innerHTML = `
                             <img src="${dataUrl}" 
-                                 class="h-96 w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
+                                 class="h-full w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                                  alt="Catalog Cover Preview" 
                                  onclick="openImagePreview(this.src)">
                         `;
@@ -219,7 +226,7 @@
             reader.onload = function(e) {
                 coverPreview.innerHTML = `
                     <img src="${e.target.result}" 
-                         class="h-96 w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
+                         class="h-full w-64 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105" 
                          alt="Catalog Cover Preview" 
                          onclick="openImagePreview(this.src)">
                 `;
@@ -262,6 +269,7 @@
                 progressPercent.innerText = '100% - Selesai';
                 progressBar.classList.remove('progress-primary');
                 progressBar.classList.add('progress-success');
+                document.getElementById('edit_upload_text').style.display = 'none';
                 
                 // Re-enable submit button
                 submitBtn.disabled = false;
@@ -306,19 +314,31 @@
     });
 
     // Reset preview when modal is closed
-    document.getElementById('editCatalogModal').addEventListener('close', function() {
-        document.getElementById('edit_catalog_cover_preview').innerHTML = `
-            <div class="flex h-96 w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 text-center">
-                Tidak ada gambar
-            </div>
-        `;
+        document.getElementById('editCatalogModal').addEventListener('close', function() {
+            document.getElementById('edit_catalog_cover_preview').innerHTML = `
+                <div class="flex h-full w-64 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-xs text-gray-400 overflow-hidden">
+                Cover PDF
+                </div>
+            `;
         document.getElementById('edit_catalog_file').value = '';
         document.getElementById('edit_catalog_cover_base64').value = '';
         document.getElementById('edit_catalog_file_path').value = '';
         document.getElementById('edit_upload_progress_container').classList.add('hidden');
         document.getElementById('edit_upload_progress_bar').classList.remove('progress-success');
         document.getElementById('edit_upload_progress_bar').classList.add('progress-primary');
+        document.getElementById('edit_upload_text').style.display = 'block';
         document.getElementById('edit_submit_btn').disabled = false;
         document.getElementById('edit_submit_btn_text').innerText = 'Simpan Perubahan';
     });
+
+    // Close dialog when clicking outside the modal box
+    (function() {
+        const dialog = document.getElementById('editCatalogModal');
+        if (!dialog) return;
+        dialog.addEventListener('click', function(e) {
+            const box = this.querySelector('.modal-box');
+            if (!box) return;
+            if (!box.contains(e.target)) this.close();
+        });
+    })();
 </script>

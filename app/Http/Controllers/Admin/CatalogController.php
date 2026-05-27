@@ -75,12 +75,13 @@ class CatalogController extends Controller
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Catalog created successfully',
+                'title' => 'Berhasil',
+                'message' => 'Katalog berhasil disimpan!',
                 'catalog' => $catalog
             ]);
         }
         
-        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Catalog created successfully.');
+        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Katalog berhasil disimpan.');
     }
 
     public function upload(Request $request)
@@ -175,7 +176,7 @@ class CatalogController extends Controller
         }
 
         $catalog->save();
-        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Catalog updated successfully.');
+        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Katalog berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -188,7 +189,7 @@ class CatalogController extends Controller
             Storage::disk('public')->delete($catalog->catalog_cover);
         }
         $catalog->delete();
-        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Catalog deleted successfully.');
+        return redirect()->route('catalog.index')->with('title', 'Berhasil!')->with('text', 'Katalog berhasil dihapus.');
     }
 
     /**
