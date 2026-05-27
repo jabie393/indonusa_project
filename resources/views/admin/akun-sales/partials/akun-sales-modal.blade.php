@@ -21,7 +21,7 @@
         </div>
         <form id="createUserForm" action="{{ route('akun-sales.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 
                     @csrf
                     <div class="col-span-2 mb-4">

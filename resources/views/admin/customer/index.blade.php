@@ -1,10 +1,10 @@
 <x-app-layout>
     <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
-        <div class="p-4">
+        <div class="px-4">
             <button onclick="createCustomerModal.showModal()"
-                class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
                 <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true">
                     <path clip-rule="evenodd" fill-rule="evenodd"
@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <div class="p-4">
+        <div class="px-4">
             {{-- Search --}}
             <form action="{{ route('customer.index') }}" method="GET" class="block pl-2">
                 <label for="topbar-search" class="sr-only">Search</label>

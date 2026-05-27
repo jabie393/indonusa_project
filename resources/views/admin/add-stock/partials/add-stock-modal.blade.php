@@ -68,8 +68,12 @@
                     </div>
 
                     <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                        <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Status
-                            Listing</label>
+                        <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 8H16M8 12H16M10 16H14M3.5 12C3.5 5.5 5.5 3.5 12 3.5C18.5 3.5 20.5 5.5 20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12Z" />
+                            </svg>
+                            Status Listing
+                        </label>
                         <p class="text-sm font-medium text-slate-700" id="status_listing">-</p>
                     </div>
                 </div>
@@ -79,12 +83,28 @@
                     <!-- Info Section -->
                     <div class="space-y-5">
                         <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Nama Barang</label>
+                                <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400" for="goods_name">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                                        <path d="M12 22V12"></path>
+                                        <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                                        <path d="m7.5 4.27 9 5.15"></path>
+                                    </svg>
+                                    Nama Barang
+                                </label>
                             <div class="text-lg font-bold text-slate-800" id="goods_name">-</div>
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Deskripsi</label>
+                            <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400" for="description">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"></path>
+                                    <path d="M7 7V3h10v4"></path>
+                                    <path d="M8 11h8"></path>
+                                    <path d="M8 15h6"></path>
+                                </svg>
+                                Deskripsi
+                            </label>
                             <div class="min-h-[60px] text-sm leading-relaxed text-slate-600 italic" id="description">-
                             </div>
                         </div>
@@ -92,34 +112,70 @@
                         <!-- Detail Grid -->
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label
-                                    class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kategori</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"></path>
+                                        <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
+                                    </svg>
+                                    Kategori
+                                </label>
                                 <p class="text-sm font-medium text-slate-700" id="category">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Stok
-                                    Saat Ini</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+                                        <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+                                        <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
+                                    </svg>
+                                    Stok Saat Ini
+                                </label>
                                 <p class="text-sm font-bold text-blue-600" id="current_stock">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label
-                                    class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Satuan</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"></path>
+                                        <path d="m14.5 12.5 2-2"></path>
+                                        <path d="m11.5 9.5 2-2"></path>
+                                        <path d="m8.5 6.5 2-2"></path>
+                                        <path d="m17.5 15.5 2-2"></path>
+                                    </svg>
+                                    Satuan
+                                </label>
                                 <p class="text-sm font-medium text-slate-700" id="unit">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label
-                                    class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Lokasi</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    Lokasi
+                                </label>
                                 <p class="text-sm font-medium text-slate-700" id="location">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kode
-                                    Barang</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <line x1="4" x2="20" y1="9" y2="9"></line>
+                                        <line x1="4" x2="20" y1="15" y2="15"></line>
+                                        <line x1="10" x2="8" y1="3" y2="21"></line>
+                                        <line x1="16" x2="14" y1="3" y2="21"></line>
+                                    </svg>
+                                    Kode Barang
+                                </label>
                                 <p class="text-sm font-mono font-bold text-slate-800" id="goods_code">-</p>
                             </div>
                             <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                                <label
-                                    class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Harga
-                                    Jual</label>
+                                <label class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                        <circle cx="12" cy="12" r="2"></circle>
+                                        <path d="M6 12h.01M18 12h.01"></path>
+                                    </svg>
+                                    Harga Jual
+                                </label>
                                 <p class="text-sm font-medium text-slate-700" id="selling_price">-</p>
                             </div>
                         </div>
@@ -148,18 +204,29 @@
                                 <input type="hidden" name="id" id="id">
 
                                 <div class="space-y-2">
-                                    <label for="stock" class="text-xs font-semibold text-slate-300">Stok Baru</label>
+                                    <label for="stock" class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
+                                            <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
+                                        </svg>
+                                        Stok Baru
+                                    </label>
                                     <input type="number" name="stock" id="stock"
                                         class="w-full rounded-xl border-0 bg-white/10 px-4 py-2.5 text-sm text-white ring-1 ring-white/20 focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                                         required min="0" placeholder="0">
                                 </div>
 
                                 <div class="space-y-2">
-                                    <label for="unit_cost_display" class="text-xs font-semibold text-slate-300">Harga
-                                        Beli Baru</label>
+                                    <label for="unit_cost_display" class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+                                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                            <circle cx="12" cy="12" r="2"></circle>
+                                            <path d="M6 12h.01M18 12h.01"></path>
+                                        </svg>
+                                        Harga Beli Baru
+                                    </label>
                                     <div class="relative">
-                                        <span
-                                            class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
+                                        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
                                         <input type="text" id="unit_cost_display"
                                             class="w-full rounded-xl border-0 bg-white/10 pl-10 pr-4 py-2.5 text-sm text-white ring-1 ring-white/20 focus:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
                                             required placeholder="0">

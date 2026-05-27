@@ -1,8 +1,8 @@
 <x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="p-4">
-            <button onclick="createUserModal.showModal()"
-                    class="flex cursor-pointer items-center justify-center rounded-lg bg-[#1c4d81] px-4 py-2 text-sm font-medium text-white hover:bg-[#0D223A] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="px-4">
+                <button onclick="createUserModal.showModal()"
+                    class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
                 <svg class="mr-2 h-3.5 w-3.5"
                      fill="currentColor"
                      viewbox="0 0 20 20"
@@ -15,7 +15,7 @@
                 Tambah Akun Sales
             </button>
         </div>
-        <div class="mr-5 flex max-w-full shrink-0 flex-col items-stretch justify-end space-y-2 py-5 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0 md:py-0">
+        <div class="mr-5 flex items-center space-x-3 md:w-auto">
             {{-- Search --}}
             <form action="{{ route('akun-sales.index') }}"
                   method="GET"

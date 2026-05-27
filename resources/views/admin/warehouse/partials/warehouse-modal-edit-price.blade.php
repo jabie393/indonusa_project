@@ -20,7 +20,14 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="text-xs font-bold text-slate-500">Harga Jual (IDR)</label>
+                    <label class="flex items-center mb-2 gap-2 text-xs font-bold text-slate-500" for="edit_selling_price">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                            <circle cx="12" cy="12" r="2"></circle>
+                            <path d="M6 12h.01M18 12h.01"></path>
+                        </svg>
+                        Harga Jual (IDR)
+                    </label>
                     <div class="relative">
                         <span class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
                         <input id="edit_selling_price" name="selling_price" type="text" inputmode="decimal" required
@@ -28,7 +35,15 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-xs font-bold text-slate-500">Catatan</label>
+                    <label class="flex items-center mb-2 gap-2 text-xs font-bold text-slate-500" for="note">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"></path>
+                            <path d="M7 7V3h10v4"></path>
+                            <path d="M8 11h8"></path>
+                            <path d="M8 15h6"></path>
+                        </svg>
+                        Catatan
+                    </label>
                     <textarea name="note" class="w-full rounded-2xl border border-slate-200 px-4 py-2 text-sm outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white" rows="3"
                         placeholder="Alasan perubahan harga..." required></textarea>
                 </div>
@@ -37,7 +52,7 @@
         </form>
 
         <footer
-            class="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
             <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum memperbarui.</p>
             <div class="flex flex-1 justify-end gap-3 sm:flex-none">
                 <form method="dialog">

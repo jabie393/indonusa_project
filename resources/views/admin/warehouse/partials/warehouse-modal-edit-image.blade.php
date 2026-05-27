@@ -10,7 +10,9 @@
                     <svg class="h-5 w-5" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
                         stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"
                         xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
+                        <path
+                            d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
+                        </path>
                         <path d="M12 22V12"></path>
                         <polyline points="3.29 7 12 12 20.71 7"></polyline>
                         <path d="m7.5 4.27 9 5.15"></path>
@@ -22,7 +24,8 @@
                 </div>
             </div>
             <form method="dialog">
-                <button aria-label="Tutup" class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                <button aria-label="Tutup"
+                    class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -33,7 +36,7 @@
         </header>
 
         <!-- Form Content -->
-            <form id="editBarangForm" method="POST" enctype="multipart/form-data"
+        <form id="editBarangForm" method="POST" enctype="multipart/form-data"
             class="grid flex-1 gap-8 overflow-y-auto p-7 md:grid-cols-[300px_1fr]">
             @csrf
             @method('PUT')
@@ -42,7 +45,8 @@
             <!-- Left Column: Image Upload Section -->
             <div class="flex flex-col justify-between items-start h-full">
                 <div>
-                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 mt-1 mb-2">
+                    <label
+                        class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mt-1 mb-2">
                         <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
                             xmlns="http://www.w3.org/2000/svg">
@@ -54,9 +58,13 @@
                         </svg>
                         Gambar Barang
                     </label>
-                    <div id="edit_image-dropzone" class="group relative aspect-square w-full md:w-[280px] max-w-full flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 transition hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl p-2 cursor-pointer">
-                        <div id="edit_upload-placeholder" class="flex h-full w-full flex-col items-center justify-center text-slate-300 z-10">
-                            <svg class="h-16 w-16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div id="edit_image-dropzone"
+                        class="group relative aspect-square w-full md:w-[280px] max-w-full flex items-center justify-center overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 transition hover:border-blue-500 hover:bg-blue-50/30 rounded-2xl p-2 cursor-pointer">
+                        <div id="edit_upload-placeholder"
+                            class="flex h-full w-full flex-col items-center justify-center text-slate-300 z-10">
+                            <svg class="h-16 w-16" fill="none" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" stroke-width="1" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                                 <circle cx="9" cy="9" r="2"></circle>
                                 <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
@@ -65,12 +73,23 @@
                             <p class="text-xs text-slate-500">PNG, JPG hingga 5MB</p>
                         </div>
                         <img id="edit_image-preview" class="h-full w-full object-contain hidden" src="" alt="Preview">
-                        <input accept="image/*" name="gambar" id="edit_gambar" class="absolute inset-0 opacity-0 cursor-pointer z-50" type="file" />
+                        <input accept="image/*" name="gambar" id="edit_gambar"
+                            class="absolute inset-0 opacity-0 cursor-pointer z-50" type="file" />
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 mt-1 md:mt-0 w-full md:w-[280px] md:ml-0">
-                    <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Status Listing</label>
+                <div
+                    class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 mt-1 md:mt-0 w-full md:w-[280px] md:ml-0">
+                    <label
+                        class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M8 8H16M8 12H16M10 16H14M3.5 12C3.5 5.5 5.5 3.5 12 3.5C18.5 3.5 20.5 5.5 20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12Z" />
+                        </svg>
+                        Status Listing
+                    </label>
                     <p class="text-sm font-medium text-slate-700" id="edit_status">-</p>
                 </div>
             </div>
@@ -80,13 +99,40 @@
                 <div>
                     <div class="space-y-5">
                         <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Nama Barang</label>
+                            <label
+                                class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400"
+                                for="edit_goods_name">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
+                                    </path>
+                                    <path d="M12 22V12"></path>
+                                    <polyline points="3.29 7 12 12 20.71 7"></polyline>
+                                    <path d="m7.5 4.27 9 5.15"></path>
+                                </svg>
+                                Nama Barang
+                            </label>
                             <div class="text-lg font-bold text-slate-800" id="edit_goods_name">-</div>
                         </div>
 
                         <div class="space-y-2">
-                            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Deskripsi</label>
-                            <div class="min-h-[60px] text-sm leading-relaxed text-slate-600 italic" id="edit_deskripsi">-</div>
+                            <label
+                                class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400"
+                                for="edit_deskripsi">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"></path>
+                                    <path d="M7 7V3h10v4"></path>
+                                    <path d="M8 11h8"></path>
+                                    <path d="M8 15h6"></path>
+                                </svg>
+                                Deskripsi
+                            </label>
+                            <div class="min-h-[60px] text-sm leading-relaxed text-slate-600 italic" id="edit_deskripsi">
+                                -</div>
                         </div>
                     </div>
                 </div>
@@ -94,23 +140,84 @@
                 <div>
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                            <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kode Barang</label>
+                            <label
+                                class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <line x1="4" x2="20" y1="9" y2="9"></line>
+                                    <line x1="4" x2="20" y1="15" y2="15"></line>
+                                    <line x1="10" x2="8" y1="3" y2="21"></line>
+                                    <line x1="16" x2="14" y1="3" y2="21"></line>
+                                </svg>
+                                Kode Barang
+                            </label>
                             <p class="text-sm font-mono font-bold text-slate-800" id="edit_goods_code">-</p>
                         </div>
                         <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                            <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Kategori</label>
+                            <label
+                                class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z">
+                                    </path>
+                                    <circle cx="7.5" cy="7.5" fill="currentColor" r=".5"></circle>
+                                </svg>
+                                Kategori
+                            </label>
                             <p class="text-sm font-medium text-slate-700" id="edit_kategori">-</p>
                         </div>
                         <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                            <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Stok Saat Ini</label>
+                            <label
+                                class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z">
+                                    </path>
+                                    <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12">
+                                    </path>
+                                    <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17">
+                                    </path>
+                                </svg>
+                                Stok Saat Ini
+                            </label>
                             <p class="text-sm font-bold text-blue-600" id="edit_stock">-</p>
                         </div>
                         <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                            <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Satuan</label>
+                            <label
+                                class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z">
+                                    </path>
+                                    <path d="m14.5 12.5 2-2"></path>
+                                    <path d="m11.5 9.5 2-2"></path>
+                                    <path d="m8.5 6.5 2-2"></path>
+                                    <path d="m17.5 15.5 2-2"></path>
+                                </svg>
+                                Satuan
+                            </label>
                             <p class="text-sm font-medium text-slate-700" id="edit_unit">-</p>
                         </div>
                         <div class="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
-                            <label class="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400">Lokasi</label>
+                            <label
+                                class="mb-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0">
+                                    </path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                Lokasi
+                            </label>
                             <p class="text-sm font-medium text-slate-700" id="edit_location">-</p>
                         </div>
                         <!-- Harga Jual intentionally removed for edit modal -->
@@ -120,8 +227,10 @@
         </form>
 
         <!-- Footer -->
-        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
-            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum menyimpan.</p>
+        <footer
+            class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum
+                menyimpan.</p>
             <div class="flex flex-1 justify-end gap-3 sm:flex-none">
                 <form method="dialog">
                     <button
@@ -138,6 +247,9 @@
             </div>
         </footer>
     </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
 </dialog>
 
 <script>

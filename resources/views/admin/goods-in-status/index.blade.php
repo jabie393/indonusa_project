@@ -3,8 +3,8 @@
 use App\Models\Barang; ?>
 <x-app-layout>
     <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="p-4">
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="px-4">
             {{-- Search --}}
             <form action="{{ route('goods-in-status.index') }}" method="GET" class="block pl-2">
                 <label for="topbar-search" class="sr-only">Search</label>

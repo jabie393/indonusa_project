@@ -1,9 +1,9 @@
 <x-app-layout>
 
     <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white p-4 shadow-md dark:bg-gray-800">
-        <a href="{{ route('dashboard.supervisor.export.semua-barang') }}"
-            class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800">
+                <a href="{{ route('dashboard.supervisor.export.semua-barang') }}"
+            class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
             <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -11,7 +11,7 @@
             </svg>
             Report Semua Barang
         </a>
-        <div>
+                <div>
             {{-- Search --}}
             <form action="{{ route('warehouse.index') }}" method="GET" class="block pl-2">
                 <label for="topbar-search" class="sr-only">Search</label>
