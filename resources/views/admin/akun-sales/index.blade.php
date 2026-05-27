@@ -164,6 +164,6 @@
     </div>
 
     <!-- Modals -->
-    @include('components.akun-sales-modal')
+    @include('admin.akun-sales.partials.akun-sales-modal')
     @vite(['resources/js/akun-sales.js', 'resources/js/table-sort.js'])
 </x-app-layout>

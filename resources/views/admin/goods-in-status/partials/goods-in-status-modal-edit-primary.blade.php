@@ -1,12 +1,3 @@
-<style>
-    :root {
-        --gradient-header: linear-gradient(to right, #225A97, #0D223A);
-        --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
-        --field: #f8fafc;
-        --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    }
-</style>
-
 <dialog id="editBarangModalPrimary" class="modal">
     <div
         class="modal-box relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 max-h-[95vh]">
@@ -33,7 +24,8 @@
                 </div>
             </div>
             <form method="dialog">
-                <button aria-label="Tutup" class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                <button aria-label="Tutup"
+                    class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -140,16 +132,28 @@
                     </label>
                     <input
                         class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        id="edit_goods_name" name="goods_name" type="text" placeholder="cth. Kopi Arabika 250g" required />
+                        id="edit_goods_name" name="goods_name" type="text" placeholder="cth. Kopi Arabika 250g"
+                        required />
                 </div>
 
                 <!-- Deskripsi -->
                 <div class="space-y-2">
-                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500"
-                        for="edit_deskripsi">Deskripsi</label>
+                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
+                        for="edit_deskripsi">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h4"></path>
+                            <path d="M7 7V3h10v4"></path>
+                            <path d="M8 11h8"></path>
+                            <path d="M8 15h6"></path>
+                        </svg>
+                        Deskripsi
+                    </label>
                     <textarea
                         class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition resize-none rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                        id="edit_deskripsi" name="deskripsi" rows="3" placeholder="Tulis deskripsi singkat tentang barang (opsional)…"></textarea>
+                        id="edit_deskripsi" name="deskripsi" rows="3"
+                        placeholder="Tulis deskripsi singkat tentang barang…" required></textarea>
                 </div>
 
                 <!-- Kategori -->
@@ -344,6 +348,9 @@
             </div>
         </footer>
     </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
 </dialog>
 
 <script>

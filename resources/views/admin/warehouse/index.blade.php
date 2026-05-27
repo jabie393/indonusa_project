@@ -172,19 +172,6 @@
                                                 @endif
                                             @elseif (Auth::user()->role === 'General Affair')
                                                 <button
-                                                    class="edit-selling-price-btn group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
-                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
-                                                    data-kode="{{ $barang->goods_code }}" data-harga="{{ $barang->selling_price }}">
-                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
-                                                        <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-                                                        <circle cx="12" cy="12" r="2"></circle>
-                                                        <path d="M6 12h.01M18 12h.01"></path>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit Selling Price</span>
-                                                </button>
-
-                                                <button
                                                     class="view-detail-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
                                                     data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kode="{{ $barang->goods_code }}" data-kategori="{{ $barang->category }}" data-status="{{ $barang->status_listing }}"
@@ -196,6 +183,18 @@
                                                         <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                                     </svg>
                                                     <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                                </button>
+                                                <button
+                                                    class="edit-selling-price-btn group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
+                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
+                                                    data-kode="{{ $barang->goods_code }}" data-harga="{{ $barang->selling_price }}">
+                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect width="20" height="12" x="2" y="6" rx="2"></rect>
+                                                        <circle cx="12" cy="12" r="2"></circle>
+                                                        <path d="M6 12h.01M18 12h.01"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit Selling Price</span>
                                                 </button>
 
                                                 <button

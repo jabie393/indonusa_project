@@ -15,12 +15,12 @@
                 </form>
             </div>
         </div>
-        <form id="editCustomerForm" action="{{ route('customer.update', ['customer' => ':id']) }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        <form id="editCustomerForm" action="{{ route('customer.update', ['customer' => ':id']) }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4 pb-0">
             @csrf
             @method('PUT')
             <input type="hidden" id="editCustomerId" name="id">
             <div class="h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div class="px-4 mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
                     <div class="col-span-2 mb-2 flex items-center justify-between overflow-hidden rounded-2xl border border-blue-100 bg-blue-50/30 p-5 dark:border-gray-600 dark:bg-gray-800/30">
                         <div class="flex items-center space-x-4">
                             <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#225A97] to-[#0D223A] text-white shadow-lg">
@@ -147,10 +147,21 @@
             </div>
     </div>
     </div>
-    <div class="flex justify-end">
-        <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-    </div>
     </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="editCustomerForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>

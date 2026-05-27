@@ -1,9 +1,9 @@
 <!-- Create PICS Modal -->
 <dialog id="createPicsModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Tambah Pic </h3>
+                Tambah PIC </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -16,7 +16,7 @@
                 </form>
             </div>
         </div>
-        <form action="{{ route('pics.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        <form id="createPicsForm" action="{{ route('pics.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
                 @csrf
                 <div class="col-span-2 mb-4">
@@ -50,10 +50,21 @@
                 </div>
             </div>
 
-            <div class="flex justify-end">
-                <button type="submit" class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="createPicsForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Tambah PIC
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
@@ -62,10 +73,10 @@
 
 <!-- Edit Sales Account Modal -->
 <dialog id="editPicsModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box relative flex max-w-3xl flex-col rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Edit Pic </h3>
+                Edit PIC </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -111,10 +122,21 @@
                     @endforeach
                 </select>
             </div>
-            <div class="flex justify-end">
-                <button type="submit" class="cursor-pointer rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="editPicsForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>

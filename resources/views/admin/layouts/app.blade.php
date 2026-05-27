@@ -40,6 +40,12 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <style>
+        :root {
+            --gradient-header: linear-gradient(to right, #225A97, #0D223A);
+            --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
+            --field: #f8fafc;
+            --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+        }
         div.dt-container div.dt-layout-row {
             margin: 0;
         }

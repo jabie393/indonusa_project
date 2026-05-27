@@ -1,6 +1,6 @@
 <!-- Create Sales Account Modal -->
 <dialog id="createUserModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
                 Tambah Akun Sales </h3>
@@ -19,7 +19,7 @@
                 </form>
             </div>
         </div>
-        <form action="{{ route('akun-sales.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        <form id="createUserForm" action="{{ route('akun-sales.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="h-full overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
@@ -40,10 +40,21 @@
             </div>
 
 
-            <div class="flex justify-end">
-                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="createUserForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Tambahkan Sales
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>
@@ -52,7 +63,7 @@
 
 <!-- Edit Sales Account Modal -->
 <dialog id="editUserModal" class="modal">
-    <div class="modal-box relative flex max-w-xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
+    <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">Edit Akun Sales</h3>
             <div class="modal-action m-0">
@@ -86,10 +97,21 @@
                 <label for="editPassword" class="block text-sm font-medium">Password</label>
                 <input type="password" id="editPassword" name="password" placeholder="Isi untuk mengubah password" autocomplete="new-password" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
             </div>
-            <div class="flex justify-end">
-                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="editUserForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>

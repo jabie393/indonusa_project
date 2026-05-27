@@ -16,9 +16,9 @@
                 </form>
             </div>
         </div>
-        <form action="{{ route('customer.store') }}" method="POST" class="relative flex h-full flex-col space-y-4 overflow-hidden p-4">
+        <form action="{{ route('customer.store') }}" method="POST" id="createCustomerForm" class="relative flex h-full flex-col space-y-4 overflow-hidden p-4 pb-0">
             <div class="relative h-full overflow-auto">
-                <div class="mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div class="px-4 mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
                     @csrf
                     <input type="hidden" name="status" value="1">
@@ -124,10 +124,21 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-end">
-                <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Simpan</button>
-            </div>
         </form>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah akurat sebelum menyimpan.</p>
+            <div class="flex flex-1 justify-end gap-3 sm:flex-none">
+                <form method="dialog">
+                    <button class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                        Batal
+                    </button>
+                </form>
+                <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl" form="createCustomerForm" style="background-image: var(--gradient-brand)" type="submit">
+                    Tambah Customer
+                </button>
+            </div>
+        </footer>
     </div>
     <form method="dialog" class="modal-backdrop">
         <button>close</button>

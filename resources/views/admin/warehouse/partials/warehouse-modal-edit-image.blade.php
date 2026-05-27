@@ -1,12 +1,3 @@
-<style>
-    :root {
-        --gradient-header: linear-gradient(to right, #225A97, #0D223A);
-        --gradient-brand: linear-gradient(to right, #225A97, #0D223A);
-        --field: #f8fafc;
-        --shadow-soft: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    }
-</style>
-
 <dialog id="editBarangModal" class="modal">
     <div
         class="modal-box relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800 max-h-[95vh]">
