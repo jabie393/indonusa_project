@@ -180,7 +180,7 @@
                             </td>
                             <td class="px-4 py-3 text-center">
                                 <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
-                                    class="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700">
+                                    class="group inline-flex items-center rounded-lg bg-green-600 p-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
@@ -188,7 +188,7 @@
                                         <path d="M9 13h6" />
                                         <path d="M9 17h3" />
                                     </svg>
-                                    Invoice
+                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Invoice</span>
                                 </a>
                             </td>
                         </tr>
