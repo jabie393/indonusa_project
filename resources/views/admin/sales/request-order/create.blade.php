@@ -3,15 +3,19 @@
 
 
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> <strong>Gagal:</strong>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        html: `<div class="text-center text-md">@foreach ($errors->all() as $error)<span>{{ $error }}</span><br>@endforeach</div>`,
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
+                });
+            </script>
         @endif
 
         <div class="card">

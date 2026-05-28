@@ -46,7 +46,7 @@
                         <th class="text-nowrap px-4 py-3">Keterangan</th>
                         <th class="text-nowrap px-4 py-3">Sent At</th>
                         <th class="text-nowrap px-4 py-3">Status</th>
-                        <th class="text-nowrap w-fit px-4 py-3 no-sort">Action</th>
+                        <th class="flex justify-center text-nowrap px-4 py-3 no-sort text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
@@ -117,10 +117,9 @@
                             </div>
 
                         </td>
-                        <td class="w-fit px-4 py-3">
-                            <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
-                                <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                        <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
+                            <div class="flex justify-center">
+                                <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
 
 
                                     {{-- Detail --}}
@@ -128,7 +127,7 @@
                                     $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
                                     @endphp
                                     <a href="{{ $detailRoute }}"
-                                        class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                         title="Lihat Detail">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             width="24"
@@ -154,7 +153,7 @@
                                     @endphp
                                     <form action="{{ $approveRoute }}"
                                         method="POST"
-                                        class="approve-form m-0 border-l border-white/20 p-0"
+                                        class="approve-form m-0 p-0"
                                         data-confirm-text="Apakah Anda yakin ingin menyetujui penawaran ini?">
                                         @csrf
                                         @if ($penawaran->offer_type === 'custom')
@@ -163,7 +162,7 @@
                                             value="approve">
                                         @endif
                                         <button type="submit"
-                                            class="group/btn flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                            class="group/btn flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                             title="Approve">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="h-4 w-4"
@@ -181,7 +180,7 @@
 
                                     {{-- Reject --}}
                                     <button type="button"
-                                        class="group/btn flex h-full cursor-pointer items-center justify-center border-l border-white/20 bg-red-600 p-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                        class="group/btn flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                         onclick="openTolakModal('{{ $penawaran->offer_type }}', '{{ $penawaran->id }}', '{{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}')"
                                         title="Reject">
                                         <svg xmlns="http://www.w3.org/2000/svg"
