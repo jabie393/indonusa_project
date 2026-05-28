@@ -5,8 +5,10 @@
             style="background-image: var(--gradient-header)">
             <div class="flex items-center gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.75a1.125 1.125 0 0 1-1.125-1.125V15h1.5a1.5 1.5 0 0 0 0-3h-1.5V6.75A2.25 2.25 0 0 1 4.875 4.5h9.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-3 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.5m10.5-3v-4.875c0-.621-.504-1.125-1.125-1.125h-3v6h4.125c.621 0 1.125-.504 1.125-1.125Z" />
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.75a1.125 1.125 0 0 1-1.125-1.125V15h1.5a1.5 1.5 0 0 0 0-3h-1.5V6.75A2.25 2.25 0 0 1 4.875 4.5h9.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-3 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.5m10.5-3v-4.875c0-.621-.504-1.125-1.125-1.125h-3v6h4.125c.621 0 1.125-.504 1.125-1.125Z" />
                     </svg>
                 </div>
                 <div>
@@ -105,14 +107,15 @@
 
             <div class="flex justify-between gap-3 border-t bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
                 <button type="button" id="btn-back-to-selection"
-                    class="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-700">
+                    class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700">
                     Kembali
                 </button>
                 <form id="partial-delivery-form" action="" method="POST">
                     @csrf
                     <div id="partial-inputs-container"></div>
                     <button type="submit" id="btn-submit-partial"
-                        class="rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
+                        style="background-image: var(--gradient-brand)">
                         Proses Partial Delivery
                     </button>
                 </form>

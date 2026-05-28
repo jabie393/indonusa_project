@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             const itemsList = batch.items
                                 .map(
                                     (item) =>
-                                        `<li>${item.nama_barang} (${item.quantity_sent})</li>`,
+                                        `<li>${item.goods_name} (${item.quantity_sent})</li>`,
                                 )
                                 .join("");
 

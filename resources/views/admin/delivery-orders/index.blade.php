@@ -60,61 +60,120 @@
                     class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="text-nowrap px-4 py-3">Customer</th>
-                        <th class="text-nowrap px-4 py-3">No. DO</th>
-                        <th class="text-nowrap px-4 py-3">No. SO</th>
-                        <th class="text-nowrap px-4 py-3">No. PO</th>
-                        <th class="text-nowrap px-4 py-3">Nama Sales</th>
-                        <th class="text-nowrap px-4 py-3">Status</th>
+                        <th class="text-nowrap px-4 py-3">No. Dokumen</th>
+                        <th class="text-nowrap px-4 py-3">Sales</th>
+                        <th class="flex justify-center text-nowrap px-4 py-3 select-none">Status</th>
                         <th class="text-nowrap px-4 py-3">Dibuat</th>
-                        <th class="flex justify-center text-nowrap px-4 py-3 text-right">Detail</th>
+                        <th class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @foreach ($orders as $order)
-                        <tr class="dark:border-gray-700">
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->customer?->nama_customer ?? $order->customer_name }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->do_number ?? $order->order_number }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->sales_order_number ?? $order->no_so }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->no_po ?? '-' }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->sales?->name ?? '-' }}
-                            </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
+                        <tr class="border-b border-gray-100 dark:border-gray-700/50 hover:bg-slate-50/80 dark:hover:bg-gray-700/40 transition-colors">
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    {{ $order->customer?->nama_customer ?? $order->customer_name }}
+                                </div>
                                 @php
-                                    $statusClass =
-                                        [
-                                            'sent_to_warehouse' =>
-                                                'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'not_completed' =>
-                                                'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-                                            'rejected_warehouse' =>
-                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                        ][$order->status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
-                                    $statusLabel =
-                                        [
-                                            'sent_to_warehouse' => 'New Request',
-                                            'completed' => 'Completed',
-                                            'not_completed' => 'Partial Delivery',
-                                            'rejected_warehouse' => 'Rejected',
-                                        ][$order->status] ?? $order->status;
+                                    $firstPic = $order->customer?->pics?->first();
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $statusLabel }}
-                                    </span>
+                                @if ($firstPic)
+                                    <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        <span class="truncate">{{ $firstPic->name }}</span>
+                                        @if ($firstPic->position)
+                                            <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
+                                        @endif
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div>
+                                    <a href="javascript:void(0)"
+                                        class="js-show-order text-[#225A97] dark:text-blue-400 font-bold hover:underline"
+                                        data-order-id="{{ $order->id }}"
+                                        data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                        data-reason="{{ $order->reason }}"
+                                        data-items='@json($order->items)'>
+                                        {{ $order->do_number ?? $order->order_number }}
+                                    </a>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal flex items-center">
+                                    <span class="text-gray-400 dark:text-gray-500 w-6">SO</span>
+                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                    <span>{{ $order->requestOrder?->sales_order_number ?? $order->no_so }}</span>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal flex items-center">
+                                    <span class="text-gray-400 dark:text-gray-500 w-6">PO</span>
+                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                    <span>{{ $order->requestOrder?->no_po ?? '-' }}</span>
                                 </div>
                             </td>
-                            <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ optional($order->created_at)->format('Y-m-d H:i') }}
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
+                                {{ $order->requestOrder?->sales?->name ?? '-' }}
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3 text-center align-middle">
+                                @php
+                                    $status = $order->status;
+                                    $badgeBg = '';
+                                    $badgeText = '';
+                                    $badgeBorder = '';
+                                    $badgeLabel = '';
+                                    $iconSvg = '';
+
+                                    switch ($status) {
+                                        case 'sent_to_warehouse':
+                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                            $badgeText = 'text-blue-700 dark:text-blue-300';
+                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                            $badgeLabel = 'Pending';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            break;
+                                        case 'completed':
+                                            $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                            $badgeText = 'text-green-700 dark:text-green-300';
+                                            $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                            $badgeLabel = 'Completed';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                            break;
+                                        case 'not_completed':
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-800 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $badgeLabel = 'Partial Delivery';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            break;
+                                        case 'rejected_warehouse':
+                                            $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                            $badgeText = 'text-red-700 dark:text-red-300';
+                                            $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                            $badgeLabel = 'Rejected';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                            break;
+                                        default:
+                                            $badgeBg = 'bg-gray-50 dark:bg-gray-900';
+                                            $badgeText = 'text-gray-700 dark:text-gray-300';
+                                            $badgeBorder = 'border border-gray-200 dark:border-gray-800';
+                                            $badgeLabel = $status;
+                                            $iconSvg = '';
+                                            break;
+                                    }
+                                @endphp
+                                <span class="flex justify-center items-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $badgeLabel }}
+                                </span>
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    {{ optional($order->created_at)->format('Y-m-d') }}
+                                </div>
+                                <div class="text-xs text-gray-400 dark:text-gray-500 mt-1 font-normal">
+                                    {{ optional($order->created_at)->format('H:i') }}
+                                </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                                 <div class="flex justify-center">
