@@ -57,10 +57,10 @@
                         <th class="px-4 py-2 text-nowrap">Email</th>
                         <th class="px-4 py-2 text-nowrap">Position</th>
                         <th class="px-4 py-2 text-nowrap">PIC of Customer</th>
-                        <th class="px-4 py-2 no-sort text-nowrap">Action</th>
+                        <th class="flex justify-center px-4 py-2 no-sort text-nowrap text-right">Action</th>
                     </tr>
                 </thead>
-                <tbody class="text-nowrap">
+                <tbody>
                     @foreach ($pics as $pic)
                         <tr class="dark:border-gray-700">
                             <td class="px-4 py-2">{{ $pic->name }}</td>
@@ -68,12 +68,11 @@
                             <td class="px-4 py-2">{{ $pic->email }}</td>
                             <td class="px-4 py-2">{{ $pic->position }}</td>
                             <td class="px-4 py-2">{{ $pic->customer->nama_customer ?? '-' }}</td>
-                            <td class="w-fit px-4 py-2 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                    <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                            <td class="whitespace-nowrap px-4 py-2 text-right align-middle">
+                                <div class="flex justify-center">
+                                    <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Edit Button --}}
-                                        <button class="editPicsButton group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        <button class="editPicsButton group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                                                 data-id="{{ $pic->id }}"
                                                 data-name="{{ $pic->name }}"
                                                 data-phone="{{ $pic->phone }}"
@@ -103,7 +102,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="button"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                     onclick="confirmDelete(() => this.closest('form').submit())">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      width="24"

@@ -98,7 +98,7 @@
                             Status</th>
                         <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Berlaku Sampai</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="flex justify-center text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Action</th>
                     </tr>
                 </thead>
@@ -253,13 +253,12 @@
                                     -
                                 @endif
                             </td>
-                            <td class="w-fit px-4 py-3 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
-                                    <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                            <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
+                                <div class="flex justify-center">
+                                    <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Lihat Detail --}}
                                         <a href="{{ $row['aksi_url'] }}"
-                                            class="group flex h-full items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                            class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                                 stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
@@ -307,7 +306,7 @@
                                         {{-- Action Dropdown --}}
                                         @if (($row['customer_status'] ?? 'active') === 'active')
                                             <button
-                                                class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 popovertarget="popover-{{ $row['id'] }}" style="anchor-name:--anchor-{{ $row['id'] }}">
                                                 <svg width="24px" height="24px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                                     class="bi bi-three-dots-vertical h-4 w-4">

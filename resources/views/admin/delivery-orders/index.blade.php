@@ -65,7 +65,7 @@
                         <th class="text-nowrap px-4 py-3">Nama Sales</th>
                         <th class="text-nowrap px-4 py-3">Status</th>
                         <th class="text-nowrap px-4 py-3">Dibuat</th>
-                        <th class="text-nowrap px-4 py-3 text-right">Detail</th>
+                        <th class="flex justify-center text-nowrap px-4 py-3 text-right">Detail</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
@@ -109,13 +109,12 @@
                             </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                 {{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
-                            <td class="w-fit px-4 py-3 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-24 opacity-0">Placeholder</div>
+                            <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
+                                <div class="flex justify-center">
                                     <div
-                                        class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                         <button type="button"
-                                            class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             data-order-id="{{ $order->id }}"
                                             data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                             data-reason="{{ $order->reason }}"
@@ -135,7 +134,7 @@
                                         @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
                                             {{-- Approve --}}
                                             <button type="button"
-                                                class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                 data-id="{{ $order->id }}"
                                                 data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                 data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
@@ -154,7 +153,7 @@
                                                 $btnLabel = $hasDeliveries ? 'Cancel' : 'Reject';
                                             @endphp
                                             <button type="button"
-                                                class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                 onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->do_number ?? $order->order_number }}", @json($order->items))'>
                                                 @if ($hasDeliveries)
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
@@ -177,7 +176,7 @@
                                         @endif
                                         @if ($order->status === 'completed')
                                             <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
-                                                class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                 data-id="{{ $order->id }}"
                                                 data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                 data-items='@json($order->items)'>
@@ -199,7 +198,7 @@
                                         @endif
                                         @if (in_array($order->status, ['completed', 'not_completed']) && $order->delivery_options === 'partial')
                                             <button type="button"
-                                                class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                                                class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
                                                 data-id="{{ $order->id }}"
                                                 data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                 data-history-url="{{ route('delivery-orders.history', $order->id) }}">
