@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->string('location')->nullable();
             $table->decimal('buy_price', 15, 2)->nullable();
             $table->decimal('selling_price', 15, 2)->nullable();
+            $table->text('description')->nullable();
 
             // Status sebelum dan sesudah perubahan
             $table->enum('old_status', ['ditinjau', 'masuk', 'ditolak'])->nullable();

@@ -20,6 +20,7 @@ class BarangHistory extends Model
         'location',
         'buy_price',
         'selling_price',
+        'description',
         'action',
         'old_status',
         'new_status',

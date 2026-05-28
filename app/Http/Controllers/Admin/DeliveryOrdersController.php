@@ -111,6 +111,7 @@ class DeliveryOrdersController extends Controller
                     'unit'        => $barang->unit,
                     'location'    => $barang->location,
                     'selling_price' => $barang->selling_price,
+                    'description' => $barang->description,
                     'old_status'  => $barang->goods_status,
                     'new_status'  => $barang->goods_status, // status remains 'masuk' or same
                     'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
@@ -185,6 +186,7 @@ class DeliveryOrdersController extends Controller
                                     'unit'        => $barang->unit,
                                     'location'    => $barang->location,
                                     'selling_price' => $barang->selling_price,
+                                    'description' => $barang->description,
                                     'old_status'  => $barang->goods_status,
                                     'new_status'  => $barang->goods_status,
                                     'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
@@ -296,6 +298,7 @@ class DeliveryOrdersController extends Controller
                             'unit'        => $barang->unit,
                             'location'    => $barang->location,
                             'selling_price' => $barang->selling_price,
+                            'description' => $barang->description,
                             'old_status'  => $barang->goods_status,
                             'new_status'  => $barang->goods_status,
                             'changed_by'  => \Illuminate\Support\Facades\Auth::id(),

@@ -97,6 +97,7 @@ class WarehouseController extends Controller
                 'location' => $barang->location,
                 'buy_price' => $barang->buy_price,
                 'selling_price' => $barang->selling_price,
+                'description' => $barang->description,
                 'old_status' => $barang->goods_status,
                 'new_status' => $barang->goods_status,
                 'changed_by' => Auth::id(),

@@ -83,9 +83,7 @@
                     class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="text-nowrap px-4 py-3">Status Listing</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Kode Barang</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Kategori</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Nama Barang</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Barang</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Deskripsi</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
                         @if (Auth::user() && Auth::user()->role === 'General Affair')
@@ -93,20 +91,30 @@
                         @endif
 
                         @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'General Affair']))
-                            <th scope="col" class="text-nowrap w-fit px-4 py-3 text-right">Aksi</th>
+                            <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
                         @endif
                     </tr>
                 </thead>
-                <tbody class="text-nowrap">
+                <tbody>
                     @forelse ($goods as $barang)
-                        <tr class="dark:border-gray-700">
+                        <tr class="dark:border-gray-700 border-b hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->goods_code }}
+                            <td class="px-4 py-3 flex-shrink-0">
+                                <div class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
+                                    {{ $barang->category }}
+                                </div>
+                                <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    {{ $barang->goods_code }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $barang->goods_name }}
+                                </div>
                             </td>
-                            <td class="px-4 py-3">{{ $barang->category }}</td>
-                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
-                            <td class="px-4 max-w-xs truncate">{{ $barang->description }}</td>
+                            <td class="px-4 max-w-xs align-middle">
+                                <div class="max-w-[250px] break-words line-clamp-3">
+                                    {{ $barang->description }}
+                                </div>
+                            </td>
                             <td class="px-4 py-3">{{ $barang->stock }}</td>
                             @if (Auth::user() && Auth::user()->role === 'General Affair')
                                 <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
@@ -118,16 +126,14 @@
                             @endif
 
                             @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'General Affair']))
-                                <td class="w-fit px-4 py-3 text-right">
-                                    <div class="relative flex min-h-[40px] w-fit items-center justify-center">
-                                        {{-- This invisible div helps reserve space for the absolute-positioned buttons --}}
-                                        <div class="pointer-events-none invisible h-9 w-24 opacity-0">Placeholder</div>
+                                <td class="px-4 py-3 text-right align-middle">
+                                    <div class="flex justify-center">
                                         <div
-                                            class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                            class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
 
                                             @if (Auth::user()->role === 'Warehouse')
                                                 <button type="button"
-                                                    class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                                                    class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 transition-all duration-300 ease-in-out"
                                                     data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                                     data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kategori="{{ $barang->category }}" data-stok="{{ $barang->stock }}"
@@ -152,7 +158,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button"
-                                                            class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                            class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transition-all duration-300 ease-in-out"
                                                             onclick="confirmDelete(() => this.closest('form').submit())">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -172,7 +178,7 @@
                                                 @endif
                                             @elseif (Auth::user()->role === 'General Affair')
                                                 <button
-                                                    class="view-detail-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                    class="view-detail-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 dark:border-yellow-500 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 transition-all duration-300 ease-in-out"
                                                     data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kode="{{ $barang->goods_code }}" data-kategori="{{ $barang->category }}" data-status="{{ $barang->status_listing }}"
                                                     data-stok="{{ $barang->stock }}" data-satuan="{{ $barang->unit }}"
@@ -185,7 +191,7 @@
                                                     <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                                 </button>
                                                 <button
-                                                    class="edit-selling-price-btn group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800"
+                                                    class="edit-selling-price-btn group flex h-full cursor-pointer items-center justify-center border-r border-green-700 dark:border-green-500 bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800 transition-all duration-300 ease-in-out"
                                                     data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kode="{{ $barang->goods_code }}" data-harga="{{ $barang->selling_price }}">
                                                     <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
@@ -198,7 +204,7 @@
                                                 </button>
 
                                                 <button
-                                                    class="view-history-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                    class="view-history-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300 ease-in-out"
                                                     data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}"
                                                     data-kode="{{ $barang->goods_code }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
