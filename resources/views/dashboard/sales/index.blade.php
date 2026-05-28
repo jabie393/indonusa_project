@@ -5,62 +5,30 @@
 
             <!-- FILTER FORM -->
             <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
-                <form action="{{ route('dashboard') }}"
-                      method="GET"
-                      id="filters-form"
-                      class="flex flex-col items-center gap-2 md:flex-row">
+                <form action="{{ route('dashboard') }}" method="GET" id="filters-form" class="flex flex-col items-center gap-2 md:flex-row">
                     <div class="flex flex-col">
                         <label class="text-nowrap py-2 text-sm text-gray-700 dark:text-gray-300">Threshold stok</label>
-                        <select name="threshold"
-                                class="rounded-xl border py-1 pr-9">
-                            <option value="10"
-                                    {{ ($selectedThreshold ?? 20) == 10 ? 'selected' : '' }}>10</option>
-                            <option value="20"
-                                    {{ ($selectedThreshold ?? 20) == 20 ? 'selected' : '' }}>20</option>
-                            <option value="50"
-                                    {{ ($selectedThreshold ?? 20) == 50 ? 'selected' : '' }}>50</option>
+                        <select name="threshold" class="rounded-xl border py-1 pr-9">
+                            <option value="10" {{ ($selectedThreshold ?? 20) == 10 ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ ($selectedThreshold ?? 20) == 20 ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ ($selectedThreshold ?? 20) == 50 ? 'selected' : '' }}>50</option>
                         </select>
                     </div>
                     <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Filter tanggal</label>
                         <div class="flex flex-col items-center md:flex-row">
-                            <input type="date"
-                                   name="date_start"
-                                   class="rounded-xl border px-2 py-1"
-                                   value="{{ $selectedDateStart ?? '' }}" />
+                            <input type="date" name="date_start" class="rounded-xl border px-2 py-1" value="{{ $selectedDateStart ?? '' }}" />
                             <span class="text-sm text-gray-700 dark:text-gray-300">-</span>
-                            <input type="date"
-                                   name="date_end"
-                                   class="rounded-xl border px-2 py-1"
-                                   value="{{ $selectedDateEnd ?? '' }}" />
-                            <button type="submit"
-                                    class="mt-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white md:ml-3 md:mt-0">
-                                <svg class="pr-2"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     width="24"
-                                     height="24"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round"
-                                     class="lucide lucide-filter h-4 w-4">
+                            <input type="date" name="date_end" class="rounded-xl border px-2 py-1" value="{{ $selectedDateEnd ?? '' }}" />
+                            <button type="submit" class="mt-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white md:ml-3 md:mt-0">
+                                <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter h-4 w-4">
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                 </svg> Filter</button>
                             <a href="{{ route('dashboard') }}"
-                               class="mt-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950 md:ml-3 md:mt-0">
-                                <svg class="pr-2"
-                                     xmlns="http://www.w3.org/2000/svg"
-                                     width="24"
-                                     height="24"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2"
-                                     stroke-linecap="round"
-                                     stroke-linejoin="round"
-                                     class="lucide lucide-rotate-ccw h-4 w-4">
+                                class="mt-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950 md:ml-3 md:mt-0">
+                                <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw h-4 w-4">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
                                     <path d="M3 3v5h5"></path>
                                 </svg>
@@ -74,16 +42,10 @@
             <!-- DOWNLOAD REPORTS -->
             <div class="flex gap-2">
                 <a href="{{ route('dashboard.sales.export.quotations') }}"
-                   class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         class="mr-1 h-5 w-5"
-                         fill="none"
-                         viewBox="0 0 24 24"
-                         stroke="currentColor">
-                        <path stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     Report Penawaran
                 </a>
@@ -93,7 +55,7 @@
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Quotation</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Penawaran</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
@@ -101,7 +63,7 @@
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $totalQuotation ?? 0 }}
                             </h1>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Quotations</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400">Penawarans</span>
                         </div>
                     </div>
                 </div>
@@ -170,23 +132,17 @@
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Performance</h1>
                     <div class="m-3">
-                        <select id="imc-year-select"
-                                class="rounded-full border-none bg-[#225A97] px-5 py-2 text-white focus:ring-0">
+                        <select id="imc-year-select" class="rounded-full border-none bg-[#225A97] px-5 py-2 text-white focus:ring-0">
                             @foreach ($imc_years as $year)
-                                <option value="{{ $year }}"
-                                        {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
+                                <option value="{{ $year }}" {{ $year == $selectedYear ? 'selected' : '' }}>{{ $year }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-64 w-full p-4">
-                        <canvas id="IMC"
-                                class="block h-full w-full"
-                                data-endpoint="{{ route('dashboard.sales.chart.data') }}"
-                                data-labels='@json($imc_labels)'
-                                data-masuk='@json($imc_masuk)'
-                                data-keluar='@json($imc_keluar)'></canvas>
+                        <canvas id="IMC" class="block h-full w-full" data-endpoint="{{ route('dashboard.sales.chart.data') }}" data-labels='@json($imc_labels)'
+                            data-masuk='@json($imc_masuk)' data-keluar='@json($imc_keluar)'></canvas>
                     </div>
                 </div>
             </div>
@@ -197,23 +153,19 @@
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-64 w-full p-4">
-                        <canvas id="SVC"
-                                class="block h-full w-full"
-                                data-labels='@json($svc_labels)'
-                                data-values='@json($svc_data)'></canvas>
+                        <canvas id="SVC" class="block h-full w-full" data-labels='@json($svc_labels)' data-values='@json($svc_data)'></canvas>
                     </div>
                 </div>
 
             </div>
 
-            <div
-                class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Riwayat Request Order</h1>
                 </div>
                 <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
                     <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
-                        <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="text-nowrap px-4 py-3">No. Request Order</th>
                                 <th class="text-nowrap px-4 py-3">No. Sales Order</th>
@@ -221,7 +173,7 @@
                                 <th class="text-nowrap px-4 py-3">Nama Pelanggan</th>
                                 <th class="text-nowrap px-4 py-3">Jumlah Item</th>
                                 <th class="text-nowrap px-4 py-3">Status</th>
-                                <th class="text-nowrap px-4 py-3 text-right no-sort">Action</th>
+                                <th class="no-sort text-nowrap px-4 py-3 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-nowrap">
@@ -267,7 +219,7 @@
                                     <td class="px-4 py-3">
                                         <div class="flex items-center gap-2">
                                             <a href="{{ route('sales.request-order.show', $order->id) }}"
-                                               class="inline-flex items-center rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                class="inline-flex items-center rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                                 Detail
                                             </a>
                                         </div>
