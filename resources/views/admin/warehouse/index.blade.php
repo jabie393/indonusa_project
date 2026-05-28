@@ -86,6 +86,10 @@
                         <th scope="col" class="text-nowrap px-4 py-3">Barang</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Deskripsi</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
+                        @if (Auth::user() && Auth::user()->role === 'Warehouse')
+                            <th scope="col" class="text-nowrap px-4 py-3">Satuan</th>
+                            <th scope="col" class="text-nowrap px-4 py-3">Lokasi</th>
+                        @endif
                         @if (Auth::user() && Auth::user()->role === 'General Affair')
                             <th scope="col" class="text-nowrap px-4 py-3">Harga Jual</th>
                         @endif
@@ -115,7 +119,11 @@
                                     {{ $barang->description }}
                                 </div>
                             </td>
-                            <td class="px-4 py-3">{{ $barang->stock }}</td>
+                            <td class="px-4 py-3 font-semibold text-gray-900">{{ $barang->stock }}</td>
+                            @if (Auth::user() && Auth::user()->role === 'Warehouse')
+                                <td class="px-4 py-3">{{ $barang->unit }}</td>
+                                <td class="px-4 py-3">{{ $barang->location }}</td>
+                            @endif
                             @if (Auth::user() && Auth::user()->role === 'General Affair')
                                 <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
                                     <div class="flex w-full items-center justify-between">

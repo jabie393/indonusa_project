@@ -32,29 +32,40 @@ use App\Models\Barang; ?>
                 <thead
                     class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Status Listing</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Kode Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Kategori</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Deskripsi</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Harga Beli</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Status Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap no-sort text-center">Action</th>
+                        <th scope="col" class="px-4 py-3">Status Listing</th>
+                        <th scope="col" class="px-4 py-3">Barang</th>
+                        <th scope="col" class="px-4 py-3">Deskripsi</th>
+                        <th scope="col" class="px-4 py-3">Stok</th>
+                        <th scope="col" class="px-4 py-3">Harga Beli</th>
+                        <th scope="col" class="px-4 py-3">Status Barang</th>
+                        <th scope="col" class="px-4 py-3">Tipe Request</th>
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right no-sort">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($goods as $barang)
-                        <tr class="border-b dark:border-gray-700">
+                        <tr
+                            class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->goods_code }}
+                            <td class="px-4 py-3 flex-shrink-0">
+                                <div
+                                    class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
+                                    {{ $barang->category }}
+                                </div>
+                                <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    {{ $barang->goods_code }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $barang->goods_name }}
+                                </div>
                             </td>
-                            <td class="px-4 py-3">{{ $barang->category }}</td>
-                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
-                            <td class="px-4 max-w-xs truncate">{{ $barang->description }}</td>
-                            <td class="px-4 py-3">{{ $barang->stock }}</td>
-                            <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
+                            <td class="px-4 max-w-xs align-middle">
+                                <div class="max-w-[250px] break-words line-clamp-3 whitespace-normal">
+                                    {{ $barang->description }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">{{ $barang->stock }}</td>
+                            <td class="text-nowrap px-4 py-3 font-medium text-slate-700 dark:text-gray-300">
                                 <div class="flex w-full items-center justify-between">
                                     <span>Rp</span>
                                     <span>{{ number_format($barang->buy_price, 0, '.', ',') }}</span>
@@ -81,15 +92,25 @@ use App\Models\Barang; ?>
                                     </span>
                                 </div>
                             </td>
-                            <td class="w-fit px-4 py-3 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
+                            <td class="px-4 py-3">
+                                @if ($barang->request_type == 'primary')
+                                    Barang baru
+                                @elseif($barang->request_type == 'new_stock')
+                                    Stok baru
+                                @elseif($barang->request_type)
+                                    {{ $barang->request_type }}
+                                @else
+                                    -
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-right align-middle">
+                                <div class="flex justify-center">
                                     <div
-                                        class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
                                         @if ($barang->goods_status == 'ditinjau')
                                             {{-- Edit barang modal --}}
                                             <button
-                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 transition-all duration-300 ease-in-out"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                                 data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
                                                 data-kategori="{{ $barang->category }}"
@@ -110,14 +131,14 @@ use App\Models\Barang; ?>
                                                     <path d="m15 5 4 4"></path>
                                                 </svg>
                                                 <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                                    class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                                style="display:inline;">
+                                                class="inline-flex">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transition-all duration-300 ease-in-out"
                                                     onclick="confirmDelete(() => this.closest('form').submit())">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -130,15 +151,14 @@ use App\Models\Barang; ?>
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
                                                     <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
                                         @elseif($barang->goods_status == 'ditolak')
                                             {{-- Note modal --}}
                                             <button
-                                                class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                data-catatan="{{ $barang->note ?? '' }}"
-                                                data-nama="{{ $barang->goods_name }}"
+                                                class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 dark:border-yellow-500 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 transition-all duration-300 ease-in-out"
+                                                data-catatan="{{ $barang->note ?? '' }}" data-nama="{{ $barang->goods_name }}"
                                                 data-kode="{{ $barang->goods_code }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -150,11 +170,11 @@ use App\Models\Barang; ?>
                                                     <path d="M15 3v6h6"></path>
                                                 </svg>
                                                 <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
+                                                    class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
                                             </button>
                                             {{-- Revise barang modal --}}
                                             <button
-                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-all duration-300 ease-in-out"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                                 data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
                                                 data-kategori="{{ $barang->category }}"
@@ -174,14 +194,14 @@ use App\Models\Barang; ?>
                                                     <path d="m15 5 4 4"></path>
                                                 </svg>
                                                 <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Revise</span>
+                                                    class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Revise</span>
                                             </button>
                                             <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                                style="display:inline;">
+                                                class="inline-flex">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transition-all duration-300 ease-in-out"
                                                     onclick="confirmDelete(() => this.closest('form').submit())">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -194,15 +214,14 @@ use App\Models\Barang; ?>
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
                                                     <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
                                         @else
                                             {{-- Note modal --}}
                                             <button
-                                                class="note-btn group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                data-catatan="{{ $barang->note ?? '' }}"
-                                                data-nama="{{ $barang->goods_name }}"
+                                                class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 dark:border-yellow-500 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 transition-all duration-300 ease-in-out"
+                                                data-catatan="{{ $barang->note ?? '' }}" data-nama="{{ $barang->goods_name }}"
                                                 data-kode="{{ $barang->goods_code }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -214,11 +233,11 @@ use App\Models\Barang; ?>
                                                     <path d="M15 3v6h6"></path>
                                                 </svg>
                                                 <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
+                                                    class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
                                             </button>
                                             {{-- Edit barang modal --}}
                                             <button
-                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 transition-all duration-300 ease-in-out"
                                                 data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
                                                 data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
                                                 data-kategori="{{ $barang->category }}"
@@ -239,14 +258,14 @@ use App\Models\Barang; ?>
                                                     <path d="m15 5 4 4"></path>
                                                 </svg>
                                                 <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                                    class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             <form action="{{ route('goods-in-status.destroy', $barang->id) }}" method="POST"
-                                                style="display:inline;">
+                                                class="inline-flex">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transition-all duration-300 ease-in-out"
                                                     onclick="return confirm('Yakin hapus?')">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -259,7 +278,7 @@ use App\Models\Barang; ?>
                                                         <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                     </svg>
                                                     <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
                                         @endif

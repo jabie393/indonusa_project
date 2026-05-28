@@ -1,6 +1,6 @@
 <x-app-layout>
     <div
-        class="relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-4">
             {{-- Search --}}
             <form action="{{ route('add-stock.index') }}" method="GET" class="block pl-2">
@@ -27,54 +27,62 @@
         </div>
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
             <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead
+                    class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-4 py-3 text-nowrap">Status Listing</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Kode Barang</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Kategori</th>
-                        <th scope="col" class="px-4 py-3 text-nowrap">Nama Barang</th>
+                        <th scope="col" class="px-4 py-3 text-nowrap">Barang</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Deskripsi</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
                         <th scope="col" class="px-4 py-3 text-nowrap">Harga Jual</th>
-                        <th scope="col" class="px-4 py-3 text-center no-sort text-nowrap">Action</th>
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($goods as $barang)
-                        <tr class="border-b dark:border-gray-700">
-                            <td class="px-4">{{ $barang->status_listing }}</td>
-                            <td scope="row" class="whitespace-nowrap px-4 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->goods_code }}
+                        <tr
+                            class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="px-4 py-3">{{ $barang->status_listing }}</td>
+                            <td class="px-4 py-3 flex-shrink-0">
+                                <div
+                                    class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
+                                    {{ $barang->category }}
+                                </div>
+                                <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    {{ $barang->goods_code }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $barang->goods_name }}
+                                </div>
                             </td>
-                            <td class="px-4">{{ $barang->category }}</td>
-                            <td class="px-4">{{ $barang->goods_name }}</td>
-                            <td class="px-4 max-w-xs truncate">{{ $barang->description }}</td>
-                            <td class="px-4">{{ $barang->stock }}</td>
-                            <td class="px-4 text-nowrap font-medium text-slate-700">
+                            <td class="px-4 max-w-xs align-middle">
+                                <div class="max-w-[250px] break-words line-clamp-3 whitespace-normal">
+                                    {{ $barang->description }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">{{ $barang->stock }}</td>
+                            <td class="px-4 py-3 text-nowrap font-medium text-slate-700 dark:text-gray-300">
                                 <div class="flex justify-between items-center w-full">
                                     <span>Rp</span>
                                     <span>{{ number_format($barang->selling_price, 0, '.', ',') }}</span>
                                 </div>
                             </td>
-                            <td class="w-fit px-4 py-3 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-32 opacity-0">Placeholder</div>
+                            <td class="px-4 py-3 text-right align-middle">
+                                <div class="flex justify-center">
                                     <div
-                                        class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                        class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
                                         {{-- Add Stock --}}
                                         <button
-                                            class="edit-barang-btn group flex cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 transition-all duration-300 ease-in-out"
                                             data-id="{{ $barang->id }}" data-status="{{ $barang->status_listing }}"
-                                            data-kode="{{ $barang->goods_code }}"
-                                            data-nama="{{ $barang->goods_name }}"
+                                            data-kode="{{ $barang->goods_code }}" data-nama="{{ $barang->goods_name }}"
                                             data-kategori="{{ $barang->category }}" data-stok="{{ $barang->stock }}"
                                             data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}"
                                             data-harga="{{ $barang->selling_price }}"
-                                            data-deskripsi="{{ $barang->description }}"
-                                            data-gambar="{{ $barang->image }}">
+                                            data-deskripsi="{{ $barang->description }}" data-gambar="{{ $barang->image }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
                                                 class="lucide lucide-plus h-4 w-4">
                                                 <path d="M5 12h14"></path>
                                                 <path d="M12 5v14"></path>
@@ -108,8 +116,8 @@
                     <select name="perPage" onchange="this.form.submit()"
                         class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}"
-                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
+                            </option>
                         @endforeach
                     </select>
                 </form>

@@ -81,41 +81,36 @@
                    class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col"
-                            class="px-4 py-3">Status Listing</th>
-                        <th scope="col"
-                            class="px-4 py-3">Kode Barang</th>
-                        <th scope="col"
-                            class="px-4 py-3">Nama Barang</th>
-                        <th scope="col"
-                            class="px-4 py-3">Kategori</th>
-                        <th scope="col"
-                            class="px-4 py-3">Stok</th>
-                        <th scope="col"
-                            class="px-4 py-3">Satuan</th>
-                        <th scope="col"
-                            class="px-4 py-3">Lokasi</th>
-                        <th scope="col"
-                            class="px-4 py-3">Status Barang</th>
-                        <th scope="col"
-                            class="px-4 py-3">Tipe Request</th>
-                        <th scope="col"
-                            class="px-4 py-3 no-sort">Action</th>
+                        <th scope="col" class="px-4 py-3">Status Listing</th>
+                        <th scope="col" class="px-4 py-3">Barang</th>
+                        <th scope="col" class="px-4 py-3">Deskripsi</th>
+                        <th scope="col" class="px-4 py-3">Stok</th>
+                        <th scope="col" class="px-4 py-3">Status Barang</th>
+                        <th scope="col" class="px-4 py-3">Tipe Request</th>
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right no-sort">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($goods as $barang)
-                        <tr>
+                        <tr class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
-                            <td scope="row"
-                                class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                {{ $barang->goods_code }}
+                            <td class="px-4 py-3 flex-shrink-0">
+                                <div class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
+                                    {{ $barang->category }}
+                                </div>
+                                <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                    {{ $barang->goods_code }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $barang->goods_name }}
+                                </div>
                             </td>
-                            <td class="px-4 py-3">{{ $barang->goods_name }}</td>
-                            <td class="px-4 py-3">{{ $barang->category }}</td>
-                            <td class="px-4 py-3">{{ $barang->stock }}</td>
-                            <td class="px-4 py-3">{{ $barang->unit }}</td>
-                            <td class="px-4 py-3">{{ $barang->location }}</td>
+                            <td class="px-4 max-w-xs align-middle">
+                                <div class="max-w-[250px] break-words line-clamp-3 whitespace-normal">
+                                    {{ $barang->description }}
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">{{ $barang->stock }}</td>
                             <td class="px-4 py-3">
                                 @php
                                     $statusClass =
@@ -138,22 +133,22 @@
                                     Barang baru
                                 @elseif($barang->request_type == 'new_stock')
                                     Stok baru
-                                @else
+                                @elseif($barang->request_type)
                                     {{ $barang->request_type }}
+                                @else
+                                    -
                                 @endif
                             </td>
-                            <td class="w-fit px-4 py-3">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-20 opacity-0">Placeholder</div>
-                                    <div class="absolute right-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                            <td class="px-4 py-3 text-right align-middle">
+                                <div class="flex justify-center">
+                                    <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
                                         {{-- Approve barang --}}
                                         <form action="{{ route('supply-orders.approve', $barang->id) }}"
                                               method="POST"
-                                              class="approve-form inline"
-                                              data-confirm-text="Apakah Anda yakin ingin menyetujui barang ini?">
+                                              class="approve-form inline-flex">
                                             @csrf
                                             <button type="submit"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                    class="group flex h-full cursor-pointer items-center justify-center border-r border-green-800 bg-green-700 p-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:border-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 transition-all duration-300 ease-in-out">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                      class="h-4 w-4"
                                                      fill="none"
@@ -169,7 +164,7 @@
                                         </form>
                                         {{-- Reject barang --}}
                                         <button type="button"
-                                                class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 transition-all duration-300 ease-in-out"
                                                 onclick="openTolakModal('supply_order', '{{ $barang->id }}', '{{ $barang->goods_name }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                  class="h-4 w-4"
