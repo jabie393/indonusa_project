@@ -59,8 +59,8 @@
                 <thead
                     class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="text-nowrap px-4 py-3">Customer</th>
                         <th class="text-nowrap px-4 py-3">No. Dokumen</th>
+                        <th class="text-nowrap px-4 py-3">Customer</th>
                         <th class="text-nowrap px-4 py-3">Sales</th>
                         <th class="flex justify-center text-nowrap px-4 py-3 select-none">Status</th>
                         <th class="text-nowrap px-4 py-3">Dibuat</th>
@@ -70,27 +70,6 @@
                 <tbody class="text-nowrap">
                     @foreach ($orders as $order)
                         <tr class="border-b border-gray-100 dark:border-gray-700/50 hover:bg-slate-50/80 dark:hover:bg-gray-700/40 transition-colors">
-                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
-                                    {{ $order->customer?->nama_customer ?? $order->customer_name }}
-                                </div>
-                                @php
-                                    $firstPic = $order->customer?->pics?->first();
-                                @endphp
-                                @if ($firstPic)
-                                    <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                            <circle cx="12" cy="7" r="4" />
-                                        </svg>
-                                        <span class="truncate">{{ $firstPic->name }}</span>
-                                        @if ($firstPic->position)
-                                            <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
-                                        @endif
-                                    </div>
-                                @endif
-                            </td>
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
                                 <div>
                                     <a href="javascript:void(0)"
@@ -112,6 +91,27 @@
                                     <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
                                     <span>{{ $order->requestOrder?->no_po ?? '-' }}</span>
                                 </div>
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    {{ $order->customer?->nama_customer ?? $order->customer_name }}
+                                </div>
+                                @php
+                                    $firstPic = $order->customer?->pics?->first();
+                                @endphp
+                                @if ($firstPic)
+                                    <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        <span class="truncate">{{ $firstPic->name }}</span>
+                                        @if ($firstPic->position)
+                                            <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
+                                        @endif
+                                    </div>
+                                @endif
                             </td>
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
                                 {{ $order->requestOrder?->sales?->name ?? '-' }}
