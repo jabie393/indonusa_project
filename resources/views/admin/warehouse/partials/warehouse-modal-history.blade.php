@@ -1,23 +1,30 @@
 <dialog id="historyModal" class="modal">
     <div
         class="modal-box relative flex h-full w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[80vh]">
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">
-                Riwayat Harga Beli - <span id="modal_nama_barang"></span> (<span id="modal_kode_barang"></span>)
-            </h3>
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold leading-tight">Riwayat Harga Beli</h3>
+                    <p class="text-xs text-white/80"><span id="modal_nama_barang"></span> (<span id="modal_kode_barang"></span>)</p>
+                </div>
+            </div>
             <form method="dialog">
-                <button
+                <button aria-label="Tutup"
                     class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                             clip-rule="evenodd"></path>
                     </svg>
-                    <span class="sr-only">Close modal</span>
                 </button>
             </form>
-        </div>
+        </header>
 
         <div class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="overflow-x-auto">

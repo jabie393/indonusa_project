@@ -1,132 +1,176 @@
 <dialog id="modalTolakGlobal" class="modal">
     <div class="modal-box max-w-2xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800">
         {{-- Header --}}
-        <div class="relative bg-gradient-to-r from-[#225A97] to-[#0D223A] px-6 py-5">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h5 id="modalTolakTitle" class="text-lg font-bold tracking-tight text-white">
-                        Pembatalan Order
-                    </h5>
-                    <p class="mt-1 text-xs font-medium text-rose-100/80">Nomor Order: <span id="modalTolakNomor"></span></p>
-                </div>
-                <button type="button" onclick="closeTolakModal()" class="btn btn-ghost btn-sm btn-square text-white hover:bg-white/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M18 6 6 18M6 6l12 12" />
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
-                </button>
+                </div>
+                <div>
+                    <h3 id="modalTolakTitle" class="text-lg font-semibold leading-tight">Pembatalan Order</h3>
+                    <p class="text-xs text-white/80">No. DO: <span id="modalTolakNomor"></span></p>
+                </div>
             </div>
-        </div>
+            <button type="button" onclick="closeTolakModal()" aria-label="Tutup"
+                class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </header>
 
         {{-- Body --}}
         <form id="formTolakGlobal" method="POST" action="">
             @csrf
-            <div class="max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+            <div
+                class="max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
                 <div class="grid grid-cols-8 gap-4 px-7 py-6">
-                <!-- Step 1: Opsi Pemilihan -->
-                <div id="step1Container" class="col-span-8 space-y-6">
-                    <div id="returnStockContainer" class="hidden">
-                        <div id="step1Header" class="mb-2 text-center">
-                            <h4 class="text-base font-bold text-gray-900 dark:text-white">Pilih Opsi Pembatalan</h4>
-                            <p class="text-xs text-gray-500 mt-1">Tentukan bagaimana stok barang dikelola setelah pembatalan</p>
-                        </div>
-                        <div class="flex flex-col items-stretch justify-center gap-4 sm:flex-row">
-                            <input type="radio" name="cancel_option" id="cancel_rest_input" value="cancel_rest" class="hidden" onchange="toggleReturnItems('cancel_rest')">
-                            <input type="radio" name="cancel_option" id="cancel_return_input" value="cancel_return" class="hidden" onchange="toggleReturnItems('cancel_return')">
+                    <!-- Step 1: Opsi Pemilihan -->
+                    <div id="step1Container" class="col-span-8 space-y-6">
+                        <div id="returnStockContainer" class="hidden">
+                            <div id="step1Header" class="mb-2 text-center">
+                                <h4 class="text-base font-bold text-gray-900 dark:text-white">Pilih Opsi Pembatalan</h4>
+                                <p class="text-xs text-gray-500 mt-1">Tentukan bagaimana stok barang dikelola setelah
+                                    pembatalan</p>
+                            </div>
+                            <div class="flex flex-col items-stretch justify-center gap-4 sm:flex-row">
+                                <input type="radio" name="cancel_option" id="cancel_rest_input" value="cancel_rest"
+                                    class="hidden" onchange="toggleReturnItems('cancel_rest')">
+                                <input type="radio" name="cancel_option" id="cancel_return_input" value="cancel_return"
+                                    class="hidden" onchange="toggleReturnItems('cancel_return')">
 
-                            {{-- Cancel Rest Card --}}
-                            <button type="button" onclick="selectCancelOption('cancel_rest')" id="card_cancel_rest" 
-                                class="flex flex-1 flex-col items-center justify-center rounded-2xl border-2 border-primary-100 bg-gray-50 p-6 transition-all hover:border-primary-400 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-700/50">
-                                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary-100 text-primary-600 shadow-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                    </svg>
-                                </div>
-                                <span class="text-base font-bold text-gray-900 dark:text-white">Batalkan Sisa</span>
-                                <span class="mt-2 text-center text-xs leading-relaxed text-gray-500 dark:text-gray-400">Batalkan barang belum terkirim</span>
-                            </button>
+                                {{-- Cancel Rest Card --}}
+                                <button type="button" onclick="selectCancelOption('cancel_rest')" id="card_cancel_rest"
+                                    class="flex flex-1 flex-col items-center justify-center rounded-2xl border-2 border-primary-100 bg-gray-50 p-6 transition-all hover:border-primary-400 hover:bg-primary-50 dark:border-gray-700 dark:bg-gray-700/50">
+                                    <div
+                                        class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-primary-100 text-primary-600 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-base font-bold text-gray-900 dark:text-white">Batalkan Sisa</span>
+                                    <span
+                                        class="mt-2 text-center text-xs leading-relaxed text-gray-500 dark:text-gray-400">Batalkan
+                                        barang belum terkirim</span>
+                                </button>
 
-                            {{-- Cancel Return Card --}}
-                            <button type="button" onclick="selectCancelOption('cancel_return')" id="card_cancel_return"
-                                class="flex flex-1 flex-col items-center justify-center rounded-2xl border-2 bg-gray-50 p-6 transition-all border-orange-100 hover:border-orange-400 hover:bg-orange-50 dark:border-gray-700 dark:bg-gray-700/50">
-                                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-100 text-orange-600 shadow-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
-                                    </svg>
-                                </div>
-                                <span class="text-base font-bold text-gray-900 dark:text-white">Retur Barang</span>
-                                <span class="mt-2 text-center text-xs leading-relaxed text-gray-500 dark:text-gray-400">Kembalikan stok yang terkirim</span>
-                            </button>
+                                {{-- Cancel Return Card --}}
+                                <button type="button" onclick="selectCancelOption('cancel_return')"
+                                    id="card_cancel_return"
+                                    class="flex flex-1 flex-col items-center justify-center rounded-2xl border-2 bg-gray-50 p-6 transition-all border-orange-100 hover:border-orange-400 hover:bg-orange-50 dark:border-gray-700 dark:bg-gray-700/50">
+                                    <div
+                                        class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-orange-100 text-orange-600 shadow-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z" />
+                                        </svg>
+                                    </div>
+                                    <span class="text-base font-bold text-gray-900 dark:text-white">Retur Barang</span>
+                                    <span
+                                        class="mt-2 text-center text-xs leading-relaxed text-gray-500 dark:text-gray-400">Kembalikan
+                                        stok yang terkirim</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Step 2: Detail Barang (Returns) -->
-                <div id="step2Container" class="col-span-8 !hidden space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div class="mb-3 flex items-center justify-between border-b pb-3 dark:border-gray-700">
+                    <!-- Step 2: Detail Barang (Returns) -->
+                    <div id="step2Container"
+                        class="col-span-8 !hidden space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                        <div class="mb-3 flex items-center justify-between border-b pb-3 dark:border-gray-700">
+                            <div>
+                                <h4 class="text-base font-bold text-gray-900 dark:text-white">Detail Pengembalian Stok
+                                </h4>
+                                <p class="text-xs text-gray-500 mt-1">Masukkan jumlah barang yang akan dikembalikan ke
+                                    gudang</p>
+                            </div>
+                        </div>
+                        <div
+                            class="overflow-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-900/50">
+                                    <tr>
+                                        <th
+                                            class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Barang</th>
+                                        <th
+                                            class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Jml Terkirim</th>
+                                        <th
+                                            class="w-32 px-5 py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Jml Kembali</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="returnItemsWrapper"
+                                    class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+                                    <!-- rows added via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Alasan -->
+                    <div id="step3Container"
+                        class="col-span-8 !hidden space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+                        <div class="rounded-lg border border-amber-100 bg-amber-50 p-4">
+                            <div class="flex space-x-3">
+                                <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" fill="currentColor"
+                                    viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <p class="text-xs font-medium leading-relaxed text-amber-800" id="tolakNote2">Harap
+                                    sertakan alasan yang konstruktif agar tim dapat melakukan revisi dengan tepat.</p>
+                            </div>
+                        </div>
+
                         <div>
-                            <h4 class="text-base font-bold text-gray-900 dark:text-white">Detail Pengembalian Stok</h4>
-                            <p class="text-xs text-gray-500 mt-1">Masukkan jumlah barang yang akan dikembalikan ke gudang</p>
+                            <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
+                                Alasan Pembatalan <span class="text-rose-500">*</span>
+                            </label>
+                            <textarea id="modalTolakReason" name="reason" rows="6" required minlength="5"
+                                placeholder="Tuliskan alasan detail di sini..."
+                                class="textarea textarea-bordered w-full rounded-xl bg-gray-50 px-4 py-3 text-sm transition-all focus:border-rose-500 focus:bg-white focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:focus:border-rose-500"></textarea>
                         </div>
-                    </div>
-                    <div class="overflow-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                            <thead class="bg-gray-50 dark:bg-gray-900/50">
-                                <tr>
-                                    <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Barang</th>
-                                    <th class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Jml Terkirim</th>
-                                    <th class="w-32 px-5 py-3 text-center text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Jml Kembali</th>
-                                </tr>
-                            </thead>
-                            <tbody id="returnItemsWrapper" class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-                                <!-- rows added via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
 
-                <!-- Step 3: Alasan -->
-                <div id="step3Container" class="col-span-8 !hidden space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-                    <div class="rounded-lg border border-amber-100 bg-amber-50 p-4">
-                        <div class="flex space-x-3">
-                            <svg class="mt-0.5 h-5 w-5 shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        <div id="modalTolakError" class="mt-2 hidden items-center text-xs font-semibold text-rose-600">
+                            <svg class="mr-1 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
                             </svg>
-                            <p class="text-xs font-medium leading-relaxed text-amber-800" id="tolakNote2">Harap sertakan alasan yang konstruktif agar tim dapat melakukan revisi dengan tepat.</p>
+                            Minimal 5 karakter wajib diisi.
                         </div>
                     </div>
-
-                    <div>
-                        <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
-                            Alasan Pembatalan <span class="text-rose-500">*</span>
-                        </label>
-                        <textarea id="modalTolakReason" name="reason" rows="6" required minlength="5" placeholder="Tuliskan alasan detail di sini..." class="textarea textarea-bordered w-full rounded-xl bg-gray-50 px-4 py-3 text-sm transition-all focus:border-rose-500 focus:bg-white focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:focus:border-rose-500"></textarea>
-                    </div>
-
-                    <div id="modalTolakError" class="mt-2 hidden items-center text-xs font-semibold text-rose-600">
-                        <svg class="mr-1 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                        </svg>
-                        Minimal 5 karakter wajib diisi.
-                    </div>
-                </div>
-            </div> {{-- This div closes the scrolling body (max-h-60vh) --}}
-        </div>
+                </div> {{-- This div closes the scrolling body (max-h-60vh) --}}
+            </div>
 
             <div class="flex items-center justify-end gap-3 bg-gray-50 px-7 py-5 dark:bg-gray-900/50">
-                <button type="button" id="btnCancelTolak" onclick="closeTolakModal()" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                <button type="button" id="btnCancelTolak" onclick="closeTolakModal()"
+                    class="px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700">
                     Batal
                 </button>
-                <button type="button" id="btnBackTolak" onclick="goToStep(1)" class="!hidden rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                <button type="button" id="btnBackTolak" onclick="goToStep(1)"
+                    class="!hidden px-6 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700">
                     Kembali
                 </button>
-                <button type="button" id="btnNextTolak" onclick="goToStep(2)" class="inline-flex items-center gap-2 rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-600/20 transition-all hover:bg-primary-700 hover:shadow-primary-600/30 active:scale-95">
-                    Lanjut
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
+                <button type="button" id="btnNextTolak" onclick="goToStep(2)"
+                    class="inline-flex items-center gap-2 rounded-xl bg-red-700 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 hover:shadow-red-800/30 active:scale-95">
+                    Lanjut Batalkan
                 </button>
-                <button type="button" id="btnSubmitTolak" onclick="submitTolakModal()" class="!hidden inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-rose-600/20 transition-all hover:bg-rose-700 hover:shadow-rose-600/30 active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <button type="button" id="btnSubmitTolak" onclick="submitTolakModal()"
+                    class="!hidden inline-flex items-center gap-2 rounded-xl bg-red-700 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-red-700/20 transition-all hover:bg-red-800 hover:shadow-red-800/30 active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                     Konfirmasi Pembatalan
@@ -147,7 +191,7 @@
 
         const cardRest = document.getElementById('card_cancel_rest');
         const cardReturn = document.getElementById('card_cancel_return');
-        
+
         // Reset both to neutral
         if (cardRest) {
             cardRest.classList.remove('border-primary-400', 'bg-primary-50', 'dark:bg-primary-900/10');
@@ -194,7 +238,7 @@
         const s1 = document.getElementById('step1Container');
         const s2 = document.getElementById('step2Container');
         const s3 = document.getElementById('step3Container');
-        
+
         const bNext = document.getElementById('btnNextTolak');
         const bBack = document.getElementById('btnBackTolak');
         const bSubmit = document.getElementById('btnSubmitTolak');
@@ -282,7 +326,7 @@
                         const itemName = item.barang ? item.barang.goods_name : (item.nama_barang ? item.nama_barang : 'Barang');
                         const itemCode = item.barang ? item.barang.goods_code : (item.kode_barang ? item.kode_barang : '-');
                         const itemUnit = item.barang ? item.barang.unit : (item.satuan ? item.satuan : '-');
-                        
+
                         returnItemsWrapper.innerHTML += `
                             <tr class="text-sm">
                                 <td class="px-5 py-4">
@@ -290,7 +334,7 @@
                                     <p class="text-[10px] font-medium tracking-wider text-gray-400 uppercase mt-0.5">` + itemCode + `</p>
                                 </td>
                                 <td class="px-5 py-4 text-left">
-                                    <p class="text-xs font-bold text-gray-900 dark:text-white">` + deliveredQty + ' ' + itemUnit +`</p>
+                                    <p class="text-xs font-bold text-gray-900 dark:text-white">` + deliveredQty + ' ' + itemUnit + `</p>
                                 </td>
                                 <td class="px-5 py-4 text-center">
                                     <div class="flex justify-center">

@@ -1,23 +1,30 @@
 <dialog id="delivery-orders-approve-modal" class="modal">
     <div
         class="modal-box relative flex w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-800">
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">
-                Pilih Tipe Pengiriman
-            </h3>
-            <div class="modal-action m-0">
-                <form method="dialog">
-                    <button type="button"
-                        class="js-approve-modal-close ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5">
-                            <path d="M18 6 6 18M6 6l12 12" />
-                        </svg>
-                    </button>
-                </form>
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.75a1.125 1.125 0 0 1-1.125-1.125V15h1.5a1.5 1.5 0 0 0 0-3h-1.5V6.75A2.25 2.25 0 0 1 4.875 4.5h9.75a2.25 2.25 0 0 1 2.25 2.25v7.5m-3 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.5m10.5-3v-4.875c0-.621-.504-1.125-1.125-1.125h-3v6h4.125c.621 0 1.125-.504 1.125-1.125Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold leading-tight">Pilih Tipe Pengiriman</h3>
+                    <p class="text-xs text-white/80">No. DO: <span id="approve-order-number-header"></span></p>
+                </div>
             </div>
-        </div>
+            <form method="dialog">
+                <button type="button" aria-label="Tutup"
+                    class="js-approve-modal-close ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </form>
+        </header>
 
         <div id="selection-view" class="p-6">
             <p class="mb-6 text-center text-gray-600 dark:text-gray-400">

@@ -273,6 +273,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 approveOrderNumberEl.textContent = orderNumber;
             if (partialOrderNumberEl)
                 partialOrderNumberEl.textContent = orderNumber;
+            const approveHeaderEl = document.getElementById("approve-order-number-header");
+            if (approveHeaderEl)
+                approveHeaderEl.textContent = orderNumber;
 
             if (fullDeliveryForm) {
                 fullDeliveryForm.setAttribute("action", approveUrl);

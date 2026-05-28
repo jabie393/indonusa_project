@@ -1,6 +1,6 @@
 <x-app-layout>
     <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-4">
             {{-- Search --}}
             <form action="{{ route('delivery-orders.index') }}" method="GET" class="block pl-2">
@@ -56,7 +56,8 @@
 
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
             <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
-                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                <thead
+                    class="sticky top-0 z-30 bg-gray-50 text-nowrap text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="text-nowrap px-4 py-3">Customer</th>
                         <th class="text-nowrap px-4 py-3">No. DO</th>
@@ -72,15 +73,20 @@
                     @foreach ($orders as $order)
                         <tr class="dark:border-gray-700">
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
+                                {{ $order->customer?->nama_customer ?? $order->customer_name }}
+                            </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->do_number ?? $order->order_number }}</td>
+                                {{ $order->do_number ?? $order->order_number }}
+                            </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->sales_order_number ?? $order->no_so }}</td>
+                                {{ $order->requestOrder?->sales_order_number ?? $order->no_so }}
+                            </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->no_po ?? '-' }}</td>
+                                {{ $order->requestOrder?->no_po ?? '-' }}
+                            </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ $order->requestOrder?->sales?->name ?? '-' }}</td>
+                                {{ $order->requestOrder?->sales?->name ?? '-' }}
+                            </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
                                 @php
                                     $statusClass =
@@ -108,7 +114,8 @@
                                 </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-2 text-gray-900 dark:text-white">
-                                {{ optional($order->created_at)->format('Y-m-d H:i') }}</td>
+                                {{ optional($order->created_at)->format('Y-m-d H:i') }}
+                            </td>
                             <td class="w-fit px-4 py-3 text-right">
                                 <div class="relative flex min-h-[40px] w-fit items-center justify-end">
                                     <div class="pointer-events-none invisible h-9 w-24 opacity-0">Placeholder</div>
@@ -118,11 +125,10 @@
                                             class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             data-order-id="{{ $order->id }}"
                                             data-order-number="{{ $order->do_number ?? $order->order_number }}"
-                                            data-reason="{{ $order->reason }}"
-                                            data-items='@json($order->items)'>
+                                            data-reason="{{ $order->reason }}" data-items='@json($order->items)'>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
                                                 class="lucide lucide-eye h-4 w-4">
                                                 <path
                                                     d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0">
@@ -142,8 +148,7 @@
                                                 data-delivery-options="{{ $order->delivery_options }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M5 13l4 4L19 7" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                                 </svg>
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
@@ -157,16 +162,14 @@
                                                 class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                 onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->do_number ?? $order->order_number }}", @json($order->items))'>
                                                 @if ($hasDeliveries)
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                        stroke-width="2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M18.36 6.64a9 9 0 11-12.73 12.73 9 9 0 0112.73-12.73zM6.34 17.66l11.32-11.32" />
                                                     </svg>
                                                 @else
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                                        stroke-width="2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                             d="M6 18L18 6M6 6l12 12" />
                                                     </svg>
@@ -182,11 +185,10 @@
                                                 data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                 data-items='@json($order->items)'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
                                                     class="lucide lucide-file-text h-4 w-4">
-                                                    <path
-                                                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
+                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
                                                     </path>
                                                     <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
                                                     <path d="M10 9H8"></path>
@@ -204,8 +206,8 @@
                                                 data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                 data-history-url="{{ route('delivery-orders.history', $order->id) }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
                                                     class="lucide lucide-history h-4 w-4">
                                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
                                                     </path>
@@ -241,8 +243,8 @@
                     <select name="perPage" onchange="this.form.submit()"
                         class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}"
-                                {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
+                            </option>
                         @endforeach
                     </select>
                 </form>

@@ -19,7 +19,7 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 id="editBarangModalTitle" class="text-lg font-semibold leading-tight">Edit Gambar Barang</h1>
+                    <h3 id="editBarangModalTitle" class="text-lg font-semibold leading-tight">Edit Gambar Barang</h3>
                     <p id="edit_subtitle" class="text-xs text-white/80">Ubah gambar barang</p>
                 </div>
             </div>

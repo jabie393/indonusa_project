@@ -1,26 +1,30 @@
 <!-- Modal Histori PDO -->
-<dialog id="historyModal"
-        class="modal">
+<dialog id="historyModal" class="modal">
     <div class="modal-box max-w-4xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800">
         <!-- Header -->
-        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 text-white">
-            <h3 class="text-xl font-bold">
-                Histori Pengiriman - <span id="historyOrderNumber"></span>
-            </h3>
-            <button type="button"
-                    class="btn btn-ghost btn-sm rounded-lg p-2 text-white hover:bg-white/20"
-                    data-modal-hide="historyModal">
-                <svg class="h-6 w-6"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2.5"
-                          d="M6 18L18 6M6 6l12 12" />
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold leading-tight">Histori Pengiriman</h3>
+                    <p class="text-xs text-white/80">No. DO: <span id="historyOrderNumber"></span></p>
+                </div>
+            </div>
+            <button type="button" aria-label="Tutup"
+                class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="historyModal">
+                <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
                 </svg>
             </button>
-        </div>
+        </header>
 
         <!-- Body -->
         <div class="p-6">
@@ -34,8 +38,7 @@
                             <th class="text-right font-bold">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="historyTableBody"
-                           class="text-gray-600 dark:text-gray-400">
+                    <tbody id="historyTableBody" class="text-gray-600 dark:text-gray-400">
                         <!-- Data will be populated by JS -->
                     </tbody>
                 </table>
@@ -43,8 +46,7 @@
         </div>
 
         <!-- Backdrop shadow effect is handled by DaisyUI dialog naturally, but adding a form button for keyboard escape -->
-        <form method="dialog"
-              class="modal-backdrop">
+        <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>
     </div>

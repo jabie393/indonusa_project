@@ -1,17 +1,31 @@
 <dialog id="editSellingPriceModal" class="modal">
     <div class="modal-box relative w-full max-w-3xl rounded-2xl bg-white p-0 shadow dark:bg-gray-800">
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-            <h3 class="text-lg font-semibold text-white">Edit Harga Jual - <span id="edit_price_nama"></span> (<span id="edit_price_kode"></span>)</h3>
+        <header class="relative flex items-center justify-between px-7 py-5 text-white"
+            style="background-image: var(--gradient-header)">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="20" height="12" x="2" y="6" rx="2" />
+                        <circle cx="12" cy="12" r="2" />
+                        <path d="M6 12h.01M18 12h.01" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold leading-tight">Edit Harga Jual</h3>
+                    <p class="text-xs text-white/80"><span id="edit_price_nama"></span> (<span id="edit_price_kode"></span>)</p>
+                </div>
+            </div>
             <form method="dialog">
-                <button
+                <button aria-label="Tutup"
                     class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                     <svg aria-hidden="true" class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
                             clip-rule="evenodd"></path>
                     </svg>
+                </button>
             </form>
-        </div>
+        </header>
 
         <form id="editSellingPriceForm" method="POST" class="p-4">
             @csrf
