@@ -8,9 +8,10 @@ window.confirmDelete = function (callback) {
         text: "Anda tidak akan dapat mengembalikan ini!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
+        confirmButtonColor: "#225A97",
         cancelButtonColor: "#d33",
         confirmButtonText: "Ya, hapus!",
+        cancelButtonText: "Batal",
         customClass: {
             popup: "rounded-2xl!",
         },

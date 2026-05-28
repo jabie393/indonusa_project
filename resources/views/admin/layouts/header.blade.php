@@ -1,4 +1,5 @@
-    <nav class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative z-50 flex h-full flex-row items-center justify-between rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] shadow-sm dark:bg-gradient-to-r dark:from-[#0D223A] dark:to-[#225A97]">
+    <nav
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative z-50 flex h-full flex-row items-center justify-between rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] shadow-sm dark:bg-gradient-to-r dark:from-[#0D223A] dark:to-[#225A97]">
         <div class="ml-5 flex items-center">
             @hasSection('header_content')
                 @yield('header_content')
@@ -92,17 +93,17 @@
                     @endphp
                     <div class="hidden text-gray-100 md:block">
                         @if (request()->routeIs('sales.request-order.show'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Detail Quotation</h1>
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Detail Penawaran</h1>
                             <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
                         @elseif (request()->routeIs('sales.request-order.edit'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Edit Quotation</h1>
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Edit Penawaran</h1>
                             <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
                         @elseif (request()->routeIs('sales.request-order.create'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Buat Quotation Baru</h1>
-                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Quotation</p>
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Buat Penawaran Baru</h1>
+                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran</p>
                         @else
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
-                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Buat dan Kelola Quotation</p>
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Penawaran</h1>
+                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Buat dan Kelola Penawaran</p>
                         @endif
                     </div>
                 @elseif (request()->routeIs('sales.custom-penawaran.*'))
@@ -121,6 +122,11 @@
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Pesanan Selesai</p>
                     </div>
                 @elseif (request()->routeIs('sales.sales-order.*'))
+                    <div class="text-gray-100">
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
+                    </div>
+                @elseif (request()->routeIs('ga.sales-order.*'))
                     <div class="text-gray-100">
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
@@ -156,7 +162,9 @@
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
                 </svg>
                 <svg id="theme-toggle-light-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    <path
+                        d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                        fill-rule="evenodd" clip-rule="evenodd"></path>
                 </svg>
             </button>
             <!-- Dropdown menu -->
@@ -169,7 +177,9 @@
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier">
-                            <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="#ffffff"></path>
+                            <path
+                                d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z"
+                                fill="#ffffff"></path>
                         </g>
                     </svg>
                 </p>
@@ -182,7 +192,8 @@
                 </div>
                 <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
                     <li>
-                        <a href="{{ route('profile.edit') }}" class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:bg-gray-800">{{ __('Profile') }}</a>
+                        <a href="{{ route('profile.edit') }}"
+                            class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-800 dark:focus:bg-gray-800">{{ __('Profile') }}</a>
                     </li>
                 </ul>
                 <ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">

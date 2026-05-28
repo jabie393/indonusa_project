@@ -2,8 +2,7 @@
 
     <div>
         @if (session('title'))
-            <div
-                class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
+            <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
                 <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
                 @if (session('text'))
                     <p class="mt-1 text-sm text-green-700 dark:text-green-400">{{ session('text') }}</p>
@@ -23,55 +22,46 @@
         @endif
     </div>
 
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="flex shrink-0 items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
-                    <line x1="4" x2="4" y1="15" y2="21"></line>
-                    <line x1="12" x2="12" y1="15" y2="21"></line>
-                    <line x1="20" x2="20" y1="15" y2="21"></line>
-                </svg>
-                Daftar Sales Order
-            </h3>
-            <a href="{{ route('ga.sales-order.export', ['search' => $search]) }}"
-                class="inline-flex items-center gap-2 rounded-lg bg-[#19426d] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#19426d]/30 transition hover:bg-[#102d4b]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Export Excel
-            </a>
+
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-show relative mb-5 flex justify-between rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="p-3 items-center flex">
+            <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+
+                <a href="{{ route('ga.sales-order.export', ['search' => $search]) }}"
+                    class="flex flex-row items-center justify-center gap-2 rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export Excel
+                </a>
+
+            </div>
         </div>
 
-        <div class="shrink-0 border-b border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700">
+        <div class="p-3 ">
+            {{-- Search --}}
             <div class="flex flex-col gap-2 md:flex-row">
                 <div class="relative flex-1">
-                    <input type="text" id="searchInput"
-                        placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..."
-                        value="{{ $search }}" autocomplete="off"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-
+                    <label for="topbar-search" class="sr-only">Search</label>
+                    <div class="relative md:w-96">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                                </path>
+                            </svg>
+                        </div>
+                        <input type="text" id="searchInput" placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..." value="{{ $search }}" autocomplete="off"
+                            class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500">
+                    </div>
                     <!-- Search Results Dropdown -->
                     <div id="searchResults"
-                        class="absolute left-0 right-0 top-full z-50 mt-1 hidden max-h-96 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg dark:border-gray-500 dark:bg-gray-600">
+                        class="z-99 absolute left-0 right-0 top-full mt-1 hidden max-h-96 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg dark:border-gray-500 dark:bg-gray-600">
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button type="button" id="searchBtn"
-                        class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-6 py-2 font-semibold text-white hover:bg-[#19426d]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                        Cari
-                    </button>
                     @if ($search)
                         <a href="{{ route('ga.sales-order.index') }}"
                             class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
@@ -81,53 +71,44 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="flex shrink-0 items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
+        </div>
 
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
             <table class="sortable w-full">
-                <thead
-                    class="sticky top-0 z-30 text-nowrap border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
+                <thead class="sticky top-0 z-30 text-nowrap border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             No.PO</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             No. Request</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             No. Penawaran</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             No. SO</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
-                            data-type="date">Tanggal</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300" data-type="date">Tanggal</th>
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Customer</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Jumlah Item</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Total</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Diskon</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Status</th>
-                        <th
-                            class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Berlaku Sampai</th>
-                        <th
-                            class="no-sort text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                        <th class="no-sort text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
                             Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($results as $row)
-                        <tr
-                            class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                             <td class="px-4 py-3">
                                 <div class="flex flex-col gap-1">
                                     <span>{{ $row['no_po'] ?? '-' }}</span>
@@ -140,14 +121,10 @@
                                         @endif
                                         @if (!empty($row['pdf_po']))
                                             <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank">
-                                                <div
-                                                    class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50 transition-transform hover:scale-110">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                        height="16" viewBox="0 0 24 24" fill="none"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" class="text-red-600">
-                                                        <path
-                                                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
+                                                <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50 transition-transform hover:scale-110">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
+                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
                                                         </path>
                                                         <polyline points="14 2 14 8 20 8"></polyline>
                                                     </svg>
@@ -176,21 +153,14 @@
                                 @php
                                     $statusClass =
                                         [
-                                            'Waiting for Supervisor Approval' =>
-                                                'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
+                                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
                                             'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Sent to Supervisor' =>
-                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Supervisor' =>
-                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Supervisor' =>
-                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Sent to Warehouse' =>
-                                                'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Warehouse' =>
-                                                'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Warehouse' =>
-                                                'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
+                                            'Sent to Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
+                                            'Approved by Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
+                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
                                             'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
                                             'Not Completed' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
                                         ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
@@ -209,14 +179,11 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}"
-                                    target="_blank"
+                                <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
                                     class="inline-flex items-center gap-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                         stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                                         <polyline points="14 2 14 8 20 8" />
                                         <path d="M9 13h6" />
                                         <path d="M9 17h3" />
@@ -228,10 +195,8 @@
                     @empty
                         <tr>
                             <td colspan="12" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
-                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round"
-                                    class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
                                     <circle cx="11" cy="11" r="8"></circle>
                                     <path d="m21 21-4.35-4.35"></path>
                                 </svg>
@@ -244,9 +209,7 @@
                                 </p>
                                 <p class="mt-1 text-sm">
                                     @if ($search)
-                                        Coba ubah kata kunci pencarian atau <a
-                                            href="{{ route('ga.sales-order.index') }}"
-                                            class="text-blue-600 hover:underline">reset pencarian</a>
+                                        Coba ubah kata kunci pencarian atau <a href="{{ route('ga.sales-order.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
                                     @else
                                         Data sales order belum tersedia
                                     @endif
@@ -263,19 +226,16 @@
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                         Showing
-                        <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->firstItem() ?? 0 }}-{{ $salesOrders->lastItem() ?? 0 }}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->firstItem() ?? 0 }}-{{ $salesOrders->lastItem() ?? 0 }}</span>
                         of
-                        <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
+                        <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
                     </span>
                     <form method="GET" action="{{ route('ga.sales-order.index') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
                         <select name="perPage" onchange="this.form.submit()"
                             class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                             @foreach ([10, 25, 50, 100] as $size)
-                                <option value="{{ $size }}"
-                                    {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
+                                <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
                                 </option>
                             @endforeach
                         </select>
