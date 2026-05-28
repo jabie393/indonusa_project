@@ -81,101 +81,149 @@
             <table class="sortable w-full">
                 <thead class="sticky top-0 z-30 text-nowrap border-b border-gray-300 bg-gray-100 dark:border-gray-600 dark:bg-gray-700">
                     <tr>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            No.PO</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            No. Request</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            No. Penawaran</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            No. SO</th>
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">No. Dokumen</th>
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Customer</th>
+                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">Item & Total</th>
+                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
                         <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300" data-type="date">Tanggal</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Customer</th>
-                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Jumlah Item</th>
-                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Total</th>
-                        <th class="text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Diskon</th>
-                        <th class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Status</th>
-                        <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Berlaku Sampai</th>
-                        <th class="no-sort text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Aksi</th>
+                        <th class="no-sort text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($results as $row)
-                        <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
-                            <td class="px-4 py-3">
-                                <div class="flex flex-col gap-1">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div>
+                                    <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
+                                        class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
+                                        {{ $row['no_sales_order'] ?? '-' }}
+                                    </a>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal flex items-center">
+                                    <span class="text-gray-400 dark:text-gray-500 w-8">PNW</span>
+                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                    <span>{{ $row['no_penawaran'] ?? '-' }}</span>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal flex items-center">
+                                    <span class="text-gray-400 dark:text-gray-500 w-8">REQ</span>
+                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                    <span>{{ $row['no_request'] ?? '-' }}</span>
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal flex items-center gap-1.5">
+                                    <span class="text-gray-400 dark:text-gray-500 w-8">PO</span>
+                                    <span class="text-gray-300 dark:text-gray-600 font-bold">·</span>
                                     <span>{{ $row['no_po'] ?? '-' }}</span>
-                                    <div class="flex gap-1">
-                                        @if (!empty($row['image_po']))
-                                            <a href="{{ Storage::url($row['image_po']) }}" target="_blank">
-                                                <img src="{{ Storage::url($row['image_po']) }}" alt="PO Image"
-                                                    class="h-10 w-10 rounded border border-gray-300 object-cover shadow-sm transition-transform hover:scale-110" />
-                                            </a>
-                                        @endif
-                                        @if (!empty($row['pdf_po']))
-                                            <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank">
-                                                <div class="flex h-10 w-10 items-center justify-center rounded border border-red-300 bg-red-50 transition-transform hover:scale-110">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" class="text-red-600">
-                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z">
-                                                        </path>
-                                                        <polyline points="14 2 14 8 20 8"></polyline>
-                                                    </svg>
-                                                </div>
-                                            </a>
+                                    @if (!empty($row['image_po']))
+                                        <a href="{{ Storage::url($row['image_po']) }}" target="_blank" class="inline-flex items-center text-blue-500 hover:text-blue-600 ml-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                                        </a>
+                                    @endif
+                                    @if (!empty($row['pdf_po']))
+                                        <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank" class="inline-flex items-center text-red-500 hover:text-red-600 ml-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                                        </a>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    {{ $row['customer_name'] ?? '-' }}
+                                </div>
+                                @if (!empty($row['first_pic_name']))
+                                    <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
+                                        <span class="truncate">{{ $row['first_pic_name'] }}</span>
+                                        @if (!empty($row['first_pic_position']))
+                                            <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $row['first_pic_position'] }}</span>
                                         @endif
                                     </div>
-                                </div>
-
-
+                                @endif
                             </td>
-                            <td class="px-4 py-3">{{ $row['no_request'] ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $row['no_penawaran'] ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $row['no_sales_order'] ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $row['tanggal'] ?? '-' }}</td>
-                            <td class="px-4 py-3">{{ $row['customer_name'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-center">{{ $row['jumlah_item'] ?? '-' }}</td>
-                            <td class="px-4 py-3 text-right">
-                                <div class="flex w-full items-center justify-between">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($row['total'] ?? 0, 0, '.', ',') }}</span>
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    Rp {{ number_format($row['total'] ?? 0, 0, '.', ',') }}
+                                </div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal flex items-center">
+                                    <span>{{ $row['jumlah_item'] ?? 0 }} {{ ($row['jumlah_item'] ?? 0) > 1 ? 'items' : 'item' }}</span>
+                                    @if (!empty($row['diskon']) && $row['diskon'] > 0)
+                                        <span class="inline-flex items-center rounded bg-amber-50 dark:bg-amber-950/30 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 ml-1.5 gap-0.5">
+                                            % {{ $row['diskon'] }}%
+                                        </span>
+                                    @endif
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="whitespace-nowrap px-4 py-3.5 text-center text-gray-900 dark:text-white">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Sent to Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Sent to Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Not Completed' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                        ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                    $statusText = $row['status'] ?? '';
+                                    $badgeBg = '';
+                                    $badgeText = '';
+                                    $badgeBorder = '';
+                                    $iconSvg = '';
+
+                                    if (in_array($statusText, ['Completed', 'Approved by Supervisor', 'Approved by Warehouse'])) {
+                                        $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                    } elseif (in_array($statusText, ['Partial Delivery', 'Open'])) {
+                                        $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($statusText, ['Pending', 'Waiting for Supervisor Approval', 'Sent to Supervisor', 'Sent to Warehouse', 'Belum Diproses'])) {
+                                        $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } else {
+                                        $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                    }
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $row['status'] }}
-                                    </span>
-                                </div>
+                                <span class="flex justify-center items-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $statusText }}
+                                </span>
                             </td>
-                            <td class="px-4 py-3">
-                                @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
-                                    {{ $row['berlaku_sampai'] }}
-                                @else
-                                    -
+                            <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                                @php
+                                    $formattedDate = '-';
+                                    if (!empty($row['tanggal']) && $row['tanggal'] !== '-') {
+                                        try {
+                                            $formattedDate = \Carbon\Carbon::createFromFormat('d/m/Y', $row['tanggal'])->format('Y-m-d');
+                                        } catch (\Exception $e) {
+                                            $formattedDate = $row['tanggal'];
+                                        }
+                                    }
+                                    
+                                    $formattedExpiry = null;
+                                    $expiryVal = $row['berlaku_sampai'] ?? '-';
+                                    if ($expiryVal !== '-') {
+                                        try {
+                                            $formattedExpiry = \Carbon\Carbon::parse($expiryVal)->format('Y-m-d');
+                                        } catch (\Exception $e) {
+                                            $formattedExpiry = $expiryVal;
+                                        }
+                                    }
+                                @endphp
+                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                    {{ $formattedDate }}
+                                </div>
+                                @if ($formattedExpiry)
+                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
+                                            <line x1="16" x2="16" y1="2" y2="6"/>
+                                            <line x1="8" x2="8" y1="2" y2="6"/>
+                                            <line x1="3" x2="21" y1="10" y2="10"/>
+                                        </svg>
+                                        <span>s/d {{ $formattedExpiry }}</span>
+                                    </div>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
@@ -194,7 +242,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="12" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-400 dark:text-gray-600">
                                     <circle cx="11" cy="11" r="8"></circle>

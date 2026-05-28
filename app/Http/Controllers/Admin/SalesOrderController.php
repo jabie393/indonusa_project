@@ -38,6 +38,8 @@ class SalesOrderController extends Controller
             $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
         }
 
+        $firstPic = $ro->customer?->pics?->first();
+
         return [
             'id'             => $ro->id,
             'type'           => 'request_order',
@@ -47,6 +49,8 @@ class SalesOrderController extends Controller
             'no_sales_order' => $ro->sales_order_number,
             'tanggal'        => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
             'customer_name'  => $ro->customer_name,
+            'first_pic_name' => $firstPic?->name,
+            'first_pic_position' => $firstPic?->position,
             'jumlah_item'    => $ro->items->count(),
             'total'          => $ro->grand_total ?? 0,
             'diskon'         => $diskonPersen,
@@ -77,11 +81,11 @@ class SalesOrderController extends Controller
                       ->orWhere('customer_name',     'like', "%$search%")
                       ->orWhere('no_po',             'like', "%$search%");
                 })
-                ->with(['items', 'customer'])
+                ->with(['items', 'customer.pics'])
                 ->get()
                 ->map(fn($ro) => $this->mapRequestOrderRow($ro));
         } else {
-            $requestOrders = \App\Models\RequestOrder::with(['order', 'items', 'customer'])
+            $requestOrders = \App\Models\RequestOrder::with(['order', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends($request->query());
@@ -531,7 +535,7 @@ class SalesOrderController extends Controller
                       ->orWhere('no_po',             'like', "%$search%");
                 })
                 ->where('sales_id', Auth::id())
-                ->with(['items', 'customer'])
+                ->with(['items', 'customer.pics'])
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                     'catatan_customer' => $ro->catatan_customer,
@@ -540,7 +544,7 @@ class SalesOrderController extends Controller
                 ]));
         } else {
             $requestOrders = \App\Models\RequestOrder::where('sales_id', Auth::id())
-                ->with(['order', 'items', 'customer'])
+                ->with(['order', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends(request()->query());
