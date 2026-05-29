@@ -12,6 +12,16 @@ use Illuminate\Support\Facades\Schema;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->check() && auth()->user()->role === 'Sales') {
+                abort(403, 'Akses ditolak. Peran Sales tidak diizinkan mengakses halaman Customer.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 10);
