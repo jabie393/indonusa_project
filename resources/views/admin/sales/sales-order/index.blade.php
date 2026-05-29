@@ -224,25 +224,37 @@
                             <td class="px-4 py-3 text-right">{{ $row['diskon'] ?? 0 }}%</td>
                             <td class="px-4 py-3 text-center">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'Waiting for Supervisor Approval' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'Open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Sent to Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Approved by Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Sent to Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Approved by Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-                                        ][$row['status']] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                    $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                    $badgeText = 'text-gray-700 dark:text-gray-300';
+                                    $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                                    if (in_array($row['status'], ['Completed', 'Approved by Supervisor', 'Approved by Warehouse', 'Open'])) {
+                                        $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                    } elseif (in_array($row['status'], ['Partial Delivery', 'Waiting for Supervisor Approval'])) {
+                                        $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($row['status'], ['Sent to Supervisor', 'Sent to Warehouse'])) {
+                                        $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($row['status'], ['Rejected by Supervisor', 'Rejected by Warehouse'])) {
+                                        $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                    }
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $row['status'] }}
-                                    </span>
-                                </div>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $row['status'] }}
+                                </span>
                             </td>
                             <td class="px-4 py-3">
                                 @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')

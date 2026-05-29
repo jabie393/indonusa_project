@@ -40,9 +40,28 @@
                     <tr class="">
                         <td class="px-4 py-3">
                             @if ($item['type'] === 'request_order')
-                            <span class="inline-block rounded bg-blue-100 px-2 inset-ring py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-200">Sent Penawaran</span>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-700 dark:border-blue-800/50 dark:bg-blue-950/30 dark:text-blue-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-1.5 shrink-0">
+                                        <path d="m22 2-7 20-4-9-9-4Z" />
+                                        <path d="M22 2 11 13" />
+                                    </svg>
+                                    Sent Penawaran
+                                </span>
                             @elseif($item['type'] === 'custom_penawaran')
-                            <span class="inline-block rounded bg-cyan-100 px-2 inset-ring py-1 text-xs font-semibold text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200">Custom Penawaran</span>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full border border-cyan-200 bg-cyan-50 px-2 py-1 text-xs font-semibold text-cyan-700 dark:border-cyan-800/50 dark:bg-cyan-950/30 dark:text-cyan-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text mr-1.5 shrink-0">
+                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                        <path d="M10 9H8" />
+                                        <path d="M16 13H8" />
+                                        <path d="M16 17H8" />
+                                    </svg>
+                                    Custom Penawaran
+                                </span>
                             @endif
                         </td>
                         <td class="px-4 py-3">{{ $item['number'] }}</td>
@@ -50,13 +69,31 @@
                         <td class="px-4 py-3">{{ $item['sales'] }}</td>
                         <td class="px-4 py-3">{{ $item['grand_total'] }}</td>
                         <td class="px-4 py-3">
-                            @if ($item['status'] === 'approved_supervisor' || $item['status'] === 'approved')
-                            <span class="inline-block rounded bg-green-100 px-2 inset-ring py-1 text-xs font-semibold text-green-800 dark:bg-green-900 dark:text-green-200">Disetujui</span>
-                            @elseif($item['status'] === 'rejected_supervisor' || $item['status'] === 'rejected')
-                            <span class="inline-block rounded bg-red-100 px-2 inset-ring py-1 text-xs font-semibold text-red-800 dark:bg-red-900 dark:text-red-200">Ditolak</span>
-                            @else
-                            <span class="inline-block rounded bg-gray-100 px-2 inset-ring py-1 text-xs font-semibold text-gray-800 dark:bg-gray-900 dark:text-gray-200">{{ $item['status'] }}</span>
-                            @endif
+                            @php
+                                $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                $badgeText = 'text-gray-700 dark:text-gray-300';
+                                $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+                                $statusLabel = $item['status'];
+
+                                if ($item['status'] === 'approved_supervisor' || $item['status'] === 'approved') {
+                                    $statusLabel = 'Disetujui';
+                                    $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                    $badgeText = 'text-green-700 dark:text-green-300';
+                                    $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                } elseif ($item['status'] === 'rejected_supervisor' || $item['status'] === 'rejected') {
+                                    $statusLabel = 'Ditolak';
+                                    $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                    $badgeText = 'text-red-700 dark:text-red-300';
+                                    $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                }
+                            @endphp
+                            <span
+                                class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                {!! $iconSvg !!}{{ $statusLabel }}
+                            </span>
                         </td>
                         <td class="px-4 py-3">{{ $item['reason'] }}</td>
                         <td class="px-4 py-3">{{ $item['approved_at'] }}</td>

@@ -73,24 +73,39 @@ use App\Models\Barang; ?>
                             </td>
                             <td class="px-4 py-3">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'ditinjau' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'disetujui' => 'bg-green-100 text-green-800 inset-ring inset-ring-green-600',
-                                            'ditolak' => 'bg-red-100 text-red-800 inset-ring inset-ring-red-600',
-                                        ][$barang->goods_status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
                                             'ditinjau' => 'Pending',
                                             'disetujui' => 'Approved',
                                             'ditolak' => 'Rejected',
                                         ][$barang->goods_status] ?? $barang->goods_status;
+
+                                    $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                    $badgeText = 'text-gray-700 dark:text-gray-300';
+                                    $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                                    if ($barang->goods_status === 'disetujui') {
+                                        $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                    } elseif ($barang->goods_status === 'ditinjau') {
+                                        $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif ($barang->goods_status === 'ditolak') {
+                                        $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                    }
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $statusLabel }}
-                                    </span>
-                                </div>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $statusLabel }}
+                                </span>
                             </td>
                             <td class="px-4 py-3">
                                 @if ($barang->request_type == 'primary')

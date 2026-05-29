@@ -70,15 +70,18 @@
                                     $hasAbove = $discounts->contains(fn($d) => $d > 20);
                                 @endphp
                                 @if ($hasBelow && $hasAbove)
-                                    <span class="badge inset-ring inset-ring-orange-600 inline-flex items-center bg-orange-50 px-2 py-0.5 text-xs font-bold text-orange-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
                                         &lt;20% &amp; &gt;20%
                                     </span>
                                 @elseif ($hasAbove)
-                                    <span class="badge inset-ring inset-ring-red-600 inline-flex items-center bg-red-50 px-2 py-0.5 text-xs font-bold text-red-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
                                         &gt;20%
                                     </span>
                                 @elseif ($hasBelow)
-                                    <span class="badge inset-ring inset-ring-green-600 inline-flex items-center bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
                                         &lt;20%
                                     </span>
                                 @else
@@ -113,19 +116,6 @@
                             </td>
                             <td class="px-4 py-4 text-center">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'draft' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'pending_approval' => 'bg-orange-50 text-orange-800 inset-ring inset-ring-orange-600',
-                                            'open' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-700',
-                                            'sent_to_warehouse' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
-                                            'sent_to_penawaran' => 'bg-indigo-50 text-indigo-700 inset-ring inset-ring-indigo-700',
-                                            'approved' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'rejected' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                            'expired' => 'bg-gray-50 text-gray-700 inset-ring inset-ring-gray-700',
-                                            'approved_supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'rejected_supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-700',
-                                        ][$penawaran->status] ?? 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600';
                                     $statusLabel =
                                         [
                                             'draft' => 'Draft',
@@ -139,12 +129,43 @@
                                             'approved_supervisor' => 'Approved by Supervisor',
                                             'rejected_supervisor' => 'Rejected by Supervisor',
                                         ][$penawaran->status] ?? $penawaran->status;
+
+                                    $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                    $badgeText = 'text-gray-700 dark:text-gray-300';
+                                    $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                                    if (in_array($penawaran->status, ['approved', 'approved_supervisor'])) {
+                                        $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                    } elseif (in_array($penawaran->status, ['rejected', 'rejected_supervisor'])) {
+                                        $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                    } elseif (in_array($penawaran->status, ['pending_approval', 'draft'])) {
+                                        $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($penawaran->status, ['open', 'sent_to_warehouse', 'sent_to_penawaran'])) {
+                                        $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif ($penawaran->status === 'expired') {
+                                        $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                        $badgeText = 'text-gray-700 dark:text-gray-300';
+                                        $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock3 mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>';
+                                    }
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $statusLabel }}
-                                    </span>
-                                </div>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $statusLabel }}
+                                </span>
                             </td>
                             <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                                 <div class="flex justify-center">
