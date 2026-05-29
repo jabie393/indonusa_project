@@ -69,7 +69,7 @@ class AdminPTController extends Controller
         // Query for RequestOrders that require supervisor approval
         $requestOrdersQuery = \App\Models\RequestOrder::whereHas('order', function($query) {
             $query->where('status', 'sent_to_supervisor');
-        })->with(['items', 'sales', 'order']);
+        })->with(['items', 'sales', 'order', 'customer.pics']);
 
         if ($search) {
             $requestOrdersQuery->where(function($q) use ($search) {

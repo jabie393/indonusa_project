@@ -38,118 +38,227 @@
             <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
                 <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="text-nowrap px-4 py-3">No. Penawaran</th>
+                        <th class="text-nowrap px-4 py-3">Penawaran</th>
                         <th class="text-nowrap px-4 py-3">Sales</th>
-                        <th class="text-nowrap px-4 py-3">To</th>
-                        <th class="text-nowrap px-4 py-3">Items</th>
-                        <th class="text-nowrap px-4 py-3">Diskon</th>
-                        <th class="text-nowrap px-4 py-3">Keterangan</th>
-                        <th class="text-nowrap px-4 py-3">Sent At</th>
+                        <th class="text-nowrap px-4 py-3">Item & Keterangan</th>
+                        <th class="text-nowrap px-4 py-3">Tgl. Kirim</th>
                         <th class="text-nowrap px-4 py-3">Status</th>
                         <th class="flex justify-center text-nowrap px-4 py-3 no-sort text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse($penawarans as $index => $penawaran)
+                    @php
+                        $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
+                        
+                        $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
+                        
+                        $keteranganText = null;
+                        $highDiscountItem = $penawaran->items->first(function($item) {
+                            return ($item->diskon_percent ?? 0) > 20 && !empty($item->keterangan);
+                        });
+                        if ($highDiscountItem) {
+                            $keteranganText = $highDiscountItem->keterangan;
+                        } else {
+                            $anyKeteranganItem = $penawaran->items->first(function($item) {
+                                return !empty($item->keterangan);
+                            });
+                            if ($anyKeteranganItem) {
+                                $keteranganText = $anyKeteranganItem->keterangan;
+                            }
+                        }
+                        if (empty($keteranganText) && !empty($penawaran->reason)) {
+                            $keteranganText = $penawaran->reason;
+                        }
+                        if (empty($keteranganText) && !empty($penawaran->subject)) {
+                            $keteranganText = $penawaran->subject;
+                        }
+
+                        $tglKirim = null;
+                        if ($penawaran->offer_type === 'custom') {
+                            $tglKirim = $penawaran->date ? $penawaran->date->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
+                        } else {
+                            $tglKirim = $penawaran->tanggal_kebutuhan ? $penawaran->tanggal_kebutuhan->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
+                        }
+                    @endphp
                     <tr class="group border-b border-gray-50 transition-colors hover:bg-gray-50/80 dark:border-gray-700/50 dark:hover:bg-gray-700/30">
-                        <td class="px-4 py-3">
-                            <div class="flex flex-col">
-                                <span class="font-bold text-gray-900 dark:text-white">
+                        {{-- Penawaran & Customer --}}
+                        <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
+                            <div>
+                                <a href="{{ $detailRoute }}"
+                                    class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
                                     {{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}
-                                </span>
-                                <span class="{{ $penawaran->offer_type === 'custom' ? 'text-blue-500' : 'text-amber-500' }} mt-0.5 text-[10px] font-semibold uppercase tracking-widest">
-                                    {{ $penawaran->offer_type === 'custom' ? 'Custom Penawaran' : 'Request Order' }}
-                                </span>
+                                </a>
                             </div>
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex items-center space-x-2">
-                                <span class="font-medium">{{ optional($penawaran->sales)->name ?? 'N/A' }}</span>
+                            <div class="font-bold text-gray-900 dark:text-white text-[14px] mt-1.5">
+                                {{ $penawaran->offer_type === 'custom' ? $penawaran->to : ($penawaran->customer?->nama_customer ?? $penawaran->customer_name) }}
                             </div>
-                        </td>
-                        <td class="px-4 py-3 font-medium">
-                            {{ $penawaran->offer_type === 'custom' ? $penawaran->to : $penawaran->customer_name }}
-                        </td>
-                        <td class="px-4 py-3">
-                            <span
-                                class="inline-flex items-center justify-center rounded-full border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700/50 dark:bg-gray-900/30 dark:text-gray-300">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package mr-1.5 shrink-0">
-                                    <path d="m7.5 4.27 9 5.15" />
-                                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                    <path d="m3.3 7 8.7 5 8.7-5" />
-                                    <path d="M12 22V12" />
-                                </svg>
-                                {{ $penawaran->items->count() }} Items
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
                             @php
-                            $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
-                            $itemsWithHighDiscount = $penawaran->items->where('diskon_percent', '>', 20);
+                                $firstPic = $penawaran->offer_type === 'custom' ? null : $penawaran->customer?->pics?->first();
                             @endphp
-                            @if ($maxDiskon > 20)
-                                <span
-                                    class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
-                                    >20%
-                                </span>
-                            @elseif ($maxDiskon > 0)
-                                <span
-                                    class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
-                                    <20%
-                                </span>
-                            @else
-                                <span class="text-gray-300 dark:text-gray-600">-</span>
+                            @if ($firstPic)
+                                <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    <span class="truncate">{{ $firstPic->name }}</span>
+                                    @if ($firstPic->position)
+                                        <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                        <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
+                                    @endif
+                                </div>
                             @endif
                         </td>
+                        
+                        {{-- Sales --}}
+                        <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
+                            {{ optional($penawaran->sales)->name ?? '-' }}
+                        </td>
+                        
+                        {{-- Item & Keterangan --}}
                         <td class="px-4 py-3">
-                            @if ($itemsWithHighDiscount->isNotEmpty())
-                            <div class="max-w-[200px] truncate text-xs italic text-gray-500 group-hover:overflow-visible group-hover:whitespace-normal">
-                                {{ $itemsWithHighDiscount->first()->keterangan ?? 'No reason provided' }}
+                            <div class="flex flex-col items-start gap-1">
+                                <div class="flex flex-row items-center gap-2">
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-[#225A97] dark:bg-blue-950/30 dark:text-blue-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                                            <path d="m7.5 4.27 9 5.15"/>
+                                            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
+                                            <path d="m3.3 7 8.7 5 8.7-5"/>
+                                            <path d="M12 22V12"/>
+                                        </svg>
+                                        {{ $penawaran->items->count() }} item
+                                    </span>
+                                    @if ($maxDiskon > 20)
+                                        <span class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                            >20%
+                                        </span>
+                                    @elseif ($maxDiskon > 0)
+                                        <span class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                            <20%
+                                        </span>
+                                    @else
+                                        <span class="text-gray-300 dark:text-gray-600 text-xs font-semibold">-</span>
+                                    @endif
+                                </div>
+                                @if (!empty($keteranganText))
+                                    <div class="max-w-[220px] truncate text-sm text-gray-500 group-hover:overflow-visible group-hover:whitespace-normal dark:text-gray-400">
+                                        {{ $keteranganText }}
+                                    </div>
+                                @else
+                                    <span class="italic text-gray-400 dark:text-gray-500 text-xs">No remarks</span>
+                                @endif
                             </div>
-                            @else
-                            <span class="text-gray-300">-</span>
-                            @endif
                         </td>
-                        <td class="whitespace-nowrap px-4 py-3 text-gray-400">{{ $penawaran->created_at ? $penawaran->created_at->format('d M Y') : '-' }}</td>
+                        
+                        {{-- Tgl. Kirim --}}
+                        <td class="whitespace-nowrap px-4 py-3 text-gray-500 dark:text-gray-400">
+                            {{ $tglKirim }}
+                        </td>
+                        
+                        {{-- Status --}}
                         <td class="px-4 py-3">
                             @php
                             $status = $penawaran->order?->status ?? $penawaran->status;
-                            $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
-                            $badgeText = 'text-gray-700 dark:text-gray-300';
-                            $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
-                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
-
-                            if (in_array($status, ['open', 'approved_supervisor'])) {
-                                $badgeBg = 'bg-green-50 dark:bg-green-950/30';
-                                $badgeText = 'text-green-700 dark:text-green-300';
-                                $badgeBorder = 'border border-green-200 dark:border-green-800/50';
-                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                            } elseif (in_array($status, ['sent_to_supervisor', 'sent_to_warehouse'])) {
-                                $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
-                                $badgeText = 'text-blue-700 dark:text-blue-300';
-                                $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
-                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                            } elseif ($status === 'rejected_supervisor') {
-                                $badgeBg = 'bg-red-50 dark:bg-red-950/30';
-                                $badgeText = 'text-red-700 dark:text-red-300';
-                                $badgeBorder = 'border border-red-200 dark:border-red-800/50';
-                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
-                            }
+                            
+                            $statusMap = [
+                                'pending' => [
+                                    'label' => 'Pending',
+                                    'bg' => 'bg-gray-50 dark:bg-gray-900/30',
+                                    'text' => 'text-gray-700 dark:text-gray-300',
+                                    'border' => 'border border-gray-200 dark:border-gray-700/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>'
+                                ],
+                                'open' => [
+                                    'label' => 'Open',
+                                    'bg' => 'bg-green-50 dark:bg-green-950/30',
+                                    'text' => 'text-green-700 dark:text-green-300',
+                                    'border' => 'border border-green-200 dark:border-green-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
+                                ],
+                                'sent' => [
+                                    'label' => 'Sent',
+                                    'bg' => 'bg-blue-50 dark:bg-blue-950/30',
+                                    'text' => 'text-blue-700 dark:text-blue-300',
+                                    'border' => 'border border-blue-200 dark:border-blue-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+                                ],
+                                'sent_to_supervisor' => [
+                                    'label' => 'Waiting for Approval',
+                                    'bg' => 'bg-blue-50 dark:bg-blue-950/30',
+                                    'text' => 'text-blue-700 dark:text-blue-300',
+                                    'border' => 'border border-blue-200 dark:border-blue-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+                                ],
+                                'approved_supervisor' => [
+                                    'label' => 'Approved by Supervisor',
+                                    'bg' => 'bg-green-50 dark:bg-green-950/30',
+                                    'text' => 'text-green-700 dark:text-green-300',
+                                    'border' => 'border border-green-200 dark:border-green-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
+                                ],
+                                'rejected_supervisor' => [
+                                    'label' => 'Rejected by Supervisor',
+                                    'bg' => 'bg-red-50 dark:bg-red-950/30',
+                                    'text' => 'text-red-700 dark:text-red-300',
+                                    'border' => 'border border-red-200 dark:border-red-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>'
+                                ],
+                                'sent_to_warehouse' => [
+                                    'label' => 'Sent to Warehouse',
+                                    'bg' => 'bg-blue-50 dark:bg-blue-950/30',
+                                    'text' => 'text-blue-700 dark:text-blue-300',
+                                    'border' => 'border border-blue-200 dark:border-blue-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+                                ],
+                                'approved_warehouse' => [
+                                    'label' => 'Approved by Warehouse',
+                                    'bg' => 'bg-green-50 dark:bg-green-950/30',
+                                    'text' => 'text-green-700 dark:text-green-300',
+                                    'border' => 'border border-green-200 dark:border-green-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
+                                ],
+                                'rejected_warehouse' => [
+                                    'label' => 'Rejected by Warehouse',
+                                    'bg' => 'bg-red-50 dark:bg-red-950/30',
+                                    'text' => 'text-red-700 dark:text-red-300',
+                                    'border' => 'border border-red-200 dark:border-red-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>'
+                                ],
+                                'completed' => [
+                                    'label' => 'Completed',
+                                    'bg' => 'bg-green-50 dark:bg-green-950/30',
+                                    'text' => 'text-green-700 dark:text-green-300',
+                                    'border' => 'border border-green-200 dark:border-green-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>'
+                                ],
+                                'not_completed' => [
+                                    'label' => 'Partial Delivery',
+                                    'bg' => 'bg-amber-50 dark:bg-amber-950/30',
+                                    'text' => 'text-amber-700 dark:text-amber-300',
+                                    'border' => 'border border-amber-200 dark:border-amber-800/50',
+                                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+                                ],
+                            ];
+                            
+                            $currentStatus = $statusMap[$status] ?? [
+                                'label' => ucfirst(str_replace('_', ' ', $status)),
+                                'bg' => 'bg-gray-50 dark:bg-gray-900/30',
+                                'text' => 'text-gray-700 dark:text-gray-300',
+                                'border' => 'border border-gray-200 dark:border-gray-700/50',
+                                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>'
+                            ];
                             @endphp
                             <div class="flex items-center">
                                 <span
-                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
-                                    {!! $iconSvg !!}{{ ucfirst(str_replace('_', ' ', $status)) }}
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $currentStatus['bg'] }} {{ $currentStatus['text'] }} {{ $currentStatus['border'] }}">
+                                    {!! $currentStatus['icon'] !!}{{ $currentStatus['label'] }}
                                 </span>
                             </div>
-
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                             <div class="flex justify-center">
                                 <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
-
-
                                     {{-- Detail --}}
                                     @php
                                     $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
