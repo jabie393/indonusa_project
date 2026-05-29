@@ -38,11 +38,15 @@ class DeliveryOrdersController extends Controller
 
         $orders = $query->latest()->paginate($perPage)->appends($request->query());
 
-        return view('admin.sales.delivery-orders.index', compact('orders'));
+        return view('admin.delivery-orders.index', compact('orders'));
     }
     // Tampilkan daftar orders yang statusnya 'sent_to_warehouse'
     public function index(Request $request)
     {
+        if (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'Sales') {
+            return $this->salesIndex($request);
+        }
+
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
 

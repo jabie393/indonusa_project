@@ -35,6 +35,7 @@
                     class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Semua Barang
                 </a>
+                @if (Auth::user() && Auth::user()->role === 'Warehouse')
                 <a href="{{ route('supply-orders.index') }}"
                     class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Supply Orders
@@ -43,6 +44,7 @@
                             class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $supplyOrderCount }}</span>
                     @endif
                 </a>
+                @endif
                 <a href="{{ route('delivery-orders.index') }}"
                     class="bg-white text-[#225A97] flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                     Delivery Orders
@@ -125,42 +127,30 @@
                                     $badgeLabel = '';
                                     $iconSvg = '';
 
-                                    switch ($status) {
-                                        case 'sent_to_warehouse':
-                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
-                                            $badgeText = 'text-blue-700 dark:text-blue-300';
-                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
-                                            $badgeLabel = 'Pending';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                            break;
-                                        case 'completed':
-                                            $badgeBg = 'bg-green-50 dark:bg-green-950/30';
-                                            $badgeText = 'text-green-700 dark:text-green-300';
-                                            $badgeBorder = 'border border-green-200 dark:border-green-800/50';
-                                            $badgeLabel = 'Completed';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                                            break;
-                                        case 'not_completed':
-                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
-                                            $badgeText = 'text-amber-800 dark:text-amber-300';
-                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
-                                            $badgeLabel = 'Partial Delivery';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                            break;
-                                        case 'rejected_warehouse':
-                                            $badgeBg = 'bg-red-50 dark:bg-red-950/30';
-                                            $badgeText = 'text-red-700 dark:text-red-300';
-                                            $badgeBorder = 'border border-red-200 dark:border-red-800/50';
-                                            $badgeLabel = 'Rejected';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
-                                            break;
-                                        default:
-                                            $badgeBg = 'bg-gray-50 dark:bg-gray-900';
-                                            $badgeText = 'text-gray-700 dark:text-gray-300';
-                                            $badgeBorder = 'border border-gray-200 dark:border-gray-800';
-                                            $badgeLabel = $status;
-                                            $iconSvg = '';
-                                            break;
+                                    if (in_array($status, ['completed', 'approved_supervisor', 'approved_warehouse'])) {
+                                        $badgeBg    = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText  = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg    = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                        $badgeLabel = $status === 'completed' ? 'Completed' : ($status === 'approved_supervisor' ? 'Approved by Supervisor' : 'Approved by Warehouse');
+                                    } elseif (in_array($status, ['not_completed', 'open'])) {
+                                        $badgeBg    = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText  = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg    = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        $badgeLabel = $status === 'not_completed' ? 'Partial Delivery' : 'Open';
+                                    } elseif (in_array($status, ['sent_to_warehouse', 'sent_to_supervisor', 'pending'])) {
+                                        $badgeBg    = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText  = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg    = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        $badgeLabel = $status === 'sent_to_warehouse' ? 'Sent to Warehouse' : ($status === 'sent_to_supervisor' ? 'Sent to Supervisor' : 'Pending');
+                                    } else {
+                                        $badgeBg    = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText  = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg    = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                        $badgeLabel = $status === 'rejected_warehouse' ? 'Rejected by Warehouse' : ($status === 'rejected_supervisor' ? 'Rejected by Supervisor' : $status);
                                     }
                                 @endphp
                                 <span class="flex justify-center items-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
@@ -196,85 +186,87 @@
                                             <span
                                                 class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Show</span>
                                         </button>
-                                        @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
-                                            {{-- Approve --}}
-                                            <button type="button"
-                                                class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                                data-id="{{ $order->id }}"
-                                                data-order-number="{{ $order->do_number ?? $order->order_number }}"
-                                                data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
-                                                data-delivery-options="{{ $order->delivery_options }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                                                </svg>
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
-                                            </button>
-                                            {{-- Reject barang --}}
-                                            @php
-                                                $hasDeliveries = $order->items->sum('delivered_quantity') > 0;
-                                                $btnLabel = $hasDeliveries ? 'Cancel' : 'Reject';
-                                            @endphp
-                                            <button type="button"
-                                                class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->do_number ?? $order->order_number }}", @json($order->items))'>
-                                                @if ($hasDeliveries)
+                                        @if (Auth::user() && Auth::user()->role === 'Warehouse')
+                                            @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
+                                                {{-- Approve --}}
+                                                <button type="button"
+                                                    class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                    data-id="{{ $order->id }}"
+                                                    data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                    data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
+                                                    data-delivery-options="{{ $order->delivery_options }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                         viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M18.36 6.64a9 9 0 11-12.73 12.73 9 9 0 0112.73-12.73zM6.34 17.66l11.32-11.32" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                                                     </svg>
-                                                @else
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            d="M6 18L18 6M6 6l12 12" />
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
+                                                </button>
+                                                {{-- Reject barang --}}
+                                                @php
+                                                    $hasDeliveries = $order->items->sum('delivered_quantity') > 0;
+                                                    $btnLabel = $hasDeliveries ? 'Cancel' : 'Reject';
+                                                @endphp
+                                                <button type="button"
+                                                    class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                    onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->do_number ?? $order->order_number }}", @json($order->items))'>
+                                                    @if ($hasDeliveries)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M18.36 6.64a9 9 0 11-12.73 12.73 9 9 0 0112.73-12.73zM6.34 17.66l11.32-11.32" />
+                                                        </svg>
+                                                    @else
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    @endif
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">{{ $btnLabel }}</span>
+                                                </button>
+                                            @endif
+                                            @if ($order->status === 'completed')
+                                                <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                    data-id="{{ $order->id }}"
+                                                    data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                    data-items='@json($order->items)'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-file-text h-4 w-4">
+                                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
+                                                        </path>
+                                                        <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                        <path d="M10 9H8"></path>
+                                                        <path d="M16 13H8"></path>
+                                                        <path d="M16 17H8"></path>
                                                     </svg>
-                                                @endif
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">{{ $btnLabel }}</span>
-                                            </button>
-                                        @endif
-                                        @if ($order->status === 'completed')
-                                            <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
-                                                class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                                                data-id="{{ $order->id }}"
-                                                data-order-number="{{ $order->do_number ?? $order->order_number }}"
-                                                data-items='@json($order->items)'>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-file-text h-4 w-4">
-                                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
-                                                    </path>
-                                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                                                    <path d="M10 9H8"></path>
-                                                    <path d="M16 13H8"></path>
-                                                    <path d="M16 17H8"></path>
-                                                </svg>
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">DO</span>
-                                            </a>
-                                        @endif
-                                        @if (in_array($order->status, ['completed', 'not_completed']) && $order->delivery_options === 'partial')
-                                            <button type="button"
-                                                class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                                                data-id="{{ $order->id }}"
-                                                data-order-number="{{ $order->do_number ?? $order->order_number }}"
-                                                data-history-url="{{ route('delivery-orders.history', $order->id) }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-history h-4 w-4">
-                                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
-                                                    </path>
-                                                    <path d="M3 3v5h5"></path>
-                                                    <path d="M12 7v5l3 3"></path>
-                                                </svg>
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDO</span>
-                                            </button>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">DO</span>
+                                                </a>
+                                            @endif
+                                            @if (in_array($order->status, ['completed', 'not_completed']) && $order->delivery_options === 'partial')
+                                                <button type="button"
+                                                    class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                                                    data-id="{{ $order->id }}"
+                                                    data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                    data-history-url="{{ route('delivery-orders.history', $order->id) }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-history h-4 w-4">
+                                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8">
+                                                        </path>
+                                                        <path d="M3 3v5h5"></path>
+                                                        <path d="M12 7v5l3 3"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDO</span>
+                                                </button>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>

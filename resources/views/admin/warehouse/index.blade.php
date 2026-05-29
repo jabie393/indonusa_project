@@ -49,15 +49,9 @@
                                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $supplyOrderCount }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('delivery-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
-                            Delivery Orders
-                            @if ($deliveryOrderCount > 0)
-                                <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
-                            @endif
-                        </a>
                     @endif
-                    @if (Auth::user() && Auth::user()->role === 'Sales')
-                        <a href="{{ route('sales.delivery-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
+                    @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
+                        <a href="{{ route('delivery-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                             Delivery Orders
                             @if ($deliveryOrderCount > 0)
                                 <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
@@ -71,7 +65,9 @@
             <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
                 <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
+                        @if (Auth::user() && Auth::user()->role !== 'Sales')
                         <th scope="col" class="text-nowrap px-4 py-3">Status Listing</th>
+                        @endif
                         <th scope="col" class="text-nowrap px-4 py-3">Barang</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Deskripsi</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
@@ -79,19 +75,18 @@
                             <th scope="col" class="text-nowrap px-4 py-3">Satuan</th>
                             <th scope="col" class="text-nowrap px-4 py-3">Lokasi</th>
                         @endif
-                        @if (Auth::user() && Auth::user()->role === 'General Affair')
+                        @if (Auth::user() && in_array(Auth::user()->role, ['General Affair', 'Supervisor']))
                             <th scope="col" class="text-nowrap px-4 py-3">Harga Jual</th>
                         @endif
-
-                        @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'General Affair']))
-                            <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
-                        @endif
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($goods as $barang)
                         <tr class="border-b transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+                            @if (Auth::user() && Auth::user()->role !== 'Sales')
                             <td class="px-4 py-3">{{ $barang->status_listing }}</td>
+                            @endif
                             <td class="flex-shrink-0 px-4 py-3">
                                 <div class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
                                     {{ $barang->category }}
@@ -113,7 +108,7 @@
                                 <td class="px-4 py-3">{{ $barang->unit }}</td>
                                 <td class="px-4 py-3">{{ $barang->location }}</td>
                             @endif
-                            @if (Auth::user() && Auth::user()->role === 'General Affair')
+                            @if (Auth::user() && in_array(Auth::user()->role, ['General Affair', 'Supervisor']))
                                 <td class="text-nowrap px-4 py-3 font-medium text-slate-700">
                                     <div class="flex w-full items-center justify-between">
                                         <span>Rp</span>
@@ -121,8 +116,6 @@
                                     </div>
                                 </td>
                             @endif
-
-                            @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'General Affair']))
                                 <td class="px-4 py-3 text-right align-middle">
                                     <div class="flex justify-center">
                                         <div
@@ -210,11 +203,40 @@
                                                         class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Price
                                                         History</span>
                                                 </button>
+                                            @elseif(Auth::user()->role === 'Supervisor')
+                                                <button
+                                                    class="view-detail-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}" data-kode="{{ $barang->goods_code }}"
+                                                    data-kategori="{{ $barang->category }}" data-status="{{ $barang->status_listing }}" data-stok="{{ $barang->stock }}"
+                                                    data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}" data-harga="{{ $barang->selling_price }}"
+                                                    data-deskripsi="{{ $barang->description ?? '' }}" data-gambar="{{ $barang->image ?? '' }}">
+                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                        width="14" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                                </button>
+                                            @elseif(Auth::user() && Auth::user()->role == 'Sales')
+                                                <button
+                                                    class="view-detail-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:text-white dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                    data-id="{{ $barang->id }}" data-nama="{{ $barang->goods_name }}" data-kode="{{ $barang->goods_code }}"
+                                                    data-kategori="{{ $barang->category }}" data-status="{{ $barang->status_listing }}" data-stok="{{ $barang->stock }}"
+                                                    data-satuan="{{ $barang->unit }}" data-lokasi="{{ $barang->location }}" data-harga="{{ $barang->selling_price }}"
+                                                    data-deskripsi="{{ $barang->description ?? '' }}" data-gambar="{{ $barang->image ?? '' }}">
+                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                        width="14" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
+                                                </button>
                                             @endif
                                         </div>
                                     </div>
                                 </td>
-                            @endif
                         </tr>
                     @empty
                     @endforelse

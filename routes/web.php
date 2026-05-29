@@ -145,27 +145,31 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
 });
 // End of General Affair
 
-// Warehouse
 route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::post('/supply-orders/bulk/approve', [SupplyOrdersController::class, 'bulkApprove'])->name('supply-orders.bulk-approve');
     Route::post('/supply-orders/bulk/reject', [SupplyOrdersController::class, 'bulkReject'])->name('supply-orders.bulk-reject');
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
-    Route::resource('/delivery-orders', DeliveryOrdersController::class);
+    Route::resource('/delivery-orders', DeliveryOrdersController::class)->except(['index']);
     Route::post('/delivery-orders/{id}/approve', [DeliveryOrdersController::class, 'approve'])->name('delivery-orders.approve');
     Route::post('/delivery-orders/{id}/reject', [DeliveryOrdersController::class, 'reject'])->name('delivery-orders.reject');
     Route::post('/delivery-orders/{id}/partial-approve', [DeliveryOrdersController::class, 'partialApprove'])->name('delivery-orders.partial-approve');
-    Route::get('/delivery-orders/{id}/items', [DeliveryOrdersController::class, 'getItems'])->name('delivery-orders.items');
-    Route::get('/delivery-orders/{id}/pdf', [DeliveryOrdersController::class, 'pdf'])->name('delivery-orders.pdf');
-    Route::get('/delivery-orders/{id}/history', [DeliveryOrdersController::class, 'getHistory'])->name('delivery-orders.history');
-    Route::get('/delivery-orders/batch/{batchId}/pdf', [DeliveryOrdersController::class, 'printBatch'])->name('delivery-orders.batch-pdf');
-    Route::get('/delivery-orders/batch/{batchId}/invoice', [\App\Http\Controllers\Admin\SalesOrderController::class, 'showBatchInvoice'])->name('delivery-orders.batch.invoice');
-    Route::post('/delivery-orders/batch/{batchId}/invoice-excel', [\App\Http\Controllers\Admin\SalesOrderController::class, 'downloadBatchInvoiceExcel'])->name('delivery-orders.batch.invoice-excel');
     Route::get('/admin/dashboard/warehouse/data', [WarehouseDashboardController::class, 'chartData'])
         ->name('dashboard.chart.data');
 });
 // End of Warehouse
+
+// Shared between Warehouse and Sales
+Route::middleware(['auth', 'role:Warehouse,Sales'])->group(function () {
+    Route::get('/delivery-orders', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'index'])->name('delivery-orders.index');
+    Route::get('/delivery-orders/{id}/items', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getItems'])->name('delivery-orders.items');
+    Route::get('/delivery-orders/{id}/history', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getHistory'])->name('delivery-orders.history');
+    Route::get('/delivery-orders/{id}/pdf', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'pdf'])->name('delivery-orders.pdf');
+    Route::get('/delivery-orders/batch/{batchId}/pdf', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'printBatch'])->name('delivery-orders.batch-pdf');
+    Route::get('/delivery-orders/batch/{batchId}/invoice', [\App\Http\Controllers\Admin\SalesOrderController::class, 'showBatchInvoice'])->name('delivery-orders.batch.invoice');
+    Route::post('/delivery-orders/batch/{batchId}/invoice-excel', [\App\Http\Controllers\Admin\SalesOrderController::class, 'downloadBatchInvoiceExcel'])->name('delivery-orders.batch.invoice-excel');
+});
 
 // Supervisor (use auth only; controllers perform case-insensitive role checks)
 Route::middleware(['auth'])->group(function () {
@@ -214,12 +218,8 @@ Route::middleware(['auth'])->group(function () {
 
 // Sales
 Route::middleware(['auth', 'role:Sales'])->group(function () {
-    // Delivery Orders (read-only untuk Sales)
-    Route::get('/sales/delivery-orders', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'salesIndex'])->name('sales.delivery-orders.index');
-    Route::get('/sales/delivery-orders/{id}/items', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getItems'])->name('sales.delivery-orders.items');
-    Route::get('/sales/delivery-orders/{id}/history', [\App\Http\Controllers\Admin\DeliveryOrdersController::class, 'getHistory'])->name('sales.delivery-orders.history');
     // Customer Routes for Sales (Consolidated to global customer.store)
-    
+
     // Request Order Routes
     Route::get('/request-order', [RequestOrderController::class, 'index'])->name('sales.request-order.index');
     Route::get('/request-order/create', [RequestOrderController::class, 'create'])->name('sales.request-order.create');
@@ -255,8 +255,10 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/custom-penawaran/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-penawaran.sent-to-warehouse');
 
     // Sent to Penawaran
-    Route::post('/custom-penawaran/{customPenawaran}/sent-to-penawaran',
-        [CustomPenawaranController::class, 'sentToPenawaran'])
+    Route::post(
+        '/custom-penawaran/{customPenawaran}/sent-to-penawaran',
+        [CustomPenawaranController::class, 'sentToPenawaran']
+    )
         ->name('sales.custom-penawaran.sent-to-penawaran');
 
     // Sales Order Routes
