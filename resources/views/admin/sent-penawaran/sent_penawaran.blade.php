@@ -71,7 +71,15 @@
                             {{ $penawaran->offer_type === 'custom' ? $penawaran->to : $penawaran->customer_name }}
                         </td>
                         <td class="px-4 py-3">
-                            <span class="inset-ring inline-flex items-center rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700">
+                            <span
+                                class="inline-flex items-center justify-center rounded-full border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-semibold text-gray-700 dark:border-gray-700/50 dark:bg-gray-900/30 dark:text-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-package mr-1.5 shrink-0">
+                                    <path d="m7.5 4.27 9 5.15" />
+                                    <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                    <path d="m3.3 7 8.7 5 8.7-5" />
+                                    <path d="M12 22V12" />
+                                </svg>
                                 {{ $penawaran->items->count() }} Items
                             </span>
                         </td>
@@ -80,13 +88,19 @@
                             $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
                             $itemsWithHighDiscount = $penawaran->items->where('diskon_percent', '>', 20);
                             @endphp
-                            <div class="flex items-center">
-                                <span class="{{ $maxDiskon > 20 ? 'text-rose-600' : 'text-emerald-600' }} text-sm font-bold">{{ $maxDiskon }}%</span>
-                                @if ($maxDiskon > 20)
-                                <span class="ml-2 flex h-2 w-2 animate-pulse rounded-full bg-rose-500"
-                                    title="High Discount"></span>
-                                @endif
-                            </div>
+                            @if ($maxDiskon > 20)
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                    >20%
+                                </span>
+                            @elseif ($maxDiskon > 0)
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                    <20%
+                                </span>
+                            @else
+                                <span class="text-gray-300 dark:text-gray-600">-</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
                             @if ($itemsWithHighDiscount->isNotEmpty())
@@ -101,18 +115,32 @@
                         <td class="px-4 py-3">
                             @php
                             $status = $penawaran->order?->status ?? $penawaran->status;
-                            $statusClass =
-                            [
-                            'sent_to_supervisor' => 'bg-sky-50 text-sky-700 ring-sky-700/20',
-                            'open' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-                            'approved_supervisor' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-                            'rejected_supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
-                            'sent_to_warehouse' => 'bg-indigo-50 text-indigo-700 ring-indigo-700/20',
-                            ][$status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
+                            $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                            $badgeText = 'text-gray-700 dark:text-gray-300';
+                            $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                            if (in_array($status, ['open', 'approved_supervisor'])) {
+                                $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                $badgeText = 'text-green-700 dark:text-green-300';
+                                $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                            } elseif (in_array($status, ['sent_to_supervisor', 'sent_to_warehouse'])) {
+                                $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                $badgeText = 'text-blue-700 dark:text-blue-300';
+                                $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                            } elseif ($status === 'rejected_supervisor') {
+                                $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                $badgeText = 'text-red-700 dark:text-red-300';
+                                $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                            }
                             @endphp
                             <div class="flex items-center">
-                                <span class="{{ $statusClass }} badge inset-ring">
-                                    {{ ucfirst(str_replace('_', ' ', $status)) }}
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ ucfirst(str_replace('_', ' ', $status)) }}
                                 </span>
                             </div>
 

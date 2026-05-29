@@ -24,7 +24,7 @@
 
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-show relative mb-5 flex justify-between rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="p-3 items-center flex">
+        <div class="flex items-center p-3">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
                 <a href="{{ route('ga.sales-order.export', ['search' => $search]) }}"
@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="p-3 ">
+        <div class="p-3">
             {{-- Search --}}
             <div class="flex flex-col gap-2 md:flex-row">
                 <div class="relative flex-1">
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-h-[calc(100vh-200px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex shrink-0 items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
         </div>
 
@@ -91,66 +91,80 @@
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse ($results as $row)
-                        <tr class="border-b border-gray-200 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
+                        <tr class="border-b border-gray-200 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
                                 <div>
                                     <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
-                                        class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
+                                        class="font-bold text-[#225A97] hover:underline dark:text-blue-400">
                                         {{ $row['no_sales_order'] ?? '-' }}
                                     </a>
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal flex items-center">
-                                    <span class="text-gray-400 dark:text-gray-500 w-8">PNW</span>
-                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                <div class="mt-1 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
+                                    <span class="w-8 text-gray-400 dark:text-gray-500">PNW</span>
+                                    <span class="mx-1.5 font-bold text-gray-300 dark:text-gray-600">·</span>
                                     <span>{{ $row['no_penawaran'] ?? '-' }}</span>
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal flex items-center">
-                                    <span class="text-gray-400 dark:text-gray-500 w-8">REQ</span>
-                                    <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
+                                <div class="mt-0.5 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
+                                    <span class="w-8 text-gray-400 dark:text-gray-500">REQ</span>
+                                    <span class="mx-1.5 font-bold text-gray-300 dark:text-gray-600">·</span>
                                     <span>{{ $row['no_request'] ?? '-' }}</span>
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-normal flex items-center gap-1.5">
-                                    <span class="text-gray-400 dark:text-gray-500 w-8">PO</span>
-                                    <span class="text-gray-300 dark:text-gray-600 font-bold">·</span>
+                                <div class="mt-0.5 flex items-center gap-1.5 text-xs font-normal text-gray-500 dark:text-gray-400">
+                                    <span class="w-8 text-gray-400 dark:text-gray-500">PO</span>
+                                    <span class="font-bold text-gray-300 dark:text-gray-600">·</span>
                                     <span>{{ $row['no_po'] ?? '-' }}</span>
                                     @if (!empty($row['image_po']))
-                                        <a href="{{ Storage::url($row['image_po']) }}" target="_blank" class="inline-flex items-center text-blue-500 hover:text-blue-600 ml-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                                        <a href="{{ Storage::url($row['image_po']) }}" target="_blank" class="ml-1 inline-flex items-center text-blue-500 hover:text-blue-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
+                                                <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                                                <circle cx="9" cy="9" r="2" />
+                                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                            </svg>
                                         </a>
                                     @endif
                                     @if (!empty($row['pdf_po']))
-                                        <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank" class="inline-flex items-center text-red-500 hover:text-red-600 ml-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                                        <a href="{{ Storage::url($row['pdf_po']) }}" target="_blank" class="ml-1 inline-flex items-center text-red-500 hover:text-red-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
+                                                <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                                <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                                <path d="M10 9H8" />
+                                                <path d="M16 13H8" />
+                                                <path d="M16 17H8" />
+                                            </svg>
                                         </a>
                                     @endif
                                 </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                <div class="text-[14px] font-bold text-gray-900 dark:text-white">
                                     {{ $row['customer_name'] ?? '-' }}
                                 </div>
                                 @if (!empty($row['first_pic_name']))
-                                    <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
+                                    <div class="mt-1 flex items-center text-[12px] font-normal text-gray-500 dark:text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user mr-1.5 shrink-0 text-gray-400 dark:text-gray-500">
                                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                             <circle cx="12" cy="7" r="4" />
                                         </svg>
                                         <span class="truncate">{{ $row['first_pic_name'] }}</span>
                                         @if (!empty($row['first_pic_position']))
-                                            <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $row['first_pic_position'] }}</span>
+                                            <span class="mx-1.5 font-bold text-gray-300 dark:text-gray-600">·</span>
+                                            <span class="truncate text-gray-400 dark:text-gray-500">{{ $row['first_pic_position'] }}</span>
                                         @endif
                                     </div>
                                 @endif
                             </td>
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                <div class="text-[14px] font-bold text-gray-900 dark:text-white">
                                     Rp {{ number_format($row['total'] ?? 0, 0, '.', ',') }}
                                 </div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal flex items-center">
+                                <div class="mt-1 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
                                     <span>{{ $row['jumlah_item'] ?? 0 }} {{ ($row['jumlah_item'] ?? 0) > 1 ? 'items' : 'item' }}</span>
                                     @if (!empty($row['diskon']) && $row['diskon'] > 0)
-                                        <span class="inline-flex items-center rounded bg-amber-50 dark:bg-amber-950/30 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 ml-1.5 gap-0.5">
+                                        <span
+                                            class="ml-1.5 inline-flex items-center gap-0.5 rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-400">
                                             % {{ $row['diskon'] }}%
                                         </span>
                                     @endif
@@ -168,25 +182,29 @@
                                         $badgeBg = 'bg-green-50 dark:bg-green-950/30';
                                         $badgeText = 'text-green-700 dark:text-green-300';
                                         $badgeBorder = 'border border-green-200 dark:border-green-800/50';
-                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                        $iconSvg =
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
                                     } elseif (in_array($statusText, ['Partial Delivery', 'Open'])) {
                                         $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
                                         $badgeText = 'text-amber-800 dark:text-amber-300';
                                         $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
-                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        $iconSvg =
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
                                     } elseif (in_array($statusText, ['Pending', 'Waiting for Supervisor Approval', 'Sent to Supervisor', 'Sent to Warehouse', 'Belum Diproses'])) {
                                         $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
                                         $badgeText = 'text-blue-700 dark:text-blue-300';
                                         $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
-                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        $iconSvg =
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
                                     } else {
                                         $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                         $badgeText = 'text-red-700 dark:text-red-300';
                                         $badgeBorder = 'border border-red-200 dark:border-red-800/50';
-                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                        $iconSvg =
+                                            '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
                                     }
                                 @endphp
-                                <span class="flex justify-center items-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                <span class="{{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }} flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold">
                                     {!! $iconSvg !!}{{ $statusText }}
                                 </span>
                             </td>
@@ -200,7 +218,7 @@
                                             $formattedDate = $row['tanggal'];
                                         }
                                     }
-                                    
+
                                     $formattedExpiry = null;
                                     $expiryVal = $row['berlaku_sampai'] ?? '-';
                                     if ($expiryVal !== '-') {
@@ -211,16 +229,17 @@
                                         }
                                     }
                                 @endphp
-                                <div class="font-bold text-gray-900 dark:text-white text-[14px]">
+                                <div class="text-[14px] font-bold text-gray-900 dark:text-white">
                                     {{ $formattedDate }}
                                 </div>
                                 @if ($formattedExpiry)
-                                    <div class="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-1 font-normal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
-                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/>
-                                            <line x1="16" x2="16" y1="2" y2="6"/>
-                                            <line x1="8" x2="8" y1="2" y2="6"/>
-                                            <line x1="3" x2="21" y1="10" y2="10"/>
+                                    <div class="mt-1 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar mr-1.5 shrink-0 text-gray-400 dark:text-gray-500">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                            <line x1="16" x2="16" y1="2" y2="6" />
+                                            <line x1="8" x2="8" y1="2" y2="6" />
+                                            <line x1="3" x2="21" y1="10" y2="10" />
                                         </svg>
                                         <span>s/d {{ $formattedExpiry }}</span>
                                     </div>
@@ -236,7 +255,8 @@
                                         <path d="M9 13h6" />
                                         <path d="M9 17h3" />
                                     </svg>
-                                    <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Invoice</span>
+                                    <span
+                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Invoice</span>
                                 </a>
                             </td>
                         </tr>

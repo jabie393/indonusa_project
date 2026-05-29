@@ -110,26 +110,33 @@
                             <td class="px-4 py-3 font-semibold text-gray-900 dark:text-white">{{ $barang->stock }}</td>
                             <td class="px-4 py-3">
                                 @php
-                                    $statusClass =
-                                        [
-                                            'ditinjau' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                        ][$barang->goods_status] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
                                     $statusLabel =
                                         [
-                                            'ditinjau' => 'Ditinjau',
+                                            'ditinjau' => 'Pending Review',
                                         ][$barang->goods_status] ?? $barang->goods_status;
+
+                                    $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                    $badgeText = 'text-gray-700 dark:text-gray-300';
+                                    $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                                    if ($barang->goods_status === 'ditinjau') {
+                                        $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    }
                                 @endphp
-                                <div class="flex items-center justify-center gap-2">
-                                    <span class="{{ $statusClass }} badge">
-                                        {{ $statusLabel }}
-                                    </span>
-                                </div>
+                                <span
+                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    {!! $iconSvg !!}{{ $statusLabel }}
+                                </span>
                             </td>
                             <td class="px-4 py-3">
                                 @if ($barang->request_type == 'primary')
-                                    Barang baru
+                                    New item
                                 @elseif($barang->request_type == 'new_stock')
-                                    Stok baru
+                                    New stock
                                 @elseif($barang->request_type)
                                     {{ $barang->request_type }}
                                 @else
@@ -197,7 +204,7 @@
                         @endforeach
                     </select>
                 </form>
-                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
             </div>
             <div>
                 {{ $goods->links() }}

@@ -124,10 +124,12 @@
                                 @elseif ($adaStokKurang)
                                     <div class="group relative inline-block">
                                         <span
-                                            class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2 py-1 text-xs font-semibold text-red-600 dark:border-red-700 dark:bg-red-900/30 dark:text-red-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                            class="inline-flex cursor-pointer items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <line x1="15" x2="9" y1="9" y2="15" />
+                                                <line x1="9" x2="15" y1="9" y2="15" />
                                             </svg>
                                             Stok Kurang ({{ count($stokKurangItems) }})
                                         </span>
@@ -159,9 +161,11 @@
                                     </div>
                                 @else
                                     <span
-                                        class="inline-flex items-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-xs font-semibold text-green-600 dark:border-green-700 dark:bg-green-900/30 dark:text-green-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="m9 12 2 2 4-4" />
                                         </svg>
                                         Stok Cukup
                                     </span>
@@ -174,15 +178,21 @@
                             @endphp
                             <td class="px-4 py-3 text-center">
                                 @if ($hasBelow && $hasAbove)
-                                    <span class="badge inset-ring inset-ring-orange-600 inline-flex items-center bg-orange-50 px-2 py-0.5 text-xs font-bold text-orange-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
+                                        
                                         &lt;20% &amp; &gt;20%
                                     </span>
                                 @elseif ($hasAbove)
-                                    <span class="badge inset-ring inset-ring-red-600 inline-flex items-center bg-red-50 px-2 py-0.5 text-xs font-bold text-red-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                        
                                         &gt;20%
                                     </span>
                                 @elseif ($hasBelow)
-                                    <span class="badge inset-ring inset-ring-green-600 inline-flex items-center bg-green-50 px-2 py-0.5 text-xs font-bold text-green-700">
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                        
                                         &lt;20%
                                     </span>
                                 @else
@@ -208,23 +218,39 @@
 
                                     $displayStatus = $orderStatus ? $statusLabelMap[$orderStatus] ?? $orderStatus : $ro->status;
 
-                                    $statusClass =
-                                        [
-                                            'Pending' => 'bg-yellow-50 text-yellow-800 inset-ring inset-ring-yellow-600',
-                                            'Open' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Sent to Supervisor' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Supervisor' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Supervisor' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Sent to Warehouse' => 'bg-blue-50 text-blue-700 inset-ring inset-ring-blue-600',
-                                            'Approved by Warehouse' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                            'Rejected by Warehouse' => 'bg-red-50 text-red-700 inset-ring inset-ring-red-600',
-                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 inset-ring inset-ring-orange-600',
-                                            'Completed' => 'bg-green-50 text-green-700 inset-ring inset-ring-green-600',
-                                        ][$displayStatus] ?? 'bg-gray-100 text-gray-800 inset-ring inset-ring-gray-600';
+                                    $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                    $badgeText = 'text-gray-700 dark:text-gray-300';
+                                    $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                    $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+
+                                    if (in_array($displayStatus, ['Completed', 'Approved by Supervisor', 'Approved by Warehouse', 'Open'])) {
+                                        $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                        $badgeText = 'text-green-700 dark:text-green-300';
+                                        $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                    } elseif (in_array($displayStatus, ['Partial Delivery'])) {
+                                        $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                        $badgeText = 'text-amber-800 dark:text-amber-300';
+                                        $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($displayStatus, ['Pending', 'Sent to Supervisor', 'Sent to Warehouse'])) {
+                                        $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                        $badgeText = 'text-blue-700 dark:text-blue-300';
+                                        $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                    } elseif (in_array($displayStatus, ['Rejected by Supervisor', 'Rejected by Warehouse'])) {
+                                        $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                        $badgeText = 'text-red-700 dark:text-red-300';
+                                        $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                    }
                                 @endphp
 
                                 <div class="flex flex-col items-center gap-1">
-                                    <span class="{{ $statusClass }} badge">{{ $displayStatus }}</span>
+                                    <span
+                                        class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                        {!! $iconSvg !!}{{ $displayStatus }}
+                                    </span>
 
                                     @if ($orderStatus === 'not_completed' && $ro->order)
                                         @php
