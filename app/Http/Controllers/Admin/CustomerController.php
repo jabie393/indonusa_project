@@ -12,18 +12,16 @@ use Illuminate\Support\Facades\Schema;
 
 class CustomerController extends Controller
 {
-    public function __construct()
+    private function checkRole()
     {
-        $this->middleware(function ($request, $next) {
-            if (auth()->check() && auth()->user()->role === 'Sales') {
-                abort(403, 'Akses ditolak. Peran Sales tidak diizinkan mengakses halaman Customer.');
-            }
-            return $next($request);
-        });
+        if (auth()->check() && auth()->user()->role === 'Sales') {
+            abort(403, 'Akses ditolak. Peran Sales tidak diizinkan mengakses halaman Customer.');
+        }
     }
 
     public function index(Request $request)
     {
+        $this->checkRole();
         $perPage = $request->input('perPage', 10);
         $search = $request->input('search');
 
@@ -65,6 +63,7 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
+        $this->checkRole();
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'npwp' => 'nullable|string|max:50',
@@ -172,6 +171,7 @@ class CustomerController extends Controller
 
     public function update(Request $request)
     {
+        $this->checkRole();
         $validatedData = $request->validate([
             'id' => 'required|exists:customers,id',
             'name' => 'required|string|max:255',
@@ -302,12 +302,14 @@ class CustomerController extends Controller
 
     public function getPics($id)
     {
+        $this->checkRole();
         $pics = Pic::where('customer_id', $id)->get();
         return response()->json($pics);
     }
 
     public function updateStatus(Request $request, $id)
     {
+        $this->checkRole();
         $request->validate([
             'status' => 'required|in:active,inactive'
         ]);
