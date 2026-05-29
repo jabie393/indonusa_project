@@ -68,7 +68,7 @@
     </div>
 
 
-    <div class="relative flex max-h-[calc(100vh-120px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="relative flex max-h-[calc(100vh-200px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex shrink-0 items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
         </div>
 
