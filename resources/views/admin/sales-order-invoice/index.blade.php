@@ -27,7 +27,7 @@
         <div class="flex items-center p-3">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                <a href="{{ route('ga.sales-order.export', ['search' => $search]) }}"
+                <a href="{{ route('sales-order-invoice.export', ['search' => $search]) }}"
                     class="flex flex-row items-center justify-center gap-2 rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -63,7 +63,7 @@
                 </div>
                 <div class="flex gap-2">
                     @if ($search)
-                        <a href="{{ route('ga.sales-order.index') }}"
+                        <a href="{{ route('sales-order-invoice.index') }}"
                             class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
                             Reset
                         </a>
@@ -94,8 +94,14 @@
                         <tr class="border-b border-gray-200 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                             <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
                                 <div>
-                                    <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
-                                        class="font-bold text-[#225A97] hover:underline dark:text-blue-400">
+                                    <a href="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
+                                        target="_self"
+                                        class="js-invoice-history font-bold text-[#225A97] hover:underline dark:text-blue-400"
+                                        data-id="{{ $row['id'] }}"
+                                        data-order-number="{{ $row['no_sales_order'] ?? '-' }}"
+                                        data-has-batches="{{ $row['has_batches'] ? 'true' : 'false' }}"
+                                        data-invoice-url="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
+                                        data-history-url="{{ route('sales-order-invoice.invoice-history', $row['id']) }}">
                                         {{ $row['no_sales_order'] ?? '-' }}
                                     </a>
                                 </div>
@@ -246,8 +252,14 @@
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <a href="{{ route('ga.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank"
-                                    class="group inline-flex items-center rounded-lg bg-green-600 p-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                <a href="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
+                                    target="_self"
+                                    class="js-invoice-history group inline-flex items-center rounded-lg bg-green-600 p-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                    data-id="{{ $row['id'] }}"
+                                    data-order-number="{{ $row['no_sales_order'] ?? '-' }}"
+                                    data-has-batches="{{ $row['has_batches'] ? 'true' : 'false' }}"
+                                    data-invoice-url="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
+                                    data-history-url="{{ route('sales-order-invoice.invoice-history', $row['id']) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
@@ -277,7 +289,7 @@
                                 </p>
                                 <p class="mt-1 text-sm">
                                     @if ($search)
-                                        Coba ubah kata kunci pencarian atau <a href="{{ route('ga.sales-order.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
+                                        Coba ubah kata kunci pencarian atau <a href="{{ route('sales-order-invoice.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
                                     @else
                                         Data sales order belum tersedia
                                     @endif
@@ -298,7 +310,7 @@
                         of
                         <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
                     </span>
-                    <form method="GET" action="{{ route('ga.sales-order.index') }}">
+                    <form method="GET" action="{{ route('sales-order-invoice.index') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
                         <select name="perPage" onchange="this.form.submit()"
                             class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -334,7 +346,7 @@
             }
 
             searchTimeout = setTimeout(() => {
-                fetch(`{{ route('ga.sales-order.search') }}?q=${encodeURIComponent(query)}`)
+                fetch(`{{ route('sales-order-invoice.search') }}?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.data.length > 0) {
@@ -358,7 +370,7 @@
             // Trigger actual search
             const form = document.createElement('form');
             form.method = 'GET';
-            form.action = '{{ route('ga.sales-order.index') }}';
+            form.action = '{{ route('sales-order-invoice.index') }}';
             form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
             document.body.appendChild(form);
             form.submit();
@@ -419,7 +431,7 @@
             if (query) {
                 const form = document.createElement('form');
                 form.method = 'GET';
-                form.action = '{{ route('ga.sales-order.index') }}';
+                form.action = '{{ route('sales-order-invoice.index') }}';
                 form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
                 document.body.appendChild(form);
                 form.submit();
@@ -439,6 +451,118 @@
             if (!e.target.closest('#searchInput') && !e.target.closest('#searchResults')) {
                 searchResults.classList.add('hidden');
             }
+        });
+    </script>
+    @include('admin.sales-order-invoice.partials.invoice-history-modal')
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const invoiceButtons = document.querySelectorAll(".js-invoice-history");
+            const historyModal = document.getElementById("invoiceHistoryModal");
+            const historySalesOrderNumberEl = document.getElementById("historySalesOrderNumber");
+            const invoiceHistoryTableBody = document.getElementById("invoiceHistoryTableBody");
+
+            function openHistoryModal() {
+                if (!historyModal) return;
+                if (typeof historyModal.showModal === "function") {
+                    historyModal.showModal();
+                } else {
+                    historyModal.style.display = "flex";
+                }
+            }
+
+            function closeHistoryModal() {
+                if (!historyModal) return;
+                if (typeof historyModal.close === "function") {
+                    historyModal.close();
+                } else {
+                    historyModal.style.display = "none";
+                }
+            }
+
+            invoiceButtons.forEach((btn) => {
+                btn.addEventListener("click", function (e) {
+                    const hasBatches = btn.getAttribute("data-has-batches") === "true";
+                    const invoiceUrl = btn.getAttribute("data-invoice-url");
+
+                    if (!hasBatches) {
+                        // Let the browser navigate naturally in the same window/tab since target is _self
+                        return;
+                    }
+
+                    // It has batches, prevent the default behavior and show the modal
+                    e.preventDefault();
+
+                    const orderId = btn.getAttribute("data-id");
+                    const orderNumber = btn.getAttribute("data-order-number");
+                    const historyUrl = btn.getAttribute("data-history-url");
+
+                    if (historySalesOrderNumberEl)
+                        historySalesOrderNumberEl.textContent = orderNumber;
+                    if (invoiceHistoryTableBody)
+                        invoiceHistoryTableBody.innerHTML =
+                            '<tr><td colspan="4" class="p-4 text-center">Loading...</td></tr>';
+
+                    openHistoryModal();
+
+                    fetch(historyUrl)
+                        .then((res) => res.json())
+                        .then((data) => {
+                            if (invoiceHistoryTableBody) {
+                                invoiceHistoryTableBody.innerHTML = "";
+                                if (data.length === 0) {
+                                    invoiceHistoryTableBody.innerHTML =
+                                        '<tr><td colspan="4" class="p-4 text-center">Belum ada histori invoice.</td></tr>';
+                                    return;
+                                }
+
+                                data.forEach((batch) => {
+                                    const tr = document.createElement("tr");
+                                    tr.className = "border-b dark:border-gray-600";
+
+                                    const itemsList = batch.items
+                                        .map(
+                                            (item) =>
+                                                `<li>${item.goods_name} (${item.quantity_sent})</li>`,
+                                        )
+                                        .join("");
+
+                                    tr.innerHTML = `
+                                        <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">Batch #${batch.batch_number}</td>
+                                        <td class="px-4 py-3">${batch.created_at}</td>
+                                        <td class="px-4 py-3">
+                                            <ul class="list-disc pl-4 text-xs font-normal">
+                                                ${itemsList}
+                                            </ul>
+                                        </td>
+                                        <td class="px-4 py-3 text-right">
+                                            <a href="${batch.invoice_url}" target="_self" class="inline-flex items-center justify-center rounded-lg bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300">Cetak Invoice</a>
+                                        </td>
+                                    `;
+                                    invoiceHistoryTableBody.appendChild(tr);
+                                });
+                            }
+                        })
+                        .catch((err) => {
+                            console.error("Failed to fetch invoice history", err);
+                            if (invoiceHistoryTableBody)
+                                invoiceHistoryTableBody.innerHTML =
+                                    '<tr><td colspan="4" class="p-4 text-center text-red-500">Gagal mengambil data.</td></tr>';
+                        });
+                });
+            });
+
+            // Close buttons for history modal
+            document
+                .querySelectorAll('[data-modal-hide="invoiceHistoryModal"]')
+                .forEach((btn) => {
+                    btn.addEventListener("click", closeHistoryModal);
+                });
+
+            // allow clicking overlay to close
+            document.addEventListener("click", function (e) {
+                if (historyModal && e.target === historyModal) closeHistoryModal();
+            });
         });
     </script>
     @vite(['resources/js/table-sort.js'])

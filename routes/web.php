@@ -107,13 +107,14 @@ Route::middleware(['auth'])->group(function () {
 // General Affair
 Route::middleware(['auth', 'role:General Affair'])->group(function () {
     // Sales Order (read-only untuk GA)
-    Route::get('/ga/sales-order', [App\Http\Controllers\Admin\SalesOrderController::class, 'gaIndex'])->name('ga.sales-order.index');
-    Route::get('/ga/sales-order/export', [App\Http\Controllers\Admin\SalesOrderController::class, 'exportGaSalesOrders'])->name('ga.sales-order.export');
-    Route::get('/ga/sales-order/search', [App\Http\Controllers\Admin\SalesOrderController::class, 'gaSearch'])->name('ga.sales-order.search');
-    Route::get('/ga/sales-order/{id}/invoice', [App\Http\Controllers\Admin\SalesOrderController::class, 'showInvoice'])->name('ga.sales-order.invoice');
-    Route::post('/ga/sales-order/{id}/invoice-excel', [App\Http\Controllers\Admin\SalesOrderController::class, 'downloadInvoiceExcel'])->name('ga.sales-order.invoice-excel');
-    Route::get('/ga/sales-order/batch/{batchId}/invoice', [App\Http\Controllers\Admin\SalesOrderController::class, 'showBatchInvoice'])->name('ga.sales-order.batch.invoice');
-    Route::post('/ga/sales-order/batch/{batchId}/invoice-excel', [App\Http\Controllers\Admin\SalesOrderController::class, 'downloadBatchInvoiceExcel'])->name('ga.sales-order.batch.invoice-excel');
+    Route::get('/sales-order-invoice', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'index'])->name('sales-order-invoice.index');
+    Route::get('/sales-order-invoice/export', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrders'])->name('sales-order-invoice.export');
+    Route::get('/sales-order-invoice/search', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'search'])->name('sales-order-invoice.search');
+    Route::get('/invoice/{id}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showInvoice'])->name('invoice.index');
+    Route::get('/sales-order-invoice/{id}/invoice-history', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'getInvoiceHistory'])->name('sales-order-invoice.invoice-history');
+    Route::post('/invoice/{id}/excel', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'downloadInvoiceExcel'])->name('invoice.excel');
+    Route::get('/invoice/batch/{batchId}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showBatchInvoice'])->name('invoice.batch.invoice');
+    Route::post('/invoice/batch/{batchId}/excel', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'downloadBatchInvoiceExcel'])->name('invoice.batch.excel');
     Route::resource('/goods-in', GoodsInController::class);
     Route::resource('/add-stock', AddStockController::class);
     // Excel Import
@@ -273,13 +274,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
     Route::post('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'uploadImage'])->name('sales-order.upload-image');
     Route::delete('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'deleteImage'])->name('sales-order.delete-image');
-    // Invoice View
-    Route::get('/sales-order/{id}/invoice', [\App\Http\Controllers\Admin\SalesOrderController::class, 'showInvoice'])
-        ->name('sales.sales-order.invoice');
-
-    // Invoice Download Excel
-    Route::post('/sales-order/{id}/invoice-excel', [\App\Http\Controllers\Admin\SalesOrderController::class, 'downloadInvoiceExcel'])
-        ->name('sales.sales-order.invoice-excel');
 
     // Sent to Warehouse dari Sales Order
     Route::post('/sales-order/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])

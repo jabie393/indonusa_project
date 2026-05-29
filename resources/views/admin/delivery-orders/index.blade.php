@@ -308,7 +308,6 @@
 
     <!-- Modals -->
     @include('admin.delivery-orders.partials.delivery-orders-modal-show')
-    @include('admin.delivery-orders.partials.delivery-orders-detail-modal-show')
     @include('admin.delivery-orders.partials.delivery-orders-approve-modal')
     @include('admin.delivery-orders.partials.delivery-orders-history-modal')
     @include('admin.delivery-orders.partials.delivery-orders-modal-reject')

@@ -32,7 +32,7 @@
                                         </td>
                                         <td class="px-4 py-3 text-right">
                                             @php
-                                                $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair' ? route('ga.sales-order.batch.invoice', $batchItem->id) : route('delivery-orders.batch.invoice', $batchItem->id);
+                                                $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair' ? route('invoice.batch.invoice', $batchItem->id) : route('delivery-orders.batch.invoice', $batchItem->id);
                                             @endphp
                                             <a href="{{ $batchInvoiceUrl }}"
                                                target="_blank"
@@ -89,7 +89,7 @@
                                                             </td>
                                                             <td style="padding:12px; vertical-align:top; text-align:right;">
                                                                 @php
-                                                                    $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair' ? route('ga.sales-order.batch.invoice', $batchItem->id) : route('delivery-orders.batch.invoice', $batchItem->id);
+                                                                    $batchInvoiceUrl = strtolower(Auth::user()->role ?? '') === 'general affair' ? route('invoice.batch.invoice', $batchItem->id) : route('delivery-orders.batch.invoice', $batchItem->id);
                                                                 @endphp
                                                                 <a href="{{ $batchInvoiceUrl }}"
                                                                    target="_blank"
@@ -319,7 +319,7 @@
                                 <div class="space-y-3 p-6">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">This order contains partial warehouse shipments. Print the invoice for each partial batch separately.</p>
                                     @foreach ($batches as $batchItem)
-                                        <a href="{{ route('ga.sales-order.batch.invoice', $batchItem->id) }}"
+                                        <a href="{{ route('invoice.batch.invoice', $batchItem->id) }}"
                                            target="_blank"
                                            class="block rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:text-white">Batch #{{ $batchItem->batch_number }} - Cetak Invoice</a>
                                     @endforeach

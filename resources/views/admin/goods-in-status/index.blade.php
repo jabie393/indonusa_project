@@ -71,7 +71,7 @@ use App\Models\Barang; ?>
                                     <span>{{ number_format($barang->buy_price, 0, '.', ',') }}</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
+                            <td class="whitespace-nowrap px-4 py-3 text-center align-middle">
                                 @php
                                     $statusLabel =
                                         [
@@ -103,7 +103,7 @@ use App\Models\Barang; ?>
                                     }
                                 @endphp
                                 <span
-                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    class="flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                     {!! $iconSvg !!}{{ $statusLabel }}
                                 </span>
                             </td>

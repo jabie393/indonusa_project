@@ -48,19 +48,19 @@ document.addEventListener("DOMContentLoaded", function () {
         items.forEach(function (item) {
             const tr = document.createElement("tr");
 
-            // prefer kode_barang coming from related barang, then item.kode_barang, then fallback to barang_id
+            // prefer goods_code coming from related barang, then item.goods_code, then fallback to barang_id
             const kodeBarang =
                 (item.barang &&
-                    (item.barang.kode_barang ?? item.barang.kode)) ??
-                item.kode_barang ??
+                    (item.barang.goods_code ?? item.barang.kode)) ??
+                item.goods_code ??
                 item.barang_id ??
                 "-";
             const namaBarang =
                 (item.barang &&
                     (item.barang.nama ||
                         item.barang.name ||
-                        item.barang.nama_barang)) ||
-                item.nama_barang ||
+                        item.barang.goods_name)) ||
+                item.goods_name ||
                 "-";
             const qty = item.quantity ?? "-";
             const delivered = item.delivered_quantity ?? "-";
@@ -217,10 +217,10 @@ document.addEventListener("DOMContentLoaded", function () {
             tr.innerHTML = `
                 <td class="px-4 py-3">
                     <div class="text-sm font-medium text-gray-900 dark:text-white">${
-                        item.nama_barang
+                        item.goods_name
                     }</div>
                     <div class="text-xs text-gray-500 dark:text-gray-400">${
-                        item.kode_barang
+                        item.goods_code
                     }</div>
                 </td>
                 <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">

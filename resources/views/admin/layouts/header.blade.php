@@ -126,7 +126,7 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
                     </div>
-                @elseif (request()->routeIs('ga.sales-order.*'))
+                @elseif (request()->routeIs('sales-order-invoice.*') || request()->routeIs('invoice.*'))
                     <div class="text-gray-100">
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>

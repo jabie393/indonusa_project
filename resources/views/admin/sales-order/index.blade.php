@@ -336,17 +336,7 @@
 
                                         <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $row['id'] }}"
                                             style="position-anchor:--anchor-{{ $row['id'] }}">
-                                            {{-- <li>
-                                                <a href="{{ route('sales.sales-order.invoice', $row['id']) }}?type={{ $row['type'] }}" target="_blank" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                                            <polyline points="14 2 14 8 20 8" />
-                                            <path d="M9 13h6" />
-                                            <path d="M9 17h3" />
-                                        </svg>
-                                        Invoice
-                                        </a>
-                                        </li> --}}
+
 
                                             @php
                                                 $sudahDikirim = in_array($row['status'], [
@@ -1108,5 +1098,6 @@
             });
         }
     </script>
+
     @vite(['resources/js/table-sort.js'])
 </x-app-layout>
