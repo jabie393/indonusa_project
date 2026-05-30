@@ -489,7 +489,7 @@
                                     </g>
                                 </svg>
                                 <span
-                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation Approval</span>
+                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation</span>
                                 @php
                                     $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
                                 @endphp

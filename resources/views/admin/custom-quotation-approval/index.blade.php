@@ -40,8 +40,8 @@
                     <tr>
                         <th class="text-nowrap px-4 py-3">Quotation</th>
                         <th class="text-nowrap px-4 py-3">Sales</th>
-                        <th class="text-nowrap px-4 py-3">Item & Remarks (Subject)</th>
-                        <th class="text-nowrap px-4 py-3">Date Sent</th>
+                        <th class="text-nowrap px-4 py-3">Item & Keterangan (Subject)</th>
+                        <th class="text-nowrap px-4 py-3">Tgl. Kirim</th>
                         <th class="text-nowrap px-4 py-3 no-sort text-center">Action</th>
                     </tr>
                 </thead>
