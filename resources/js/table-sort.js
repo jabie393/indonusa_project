@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const cell = row.children[idx];
             if (!cell) return '';
             
-            const text = cell.textContent.trim();
+            const text = cell.hasAttribute('data-sort-value') ? cell.getAttribute('data-sort-value').trim() : cell.textContent.trim();
             
             // 1. Check if it's a number/currency (e.g. Rp 1.000.000 or -Rp 500)
             const cleanNum = text.replace(/Rp\.?\s?/g, '').replace(/\./g, '').replace(/,/g, '.').replace(/\s/g, '').trim();
