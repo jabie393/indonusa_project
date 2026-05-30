@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id-ID">
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Penawaran - Indonusa Jaya Bersama</title>
+    <title>Quotation - Indonusa Jaya Bersama</title>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
@@ -211,13 +211,13 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[160pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                            <th class="w-[160pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
 
                             <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
-                            <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Satuan</th>
-                            <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Harga</th>
+                            <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Unit</th>
+                            <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Price</th>
                             <th class="w-[67.15pt] border border-black px-2 py-1 text-center text-white">Total</th>
-                            <th class="border border-black px-2 py-1 text-center text-white">Gambar</th>
+                            <th class="border border-black px-2 py-1 text-center text-white">Image</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -249,7 +249,7 @@
 
                                                 @if ($imgBase64)
                                                     <img src="{{ $imgBase64 }}"
-                                                         alt="Gambar"
+                                                         alt="Image"
                                                          class="h-20 w-20 border border-gray-300 object-contain">
                                                 @else
                                                     <span>-</span>
@@ -264,7 +264,7 @@
                         @empty
                             <tr>
                                 <td colspan="7"
-                                    class="border px-2 py-1 text-center">Tidak ada barang</td>
+                                    class="border px-2 py-1 text-center">No items</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -277,11 +277,11 @@
 
                 <!-- TERMS -->
                 <div class="mt-8 break-inside-avoid text-[9pt]">
-                    <p>Syarat dan ketentuan :</p>
+                    <p>Terms and conditions :</p>
                     <ol class="ml-[26.08pt] mt-1 list-decimal space-y-0.5">
-                        <li>Harga Franko On Site</li>
-                        <li>Harga Sudah Include PPN 11%</li>
-                        <li>Penawaran berlaku 2 Minggu</li>
+                        <li>Price Franko On Site</li>
+                        <li>Price includes 11% VAT</li>
+                        <li>Quotation valid for 2 weeks</li>
                     </ol>
                 </div>
 
@@ -323,13 +323,13 @@
                 <!-- SIGNATURE (Ensures block stays together and moves to next page if space is insufficient) -->
                 <div class="ml-auto mt-8 w-fit text-center text-[9pt]"
                      style="page-break-inside: avoid; break-inside: avoid;">
-                    <p>Hormat Kami</p>
+                    <p>Best Regards</p>
                     <p>PT. INDONUSA JAYA BERSAMA</p>
 
                     <div class="mt-2">
                         @if ($getPublicImageBase64('ttd.png'))
                             <img src="{{ $getPublicImageBase64('ttd.png') }}"
-                                 alt="Tanda tangan"
+                                 alt="Signature"
                                  class="mx-auto h-20 object-contain" />
                         @endif
                     </div>

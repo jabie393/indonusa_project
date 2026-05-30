@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
             @if (($requestOrder->customer->status ?? 'active') === 'inactive')
@@ -68,12 +68,12 @@
             @endif
 
             {{-- ============================================================
-                    {{-- Info asal custom penawaran --}}
+                    {{-- Info asal Custom Quotation --}}
             @if ($requestOrder->customPenawaran)
             <div class="mx-6 mb-2 mt-4 flex items-center gap-2 rounded bg-indigo-50 p-3 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
-                <span class="font-semibold">Dari Custom Penawaran:</span>
+                <span class="font-semibold">Dari Custom Quotation:</span>
                 @php
-                $parentShowRoute = Auth::user()->role === 'Sales' ? 'sales.custom-penawaran.show' : 'admin.custom-penawaran.show';
+                $parentShowRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.show' : 'admin.custom-quotation-approval.show';
                 @endphp
                 <a href="{{ route($parentShowRoute, $requestOrder->customPenawaran->id) }}"
                     class="underline hover:text-indigo-600">
@@ -119,7 +119,7 @@
                     </div>
                     <div class="shrink-0">
                         @if (Auth::user()->role === 'Sales')
-                        <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}"
+                        <a href="{{ route('sales.quotation.edit', $requestOrder->id) }}"
                             class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4"
@@ -178,7 +178,7 @@
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-orange-700">Partial Delivery — Pengiriman Bertahap</h4>
+                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-orange-700">Partial Delivery â€” Pengiriman Bertahap</h4>
                         <p class="mt-1 text-sm font-medium text-orange-600 dark:text-orange-300">
                             Sebagian barang sudah dikirim oleh warehouse. Sisa barang akan dikirim pada pengiriman berikutnya.
                         </p>
@@ -302,7 +302,7 @@
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-orange-700">Partial Delivery — Pengiriman Bertahap</h4>
+                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-orange-700">Partial Delivery â€” Pengiriman Bertahap</h4>
                         <p class="mt-1 text-sm font-medium text-orange-600 dark:text-orange-300">
                             Sebagian barang sudah dikirim oleh warehouse. Sisa barang akan dikirim pada pengiriman berikutnya.
                         </p>
@@ -610,7 +610,7 @@
                                 @foreach ($requestOrder->supporting_images as $image)
                                 <div class="group relative aspect-square overflow-hidden rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/50">
                                     <button type="button"
-                                        class="custom-penawaran-thumb block h-full w-full"
+                                        class="custom-quotation-thumb block h-full w-full"
                                         data-full="{{ asset('storage/' . $image) }}">
                                         <img src="{{ asset('storage/' . $image) }}"
                                             class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
@@ -730,7 +730,7 @@
                                                 @endphp
                                                 @if ($imgUrl)
                                                 <button type="button"
-                                                    class="custom-penawaran-thumb inline-block"
+                                                    class="custom-quotation-thumb inline-block"
                                                     data-full="{{ $imgUrl }}">
                                                     <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800"
                                                         src="{{ $imgUrl }}"
@@ -801,7 +801,7 @@
                                     <div class="mb-4 space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
                                         <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
                                         <div class="grid grid-cols-2 gap-3">
-                                            <form action="{{ route('supervisor.request-order.approve', $requestOrder->id) }}"
+                                            <form action="{{ route('supervisor.quotation.approve', $requestOrder->id) }}"
                                                 method="POST"
                                                 class="w-full">
                                                 @csrf
@@ -844,7 +844,7 @@
                                     <div class="grid grid-cols-2 gap-3">
                                         {{-- Edit Button (Sales Only) --}}
                                         @if (Auth::user()->role === 'Sales')
-                                        <a href="{{ route('sales.request-order.edit', $requestOrder->id) }}"
+                                        <a href="{{ route('sales.quotation.edit', $requestOrder->id) }}"
                                             class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-200 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="h-4 w-4"
@@ -862,7 +862,7 @@
 
                                         @php
                                         $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
-                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
+                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.quotation.pdf' : 'admin.quotation.pdf';
                                         @endphp
 
                                         @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
@@ -903,7 +903,7 @@
 
                                     {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
                                     @if (!$requestOrder->order && Auth::user()->role === 'Sales')
-                                    <form action="{{ route('sales.request-order.sent-to-warehouse', $requestOrder->id) }}"
+                                    <form action="{{ route('sales.quotation.sent-to-warehouse', $requestOrder->id) }}"
                                         method="POST"
                                         class="w-full">
                                         @csrf
@@ -946,7 +946,7 @@
                                     @if (Auth::user()->role === 'Sales')
                                     <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
                                         <form id="deleteRequestOrderForm"
-                                            action="{{ route('sales.request-order.destroy', $requestOrder->id) }}"
+                                            action="{{ route('sales.quotation.destroy', $requestOrder->id) }}"
                                             method="POST"
                                             class="w-full">
                                             @csrf
@@ -964,7 +964,7 @@
                                                         stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                                <span class="uppercase tracking-widest">Delete Request Order</span>
+                                                <span class="uppercase tracking-widest">Delete Quotation</span>
                                             </button>
                                         </form>
                                     </div>
@@ -1106,7 +1106,7 @@
                             data-bs-dismiss="modal"></button>
                     </div>
                     @php
-                    $modalPdfRoute = Auth::user()->role === 'Sales' ? 'sales.request-order.pdf' : 'admin.request-order.pdf';
+                    $modalPdfRoute = Auth::user()->role === 'Sales' ? 'sales.quotation.pdf' : 'admin.quotation.pdf';
                     @endphp
                     <form method="GET"
                         action="{{ route($modalPdfRoute, $requestOrder->id) }}"
@@ -1169,7 +1169,7 @@
             }
 
             document.addEventListener('click', function(e) {
-                const btn = e.target.closest('.custom-penawaran-thumb');
+                const btn = e.target.closest('.custom-quotation-thumb');
                 if (btn) {
                     const src = btn.getAttribute('data-full');
                     if (src) {
@@ -1194,7 +1194,7 @@
             if (btnDelete) {
                 btnDelete.addEventListener('click', function() {
                     Swal.fire({
-                        title: 'Hapus Request Order?',
+                        title: 'Hapus Quotation?',
                         text: "Data ini akan dihapus permanen dari sistem.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -1219,9 +1219,9 @@
         function supervisorBack() {
             try {
                 var backBtn = document.getElementById('backBtn');
-                var fallback = backBtn ? backBtn.dataset.fallback : '/sent-penawaran';
+                var fallback = backBtn ? backBtn.dataset.fallback : '/quotation-approval';
 
-                if (document.referrer && document.referrer.indexOf('/sent-penawaran') !== -1) {
+                if (document.referrer && document.referrer.indexOf('/quotation-approval') !== -1) {
                     history.back();
                     return;
                 }
@@ -1244,12 +1244,12 @@
 
                 window.location.href = fallback;
             } catch (e) {
-                window.location.href = '{{ route('admin.sent_penawaran') }}';
+                window.location.href = '{{ route('admin.quotation_approval') }}';
             }
         }
     </script>
 
-    @include('admin.sent-penawaran.partials.modal_tolak')
+    @include('admin.quotation-approval.partials.quotation-approval-modal-reject')
 
 
 

@@ -282,9 +282,9 @@
         // Tentukan action URL berdasarkan tipe
         let actionUrl = '';
         if (type === 'request_order') {
-            actionUrl = '/request-order/' + id + '/reject';
+            actionUrl = '/quotation/' + id + '/reject';
         } else if (type === 'custom') {
-            actionUrl = '/supervisor/custom-penawaran/' + id + '/approval?action=reject';
+            actionUrl = '/custom-quotation-approval/' + id + '/approval?action=reject';
         } else if (type === 'delivery_order') {
             actionUrl = '/delivery-orders/' + id + '/reject';
         } else if (type === 'supply_order') {

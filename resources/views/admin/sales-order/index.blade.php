@@ -4,8 +4,8 @@
         <div class="p-3 flex items-center">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                <a href="{{ route('sales.custom-penawaran.create') }}" class="flex text-sm flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                    + Buat Penawaran Baru
+                <a href="{{ route('sales.custom-quotation.create') }}" class="flex text-sm flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
+                    + Create New Custom Quotation
                 </a>
 
             </div>
@@ -368,8 +368,8 @@
                                                         </li>
                                                     </form>
                                                 @elseif ($row['type'] === 'request_order')
-                                                    <form method="POST" action="{{ route('sales.request-order.sent-to-warehouse-from-so', $row['id']) }}"
-                                                        data-confirm-text="Kirim Request Order ini ke Warehouse?" data-confirm-button-text="Ya, Kirim" class="approve-form w-full">
+                                                    <form method="POST" action="{{ route('sales.quotation.sent-to-warehouse-from-so', $row['id']) }}"
+                                                        data-confirm-text="Send this Quotation to Warehouse?" data-confirm-button-text="Yes, Send" class="approve-form w-full">
                                                         @csrf
                                                         <li>
                                                             <button type="submit" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
@@ -849,10 +849,10 @@
             let fieldName = '';
 
             if (imageType === 'po') {
-                endpoint = `/request-order/${id}/upload-image-po`;
+                endpoint = `/quotation/${id}/upload-image-po`;
                 fieldName = 'image_po';
             } else if (imageType === 'pdf_po') {
-                endpoint = `/request-order/${id}/upload-pdf-po`;
+                endpoint = `/quotation/${id}/upload-pdf-po`;
                 fieldName = 'pdf_po';
             } else {
                 endpoint = `/sales-order/${id}/upload-image`;
@@ -964,7 +964,7 @@
             formData.append('_token', '{{ csrf_token() }}');
             formData.append('no_po', trimmedValue);
 
-            fetch(`/request-order/${id}/update-no-po`, {
+            fetch(`/quotation/${id}/update-no-po`, {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -1013,8 +1013,8 @@
         function handleDeleteImage(type, id, imageType) {
             window.confirmDelete(() => {
                 let endpoint = '';
-                if (imageType === 'po') endpoint = `/request-order/${id}/upload-image-po`;
-                else if (imageType === 'pdf_po') endpoint = `/request-order/${id}/upload-pdf-po`;
+                if (imageType === 'po') endpoint = `/quotation/${id}/upload-image-po`;
+                else if (imageType === 'pdf_po') endpoint = `/quotation/${id}/upload-pdf-po`;
                 else endpoint = `/sales-order/${id}/upload-image`;
 
                 const formData = new FormData();

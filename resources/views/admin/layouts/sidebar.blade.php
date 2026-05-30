@@ -352,12 +352,12 @@
 
             {{-- Menu untuk Sales --}}
             @if (in_array(auth()->user()->role, ['Sales']))
-                <details {{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.custom-penawaran.*') || request()->routeIs('sales.sales-order.*') ? 'open' : 'close' }} class="">
+                <details {{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'open' : 'close' }} class="">
                     <summary
-                        class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.custom-penawaran.*') || request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.custom-penawaran.*') || request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                            class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                             <g clip-path="url(#clip0_919_580)">
                                 <path
                                     d="M26.25 0.937592H18.75C18.0041 0.937592 17.2887 1.23391 16.7613 1.76135C16.2338 2.2888 15.9375 3.00417 15.9375 3.75009V11.2501C15.9375 11.996 16.2338 12.7114 16.7613 13.2388C17.2887 13.7663 18.0041 14.0626 18.75 14.0626H26.25C26.996 14.0626 27.7113 13.7663 28.2388 13.2388C28.7662 12.7114 29.0625 11.996 29.0625 11.2501V3.75009C29.0625 3.00417 28.7662 2.2888 28.2388 1.76135C27.7113 1.23391 26.996 0.937592 26.25 0.937592ZM27.1875 11.2501C27.1875 11.4987 27.0888 11.7372 26.9129 11.913C26.7371 12.0888 26.4987 12.1876 26.25 12.1876H18.75C18.5014 12.1876 18.2629 12.0888 18.0871 11.913C17.9113 11.7372 17.8125 11.4987 17.8125 11.2501V3.75009C17.8125 3.50145 17.9113 3.26299 18.0871 3.08718C18.2629 2.91136 18.5014 2.81259 18.75 2.81259H26.25C26.4987 2.81259 26.7371 2.91136 26.9129 3.08718C27.0888 3.26299 27.1875 3.50145 27.1875 3.75009V11.2501ZM1.87503 6.56259C1.99754 6.56111 2.11857 6.53563 2.23128 6.48759C2.34481 6.43995 2.44942 6.37338 2.54066 6.29072C2.67074 6.15888 2.75886 5.99147 2.7939 5.8096C2.82894 5.62774 2.80932 5.43957 2.73753 5.26884C2.69291 5.15376 2.62601 5.04863 2.54066 4.95947C2.43241 4.84659 2.29765 4.76258 2.14865 4.7151C1.99964 4.66761 1.84112 4.65816 1.68753 4.68759C1.62883 4.69799 1.57198 4.71694 1.51878 4.74384C1.45895 4.76415 1.40218 4.79254 1.35003 4.82822L1.20941 4.94072C1.12405 5.02988 1.05715 5.13501 1.01253 5.25009C0.96203 5.36861 0.936499 5.49627 0.93753 5.62509C0.93753 5.87373 1.0363 6.11219 1.21212 6.288C1.38793 6.46382 1.62639 6.56259 1.87503 6.56259ZM4.38753 3.75009C4.57131 3.74866 4.75062 3.69323 4.90316 3.59072C5.8967 2.93288 7.10349 2.67811 8.27815 2.87822C8.5268 2.91924 8.78155 2.85982 8.98637 2.71301C9.1912 2.5662 9.32932 2.34404 9.37034 2.0954C9.41137 1.84676 9.35194 1.59201 9.20514 1.38718C9.05833 1.18236 8.83617 1.04424 8.58753 1.00322C6.95458 0.740149 5.2823 1.09802 3.90003 2.00634C3.72268 2.11155 3.58496 2.2723 3.50821 2.4637C3.43146 2.6551 3.41995 2.86646 3.47548 3.06505C3.531 3.26365 3.65045 3.4384 3.81533 3.56224C3.98021 3.68609 4.18133 3.75211 4.38753 3.75009ZM11.0719 3.04697C10.887 3.2125 10.7752 3.44461 10.7612 3.6924C10.7471 3.9402 10.8319 4.18346 10.9969 4.36884C11.7659 5.2303 12.1899 6.34532 12.1875 7.50009V11.2501C12.1875 11.4987 12.0888 11.7372 11.9129 11.913C11.7371 12.0888 11.4987 12.1876 11.25 12.1876H7.50003C6.53171 12.187 5.58732 11.8866 4.79664 11.3276C4.00597 10.7686 3.40783 9.97843 3.0844 9.06572C2.99013 8.84702 2.81615 8.67239 2.5978 8.57731C2.37946 8.48222 2.1331 8.4738 1.90877 8.55374C1.68444 8.63369 1.49894 8.79602 1.38994 9.00777C1.28094 9.21952 1.25662 9.46481 1.32191 9.69384C1.77479 10.9707 2.61176 12.0761 3.71793 12.8583C4.82409 13.6405 6.14524 14.0612 7.50003 14.0626H11.25C11.996 14.0626 12.7113 13.7663 13.2388 13.2388C13.7662 12.7114 14.0625 11.996 14.0625 11.2501V7.50009C14.0639 5.8851 13.4698 4.32629 12.3938 3.12197C12.2282 2.93703 11.9961 2.82529 11.7483 2.81123C11.5006 2.79717 11.2573 2.88195 11.0719 3.04697ZM26.25 15.9376H18.75C18.0041 15.9376 17.2887 16.2339 16.7613 16.7614C16.2338 17.2888 15.9375 18.0042 15.9375 18.7501V26.2501C15.9375 26.996 16.2338 27.7114 16.7613 28.2388C17.2887 28.7663 18.0041 29.0626 18.75 29.0626H26.25C26.996 29.0626 27.7113 28.7663 28.2388 28.2388C28.7662 27.7114 29.0625 26.996 29.0625 26.2501V18.7501C29.0625 18.0042 28.7662 17.2888 28.2388 16.7614C27.7113 16.2339 26.996 15.9376 26.25 15.9376ZM27.1875 26.2501C27.1875 26.4987 27.0888 26.7372 26.9129 26.913C26.7371 27.0888 26.4987 27.1876 26.25 27.1876H18.75C18.5014 27.1876 18.2629 27.0888 18.0871 26.913C17.9113 26.7372 17.8125 26.4987 17.8125 26.2501V18.7501C17.8125 18.5015 17.9113 18.263 18.0871 18.0872C18.2629 17.9114 18.5014 17.8126 18.75 17.8126H26.25C26.4987 17.8126 26.7371 17.9114 26.9129 18.0872C27.0888 18.263 27.1875 18.5015 27.1875 18.7501V26.2501ZM11.25 15.9376H3.75003C3.00411 15.9376 2.28874 16.2339 1.76129 16.7614C1.23385 17.2888 0.93753 18.0042 0.93753 18.7501V26.2501C0.93753 26.996 1.23385 27.7114 1.76129 28.2388C2.28874 28.7663 3.00411 29.0626 3.75003 29.0626H11.25C11.996 29.0626 12.7113 28.7663 13.2388 28.2388C13.7662 27.7114 14.0625 26.996 14.0625 26.2501V18.7501C14.0625 18.0042 13.7662 17.2888 13.2388 16.7614C12.7113 16.2339 11.996 15.9376 11.25 15.9376ZM12.1875 26.2501C12.1875 26.4987 12.0888 26.7372 11.9129 26.913C11.7371 27.0888 11.4987 27.1876 11.25 27.1876H3.75003C3.50139 27.1876 3.26293 27.0888 3.08712 26.913C2.9113 26.7372 2.81253 26.4987 2.81253 26.2501V18.7501C2.81253 18.5015 2.9113 18.263 3.08712 18.0872C3.26293 17.9114 3.50139 17.8126 3.75003 17.8126H11.25C11.4987 17.8126 11.7371 17.9114 11.9129 18.0872C12.0888 18.263 12.1875 18.5015 12.1875 18.7501V26.2501Z"
@@ -371,16 +371,16 @@
                         </svg>
 
                         <span
-                            class="{{ request()->routeIs('sales.request-order.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-penawaran.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
+                            class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
                             Sales Module</span>
                     </summary>
 
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
-                        {{-- Request Order --}}
+                        {{-- Quotation --}}
                         <li class="w-[75%]">
-                            <a href="{{ route('sales.request-order.index') }}"
-                                class="{{ request()->routeIs('sales.request-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                            <a href="{{ route('sales.quotation.index') }}"
+                                class="{{ request()->routeIs('sales.quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_931_10)">
@@ -396,20 +396,20 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('sales.request-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Penawaran</span>
+                                    class="{{ request()->routeIs('sales.quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation</span>
                             </a>
                         </li>
 
-                        {{-- Custom Penawaran --}}
+                        {{-- Custom Quotation --}}
                         <li class="w-[75%]">
-                            <a href="{{ route('sales.custom-penawaran.index') }}"
-                                class="{{ request()->routeIs('sales.custom-penawaran.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                            <a href="{{ route('sales.custom-quotation.index') }}"
+                                class="{{ request()->routeIs('sales.custom-quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
 
 
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales.custom-penawaran.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
                                         d="M20.6943 0.900204C20.5117 1.05585 20.4203 1.13369 20.3228 1.19906C20.0992 1.34891 19.8481 1.45291 19.5841 1.50504C19.4689 1.52779 19.3493 1.53733 19.1101 1.55642C18.509 1.60439 18.2085 1.62836 17.9578 1.71692C17.3779 1.92175 16.9217 2.37788 16.7169 2.95778C16.6284 3.2085 16.6044 3.50903 16.5564 4.11006C16.5373 4.34927 16.5278 4.46888 16.505 4.58408C16.4529 4.84813 16.3489 5.09922 16.1991 5.3228C16.1337 5.42033 16.0559 5.51165 15.9002 5.6943C15.5091 6.15323 15.3136 6.38265 15.1989 6.62258C14.9337 7.1775 14.9337 7.8225 15.1989 8.37743C15.3136 8.61735 15.5091 8.84678 15.9002 9.3057C16.0558 9.48833 16.1337 9.57968 16.1991 9.67718C16.3489 9.90075 16.4529 10.1519 16.505 10.4159C16.5278 10.5311 16.5373 10.6508 16.5564 10.8899C16.6044 11.491 16.6284 11.7915 16.7169 12.0422C16.9217 12.6221 17.3779 13.0783 17.9578 13.2831C18.2085 13.3716 18.509 13.3956 19.1101 13.4436C19.3493 13.4627 19.4689 13.4723 19.5841 13.495C19.8481 13.5471 20.0992 13.6511 20.3228 13.801C20.4203 13.8663 20.5117 13.9442 20.6943 14.0998C21.1532 14.4909 21.3827 14.6864 21.6226 14.8011C22.1775 15.0663 22.8225 15.0663 23.3774 14.8011C23.6174 14.6864 23.8468 14.4909 24.3057 14.0998C24.4883 13.9442 24.5797 13.8663 24.6772 13.801C24.9008 13.6511 25.1519 13.5471 25.4159 13.495C25.5311 13.4723 25.6508 13.4627 25.8899 13.4436C26.491 13.3956 26.7915 13.3716 27.0422 13.2831C27.6221 13.0783 28.0783 12.6221 28.2831 12.0422C28.3716 11.7915 28.3956 11.491 28.4436 10.8899C28.4627 10.6508 28.4723 10.5311 28.495 10.4159C28.5471 10.1519 28.6511 9.90075 28.801 9.67718C28.8663 9.57968 28.9442 9.48833 29.0998 9.3057C29.4909 8.84678 29.6864 8.61735 29.8011 8.37743C30.0663 7.8225 30.0663 7.1775 29.8011 6.62258C29.6864 6.38265 29.4909 6.15323 29.0998 5.6943C28.9442 5.51165 28.8663 5.42033 28.801 5.3228C28.6511 5.09922 28.5471 4.84813 28.495 4.58408C28.4723 4.46888 28.4627 4.34927 28.4436 4.11006C28.3956 3.50903 28.3716 3.2085 28.2831 2.95778C28.0783 2.37788 27.6221 1.92175 27.0422 1.71692C26.7915 1.62836 26.491 1.60439 25.8899 1.55642C25.6508 1.53733 25.5311 1.52779 25.4159 1.50504C25.1519 1.45291 24.9008 1.34891 24.6772 1.19906C24.5797 1.13369 24.4883 1.05586 24.3057 0.900204C23.8468 0.509124 23.6174 0.313584 23.3774 0.198917C22.8225 -0.0663056 22.1775 -0.0663056 21.6226 0.198917C21.3827 0.313577 21.1532 0.509124 20.6943 0.900204ZM25.3732 4.62719C25.6115 4.86557 25.6115 5.25205 25.3732 5.49042L20.49 10.3736C20.2517 10.612 19.8652 10.612 19.6268 10.3736C19.3884 10.1352 19.3884 9.74873 19.6268 9.51038L24.5099 4.62719C24.7484 4.38882 25.1348 4.38882 25.3732 4.62719ZM25.3485 9.53505C25.3485 9.98453 24.9842 10.3489 24.5347 10.3489C24.0851 10.3489 23.7208 9.98453 23.7208 9.53505C23.7208 9.08558 24.0851 8.72115 24.5347 8.72115C24.9842 8.72115 25.3485 9.08558 25.3485 9.53505ZM20.4653 6.2796C20.9148 6.2796 21.2792 5.91522 21.2792 5.46574C21.2792 5.01626 20.9148 4.65188 20.4653 4.65188C20.0159 4.65188 19.6515 5.01626 19.6515 5.46574C19.6515 5.91522 20.0159 6.2796 20.4653 6.2796Z"
                                         fill="currentColor" />
@@ -420,8 +420,8 @@
 
 
                                 <span
-                                    class="{{ request()->routeIs('sales.custom-penawaran.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Custom
-                                    Penawaran</span>
+                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Custom
+                                    Quotation</span>
                             </a>
                         </li>
 
@@ -457,12 +457,12 @@
                         {{-- (Incoming Orders removed) --}}
                         {{-- Sent Penawaran (needs approval) --}}
                         <li>
-                            <a href="{{ route('admin.sent_penawaran') }}"
-                                class="{{ request()->is('sent-penawaran') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                            <a href="{{ route('admin.quotation_approval') }}"
+                                class="{{ request()->routeIs('admin.quotation_approval') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                     viewBox="0 0 491.695 491.695" xml:space="preserve"
-                                    class="{{ request()->is('sent-penawaran') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
                                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                     <g id="SVGRepo_iconCarrier">
@@ -489,8 +489,7 @@
                                     </g>
                                 </svg>
                                 <span
-                                    class="{{ request()->is('sent-penawaran') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sent
-                                    Penawaran</span>
+                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation Approval</span>
                                 @php
                                     $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
                                 @endphp
@@ -503,13 +502,13 @@
                             </a>
                         </li>
 
-                        {{-- Custom Penawaran Approval --}}
+                        {{-- Custom Quotation Approval --}}
                         <li>
-                            <a href="{{ route('supervisor.custom-penawaran.index') }}"
-                                class="{{ request()->routeIs('supervisor.custom-penawaran.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                            <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
+                                class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
 
-                                <svg class="{{ request()->routeIs('supervisor.custom-penawaran.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                <svg class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                                     width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
                                     id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
                                     xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor">
@@ -628,8 +627,8 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('supervisor.custom-penawaran.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
-                                    Custom Penawaran</span>
+                                    class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
+                                    Custom Quotation</span>
                                 @php
                                     $pendingCustomPenawaran = \App\Models\CustomPenawaran::where('status', 'pending_approval')->count();
                                 @endphp

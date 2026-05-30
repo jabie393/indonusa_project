@@ -1,12 +1,12 @@
-<x-app-layout>
+﻿<x-app-layout>
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="item-center flex p-3">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                <a href="{{ route('sales.custom-penawaran.create') }}"
+                <a href="{{ route('sales.custom-quotation.create') }}"
                     class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
-                    + Buat Penawaran Baru
+                    + Buat New Quotation
                 </a>
 
             </div>
@@ -14,7 +14,7 @@
 
         <div class="p-3">
             {{-- Search --}}
-            <form action="{{ route('sales.custom-penawaran.index') }}" method="GET" class="block pl-2">
+            <form action="{{ route('sales.custom-quotation.index') }}" method="GET" class="block pl-2">
                 <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -171,7 +171,7 @@
                                 <div class="flex justify-center">
                                     <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Detail --}}
-                                        <a href="{{ route('sales.custom-penawaran.show', $penawaran->id) }}"
+                                        <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}"
                                             class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                                             title="Detail">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -221,7 +221,7 @@
                                             style="position-anchor:--anchor-{{ $penawaran->id }}">
                                             <li>
                                                 {{-- Edit --}}
-                                                <a href="{{ route('sales.custom-penawaran.edit', $penawaran->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                <a href="{{ route('sales.custom-quotation.edit', $penawaran->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
                                                         <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
@@ -232,7 +232,7 @@
                                                 </a>
                                             </li>
                                             {{-- Tombol Delete --}}
-                                            <form action="{{ route('sales.custom-penawaran.destroy', $penawaran->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('sales.custom-quotation.destroy', $penawaran->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <li>
@@ -258,7 +258,7 @@
                                                     $isExpired = $penawaran->isExpired();
                                                 @endphp
                                                 @if ($penawaran->status === 'approved_supervisor' && !$isExpired)
-                                                    <a href="{{ route('sales.custom-penawaran.pdf', $penawaran->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50"
+                                                    <a href="{{ route('sales.custom-quotation.pdf', $penawaran->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50"
                                                         target="_blank">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -283,7 +283,7 @@
                                             </li>
                                             {{-- Sent to Warehouse --}}
                                             @if ($penawaran->status === 'approved_supervisor')
-                                                <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $penawaran->id) }}" method="POST">
+                                                <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $penawaran->id) }}" method="POST">
                                                     @csrf
                                                     <li>
                                                         <button type="button" onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Warehouse?', 'Ya, Kirim')"
@@ -300,7 +300,7 @@
 
                                             {{-- Send to Penawaran --}}
                                             @if (in_array($penawaran->status, ['open', 'approved_supervisor']))
-                                                <form action="{{ route('sales.custom-penawaran.sent-to-penawaran', $penawaran->id) }}" method="POST" style="display:inline;">
+                                                <form action="{{ route('sales.custom-quotation.sent-to-penawaran', $penawaran->id) }}" method="POST" style="display:inline;">
                                                     @csrf
                                                     <li>
                                                         <button type="button" class="flex items-center gap-2 text-blue-700 hover:bg-blue-50"
@@ -333,7 +333,7 @@
                     of
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->total() ?? $customPenawarans->count() }}</span>
                 </span>
-                <form method="GET" action="{{ route('sales.custom-penawaran.index') }}">
+                <form method="GET" action="{{ route('sales.custom-quotation.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
@@ -348,6 +348,7 @@
             </div>
         </nav>
     </div>
-    @vite(['resources/js/custom-penawaran.js', 'resources/js/table-sort.js'])
-    @include('admin.sales.custom-penawaran.partials.modal-show-note')
+    @vite(['resources/js/custom-quotation.js', 'resources/js/table-sort.js'])
+    @include('admin.custom-quotation.partials.modal-show-note')
 </x-app-layout>
+

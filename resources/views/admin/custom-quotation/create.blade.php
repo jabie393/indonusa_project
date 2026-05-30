@@ -1,18 +1,17 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Penawaran Kustom</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Ubah detail penawaran</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Buat Custom Quotation</h1>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Buat Custom Quotation untuk customer</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('sales.custom-penawaran.update', $customPenawaran->id) }}"
+                <form action="{{ route('sales.custom-quotation.store') }}"
                       method="POST"
                       enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
@@ -40,7 +39,7 @@
                                 <input type="text"
                                        id="to"
                                        name="to"
-                                       value="{{ old('to', $customPenawaran->to) }}"
+                                       value="{{ old('to') }}"
                                        required
                                        class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                        placeholder="Nama customer">
@@ -60,7 +59,7 @@
                                     <option value="">Pilih Sales</option>
                                     @foreach ($salesUsers as $name => $displayName)
                                         <option value="{{ $name }}"
-                                                {{ old('up', $customPenawaran->up ?: $currentUserName) == $name ? 'selected' : '' }}>
+                                                {{ old('up', $currentUserName ?? '') == $name ? 'selected' : '' }}>
                                             {{ $displayName }}
                                         </option>
                                     @endforeach
@@ -77,7 +76,7 @@
                                 <input type="text"
                                        id="subject"
                                        name="subject"
-                                       value="{{ old('subject', $customPenawaran->subject) }}"
+                                       value="{{ old('subject') }}"
                                        required
                                        class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                        placeholder="Judul penawaran">
@@ -93,7 +92,7 @@
                                 <input type="email"
                                        id="email"
                                        name="email"
-                                       value="{{ old('email', $customPenawaran->email) }}"
+                                       value="{{ old('email') }}"
                                        required
                                        class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                        placeholder="email@example.com">
@@ -102,16 +101,16 @@
                                 @enderror
                             </div>
 
-                            <!-- Our Ref Field -->
+                            <!-- Our Ref Field (Auto-generated) -->
                             <div>
                                 <label for="our_ref"
-                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref</label>
+                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Our Ref (Auto)</label>
                                 <input type="text"
                                        id="our_ref"
                                        name="our_ref"
-                                       value="{{ old('our_ref', $customPenawaran->our_ref) }}"
-                                       readonly
-                                       class="@error('our_ref') border-red-500 @enderror w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-black dark:bg-gray-600 dark:text-gray-300">
+                                       value="{{ old('our_ref') }}"
+                                       class="@error('our_ref') border-red-500 @enderror w-full rounded-lg bg-gray-100 px-4 py-2 text-black dark:bg-gray-600 dark:text-gray-300"
+                                       placeholder="Auto-generated">
                                 @error('our_ref')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -124,7 +123,7 @@
                                 <input type="date"
                                        id="date"
                                        name="date"
-                                       value="{{ old('date', $customPenawaran->date) }}"
+                                       value="{{ old('date', date('Y-m-d')) }}"
                                        required
                                        class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
@@ -140,7 +139,7 @@
                                           name="intro_text"
                                           rows="4"
                                           class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                          placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', $customPenawaran->intro_text) }}</textarea>
+                                          placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', '') }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -149,7 +148,7 @@
                     </div>
 
                     <!-- Items Table -->
-                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
+                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 max-h-[80vh] overflow-y-auto rounded-2xl shadow-sm">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -169,243 +168,141 @@
                                 Detail Barang
                             </h3>
                         </div>
-                        <div class="max-h-[520px] overflow-x-auto overflow-y-auto">
-                            <table class="h-full w-full border-collapse">
+                        <div class="overflow-x-auto">
+                            <table id=""
+                                   class="h-full w-full border-collapse">
                                 <thead>
-                                    <tr class="bg-gray-200 dark:bg-gray-700">
-                                        <th class="sticky top-0 z-10 min-w-[50px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">No</th>
-                                        <th class="sticky top-0 z-10 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama Barang</th>
-                                        <th class="sticky top-0 z-10 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty</th>
-                                        <th class="sticky top-0 z-10 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Satuan</th>
-                                        <th class="sticky top-0 z-10 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Harga (Rp)</th>
-                                        <th class="sticky top-0 z-10 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon (%)</th>
-                                        <th class="sticky top-0 z-10 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
-                                        <th class="sticky top-0 z-10 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-right text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
-                                        <th class="sticky top-0 z-10 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
-                                        <th class="sticky top-0 z-10 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Action</th>
+                                    <tr class="">
+                                        <th class="sticky top-0 z-20 min-w-[50px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">No</th>
+                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama Barang</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Satuan</th>
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Harga (Rp)</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon (%)</th>
+                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
+                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
-                                    @forelse($customPenawaran->items as $index => $item)
-                                        <tr class="item-row"
-                                            data-index="{{ $index }}">
-                                            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">{{ $index + 1 }}</td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                    <tr class="item-row"
+                                        data-index="0">
+                                        <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">1</td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text"
+                                                   name="items[0][nama_barang]"
+                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="Nama barang"
+                                                   value="{{ old('items.0.nama_barang') }}"
+                                                   required>
+                                            @error('items.0.nama_barang')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number"
+                                                   name="items[0][qty]"
+                                                   class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="0"
+                                                   value="{{ old('items.0.qty', 1) }}"
+                                                   min="1"
+                                                   required>
+                                            @error('items.0.qty')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text"
+                                                   name="items[0][satuan]"
+                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="Unit"
+                                                   value="{{ old('items.0.satuan') }}"
+                                                   required>
+                                            @error('items.0.satuan')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <div class="relative flex items-center">
+                                                <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
                                                 <input type="text"
-                                                       name="items[{{ $index }}][nama_barang]"
-                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Nama barang"
-                                                       value="{{ $item->nama_barang }}"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
-                                                       name="items[{{ $index }}][qty]"
-                                                       class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="0"
-                                                       value="{{ $item->qty }}"
-                                                       min="1"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="items[{{ $index }}][satuan]"
-                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Unit"
-                                                       value="{{ $item->satuan }}"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <div class="relative flex items-center">
-                                                    <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
-                                                    <input type="text"
-                                                           name="items[{{ $index }}][harga]"
-                                                           class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                           placeholder="0"
-                                                           value="{{ $item->harga }}"
-                                                           required>
-                                                </div>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
-                                                       name="items[{{ $index }}][diskon]"
-                                                       class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="0"
-                                                       value="{{ $item->diskon ?? 0 }}"
-                                                       min="0"
-                                                       max="100"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="items[{{ $index }}][keterangan]"
-                                                       class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Keterangan diskon"
-                                                       value="{{ $item->keterangan ?? '' }}">
-                                            </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, '.', ',') }}</td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                                <div class="upload-btn-container relative">
-                                                    <input type="file"
-                                                           name="items[{{ $index }}][images][]"
-                                                           class="item-images-input absolute inset-0 h-full w-0 w-full cursor-pointer opacity-0"
-                                                           multiple
-                                                           accept="image/*">
-                                                    <button type="button"
-                                                            class="upload-button rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]"
-                                                            style="{{ $item->images && count($item->images) > 0 ? 'display: none;' : '' }}">
-                                                        Upload
-                                                    </button>
-                                                </div>
-                                                <!-- Hidden inputs to preserve existing images -->
-                                                @if ($item->images && count($item->images) > 0)
-                                                    @foreach ($item->images as $image)
-                                                        <input type="hidden"
-                                                               name="items[{{ $index }}][existing_images][]"
-                                                               value="{{ $image }}">
-                                                    @endforeach
-                                                @endif
-                                                <div class="item-images-preview flex flex-wrap justify-center gap-2">
-                                                    @if ($item->images && count($item->images) > 0)
-                                                        @foreach ($item->images as $image)
-                                                            <div class="relative inline-block">
-                                                                <img src="{{ Storage::url($image) }}"
-                                                                     class="h-20 w-20 rounded border object-cover"
-                                                                     title="{{ $image }}">
-                                                                <button type="button"
-                                                                        class="remove-existing-image absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white hover:bg-red-600"
-                                                                        data-image="{{ $image }}">
-                                                                    ✕
-                                                                </button>
-                                                            </div>
-                                                        @endforeach
-                                                    @endif
-                                                </div>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                                <button type="button"
-                                                        class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         width="24"
-                                                         height="24"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2"
-                                                         stroke-linecap="round"
-                                                         stroke-linejoin="round"
-                                                         class="lucide lucide-trash2 h-4 w-4">
-                                                        <path d="M3 6h18"></path>
-                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                        <line x1="10"
-                                                              x2="10"
-                                                              y1="11"
-                                                              y2="17"></line>
-                                                        <line x1="14"
-                                                              x2="14"
-                                                              y1="11"
-                                                              y2="17"></line>
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr class="item-row"
-                                            data-index="0">
-                                            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">1</td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="items[0][nama_barang]"
-                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Nama barang"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
-                                                       name="items[0][qty]"
-                                                       class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="0"
-                                                       value="1"
-                                                       min="1"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="items[0][satuan]"
-                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Unit"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
                                                        name="items[0][harga]"
-                                                       class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="0"
-                                                       step="0.01"
-                                                       min="0"
+                                                       value="{{ old('items.0.harga') }}"
                                                        required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="number"
-                                                       name="items[0][diskon]"
-                                                       class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="0"
-                                                       value="0"
-                                                       min="0"
-                                                       max="100"
-                                                       required>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <input type="text"
-                                                       name="items[0][keterangan]"
-                                                       class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="Keterangan diskon">
-                                            </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                                <div class="upload-btn-container relative">
-                                                    <input type="file"
-                                                           name="items[0][images][]"
-                                                           class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                                                           multiple
-                                                           accept="image/*">
-                                                    <button type="button"
-                                                            class="upload-button rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
-                                                        Upload
-                                                    </button>
-                                                </div>
-                                                <div class="item-images-preview flex flex-wrap justify-center gap-2"></div>
-                                            </td>
-                                            <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                            </div>
+                                            @error('items.0.harga')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="number"
+                                                   name="items[0][diskon]"
+                                                   class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="0"
+                                                   value="{{ old('items.0.diskon', 0) }}"
+                                                   min="0"
+                                                   max="100"
+                                                   required>
+                                            @error('items.0.diskon')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text"
+                                                   name="items[0][keterangan]"
+                                                   class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="Keterangan jika diskon > 20%"
+                                                   value="{{ old('items.0.keterangan') }}">
+                                            @error('items.0.keterangan')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">
+                                            <div class="upload-btn-container relative">
+                                                <input type="file"
+                                                       name="items[0][images][]"
+                                                       class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                       multiple
+                                                       accept="image/*">
                                                 <button type="button"
-                                                        class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                         width="24"
-                                                         height="24"
-                                                         viewBox="0 0 24 24"
-                                                         fill="none"
-                                                         stroke="currentColor"
-                                                         stroke-width="2"
-                                                         stroke-linecap="round"
-                                                         stroke-linejoin="round"
-                                                         class="lucide lucide-trash2 h-4 w-4">
-                                                        <path d="M3 6h18"></path>
-                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                        <line x1="10"
-                                                              x2="10"
-                                                              y1="11"
-                                                              y2="17"></line>
-                                                        <line x1="14"
-                                                              x2="14"
-                                                              y1="11"
-                                                              y2="17"></line>
-                                                    </svg>
+                                                        class="rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
+                                                    Upload
                                                 </button>
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                            </div>
+                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2"></div>
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <button type="button"
+                                                    class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="24"
+                                                     height="24"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     stroke-width="2"
+                                                     stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     class="lucide lucide-trash2 h-4 w-4">
+                                                    <path d="M3 6h18"></path>
+                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                                                    <line x1="10"
+                                                          x2="10"
+                                                          y1="11"
+                                                          y2="17"></line>
+                                                    <line x1="14"
+                                                          x2="14"
+                                                          y1="11"
+                                                          y2="17"></line>
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -414,6 +311,9 @@
                                 class="btn m-5 bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             + Tambah Barang
                         </button>
+                        @error('items')
+                            <span class="mt-2 block text-sm text-red-500">{{ $message }}</span>
+                        @enderror
                     </div>
 
                     <!-- Summary Section -->
@@ -436,7 +336,7 @@
                                             <input type="hidden"
                                                    id="subtotal-value"
                                                    name="subtotal"
-                                                   value="{{ $customPenawaran->subtotal }}">
+                                                   value="0">
                                         </div>
                                         <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
                                             <svg class="h-6 w-6 text-blue-600 dark:text-blue-300"
@@ -454,15 +354,15 @@
 
                                 <!-- Tax -->
                                 <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-700">
-                                    <div class="flex items-center justify-start">
+                                    <div class="flex items-center justify-between">
                                         <div class="w-full">
-                                            <div class="mb-1 flex items-center gap-2">
+                                            <div class="mb-1 flex items-center justify-start">
                                                 <div class="flex items-center gap-1 rounded border border-gray-300 bg-white px-2 py-0.5 dark:border-gray-500 dark:bg-gray-600"
                                                      style="width: fit-content;">
-                                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-300">Pajak/PPN</p>
+                                                    <p class="w-fit text-sm font-medium text-gray-600 dark:text-gray-300">Pajak/PPN</p>
                                                     <input type="number"
                                                            id="tax_rate"
-                                                           value="{{ $customPenawaran->tax_rate ?? 11 }}"
+                                                           value="11"
                                                            class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white"
                                                            min="0"
                                                            max="100">
@@ -472,12 +372,12 @@
                                             <input type="hidden"
                                                    id="tax"
                                                    name="tax"
-                                                   value="{{ old('tax', $customPenawaran->tax) }}">
+                                                   value="{{ old('tax', 0) }}">
                                             <input type="text"
                                                    id="tax_display"
                                                    readonly
                                                    class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white"
-                                                   value="{{ 'Rp ' . number_format($customPenawaran->tax, 0, '.', ',') }}">
+                                                   value="Rp 0">
                                         </div>
                                         <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
                                             <svg class="h-6 w-6 text-green-600 dark:text-green-300"
@@ -506,7 +406,7 @@
                                             <input type="hidden"
                                                    id="grand-total-value"
                                                    name="grand_total"
-                                                   value="{{ $customPenawaran->grand_total }}">
+                                                   value="0">
                                         </div>
                                         <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
                                             <svg class="h-6 w-6 text-purple-600 dark:text-purple-300"
@@ -523,67 +423,86 @@
                                 </div>
                             </div>
                         </div>
-                        <script>
-                            (function() {
-                                function handleDiskonChange(el) {
-                                    const row = el.closest('tr');
-                                    const diskonVal = parseFloat(el.value) || 0;
-                                    const keterangan = row.querySelector('.item-keterangan');
-                                    if (!keterangan) return;
-                                    if (diskonVal > 20) {
-                                        keterangan.required = true;
-                                        keterangan.classList.add('border-red-500');
-                                    } else {
-                                        keterangan.required = false;
-                                        keterangan.classList.remove('border-red-500');
-                                    }
-                                }
-
-                                // Attach to existing rows
-                                document.querySelectorAll('.item-diskon').forEach(function(d) {
-                                    d.addEventListener('input', function() {
-                                        handleDiskonChange(d);
-                                    });
-                                    // initial state
-                                    handleDiskonChange(d);
-                                });
-
-                                document.getElementById('btn-add-item')?.addEventListener('click', function() {
-                                    setTimeout(function() {
-                                        document.querySelectorAll('.item-diskon').forEach(function(d) {
-                                            if (!d.dataset._hasListener) {
-                                                d.addEventListener('input', function() {
-                                                    handleDiskonChange(d);
-                                                });
-                                                d.dataset._hasListener = '1';
-                                                handleDiskonChange(d);
-                                            }
-                                        });
-                                    }, 50);
-                                });
-                            })();
-                        </script>
                     </div>
-
                     <!-- Action Buttons -->
                     <div class="mt-4 flex justify-end gap-4">
-                        <a href="{{ route('sales.custom-penawaran.index') }}"
+                        <a href="{{ route('sales.custom-quotation.index') }}"
                            class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Batal
                         </a>
                         <button type="submit"
                                 class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                            Simpan Perubahan
+                            Simpan Penawaran
                         </button>
                     </div>
-                </form>
+                    <script>
+                        (function() {
+                            function handleDiskonChange(el) {
+                                const row = el.closest('tr');
+                                const diskonVal = parseFloat(el.value) || 0;
+                                const keterangan = row.querySelector('.item-keterangan');
+                                if (!keterangan) return;
+                                if (diskonVal > 20) {
+                                    keterangan.required = true;
+                                    keterangan.classList.add('border-red-500');
+                                } else {
+                                    keterangan.required = false;
+                                    keterangan.classList.remove('border-red-500');
+                                }
+                            }
+
+                            // Attach to existing rows
+                            document.querySelectorAll('.item-diskon').forEach(function(d) {
+                                d.addEventListener('input', function() {
+                                    handleDiskonChange(d);
+                                });
+                                // initial state
+                                handleDiskonChange(d);
+                            });
+
+                            // When adding new rows, make sure handlers attach (if your add-row script triggers an event, adapt accordingly)
+                            document.getElementById('btn-add-item')?.addEventListener('click', function() {
+                                setTimeout(function() {
+                                    document.querySelectorAll('.item-diskon').forEach(function(d) {
+                                        if (!d.dataset._hasListener) {
+                                            d.addEventListener('input', function() {
+                                                handleDiskonChange(d);
+                                            });
+                                            d.dataset._hasListener = '1';
+                                            handleDiskonChange(d);
+                                        }
+                                    });
+                                }, 50);
+                            });
+                        })();
+                    </script>
             </div>
+
+
+            </form>
         </div>
+    </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let itemCount = {{ count($customPenawaran->items) }};
+            let itemCount = 1;
+
+            // Generate unique reference
+            function generateUniqueRef() {
+                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let result = 'REF-';
+                for (let i = 0; i < 8; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            // Set our_ref value on page load
+            const ourRefInput = document.getElementById('our_ref');
+            if (ourRefInput && !ourRefInput.value) {
+                ourRefInput.value = generateUniqueRef();
+            }
 
             // Format currency
             function formatCurrency(value) {
@@ -591,6 +510,11 @@
                     minimumFractionDigits: 0,
                     maximumFractionDigits: 2
                 }).format(value);
+            }
+
+            // Parse currency
+            function parseCurrency(value) {
+                return parseInt(value.replace(/\D/g, '')) || 0;
             }
 
             function formatInputPrice(input) {
@@ -635,7 +559,7 @@
                 const subtotalDisplay = row.querySelector('.item-subtotal');
 
                 const qty = parseInt(qtyInput.value) || 0;
-                const harga = parseFloat(hargaInput.value.replace(/,/g, "")) || 0;
+                const harga = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
                 const diskonPercent = parseFloat(diskonInput.value) || 0;
 
                 // Hitung subtotal dengan diskon: (qty * harga) * (1 - diskon%)
@@ -655,6 +579,7 @@
                 const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
                 const tax = Math.round(subtotal * (taxRate / 100));
 
+                // Update tax inputs (hidden value and display text)
                 document.getElementById('tax').value = tax;
                 const taxDisplay = document.getElementById('tax_display');
                 if (taxDisplay) taxDisplay.value = formatCurrency(tax);
@@ -667,49 +592,21 @@
                 document.getElementById('grand-total-value').value = grandTotal;
             }
 
+            // Listen for tax rate changes
             document.getElementById('tax_rate').addEventListener('input', calculateTotals);
 
             // Handle image preview
             function handleImagePreview(row) {
-                const fileInput = row.querySelector('.item-images-input');
+                const fileInput = row.querySelector('input[type="file"]');
                 const preview = row.querySelector('.item-images-preview');
-                const uploadBtn = row.querySelector('.upload-button');
-
-                // Handle removing existing images
-                const removeExistingBtns = row.querySelectorAll('.remove-existing-image');
-                removeExistingBtns.forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const imagePath = this.dataset.image;
-
-                        // Remove the image div
-                        this.closest('div.relative').remove();
-
-                        // Remove the corresponding hidden input
-                        const hiddenInputs = row.querySelectorAll('input[type="hidden"][name*="existing_images"]');
-                        hiddenInputs.forEach(input => {
-                            if (input.value === imagePath) {
-                                input.remove();
-                            }
-                        });
-
-                        // Show upload button if no more images
-                        if (preview.querySelectorAll('img').length === 0 && fileInput.files.length === 0) {
-                            uploadBtn.style.display = '';
-                        }
-                    });
-                });
+                const uploadBtn = row.querySelector('.upload-btn-container');
 
                 fileInput.addEventListener('change', function() {
-                    // Clear only newly added file previews, not existing ones
-                    const newlyAddedPreviews = preview.querySelectorAll('div:has(.remove-image-btn)');
-                    newlyAddedPreviews.forEach(div => div.remove());
-
+                    preview.innerHTML = '';
                     if (this.files.length > 0) {
                         uploadBtn.style.display = 'none';
-                    } else if (preview.querySelectorAll('img').length === 0) {
-                        uploadBtn.style.display = '';
+                    } else {
+                        uploadBtn.style.display = 'block';
                     }
 
                     Array.from(this.files).forEach((file, index) => {
@@ -719,8 +616,8 @@
                             imgContainer.className = 'relative inline-block';
                             imgContainer.innerHTML = `
                                 <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
-                                <button type="button" class="remove-image-btn absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs" data-index="${index}">
-                                    ✕
+                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
+                                    âœ•
                                 </button>
                             `;
                             preview.appendChild(imgContainer);
@@ -757,7 +654,7 @@
                 newRow.className = 'item-row';
                 newRow.dataset.index = itemCount;
                 newRow.innerHTML = `
-            <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">${itemCount + 1}</td>
+            <td class="border border-gray-300 px-4 py-2 text-center item-no dark:border-gray-600 text-black dark:text-gray-100">${itemCount + 1}</td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="text" name="items[${itemCount}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Nama barang" required>
@@ -785,10 +682,10 @@
                 <input type="text" name="items[${itemCount}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Keterangan jika diskon > 20%">
             </td>
-            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
+            <td class="border border-gray-300 px-4 py-2 text-black text-right item-subtotal font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                 <div class="relative upload-btn-container">
-                    <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0" 
+                    <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                         multiple accept="image/*">
                     <button type="button" class="upload-button rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
                         Upload
@@ -797,7 +694,7 @@
                 <div class="item-images-preview flex flex-wrap gap-2 justify-center"></div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <button type="button" class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
+                <button type="button" class="btn btn-remove-item rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
                         <path d="M3 6h18"></path>
@@ -818,6 +715,7 @@
                 const diskonInput = newRow.querySelector('.item-diskon');
                 const keteranganInput = newRow.querySelector('.item-keterangan');
                 const removeBtn = newRow.querySelector('.btn-remove-item');
+
                 qtyInput.addEventListener('input', calculateTotals);
                 hargaInput.addEventListener('input', function() {
                     formatInputPrice(this);
@@ -876,6 +774,7 @@
                     });
                 });
             }
+
             // Format and attach event listeners for existing items
             document.querySelectorAll('.item-row').forEach(row => {
                 const qtyInput = row.querySelector('.item-qty');
@@ -935,3 +834,4 @@
         });
     </script>
 </x-app-layout>
+

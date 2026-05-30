@@ -1,4 +1,4 @@
-<dialog id="noteModal" class="modal">
+﻿<dialog id="noteModal" class="modal">
     <div
         class="modal-box bg-white dark:bg-gray-800 border dark:border-gray-700 shadow-2xl rounded-2xl p-0 overflow-hidden max-w-md w-full">
         <!-- Header -->
@@ -34,3 +34,4 @@
         <button>close</button>
     </form>
 </dialog>
+

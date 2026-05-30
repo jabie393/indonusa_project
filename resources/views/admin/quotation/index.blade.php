@@ -4,7 +4,7 @@
         <div class="flex items-center p-3">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                 {{-- Tambah barang modal --}}
-                <a href="{{ route('sales.request-order.create') }}"
+                <a href="{{ route('sales.quotation.create') }}"
                     class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
                     <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
@@ -30,7 +30,7 @@
         <div class="p-3">
 
             {{-- Search --}}
-            <form action="{{ route('sales.request-order.index') }}" method="GET" class="block pl-2">
+            <form action="{{ route('sales.quotation.index') }}" method="GET" class="block pl-2">
                 <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-64 md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -271,7 +271,7 @@
                                                 <div
                                                     class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                                                     @if ($sudahDikirim->count() > 0)
-                                                        <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
+                                                        <p class="mb-1.5 font-bold text-green-600">âœ“ Sudah Dikirim:</p>
                                                         @foreach ($sudahDikirim as $item)
                                                             <div class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
                                                                 <span class="text-gray-700">{{ Str::limit($item->barang->goods_name ?? '-', 28) }}</span>
@@ -283,7 +283,7 @@
                                                         @endforeach
                                                     @endif
                                                     @if ($belumDikirim->count() > 0)
-                                                        <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa
+                                                        <p class="mb-1.5 mt-2 font-bold text-orange-500">â³ Belum / Sisa
                                                             Dikirim:</p>
                                                         @foreach ($belumDikirim as $item)
                                                             @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
@@ -314,7 +314,7 @@
 
 
                                         {{-- Detail --}}
-                                        <a href="{{ route('sales.request-order.show', $ro->id) }}"
+                                        <a href="{{ route('sales.quotation.show', $ro->id) }}"
                                             class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                                             title="Lihat Detail">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -364,7 +364,7 @@
                                             style="position-anchor:--anchor-{{ $ro->id }}">
                                             {{-- Edit --}}
                                             <li>
-                                                <a href="{{ route('sales.request-order.edit', $ro->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
+                                                <a href="{{ route('sales.quotation.edit', $ro->id) }}" class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil">
                                                         <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
@@ -378,7 +378,7 @@
                                             <li>
                                                 {{-- PDF --}}
                                                 @if ($ro->canDownloadPdf())
-                                                    <a href="{{ route('sales.request-order.pdf', $ro->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50" target="_blank">
+                                                    <a href="{{ route('sales.quotation.pdf', $ro->id) }}" class="flex items-center gap-2 text-green-600 hover:bg-green-50" target="_blank">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text">
                                                             <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
@@ -403,7 +403,7 @@
                                             </li>
 
                                             {{-- Delete --}}
-                                            <form action="{{ route('sales.request-order.destroy', $ro->id) }}" method="POST">
+                                            <form action="{{ route('sales.quotation.destroy', $ro->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <li>
@@ -441,7 +441,7 @@
                     of
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $requestOrders->total() ?? $requestOrders->count() }}</span>
                 </span>
-                <form method="GET" action="{{ route('sales.request-order.index') }}">
+                <form method="GET" action="{{ route('sales.quotation.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm">
                         @foreach ([10, 25, 50, 100] as $size)
@@ -456,6 +456,7 @@
             </div>
         </nav>
     </div>
-    @vite(['resources/js/request-order.js', 'resources/js/table-sort.js'])
-    @include('admin.sales.request-order.partials.modal-show-note')
+    @vite(['resources/js/quotation.js', 'resources/js/table-sort.js'])
+    @include('admin.quotation.partials.modal-show-note')
 </x-app-layout>
+

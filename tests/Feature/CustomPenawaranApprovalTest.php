@@ -45,7 +45,7 @@ class CustomPenawaranApprovalTest extends TestCase
 
         // Test approval
         $response = $this->actingAs($supervisor)
-            ->post(route('admin.custom-penawaran.approval', $penawaran), [
+            ->post(route('admin.custom-quotation-approval.approval', $penawaran), [
                 'action' => 'approve'
             ]);
 
@@ -85,7 +85,7 @@ class CustomPenawaranApprovalTest extends TestCase
 
         // Test rejection
         $response = $this->actingAs($supervisor)
-            ->post(route('admin.custom-penawaran.approval', $penawaran), [
+            ->post(route('admin.custom-quotation-approval.approval', $penawaran), [
                 'action' => 'reject'
             ]);
 
@@ -125,7 +125,7 @@ class CustomPenawaranApprovalTest extends TestCase
 
         // Test that non-supervisor is denied
         $response = $this->actingAs($other_sales)
-            ->post(route('admin.custom-penawaran.approval', $penawaran), [
+            ->post(route('admin.custom-quotation-approval.approval', $penawaran), [
                 'action' => 'approve'
             ]);
 

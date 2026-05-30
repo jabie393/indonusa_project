@@ -81,40 +81,40 @@
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods Receipt</h1>
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Harga Beli</p>
                     </div>
-                @elseif (request()->routeIs('supervisor.custom-penawaran.*'))
+                @elseif (request()->routeIs('supervisor.custom-quotation-approval.*'))
                     <div class="hidden text-gray-100 md:block">
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Penawaran</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Menunggu Approval</p>
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation Approval</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Waiting for Approval</p>
                     </div>
-                @elseif (request()->routeIs('sales.request-order.*'))
+                @elseif (request()->routeIs('sales.quotation.*'))
                     @php
-                        $ro = request()->route('request_order');
+                        $ro = request()->route('requestOrder') ?? request()->route('request_order');
                         $requestNumber = optional($ro)->request_number ?? (optional($ro)->nomor_penawaran ?? '');
                     @endphp
                     <div class="hidden text-gray-100 md:block">
-                        @if (request()->routeIs('sales.request-order.show'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Detail Penawaran</h1>
+                        @if (request()->routeIs('sales.quotation.show'))
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation Details</h1>
                             <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
-                        @elseif (request()->routeIs('sales.request-order.edit'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Edit Penawaran</h1>
+                        @elseif (request()->routeIs('sales.quotation.edit'))
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Edit Quotation</h1>
                             <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
-                        @elseif (request()->routeIs('sales.request-order.create'))
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Buat Penawaran Baru</h1>
-                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran</p>
+                        @elseif (request()->routeIs('sales.quotation.create'))
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
+                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Quotation Creation Form</p>
                         @else
-                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Penawaran</h1>
-                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Buat dan Kelola Penawaran</p>
+                            <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
+                            <p class="md:text-md text-xs text-gray-300 md:mt-1">Create and Manage Quotations</p>
                         @endif
                     </div>
-                @elseif (request()->routeIs('sales.custom-penawaran.*'))
+                @elseif (request()->routeIs('sales.custom-quotation.*'))
                     <div class="text-gray-100">
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Penawaran</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Penawaran Kustom (Non-Stok)</p>
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Custom Quotation (Non-Stock)</p>
                     </div>
-                @elseif (request()->routeIs('admin.sent_penawaran'))
+                @elseif (request()->routeIs('admin.quotation_approval'))
                     <div class="text-gray-100">
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Approval Penawaran</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Persetujuan Penawaran Dikirim</p>
+                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation Approval</h1>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Approve or Reject Sent Quotations</p>
                     </div>
                 @elseif (request()->routeIs('orders.history') || request()->routeIs('admin.orders.history'))
                     <div class="text-gray-100">

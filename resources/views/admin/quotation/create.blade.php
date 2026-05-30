@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
 
@@ -20,7 +20,7 @@
 
         <div class="card">
             <div class="card-body">
-                <form method="POST" action="{{ route('sales.request-order.store') }}" id="requestOrderForm" enctype="multipart/form-data">
+                <form method="POST" action="{{ route('sales.quotation.store') }}" id="requestOrderForm" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Customer Info Section -->
@@ -107,7 +107,7 @@
                                 @error('pic_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani request order
+                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani Quotation
                                     ini</small>
                             </div>
 
@@ -352,7 +352,7 @@
                                                 min="1" value="1" required>
                                             <div class="stok-info mt-1 hidden text-xs">
                                                 <span class="stok-ok hidden font-medium text-green-600"></span>
-                                                <span class="stok-warn hidden font-semibold text-red-500">⚠ Stok kurang! Tersedia: <span class="stok-angka font-bold"></span></span>
+                                                <span class="stok-warn hidden font-semibold text-red-500">âš  Stok kurang! Tersedia: <span class="stok-angka font-bold"></span></span>
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -512,7 +512,7 @@
                     </div>
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4">
-                        <a href="{{ route('sales.request-order.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
+                        <a href="{{ route('sales.quotation.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x mr-2 h-4 w-4">
                                 <path d="M18 6 6 18"></path>
@@ -1065,7 +1065,7 @@
                             imgContainer.innerHTML = `
                                 <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
                                 <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
-                                    ✕
+                                    âœ•
                                 </button>
                             `;
                             preview.appendChild(imgContainer);
@@ -1531,3 +1531,4 @@
         }
     </style>
 </x-app-layout>
+

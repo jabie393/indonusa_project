@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     @php
         $dariCustomPenawaran = !empty($requestOrder->custom_penawaran_id) && $requestOrder->customPenawaran !== null;
         $cp = $dariCustomPenawaran ? $requestOrder->customPenawaran : null;
@@ -6,11 +6,11 @@
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Request Order</h1>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Quotation</h1>
                 <p class="mt-2 text-gray-600 dark:text-gray-300">No. {{ $requestOrder->request_number }}</p>
             </div>
             <div>
-                <a href="{{ route('sales.request-order.show', $requestOrder->id) }}"
+                <a href="{{ route('sales.quotation.show', $requestOrder->id) }}"
                    class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-medium text-white hover:bg-[#1c4d81] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
                     <svg xmlns="http://www.w3.org/2000/svg"
                          width="24"
@@ -47,7 +47,7 @@
         <div class="card">
             <div class="card-body">
                 <form method="POST"
-                      action="{{ route('sales.request-order.update', $requestOrder->id) }}"
+                      action="{{ route('sales.quotation.update', $requestOrder->id) }}"
                       id="requestOrderForm"
                       enctype="multipart/form-data">
                     @csrf
@@ -125,7 +125,7 @@
                                                     r="10" />
                                             <path d="M12 16v-4M12 8h.01" />
                                         </svg>
-                                        Customer dikunci karena berasal dari Custom Penawaran ({{ $cp->penawaran_number }})
+                                        Customer dikunci karena berasal dari Custom Quotation ({{ $cp->penawaran_number }})
                                     </small>
                                 @endif
                                 @error('customer_id')
@@ -200,7 +200,7 @@
                                 @error('pic_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani request order
+                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani Quotation
                                     ini</small>
                             </div>
 
@@ -262,7 +262,7 @@
                                        value="{{ old('tanggal_kebutuhan', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) }}">
                                 @if ($dariCustomPenawaran && $cp->date)
                                     <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
-                                        Auto-terisi dari tanggal Custom Penawaran. Bisa diubah jika perlu.
+                                        Auto-terisi dari tanggal Custom Quotation. Bisa diubah jika perlu.
                                     </small>
                                 @endif
                                 @error('tanggal_kebutuhan')
@@ -381,7 +381,7 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 @if ($item->barang_id === null && $item->nama_barang_custom)
-                                                    {{-- Item dari Custom Penawaran: tidak ada di tabel goods --}}
+                                                    {{-- Item dari Custom Quotation: tidak ada di tabel goods --}}
                                                     <input type="hidden"
                                                            name="barang_id[]"
                                                            value="">
@@ -547,13 +547,13 @@
                                                                      alt="Gambar item">
                                                                 @if ($dariCustomPenawaran)
                                                                     <span class="absolute -right-1 -top-1 rounded-full bg-indigo-500 px-1 py-0.5 text-[9px] text-white"
-                                                                          title="Gambar dari Custom Penawaran">CP</span>
+                                                                          title="Gambar dari Custom Quotation">CP</span>
                                                                 @endif
                                                             </div>
                                                         @endforeach
                                                         @if ($dariCustomPenawaran)
                                                             <small class="mt-1 block w-full text-xs text-indigo-600 dark:text-indigo-400">
-                                                                Gambar sudah terisi dari Custom Penawaran. Upload baru untuk mengganti.
+                                                                Gambar sudah terisi dari Custom Quotation. Upload baru untuk mengganti.
                                                             </small>
                                                         @endif
                                                     @endif
@@ -899,7 +899,7 @@
                     </div>
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4">
-                        <a href="{{ route('sales.request-order.show', $requestOrder->id) }}"
+                        <a href="{{ route('sales.quotation.show', $requestOrder->id) }}"
                            class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                  width="24"
@@ -1561,7 +1561,7 @@
                             imgContainer.innerHTML = `
                                 <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
                                 <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
-                                    ✕
+                                    âœ•
                                 </button>
                             `;
                             preview.appendChild(imgContainer);
@@ -1710,3 +1710,4 @@
         }
     </style>
 </x-app-layout>
+

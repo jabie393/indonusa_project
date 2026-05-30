@@ -161,7 +161,7 @@ class SalesOrderController extends Controller
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                     'catatan_customer' => $ro->catatan_customer,
-                    'aksi_url'         => route('sales.request-order.show', $ro),
+                    'aksi_url'         => route('sales.quotation.show', $ro),
                     'image_po'         => $ro->image_po,
                 ]));
         } else {
@@ -173,7 +173,7 @@ class SalesOrderController extends Controller
 
             $results = $requestOrders->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                 'catatan_customer' => $ro->catatan_customer,
-                'aksi_url'         => route('sales.request-order.show', $ro),
+                'aksi_url'         => route('sales.quotation.show', $ro),
                 'image_po'         => $ro->image_po,
             ]));
 
@@ -285,7 +285,7 @@ class SalesOrderController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('sales.request-order.show', $requestOrder->id)
+            return redirect()->route('sales.quotation.show', $requestOrder->id)
                 ->with(['title' => 'Berhasil', 'text' => "Request Order berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -304,7 +304,7 @@ class SalesOrderController extends Controller
             abort(403);
         }
 
-        return view('admin.sales.request-order.show', compact('requestOrder'));
+        return view('admin.quotation.show', compact('requestOrder'));
     }
 
     public function edit($id)
@@ -318,7 +318,7 @@ class SalesOrderController extends Controller
         $salesUsers      = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales.request-order.edit', compact('requestOrder', 'salesUsers', 'currentUserName'));
+        return view('admin.quotation.edit', compact('requestOrder', 'salesUsers', 'currentUserName'));
     }
 
     public function update(Request $request, $id)
@@ -366,7 +366,7 @@ class SalesOrderController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('sales.request-order.show', $requestOrder->id)
+            return redirect()->route('sales.quotation.show', $requestOrder->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -386,7 +386,7 @@ class SalesOrderController extends Controller
                 $requestOrder->items()->delete();
                 $requestOrder->delete();
             });
-            return redirect()->route('sales.request-order.index')
+            return redirect()->route('sales.quotation.index')
                 ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dihapus.']);
         } catch (\Throwable $e) {
             return back()->withErrors('Gagal menghapus Request Order: ' . $e->getMessage());
@@ -446,7 +446,7 @@ class SalesOrderController extends Controller
                     'customer_name'      => $ro->customer_name,
                     'type'               => 'penawaran',
                     'badge'              => 'Quotation',
-                    'url'                => route('sales.request-order.show', $ro->id),
+                    'url'                => route('sales.quotation.show', $ro->id),
                     'no_po'              => $ro->no_po,
                 ];
             });

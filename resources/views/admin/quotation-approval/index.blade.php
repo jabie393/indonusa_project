@@ -4,7 +4,7 @@
 
         <div class="p-4">
             {{-- Search --}}
-            <form action="{{ route('admin.sent_penawaran') }}"
+            <form action="{{ route('admin.quotation_approval') }}"
                 method="GET"
                 class="block pl-2">
                 <label for="topbar-search"
@@ -38,7 +38,7 @@
             <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
                 <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="text-nowrap px-4 py-3">Penawaran</th>
+                        <th class="text-nowrap px-4 py-3">Quotation</th>
                         <th class="text-nowrap px-4 py-3">Sales</th>
                         <th class="text-nowrap px-4 py-3">Item & Keterangan (Subject)</th>
                         <th class="text-nowrap px-4 py-3">Tgl. Kirim</th>
@@ -48,7 +48,7 @@
                 <tbody class="text-nowrap">
                     @forelse($penawarans as $index => $penawaran)
                     @php
-                        $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
+                        $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('admin.quotation.show', $penawaran->id);
                         
                         $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
                         
@@ -205,7 +205,7 @@
                             {{ optional($penawaran->sales)->name ?? '-' }}
                         </td>
                         
-                        {{-- Item & Keterangan --}}
+                        {{-- Item & Remarks --}}
                         <td class="px-4 py-3">
                             <div class="flex flex-col items-start gap-1">
                                 <div class="flex flex-row items-center gap-2">
@@ -216,7 +216,7 @@
                                             <path d="m3.3 7 8.7 5 8.7-5"/>
                                             <path d="M12 22V12"/>
                                         </svg>
-                                        {{ $penawaran->items->count() }} item
+                                        {{ $penawaran->items->count() }} items
                                     </span>
                                     @if ($maxDiskon > 20)
                                         <span class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
@@ -251,7 +251,7 @@
                                 <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                     {{-- Detail --}}
                                     @php
-                                    $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.show', $penawaran->id) : route('admin.request-order.show', $penawaran->id);
+                                    $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('admin.quotation.show', $penawaran->id);
                                     @endphp
                                     <a href="{{ $detailRoute }}"
                                         class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -276,12 +276,12 @@
 
                                     {{-- Approve --}}
                                     @php
-                                    $approveRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-penawaran.approval', $penawaran->id) : route('supervisor.request-order.approve', $penawaran->id);
+                                    $approveRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.approval', $penawaran->id) : route('supervisor.quotation.approve', $penawaran->id);
                                     @endphp
                                     <form action="{{ $approveRoute }}"
                                         method="POST"
                                         class="approve-form m-0 p-0"
-                                        data-confirm-text="Apakah Anda yakin ingin menyetujui penawaran ini?">
+                                        data-confirm-text="Are you sure you want to approve this quotation?">
                                         @csrf
                                         @if ($penawaran->offer_type === 'custom')
                                         <input type="hidden"
@@ -348,7 +348,7 @@
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $penawarans->total() ?? $penawarans->count() }}</span>
                 </span>
                 <form method="GET"
-                    action="{{ route('admin.sent_penawaran') }}">
+                    action="{{ route('admin.quotation_approval') }}">
                     <input type="hidden"
                         name="search"
                         value="{{ request('search') }}">
@@ -361,7 +361,7 @@
                         @endforeach
                     </select>
                 </form>
-                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
             </div>
             <div>
                 {{ $penawarans->links() }}
@@ -369,7 +369,7 @@
         </nav>
     </div>
 
-    @include('admin.sent-penawaran.partials.modal_tolak')
+    @include('admin.quotation-approval.partials.quotation-approval-modal-reject')
 
     @vite(['resources/js/table-sort.js'])
 </x-app-layout>

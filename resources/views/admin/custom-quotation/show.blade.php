@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
             @php $orderStatus = $customPenawaran->status; @endphp
@@ -38,7 +38,7 @@
                     </div>
                     <div class="shrink-0">
                         @if (Auth::user()->role === 'Sales')
-                        <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}"
+                        <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
                             class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="h-4 w-4"
@@ -126,7 +126,7 @@
                                         stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                Detail Penawaran Kustom
+                                Detail Custom Quotation
                             </h2>
                         </div>
                         <div class="p-6">
@@ -393,7 +393,7 @@
                                                 @endphp
                                                 @if ($imgUrl)
                                                 <button type="button"
-                                                    class="custom-penawaran-thumb inline-block transition-transform hover:scale-110 active:scale-95"
+                                                    class="custom-quotation-thumb inline-block transition-transform hover:scale-110 active:scale-95"
                                                     data-full="{{ $imgUrl }}">
                                                     <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover shadow-sm ring-2 ring-white dark:ring-gray-800"
                                                         src="{{ $imgUrl }}"
@@ -479,7 +479,7 @@
                                     <div class="space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
                                         <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
                                         <div class="grid grid-cols-2 gap-3">
-                                            <form action="{{ route('admin.custom-penawaran.approval', $customPenawaran) }}"
+                                            <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}"
                                                 method="POST"
                                                 class="w-full">
                                                 @csrf
@@ -523,7 +523,7 @@
                                     <div class="grid grid-cols-2 gap-3">
                                         {{-- Edit (Sales Only) --}}
                                         @if (Auth::user()->role === 'Sales')
-                                        <a href="{{ route('sales.custom-penawaran.edit', $customPenawaran->id) }}"
+                                        <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
                                             class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-100 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="h-4 w-4"
@@ -543,7 +543,7 @@
                                         @php
                                         $isExpired = $customPenawaran->isExpired();
                                         $canDownload = in_array($customPenawaran->status, ['open', 'approved']) && !$isExpired;
-                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-penawaran.pdf' : 'admin.custom-penawaran.pdf';
+                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.pdf' : 'admin.custom-quotation-approval.pdf';
                                         @endphp
                                         @if ($canDownload && Auth::user()->role !== 'Supervisor')
                                         <a href="{{ route($pdfRoute, $customPenawaran->id) }}"
@@ -582,7 +582,7 @@
 
                                     {{-- Primary Warehouse Action (Sales Only) --}}
                                     @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
-                                    <form action="{{ route('sales.custom-penawaran.sent-to-warehouse', $customPenawaran->id) }}"
+                                    <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}"
                                         method="POST"
                                         class="w-full">
                                         @csrf
@@ -608,7 +608,7 @@
                                     @if (Auth::user()->role === 'Sales')
                                     <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
                                         <form id="deleteCustomPenawaranForm"
-                                            action="{{ route('sales.custom-penawaran.destroy', $customPenawaran->id) }}"
+                                            action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}"
                                             method="POST"
                                             class="w-full">
                                             @csrf
@@ -626,7 +626,7 @@
                                                         stroke-width="2"
                                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                                <span class="uppercase tracking-widest">Delete Penawaran Kustom</span>
+                                                <span class="uppercase tracking-widest">Delete Custom Quotation</span>
                                             </button>
                                         </form>
                                     </div>
@@ -756,7 +756,7 @@
                 modal.classList.add('hidden');
             }
 
-            document.querySelectorAll('.custom-penawaran-thumb').forEach(btn => {
+            document.querySelectorAll('.custom-quotation-thumb').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     const src = this.getAttribute('data-full');
                     if (src) openModal(src);
@@ -776,7 +776,7 @@
             if (btnDelete) {
                 btnDelete.addEventListener('click', function() {
                     Swal.fire({
-                        title: 'Hapus Penawaran Kustom?',
+                        title: 'Hapus Custom Quotation?',
                         text: "Data ini akan dihapus permanen dari sistem.",
                         icon: 'warning',
                         showCancelButton: true,
@@ -798,5 +798,5 @@
             }
         })();
     </script>
-    @include('admin.sent-penawaran.partials.modal_tolak')
+    @include('admin.quotation-approval.partials.quotation-approval-modal-reject')
 </x-app-layout>

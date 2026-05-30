@@ -29,7 +29,7 @@ class AdminPTController extends Controller
         $order->save();
 
         // Setelah approve, arahkan ke halaman sent penawaran/pengecekan diskon jika ada
-        return redirect()->route('admin.sent_penawaran')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
+        return redirect()->route('admin.quotation_approval')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
 
     public function reject(Request $request, $id)
@@ -103,7 +103,7 @@ class AdminPTController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('admin.sent-penawaran.index', ['penawarans' => $paginator]);
+        return view('admin.quotation-approval.index', ['penawarans' => $paginator]);
     }
 
     public function history()

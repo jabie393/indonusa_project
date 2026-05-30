@@ -52,7 +52,7 @@ class CustomPenawaranController extends Controller
         $perPage = $request->input('perPage', 10);
         $customPenawarans = $query->paginate($perPage)->withQueryString();
 
-        return view('admin.sales.custom-penawaran.index', compact('customPenawarans'));
+        return view('admin.custom-quotation.index', compact('customPenawarans'));
     }
 
     /**
@@ -63,7 +63,7 @@ class CustomPenawaranController extends Controller
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales.custom-penawaran.create', compact('salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.create', compact('salesUsers', 'currentUserName'));
     }
 
     /**
@@ -168,7 +168,7 @@ class CustomPenawaranController extends Controller
 
             Log::info('Custom Penawaran Returning Redirect To Show', ['id' => $penawaran->id]);
 
-            return redirect()->route('sales.custom-penawaran.show', $penawaran->id)
+            return redirect()->route('sales.custom-quotation.show', $penawaran->id)
                 ->with(['title' => 'Berhasil', 'text' => "Penawaran {$penawaran->penawaran_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -192,7 +192,7 @@ class CustomPenawaranController extends Controller
 
         $customPenawaran->load('items', 'sales');
 
-        return view('admin.sales.custom-penawaran.show', compact('customPenawaran'));
+        return view('admin.custom-quotation.show', compact('customPenawaran'));
     }
 
     /**
@@ -208,7 +208,7 @@ class CustomPenawaranController extends Controller
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales.custom-penawaran.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
     }
 
     /**
@@ -316,7 +316,7 @@ class CustomPenawaranController extends Controller
 
             DB::commit();
 
-            return redirect()->route('sales.custom-penawaran.show', $customPenawaran->id)
+            return redirect()->route('sales.custom-quotation.show', $customPenawaran->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -355,7 +355,7 @@ class CustomPenawaranController extends Controller
                 $customPenawaran->delete();
             });
 
-            return redirect()->route('sales.custom-penawaran.index')->with([
+            return redirect()->route('sales.custom-quotation.index')->with([
                 'success' => 'Penawaran berhasil dihapus.',
                 'title' => 'Terhapus!',
                 'text' => 'Penawaran Kustom dan data terkait telah berhasil dihapus dari sistem.',
@@ -424,7 +424,7 @@ class CustomPenawaranController extends Controller
             }
         }
 
-        $html = view('admin.pdf.custom-penawaran-pdf', compact('customPenawaran'))->render();
+        $html = view('admin.pdf.custom-quotation-pdf', compact('customPenawaran'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
@@ -451,7 +451,7 @@ class CustomPenawaranController extends Controller
 
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Custom-Penawaran-'.$customPenawaran->penawaran_number.'.pdf"');
+            ->header('Content-Disposition', 'inline; filename="Custom-Quotation-'.$customPenawaran->penawaran_number.'.pdf"');
     }
 
     /**
@@ -519,7 +519,7 @@ class CustomPenawaranController extends Controller
 
             Log::info('Transaction committed');
 
-            return redirect()->route('sales.custom-penawaran.index')
+            return redirect()->route('sales.custom-quotation.index')
                 ->with(['title' => 'Berhasil', 'text' => "Order {$order->order_number} berhasil dikirim ke Warehouse."]);
 
         } catch (\Throwable $e) {
@@ -645,9 +645,9 @@ class CustomPenawaranController extends Controller
             });
         }
 
-        $customPenawarans = $query->paginate(20);
+        $penawarans = $query->paginate(20);
 
-        return view('admin.supervisor.custom-penawaran.index', compact('customPenawarans'));
+        return view('admin.custom-quotation-approval.index', compact('penawarans'));
     }
 
     /**
@@ -728,7 +728,7 @@ class CustomPenawaranController extends Controller
         }
         $existing = \App\Models\RequestOrder::where('custom_penawaran_id', $customPenawaran->id)->first();
         if ($existing) {
-            return redirect()->route('sales.request-order.show', $existing->id)
+            return redirect()->route('sales.quotation.show', $existing->id)
                 ->with('info', 'Sudah pernah dikirim ke Penawaran.');
         }
         \DB::beginTransaction();
@@ -778,7 +778,7 @@ class CustomPenawaranController extends Controller
             \DB::commit();
 
             // Redirect langsung ke halaman penawaran sales
-            return redirect()->route('sales.request-order.show', $requestOrder->id)
+            return redirect()->route('sales.quotation.show', $requestOrder->id)
                 ->with('success', "Berhasil dikirim ke Penawaran: {$requestOrder->request_number}");
         } catch (\Throwable $e) {
             \DB::rollBack();

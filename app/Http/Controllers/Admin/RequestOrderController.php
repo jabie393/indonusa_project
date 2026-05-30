@@ -95,7 +95,7 @@ class RequestOrderController extends Controller
             ->paginate(request('perPage', 20))
             ->withQueryString();
 
-        return view('admin.sales.request-order.index', compact('requestOrders'));
+        return view('admin.quotation.index', compact('requestOrders'));
     }
 
     public function create()
@@ -120,7 +120,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.create', compact('goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.create', compact('goods', 'customers', 'categories', 'salesUsers'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
     }
 
@@ -286,10 +286,10 @@ class RequestOrderController extends Controller
             DB::commit();
 
             if ($requestOrder->sales_id == Auth::id()) {
-                return redirect()->route('sales.request-order.show', $requestOrder->id)
+                return redirect()->route('sales.quotation.show', $requestOrder->id)
                     ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
             } else {
-                return redirect()->route('sales.request-order.index')
+                return redirect()->route('sales.quotation.index')
                     ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat untuk sales lain.");
             }
 
@@ -324,7 +324,7 @@ class RequestOrderController extends Controller
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales', 'approvedBy');
 
-        return view('admin.sales.request-order.show', compact('requestOrder'));
+        return view('admin.quotation.show', compact('requestOrder'));
     }
 
     public function pdf(RequestOrder $requestOrder)
@@ -361,7 +361,7 @@ class RequestOrderController extends Controller
 
         $pdfNote = request()->query('pdf_note', $requestOrder->catatan_customer ?? null);
 
-        $html = view('admin.pdf.request-order-pdf', compact('requestOrder', 'pdfNote'))->render();
+        $html = view('admin.pdf.quotation-pdf', compact('requestOrder', 'pdfNote'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
@@ -388,7 +388,7 @@ class RequestOrderController extends Controller
 
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Penawaran-'.$requestOrder->request_number.'.pdf"');
+            ->header('Content-Disposition', 'inline; filename="Quotation-'.$requestOrder->request_number.'.pdf"');
     }
 
     public function edit(RequestOrder $requestOrder)
@@ -424,7 +424,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.sales.request-order.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
@@ -685,7 +685,7 @@ class RequestOrderController extends Controller
 
             DB::commit();
 
-            return redirect()->route('sales.request-order.show', $requestOrder->id)
+            return redirect()->route('sales.quotation.show', $requestOrder->id)
                 ->with('success', 'Request Order berhasil diubah.')
                 ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diubah!']);
 
@@ -711,7 +711,7 @@ class RequestOrderController extends Controller
         try {
             $this->processSentToWarehouse($requestOrder);
 
-            return redirect()->route('sales.request-order.index')
+            return redirect()->route('sales.quotation.index')
                 ->with('success', 'Request Order berhasil dikirim ke Warehouse.')
                 ->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
         } catch (\Throwable $e) {
@@ -736,7 +736,7 @@ class RequestOrderController extends Controller
                 $requestOrder->delete();
             });
 
-            return redirect()->route('sales.request-order.index')->with([
+            return redirect()->route('sales.quotation.index')->with([
                 'success' => 'Request Order berhasil dihapus.',
                 'title' => 'Terhapus!',
                 'text' => 'Request Order dan data terkait telah berhasil dihapus dari sistem.',

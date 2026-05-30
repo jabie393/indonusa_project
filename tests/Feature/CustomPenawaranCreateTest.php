@@ -41,7 +41,7 @@ class CustomPenawaranCreateTest extends TestCase
 
         // Post to create penawaran
         $response = $this->actingAs($sales)
-            ->post(route('sales.custom-penawaran.store'), $data);
+            ->post(route('sales.custom-quotation.store'), $data);
 
         // Check response redirects to show page
         $response->assertRedirect();
@@ -84,7 +84,7 @@ class CustomPenawaranCreateTest extends TestCase
 
         // Post to create penawaran
         $response = $this->actingAs($sales)
-            ->post(route('sales.custom-penawaran.store'), $data);
+            ->post(route('sales.custom-quotation.store'), $data);
 
         // Check validation error for our_ref
         $response->assertSessionHasErrors(['our_ref']);
@@ -116,7 +116,7 @@ class CustomPenawaranCreateTest extends TestCase
 
         // Post to create penawaran
         $response = $this->actingAs($sales)
-            ->post(route('sales.custom-penawaran.store'), $data);
+            ->post(route('sales.custom-quotation.store'), $data);
 
         // Check error
         $response->assertSessionHasErrors();
@@ -148,7 +148,7 @@ class CustomPenawaranCreateTest extends TestCase
 
         // Post to create penawaran
         $response = $this->actingAs($sales)
-            ->post(route('sales.custom-penawaran.store'), $data);
+            ->post(route('sales.custom-quotation.store'), $data);
 
         // Check response redirects
         $response->assertRedirect();
