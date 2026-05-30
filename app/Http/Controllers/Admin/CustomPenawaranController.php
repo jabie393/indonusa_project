@@ -647,6 +647,11 @@ class CustomPenawaranController extends Controller
 
         $penawarans = $query->paginate(20);
 
+        $penawarans->getCollection()->transform(function ($item) {
+            $item->offer_type = 'custom';
+            return $item;
+        });
+
         return view('admin.custom-quotation-approval.index', compact('penawarans'));
     }
 
