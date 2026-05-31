@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class CustomPenawaranController extends Controller
+class CustomQuotationController extends Controller
 {
     /**
      * List semua custom penawarans milik sales
@@ -181,8 +181,9 @@ class CustomPenawaranController extends Controller
     /**
      * Lihat detail custom penawaran
      */
-    public function show(CustomPenawaran $customPenawaran)
+    public function show(CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         // Allow owner (Sales) or Supervisor/Admin to view the penawaran
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
@@ -198,8 +199,9 @@ class CustomPenawaranController extends Controller
     /**
      * Form edit custom penawaran
      */
-    public function edit(CustomPenawaran $customPenawaran)
+    public function edit(CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         if ($customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -214,8 +216,9 @@ class CustomPenawaranController extends Controller
     /**
      * Update custom penawaran
      */
-    public function update(Request $request, CustomPenawaran $customPenawaran)
+    public function update(Request $request, CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         if ($customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -328,8 +331,9 @@ class CustomPenawaranController extends Controller
     /**
      * Hapus custom penawaran
      */
-    public function destroy(CustomPenawaran $customPenawaran)
+    public function destroy(CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         if ($customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -368,48 +372,9 @@ class CustomPenawaranController extends Controller
         }
     }
 
-    /**
-     * View PDF penawaran
-     */
-    /**
-     * Supervisor approval/reject penawaran
-     */
-    public function approval(Request $request, CustomPenawaran $customPenawaran)
+    public function pdf(CustomPenawaran $customQuotation)
     {
-        // Role check is already done by route middleware 'role:Supervisor'
-        $action = $request->input('action');
-        if (! in_array($customPenawaran->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
-            return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
-        }
-        $userRole = trim(strtolower(Auth::user()->role ?? ''));
-        $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($customPenawaran->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
-            abort(403);
-        }
-        if ($action === 'approve') {
-            $customPenawaran->status = 'approved_supervisor';
-            $customPenawaran->approved_by = Auth::id();
-            $customPenawaran->approved_at = now();
-            $customPenawaran->reason = null;
-            $customPenawaran->save();
-
-            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
-        } elseif ($action === 'reject') {
-            $validated = $request->validate([
-                'reason' => 'required|string|max:2000',
-            ]);
-            $customPenawaran->status = 'rejected_supervisor';
-            $customPenawaran->reason = $validated['reason'];
-            $customPenawaran->save();
-
-            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
-        }
-
-        return back()->withErrors('Action tidak valid.');
-    }
-
-    public function pdf(CustomPenawaran $customPenawaran)
-    {
+        $customPenawaran = $customQuotation;
         // Only owner (Sales) or Supervisor/Admin can view, but enforce approval rule:
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
@@ -457,8 +422,9 @@ class CustomPenawaranController extends Controller
     /**
      * Sent Custom Penawaran to Warehouse (create Order with status sent_to_warehouse)
      */
-    public function sentToWarehouse(CustomPenawaran $customPenawaran)
+    public function sentToWarehouse(CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         // Allow if user is admin or the sales who created it
         if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
             abort(403);
@@ -627,104 +593,12 @@ class CustomPenawaranController extends Controller
         return response()->json(['success' => false, 'message' => 'No items were processed.']);
     }
 
-    public function supervisorIndex(Request $request)
-    {
-        $query = CustomPenawaran::where('status', 'pending_approval')
-            ->with('items', 'sales')
-            ->latest();
-
-        if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('penawaran_number', 'like', "%{$search}%")
-                    ->orWhere('to', 'like', "%{$search}%")
-                    ->orWhere('subject', 'like', "%{$search}%")
-                    ->orWhereHas('sales', function ($subQ) use ($search) {
-                        $subQ->where('name', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        $penawarans = $query->paginate(20);
-
-        $penawarans->getCollection()->transform(function ($item) {
-            $item->offer_type = 'custom';
-            return $item;
-        });
-
-        return view('admin.custom-quotation-approval.index', compact('penawarans'));
-    }
-
-    /**
-     * Bulk Approval for Supervisor
-     */
-    public function bulkApproval(Request $request)
-    {
-        $ids = $request->input('ids', []);
-        $action = $request->input('action'); // 'approve' or 'reject'
-
-        if (empty($ids)) {
-            return response()->json(['success' => false, 'message' => 'No items selected.']);
-        }
-
-        if (! in_array($action, ['approve', 'reject'])) {
-            return response()->json(['success' => false, 'message' => 'Invalid action.']);
-        }
-
-        DB::beginTransaction();
-        try {
-            $penawarans = CustomPenawaran::whereIn('id', $ids)
-                ->where('status', 'pending_approval')
-                ->get();
-
-            if ($penawarans->isEmpty()) {
-                return response()->json(['success' => false, 'message' => 'No valid items found for approval/rejection.']);
-            }
-
-            foreach ($penawarans as $penawaran) {
-                // Determine if user is allowed (re-using logic from single approval)
-                $userRole = trim(strtolower(Auth::user()->role ?? ''));
-                $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-                // Check if supervisor or admin
-                if (! in_array($userRole, $allowed) && $penawaran->sales_id !== Auth::id()) {
-                    continue; // Skip unauthorized
-                }
-
-                if ($action === 'approve') {
-                    $penawaran->status = 'approved_supervisor';
-                    $penawaran->approved_by = Auth::id();
-                    $penawaran->approved_at = now();
-                    $penawaran->reason = null;
-                } else {
-                    // note: bulk reject usually needs a reason, but for bulk we might just set a generic one or empty
-                    // For now let's set a generic reason if not provided, or handle it differently.
-                    // The user requested bulk action.
-                    $reason = $request->input('reason', 'Bulk rejected by supervisor');
-                    $penawaran->status = 'rejected_supervisor';
-                    $penawaran->reason = $reason;
-                }
-                $penawaran->save();
-            }
-
-            DB::commit();
-
-            $message = $action === 'approve' ? 'Items approved successfully.' : 'Items rejected successfully.';
-
-            return response()->json(['success' => true, 'message' => $message]);
-
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            Log::error('Custom Penawaran Bulk Approval Error', ['message' => $e->getMessage()]);
-
-            return response()->json(['success' => false, 'message' => 'Error: '.$e->getMessage()]);
-        }
-    }
-
     /**
      * Kirim Custom Penawaran ke Penawaran (Request Order)
      */
-    public function sentToPenawaran(CustomPenawaran $customPenawaran)
+    public function sentToPenawaran(CustomPenawaran $customQuotation)
     {
+        $customPenawaran = $customQuotation;
         if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
             abort(403);
         }

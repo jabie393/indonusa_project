@@ -17,52 +17,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
-class RequestOrderController extends Controller
+class QuotationController extends Controller
 {
-    public function supervisorApprove(Request $request, $id)
-    {
-        $order = Order::where('request_order_id', $id)->first();
-        if (! $order) {
-            return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
-        }
-        $order->update([
-            'status' => 'approved_supervisor',
-            'supervisor_id' => Auth::id(),
-            'approved_at' => now(),
-        ]);
-
-        return redirect()->back()->with(['title' => 'Berhasil!', 'text' => 'Request order berhasil di-approve oleh supervisor.']);
-    }
-
-    public function supervisorReject(Request $request, $id)
-    {
-        $request->validate([
-            'reason' => 'required|string|min:5|max:500',
-        ], [
-            'reason.required' => 'Alasan penolakan wajib diisi.',
-            'reason.min' => 'Alasan penolakan minimal 5 karakter.',
-        ]);
-
-        $order = Order::where('request_order_id', $id)->first();
-        if (! $order) {
-            return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
-        }
-
-        $order->update([
-            'status' => 'rejected_supervisor',
-            'supervisor_id' => Auth::id(),
-            'approved_at' => now(),
-            'reason' => $request->reason,
-        ]);
-
-        $requestOrder = RequestOrder::find($id);
-        if ($requestOrder) {
-            $requestOrder->update(['reason' => $request->reason]);
-        }
-
-        return redirect()->back()->with(['title' => 'Berhasil!', 'text' => 'Request order berhasil ditolak.']);
-    }
-
     public function index()
     {
         if (\Illuminate\Support\Facades\Schema::hasColumn('request_orders', 'expired_at')) {
@@ -303,8 +259,9 @@ class RequestOrderController extends Controller
         }
     }
 
-    public function show(RequestOrder $requestOrder)
+    public function show(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Warehouse', 'Admin']);
         if ($requestOrder->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
@@ -327,8 +284,9 @@ class RequestOrderController extends Controller
         return view('admin.quotation.action.show', compact('requestOrder'));
     }
 
-    public function pdf(RequestOrder $requestOrder)
+    public function pdf(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         $requestOrder->loadMissing('items', 'order');
         if (! $requestOrder->canDownloadPdf()) {
             $status = $requestOrder->order?->status;
@@ -391,8 +349,9 @@ class RequestOrderController extends Controller
             ->header('Content-Disposition', 'inline; filename="Quotation-'.$requestOrder->request_number.'.pdf"');
     }
 
-    public function edit(RequestOrder $requestOrder)
+    public function edit(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -428,8 +387,9 @@ class RequestOrderController extends Controller
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
-    public function update(Request $request, RequestOrder $requestOrder)
+    public function update(Request $request, RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -698,8 +658,9 @@ class RequestOrderController extends Controller
         }
     }
 
-    public function sentToWarehouse(RequestOrder $requestOrder)
+    public function sentToWarehouse(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -720,8 +681,9 @@ class RequestOrderController extends Controller
         }
     }
 
-    public function destroy(RequestOrder $requestOrder)
+    public function destroy(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -805,8 +767,9 @@ class RequestOrderController extends Controller
         ]);
     }
 
-    public function uploadImageSO(Request $request, RequestOrder $requestOrder)
+    public function uploadImageSO(Request $request, RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($request->hasFile('image_so')) {
             $path = $request->file('image_so')->store('request-order-so-images', 'public');
             if ($requestOrder->image_so) {
@@ -821,8 +784,9 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function deleteImageSO(RequestOrder $requestOrder)
+    public function deleteImageSO(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->image_so) {
             Storage::disk('public')->delete($requestOrder->image_so);
             $requestOrder->image_so = null;
@@ -832,8 +796,9 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function uploadImagePO(Request $request, RequestOrder $requestOrder)
+    public function uploadImagePO(Request $request, RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($request->hasFile('image_po')) {
             $path = $request->file('image_po')->store('request-order-po-images', 'public');
             if ($requestOrder->image_po) {
@@ -848,8 +813,9 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function deleteImagePO(RequestOrder $requestOrder)
+    public function deleteImagePO(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->image_po) {
             Storage::disk('public')->delete($requestOrder->image_po);
             $requestOrder->image_po = null;
@@ -859,8 +825,9 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function uploadPdfPO(Request $request, RequestOrder $requestOrder)
+    public function uploadPdfPO(Request $request, RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($request->hasFile('pdf_po')) {
             $path = $request->file('pdf_po')->store('request-order-pdf-po', 'public');
             if ($requestOrder->pdf_po) {
@@ -875,8 +842,9 @@ class RequestOrderController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function updateNoPO(Request $request, RequestOrder $requestOrder)
+    public function updateNoPO(Request $request, RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         $validated = $request->validate([
             'no_po' => 'nullable|string|max:255',
         ]);
@@ -891,8 +859,9 @@ class RequestOrderController extends Controller
         ]);
     }
 
-    public function deletePdfPO(RequestOrder $requestOrder)
+    public function deletePdfPO(RequestOrder $quotation)
     {
+        $requestOrder = $quotation;
         if ($requestOrder->pdf_po) {
             Storage::disk('public')->delete($requestOrder->pdf_po);
             $requestOrder->pdf_po = null;

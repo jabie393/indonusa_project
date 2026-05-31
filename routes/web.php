@@ -16,11 +16,11 @@ use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Admin\AdminPTController;
-use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\Admin\RequestOrderController;
-use App\Http\Controllers\Admin\CustomPenawaranController;
+use App\Http\Controllers\Admin\QuotationController;
+use App\Http\Controllers\Admin\CustomQuotationController;
+use App\Http\Controllers\Admin\QuotationApprovalController;
+use App\Http\Controllers\Admin\CustomQuotationApprovalController;
 use App\Http\Controllers\Admin\SalesOrderController;
 use App\Http\Controllers\Admin\ImportExcelController;
 use App\Http\Controllers\Admin\ImportStockExcelController;
@@ -177,28 +177,25 @@ Route::middleware(['auth', 'role:Warehouse,Sales'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 
     // Support old URLs/names: map approved-orders and diskon-approved to the sentPenawaran controller
-    Route::get('/approved-orders', [AdminPTController::class, 'sentPenawaran'])->name('admin.approved');
-    Route::get('/diskon-approved', [AdminPTController::class, 'sentPenawaran'])->name('admin.diskon_approved');
+    Route::get('/approved-orders', [QuotationApprovalController::class, 'index'])->name('admin.approved');
+    Route::get('/diskon-approved', [QuotationApprovalController::class, 'index'])->name('admin.diskon_approved');
 
-    Route::get('/quotation-approval', [AdminPTController::class, 'sentPenawaran'])->name('admin.quotation_approval');
+    Route::get('/quotation-approval', [QuotationApprovalController::class, 'index'])->name('admin.quotation_approval');
     // Supervisor approval route for Custom Quotation (allow Supervisor to POST approve/reject)
-    Route::post('/custom-quotation-approval/{customPenawaran}/approval', [CustomPenawaranController::class, 'approval'])->name('admin.custom-quotation-approval.approval');
+    Route::post('/custom-quotation-approval/{customQuotation}/approval', [CustomQuotationApprovalController::class, 'approve'])->name('admin.custom-quotation-approval.approval');
     // Supervisor view detail for custom quotation (so Supervisor can access without Sales role)
-    Route::get('/custom-quotation-approval/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('admin.custom-quotation-approval.show');
-    Route::get('/custom-quotation-approval', [CustomPenawaranController::class, 'supervisorIndex'])->name('supervisor.custom-quotation-approval.index');
-    Route::post('/custom-quotation-approval/bulk-approval', [CustomPenawaranController::class, 'bulkApproval'])->name('supervisor.custom-quotation-approval.bulk-approval');
-    Route::get('/orders/{id}', [AdminPTController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{id}/approve', [AdminPTController::class, 'approve'])->name('orders.approve');
-    Route::post('/orders/{id}/reject', [AdminPTController::class, 'reject'])->name('orders.reject');
-    Route::get('/orders/history', [AdminPTController::class, 'history'])->name('orders.history');
+    Route::get('/custom-quotation-approval/{customQuotation}', [CustomQuotationController::class, 'show'])->name('admin.custom-quotation-approval.show');
+    Route::get('/custom-quotation-approval', [CustomQuotationApprovalController::class, 'index'])->name('supervisor.custom-quotation-approval.index');
+    Route::post('/custom-quotation-approval/bulk-approval', [CustomQuotationApprovalController::class, 'bulkApproval'])->name('supervisor.custom-quotation-approval.bulk-approval');
+    Route::get('/orders/{id}', [QuotationApprovalController::class, 'incomingShow'])->name('orders.show');
+    Route::post('/orders/{id}/approve', [QuotationApprovalController::class, 'incomingApprove'])->name('orders.approve');
+    Route::post('/orders/{id}/reject', [QuotationApprovalController::class, 'incomingReject'])->name('orders.reject');
+    Route::get('/orders/history', [QuotationApprovalController::class, 'incomingHistory'])->name('orders.history');
 
     // Supervisor approval for Request Orders (from Sales)
-    Route::post('/quotation/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.quotation.approve');
-    Route::post('/quotation/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.quotation.reject');
-    // Supervisor/Sales view for Request Order detail (accessible by both)
-    Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.quotation.show');
-    Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.quotation.pdf');
-    Route::get('/custom-quotation-approval/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
+    Route::post('/quotation/{quotation}/approve', [QuotationApprovalController::class, 'approve'])->name('supervisor.quotation.approve');
+    Route::post('/quotation/{quotation}/reject', [QuotationApprovalController::class, 'reject'])->name('supervisor.quotation.reject');
+    Route::get('/custom-quotation-approval/{customQuotation}/pdf', [CustomQuotationController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
 
     // Supervisor Dashboard
     Route::get('/admin/dashboard/supervisor', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'dashboard'])
@@ -214,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Supervisor History (all approval processes)
-    Route::get('/supervisor/history', [SupervisorController::class, 'history'])->name('supervisor.history');
+    Route::get('/supervisor/history', [QuotationApprovalController::class, 'history'])->name('supervisor.history');
 });
 // End of Supervisor
 
@@ -223,42 +220,42 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Customer Routes for Sales (Consolidated to global customer.store)
 
     // Quotation Routes
-    Route::get('/quotation', [RequestOrderController::class, 'index'])->name('sales.quotation.index');
-    Route::get('/quotation/create', [RequestOrderController::class, 'create'])->name('sales.quotation.create');
-    Route::post('/quotation', [RequestOrderController::class, 'store'])->name('sales.quotation.store');
+    Route::get('/quotation', [QuotationController::class, 'index'])->name('sales.quotation.index');
+    Route::get('/quotation/create', [QuotationController::class, 'create'])->name('sales.quotation.create');
+    Route::post('/quotation', [QuotationController::class, 'store'])->name('sales.quotation.store');
 
-    Route::get('/quotation/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.quotation.edit');
-    Route::put('/quotation/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.quotation.update');
-    Route::post('/quotation/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.quotation.status');
-    Route::delete('/quotation/{requestOrder}', [RequestOrderController::class, 'destroy'])->name('sales.quotation.destroy');
-    Route::post('/quotation/bulk/delete', [RequestOrderController::class, 'bulkDelete'])->name('sales.quotation.bulk-delete');
-    Route::post('/quotation/bulk/send-to-warehouse', [RequestOrderController::class, 'bulkSendToWarehouse'])->name('sales.quotation.bulk-send-to-warehouse');
-    Route::post('/quotation/{requestOrder}/sent-to-warehouse', [RequestOrderController::class, 'sentToWarehouse'])->name('sales.quotation.sent-to-warehouse');
-    Route::post('/quotation/{requestOrder}/upload-image-so', [RequestOrderController::class, 'uploadImageSO'])->name('request-order.upload-image-so');
-    Route::delete('/quotation/{requestOrder}/upload-image-so', [RequestOrderController::class, 'deleteImageSO'])->name('request-order.delete-image-so');
-    Route::post('/quotation/{requestOrder}/upload-image-po', [RequestOrderController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
-    Route::delete('/quotation/{requestOrder}/upload-image-po', [RequestOrderController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
-    Route::post('/quotation/{requestOrder}/upload-pdf-po', [RequestOrderController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
-    Route::delete('/quotation/{requestOrder}/upload-pdf-po', [RequestOrderController::class, 'deletePdfPO'])->name('request-order.delete-pdf-po');
-    Route::post('/quotation/{requestOrder}/update-no-po', [RequestOrderController::class, 'updateNoPO'])->name('request-order.update-no-po');
+    Route::get('/quotation/{quotation}/edit', [QuotationController::class, 'edit'])->name('sales.quotation.edit');
+    Route::put('/quotation/{quotation}', [QuotationController::class, 'update'])->name('sales.quotation.update');
+    Route::post('/quotation/{quotation}/status', [QuotationController::class, 'updateStatus'])->name('sales.quotation.status');
+    Route::delete('/quotation/{quotation}', [QuotationController::class, 'destroy'])->name('sales.quotation.destroy');
+    Route::post('/quotation/bulk/delete', [QuotationController::class, 'bulkDelete'])->name('sales.quotation.bulk-delete');
+    Route::post('/quotation/bulk/send-to-warehouse', [QuotationController::class, 'bulkSendToWarehouse'])->name('sales.quotation.bulk-send-to-warehouse');
+    Route::post('/quotation/{quotation}/sent-to-warehouse', [QuotationController::class, 'sentToWarehouse'])->name('sales.quotation.sent-to-warehouse');
+    Route::post('/quotation/{quotation}/upload-image-so', [QuotationController::class, 'uploadImageSO'])->name('request-order.upload-image-so');
+    Route::delete('/quotation/{quotation}/upload-image-so', [QuotationController::class, 'deleteImageSO'])->name('request-order.delete-image-so');
+    Route::post('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
+    Route::delete('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
+    Route::post('/quotation/{quotation}/upload-pdf-po', [QuotationController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
+    Route::delete('/quotation/{quotation}/upload-pdf-po', [QuotationController::class, 'deletePdfPO'])->name('request-order.delete-pdf-po');
+    Route::post('/quotation/{quotation}/update-no-po', [QuotationController::class, 'updateNoPO'])->name('request-order.update-no-po');
 
     // Custom Quotation Routes
-    Route::get('/custom-quotation', [CustomPenawaranController::class, 'index'])->name('sales.custom-quotation.index');
-    Route::get('/custom-quotation/create', [CustomPenawaranController::class, 'create'])->name('sales.custom-quotation.create');
-    Route::post('/custom-quotation', [CustomPenawaranController::class, 'store'])->name('sales.custom-quotation.store');
-    Route::post('/custom-quotation/bulk/delete', [CustomPenawaranController::class, 'bulkDelete'])->name('sales.custom-quotation.bulk-delete');
-    Route::post('/custom-quotation/bulk/send-to-warehouse', [CustomPenawaranController::class, 'bulkSendToWarehouse'])->name('sales.custom-quotation.bulk-send-to-warehouse');
-    Route::get('/custom-quotation/{customPenawaran}', [CustomPenawaranController::class, 'show'])->name('sales.custom-quotation.show');
-    Route::get('/custom-quotation/{customPenawaran}/edit', [CustomPenawaranController::class, 'edit'])->name('sales.custom-quotation.edit');
-    Route::put('/custom-quotation/{customPenawaran}', [CustomPenawaranController::class, 'update'])->name('sales.custom-quotation.update');
-    Route::delete('/custom-quotation/{customPenawaran}', [CustomPenawaranController::class, 'destroy'])->name('sales.custom-quotation.destroy');
-    Route::get('/custom-quotation/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('sales.custom-quotation.pdf');
-    Route::post('/custom-quotation/{customPenawaran}/sent-to-warehouse', [CustomPenawaranController::class, 'sentToWarehouse'])->name('sales.custom-quotation.sent-to-warehouse');
+    Route::get('/custom-quotation', [CustomQuotationController::class, 'index'])->name('sales.custom-quotation.index');
+    Route::get('/custom-quotation/create', [CustomQuotationController::class, 'create'])->name('sales.custom-quotation.create');
+    Route::post('/custom-quotation', [CustomQuotationController::class, 'store'])->name('sales.custom-quotation.store');
+    Route::post('/custom-quotation/bulk/delete', [CustomQuotationController::class, 'bulkDelete'])->name('sales.custom-quotation.bulk-delete');
+    Route::post('/custom-quotation/bulk/send-to-warehouse', [CustomQuotationController::class, 'bulkSendToWarehouse'])->name('sales.custom-quotation.bulk-send-to-warehouse');
+    Route::get('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'show'])->name('sales.custom-quotation.show');
+    Route::get('/custom-quotation/{customQuotation}/edit', [CustomQuotationController::class, 'edit'])->name('sales.custom-quotation.edit');
+    Route::put('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'update'])->name('sales.custom-quotation.update');
+    Route::delete('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'destroy'])->name('sales.custom-quotation.destroy');
+    Route::get('/custom-quotation/{customQuotation}/pdf', [CustomQuotationController::class, 'pdf'])->name('sales.custom-quotation.pdf');
+    Route::post('/custom-quotation/{customQuotation}/sent-to-warehouse', [CustomQuotationController::class, 'sentToWarehouse'])->name('sales.custom-quotation.sent-to-warehouse');
 
     // Sent to Quotation
     Route::post(
-        '/custom-quotation/{customPenawaran}/sent-to-penawaran',
-        [CustomPenawaranController::class, 'sentToPenawaran']
+        '/custom-quotation/{customQuotation}/sent-to-penawaran',
+        [CustomQuotationController::class, 'sentToPenawaran']
     )
         ->name('sales.custom-quotation.sent-to-penawaran');
 
@@ -280,7 +277,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
         ->name('sales.sales-order.sent-to-warehouse');
 
     // Sent to Warehouse dari Quotation (yang muncul di halaman SO)
-    Route::post('/quotation-so/{requestOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
+    Route::post('/quotation-so/{quotation}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
         ->name('sales.quotation.sent-to-warehouse-from-so');
 
     // Dashboard Chart Data for Sales
@@ -291,6 +288,12 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
         ->name('dashboard.sales.export.quotations');
 });
 // End of Sales
+
+// Shared Detail and PDF views for Quotation (registered below specific routes to avoid parameter clashes)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');
+    Route::get('/quotation/{quotation}/pdf', [QuotationController::class, 'pdf'])->name('sales.quotation.pdf');
+});
 
 // === End Admin Routes === //
 require __DIR__ . '/auth.php';

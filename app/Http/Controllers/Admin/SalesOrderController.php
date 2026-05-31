@@ -69,9 +69,9 @@ class SalesOrderController extends Controller
     /**
      * Kirim RequestOrder ke Warehouse dari halaman SO
      */
-    public function sentRequestOrderToWarehouse(Request $request, \App\Models\RequestOrder $requestOrder)
+    public function sentRequestOrderToWarehouse(Request $request, \App\Models\RequestOrder $quotation)
     {
-        $alreadySent = Order::where('request_order_id', $requestOrder->id)
+        $alreadySent = Order::where('request_order_id', $quotation->id)
             ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
             ->exists();
 
@@ -82,8 +82,8 @@ class SalesOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            $requestOrder->load('items', 'sales');
-            $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
+            $quotation->load('items', 'sales');
+            $existingOrder = Order::where('request_order_id', $quotation->id)->first();
 
             if ($existingOrder) {
                 $doNumber = $existingOrder->do_number ?? ('DO-' . now()->format('Ymd') . '-' . str_pad(
@@ -105,17 +105,17 @@ class SalesOrderController extends Controller
                 $order = Order::create([
                     'order_number'        => $orderNumber,
                     'do_number'           => $doNumber,
-                    'sales_id'            => $requestOrder->sales_id ?? Auth::id(),
-                    'customer_name'       => $requestOrder->customer_name,
-                    'customer_id'         => $requestOrder->customer_id ?? null,
-                    'request_order_id'    => $requestOrder->id,
-                    'custom_penawaran_id' => $requestOrder->custom_penawaran_id ?? null,
+                    'sales_id'            => $quotation->sales_id ?? Auth::id(),
+                    'customer_name'       => $quotation->customer_name,
+                    'customer_id'         => $quotation->customer_id ?? null,
+                    'request_order_id'    => $quotation->id,
+                    'custom_penawaran_id' => $quotation->custom_penawaran_id ?? null,
                     'status'              => 'sent_to_warehouse',
-                    'tanggal_kebutuhan'   => $requestOrder->tanggal_kebutuhan ?? now()->toDateString(),
-                    'catatan_customer'    => $requestOrder->catatan_customer ?? null,
+                    'tanggal_kebutuhan'   => $quotation->tanggal_kebutuhan ?? now()->toDateString(),
+                    'catatan_customer'    => $quotation->catatan_customer ?? null,
                 ]);
 
-                foreach ($requestOrder->items as $item) {
+                foreach ($quotation->items as $item) {
                     OrderItem::create([
                         'order_id'           => $order->id,
                         'barang_id'          => $item->barang_id ?? null,
