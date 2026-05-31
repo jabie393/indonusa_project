@@ -120,7 +120,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.quotation.create', compact('goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.action.create', compact('goods', 'customers', 'categories', 'salesUsers'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
     }
 
@@ -324,7 +324,7 @@ class RequestOrderController extends Controller
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales', 'approvedBy');
 
-        return view('admin.quotation.show', compact('requestOrder'));
+        return view('admin.quotation.action.show', compact('requestOrder'));
     }
 
     public function pdf(RequestOrder $requestOrder)
@@ -424,7 +424,7 @@ class RequestOrderController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.quotation.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 

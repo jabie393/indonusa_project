@@ -304,7 +304,7 @@ class SalesOrderController extends Controller
             abort(403);
         }
 
-        return view('admin.quotation.show', compact('requestOrder'));
+        return view('admin.quotation.action.show', compact('requestOrder'));
     }
 
     public function edit($id)
@@ -318,7 +318,7 @@ class SalesOrderController extends Controller
         $salesUsers      = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.quotation.edit', compact('requestOrder', 'salesUsers', 'currentUserName'));
+        return view('admin.quotation.action.edit', compact('requestOrder', 'salesUsers', 'currentUserName'));
     }
 
     public function update(Request $request, $id)

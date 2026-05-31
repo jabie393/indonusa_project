@@ -63,7 +63,7 @@ class CustomPenawaranController extends Controller
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.custom-quotation.create', compact('salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.action.create', compact('salesUsers', 'currentUserName'));
     }
 
     /**
@@ -192,7 +192,7 @@ class CustomPenawaranController extends Controller
 
         $customPenawaran->load('items', 'sales');
 
-        return view('admin.custom-quotation.show', compact('customPenawaran'));
+        return view('admin.custom-quotation.action.show', compact('customPenawaran'));
     }
 
     /**
@@ -208,7 +208,7 @@ class CustomPenawaranController extends Controller
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.custom-quotation.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.action.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
     }
 
     /**
