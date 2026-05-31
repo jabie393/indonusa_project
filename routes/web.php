@@ -16,7 +16,8 @@ use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AdminPTController;
+use App\Http\Controllers\Admin\AdminPTController;
+use App\Http\Controllers\Admin\SupervisorController;
 use App\Http\Controllers\Guest\ProductController;
 use App\Http\Controllers\Admin\RequestOrderController;
 use App\Http\Controllers\Admin\CustomPenawaranController;
@@ -213,7 +214,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Supervisor History (all approval processes)
-    Route::get('/supervisor/history', [\App\Http\Controllers\SupervisorController::class, 'history'])->name('supervisor.history');
+    Route::get('/supervisor/history', [SupervisorController::class, 'history'])->name('supervisor.history');
 });
 // End of Supervisor
 
