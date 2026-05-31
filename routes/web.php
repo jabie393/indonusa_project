@@ -194,9 +194,11 @@ Route::middleware(['auth'])->group(function () {
     // Supervisor approval for Request Orders (from Sales)
     Route::post('/quotation/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.quotation.approve');
     Route::post('/quotation/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.quotation.reject');
-    // Supervisor view for Request Order detail (so Supervisor can view without Sales role)
-    Route::get('/supervisor/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('admin.quotation.show');
-    Route::get('/supervisor/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('admin.quotation.pdf');
+    // Supervisor/Sales view for Request Order detail (accessible by both)
+    Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('admin.quotation.show');
+    Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('admin.quotation.pdf');
+    Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.quotation.show');
+    Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.quotation.pdf');
     Route::get('/custom-quotation-approval/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
 
     // Supervisor Dashboard
@@ -225,8 +227,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/quotation', [RequestOrderController::class, 'index'])->name('sales.quotation.index');
     Route::get('/quotation/create', [RequestOrderController::class, 'create'])->name('sales.quotation.create');
     Route::post('/quotation', [RequestOrderController::class, 'store'])->name('sales.quotation.store');
-    Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.quotation.show');
-    Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.quotation.pdf');
+
     Route::get('/quotation/{requestOrder}/edit', [RequestOrderController::class, 'edit'])->name('sales.quotation.edit');
     Route::put('/quotation/{requestOrder}', [RequestOrderController::class, 'update'])->name('sales.quotation.update');
     Route::post('/quotation/{requestOrder}/status', [RequestOrderController::class, 'updateStatus'])->name('sales.quotation.status');
