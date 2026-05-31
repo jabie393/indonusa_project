@@ -369,7 +369,7 @@
         </nav>
     </div>
 
-    @include('admin.quotation-approval.partials.quotation-approval-modal-reject')
+    @include('admin.custom-quotation-approval.partials.custom-quotation-approval-modal-reject')
 
     @vite(['resources/js/table-sort.js'])
 </x-app-layout>

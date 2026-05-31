@@ -218,7 +218,7 @@
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ route('sales.request-order.show', $order->id) }}"
+                                            <a href="{{ route('sales.quotation.show', $order->id) }}"
                                                 class="inline-flex items-center rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                                 Detail
                                             </a>
