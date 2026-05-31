@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
             @if (($requestOrder->customer->status ?? 'active') === 'inactive')
@@ -862,7 +862,7 @@
 
                                         @php
                                         $canDownloadPdf = method_exists($requestOrder, 'canDownloadPdf') ? $requestOrder->canDownloadPdf() : true;
-                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.quotation.pdf' : 'admin.quotation.pdf';
+                                        $pdfRoute = 'sales.quotation.pdf';
                                         @endphp
 
                                         @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
@@ -1106,7 +1106,7 @@
                             data-bs-dismiss="modal"></button>
                     </div>
                     @php
-                    $modalPdfRoute = Auth::user()->role === 'Sales' ? 'sales.quotation.pdf' : 'admin.quotation.pdf';
+                    $modalPdfRoute = 'sales.quotation.pdf';
                     @endphp
                     <form method="GET"
                         action="{{ route($modalPdfRoute, $requestOrder->id) }}"

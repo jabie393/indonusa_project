@@ -195,8 +195,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/quotation/{requestOrder}/approve', [RequestOrderController::class, 'supervisorApprove'])->name('supervisor.quotation.approve');
     Route::post('/quotation/{requestOrder}/reject', [RequestOrderController::class, 'supervisorReject'])->name('supervisor.quotation.reject');
     // Supervisor/Sales view for Request Order detail (accessible by both)
-    Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('admin.quotation.show');
-    Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('admin.quotation.pdf');
     Route::get('/quotation/{requestOrder}', [RequestOrderController::class, 'show'])->name('sales.quotation.show');
     Route::get('/quotation/{requestOrder}/pdf', [RequestOrderController::class, 'pdf'])->name('sales.quotation.pdf');
     Route::get('/custom-quotation-approval/{customPenawaran}/pdf', [CustomPenawaranController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');

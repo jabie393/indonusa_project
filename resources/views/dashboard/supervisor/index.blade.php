@@ -284,7 +284,7 @@
                                     <td class="px-4 py-3">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</td>
                                     <td class="px-4 py-3">{{ $order->sales?->name }}</td>
                                     <td class="px-4 py-3 text-right">
-                                        <a href="{{ route('admin.quotation.show', $order->id) }}"
+                                        <a href="{{ route('sales.quotation.show', $order->id) }}"
                                            class="inline-flex items-center rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Review</a>
                                     </td>
                                 </tr>

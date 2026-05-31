@@ -48,7 +48,7 @@
                 <tbody class="text-nowrap">
                     @forelse($penawarans as $index => $penawaran)
                     @php
-                        $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('admin.quotation.show', $penawaran->id);
+                        $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('sales.quotation.show', $penawaran->id);
                         
                         $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
                         
@@ -251,7 +251,7 @@
                                 <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                     {{-- Detail --}}
                                     @php
-                                    $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('admin.quotation.show', $penawaran->id);
+                                    $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('sales.quotation.show', $penawaran->id);
                                     @endphp
                                     <a href="{{ $detailRoute }}"
                                         class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
