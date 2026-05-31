@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('supervisor_id')->nullable(); // id Supervisor yang meninjau
             $table->unsignedBigInteger('warehouse_id')->nullable(); // id Warehouse
-            $table->unsignedBigInteger('request_order_id')->nullable();
-            $table->unsignedBigInteger('custom_penawaran_id')->nullable();
+            $table->unsignedBigInteger('quotation_id')->nullable();
+            $table->unsignedBigInteger('custom_quotation_id')->nullable();
             $table->enum('status', [
                 'pending',
                 'sent_to_supervisor',
@@ -34,15 +34,15 @@ return new class extends Migration
                 'not_completed'
             ])->default('pending');
             $table->text('reason')->nullable(); // alasan penolakan oleh Supervisor atau Warehouse
-            $table->date('tanggal_kebutuhan')->nullable();
-            $table->text('catatan_customer')->nullable();
+            $table->date('required_date')->nullable();
+            $table->text('customer_notes')->nullable();
             $table->timestamps();
 
             $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('supervisor_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('warehouse_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('request_order_id')->references('id')->on('request_orders')->onDelete('set null');
-            $table->foreign('custom_penawaran_id')->references('id')->on('custom_penawarans')->onDelete('cascade');
+            $table->foreign('quotation_id')->references('id')->on('quotations')->onDelete('set null');
+            $table->foreign('custom_quotation_id')->references('id')->on('custom_quotations')->onDelete('cascade');
         });
     }
 
@@ -52,8 +52,8 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('orders');
-        // Kembalikan kolom status ke request_orders
-        Schema::table('request_orders', function (Blueprint $table) {
+        // Kembalikan kolom status ke quotations
+        Schema::table('quotations', function (Blueprint $table) {
             $table->string('status')->default('pending');
         });
     }

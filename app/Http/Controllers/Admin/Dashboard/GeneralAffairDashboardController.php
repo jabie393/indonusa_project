@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barang;
 use App\Models\Order;
-use App\Models\RequestOrder;
-use App\Models\RequestOrderItem;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -39,28 +39,28 @@ class GeneralAffairDashboardController extends Controller
             $dateEnd = null;
         }
 
-        // 2. Calculate Stats (Driven by RequestOrder)
+        // 2. Calculate Stats (Driven by Quotation)
         // Pending: No order yet, or still in approval stages
-        $totalPending = RequestOrder::whereDoesntHave('order')
+        $totalPending = Quotation::whereDoesntHave('order')
             ->orWhereHas('order', function($q) {
                 $q->whereIn('status', ['pending_approval', 'sent_to_supervisor', 'sent_to_warehouse']);
             })->count();
 
         // Approved: Supervisor approved it, or moving through warehouse/completion
-        $totalApproved = RequestOrder::whereHas('order', function($q) {
+        $totalApproved = Quotation::whereHas('order', function($q) {
             $q->whereIn('status', ['approved_supervisor', 'sent_to_warehouse', 'approved_warehouse']);
         })->count();
 
         // Total Orders (All Quotations/Requests)
         $totalOrders = Order::whereIn('status', ['completed'])->count();
 
-        // Total Revenue (Sum of all RequestOrder grand totals where order is completed)
-        $totalRevenue = RequestOrder::whereHas('order', function($q) {
+        // Total Revenue (Sum of all Quotation grand totals where order is completed)
+        $totalRevenue = Quotation::whereHas('order', function($q) {
             $q->where('status', 'completed');
         })->sum('grand_total');
 
         // Customers (Only from completed orders)
-        $totalCustomers = RequestOrder::whereHas('order', function($q) {
+        $totalCustomers = Quotation::whereHas('order', function($q) {
             $q->where('status', 'completed');
         })->distinct('customer_id')->count('customer_id');
 
@@ -68,17 +68,17 @@ class GeneralAffairDashboardController extends Controller
 
         // Top 5 Sales Users by Revenue (Status: Completed)
         $topSales = User::where('role', 'Sales')
-            ->join('request_orders', 'users.id', '=', 'request_orders.sales_id')
-            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
+            ->join('quotations', 'users.id', '=', 'quotations.sales_id')
+            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
             ->where('orders.status', 'completed')
-            ->select('users.name', DB::raw('SUM(request_orders.grand_total) as revenue'))
+            ->select('users.name', DB::raw('SUM(quotations.grand_total) as revenue'))
             ->groupBy('users.id', 'users.name')
             ->orderByDesc('revenue')
             ->take(5)
             ->get();
 
         // Top 5 Customers by Revenue (Completed)
-        $topCustomers = RequestOrder::whereHas('order', function($q) {
+        $topCustomers = Quotation::whereHas('order', function($q) {
                 $q->where('status', 'completed');
             })
             ->select('customer_name', DB::raw('SUM(grand_total) as revenue'))
@@ -99,13 +99,13 @@ class GeneralAffairDashboardController extends Controller
         $imcMasuk = []; 
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            // Potensi Pendapatan (Total Grand Total all RequestOrders)
-            $imcMasuk[] = (float) RequestOrder::whereYear('created_at', $selectedYear)
+            // Potensi Pendapatan (Total Grand Total all Quotations)
+            $imcMasuk[] = (float) Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->sum('grand_total');
 
             // Pendapatan Selesai (Total Grand Total where order is completed)
-            $imcKeluar[] = (float) RequestOrder::whereHas('order', function($q) {
+            $imcKeluar[] = (float) Quotation::whereHas('order', function($q) {
                     $q->where('status', 'completed');
                 })
                 ->whereYear('created_at', $selectedYear)
@@ -113,7 +113,7 @@ class GeneralAffairDashboardController extends Controller
                 ->sum('grand_total');
         }
 
-        $imcYears = RequestOrder::whereHas('order', function($q) {
+        $imcYears = Quotation::whereHas('order', function($q) {
                 $q->where('status', 'completed');
             })
             ->selectRaw('YEAR(created_at) as year')
@@ -125,13 +125,13 @@ class GeneralAffairDashboardController extends Controller
         if (empty($imcYears)) $imcYears = [now()->year];
 
         // 5. Chart Data (SVC - Best Sellers from Completed Orders)
-        $topItems = RequestOrderItem::join('request_orders', 'request_order_items.request_order_id', '=', 'request_orders.id')
-            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
+        $topItems = QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
+            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
             ->where('orders.status', 'completed')
-            ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
-                DB::raw('SUM(request_order_items.quantity) as total_qty')
+                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
+                DB::raw('SUM(quotation_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
             ->orderByDesc('total_qty')
@@ -188,7 +188,7 @@ class GeneralAffairDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = RequestOrder::whereYear('created_at', $selectedYear)
+            $imcMasuk[] = Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->count();
             $imcKeluar[] = Order::whereIn('status', ['approved_supervisor', 'approved_warehouse', 'completed'])
@@ -197,13 +197,13 @@ class GeneralAffairDashboardController extends Controller
                 ->count();
         }
 
-        $topItems = RequestOrderItem::join('request_orders', 'request_order_items.request_order_id', '=', 'request_orders.id')
-            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
+        $topItems = QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
+            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
             ->where('orders.status', 'completed')
-            ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
-                DB::raw('SUM(request_order_items.quantity) as total_qty')
+                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
+                DB::raw('SUM(quotation_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
             ->orderByDesc('total_qty')

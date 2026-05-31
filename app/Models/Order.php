@@ -13,14 +13,14 @@ class Order extends Model
         'sales_id',
         'supervisor_id',
         'warehouse_id',
-        'request_order_id',
-        'custom_penawaran_id',
+        'quotation_id',
+        'custom_quotation_id',
         'status',
         'reason',
         'customer_name',
         'customer_id',
-        'tanggal_kebutuhan',
-        'catatan_customer',
+        'required_date',
+        'customer_notes',
         'delivery_options',
         'do_number',
     ];
@@ -49,14 +49,19 @@ class Order extends Model
         return $this->belongsTo(User::class, 'warehouse_id');
     }
 
-    public function requestOrder()
+    public function quotation()
     {
-        return $this->belongsTo(RequestOrder::class, 'request_order_id');
+        return $this->belongsTo(Quotation::class, 'quotation_id');
     }
 
-    public function customPenawaran()
+    public function requestOrder()
     {
-        return $this->belongsTo(CustomPenawaran::class, 'custom_penawaran_id');
+        return $this->belongsTo(Quotation::class, 'quotation_id');
+    }
+
+    public function customQuotation()
+    {
+        return $this->belongsTo(CustomQuotation::class, 'custom_quotation_id');
     }
 
     // Add relationship to order items

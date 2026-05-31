@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\RequestOrderItem;
+use App\Models\QuotationItem;
 use Illuminate\Support\Carbon;
 
-class RequestOrder extends Model
+class Quotation extends Model
 {
+    protected $table = 'quotations';
+
     /**
      * Generate unique Sales Order Number (NO.SO) with format:
      * SO-[YYYYMMDD]-[4 digit urut]
@@ -31,13 +34,14 @@ class RequestOrder extends Model
         }
         return $noSo;
     }
+
     /**
      * Cek apakah PDF bisa didownload sesuai aturan diskon dan status order
      * @return bool
      */
     public function canDownloadPdf(): bool
     {
-        $maxDiskon = $this->items->max('diskon_percent');
+        $maxDiskon = $this->items->max('discount_percent');
         $status = $this->order?->status;
         if ($maxDiskon === null) return false; // Tidak ada item
         if ($status === 'approved_supervisor') return true;
@@ -48,10 +52,9 @@ class RequestOrder extends Model
         return false;
     }
 
-
     protected $fillable = [
         'request_number',
-        'nomor_penawaran',
+        'quotation_number',
         'sales_order_number',
         'no_po',
         'sales_id',
@@ -59,18 +62,22 @@ class RequestOrder extends Model
         'customer_id',
         'subject',
         'reason',
-        'tanggal_kebutuhan',
-        'tanggal_berlaku',
+        'required_date',
+        'valid_date',
+        'expired_at',
+        'customer_notes',
         'subtotal',
         'tax',
         'grand_total',
+        'product_category',
         'supporting_images',
-        'custom_penawaran_id',
+        'custom_quotation_id',
     ];
 
-    public function customPenawaran() {
-        return $this->belongsTo(\App\Models\CustomPenawaran::class, 'custom_penawaran_id');
+    public function customQuotation() {
+        return $this->belongsTo(\App\Models\CustomQuotation::class, 'custom_quotation_id');
     }
+
     /**
      * Cek apakah ada item dengan diskon >20%
      *
@@ -78,12 +85,12 @@ class RequestOrder extends Model
      */
     public function hasDiscountOver20(): bool
     {
-        return $this->items->max('diskon_percent') > 20;
+        return $this->items->max('discount_percent') > 20;
     }
 
     protected $casts = [
-        'tanggal_kebutuhan' => 'date',
-        'tanggal_berlaku' => 'datetime',
+        'required_date' => 'date',
+        'valid_date' => 'datetime',
         'expired_at' => 'datetime',
         'supporting_images' => 'array',
         'subtotal' => 'decimal:2',
@@ -91,15 +98,6 @@ class RequestOrder extends Model
         'grand_total' => 'decimal:2',
     ];
 
-    /**
-     * Relasi ke Order (hasOne)
-     */
-
-    /**
-     * Accessor untuk status order terkait
-     *
-     * @return string|null
-     */
     /**
      * Accessor untuk status order terkait (label user-friendly)
      *
@@ -127,31 +125,31 @@ class RequestOrder extends Model
     }
 
     /**
-     * Accessor untuk tanggal_kebutuhan yang aman
+     * Accessor untuk required_date yang aman
      */
-    public function getTanggalKebutuhanFormattedAttribute()
+    public function getRequiredDateFormattedAttribute()
     {
-        if (!$this->tanggal_kebutuhan) {
+        if (!$this->required_date) {
             return '-';
         }
-        if (is_string($this->tanggal_kebutuhan)) {
-            return \Carbon\Carbon::parse($this->tanggal_kebutuhan)->format('d M Y');
+        if (is_string($this->required_date)) {
+            return \Carbon\Carbon::parse($this->required_date)->format('d M Y');
         }
-        return $this->tanggal_kebutuhan->format('d M Y');
+        return $this->required_date->format('d M Y');
     }
 
     /**
-     * Accessor untuk tanggal_berlaku yang aman
+     * Accessor untuk valid_date yang aman
      */
-    public function getTanggalBerlakuFormattedAttribute()
+    public function getValidDateFormattedAttribute()
     {
-        if (!$this->tanggal_berlaku) {
+        if (!$this->valid_date) {
             return '-';
         }
-        if (is_string($this->tanggal_berlaku)) {
-            return \Carbon\Carbon::parse($this->tanggal_berlaku)->format('d M Y');
+        if (is_string($this->valid_date)) {
+            return \Carbon\Carbon::parse($this->valid_date)->format('d M Y');
         }
-        return $this->tanggal_berlaku->format('d M Y');
+        return $this->valid_date->format('d M Y');
     }
 
     /**
@@ -170,7 +168,7 @@ class RequestOrder extends Model
 
     public function items()
     {
-        return $this->hasMany(RequestOrderItem::class);
+        return $this->hasMany(QuotationItem::class, 'quotation_id');
     }
 
     public function sales()
@@ -190,10 +188,10 @@ class RequestOrder extends Model
 
     public function order()
     {
-        return $this->hasOne(Order::class, 'request_order_id');
+        return $this->hasOne(Order::class, 'quotation_id');
     }
 
-    public static function generateNomorPenawaran()
+    public static function generateQuotationNumber()
     {
         $date = now()->format('Ymd');
         $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
@@ -206,5 +204,66 @@ class RequestOrder extends Model
     public function isExpired()
     {
         return $this->expired_at && now() > $this->expired_at;
+    }
+
+    // Compatibility accessors for old column names
+    public function getNomorPenawaranAttribute()
+    {
+        return $this->quotation_number;
+    }
+
+    public function setNomorPenawaranAttribute($value)
+    {
+        $this->attributes['quotation_number'] = $value;
+    }
+
+    public function getTanggalKebutuhanAttribute()
+    {
+        return $this->required_date;
+    }
+
+    public function setTanggalKebutuhanAttribute($value)
+    {
+        $this->attributes['required_date'] = $value;
+    }
+
+    public function getTanggalBerlakuAttribute()
+    {
+        return $this->valid_date;
+    }
+
+    public function setTanggalBerlakuAttribute($value)
+    {
+        $this->attributes['valid_date'] = $value;
+    }
+
+    public function getCatatanCustomerAttribute()
+    {
+        return $this->customer_notes;
+    }
+
+    public function setCatatanCustomerAttribute($value)
+    {
+        $this->attributes['customer_notes'] = $value;
+    }
+
+    public function getKategoriBarangAttribute()
+    {
+        return $this->product_category;
+    }
+
+    public function setKategoriBarangAttribute($value)
+    {
+        $this->attributes['product_category'] = $value;
+    }
+
+    public function getTanggalKebutuhanFormattedAttribute()
+    {
+        return $this->required_date_formatted;
+    }
+
+    public function getTanggalBerlakuFormattedAttribute()
+    {
+        return $this->valid_date_formatted;
     }
 }

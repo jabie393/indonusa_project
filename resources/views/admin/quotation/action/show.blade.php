@@ -69,15 +69,15 @@
 
             {{-- ============================================================
                     {{-- Info asal Custom Quotation --}}
-            @if ($requestOrder->customPenawaran)
+            @if ($requestOrder->customQuotation)
             <div class="mx-6 mb-2 mt-4 flex items-center gap-2 rounded bg-indigo-50 p-3 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200">
                 <span class="font-semibold">Dari Custom Quotation:</span>
                 @php
                 $parentShowRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.show' : 'admin.custom-quotation-approval.show';
                 @endphp
-                <a href="{{ route($parentShowRoute, $requestOrder->customPenawaran->id) }}"
+                <a href="{{ route($parentShowRoute, $requestOrder->customQuotation->id) }}"
                     class="underline hover:text-indigo-600">
-                    {{ $requestOrder->customPenawaran->penawaran_number }}
+                    {{ $requestOrder->customQuotation->quotation_number }}
                 </a>
             </div>
             @endif
@@ -432,7 +432,7 @@
                                         </div>
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">No. Penawaran</label>
-                                            <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->nomor_penawaran ?? '-' }}</p>
+                                            <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->quotation_number ?? '-' }}</p>
                                         </div>
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Status Sistem</label>
@@ -513,14 +513,14 @@
                                         </div>
                                         <div class="space-y-1">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Tgl Kebutuhan</label>
-                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->tanggal_kebutuhan_formatted }}</p>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->required_date_formatted }}</p>
                                         </div>
                                         <div class="space-y-1 md:col-span-2">
                                             <label class="text-[10px] font-bold uppercase text-gray-400">Masa Berlaku</label>
                                             <div class="flex items-center space-x-3">
-                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->tanggal_berlaku_formatted ?? '-' }}</p>
+                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->valid_date_formatted ?? '-' }}</p>
                                                 @php
-                                                $expiryDate = $requestOrder->expired_at ?? $requestOrder->tanggal_berlaku;
+                                                $expiryDate = $requestOrder->expired_at ?? $requestOrder->valid_date;
                                                 @endphp
                                                 @if ($expiryDate)
                                                 @php
@@ -542,7 +542,7 @@
                             </div>
                         </div>
 
-                        @if ($requestOrder->catatan_customer)
+                        @if ($requestOrder->customer_notes)
                         <div class="border-t border-gray-100 p-6 pt-6 dark:border-gray-700">
                             <label class="mb-3 flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg"
@@ -558,7 +558,7 @@
                                 Catatan Customer
                             </label>
                             <div class="space-y-1">
-                                "{{ $requestOrder->catatan_customer }}"
+                                "{{ $requestOrder->customer_notes }}"
                             </div>
                         </div>
                         @endif
@@ -660,8 +660,8 @@
                                     @php $total = 0; @endphp
                                     @forelse($requestOrder->items as $item)
                                     @php
-                                    $displayHarga = $item->harga ?? 0;
-                                    $diskonPercent = $item->diskon_percent ?? 0;
+                                    $displayHarga = $item->price ?? 0;
+                                    $diskonPercent = $item->discount_percent ?? 0;
                                     $computedSubtotal = $item->subtotal ?? 0;
                                     $total += $computedSubtotal;
                                     @endphp
@@ -669,18 +669,18 @@
                                         <td class="px-6 py-5">
                                             <div class="flex flex-col space-y-1">
                                                 <span class="font-bold leading-tight text-gray-900 dark:text-white">
-                                                    {{ $item->barang->goods_name ?? ($item->nama_barang_custom ?? 'N/A') }}
+                                                    {{ $item->barang->goods_name ?? ($item->custom_product_name ?? 'N/A') }}
                                                 </span>
                                                 <div class="flex items-center space-x-2">
                                                     <span class="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter text-blue-600 dark:bg-blue-900/40 dark:text-blue-300">
-                                                        {{ $item->kategori_barang ?? ($item->barang->category ?? 'UMUM') }}
+                                                        {{ $item->product_category ?? ($item->barang->category ?? 'UMUM') }}
                                                     </span>
                                                     <span class="font-mono text-[10px] text-gray-400">CODE: {{ $item->barang->goods_code ?? '-' }}</span>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-5 text-center">
-                                            @php $dk = $item->diskon_percent ?? ($item->barang->discount_percent ?? 0); @endphp
+                                            @php $dk = $item->discount_percent ?? ($item->barang->discount_percent ?? 0); @endphp
                                             @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">
@@ -697,7 +697,7 @@
                                         <td class="px-6 py-5 text-center">
                                             <div class="flex flex-col">
                                                 <span class="font-black text-gray-900 dark:text-white">{{ $item->quantity ?? $item->qty }}</span>
-                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->kategori_barang ?? ($item->satuan ?? '-') }}</span>
+                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->product_category ?? ($item->unit ?? '-') }}</span>
                                             </div>
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-5 text-gray-600 dark:text-gray-400">
@@ -1121,7 +1121,7 @@
                                 <textarea id="pdf_note"
                                     name="pdf_note"
                                     rows="8"
-                                    class="form-control">{{ old('pdf_note', $requestOrder->catatan_customer ?? $defaultPdfNote) }}</textarea>
+                                    class="form-control">{{ old('pdf_note', $requestOrder->customer_notes ?? $defaultPdfNote) }}</textarea>
                                 <small class="text-muted">Teks ini akan dimasukkan ke bagian pembuka PDF. Anda dapat
                                     mengeditnya sebelum mengunduh.</small>
                             </div>

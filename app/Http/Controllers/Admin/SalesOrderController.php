@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Http\Controllers\Controller;
-use App\Models\RequestOrder;
-use App\Models\RequestOrderItem;
-use App\Models\CustomPenawaran;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
+use App\Models\CustomQuotation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,16 +24,16 @@ use App\Exports\GaSalesOrderExport;
 class SalesOrderController extends Controller
 {
     /**
-     * Helper private: mapping RequestOrder ke array row tabel
+     * Helper private: mapping Quotation ke array row tabel
      */
-    private function mapRequestOrderRow(\App\Models\RequestOrder $ro): array
+    private function mapRequestOrderRow(\App\Models\Quotation $ro): array
     {
         $diskonPersen = ($ro->items && $ro->items->count() > 0)
-            ? ($ro->items->first()->diskon_percent ?? 0) : 0;
+            ? ($ro->items->first()->discount_percent ?? 0) : 0;
 
         $berlakuSampai = '-';
-        if ($ro->tanggal_berlaku) {
-            $berlakuSampai = \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y');
+        if ($ro->valid_date) {
+            $berlakuSampai = \Carbon\Carbon::parse($ro->valid_date)->translatedFormat('d F Y');
         } elseif ($ro->expired_at) {
             $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
         }
@@ -44,10 +44,10 @@ class SalesOrderController extends Controller
             'id'             => $ro->id,
             'type'           => 'request_order',
             'no_request'     => $ro->request_number,
-            'no_penawaran'   => $ro->nomor_penawaran,
+            'no_penawaran'   => $ro->quotation_number,
             'no_po'          => $ro->no_po ?? '-',
             'no_sales_order' => $ro->sales_order_number,
-            'tanggal'        => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
+            'tanggal'        => $ro->required_date ? $ro->required_date->format('d/m/Y') : '-',
             'customer_name'  => $ro->customer_name,
             'first_pic_name' => $firstPic?->name,
             'first_pic_position' => $firstPic?->position,
@@ -64,14 +64,12 @@ class SalesOrderController extends Controller
         ];
     }
 
-
-
     /**
-     * Kirim RequestOrder ke Warehouse dari halaman SO
+     * Kirim Quotation ke Warehouse dari halaman SO
      */
-    public function sentRequestOrderToWarehouse(Request $request, \App\Models\RequestOrder $quotation)
+    public function sentRequestOrderToWarehouse(Request $request, \App\Models\Quotation $quotation)
     {
-        $alreadySent = Order::where('request_order_id', $quotation->id)
+        $alreadySent = Order::where('quotation_id', $quotation->id)
             ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
             ->exists();
 
@@ -83,7 +81,7 @@ class SalesOrderController extends Controller
         DB::beginTransaction();
         try {
             $quotation->load('items', 'sales');
-            $existingOrder = Order::where('request_order_id', $quotation->id)->first();
+            $existingOrder = Order::where('quotation_id', $quotation->id)->first();
 
             if ($existingOrder) {
                 $doNumber = $existingOrder->do_number ?? ('DO-' . now()->format('Ymd') . '-' . str_pad(
@@ -108,21 +106,21 @@ class SalesOrderController extends Controller
                     'sales_id'            => $quotation->sales_id ?? Auth::id(),
                     'customer_name'       => $quotation->customer_name,
                     'customer_id'         => $quotation->customer_id ?? null,
-                    'request_order_id'    => $quotation->id,
-                    'custom_penawaran_id' => $quotation->custom_penawaran_id ?? null,
+                    'quotation_id'        => $quotation->id,
+                    'custom_quotation_id' => $quotation->custom_quotation_id ?? null,
                     'status'              => 'sent_to_warehouse',
-                    'tanggal_kebutuhan'   => $quotation->tanggal_kebutuhan ?? now()->toDateString(),
-                    'catatan_customer'    => $quotation->catatan_customer ?? null,
+                    'required_date'       => $quotation->required_date ?? now()->toDateString(),
+                    'customer_notes'      => $quotation->customer_notes ?? null,
                 ]);
 
                 foreach ($quotation->items as $item) {
                     OrderItem::create([
                         'order_id'           => $order->id,
-                        'barang_id'          => $item->barang_id ?? null,
+                        'barang_id'          => $item->product_id ?? null,
                         'quantity'           => $item->quantity ?? 1,
                         'delivered_quantity' => 0,
                         'status_item'        => 'pending',
-                        'harga'              => $item->harga ?? 0,
+                        'harga'              => $item->price ?? 0,
                         'subtotal'           => $item->subtotal ?? 0,
                     ]);
                 }
@@ -149,9 +147,9 @@ class SalesOrderController extends Controller
         $perPage  = (int) $request->input('perPage', 20);
 
         if ($isSearch) {
-            $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
+            $results = \App\Models\Quotation::where(function ($q) use ($search) {
                     $q->where('request_number',     'like', "%$search%")
-                      ->orWhere('nomor_penawaran',   'like', "%$search%")
+                      ->orWhere('quotation_number',   'like', "%$search%")
                       ->orWhere('sales_order_number','like', "%$search%")
                       ->orWhere('customer_name',     'like', "%$search%")
                       ->orWhere('no_po',             'like', "%$search%");
@@ -160,19 +158,19 @@ class SalesOrderController extends Controller
                 ->with(['order.batches', 'items', 'customer.pics'])
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
-                    'catatan_customer' => $ro->catatan_customer,
+                    'catatan_customer' => $ro->customer_notes,
                     'aksi_url'         => route('sales.quotation.show', $ro),
                     'image_po'         => $ro->image_po,
                 ]));
         } else {
-            $requestOrders = \App\Models\RequestOrder::where('sales_id', Auth::id())
+            $requestOrders = \App\Models\Quotation::where('sales_id', Auth::id())
                 ->with(['order.batches', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends(request()->query());
 
             $results = $requestOrders->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
-                'catatan_customer' => $ro->catatan_customer,
+                'catatan_customer' => $ro->customer_notes,
                 'aksi_url'         => route('sales.quotation.show', $ro),
                 'image_po'         => $ro->image_po,
             ]));
@@ -191,13 +189,13 @@ class SalesOrderController extends Controller
     public function getPenawaranDetail(Request $request)
     {
         $penawaranId = $request->input('id');
-        $penawaran   = CustomPenawaran::where('sales_id', Auth::id())->findOrFail($penawaranId);
+        $penawaran   = CustomQuotation::where('sales_id', Auth::id())->findOrFail($penawaranId);
 
         return response()->json([
             'success' => true,
             'data'    => [
                 'id'               => $penawaran->id,
-                'penawaran_number' => $penawaran->penawaran_number,
+                'penawaran_number' => $penawaran->quotation_number,
                 'to'               => $penawaran->to,
                 'up'               => $penawaran->up,
                 'email'            => $penawaran->email,
@@ -211,13 +209,13 @@ class SalesOrderController extends Controller
                 'grand_total'      => $penawaran->grand_total,
                 'items'            => $penawaran->items->map(function ($item) {
                     return [
-                        'nama_barang' => $item->nama_barang,
+                        'nama_barang' => $item->product_name,
                         'qty'         => $item->qty,
-                        'satuan'      => $item->satuan,
-                        'harga'       => $item->harga,
-                        'diskon'      => $item->diskon,
+                        'satuan'      => $item->unit,
+                        'harga'       => $item->price,
+                        'diskon'      => $item->discount,
                         'subtotal'    => $item->subtotal,
-                        'keterangan'  => $item->keterangan,
+                        'keterangan'  => $item->description,
                         'images'      => $item->images ?? [],
                     ];
                 }),
@@ -227,7 +225,7 @@ class SalesOrderController extends Controller
 
     public function create()
     {
-        $customPenawarans = CustomPenawaran::where('sales_id', Auth::id())
+        $customPenawarans = CustomQuotation::where('sales_id', Auth::id())
             ->whereIn('status', ['open', 'approved'])
             ->with('items')
             ->latest()
@@ -241,7 +239,7 @@ class SalesOrderController extends Controller
 
     public function store(Request $request)
     {
-        Log::info('Sales Order Store Request Incoming (Pivoted to RequestOrder)', [
+        Log::info('Sales Order Store Request Incoming (Pivoted to Quotation)', [
             'auth_id' => Auth::id(),
             'request' => $request->all(),
         ]);
@@ -264,23 +262,23 @@ class SalesOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            $requestOrder = RequestOrder::create([
+            $requestOrder = Quotation::create([
                 'sales_id'          => Auth::id(),
-                'request_number'    => RequestOrder::generateNomorPenawaran(),
+                'request_number'    => Quotation::generateQuotationNumber(),
                 'customer_name'     => $validated['to'],
                 'subject'           => $validated['subject'],
-                'tanggal_kebutuhan' => $validated['date'],
+                'required_date'     => $validated['date'],
                 'status'            => 'pending',
             ]);
 
             foreach ($validated['items'] as $itemData) {
-                RequestOrderItem::create([
-                    'request_order_id'  => $requestOrder->id,
-                    'nama_barang_custom'=> $itemData['nama_barang'],
-                    'quantity'          => $itemData['qty'],
-                    'harga'             => $itemData['harga'],
-                    'subtotal'          => $itemData['qty'] * $itemData['harga'],
-                    'diskon_percent'    => $itemData['diskon'] ?? 0,
+                QuotationItem::create([
+                    'quotation_id'        => $requestOrder->id,
+                    'custom_product_name' => $itemData['nama_barang'],
+                    'quantity'            => $itemData['qty'],
+                    'price'               => $itemData['harga'],
+                    'subtotal'            => $itemData['qty'] * $itemData['harga'],
+                    'discount_percent'    => $itemData['diskon'] ?? 0,
                 ]);
             }
 
@@ -296,7 +294,7 @@ class SalesOrderController extends Controller
 
     public function show($id)
     {
-        $requestOrder = RequestOrder::with('items.barang', 'sales', 'customPenawaran', 'order', 'customer')->findOrFail($id);
+        $requestOrder = Quotation::with('items.barang', 'sales', 'customQuotation', 'order', 'customer')->findOrFail($id);
 
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed  = array_map('strtolower', ['Supervisor', 'Admin']);
@@ -309,7 +307,7 @@ class SalesOrderController extends Controller
 
     public function edit($id)
     {
-        $requestOrder = RequestOrder::findOrFail($id);
+        $requestOrder = Quotation::findOrFail($id);
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -323,7 +321,7 @@ class SalesOrderController extends Controller
 
     public function update(Request $request, $id)
     {
-        $requestOrder = RequestOrder::findOrFail($id);
+        $requestOrder = Quotation::findOrFail($id);
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -349,19 +347,19 @@ class SalesOrderController extends Controller
             $requestOrder->update([
                 'customer_name'     => $validated['to'],
                 'subject'           => $validated['subject'],
-                'tanggal_kebutuhan' => $validated['date'],
+                'required_date'     => $validated['date'],
             ]);
 
             $requestOrder->items()->delete();
 
             foreach ($validated['items'] as $itemData) {
-                RequestOrderItem::create([
-                    'request_order_id'   => $requestOrder->id,
-                    'nama_barang_custom' => $itemData['nama_barang'],
-                    'quantity'           => $itemData['qty'],
-                    'harga'              => $itemData['harga'],
-                    'subtotal'           => $itemData['qty'] * $itemData['harga'],
-                    'diskon_percent'     => $itemData['diskon'] ?? 0,
+                QuotationItem::create([
+                    'quotation_id'        => $requestOrder->id,
+                    'custom_product_name' => $itemData['nama_barang'],
+                    'quantity'            => $itemData['qty'],
+                    'price'               => $itemData['harga'],
+                    'subtotal'            => $itemData['qty'] * $itemData['harga'],
+                    'discount_percent'    => $itemData['diskon'] ?? 0,
                 ]);
             }
 
@@ -376,7 +374,7 @@ class SalesOrderController extends Controller
 
     public function destroy($id)
     {
-        $requestOrder = RequestOrder::findOrFail($id);
+        $requestOrder = Quotation::findOrFail($id);
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -395,7 +393,7 @@ class SalesOrderController extends Controller
 
     public function uploadImage(Request $request, $id)
     {
-        $requestOrder = RequestOrder::findOrFail($id);
+        $requestOrder = Quotation::findOrFail($id);
         if ($requestOrder->sales_id !== Auth::id()) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
@@ -411,7 +409,7 @@ class SalesOrderController extends Controller
 
     public function deleteImage($id)
     {
-        $requestOrder = RequestOrder::findOrFail($id);
+        $requestOrder = Quotation::findOrFail($id);
         if ($requestOrder->sales_id !== Auth::id()) {
             return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
         }
@@ -431,10 +429,10 @@ class SalesOrderController extends Controller
             return response()->json(['success' => true, 'data' => []]);
         }
 
-        $results = \App\Models\RequestOrder::where('sales_id', Auth::id())
+        $results = \App\Models\Quotation::where('sales_id', Auth::id())
             ->where(function ($q) use ($search) {
                 $q->where('request_number',  'like', "%$search%")
-                  ->orWhere('nomor_penawaran','like', "%$search%")
+                  ->orWhere('quotation_number','like', "%$search%")
                   ->orWhere('customer_name',  'like', "%$search%")
                   ->orWhere('no_po',          'like', "%$search%");
             })
@@ -442,7 +440,7 @@ class SalesOrderController extends Controller
             ->get()
             ->map(function ($ro) {
                 return [
-                    'sales_order_number' => $ro->nomor_penawaran ?: ($ro->request_number ?: 'Quotation'),
+                    'sales_order_number' => $ro->quotation_number ?: ($ro->request_number ?: 'Quotation'),
                     'customer_name'      => $ro->customer_name,
                     'type'               => 'penawaran',
                     'badge'              => 'Quotation',
@@ -453,4 +451,4 @@ class SalesOrderController extends Controller
 
         return response()->json(['success' => true, 'data' => $results]);
     }
-} // ← penutup class SalesOrderController
+}

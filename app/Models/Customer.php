@@ -48,9 +48,9 @@ class Customer extends Model
         });
     }
 
-    public function requestOrders()
+    public function quotations()
     {
-        return $this->hasMany(RequestOrder::class, 'customer_id');
+        return $this->hasMany(Quotation::class, 'customer_id');
     }
 
     public function createdBy()

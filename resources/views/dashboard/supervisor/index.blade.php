@@ -278,7 +278,7 @@
                         <tbody class="text-nowrap">
                             @forelse($pendingOrders as $order)
                                 <tr class="border-b hover:bg-gray-50 dark:border-gray-700">
-                                    <td class="px-4 py-3 font-medium">{{ $order->nomor_penawaran }}</td>
+                                    <td class="px-4 py-3 font-medium">{{ $order->quotation_number }}</td>
                                     <td class="px-4 py-3">{{ $order->customer?->nama_customer }}</td>
                                     <td class="px-4 py-3">{{ $order->created_at->format('d/m/Y') }}</td>
                                     <td class="px-4 py-3">Rp{{ number_format($order->subtotal, 0, ',', '.') }}</td>

@@ -8,10 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Tambah kolom reason ke tabel request_orders jika belum ada
-        if (!Schema::hasColumn('request_orders', 'reason')) {
-            Schema::table('request_orders', function (Blueprint $table) {
-                $table->text('reason')->nullable()->after('catatan_customer')
+        // Tambah kolom reason ke tabel quotations jika belum ada
+        if (!Schema::hasColumn('quotations', 'reason')) {
+            Schema::table('quotations', function (Blueprint $table) {
+                $table->text('reason')->nullable()->after('customer_notes')
                       ->comment('Alasan penolakan dari supervisor');
             });
         }
@@ -19,7 +19,7 @@ return new class extends Migration
         // Tambah kolom reason ke tabel orders jika belum ada
         if (!Schema::hasColumn('orders', 'reason')) {
             Schema::table('orders', function (Blueprint $table) {
-                $table->text('reason')->nullable()->after('catatan_customer')
+                $table->text('reason')->nullable()->after('customer_notes')
                       ->comment('Alasan penolakan dari supervisor');
             });
         }
@@ -27,7 +27,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('request_orders', function (Blueprint $table) {
+        Schema::table('quotations', function (Blueprint $table) {
             $table->dropColumn('reason');
         });
         Schema::table('orders', function (Blueprint $table) {

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('request_orders', function (Blueprint $table) {
+        Schema::table('quotations', function (Blueprint $table) {
             $table->string('image_po')->nullable()->after('no_po');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('request_orders', function (Blueprint $table) {
+        Schema::table('quotations', function (Blueprint $table) {
             $table->dropColumn('image_po');
         });
     }

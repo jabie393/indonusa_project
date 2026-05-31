@@ -630,12 +630,12 @@
                                     class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
                                     Custom Quotation</span>
                                 @php
-                                    $pendingCustomPenawaran = \App\Models\CustomPenawaran::where('status', 'pending_approval')->count();
+                                    $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
                                 @endphp
-                                @if ($pendingCustomPenawaran > 0)
+                                @if ($pendingCustomQuotation > 0)
                                     <span
                                         class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 p-3 text-sm font-medium text-white shadow-sm">
-                                        {{ $pendingCustomPenawaran }}
+                                        {{ $pendingCustomQuotation }}
                                     </span>
                                 @endif
                             </a>

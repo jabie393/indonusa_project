@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
             @php $orderStatus = $customPenawaran->status; @endphp
@@ -327,15 +327,15 @@
                                         <td class="px-6 py-5">
                                             <div class="flex flex-col space-y-1">
                                                 <span class="font-bold leading-tight text-gray-900 transition-colors group-hover:text-[#225A97] dark:text-white">
-                                                    {{ $item->nama_barang }}
+                                                    {{ $item->product_name }}
                                                 </span>
-                                                @if ($item->keterangan)
-                                                <span class="text-[10px] font-medium italic text-gray-500">Note: {{ $item->keterangan }}</span>
+                                                @if ($item->description)
+                                                <span class="text-[10px] font-medium italic text-gray-500">Note: {{ $item->description }}</span>
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-5 text-center">
-                                            @php $dk = $item->diskon ?? 0; @endphp
+                                            @php $dk = $item->discount ?? 0; @endphp
                                             @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">
@@ -352,18 +352,18 @@
                                         <td class="px-6 py-5 text-center">
                                             <div class="flex flex-col">
                                                 <span class="font-black text-gray-900 dark:text-white">{{ $item->qty }}</span>
-                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->satuan }}</span>
+                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->unit }}</span>
                                             </div>
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-5">
                                             <div class="flex items-baseline font-medium text-gray-700 dark:text-gray-300">
                                                 <span class="mr-1 text-[10px] font-bold text-gray-400">Rp</span>
-                                                <span class="text-sm">{{ number_format($item->harga, 0, '.', ',') }}</span>
+                                                <span class="text-sm">{{ number_format($item->price, 0, '.', ',') }}</span>
                                             </div>
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-5">
                                             @php
-                                            $totalSetelahDiskon = $item->qty * $item->harga * (1 - ($item->diskon ?? 0) / 100);
+                                            $totalSetelahDiskon = $item->qty * $item->price * (1 - ($item->discount ?? 0) / 100);
                                             @endphp
                                             <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
                                                 <span class="mr-1 text-[10px] font-bold opacity-60">Rp</span>

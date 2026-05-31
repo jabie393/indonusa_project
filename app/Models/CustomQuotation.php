@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class CustomPenawaran extends Model
+class CustomQuotation extends Model
 {
-    public function requestOrder() {
-        return $this->hasOne(\App\Models\RequestOrder::class, 'custom_penawaran_id');
+    protected $table = 'custom_quotations';
+
+    public function quotation() {
+        return $this->hasOne(\App\Models\Quotation::class, 'custom_quotation_id');
     }
+
     protected $fillable = [
         'sales_id',
-        'penawaran_number',
+        'quotation_number',
         'to',
         'up',
         'subject',
@@ -46,15 +49,15 @@ class CustomPenawaran extends Model
 
     public function items()
     {
-        return $this->hasMany(CustomPenawaranItem::class);
+        return $this->hasMany(CustomQuotationItem::class, 'custom_quotation_id');
     }
 
     public function order()
     {
-        return $this->hasOne(\App\Models\Order::class, 'custom_penawaran_id');
+        return $this->hasOne(\App\Models\Order::class, 'custom_quotation_id');
     }
 
-    public static function generatePenawaranNumber()
+    public static function generateQuotationNumber()
     {
         $date = now()->format('Ymd');
         $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
@@ -96,5 +99,16 @@ class CustomPenawaran extends Model
         if (now() > $this->expired_at && in_array($this->status, ['open', 'sent'])) {
             $this->update(['status' => 'expired']);
         }
+    }
+
+    // Compatibility accessors for old column names
+    public function getPenawaranNumberAttribute()
+    {
+        return $this->quotation_number;
+    }
+
+    public function setPenawaranNumberAttribute($value)
+    {
+        $this->attributes['quotation_number'] = $value;
     }
 }

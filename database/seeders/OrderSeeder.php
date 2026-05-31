@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Customer;
-use App\Models\RequestOrder;
+use App\Models\Quotation;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -52,8 +52,8 @@ class OrderSeeder extends Seeder
         $supervisor = User::where('role', 'Supervisor')->first() ?? User::find(2);
         $warehouse = User::where('role', 'Warehouse')->first() ?? User::find(6);
 
-        // 4. Buat Request Order
-        $requestOrder = RequestOrder::create([
+        // 4. Buat Quotation
+        $quotation = Quotation::create([
             'request_number' => 'REQ-' . date('Ymd') . '-001',
             'sales_order_number' => 'SO-20260305-0001',
             'no_po' => 'PO/MAJU/321/2026',
@@ -61,24 +61,24 @@ class OrderSeeder extends Seeder
             'customer_id' => $customer->id,
             'customer_name' => $customer->nama_customer,
             'subject' => 'Permintaan Laptop dan Printer Office',
-            'tanggal_kebutuhan' => now()->addDays(7),
+            'required_date' => now()->addDays(7),
             'subtotal' => 11000000,
             'tax' => 1210000,
             'grand_total' => 12210000,
-            'kategori_barang' => 'MISCELLANEOUS',
+            'product_category' => 'MISCELLANEOUS',
         ]);
 
         // 5. Buat Order (Delivery Order Full)
         $order1 = Order::create([
-            'order_number' => 'DO-' . date('Ymd') . '-0001',
+            'order_number' => 'DO-' . date('Ymd') . '-00001',
             'sales_id' => $sales->id,
             'customer_id' => $customer->id,
             'customer_name' => $customer->nama_customer,
-            'request_order_id' => $requestOrder->id,
+            'quotation_id' => $quotation->id,
             'supervisor_id' => $supervisor->id,
             'warehouse_id' => $warehouse->id,
             'status' => 'completed',
-            'tanggal_kebutuhan' => now()->addDays(7),
+            'required_date' => now()->addDays(7),
         ]);
 
         OrderItem::create([
@@ -118,7 +118,7 @@ class OrderSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
-        $requestOrder2 = RequestOrder::create([
+        $quotation2 = Quotation::create([
             'request_number' => 'REQ-' . date('Ymd') . '-002',
             'sales_order_number' => 'SO-20260305-0002',
             'no_po' => 'PO/TECH/987/2026',
@@ -133,7 +133,7 @@ class OrderSeeder extends Seeder
             'sales_id' => $sales->id,
             'customer_id' => $customer2->id,
             'customer_name' => $customer2->nama_customer,
-            'request_order_id' => $requestOrder2->id,
+            'quotation_id' => $quotation2->id,
             'status' => 'not_completed',
         ]);
 

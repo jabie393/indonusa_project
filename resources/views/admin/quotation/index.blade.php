@@ -75,7 +75,7 @@
                         <tr class="max-h-16 dark:border-gray-700">
                             <td class="px-4 py-3">{{ $ro->id }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->nomor_penawaran ?? '-' }}</td>
+                            <td class="text-nowrap px-4 py-3">{{ $ro->quotation_number ?? '-' }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->no_po ?? '-' }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
                             <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
@@ -302,8 +302,8 @@
                                 </div>
                             </td>
                             <td class="text-nowrap px-4 py-3">
-                                @if ($ro->tanggal_berlaku)
-                                    {{ \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y') }}
+                                @if ($ro->valid_date)
+                                    {{ \Carbon\Carbon::parse($ro->valid_date)->translatedFormat('d F Y') }}
                                 @else
                                     -
                                 @endif

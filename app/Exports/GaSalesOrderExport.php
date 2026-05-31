@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\RequestOrder;
+use App\Models\Quotation;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -21,13 +21,13 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
 
     public function collection()
     {
-        $query = RequestOrder::with(['items', 'customer']);
+        $query = Quotation::with(['items', 'customer']);
 
         if (!empty($this->search)) {
             $search = $this->search;
             $query->where(function ($q) use ($search) {
                 $q->where('request_number', 'like', "%{$search}%")
-                  ->orWhere('nomor_penawaran', 'like', "%{$search}%")
+                  ->orWhere('quotation_number', 'like', "%{$search}%")
                   ->orWhere('sales_order_number', 'like', "%{$search}%")
                   ->orWhere('customer_name', 'like', "%{$search}%")
                   ->orWhere('no_po', 'like', "%{$search}%");
@@ -61,8 +61,8 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
         $rowNumber++;
 
         $berlakuSampai = '-';
-        if ($row->tanggal_berlaku) {
-            $berlakuSampai = \Carbon\Carbon::parse($row->tanggal_berlaku)->translatedFormat('d F Y');
+        if ($row->valid_date) {
+            $berlakuSampai = \Carbon\Carbon::parse($row->valid_date)->translatedFormat('d F Y');
         } elseif ($row->expired_at) {
             $berlakuSampai = \Carbon\Carbon::parse($row->expired_at)->translatedFormat('d F Y');
         }
@@ -70,14 +70,14 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
         return [
             $rowNumber,
             $row->request_number,
-            $row->nomor_penawaran,
+            $row->quotation_number,
             $row->no_po ?? '-',
             $row->sales_order_number ?? '-',
-            $row->tanggal_kebutuhan ? $row->tanggal_kebutuhan->format('d/m/Y') : '-',
+            $row->required_date ? $row->required_date->format('d/m/Y') : '-',
             $row->customer_name ?? '-',
             $row->items->count(),
             $row->grand_total ?? 0,
-            $row->items->first()->diskon_percent ?? 0,
+            $row->items->first()->discount_percent ?? 0,
             $row->status,
             $berlakuSampai,
         ];

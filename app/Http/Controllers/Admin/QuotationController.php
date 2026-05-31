@@ -7,8 +7,8 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\RequestOrder;
-use App\Models\RequestOrderItem;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -21,8 +21,8 @@ class QuotationController extends Controller
 {
     public function index()
     {
-        if (\Illuminate\Support\Facades\Schema::hasColumn('request_orders', 'expired_at')) {
-            \Illuminate\Support\Facades\DB::table('request_orders')
+        if (\Illuminate\Support\Facades\Schema::hasColumn('quotations', 'expired_at')) {
+            \Illuminate\Support\Facades\DB::table('quotations')
                 ->whereNotNull('created_at')
                 ->whereNotNull('expired_at')
                 ->where('expired_at', '>', now())
@@ -31,18 +31,18 @@ class QuotationController extends Controller
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw('DATE_ADD(NOW(), INTERVAL 14 DAY)')]);
         }
 
-        $query = RequestOrder::with(['items.barang', 'sales', 'order.items.barang'])
+        $query = Quotation::with(['items.barang', 'sales', 'order.items.barang'])
             ->where('sales_id', Auth::id());
 
         if ($search = request('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('request_number', 'like', "%{$search}%")
-                    ->orWhere('nomor_penawaran', 'like', "%{$search}%")
+                    ->orWhere('quotation_number', 'like', "%{$search}%")
                     ->orWhere('sales_order_number', 'like', "%{$search}%")
                     ->orWhere('customer_name', 'like', "%{$search}%")
                     ->orWhere('subject', 'like', "%{$search}%")
-                    ->orWhere('catatan_customer', 'like', "%{$search}%")
-                    ->orWhere('kategori_barang', 'like', "%{$search}%")
+                    ->orWhere('customer_notes', 'like', "%{$search}%")
+                    ->orWhere('product_category', 'like', "%{$search}%")
                     ->orWhere('grand_total', 'like', "%{$search}%");
             });
         }
@@ -92,52 +92,53 @@ class QuotationController extends Controller
             'customer_id' => 'nullable|integer',
             'pic_id' => 'required|integer|exists:users,id',
             'subject' => 'required|string|max:255',
-            'no_po' => 'nullable|string|max:255|unique:request_orders,no_po',
-            'tanggal_kebutuhan' => 'nullable|date',
-            'catatan_customer' => 'nullable|string',
-            'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'nullable',
-            'kategori_barang' => 'required|array|min:1',
-            'kategori_barang.*' => 'required|string|max:100',
+            'no_po' => 'nullable|string|max:255|unique:quotations,no_po',
+            'required_date' => 'nullable|date',
+            'customer_notes' => 'nullable|string',
+            'product_id' => 'required|array|min:1',
+            'product_id.*' => 'nullable',
+            'product_category' => 'required|array|min:1',
+            'product_category.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',
             'quantity.*' => 'required|integer|min:1',
-            'harga' => 'nullable|array',
-            'harga.*' => 'nullable|numeric|min:0',
-            'diskon_percent' => 'nullable|array',
-            'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
+            'price' => 'nullable|array',
+            'price.*' => 'nullable|numeric|min:0',
+            'discount_percent' => 'nullable|array',
+            'discount_percent.*' => 'nullable|numeric|min:0|max:100',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
-            'nama_barang_custom' => 'nullable|array',
-            'nama_barang_custom.*' => 'nullable|string|max:255',
+            'custom_product_name' => 'nullable|array',
+            'custom_product_name.*' => 'nullable|string|max:255',
         ], [
             'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
         ]);
 
         $items = [];
         $maxDiskon = 0;
-        foreach ($validated['barang_id'] as $i => $barangId) {
+        foreach ($validated['product_id'] as $i => $productId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) {
                 continue;
             }
 
-            $baseHarga = optional(Barang::find($barangId))->selling_price ?? 0;
-            $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
+            $baseHarga = $productId ? (optional(Barang::find($productId))->selling_price ?? 0) : 0;
+            $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
-            $hargaSatuan = isset($validated['harga'][$i]) && $validated['harga'][$i] !== '' ? (float) $validated['harga'][$i] : $computedHargaSatuan;
+            $hargaSatuan = isset($validated['price'][$i]) && $validated['price'][$i] !== '' ? (float) $validated['price'][$i] : $computedHargaSatuan;
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
                 'original_index' => $i,
-                'barang_id' => $barangId,
-                'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
+                'product_id' => $productId,
+                'custom_product_name' => empty($productId) ? ($validated['custom_product_name'][$i] ?? null) : null,
+                'product_category' => $validated['product_category'][$i] ?? null,
                 'quantity' => $qty,
-                'harga' => $hargaSatuan,
-                'diskon_percent' => $diskon,
+                'price' => $hargaSatuan,
+                'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
             ];
             if ($diskon > $maxDiskon) {
@@ -151,7 +152,7 @@ class QuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $nomorPenawaran = RequestOrder::generateNomorPenawaran();
+            $nomorPenawaran = Quotation::generateQuotationNumber();
             $tanggalBerlaku = now()->addDays(14);
 
             $supportingImages = [];
@@ -166,21 +167,21 @@ class QuotationController extends Controller
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
-            $salesOrderNumber = RequestOrder::generateSalesOrderNumber();
-            $requestOrder = RequestOrder::create([
+            $salesOrderNumber = Quotation::generateSalesOrderNumber();
+            $requestOrder = Quotation::create([
                 'request_number' => 'REQ-'.strtoupper(Str::random(8)),
-                'nomor_penawaran' => $nomorPenawaran,
+                'quotation_number' => $nomorPenawaran,
                 'sales_order_number' => $salesOrderNumber,
                 'no_po' => $validated['no_po'] ?? null,
                 'sales_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
-                'kategori_barang' => $validated['kategori_barang'][0] ?? null,
-                'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
-                'tanggal_berlaku' => $tanggalBerlaku,
+                'product_category' => $validated['product_category'][0] ?? null,
+                'required_date' => $validated['required_date'] ?? null,
+                'valid_date' => $tanggalBerlaku,
                 'expired_at' => $tanggalBerlaku,
-                'catatan_customer' => $validated['catatan_customer'] ?? null,
+                'customer_notes' => $validated['customer_notes'] ?? null,
                 'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
@@ -199,41 +200,37 @@ class QuotationController extends Controller
                 }
 
                 $itemData = [
-                    'request_order_id' => $requestOrder->id,
-                    'barang_id' => $item['barang_id'],
-                    'kategori_barang' => $item['kategori_barang'] ?? null,
+                    'quotation_id' => $requestOrder->id,
+                    'product_id' => $item['product_id'],
+                    'custom_product_name' => $item['custom_product_name'],
+                    'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
-                    'harga' => $item['harga'],
+                    'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
+                    'discount_percent' => $item['discount_percent'] ?? 0,
                     'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
-                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
-                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
-                }
-
-                RequestOrderItem::create($itemData);
+                QuotationItem::create($itemData);
             }
 
             $requestOrder->refresh();
             $requestOrder->load('items');
-            $maxDiskon = $requestOrder->items->max('diskon_percent') ?? 0;
+            $maxDiskon = $requestOrder->items->max('discount_percent') ?? 0;
 
-            // Jangan kurangi stok saat membuat penawaran.
-            // Pengurangan stok akan diproses ketika request order dikirim ke warehouse / DO dikirim.
             $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
 
-            $existingOrder = Order::where('request_order_id', $requestOrder->id)->first();
+            $existingOrder = Order::where('quotation_id', $requestOrder->id)->first();
             if (! $existingOrder) {
                 Order::create([
                     'order_number' => 'ORD-'.strtoupper(Str::random(8)),
                     'sales_id' => $requestOrder->sales_id,
                     'customer_name' => $requestOrder->customer_name,
                     'customer_id' => $requestOrder->customer_id,
-                    'request_order_id' => $requestOrder->id,
+                    'quotation_id' => $requestOrder->id,
                     'status' => $orderStatus,
-                    'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                    'catatan_customer' => $requestOrder->catatan_customer,
+                    'required_date' => $requestOrder->required_date,
+                    'customer_notes' => $requestOrder->customer_notes,
                 ]);
             } else {
                 $existingOrder->update(['status' => $orderStatus]);
@@ -259,7 +256,7 @@ class QuotationController extends Controller
         }
     }
 
-    public function show(RequestOrder $quotation)
+    public function show(Quotation $quotation)
     {
         $requestOrder = $quotation;
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
@@ -284,7 +281,7 @@ class QuotationController extends Controller
         return view('admin.quotation.action.show', compact('requestOrder'));
     }
 
-    public function pdf(RequestOrder $quotation)
+    public function pdf(Quotation $quotation)
     {
         $requestOrder = $quotation;
         $requestOrder->loadMissing('items', 'order');
@@ -317,7 +314,7 @@ class QuotationController extends Controller
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales');
 
-        $pdfNote = request()->query('pdf_note', $requestOrder->catatan_customer ?? null);
+        $pdfNote = request()->query('pdf_note', $requestOrder->customer_notes ?? null);
 
         $html = view('admin.pdf.quotation-pdf', compact('requestOrder', 'pdfNote'))->render();
 
@@ -349,7 +346,7 @@ class QuotationController extends Controller
             ->header('Content-Disposition', 'inline; filename="Quotation-'.$requestOrder->request_number.'.pdf"');
     }
 
-    public function edit(RequestOrder $quotation)
+    public function edit(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
@@ -366,7 +363,7 @@ class QuotationController extends Controller
             }
         }
 
-        $requestOrder->loadMissing('customPenawaran', 'items.barang');
+        $requestOrder->loadMissing('customQuotation', 'items.barang');
 
         $goods = Barang::where('request_type', 'primary')
             ->where('stock', '>', 0)
@@ -387,7 +384,7 @@ class QuotationController extends Controller
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
-    public function update(Request $request, RequestOrder $quotation)
+    public function update(Request $request, Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
@@ -404,28 +401,28 @@ class QuotationController extends Controller
             'customer_id' => 'nullable|integer',
             'pic_id' => 'required|integer|exists:users,id',
             'subject' => 'required|string|max:255',
-            'no_po' => 'nullable|string|max:255|unique:request_orders,no_po,'.$requestOrder->id,
+            'no_po' => 'nullable|string|max:255|unique:quotations,no_po,'.$requestOrder->id,
             'sales_order_number' => 'nullable|string|max:255',
-            'tanggal_kebutuhan' => 'nullable|date',
-            'catatan_customer' => 'nullable|string',
-            'barang_id' => 'required|array|min:1',
-            'barang_id.*' => 'nullable|integer|exists:goods,id',
-            'kategori_barang' => 'required|array|min:1',
-            'kategori_barang.*' => 'nullable|string|max:100',
+            'required_date' => 'nullable|date',
+            'customer_notes' => 'nullable|string',
+            'product_id' => 'required|array|min:1',
+            'product_id.*' => 'nullable|integer|exists:goods,id',
+            'product_category' => 'required|array|min:1',
+            'product_category.*' => 'nullable|string|max:100',
             'quantity' => 'required|array|min:1',
             'quantity.*' => 'required|integer|min:1',
-            'harga' => 'nullable|array',
-            'harga.*' => 'nullable|numeric|min:0',
-            'diskon_percent' => 'nullable|array',
-            'diskon_percent.*' => 'nullable|numeric|min:0|max:100',
+            'price' => 'nullable|array',
+            'price.*' => 'nullable|numeric|min:0',
+            'discount_percent' => 'nullable|array',
+            'discount_percent.*' => 'nullable|numeric|min:0|max:100',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
             'supporting_images' => 'nullable|array',
             'supporting_images.*' => 'nullable|image|max:5120',
             'item_images' => 'nullable|array',
             'item_images.*' => 'nullable|array',
             'item_images.*.*' => 'nullable|image|max:5120',
-            'nama_barang_custom' => 'nullable|array',
-            'nama_barang_custom.*' => 'nullable|string|max:255',
+            'custom_product_name' => 'nullable|array',
+            'custom_product_name.*' => 'nullable|string|max:255',
             'existing_item_images' => 'nullable|array',
             'existing_item_images.*' => 'nullable|array',
             'existing_item_images.*.*' => 'nullable|string',
@@ -433,15 +430,15 @@ class QuotationController extends Controller
             'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
         ]);
 
-        foreach ($validated['barang_id'] as $i => $barangId) {
-            $isCustom = empty($barangId) && (! empty($validated['nama_barang_custom'][$i] ?? null));
-            $isRegular = ! empty($barangId);
+        foreach ($validated['product_id'] as $i => $productId) {
+            $isCustom = empty($productId) && (! empty($validated['custom_product_name'][$i] ?? null));
+            $isRegular = ! empty($productId);
             if (! $isCustom && ! $isRegular) {
-                return back()->withErrors(["barang_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
+                return back()->withErrors(["product_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
                     ->withInput();
             }
-            if (($isCustom || $isRegular) && empty($validated['kategori_barang'][$i])) {
-                return back()->withErrors(["kategori_barang.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i + 1)])
+            if (($isCustom || $isRegular) && empty($validated['product_category'][$i])) {
+                return back()->withErrors(["product_category.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i + 1)])
                     ->withInput();
             }
         }
@@ -450,11 +447,11 @@ class QuotationController extends Controller
         // AMBIL DATA PENTING SEBELUM ITEMS DIHAPUS
         // Query langsung ke DB agar nilai pasti fresh (bukan dari cache relasi)
         // =====================================================================
-        $maxDiskonLama = \App\Models\RequestOrderItem::where('request_order_id', $requestOrder->id)
-            ->max('diskon_percent') ?? 0;
+        $maxDiskonLama = \App\Models\QuotationItem::where('quotation_id', $requestOrder->id)
+            ->max('discount_percent') ?? 0;
 
         // Ambil order terkait beserta supervisor_id SEBELUM update
-        $existingOrder = \App\Models\Order::where('request_order_id', $requestOrder->id)->first();
+        $existingOrder = \App\Models\Order::where('quotation_id', $requestOrder->id)->first();
         $statusSekarang = $existingOrder?->status;
 
         // "Pernah diapprove" = supervisor_id sudah terisi di order
@@ -471,37 +468,37 @@ class QuotationController extends Controller
         ]);
 
         $items = [];
-        foreach ($validated['barang_id'] as $i => $barangId) {
+        foreach ($validated['product_id'] as $i => $productId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) {
                 continue;
             }
 
-            $diskon = isset($validated['diskon_percent'][$i]) && $validated['diskon_percent'][$i] !== '' ? (float) $validated['diskon_percent'][$i] : 0;
+            $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
 
-            if (empty($barangId)) {
-                $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== ''
-                    ? (float) $validated['harga'][$i]
+            if (empty($productId)) {
+                $harga = isset($validated['price'][$i]) && $validated['price'][$i] !== ''
+                    ? (float) $validated['price'][$i]
                     : 0;
             } else {
-                $baseHarga = optional(Barang::find($barangId))->selling_price ?? 0;
+                $baseHarga = optional(Barang::find($productId))->selling_price ?? 0;
                 $computedHarga = round($baseHarga * 1.3, 2);
-                $harga = isset($validated['harga'][$i]) && $validated['harga'][$i] !== ''
-                    ? (float) $validated['harga'][$i]
+                $harga = isset($validated['price'][$i]) && $validated['price'][$i] !== ''
+                    ? (float) $validated['price'][$i]
                     : $computedHarga;
             }
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
             $items[] = [
                 'original_index' => $i,
-                'barang_id' => empty($barangId) ? null : (int) $barangId,
-                'nama_barang_custom' => empty($barangId)
-                    ? ($validated['nama_barang_custom'][$i] ?? null)
+                'product_id' => empty($productId) ? null : (int) $productId,
+                'custom_product_name' => empty($productId)
+                    ? ($validated['custom_product_name'][$i] ?? null)
                     : null,
-                'kategori_barang' => $validated['kategori_barang'][$i] ?? null,
+                'product_category' => $validated['product_category'][$i] ?? null,
                 'quantity' => $qty,
-                'harga' => $harga,
-                'diskon_percent' => $diskon,
+                'price' => $harga,
+                'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
             ];
         }
@@ -511,7 +508,7 @@ class QuotationController extends Controller
         }
 
         // Hitung diskon baru dari items yang akan disimpan
-        $maxDiskonBaru = collect($items)->max('diskon_percent') ?? 0;
+        $maxDiskonBaru = collect($items)->max('discount_percent') ?? 0;
 
         DB::beginTransaction();
         try {
@@ -537,9 +534,9 @@ class QuotationController extends Controller
                 'subject' => $validated['subject'],
                 'no_po' => $validated['no_po'] ?? null,
                 'sales_order_number' => $validated['sales_order_number'] ?? null,
-                'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
-                'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
-                'catatan_customer' => $validated['catatan_customer'] ?? null,
+                'product_category' => isset($validated['product_category'][0]) ? $validated['product_category'][0] : null,
+                'required_date' => $validated['required_date'] ?? null,
+                'customer_notes' => $validated['customer_notes'] ?? null,
                 'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
@@ -566,64 +563,35 @@ class QuotationController extends Controller
                 }
 
                 $itemData = [
-                    'request_order_id' => $requestOrder->id,
-                    'barang_id' => $item['barang_id'],
-                    'nama_barang_custom' => $item['nama_barang_custom'] ?? null,
-                    'kategori_barang' => $item['kategori_barang'] ?? null,
+                    'quotation_id' => $requestOrder->id,
+                    'product_id' => $item['product_id'],
+                    'custom_product_name' => $item['custom_product_name'] ?? null,
+                    'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
-                    'harga' => $item['harga'],
+                    'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                     'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
+                    'discount_percent' => $item['discount_percent'] ?? 0,
                 ];
 
-                if (Schema::hasColumn('request_order_items', 'diskon_percent')) {
-                    $itemData['diskon_percent'] = $item['diskon_percent'] ?? 0;
-                }
-
-                RequestOrderItem::create($itemData);
+                QuotationItem::create($itemData);
             }
 
             // =====================================================================
             // LOGIKA STATUS ORDER
             // =====================================================================
-            //
-            // Skenario yang mungkin terjadi:
-            //
-            // A. Diskon baru ≤ 20%
-            //    → Tidak perlu approve, status = 'open'
-            //
-            // B. Diskon baru > 20%, dan supervisor SUDAH PERNAH approve sebelumnya,
-            //    dan diskon TIDAK baru melewati batas 20% (artinya dulu juga sudah >20%)
-            //    → Tidak perlu approve ulang, pertahankan status yang ada
-            //    Contoh: diskon 25% sudah diapprove → edit subject/catatan/qty → tidak perlu approve lagi
-            //    Contoh: diskon 25% sudah diapprove → edit diskon jadi 30% → TETAP tidak perlu approve
-            //            karena supervisor sudah tahu ada diskon tinggi dan sudah approve
-            //
-            // C. Diskon baru > 20%, dan supervisor BELUM PERNAH approve
-            //    → Minta approve supervisor
-            //
-            // D. Diskon baru > 20%, sebelumnya diskon ≤ 20% (baru pertama kali melampaui batas)
-            //    → Minta approve supervisor meskipun sebelumnya pernah approve hal lain
-            // =====================================================================
-
-            // Apakah diskon ini baru pertama kali melewati batas 20%?
             $diskonBaruMelampauiBatas = ($maxDiskonLama <= 20 && $maxDiskonBaru > 20);
 
             if ($maxDiskonBaru <= 20) {
-                // Skenario A: diskon aman, tidak perlu approve
                 $orderStatus = 'open';
             } elseif ($sudahApprove && ! $diskonBaruMelampauiBatas) {
-                // Skenario B: sudah pernah diapprove dan diskon tidak baru melampaui batas
-                // → pertahankan status yang ada, tidak perlu approve ulang
                 $orderStatus = $statusSekarang;
             } else {
-                // Skenario C & D: belum pernah diapprove, atau diskon baru pertama melampaui batas
                 $orderStatus = 'sent_to_supervisor';
             }
 
             if ($existingOrder) {
                 $updateData = ['status' => $orderStatus];
-                // Reset data supervisor HANYA jika status berubah ke sent_to_supervisor
                 if ($orderStatus === 'sent_to_supervisor') {
                     $updateData['supervisor_id'] = null;
                     $updateData['approved_at'] = null;
@@ -636,10 +604,10 @@ class QuotationController extends Controller
                     'sales_id' => $requestOrder->sales_id,
                     'customer_name' => $requestOrder->customer_name,
                     'customer_id' => $requestOrder->customer_id,
-                    'request_order_id' => $requestOrder->id,
+                    'quotation_id' => $requestOrder->id,
                     'status' => $orderStatus,
-                    'tanggal_kebutuhan' => $requestOrder->tanggal_kebutuhan,
-                    'catatan_customer' => $requestOrder->catatan_customer,
+                    'required_date' => $requestOrder->required_date,
+                    'customer_notes' => $requestOrder->customer_notes,
                 ]);
             }
 
@@ -658,14 +626,14 @@ class QuotationController extends Controller
         }
     }
 
-    public function sentToWarehouse(RequestOrder $quotation)
+    public function sentToWarehouse(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
         }
 
-        if ($requestOrder->order) {
+        if ($requestOrder->order && in_array($requestOrder->order->status, ['sent_to_warehouse', 'approved_warehouse', 'completed'])) {
             return back()->withErrors('Request Order ini sudah dikirim ke Warehouse.');
         }
 
@@ -681,7 +649,7 @@ class QuotationController extends Controller
         }
     }
 
-    public function destroy(RequestOrder $quotation)
+    public function destroy(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
@@ -720,7 +688,7 @@ class QuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $requestOrders = RequestOrder::whereIn('id', $ids)
+            $requestOrders = Quotation::whereIn('id', $ids)
                 ->where('sales_id', Auth::id())
                 ->get();
 
@@ -749,11 +717,11 @@ class QuotationController extends Controller
         $successCount = 0;
         foreach ($ids as $id) {
             try {
-                $ro = RequestOrder::where('id', $id)
+                $ro = Quotation::where('id', $id)
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($ro && ! $ro->order) {
+                if ($ro && (! $ro->order || ! in_array($ro->order->status, ['sent_to_warehouse', 'approved_warehouse', 'completed']))) {
                     $this->processSentToWarehouse($ro);
                     $successCount++;
                 }
@@ -767,7 +735,7 @@ class QuotationController extends Controller
         ]);
     }
 
-    public function uploadImageSO(Request $request, RequestOrder $quotation)
+    public function uploadImageSO(Request $request, Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($request->hasFile('image_so')) {
@@ -784,7 +752,7 @@ class QuotationController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function deleteImageSO(RequestOrder $quotation)
+    public function deleteImageSO(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->image_so) {
@@ -796,7 +764,7 @@ class QuotationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function uploadImagePO(Request $request, RequestOrder $quotation)
+    public function uploadImagePO(Request $request, Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($request->hasFile('image_po')) {
@@ -813,7 +781,7 @@ class QuotationController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function deleteImagePO(RequestOrder $quotation)
+    public function deleteImagePO(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->image_po) {
@@ -825,7 +793,7 @@ class QuotationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    public function uploadPdfPO(Request $request, RequestOrder $quotation)
+    public function uploadPdfPO(Request $request, Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($request->hasFile('pdf_po')) {
@@ -842,7 +810,7 @@ class QuotationController extends Controller
         return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
     }
 
-    public function updateNoPO(Request $request, RequestOrder $quotation)
+    public function updateNoPO(Request $request, Quotation $quotation)
     {
         $requestOrder = $quotation;
         $validated = $request->validate([
@@ -859,7 +827,7 @@ class QuotationController extends Controller
         ]);
     }
 
-    public function deletePdfPO(RequestOrder $quotation)
+    public function deletePdfPO(Quotation $quotation)
     {
         $requestOrder = $quotation;
         if ($requestOrder->pdf_po) {
@@ -871,10 +839,10 @@ class QuotationController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    protected function processSentToWarehouse(RequestOrder $ro)
+    protected function processSentToWarehouse(Quotation $ro)
     {
         DB::transaction(function () use ($ro) {
-            $existingOrder = Order::where('request_order_id', $ro->id)->first();
+            $existingOrder = Order::where('quotation_id', $ro->id)->first();
 
             if ($existingOrder) {
                 $existingOrder->update([
@@ -887,11 +855,11 @@ class QuotationController extends Controller
                     foreach ($ro->items as $reqItem) {
                         OrderItem::create([
                             'order_id' => $existingOrder->id,
-                            'barang_id' => $reqItem->barang_id,
+                            'barang_id' => $reqItem->product_id,
                             'quantity' => $reqItem->quantity,
                             'delivered_quantity' => 0,
                             'status_item' => 'pending',
-                            'harga' => $reqItem->harga,
+                            'harga' => $reqItem->price,
                             'subtotal' => $reqItem->subtotal,
                         ]);
                     }
@@ -902,22 +870,22 @@ class QuotationController extends Controller
                     'do_number' => 'DO-'.strtoupper(Str::random(8)),
                     'sales_id' => Auth::id(),
                     'supervisor_id' => $ro->approved_by ?? null,
-                    'request_order_id' => $ro->id,
+                    'quotation_id' => $ro->id,
                     'status' => 'sent_to_warehouse',
                     'customer_name' => $ro->customer_name,
                     'customer_id' => $ro->customer_id,
-                    'tanggal_kebutuhan' => $ro->tanggal_kebutuhan,
-                    'catatan_customer' => $ro->catatan_customer,
+                    'required_date' => $ro->required_date,
+                    'customer_notes' => $ro->customer_notes,
                 ]);
 
                 foreach ($ro->items as $reqItem) {
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'barang_id' => $reqItem->barang_id,
+                        'barang_id' => $reqItem->product_id,
                         'quantity' => $reqItem->quantity,
                         'delivered_quantity' => 0,
                         'status_item' => 'pending',
-                        'harga' => $reqItem->harga,
+                        'harga' => $reqItem->price,
                         'subtotal' => $reqItem->subtotal,
                     ]);
                 }

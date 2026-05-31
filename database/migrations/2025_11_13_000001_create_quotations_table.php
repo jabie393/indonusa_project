@@ -11,24 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('request_orders', function (Blueprint $table) {
+        Schema::create('quotations', function (Blueprint $table) {
             $table->id();
             $table->string('request_number')->unique();
-            $table->string('nomor_penawaran')->nullable();
+            $table->string('quotation_number')->nullable();
             $table->unsignedBigInteger('sales_id');
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->string('subject')->nullable();
             // $table->string('status')->default('pending'); // pending, approved, rejected, expired, converted, etc.
             $table->text('reason')->nullable(); // alasan penolakan
-            $table->date('tanggal_kebutuhan')->nullable();
-            $table->dateTime('tanggal_berlaku')->nullable();
+            $table->date('required_date')->nullable();
+            $table->dateTime('valid_date')->nullable();
             $table->dateTime('expired_at')->nullable();
-            $table->text('catatan_customer')->nullable();
+            $table->text('customer_notes')->nullable();
             $table->decimal('subtotal', 14, 2)->default(0);
             $table->decimal('tax', 14, 2)->default(0);
             $table->decimal('grand_total', 14, 2)->default(0);
-            $table->string('kategori_barang')->nullable();
+            $table->string('product_category')->nullable();
             $table->json('supporting_images')->nullable();
             $table->string('no_po')->nullable();
             $table->string('sales_order_number')->nullable();
@@ -47,6 +47,6 @@ return new class extends Migration
     
     public function down(): void
     {
-        Schema::dropIfExists('request_orders');
+        Schema::dropIfExists('quotations');
     }
 };

@@ -77,7 +77,7 @@
                         if ($penawaran->offer_type === 'custom') {
                             $tglKirim = $penawaran->date ? $penawaran->date->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
                         } else {
-                            $tglKirim = $penawaran->tanggal_kebutuhan ? $penawaran->tanggal_kebutuhan->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
+                            $tglKirim = $penawaran->required_date ? $penawaran->required_date->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
                         }
 
                         $status = $penawaran->order?->status ?? $penawaran->status;

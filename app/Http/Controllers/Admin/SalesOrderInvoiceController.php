@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Http\Controllers\Controller;
-use App\Models\RequestOrder;
-use App\Models\RequestOrderItem;
-use App\Models\CustomPenawaran;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
+use App\Models\CustomQuotation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,16 +24,16 @@ use App\Exports\GaSalesOrderExport;
 class SalesOrderInvoiceController extends Controller
 {
     /**
-     * Helper private: mapping RequestOrder ke array row tabel
+     * Helper private: mapping Quotation ke array row tabel
      */
-    private function mapRequestOrderRow(\App\Models\RequestOrder $ro): array
+    private function mapRequestOrderRow(\App\Models\Quotation $ro): array
     {
         $diskonPersen = ($ro->items && $ro->items->count() > 0)
-            ? ($ro->items->first()->diskon_percent ?? 0) : 0;
+            ? ($ro->items->first()->discount_percent ?? 0) : 0;
 
         $berlakuSampai = '-';
-        if ($ro->tanggal_berlaku) {
-            $berlakuSampai = \Carbon\Carbon::parse($ro->tanggal_berlaku)->translatedFormat('d F Y');
+        if ($ro->valid_date) {
+            $berlakuSampai = \Carbon\Carbon::parse($ro->valid_date)->translatedFormat('d F Y');
         } elseif ($ro->expired_at) {
             $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
         }
@@ -44,10 +44,10 @@ class SalesOrderInvoiceController extends Controller
             'id'             => $ro->id,
             'type'           => 'request_order',
             'no_request'     => $ro->request_number,
-            'no_penawaran'   => $ro->nomor_penawaran,
+            'no_penawaran'   => $ro->quotation_number,
             'no_po'          => $ro->no_po ?? '-',
             'no_sales_order' => $ro->sales_order_number,
-            'tanggal'        => $ro->tanggal_kebutuhan ? $ro->tanggal_kebutuhan->format('d/m/Y') : '-',
+            'tanggal'        => $ro->required_date ? $ro->required_date->format('d/m/Y') : '-',
             'customer_name'  => $ro->customer_name,
             'first_pic_name' => $firstPic?->name,
             'first_pic_position' => $firstPic?->position,
@@ -75,9 +75,9 @@ class SalesOrderInvoiceController extends Controller
         $perPage  = (int) $request->input('perPage', 20);
 
         if ($isSearch) {
-            $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
+            $results = \App\Models\Quotation::where(function ($q) use ($search) {
                     $q->where('request_number',     'like', "%$search%")
-                      ->orWhere('nomor_penawaran',   'like', "%$search%")
+                      ->orWhere('quotation_number',   'like', "%$search%")
                       ->orWhere('sales_order_number','like', "%$search%")
                       ->orWhere('customer_name',     'like', "%$search%")
                       ->orWhere('no_po',             'like', "%$search%");
@@ -86,7 +86,7 @@ class SalesOrderInvoiceController extends Controller
                 ->get()
                 ->map(fn($ro) => $this->mapRequestOrderRow($ro));
         } else {
-            $requestOrders = \App\Models\RequestOrder::with(['order.batches', 'items', 'customer.pics'])
+            $requestOrders = \App\Models\Quotation::with(['order.batches', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends($request->query());
@@ -117,7 +117,7 @@ class SalesOrderInvoiceController extends Controller
     /**
      * Get invoice items for a request order, preferring warehouse-shipped order items when available.
      */
-    private function getInvoiceItems(RequestOrder $ro, bool $preferWarehouseItems = false): array
+    private function getInvoiceItems(Quotation $ro, bool $preferWarehouseItems = false): array
     {
         if ($preferWarehouseItems && $ro->order && $ro->order->items->count() > 0) {
             $warehouseItems = $ro->order->items->filter(fn ($item) => ($item->delivered_quantity ?? 0) > 0);
@@ -139,14 +139,14 @@ class SalesOrderInvoiceController extends Controller
         }
 
         return $ro->items->map(function ($item) {
-            $barangData = \App\Models\Barang::find($item->barang_id);
+            $barangData = \App\Models\Barang::find($item->product_id);
             return [
-                'nama_barang' => $item->nama_barang_custom
+                'nama_barang' => $item->custom_product_name
                     ?? optional($barangData)->goods_name
                     ?? '-',
                 'deskripsi' => optional($barangData)->description ?? '-',
                 'qty'      => $item->quantity ?? 1,
-                'harga'    => $item->harga ?? 0,
+                'harga'    => $item->price ?? 0,
                 'subtotal' => $item->subtotal ?? 0,
             ];
         })->toArray();
@@ -172,7 +172,7 @@ class SalesOrderInvoiceController extends Controller
         })->toArray();
     }
 
-    private function calculateInvoiceTotals(array $items, ?RequestOrder $ro = null): array
+    private function calculateInvoiceTotals(array $items, ?Quotation $ro = null): array
     {
         $subtotal = array_reduce($items, fn ($carry, $item) => $carry + ($item['subtotal'] ?? 0), 0);
         $taxRatio = ($ro && $ro->subtotal > 0) ? ($ro->tax / $ro->subtotal) : 0;
@@ -196,9 +196,9 @@ class SalesOrderInvoiceController extends Controller
             return response()->json(['success' => true, 'data' => []]);
         }
 
-        $results = \App\Models\RequestOrder::where(function ($q) use ($search) {
+        $results = \App\Models\Quotation::where(function ($q) use ($search) {
                 $q->where('request_number',   'like', "%$search%")
-                  ->orWhere('nomor_penawaran', 'like', "%$search%")
+                  ->orWhere('quotation_number', 'like', "%$search%")
                   ->orWhere('customer_name',   'like', "%$search%")
                   ->orWhere('no_po',           'like', "%$search%");
             })
@@ -206,7 +206,7 @@ class SalesOrderInvoiceController extends Controller
             ->get()
             ->map(function ($ro) {
                 return [
-                    'sales_order_number' => $ro->nomor_penawaran ?: ($ro->request_number ?: 'Quotation'),
+                    'sales_order_number' => $ro->quotation_number ?: ($ro->request_number ?: 'Quotation'),
                     'customer_name'      => $ro->customer_name,
                     'type'               => 'penawaran',
                     'badge'              => 'Quotation',
@@ -228,7 +228,7 @@ class SalesOrderInvoiceController extends Controller
 
         $type          = $request->query('type', 'sales_order');
         $customerModel = null;
-        $ro            = \App\Models\RequestOrder::with(['items', 'order.items.barang', 'order.batches'])->findOrFail($id);
+        $ro            = \App\Models\Quotation::with(['items', 'order.items.barang', 'order.batches'])->findOrFail($id);
         $customerName  = $ro->customer_name ?? '-';
         $noPoDisplay   = $ro->no_po ?? '-';
         $subtotal      = $ro->subtotal ?? 0;
@@ -294,7 +294,7 @@ class SalesOrderInvoiceController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $ro = \App\Models\RequestOrder::with(['order.batches.items.orderItem.barang'])->findOrFail($id);
+        $ro = \App\Models\Quotation::with(['order.batches.items.orderItem.barang'])->findOrFail($id);
 
         $batches = $ro->order?->batches ?? collect();
 
@@ -337,7 +337,7 @@ class SalesOrderInvoiceController extends Controller
         $invPaymentNote = $request->input('inv_payment_note', '');
         $invAddress     = $request->input('inv_address', '');
 
-        $ro              = \App\Models\RequestOrder::with(['items', 'order.items.barang'])->findOrFail($id);
+        $ro              = \App\Models\Quotation::with(['items', 'order.items.barang'])->findOrFail($id);
         $customerName    = $ro->customer_name;
         $customerAddress = $ro->customer_address ?? '';
         $isGa            = strtolower(Auth::user()->role ?? '') === 'general affair';
@@ -383,11 +383,11 @@ class SalesOrderInvoiceController extends Controller
             abort(403, 'Unauthorized.');
         }
 
-        $batch = DeliveryBatch::with(['order.requestOrder', 'order.customer', 'items.orderItem.barang'])
+        $batch = DeliveryBatch::with(['order.quotation', 'order.customer', 'items.orderItem.barang'])
             ->findOrFail($batchId);
 
         $order = $batch->order;
-        $requestOrder = $order?->requestOrder;
+        $requestOrder = $order?->quotation;
         $customerName = $order->customer?->nama_customer
             ?? $order->customer_name
             ?? $requestOrder?->customer_name
@@ -448,9 +448,9 @@ class SalesOrderInvoiceController extends Controller
         $invPaymentNote = $request->input('inv_payment_note', '');
         $invAddress     = $request->input('inv_address', '');
 
-        $batch = DeliveryBatch::with(['order.requestOrder', 'order.customer', 'items.orderItem.barang'])
+        $batch = DeliveryBatch::with(['order.quotation', 'order.customer', 'items.orderItem.barang'])
             ->findOrFail($batchId);
-        $requestOrder = $batch->order?->requestOrder;
+        $requestOrder = $batch->order?->quotation;
         $customerName = $batch->order?->customer?->nama_customer
             ?? $batch->order?->customer_name
             ?? $requestOrder?->customer_name
