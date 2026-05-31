@@ -12,7 +12,7 @@ class BarangObserver
      */
     public function created(Barang $barang): void
     {
-        if ($barang->goods_status === 'ditinjau') {
+        if ($barang->goods_status === 'pending') {
             event(new BarangStatusUpdated($barang));
         }
     }
@@ -22,7 +22,7 @@ class BarangObserver
      */
     public function updated(Barang $barang): void
     {
-        if ($barang->isDirty('goods_status') && $barang->goods_status === 'ditinjau') {
+        if ($barang->isDirty('goods_status') && $barang->goods_status === 'pending') {
             event(new BarangStatusUpdated($barang));
         }
     }

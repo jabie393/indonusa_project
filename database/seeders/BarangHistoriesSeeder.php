@@ -20,8 +20,8 @@ class BarangHistoriesSeeder extends Seeder
         $goods = DB::table('goods')->get();
         $userIds = DB::table('users')->pluck('id')->toArray();
 
-        $newStatuses = ['ditinjau', 'masuk', 'ditolak', 'dihapus', 'keluar'];
-        $oldStatuses = ['ditinjau', 'masuk', 'ditolak', null];
+        $newStatuses = ['pending', 'approved', 'rejected', 'deleted', 'out'];
+        $oldStatuses = ['pending', 'approved', 'rejected', null];
 
         for ($i = 0; $i < 30; $i++) {
             $barang = $goods->isNotEmpty() ? $goods->random() : null;

@@ -75,9 +75,9 @@ use App\Models\Barang; ?>
                                 @php
                                     $statusLabel =
                                         [
-                                            'ditinjau' => 'Pending',
-                                            'disetujui' => 'Approved',
-                                            'ditolak' => 'Rejected',
+                                            'pending' => 'Pending',
+                                            'approved' => 'Approved',
+                                            'rejected' => 'Rejected',
                                         ][$barang->goods_status] ?? $barang->goods_status;
 
                                     $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
@@ -85,17 +85,17 @@ use App\Models\Barang; ?>
                                     $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
                                     $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
 
-                                    if ($barang->goods_status === 'disetujui') {
+                                    if ($barang->goods_status === 'approved') {
                                         $badgeBg = 'bg-green-50 dark:bg-green-950/30';
                                         $badgeText = 'text-green-700 dark:text-green-300';
                                         $badgeBorder = 'border border-green-200 dark:border-green-800/50';
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                                    } elseif ($barang->goods_status === 'ditinjau') {
+                                    } elseif ($barang->goods_status === 'pending') {
                                         $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
                                         $badgeText = 'text-blue-700 dark:text-blue-300';
                                         $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                    } elseif ($barang->goods_status === 'ditolak') {
+                                    } elseif ($barang->goods_status === 'rejected') {
                                         $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                         $badgeText = 'text-red-700 dark:text-red-300';
                                         $badgeBorder = 'border border-red-200 dark:border-red-800/50';
@@ -122,7 +122,7 @@ use App\Models\Barang; ?>
                                 <div class="flex justify-center">
                                     <div
                                         class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
-                                        @if ($barang->goods_status == 'ditinjau')
+                                        @if ($barang->goods_status == 'pending')
                                             {{-- Edit barang modal --}}
                                             <button
                                                 class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900 transition-all duration-300 ease-in-out"
@@ -169,7 +169,7 @@ use App\Models\Barang; ?>
                                                         class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                                 </button>
                                             </form>
-                                        @elseif($barang->goods_status == 'ditolak')
+                                        @elseif($barang->goods_status == 'rejected')
                                             {{-- Note modal --}}
                                             <button
                                                 class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 dark:border-yellow-500 bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800 transition-all duration-300 ease-in-out"

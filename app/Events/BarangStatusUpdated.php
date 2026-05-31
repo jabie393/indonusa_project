@@ -27,7 +27,7 @@ class BarangStatusUpdated implements ShouldBroadcastNow, ShouldDispatchAfterComm
         $this->tipeRequest = $barang->request_type;
 
         // Count pending items
-        $this->barangCount = Barang::where('goods_status', 'ditinjau')->count();
+        $this->barangCount = Barang::where('goods_status', 'pending')->count();
     }
 
     /**

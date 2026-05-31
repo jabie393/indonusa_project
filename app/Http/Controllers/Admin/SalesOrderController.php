@@ -116,11 +116,11 @@ class SalesOrderController extends Controller
                 foreach ($quotation->items as $item) {
                     OrderItem::create([
                         'order_id'           => $order->id,
-                        'barang_id'          => $item->product_id ?? null,
+                        'product_id'         => $item->product_id ?? null,
                         'quantity'           => $item->quantity ?? 1,
                         'delivered_quantity' => 0,
-                        'status_item'        => 'pending',
-                        'harga'              => $item->price ?? 0,
+                        'item_status'        => 'pending',
+                        'price'              => $item->price ?? 0,
                         'subtotal'           => $item->subtotal ?? 0,
                     ]);
                 }

@@ -62,7 +62,7 @@ class QuotationController extends Controller
             ->get();
 
         $customers = Customer::where('status', 'active')
-            ->orderBy('nama_customer')
+            ->orderBy('customer_name')
             ->get();
 
         $categories = Barang::distinct()
@@ -371,7 +371,7 @@ class QuotationController extends Controller
             ->get();
 
         $customers = Customer::where('status', 'active')
-            ->orderBy('nama_customer')
+            ->orderBy('customer_name')
             ->get();
 
         $categories = Barang::distinct()->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
@@ -855,11 +855,11 @@ class QuotationController extends Controller
                     foreach ($ro->items as $reqItem) {
                         OrderItem::create([
                             'order_id' => $existingOrder->id,
-                            'barang_id' => $reqItem->product_id,
+                            'product_id' => $reqItem->product_id,
                             'quantity' => $reqItem->quantity,
                             'delivered_quantity' => 0,
-                            'status_item' => 'pending',
-                            'harga' => $reqItem->price,
+                            'item_status' => 'pending',
+                            'price' => $reqItem->price,
                             'subtotal' => $reqItem->subtotal,
                         ]);
                     }
@@ -881,11 +881,11 @@ class QuotationController extends Controller
                 foreach ($ro->items as $reqItem) {
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'barang_id' => $reqItem->product_id,
+                        'product_id' => $reqItem->product_id,
                         'quantity' => $reqItem->quantity,
                         'delivered_quantity' => 0,
-                        'status_item' => 'pending',
-                        'harga' => $reqItem->price,
+                        'item_status' => 'pending',
+                        'price' => $reqItem->price,
                         'subtotal' => $reqItem->subtotal,
                     ]);
                 }

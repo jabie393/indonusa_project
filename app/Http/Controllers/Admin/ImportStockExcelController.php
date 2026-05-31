@@ -173,7 +173,7 @@ class ImportStockExcelController extends Controller
                             $copyData->description = $deskripsi;
                             $copyData->stock = $stok;
                             $copyData->buy_price = $harga;
-                            $copyData->goods_status = 'ditinjau';
+                            $copyData->goods_status = 'pending';
                             $copyData->request_type = 'new_stock';
                             $copyData->form = Auth::id();
 

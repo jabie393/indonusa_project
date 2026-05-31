@@ -20,18 +20,18 @@ class OrderSeeder extends Seeder
 
         // 1. Ambil atau Buat Customer
         $customer = Customer::create([
-            'nama_customer' => 'PT. Maju Bersama',
+            'customer_name' => 'PT. Maju Bersama',
             'npwp' => '0873627166789883',
             'term_of_payments' => 30,
-            'kredit_limit' => '100000000',
+            'credit_limit' => '100000000',
             'email' => 'contact@majubersama.com',
-            'telepon' => '021-1234567',
-            'alamat_penagihan' => 'Jl. Merdeka No. 10, Jakarta Pusat',
-            'alamat_pengiriman' => 'Kawasan Industri Jababeka Blok C-12, Bekasi',
-            'kota' => 'Bekasi',
-            'provinsi' => 'Jawa Barat',
+            'phone' => '021-1234567',
+            'billing_address' => 'Jl. Merdeka No. 10, Jakarta Pusat',
+            'shipping_address' => 'Kawasan Industri Jababeka Blok C-12, Bekasi',
+            'city' => 'Bekasi',
+            'province' => 'Jawa Barat',
             'pic' => 'Budi Santoso',
-            'tipe_customer' => 'Swasta',
+            'customer_type' => 'Swasta',
             'created_by' => 1,
             'status' => 'active'
         ]);
@@ -83,26 +83,26 @@ class OrderSeeder extends Seeder
 
         OrderItem::create([
             'order_id' => $order1->id,
-            'barang_id' => 1, // Laptop Asus ExpertBook (from BarangSeeder)
+            'product_id' => 1, // Laptop Asus ExpertBook (from BarangSeeder)
             'quantity' => 1,
             'delivered_quantity' => 1,
-            'status_item' => 'delivered'
+            'item_status' => 'delivered'
         ]);
 
         // 6. Order Kedua (Partial Delivery)
         $customer2 = Customer::create([
-            'nama_customer' => 'PT. Teknologi Masa Depan',
+            'customer_name' => 'PT. Teknologi Masa Depan',
             'npwp' => '012345678901000',
             'term_of_payments' => 30,
-            'kredit_limit' => '100000000',
+            'credit_limit' => '100000000',
             'email' => 'contact@majubersama.com',
-            'telepon' => '0211234567',
-            'alamat_penagihan' => 'Jl. Bandung, Malang',
-            'alamat_pengiriman' => 'Kawasan Blok M, Malang',
-            'kota' => 'Malang',
-            'provinsi' => 'Jawa Timur',
+            'phone' => '0211234567',
+            'billing_address' => 'Jl. Bandung, Malang',
+            'shipping_address' => 'Kawasan Blok M, Malang',
+            'city' => 'Malang',
+            'province' => 'Jawa Timur',
             'pic' => 'Jane Doe',
-            'tipe_customer' => 'Swasta',
+            'customer_type' => 'Swasta',
             'created_by' => 1,
             'status' => 'active'
         ]);
@@ -139,10 +139,10 @@ class OrderSeeder extends Seeder
 
         $orderItem2 = OrderItem::create([
             'order_id' => $order2->id,
-            'barang_id' => 3, // Buble Wrap (from BarangSeeder)
+            'product_id' => 3, // Buble Wrap (from BarangSeeder)
             'quantity' => 10,
             'delivered_quantity' => 5,
-            'status_item' => 'partially_delivered'
+            'item_status' => 'partially_delivered'
         ]);
 
         // 7. Seed Delivery Batch for Partial Delivery

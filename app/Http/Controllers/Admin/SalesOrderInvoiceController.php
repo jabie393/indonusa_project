@@ -239,7 +239,7 @@ class SalesOrderInvoiceController extends Controller
             $customerModel = \App\Models\Customer::find($ro->customer_id);
         }
         if (!$customerModel && !empty($customerName)) {
-            $customerModel = \App\Models\Customer::where('nama_customer', $customerName)->first();
+            $customerModel = \App\Models\Customer::where('customer_name', $customerName)->first();
         }
 
         $isGa = strtolower(Auth::user()->role ?? '') === 'general affair';
@@ -256,10 +256,10 @@ class SalesOrderInvoiceController extends Controller
         $customerAddress = '';
         if ($customerModel) {
             $parts = array_filter([
-                $customerModel->alamat_pengiriman ?? null,
-                $customerModel->kota              ?? null,
-                $customerModel->provinsi          ?? null,
-                $customerModel->kode_pos          ?? null,
+                $customerModel->shipping_address ?? null,
+                $customerModel->city             ?? null,
+                $customerModel->province         ?? null,
+                $customerModel->postal_code      ?? null,
             ]);
             $customerAddress = implode(', ', $parts);
         }
@@ -388,7 +388,7 @@ class SalesOrderInvoiceController extends Controller
 
         $order = $batch->order;
         $requestOrder = $order?->quotation;
-        $customerName = $order->customer?->nama_customer
+        $customerName = $order->customer?->customer_name
             ?? $order->customer_name
             ?? $requestOrder?->customer_name
             ?? '-';
@@ -399,17 +399,17 @@ class SalesOrderInvoiceController extends Controller
 
         $customerModel = $order?->customer;
         if (!$customerModel && !empty($requestOrder?->customer_name)) {
-            $customerModel = \App\Models\Customer::where('nama_customer', $requestOrder->customer_name)->first();
+            $customerModel = \App\Models\Customer::where('customer_name', $requestOrder->customer_name)->first();
         }
 
         $customerNpwp = $customerModel->npwp ?? '';
         $customerAddress = '';
         if ($customerModel) {
             $parts = array_filter([
-                $customerModel->alamat_pengiriman ?? null,
-                $customerModel->kota ?? null,
-                $customerModel->provinsi ?? null,
-                $customerModel->kode_pos ?? null,
+                $customerModel->shipping_address ?? null,
+                $customerModel->city ?? null,
+                $customerModel->province ?? null,
+                $customerModel->postal_code ?? null,
             ]);
             $customerAddress = implode(', ', $parts);
         }
@@ -451,12 +451,12 @@ class SalesOrderInvoiceController extends Controller
         $batch = DeliveryBatch::with(['order.quotation', 'order.customer', 'items.orderItem.barang'])
             ->findOrFail($batchId);
         $requestOrder = $batch->order?->quotation;
-        $customerName = $batch->order?->customer?->nama_customer
+        $customerName = $batch->order?->customer?->customer_name
             ?? $batch->order?->customer_name
             ?? $requestOrder?->customer_name
             ?? '-';
 
-        $customerAddress = $batch->order?->customer?->alamat_pengiriman
+        $customerAddress = $batch->order?->customer?->shipping_address
             ?? $batch->order?->customer?->alamat
             ?? $requestOrder?->customer_address
             ?? '';

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique();
+            $table->string('do_number')->nullable();
             $table->unsignedBigInteger('sales_id');      // id user yang membuat order (Sales)
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
@@ -33,7 +34,8 @@ return new class extends Migration
                 'completed',
                 'not_completed'
             ])->default('pending');
-            $table->text('reason')->nullable(); // alasan penolakan oleh Supervisor atau Warehouse
+            $table->enum('delivery_options', ['full', 'partial'])->nullable();
+            $table->text('reason')->nullable()->comment('Alasan penolakan dari supervisor'); // alasan penolakan oleh Supervisor atau Warehouse
             $table->date('required_date')->nullable();
             $table->text('customer_notes')->nullable();
             $table->timestamps();
@@ -52,9 +54,5 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('orders');
-        // Kembalikan kolom status ke quotations
-        Schema::table('quotations', function (Blueprint $table) {
-            $table->string('status')->default('pending');
-        });
     }
 };

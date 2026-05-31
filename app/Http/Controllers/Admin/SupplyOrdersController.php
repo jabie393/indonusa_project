@@ -14,7 +14,7 @@ class SupplyOrdersController extends Controller
     {
         $perPage = $request->input('perPage', 10); // Default to 10
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'ditinjau');
+        $goods = Barang::where('goods_status', 'pending');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
@@ -47,7 +47,7 @@ class SupplyOrdersController extends Controller
     {
         $barang = Barang::findOrFail($id);
         $barang->note = $request->input('reason') ?? $request->input('catatan');
-        $barang->goods_status = 'ditolak';
+        $barang->goods_status = 'rejected';
         $barang->save();
 
         if ($request->ajax()) {
@@ -82,7 +82,7 @@ class SupplyOrdersController extends Controller
         }
 
         Barang::whereIn('id', $ids)->update([
-            'goods_status' => 'ditolak',
+            'goods_status' => 'rejected',
             'note' => $catatan
         ]);
 
@@ -94,7 +94,7 @@ class SupplyOrdersController extends Controller
         $barang = Barang::findOrFail($id);
 
         if ($barang->request_type == 'primary') {
-            $barang->goods_status = 'masuk';
+            $barang->goods_status = 'approved';
             $barang->save();
 
             // Buat record GoodsReceipt untuk barang baru
@@ -127,7 +127,7 @@ class SupplyOrdersController extends Controller
                     'unit_cost' => $barang->buy_price,
                 ]);
 
-                $barang->goods_status = 'masuk';
+                $barang->goods_status = 'approved';
                 $barang->save();
 
                 // Hapus record new_stock tanpa memicu event model
@@ -138,7 +138,7 @@ class SupplyOrdersController extends Controller
                 // Jika barang utama tidak ditemukan, jadikan barang request ini sebagai primary
                 $barang->goods_code = $kodeUtama;
                 $barang->request_type = 'primary';
-                $barang->goods_status = 'masuk';
+                $barang->goods_status = 'approved';
                 $barang->save();
 
                 // Buat record GoodsReceipt

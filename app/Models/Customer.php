@@ -10,22 +10,34 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_customer',
+        'customer_name',
         'npwp',
         'term_of_payments',
-        'kredit_limit',
+        'credit_limit',
         'email',
+        'phone',
+        'billing_address',
+        'shipping_address',
+        'city',
+        'province',
+        'postal_code',
+        'pic',
+        'customer_type',
+        'created_by',
+        'updated_by',
+        'status',
+    ];
+
+    protected $appends = [
+        'nama_customer',
+        'kredit_limit',
         'telepon',
         'alamat_penagihan',
         'alamat_pengiriman',
         'kota',
         'provinsi',
         'kode_pos',
-        'pic',
         'tipe_customer',
-        'created_by',
-        'updated_by',
-        'status',
     ];
 
     protected $casts = [
@@ -65,7 +77,7 @@ class Customer extends Model
 
     public function getFullAddressAttribute()
     {
-        return "{$this->alamat_penagihan}, {$this->kota}, {$this->provinsi} {$this->kode_pos}";
+        return "{$this->billing_address}, {$this->city}, {$this->province} {$this->postal_code}";
     }
 
     public function pics()
@@ -77,5 +89,96 @@ class Customer extends Model
     public function orders()
     {
         return $this->hasMany(Order::class, 'customer_id');
+    }
+
+    // Compatibility accessors for old column names
+    public function getNamaCustomerAttribute()
+    {
+        return $this->customer_name;
+    }
+
+    public function setNamaCustomerAttribute($value)
+    {
+        $this->attributes['customer_name'] = $value;
+    }
+
+    public function getKreditLimitAttribute()
+    {
+        return $this->credit_limit;
+    }
+
+    public function setKreditLimitAttribute($value)
+    {
+        $this->attributes['credit_limit'] = $value;
+    }
+
+    public function getTeleponAttribute()
+    {
+        return $this->phone;
+    }
+
+    public function setTeleponAttribute($value)
+    {
+        $this->attributes['phone'] = $value;
+    }
+
+    public function getAlamatPenagihanAttribute()
+    {
+        return $this->billing_address;
+    }
+
+    public function setAlamatPenagihanAttribute($value)
+    {
+        $this->attributes['billing_address'] = $value;
+    }
+
+    public function getAlamatPengirimanAttribute()
+    {
+        return $this->shipping_address;
+    }
+
+    public function setAlamatPengirimanAttribute($value)
+    {
+        $this->attributes['shipping_address'] = $value;
+    }
+
+    public function getKotaAttribute()
+    {
+        return $this->city;
+    }
+
+    public function setKotaAttribute($value)
+    {
+        $this->attributes['city'] = $value;
+    }
+
+    public function getProvinsiAttribute()
+    {
+        return $this->province;
+    }
+
+    public function setProvinsiAttribute($value)
+    {
+        $this->attributes['province'] = $value;
+    }
+
+    public function getKodePosAttribute()
+    {
+        return $this->postal_code;
+    }
+
+    public function setKodePosAttribute($value)
+    {
+        $this->attributes['postal_code'] = $value;
+    }
+
+    public function getTipeCustomerAttribute()
+    {
+        return $this->customer_type;
+    }
+
+    public function setTipeCustomerAttribute($value)
+    {
+        $this->attributes['customer_type'] = $value;
     }
 }

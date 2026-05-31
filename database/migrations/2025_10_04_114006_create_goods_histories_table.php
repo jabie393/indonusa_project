@@ -28,8 +28,8 @@ return new class extends Migration {
             $table->text('description')->nullable();
 
             // Status sebelum dan sesudah perubahan
-            $table->enum('old_status', ['ditinjau', 'masuk', 'ditolak'])->nullable();
-            $table->enum('new_status', ['ditinjau', 'masuk', 'ditolak', 'dihapus','keluar']);
+            $table->enum('old_status', ['pending', 'approved', 'rejected'])->nullable();
+            $table->enum('new_status', ['pending', 'approved', 'rejected', 'deleted', 'out']);
 
             // Siapa yang mengubah (relasi ke users)
             $table->unsignedBigInteger('changed_by')->nullable();

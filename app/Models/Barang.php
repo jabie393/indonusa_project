@@ -91,9 +91,9 @@ class Barang extends Model
         static::updated(function ($barang) {
             if ($barang->isDirty('goods_status')) {
                 $action = null;
-                if ($barang->goods_status === 'masuk') {
+                if ($barang->goods_status === 'approved') {
                     $action = 'Barang di approve oleh admin warehouse dan berhasil masuk ke gudang';
-                } elseif ($barang->goods_status === 'ditolak') {
+                } elseif ($barang->goods_status === 'rejected') {
                     $action = 'Barang ditolak oleh admin warehouse sesuai catatan penolakan';
                 }
 
@@ -131,7 +131,7 @@ class Barang extends Model
                 'selling_price' => $barang->selling_price,
                 'description'   => $barang->description,
                 'old_status'   => $barang->goods_status,
-                'new_status'   => 'dihapus',
+                'new_status'   => 'deleted',
                 'changed_by'   => Auth::id(),
                 'note'         => $barang->note ?? null,
             ]);
@@ -140,7 +140,7 @@ class Barang extends Model
 
     public function orderItems()
     {
-        return $this->hasMany(OrderItem::class, 'barang_id');
+        return $this->hasMany(OrderItem::class, 'product_id');
     }
 
     public function histories()

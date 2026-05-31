@@ -45,11 +45,11 @@
         <div
             class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
-                $supplyOrderCount = \App\Models\Barang::where('goods_status', 'ditinjau')->count();
+                $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')->count();
                 $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
             @endphp
             <div class="flex items-center space-x-2">
-                <a href="{{ route('warehouse.index', ['status' => 'masuk']) }}"
+                <a href="{{ route('warehouse.index', ['status' => 'approved']) }}"
                     class="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                     Semua Barang
                 </a>
@@ -112,7 +112,7 @@
                                 @php
                                     $statusLabel =
                                         [
-                                            'ditinjau' => 'Pending Review',
+                                            'pending' => 'Pending Review',
                                         ][$barang->goods_status] ?? $barang->goods_status;
 
                                     $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
@@ -120,7 +120,7 @@
                                     $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
                                     $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
 
-                                    if ($barang->goods_status === 'ditinjau') {
+                                    if ($barang->goods_status === 'pending') {
                                         $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
                                         $badgeText = 'text-amber-800 dark:text-amber-300';
                                         $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';

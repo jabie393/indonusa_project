@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('goods', function (Blueprint $table) {
             $table->id();
             $table->enum('request_type', ['primary', 'new_stock'])->default('primary');
-            $table->enum('goods_status', ['ditinjau', 'masuk', 'ditolak', 'ditinjau_supervisor'])->default('ditinjau');
+            $table->enum('goods_status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->string('status_listing')->default('listing');
             $table->string('goods_code')->unique();
             $table->string('goods_name');
@@ -59,6 +59,7 @@ return new class extends Migration {
             $table->text('note')->nullable();
             $table->text('submission_reason')->nullable();
             $table->string('form')->nullable();
+            $table->foreignId('parent_id')->nullable()->constrained('goods')->onDelete('cascade');
             $table->timestamps();
         });
     }

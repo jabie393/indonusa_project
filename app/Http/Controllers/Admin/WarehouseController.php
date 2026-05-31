@@ -21,7 +21,7 @@ class WarehouseController extends Controller
 
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'masuk');
+        $goods = Barang::where('goods_status', 'approved');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
@@ -58,7 +58,7 @@ class WarehouseController extends Controller
         }
 
         $validated['form'] = Auth::id();
-        $validated['goods_status'] = 'masuk';
+        $validated['goods_status'] = 'approved';
         $validated['request_type'] = 'primary';
 
         $barang = Barang::create($validated);

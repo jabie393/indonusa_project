@@ -34,13 +34,13 @@ class WarehouseDashboardController extends Controller
             $dateEnd = null;
         }
 
-        // query dasar untuk barang stok rendah (status 'masuk' + stok < threshold)
-        $baseLowQuery = Barang::where('goods_status', 'masuk')
+        // query dasar untuk barang stok rendah (status 'approved' + stok < threshold)
+        $baseLowQuery = Barang::where('goods_status', 'approved')
             ->where('stock', '<', $threshold);
 
         $data = [
-            'totalBarang' => Barang::where('goods_status', 'masuk')->count(),
-            'totalStok' => Barang::where('goods_status', 'masuk')->sum('stock'),
+            'totalBarang' => Barang::where('goods_status', 'approved')->count(),
+            'totalStok' => Barang::where('goods_status', 'approved')->sum('stock'),
             // ambil 4 terendah untuk card
             'lowStockItems' => (clone $baseLowQuery)->orderBy('stock', 'asc')->take(4)->get(),
             // semua untuk tabel
@@ -48,7 +48,7 @@ class WarehouseDashboardController extends Controller
         ];
 
         // recent inbound: prioritas date range jika ada, kalau tidak ambil semua (atau bisa pakai periode)
-        $recentQuery = BarangHistory::where('new_status', 'masuk');
+        $recentQuery = BarangHistory::where('new_status', 'approved');
         if ($dateStart && $dateEnd) {
             $recentQuery->whereBetween('changed_at', [$dateStart, $dateEnd]);
         }
@@ -57,8 +57,8 @@ class WarehouseDashboardController extends Controller
         // eager load submitter (form)
         $data['recentInbound'] = $recentQuery->with('formUser')->latest('changed_at')->take(5)->get();
 
-        // recent outbound: ambil dari history dengan new_status 'keluar' (filter date range sama seperti inbound)
-        $recentOutboundQuery = BarangHistory::where('new_status', 'keluar');
+        // recent outbound: ambil dari history dengan new_status 'out' (filter date range sama seperti inbound)
+        $recentOutboundQuery = BarangHistory::where('new_status', 'out');
         if ($dateStart && $dateEnd) {
             $recentOutboundQuery->whereBetween('changed_at', [$dateStart, $dateEnd]);
         }
@@ -66,22 +66,22 @@ class WarehouseDashboardController extends Controller
 
         // barangMasukToday / atau jumlah masuk di rentang tanggal
         if ($dateStart && $dateEnd) {
-            $data['barangMasukToday'] = BarangHistory::where('new_status', 'masuk')
+            $data['barangMasukToday'] = BarangHistory::where('new_status', 'approved')
                 ->whereBetween('changed_at', [$dateStart, $dateEnd])
                 ->count();
         } else {
-            $data['barangMasukToday'] = BarangHistory::where('new_status', 'masuk')
+            $data['barangMasukToday'] = BarangHistory::where('new_status', 'approved')
                 ->whereDate('changed_at', now())
                 ->count();
         }
 
         // barangKeluarToday / jumlah keluar di rentang tanggal (atau hari ini jika tidak ada filter)
         if ($dateStart && $dateEnd) {
-            $data['barangKeluarToday'] = BarangHistory::where('new_status', 'keluar')
+            $data['barangKeluarToday'] = BarangHistory::where('new_status', 'out')
                 ->whereBetween('changed_at', [$dateStart, $dateEnd])
                 ->count();
         } else {
-            $data['barangKeluarToday'] = BarangHistory::where('new_status', 'keluar')
+            $data['barangKeluarToday'] = BarangHistory::where('new_status', 'out')
                 ->whereDate('changed_at', now())
                 ->count();
         }
@@ -94,18 +94,18 @@ class WarehouseDashboardController extends Controller
         $prevEnd = Carbon::now()->subMonth()->endOfMonth();
 
         // counts untuk bulan ini (opsional, bisa dipakai di view)
-        $data['barangMasukThisMonth'] = BarangHistory::where('new_status', 'masuk')
+        $data['barangMasukThisMonth'] = BarangHistory::where('new_status', 'approved')
             ->whereBetween('changed_at', [$currentStart, $currentEnd])
             ->count();
-        $data['barangKeluarThisMonth'] = BarangHistory::where('new_status', 'keluar')
+        $data['barangKeluarThisMonth'] = BarangHistory::where('new_status', 'out')
             ->whereBetween('changed_at', [$currentStart, $currentEnd])
             ->count();
 
         // last month (full previous month)
-        $data['barangMasukLastMonth'] = BarangHistory::where('new_status', 'masuk')
+        $data['barangMasukLastMonth'] = BarangHistory::where('new_status', 'approved')
             ->whereBetween('changed_at', [$prevStart, $prevEnd])
             ->count();
-        $data['barangKeluarLastMonth'] = BarangHistory::where('new_status', 'keluar')
+        $data['barangKeluarLastMonth'] = BarangHistory::where('new_status', 'out')
             ->whereBetween('changed_at', [$prevStart, $prevEnd])
             ->count();
 
@@ -118,11 +118,11 @@ class WarehouseDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = BarangHistory::where('new_status', 'masuk')
+            $imcMasuk[] = BarangHistory::where('new_status', 'approved')
                 ->whereYear('changed_at', $year)
                 ->whereMonth('changed_at', $m)
                 ->count();
-            $imcKeluar[] = BarangHistory::where('new_status', 'keluar')
+            $imcKeluar[] = BarangHistory::where('new_status', 'out')
                 ->whereYear('changed_at', $year)
                 ->whereMonth('changed_at', $m)
                 ->count();
@@ -139,8 +139,8 @@ class WarehouseDashboardController extends Controller
             $imcYears = [now()->year];
         }
 
-        // Stock Value Chart (SVC) - top items by stock (hanya status 'masuk')
-        $topItems = Barang::where('goods_status', 'masuk')
+        // Stock Value Chart (SVC) - top items by stock (hanya status 'approved')
+        $topItems = Barang::where('goods_status', 'approved')
             ->orderByDesc('stock')
             ->take(8)
             ->get();
@@ -173,11 +173,11 @@ class WarehouseDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = BarangHistory::where('new_status', 'masuk')
+            $imcMasuk[] = BarangHistory::where('new_status', 'approved')
                 ->whereYear('changed_at', $selectedYear)
                 ->whereMonth('changed_at', $m)
                 ->count();
-            $imcKeluar[] = BarangHistory::where('new_status', 'keluar')
+            $imcKeluar[] = BarangHistory::where('new_status', 'out')
                 ->whereYear('changed_at', $selectedYear)
                 ->whereMonth('changed_at', $m)
                 ->count();
@@ -193,7 +193,7 @@ class WarehouseDashboardController extends Controller
             $imcYears = [now()->year];
         }
 
-        $topItems = Barang::where('goods_status', 'masuk')
+        $topItems = Barang::where('goods_status', 'approved')
             ->orderByDesc('stock')
             ->take(8)
             ->get();

@@ -33,13 +33,13 @@
         <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
             @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
                 @php
-                    $currentStatus = session('warehouse_filter_status', 'masuk');
-                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'ditinjau')->count();
+                    $currentStatus = session('warehouse_filter_status', 'approved');
+                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')->count();
                     $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
                 @endphp
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('warehouse.index', ['status' => 'masuk', 'search' => request('search')]) }}"
-                        class="{{ $currentStatus === 'masuk' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
+                    <a href="{{ route('warehouse.index', ['status' => 'approved', 'search' => request('search')]) }}"
+                        class="{{ $currentStatus === 'approved' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Semua Barang
                     </a>
                     @if (Auth::user() && Auth::user()->role === 'Warehouse')
@@ -270,7 +270,6 @@
         </nav>
 
         {{-- Modal --}}
-        @include('admin.warehouse.partials.warehouse-modal-tambah', ['kategoriList' => $kategoriList])
         @include('admin.warehouse.partials.warehouse-modal-edit-image', [
             'kategoriList' => $kategoriList,
             'barang' => $barang,
