@@ -311,14 +311,21 @@ class CustomQuotationController extends Controller
                 ]);
             }
 
-            $customPenawaran->update([
+            $updateData = [
                 'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-                'status' => 'pending_approval',
-                'approved_by' => null,
-                'approved_at' => null,
-                'reason' => null,
-            ]);
+            ];
+
+            if (! in_array($customPenawaran->status, ['approved', 'approved_supervisor'])) {
+                $updateData = array_merge($updateData, [
+                    'status' => 'pending_approval',
+                    'approved_by' => null,
+                    'approved_at' => null,
+                    'reason' => null,
+                ]);
+            }
+
+            $customPenawaran->update($updateData);
 
             DB::commit();
 
@@ -626,7 +633,7 @@ class CustomQuotationController extends Controller
                 'tax' => $customPenawaran->tax ?? 0,
                 'grand_total' => $customPenawaran->grand_total,
                 'no_po' => null,
-                'sales_order_number' => null,
+                'sales_order_number' => Quotation::generateSalesOrderNumber(),
             ]);
             Order::create([
                 'order_number' => 'ORD-'.strtoupper(uniqid()),

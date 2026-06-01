@@ -4,10 +4,6 @@
         <div class="p-3 flex items-center">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                <a href="{{ route('sales.custom-quotation.create') }}" class="flex text-sm flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
-                    + Create New Custom Quotation
-                </a>
-
             </div>
         </div>
 
@@ -138,37 +134,37 @@
                                                     </svg>
                                                 </button>
                                             </div>
-                                        @elseif($row['type'] === 'request_order')
-                                            @if (($row['customer_status'] ?? 'active') === 'active')
-                                                <div class="flex flex-col gap-1">
-                                                    <label
-                                                        class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                            <polyline points="17 8 12 3 7 8" />
-                                                            <line x1="12" x2="12" y1="3" y2="15" />
-                                                        </svg>
-                                                        Upload PO
-                                                        <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg"
-                                                            onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
-                                                    </label>
-                                                    <label
-                                                        class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-purple-500 bg-white px-2 py-1 text-[10px] font-semibold text-purple-600 shadow-sm transition-colors hover:bg-purple-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                            <polyline points="17 8 12 3 7 8" />
-                                                            <line x1="12" x2="12" y1="3" y2="15" />
-                                                        </svg>
-                                                        Upload PDF
-                                                        <input type="file" class="hidden" accept="application/pdf"
-                                                            onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'pdf_po')">
-                                                    </label>
-                                                </div>
-                                            @endif
                                         @endif
                                     </div>
+                                    @if ($row['type'] === 'request_order' && ($row['customer_status'] ?? 'active') === 'active')
+                                        <div class="flex flex-col gap-1 mt-2">
+                                            <label
+                                                class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-green-500 bg-white px-2 py-1 text-[10px] font-semibold text-green-600 shadow-sm transition-colors hover:bg-green-50">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                    <polyline points="17 8 12 3 7 8" />
+                                                    <line x1="12" x2="12" y1="3" y2="15" />
+                                                </svg>
+                                                Upload PO
+                                                <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg"
+                                                    onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'po')">
+                                            </label>
+                                            <label
+                                                class="inline-flex cursor-pointer items-center gap-1 rounded-md border border-purple-500 bg-white px-2 py-1 text-[10px] font-semibold text-purple-600 shadow-sm transition-colors hover:bg-purple-50">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                    <polyline points="17 8 12 3 7 8" />
+                                                    <line x1="12" x2="12" y1="3" y2="15" />
+                                                </svg>
+                                                Upload PDF
+                                                <input type="file" class="hidden" accept="application/pdf"
+                                                    onchange="handleUploadImage(this, 'request_order', {{ $row['id'] }}, 'pdf_po')">
+                                            </label>
+                                        </div>
+                                    @endif
+                                </div>
                                     <div id="pdf-po-preview-{{ $row['id'] }}-{{ $row['type'] }}" class="mt-1">
                                         @if (isset($row['pdf_po']) && $row['pdf_po'])
                                             <div class="group relative inline-block">

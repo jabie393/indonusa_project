@@ -1,4 +1,4 @@
-<x-app-layout>
+﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
             @php $orderStatus = $customPenawaran->status; @endphp
@@ -542,7 +542,7 @@
                                         {{-- PDF --}}
                                         @php
                                         $isExpired = $customPenawaran->isExpired();
-                                        $canDownload = in_array($customPenawaran->status, ['open', 'approved']) && !$isExpired;
+                                        $canDownload = in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor']) && !$isExpired;
                                         $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.pdf' : 'admin.custom-quotation-approval.pdf';
                                         @endphp
                                         @if ($canDownload && Auth::user()->role !== 'Supervisor')
