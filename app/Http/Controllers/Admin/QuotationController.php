@@ -536,7 +536,7 @@ class QuotationController extends Controller
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
                 'no_po' => $validated['no_po'] ?? null,
-                'sales_order_number' => $validated['sales_order_number'] ?? null,
+                'sales_order_number' => $requestOrder->sales_order_number ?? ($validated['sales_order_number'] ?? null),
                 'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
                 'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
                 'catatan_customer' => $validated['catatan_customer'] ?? null,

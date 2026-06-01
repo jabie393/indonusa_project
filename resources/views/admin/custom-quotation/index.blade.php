@@ -281,22 +281,7 @@
                                                     </button>
                                                 @endif
                                             </li>
-                                            {{-- Sent to Warehouse --}}
-                                            @if ($penawaran->status === 'approved_supervisor')
-                                                <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $penawaran->id) }}" method="POST">
-                                                    @csrf
-                                                    <li>
-                                                        <button type="button" onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Warehouse?', 'Ya, Kirim')"
-                                                            class="flex w-full items-center gap-2 text-yellow-600 hover:bg-yellow-50">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" />
-                                                            </svg>
-                                                            Send to Warehouse
-                                                        </button>
-                                                    </li>
-                                                </form>
-                                            @endif
+                                            {{-- Sent to Warehouse removed per request --}}
 
                                             {{-- Send to Penawaran --}}
                                             @if (in_array($penawaran->status, ['open', 'approved_supervisor']))

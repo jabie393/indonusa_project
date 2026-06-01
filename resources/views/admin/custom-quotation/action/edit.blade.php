@@ -124,7 +124,7 @@
                                 <input type="date"
                                        id="date"
                                        name="date"
-                                       value="{{ old('date', $customPenawaran->date) }}"
+                                       value="{{ old('date', $customPenawaran->date ? \Carbon\Carbon::parse($customPenawaran->date)->format('Y-m-d') : '') }}"
                                        required
                                        class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
@@ -149,6 +149,10 @@
                     </div>
 
                     <!-- Items Table -->
+                    @php
+                        $oldItems = old('items');
+                        $items = is_array($oldItems) ? $oldItems : $customPenawaran->items->toArray();
+                    @endphp
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
@@ -186,7 +190,11 @@
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
-                                    @forelse($customPenawaran->items as $index => $item)
+                                    @forelse($items as $index => $item)
+                                        @php
+                                            $isOldItem = is_array($item);
+                                            $itemImages = $isOldItem ? ($item['existing_images'] ?? ($item['images'] ?? [])) : ($item->images ?? []);
+                                        @endphp
                                         <tr class="item-row"
                                             data-index="{{ $index }}">
                                             <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">{{ $index + 1 }}</td>
@@ -195,7 +203,7 @@
                                                        name="items[{{ $index }}][nama_barang]"
                                                        class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="Nama barang"
-                                                       value="{{ $item->nama_barang }}"
+                                                       value="{{ old('items.'.$index.'.nama_barang', $isOldItem ? ($item['nama_barang'] ?? '') : $item->nama_barang) }}"
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -203,7 +211,7 @@
                                                        name="items[{{ $index }}][qty]"
                                                        class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="0"
-                                                       value="{{ $item->qty }}"
+                                                       value="{{ old('items.'.$index.'.qty', $isOldItem ? ($item['qty'] ?? '') : $item->qty) }}"
                                                        min="1"
                                                        required>
                                             </td>
@@ -212,7 +220,7 @@
                                                        name="items[{{ $index }}][satuan]"
                                                        class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="Unit"
-                                                       value="{{ $item->satuan }}"
+                                                       value="{{ old('items.'.$index.'.satuan', $isOldItem ? ($item['satuan'] ?? '') : $item->satuan) }}"
                                                        required>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -222,7 +230,7 @@
                                                            name="items[{{ $index }}][harga]"
                                                            class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                            placeholder="0"
-                                                           value="{{ $item->harga }}"
+                                                           value="{{ old('items.'.$index.'.harga', $isOldItem ? ($item['harga'] ?? '') : $item->harga) }}"
                                                            required>
                                                 </div>
                                             </td>
@@ -231,7 +239,7 @@
                                                        name="items[{{ $index }}][diskon]"
                                                        class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="0"
-                                                       value="{{ $item->diskon ?? 0 }}"
+                                                       value="{{ old('items.'.$index.'.diskon', $isOldItem ? ($item['diskon'] ?? 0) : ($item->diskon ?? 0)) }}"
                                                        min="0"
                                                        max="100"
                                                        required>
@@ -241,9 +249,9 @@
                                                        name="items[{{ $index }}][keterangan]"
                                                        class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="Keterangan diskon"
-                                                       value="{{ $item->keterangan ?? '' }}">
+                                                       value="{{ old('items.'.$index.'.keterangan', $isOldItem ? ($item['keterangan'] ?? '') : ($item->keterangan ?? '')) }}">
                                             </td>
-                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format($item->subtotal, 0, '.', ',') }}</td>
+                                            <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">{{ number_format(old('items.'.$index.'.subtotal', $isOldItem ? ($item['subtotal'] ?? 0) : ($item->subtotal ?? 0)), 0, '.', ',') }}</td>
                                             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
                                                 <div class="upload-btn-container relative">
                                                     <input type="file"
@@ -253,21 +261,21 @@
                                                            accept="image/*">
                                                     <button type="button"
                                                             class="upload-button rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]"
-                                                            style="{{ $item->images && count($item->images) > 0 ? 'display: none;' : '' }}">
+                                                            style="{{ !empty($itemImages) && count($itemImages) > 0 ? 'display: none;' : '' }}">
                                                         Upload
                                                     </button>
                                                 </div>
                                                 <!-- Hidden inputs to preserve existing images -->
-                                                @if ($item->images && count($item->images) > 0)
-                                                    @foreach ($item->images as $image)
+                                                @if (!empty($itemImages) && count($itemImages) > 0)
+                                                    @foreach ($itemImages as $image)
                                                         <input type="hidden"
                                                                name="items[{{ $index }}][existing_images][]"
                                                                value="{{ $image }}">
                                                     @endforeach
                                                 @endif
                                                 <div class="item-images-preview flex flex-wrap justify-center gap-2">
-                                                    @if ($item->images && count($item->images) > 0)
-                                                        @foreach ($item->images as $image)
+                                                    @if (!empty($itemImages) && count($itemImages) > 0)
+                                                        @foreach ($itemImages as $image)
                                                             <div class="relative inline-block">
                                                                 <img src="{{ Storage::url($image) }}"
                                                                      class="h-20 w-20 rounded border object-cover"
@@ -275,7 +283,7 @@
                                                                 <button type="button"
                                                                         class="remove-existing-image absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white hover:bg-red-600"
                                                                         data-image="{{ $image }}">
-                                                                    âœ•
+                                                                    ×
                                                                 </button>
                                                             </div>
                                                         @endforeach
@@ -583,7 +591,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let itemCount = {{ count($customPenawaran->items) }};
+            let itemCount = {{ count(old('items', $customPenawaran->items->toArray())) }};
 
             // Format currency
             function formatCurrency(value) {
