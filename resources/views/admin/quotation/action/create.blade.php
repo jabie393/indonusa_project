@@ -157,23 +157,17 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="pic_id" class="form-label text-gray-700 dark:text-gray-300">PIC (Sales)
+                                <label for="pic_id" class="form-label text-gray-700 dark:text-gray-300">PIC Customer
                                     <span class="text-danger">*</span></label>
                                 <select
                                     class="@error('pic_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="pic_id" name="pic_id" required>
-                                    <option value="">-- Pilih PIC Sales --</option>
-                                    @foreach ($salesUsers as $sales)
-                                        <option value="{{ $sales->id }}" @selected(old('pic_id', Auth::id()) == $sales->id)>
-                                            {{ $sales->name }}
-                                        </option>
-                                    @endforeach
+                                    <option value="">-- Pilih PIC Customer --</option>
                                 </select>
                                 @error('pic_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Pilih sales yang menangani Quotation
-                                    ini</small>
+                                <small class="text-muted dark:text-gray-400">Pilih PIC yang terdaftar untuk customer ini</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col">
@@ -877,6 +871,58 @@
             var selectedOption = select.options[select.selectedIndex];
             kategoriInput.value = selectedOption.getAttribute('data-kategori') || '';
         }
+
+        @php
+            $customerPics = $customers->mapWithKeys(function ($customer) {
+                return [$customer->id => $customer->pics->map(function ($pic) {
+                    return [
+                        'id' => $pic->id,
+                        'name' => $pic->name,
+                        'position' => $pic->position,
+                        'email' => $pic->email,
+                        'phone' => $pic->phone,
+                    ];
+                })->toArray()];
+            })->toArray();
+        @endphp
+        window.customerPics = {!! json_encode($customerPics) !!};
+        window.initialPicId = "{{ old('pic_id', '') }}";
+
+        function loadCustomerPics(customerId, selectedPicId = null) {
+            const picSelect = document.getElementById('pic_id');
+            if (!picSelect) return;
+            picSelect.innerHTML = '';
+
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Pilih PIC Customer --';
+            picSelect.appendChild(placeholder);
+
+            if (!customerId || !window.customerPics || !window.customerPics[customerId] || window.customerPics[customerId].length === 0) {
+                const noDataOption = document.createElement('option');
+                noDataOption.value = '';
+                noDataOption.textContent = 'Tidak ada PIC untuk customer ini';
+                noDataOption.disabled = true;
+                picSelect.appendChild(noDataOption);
+                picSelect.value = '';
+                return;
+            }
+
+            window.customerPics[customerId].forEach(pic => {
+                const opt = document.createElement('option');
+                opt.value = pic.id;
+                opt.textContent = pic.name + (pic.position ? ' (' + pic.position + ')' : '');
+                if (selectedPicId && String(pic.id) === String(selectedPicId)) {
+                    opt.selected = true;
+                }
+                picSelect.appendChild(opt);
+            });
+
+            if (selectedPicId) {
+                picSelect.value = selectedPicId;
+            }
+        }
+
         // Populate customer data from select dropdown
         function populateCustomerData(customerId) {
             const customerSelect = document.getElementById('customer_id');
@@ -896,8 +942,11 @@
                     const icon = row.querySelector('.customer-checked-icon');
                     if (icon) icon.classList.add('hidden');
                 });
+                loadCustomerPics('');
                 return;
             }
+
+            loadCustomerPics(customerId, window.initialPicId);
 
             document.getElementById('customer_name').value = selectedOption.textContent.split('(')[0].trim();
             document.getElementById('customer_email').value = selectedOption.dataset.email || '';

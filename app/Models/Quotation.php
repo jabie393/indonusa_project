@@ -78,10 +78,16 @@ class Quotation extends Model
         'product_category',
         'supporting_images',
         'custom_quotation_id',
+        'pic_id',
     ];
 
     public function customQuotation() {
         return $this->belongsTo(\App\Models\CustomQuotation::class, 'custom_quotation_id');
+    }
+
+    public function pic()
+    {
+        return $this->belongsTo(\App\Models\Pic::class, 'pic_id');
     }
 
     /**

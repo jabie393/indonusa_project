@@ -241,6 +241,150 @@
             END BANNER STATUS SUPERVISOR
             ============================================================ --}}
 
+<<<<<<< HEAD
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <!-- Left Column -->
+                <div class="lg:col-span-2">
+                    <!-- Main Details Card -->
+                    <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+                            <h2 class="flex items-center font-semibold text-white">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-2 h-5 w-5"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Informasi Penawaran
+                            </h2>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+                                <!-- Group: Order Metadata -->
+                                <div class="space-y-5">
+                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
+                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
+                                        Detail Request
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">No. Request</label>
+                                            <p class="text-sm font-black text-[#225A97] dark:text-blue-400">{{ $requestOrder->request_number }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">No. Penawaran</label>
+                                            <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->quotation_number ?? '-' }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Status Sistem</label>
+                                            @php
+                                            $statusClass =
+                                            [
+                                            'Pending' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
+                                            'Open' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+                                            'Waiting for Supervisor Approval' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+                                            'Rejected by Supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+                                            'Sent to Warehouse' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
+                                            'Sent to Supervisor' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
+                                            'Partial Delivery' => 'bg-orange-50 text-orange-700 ring-orange-600/20',
+                                            'Completed' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
+                                            'Rejected by Warehouse' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
+                                            ][$requestOrder->status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
+                                            @endphp
+                                            <div>
+                                                <span class="{{ $statusClass }} inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter ring-1 ring-inset">
+                                                    {{ $requestOrder->status }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Kategori</label>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                @php
+                                                $firstItem = $requestOrder->items->first();
+                                                $kategori = $firstItem->kategori_barang ?? ($firstItem->kategori ?? ($firstItem->barang->kategori ?? '-'));
+                                                @endphp
+                                                {{ $kategori }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Group: Customer & Sales -->
+                                <div class="space-y-5">
+                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
+                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
+                                        Customer & PIC
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Nama Customer</label>
+                                            <p class="text-sm font-bold leading-tight text-gray-900 dark:text-white">{{ $requestOrder->customer_name }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">PIC (Customer)</label>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-[10px] font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+                                                    {{ substr($requestOrder->pic->name ?? $requestOrder->sales->name ?? 'S', 0, 1) }}
+                                                </div>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->pic->name ?? $requestOrder->sales->name ?? '-' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">No. PO</label>
+                                            <p class="font-mono text-sm text-gray-600 dark:text-gray-400">{{ $requestOrder->no_po ?? '-' }}</p>
+                                        </div>
+                                        <div class="space-y-1 md:col-span-2">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Subject / Keterangan</label>
+                                            <p class="text-sm font-medium italic text-gray-600 dark:text-gray-400">"{{ $requestOrder->subject ?? '-' }}"</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Group: Timeline -->
+                                <div class="space-y-5 border-t border-gray-50 pt-4 dark:border-gray-700/50 md:col-span-2">
+                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
+                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
+                                        Jadwal & Validitas
+                                    </h3>
+                                    <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Tgl Penawaran</label>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->created_at->format('d M Y') }}</p>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Tgl Kebutuhan</label>
+                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->required_date_formatted }}</p>
+                                        </div>
+                                        <div class="space-y-1 md:col-span-2">
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">Masa Berlaku</label>
+                                            <div class="flex items-center space-x-3">
+                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $requestOrder->valid_date_formatted ?? '-' }}</p>
+                                                @php
+                                                $expiryDate = $requestOrder->expired_at ?? $requestOrder->valid_date;
+                                                @endphp
+                                                @if ($expiryDate)
+                                                @php
+                                                $isExpired = now() > $expiryDate;
+                                                $daysLeft = now()->diffInDays($expiryDate, false);
+                                                @endphp
+                                                @if ($isExpired)
+                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase text-red-700">Expired</span>
+                                                @else
+                                                <span class="{{ $daysLeft <= 3 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' }} inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase">
+                                                    {{ floor($daysLeft) }} Hari Lagi
+                                                </span>
+                                                @endif
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+=======
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
                 <!-- Left Column: Informasi Penawaran -->
                 <div class="lg:col-span-2 space-y-6">
@@ -257,6 +401,7 @@
                                     class="inline-flex items-center rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
                                     {{ $requestOrder->request_number }}
                                 </span>
+>>>>>>> 9b410d13d243a2b020c9881aa536c426d797b204
                             </div>
                         </div>
 
