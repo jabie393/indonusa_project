@@ -238,17 +238,29 @@
 
 
             {{-- Warehouse --}}
+            @php
+                $sidebarSupplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')->count();
+                $sidebarDeliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                $hasWarehouseNotification = $sidebarSupplyOrderCount > 0 || $sidebarDeliveryOrderCount > 0;
+            @endphp
             <li>
                 <a href="{{ route('warehouse.index') }}"
-                    class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31" fill="none"
-                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
-                        <path
+                    class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                    <div class="flex">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31" fill="none"
+                            class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                            <path
                             d="M6.21582 14.4103H10.0143V18.1884H6.21582V14.4103ZM6.21582 23.2138H10.0143V19.4356H6.21582V23.2138ZM6.21582 28.227H10.0143V24.4489H6.21582V28.227ZM11.1416 23.2138H14.9299V19.4356H11.1314V23.2138H11.1416ZM11.1416 28.227H14.9299V24.4489H11.1314V28.227H11.1416ZM16.0674 24.4489V28.227H19.8658V24.4489H16.0674ZM25.8986 9.71182L13.0307 2.49463L0.172852 9.73603L0.975195 11.7341L2.61035 10.8017V28.2392H4.45879V10.729H21.6229V28.2634H23.4713V10.8259L25.1064 11.7341L25.8986 9.71182Z"
                             fill="currentColor" />
-                    </svg>
-                    <span
-                        class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Warehouse</span>
+                        </svg>
+                        <span class="ml-3 flex items-center gap-2">
+                            <span
+                            class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">Warehouse</span>
+                        </span>
+                    </div>
+                    @if ($hasWarehouseNotification && auth()->user()->role === 'Warehouse')
+                        <span class="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500"></span>
+                    @endif
                 </a>
             </li>
 
