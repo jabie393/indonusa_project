@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Admin\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use App\Models\Quotation;
+use App\Models\CustomQuotation;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesPerformanceExport;
@@ -56,12 +61,12 @@ class SupervisorDashboardController extends Controller
             $compEnd = \Carbon\Carbon::now()->subMonth()->endOfMonth();
         }
 
-        // A. Waiting Approval (RequestOrder + CustomPenawaran pending supervisor)
+        // A. Waiting Approval (Quotation + CustomQuotation pending supervisor)
         // Note: Pending is usually current state, but we filter by creation date if requested
-        $pendingROQuery = \App\Models\RequestOrder::whereHas('order', function($q) {
+        $pendingROQuery = \App\Models\Quotation::whereHas('order', function($q) {
             $q->where('status', 'sent_to_supervisor');
         });
-        $pendingCPQuery = \App\Models\CustomPenawaran::where('status', 'pending_approval');
+        $pendingCPQuery = \App\Models\CustomQuotation::where('status', 'pending_approval');
         
         $totalPending = (clone $pendingROQuery)->whereBetween('created_at', [$start, $end])->count() 
             + (clone $pendingCPQuery)->whereBetween('created_at', [$start, $end])->count();
@@ -74,8 +79,8 @@ class SupervisorDashboardController extends Controller
         $totalApproved = (clone $approvedQuery)->whereBetween('created_at', [$start, $end])->count();
         $lastMonthApproved = (clone $approvedQuery)->whereBetween('created_at', [$compStart, $compEnd])->count();
 
-        // C. Revenue (Sum subtotal from RequestOrder where Order is completed/approved)
-        $revenueQuery = \App\Models\RequestOrder::whereHas('order', function($q) {
+        // C. Revenue (Sum subtotal from Quotation where Order is completed/approved)
+        $revenueQuery = \App\Models\Quotation::whereHas('order', function($q) {
             $q->whereIn('status', ['approved_warehouse', 'completed']);
         });
         $totalRevenue = (clone $revenueQuery)->whereBetween('created_at', [$start, $end])->sum('subtotal');
@@ -92,11 +97,11 @@ class SupervisorDashboardController extends Controller
         $imcMasuk = []; // Requests
         $imcKeluar = []; // Completed
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = (float) \App\Models\RequestOrder::whereYear('created_at', $selectedYear)
+            $imcMasuk[] = (float) \App\Models\Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->sum('subtotal');
 
-            $imcKeluar[] = (float) \App\Models\RequestOrder::whereHas('order', function($q) {
+            $imcKeluar[] = (float) \App\Models\Quotation::whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
                 })
                 ->whereYear('created_at', $selectedYear)
@@ -104,7 +109,7 @@ class SupervisorDashboardController extends Controller
                 ->sum('subtotal');
         }
 
-        $imcYears = \App\Models\RequestOrder::selectRaw('YEAR(created_at) as year')
+        $imcYears = \App\Models\Quotation::selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')
@@ -120,7 +125,7 @@ class SupervisorDashboardController extends Controller
         $svcData = $statusCounts->pluck('total')->toArray();
 
         // 5. Pending Orders Table (respect date filter)
-        $pendingOrders = \App\Models\RequestOrder::with(['sales', 'customer'])
+        $pendingOrders = \App\Models\Quotation::with(['sales', 'customer'])
             ->whereHas('order', function($q) {
                 $q->where('status', 'sent_to_supervisor');
             })
@@ -133,16 +138,16 @@ class SupervisorDashboardController extends Controller
         $salesList = \App\Models\User::where('role', 'Sales')->get();
         $salesPerfData = [];
         foreach ($salesList as $s) {
-            $total = \App\Models\RequestOrder::where('sales_id', $s->id)
+            $total = \App\Models\Quotation::where('sales_id', $s->id)
                 ->whereBetween('created_at', [$start, $end])
                 ->count();
-            $approved = \App\Models\RequestOrder::where('sales_id', $s->id)
+            $approved = \App\Models\Quotation::where('sales_id', $s->id)
                 ->whereBetween('created_at', [$start, $end])
                 ->whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
                 })->count();
             
-            $revenue = \App\Models\RequestOrder::where('sales_id', $s->id)
+            $revenue = \App\Models\Quotation::where('sales_id', $s->id)
                 ->whereBetween('created_at', [$start, $end])
                 ->whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
@@ -213,11 +218,11 @@ class SupervisorDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = \App\Models\RequestOrder::whereYear('created_at', $selectedYear)
+            $imcMasuk[] = \App\Models\Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->sum('subtotal');
 
-            $imcKeluar[] = \App\Models\RequestOrder::whereHas('order', function($q) {
+            $imcKeluar[] = \App\Models\Quotation::whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
                 })
                 ->whereYear('created_at', $selectedYear)
@@ -239,7 +244,7 @@ class SupervisorDashboardController extends Controller
         $svcData = $statusCounts->pluck('total')->toArray();
 
         // Also return updated years for select
-        $imcYears = \App\Models\RequestOrder::selectRaw('YEAR(created_at) as year')
+        $imcYears = \App\Models\Quotation::selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')

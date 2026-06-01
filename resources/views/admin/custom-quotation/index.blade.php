@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="item-center flex p-3">
@@ -58,7 +58,7 @@
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
                             <td class="px-4 py-4">{{ $penawaran->id }}</td>
                             <td class="px-4 py-4">
-                                <span class="text-nowrap font-semibold">{{ $penawaran->penawaran_number }}</span>
+                                <span class="text-nowrap font-semibold">{{ $penawaran->quotation_number }}</span>
                             </td>
                             <td class="text-nowrap px-4 py-4">{{ $penawaran->to }}</td>
                             <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>

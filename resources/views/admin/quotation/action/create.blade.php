@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
 
 
@@ -139,7 +139,7 @@
                                 <label for="sales_order_number" class="form-label text-gray-700 dark:text-gray-300">No. SO</label>
                                 <input type="text"
                                     class="@error('sales_order_number') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="sales_order_number" name="sales_order_number" value="{{ old('sales_order_number', App\Models\RequestOrder::generateSalesOrderNumber()) }}"
+                                    id="sales_order_number" name="sales_order_number" value="{{ old('sales_order_number', App\Models\Quotation::generateSalesOrderNumber()) }}"
                                     placeholder="No. SO akan diisi otomatis" readonly>
                                 @error('sales_order_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -148,21 +148,21 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="tanggal_kebutuhan" class="form-label text-gray-700 dark:text-gray-300">Tanggal
+                                <label for="required_date" class="form-label text-gray-700 dark:text-gray-300">Tanggal
                                     Kebutuhan</label>
                                 <input type="date"
-                                    class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="tanggal_kebutuhan" name="tanggal_kebutuhan" value="{{ old('tanggal_kebutuhan') }}">
-                                @error('tanggal_kebutuhan')
+                                    class="@error('required_date') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="required_date" name="required_date" value="{{ old('required_date') }}">
+                                @error('required_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="catatan_customer" class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
+                                <label for="customer_notes" class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
                                 <textarea
-                                    class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="catatan_customer" name="catatan_customer" rows="4">{{ old('catatan_customer', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
-                                @error('catatan_customer')
+                                    class="@error('customer_notes') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    id="customer_notes" name="customer_notes" rows="4">{{ old('customer_notes', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                @error('customer_notes')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -230,7 +230,7 @@
                                 <tbody id="itemRows">
                                     <tr class="item-row">
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <select name="kategori_barang[]"
+                                            <select name="product_category[]"
                                                 class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                                 <option value="">Pilih Kategori</option>
                                                 @foreach ($categories as $cat)
@@ -260,7 +260,7 @@
                                                 </button>
 
                                                 <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                <select name="barang_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden" required
+                                                <select name="product_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden" required
                                                     onchange="updateKategoriBarang(this)">
                                                     <option value="">Pilih Barang</option>
                                                     @foreach ($goods as $b)
@@ -337,7 +337,7 @@
                                                 readonly>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number" name="diskon_percent[]"
+                                            <input type="number" name="discount_percent[]"
                                                 class="form-control diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                 min="0" max="100" step="0.01" value="0">
                                         </td>
@@ -358,7 +358,7 @@
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <div class="relative flex items-center">
                                                 <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
-                                                <input type="text" name="harga[]"
+                                                <input type="text" name="price[]"
                                                     class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     value="" placeholder="0">
                                             </div>

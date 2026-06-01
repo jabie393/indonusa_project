@@ -271,7 +271,7 @@
                                     <td class="px-4 py-3">{{ $out->goods_name }}</td>
                                     <td class="px-4 py-3">{{ $out->stock ?? '-' }}</td>
                                     <td class="px-4 py-3">{{ optional($out->formUser)->display_name ?? '-' }}</td> {{-- tampilkan name (role) dari kolom form --}}
-                                    <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Keluar') }}</td>
+                                    <td class="px-4 py-3">{{ $out->status ?? ($out->new_status ?? 'Out') }}</td>
                                 </tr>
                             @empty
                                 <tr>

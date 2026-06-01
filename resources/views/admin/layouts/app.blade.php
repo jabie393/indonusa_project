@@ -125,6 +125,10 @@
             </div>
         @endunless
     </div>
+
+    {{-- Manual Guide Modal --}}
+    @include('admin.layouts.partials.guide-modal')
+
     <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1"
             type="module"></script>
     <div id="notification-container"

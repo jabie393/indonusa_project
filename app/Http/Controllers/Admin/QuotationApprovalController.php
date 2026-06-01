@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\CustomPenawaran;
-use App\Models\RequestOrder;
+use App\Models\CustomQuotation;
+use App\Models\Quotation;
 use Illuminate\Support\Facades\Auth;
 
 class QuotationApprovalController extends Controller
@@ -18,13 +18,13 @@ class QuotationApprovalController extends Controller
     {
         $search = $request->get('search');
 
-        // Query for custom penawaran (status = 'sent')
-        $penawaransQuery = CustomPenawaran::where('status', 'sent')
+        // Query for custom quotation (status = 'sent')
+        $penawaransQuery = CustomQuotation::where('status', 'sent')
             ->with(['items', 'sales']);
 
         if ($search) {
             $penawaransQuery->where(function($q) use ($search) {
-                $q->where('penawaran_number', 'like', "%{$search}%")
+                $q->where('quotation_number', 'like', "%{$search}%")
                   ->orWhere('to', 'like', "%{$search}%")
                   ->orWhereHas('sales', function($q2) use ($search) {
                       $q2->where('name', 'like', "%{$search}%");
@@ -33,8 +33,8 @@ class QuotationApprovalController extends Controller
         }
         $penawarans = $penawaransQuery->get();
 
-        // Query for RequestOrders that require supervisor approval
-        $requestOrdersQuery = RequestOrder::whereHas('order', function($query) {
+        // Query for Quotations that require supervisor approval
+        $requestOrdersQuery = Quotation::whereHas('order', function($query) {
             $query->where('status', 'sent_to_supervisor');
         })->with(['items', 'sales', 'order', 'customer.pics']);
 
@@ -76,9 +76,9 @@ class QuotationApprovalController extends Controller
     /**
      * Approve regular quotation.
      */
-    public function approve(Request $request, RequestOrder $quotation)
+    public function approve(Request $request, Quotation $quotation)
     {
-        $order = Order::where('request_order_id', $quotation->id)->first();
+        $order = Order::where('quotation_id', $quotation->id)->first();
         if (! $order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
@@ -94,7 +94,7 @@ class QuotationApprovalController extends Controller
     /**
      * Reject regular quotation.
      */
-    public function reject(Request $request, RequestOrder $quotation)
+    public function reject(Request $request, Quotation $quotation)
     {
         $request->validate([
             'reason' => 'required|string|min:5|max:500',
@@ -103,7 +103,7 @@ class QuotationApprovalController extends Controller
             'reason.min' => 'Alasan penolakan minimal 5 karakter.',
         ]);
 
-        $order = Order::where('request_order_id', $quotation->id)->first();
+        $order = Order::where('quotation_id', $quotation->id)->first();
         if (! $order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
@@ -127,15 +127,15 @@ class QuotationApprovalController extends Controller
     {
         $search = $request->input('search');
 
-        // Request Orders (sent penawaran)
-        $roQuery = RequestOrder::with(['order', 'sales'])
+        // Quotations (sent quotation)
+        $roQuery = Quotation::with(['order', 'sales'])
             ->whereHas('order', function($q) {
                 $q->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
             });
 
         if ($search) {
             $roQuery->where(function($q) use ($search) {
-                $q->where('nomor_penawaran', 'LIKE', "%{$search}%")
+                $q->where('quotation_number', 'LIKE', "%{$search}%")
                   ->orWhere('customer_name', 'LIKE', "%{$search}%")
                   ->orWhereHas('sales', function($sq) use ($search) {
                       $sq->where('name', 'LIKE', "%{$search}%");
@@ -147,7 +147,7 @@ class QuotationApprovalController extends Controller
             return [
                 'type' => 'request_order',
                 'id' => $ro->id,
-                'number' => $ro->nomor_penawaran,
+                'number' => $ro->quotation_number,
                 'customer' => $ro->customer_name,
                 'sales' => $ro->sales->name ?? '-',
                 'grand_total' => 'Rp ' . number_format($ro->grand_total, 2, ',', '.'),
@@ -158,13 +158,13 @@ class QuotationApprovalController extends Controller
             ];
         });
 
-        // Custom Penawaran
-        $cpQuery = CustomPenawaran::with(['sales', 'order'])
+        // Custom Quotation
+        $cpQuery = CustomQuotation::with(['sales', 'order'])
             ->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
 
         if ($search) {
             $cpQuery->where(function($q) use ($search) {
-                $q->where('penawaran_number', 'LIKE', "%{$search}%")
+                $q->where('quotation_number', 'LIKE', "%{$search}%")
                   ->orWhere('to', 'LIKE', "%{$search}%")
                   ->orWhereHas('sales', function($sq) use ($search) {
                       $sq->where('name', 'LIKE', "%{$search}%");
@@ -176,7 +176,7 @@ class QuotationApprovalController extends Controller
             return [
                 'type' => 'custom_penawaran',
                 'id' => $cp->id,
-                'number' => $cp->penawaran_number,
+                'number' => $cp->quotation_number,
                 'customer' => $cp->to,
                 'sales' => $cp->sales->name ?? '-',
                 'grand_total' => 'Rp ' . number_format($cp->grand_total, 2, ',', '.'),

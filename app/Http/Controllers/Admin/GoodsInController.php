@@ -58,7 +58,7 @@ class GoodsInController extends Controller
         // Simpan id user yang submit ke kolom 'form'
         $validated['form'] = Auth::id();
 
-        $validated['goods_status'] = 'ditinjau';
+        $validated['goods_status'] = 'pending';
         $validated['request_type'] = 'primary'; // Set tipe_request primary
 
         $barang = Barang::create($validated);

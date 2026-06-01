@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Barang;
+use App\Models\Quotation;
+use App\Models\QuotationItem;
+use App\Models\CustomQuotation;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Exports\QuotationsReportExportSales;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -43,19 +48,19 @@ class SalesDashboardController extends Controller
         $lastMonthStart = \Carbon\Carbon::now()->subMonth()->startOfMonth();
         $lastMonthEnd = \Carbon\Carbon::now()->subMonth()->endOfMonth();
 
-        // Total orders (Order model + CustomPenawaran)
+        // Total orders (Order model + CustomQuotation)
         $totalQuotationQuery = \App\Models\Order::where('sales_id', $user->id);
-        $totalCustomQuotationQuery = \App\Models\CustomPenawaran::where('sales_id', $user->id)
+        $totalCustomQuotationQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
             ->whereIn('status', ['pending_approval', 'sent_to_warehouse', 'open','approved_supervisor', 'approved_warehouse']);
 
         $totalQuotation = $totalQuotationQuery->count() + $totalCustomQuotationQuery->count();
         $lastMonthQuotation = (clone $totalQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
             + (clone $totalCustomQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
 
-        // Approved Orders (Order model + CustomPenawaran)
+        // Approved Orders (Order model + CustomQuotation)
         $approvedOrderQuery = \App\Models\Order::where('sales_id', $user->id)
             ->whereIn('status', ['approved_supervisor', 'approved_warehouse', 'open']);
-        $approvedCustomQuery = \App\Models\CustomPenawaran::where('sales_id', $user->id)
+        $approvedCustomQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
             ->whereIn('status', ['approved_supervisor', 'open']);
 
         $totalApproved = $approvedOrderQuery->count() + $approvedCustomQuery->count();
@@ -70,8 +75,8 @@ class SalesDashboardController extends Controller
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->count();
 
-        // Total Profit (Sum of subtotal from completed RequestOrders)
-        $profitQuery = \App\Models\RequestOrder::where('sales_id', $user->id)
+        // Total Profit (Sum of subtotal from completed Quotations)
+        $profitQuery = \App\Models\Quotation::where('sales_id', $user->id)
             ->whereHas('order', function($q) {
                 $q->where('status', 'completed');
             });
@@ -86,14 +91,14 @@ class SalesDashboardController extends Controller
         $imcMasuk = []; // We'll use this for 'Request'
         $imcKeluar = []; // We'll use this for 'Approved'
         for ($m = 1; $m <= 12; $m++) {
-            // Potensi Laba (Subtotal all RequestOrders)
-            $imcMasuk[] = (float) \App\Models\RequestOrder::where('sales_id', $user->id)
+            // Potensi Laba (Subtotal all Quotations)
+            $imcMasuk[] = (float) \App\Models\Quotation::where('sales_id', $user->id)
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->sum('subtotal');
 
             // Laba Selesai (Subtotal where associated order is completed)
-            $imcKeluar[] = (float) \App\Models\RequestOrder::where('sales_id', $user->id)
+            $imcKeluar[] = (float) \App\Models\Quotation::where('sales_id', $user->id)
                 ->whereHas('order', function($q) {
                     $q->where('status', 'completed');
                 })
@@ -102,7 +107,7 @@ class SalesDashboardController extends Controller
                 ->sum('subtotal');
         }
 
-        $imcYears = \App\Models\RequestOrder::where('sales_id', $user->id)
+        $imcYears = \App\Models\Quotation::where('sales_id', $user->id)
             ->whereHas('order', function($q) {
                 $q->where('status', 'completed');
             })
@@ -115,14 +120,14 @@ class SalesDashboardController extends Controller
         if (empty($imcYears)) $imcYears = [now()->year];
 
         // 4. Chart Data (SVC - Best Sellers from Completed Orders)
-        $topItems = \App\Models\RequestOrderItem::join('request_orders', 'request_order_items.request_order_id', '=', 'request_orders.id')
-            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
-            ->where('request_orders.sales_id', $user->id)
+        $topItems = \App\Models\QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
+            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
+            ->where('quotations.sales_id', $user->id)
             ->where('orders.status', 'completed')
-            ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
-                DB::raw('SUM(request_order_items.quantity) as total_qty')
+                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
+                DB::raw('SUM(quotation_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
             ->orderByDesc('total_qty')
@@ -132,7 +137,7 @@ class SalesDashboardController extends Controller
         $svcData = $topItems->pluck('total_qty')->toArray();
 
         // 5. Table Data (Latest Request Orders)
-        $salesOrders = \App\Models\RequestOrder::where('sales_id', $user->id)
+        $salesOrders = \App\Models\Quotation::where('sales_id', $user->id)
             ->with(['order', 'items'])
             ->latest()
             ->take(10)
@@ -180,7 +185,7 @@ class SalesDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = \App\Models\RequestOrder::where('sales_id', $user->id)
+            $imcMasuk[] = \App\Models\Quotation::where('sales_id', $user->id)
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
                 ->count();
@@ -191,14 +196,14 @@ class SalesDashboardController extends Controller
                 ->count();
         }
 
-        $topItems = \App\Models\RequestOrderItem::join('request_orders', 'request_order_items.request_order_id', '=', 'request_orders.id')
-            ->join('orders', 'request_orders.id', '=', 'orders.request_order_id')
-            ->where('request_orders.sales_id', $user->id)
+        $topItems = \App\Models\QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
+            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
+            ->where('quotations.sales_id', $user->id)
             ->where('orders.status', 'completed')
-            ->leftJoin('goods', 'request_order_items.barang_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
-                DB::raw('COALESCE(goods.goods_name, request_order_items.nama_barang_custom) as item_name'), 
-                DB::raw('SUM(request_order_items.quantity) as total_qty')
+                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
+                DB::raw('SUM(quotation_items.quantity) as total_qty')
             )
             ->groupBy('item_name')
             ->orderByDesc('total_qty')

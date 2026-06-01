@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\CustomPenawaran;
+use App\Models\CustomQuotation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,14 +16,14 @@ class CustomQuotationApprovalController extends Controller
      */
     public function index(Request $request)
     {
-        $query = CustomPenawaran::where('status', 'pending_approval')
+        $query = CustomQuotation::where('status', 'pending_approval')
             ->with('items', 'sales')
             ->latest();
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('penawaran_number', 'like', "%{$search}%")
+                $q->where('quotation_number', 'like', "%{$search}%")
                     ->orWhere('to', 'like', "%{$search}%")
                     ->orWhere('subject', 'like', "%{$search}%")
                     ->orWhereHas('sales', function ($subQ) use ($search) {
@@ -45,7 +45,7 @@ class CustomQuotationApprovalController extends Controller
     /**
      * Supervisor approve/reject a single custom penawaran.
      */
-    public function approve(Request $request, CustomPenawaran $customQuotation)
+    public function approve(Request $request, CustomQuotation $customQuotation)
     {
         $action = $request->input('action');
         if (! in_array($customQuotation->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
@@ -96,7 +96,7 @@ class CustomQuotationApprovalController extends Controller
 
         DB::beginTransaction();
         try {
-            $penawarans = CustomPenawaran::whereIn('id', $ids)
+            $penawarans = CustomQuotation::whereIn('id', $ids)
                 ->where('status', 'pending_approval')
                 ->get();
 

@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     @php
         $dariCustomPenawaran = !empty($requestOrder->custom_penawaran_id) && $requestOrder->customPenawaran !== null;
         $cp = $dariCustomPenawaran ? $requestOrder->customPenawaran : null;
@@ -252,46 +252,46 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="tanggal_kebutuhan"
+                                <label for="required_date"
                                        class="form-label dark:text-gray-300">Tanggal
                                     Kebutuhan</label>
                                 <input type="date"
-                                       class="@error('tanggal_kebutuhan') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                       id="tanggal_kebutuhan"
-                                       name="tanggal_kebutuhan"
-                                       value="{{ old('tanggal_kebutuhan', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) : ($requestOrder->tanggal_kebutuhan ? \Carbon\Carbon::parse($requestOrder->tanggal_kebutuhan)->format('Y-m-d') : '')) }}">
+                                       class="@error('required_date') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                       id="required_date"
+                                       name="required_date"
+                                       value="{{ old('required_date', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) }}">
                                 @if ($dariCustomPenawaran && $cp->date)
                                     <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
                                         Auto-terisi dari tanggal Custom Quotation. Bisa diubah jika perlu.
                                     </small>
                                 @endif
-                                @error('tanggal_kebutuhan')
+                                @error('required_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="tanggal_berlaku"
+                                <label for="valid_date"
                                        class="form-label dark:text-gray-300">Masa Berlaku</label>
                                 <input type="datetime-local"
-                                       class="@error('tanggal_berlaku') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                       id="tanggal_berlaku"
-                                       name="tanggal_berlaku"
-                                       value="{{ old('tanggal_berlaku', $requestOrder->tanggal_berlaku ? $requestOrder->tanggal_berlaku->format('Y-m-d\TH:i') : '') }}">
-                                @error('tanggal_berlaku')
+                                       class="@error('valid_date') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                       id="valid_date"
+                                       name="valid_date"
+                                       value="{{ old('valid_date', $requestOrder->valid_date ? $requestOrder->valid_date->format('Y-m-d\TH:i') : '') }}">
+                                @error('valid_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted dark:text-gray-400">Tanggal dan waktu hingga penawaran berlaku</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="catatan_customer"
+                                <label for="customer_notes"
                                        class="form-label dark:text-gray-300">Catatan</label>
-                                <textarea class="@error('catatan_customer') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                          id="catatan_customer"
-                                          name="catatan_customer"
-                                          rows="4">{{ old('catatan_customer', $requestOrder->catatan_customer ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
-                                @error('catatan_customer')
+                                <textarea class="@error('customer_notes') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                          id="customer_notes"
+                                          name="customer_notes"
+                                          rows="4">{{ old('customer_notes', $requestOrder->customer_notes ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                @error('customer_notes')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -368,22 +368,22 @@
                                                            name="existing_item_images[{{ $loop->parent->index }}][]"
                                                            value="{{ $existingImg }}">
                                                 @endforeach
-                                                <select name="kategori_barang[]"
+                                                <select name="product_category[]"
                                                         class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                                     <option value="">Pilih Kategori</option>
                                                     @foreach ($categories as $cat)
                                                         <option value="{{ $cat }}"
-                                                                @selected(($item->kategori_barang ?? optional($item->barang)->category) === $cat)>
+                                                                @selected(($item->product_category ?? optional($item->barang)->category) === $cat)>
                                                             {{ $cat }}
                                                         </option>
                                                     @endforeach
                                                 </select>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                @if ($item->barang_id === null && $item->nama_barang_custom)
+                                                @if ($item->product_id === null && $item->custom_product_name)
                                                     {{-- Item dari Custom Quotation: tidak ada di tabel goods --}}
                                                     <input type="hidden"
-                                                           name="barang_id[]"
+                                                           name="product_id[]"
                                                            value="">
                                                     <span class="block rounded-lg bg-indigo-50 px-2.5 py-2 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
                                                         Custom Item
@@ -401,7 +401,7 @@
                                                         </button>
 
                                                         <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                        <select name="barang_id[]"
+                                                        <select name="product_id[]"
                                                                 class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                                 required
                                                                 onchange="updateKategoriBarang(this)">
@@ -415,9 +415,9 @@
                                                                         data-satuan="{{ $b->unit ?? '' }}"
                                                                         data-harga="{{ $b->selling_price ?? 0 }}"
                                                                         data-diskon="{{ $b->discount_percent ?? 0 }}"
-                                                                        @selected($item->barang_id === $b->id)>
+                                                                        @selected($item->product_id === $b->id)>
                                                                     {{ $b->goods_code }}
-                                                                </option>
+                                                                 </option>
                                                             @endforeach
                                                         </select>
 
@@ -443,7 +443,7 @@
                                                                     </thead>
                                                                     <tbody class="divide-y divide-subtle/30 barang-options-body">
                                                                         @foreach ($goods as $b)
-                                                                            <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row {{ $item->barang_id === $b->id ? 'bg-secondary-container/10 hover:bg-secondary-container/20' : '' }}"
+                                                                            <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row {{ $item->product_id === $b->id ? 'bg-secondary-container/10 hover:bg-secondary-container/20' : '' }}"
                                                                                 data-id="{{ $b->id }}"
                                                                                 data-kode="{{ $b->goods_code }}"
                                                                                 data-nama="{{ $b->goods_name }}"
@@ -453,7 +453,7 @@
                                                                                 <td class="px-4 py-3 text-body-sm text-nowrap">{{ $b->goods_name }}</td>
                                                                                 <td class="px-4 py-3 text-[12px] text-on-surface-variant">{{ $b->description ?? '-' }}</td>
                                                                                 <td class="pr-4 text-primary text-right select-check-icon">
-                                                                                    <span class="material-symbols-outlined text-[18px] checked-icon {{ $item->barang_id === $b->id ? '' : 'hidden' }}"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></span>
+                                                                                    <span class="material-symbols-outlined text-[18px] checked-icon {{ $item->product_id === $b->id ? '' : 'hidden' }}"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg></span>
                                                                                 </td>
                                                                             </tr>
                                                                         @endforeach
@@ -465,17 +465,17 @@
                                                 @endif
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                @if ($item->barang_id === null && $item->nama_barang_custom)
+                                                @if ($item->product_id === null && $item->custom_product_name)
                                                     {{-- Custom item: nama bisa diedit manual --}}
                                                     <input type="text"
-                                                           name="nama_barang_custom[]"
+                                                           name="custom_product_name[]"
                                                            class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                           value="{{ is_array(old('nama_barang_custom', $item->nama_barang_custom)) ? old('nama_barang_custom', $item->nama_barang_custom)[0] ?? '' : old('nama_barang_custom', $item->nama_barang_custom) }}"
+                                                           value="{{ is_array(old('custom_product_name', $item->custom_product_name)) ? old('custom_product_name', $item->custom_product_name)[0] ?? '' : old('custom_product_name', $item->custom_product_name) }}"
                                                            placeholder="Nama barang">
                                                 @else
                                                     {{-- Regular item: readonly, auto-filled dari select barang --}}
                                                     <input type="hidden"
-                                                           name="nama_barang_custom[]"
+                                                           name="custom_product_name[]"
                                                            value="">
                                                     <input type="text"
                                                            class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -485,12 +485,12 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number"
-                                                       name="diskon_percent[]"
+                                                       name="discount_percent[]"
                                                        class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        min="0"
                                                        max="100"
                                                        step="0.01"
-                                                       value="{{ is_array(old('diskon_percent', $item->diskon_percent ?? ($item->barang->discount_percent ?? 0))) ? old('diskon_percent', $item->diskon_percent ?? ($item->barang->discount_percent ?? 0))[0] ?? '' : old('diskon_percent', $item->diskon_percent ?? ($item->barang->discount_percent ?? 0)) }}">
+                                                       value="{{ is_array(old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0))) ? old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0))[0] ?? '' : old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0)) }}">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text"
@@ -499,7 +499,7 @@
                                                        class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        placeholder="Isi jika diskon > 20%"
                                                        value="{{ is_array(old('keterangan', $item->keterangan)) ? old('keterangan', $item->keterangan)[0] ?? '' : old('keterangan', $item->keterangan) }}"
-                                                       {{ ($item->diskon_percent ?? 0) > 20 ? '' : 'disabled' }}>
+                                                       {{ ($item->discount_percent ?? 0) > 20 ? '' : 'disabled' }}>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number"
@@ -513,7 +513,7 @@
                                                 <div class="relative flex items-center">
                                                     <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
                                                     <input type="text"
-                                                           name="harga[]"
+                                                           name="price[]"
                                                            class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                            value="{{ number_format(is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? 0 : old('harga', $item->harga), 2, '.', ',') }}"
                                                            readonly>
@@ -597,7 +597,7 @@
                                     @empty
                                         <tr class="item-row">
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                <select name="kategori_barang[]"
+                                                <select name="product_category[]"
                                                         class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                                     <option value="">Pilih Kategori</option>
                                                     @foreach ($categories as $cat)
@@ -619,7 +619,7 @@
                                                     </button>
 
                                                     <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                    <select name="barang_id[]"
+                                                    <select name="product_id[]"
                                                             class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                             required
                                                             onchange="updateKategoriBarang(this)">
@@ -687,7 +687,7 @@
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number"
-                                                       name="diskon_percent[]"
+                                                       name="discount_percent[]"
                                                        class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                        min="0"
                                                        max="100"
@@ -714,7 +714,7 @@
                                                 <div class="relative flex items-center">
                                                     <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
                                                     <input type="text"
-                                                           name="harga[]"
+                                                           name="price[]"
                                                            class="harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                            value="0.00"
                                                            readonly>
@@ -1260,7 +1260,7 @@
                 newRow.className = 'item-row';
                 newRow.innerHTML = `
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <select name="kategori_barang[]" class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <select name="product_category[]" class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             <option value="">Pilih Kategori</option>
                             @foreach ($categories as $cat)
                                 <option value="{{ $cat }}">{{ $cat }}</option>
@@ -1275,7 +1275,7 @@
                                     <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="currentColor"></path> </g></svg>
                                 </span>
                             </button>
-                            <select name="barang_id[]" class="form-control barang-select hidden" required onchange="updateKategoriBarang(this)">
+                            <select name="product_id[]" class="form-control barang-select hidden" required onchange="updateKategoriBarang(this)">
                                 ${getBarangOptionsHTML()}
                             </select>
                             <div class="fixed w-[600px] bg-white border border-subtle rounded-xl shadow-2xl z-[9999] overflow-hidden hidden dropdown-menu-container">
@@ -1307,7 +1307,7 @@
                         <input type="text" class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="number" name="diskon_percent[]" class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
+                        <input type="number" name="discount_percent[]" class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                         <input type="text" name="keterangan[]" maxlength="255" class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" disabled>
@@ -1316,7 +1316,7 @@
                         <input type="number" name="quantity[]" class="quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="text" name="harga[]" class="harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="0.00" readonly>
+                        <input type="text" name="price[]" class="harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="0.00" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
                         <div class="upload-btn-container relative">

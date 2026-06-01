@@ -147,7 +147,7 @@ class ImportExcelController extends Controller
 
                         $payload = [
                             'request_type' => 'primary',
-                            'goods_status' => 'ditinjau',
+                            'goods_status' => 'pending',
                             'status_listing' => $r['status_listing'] ?? 'listing',
                             'goods_code' => $kode,
                             'goods_name' => $r['goods_name'] ?? 'Unnamed',
@@ -291,7 +291,7 @@ class ImportExcelController extends Controller
 
                 $payload = [
                     'request_type' => 'primary',
-                    'goods_status' => 'ditinjau',
+                    'goods_status' => 'pending',
                     'status_listing' => $data['status_listing'] ?? 'listing',
                     'goods_code' => $kode,
                     'goods_name' => $data['goods_name'] ?? 'Unnamed',

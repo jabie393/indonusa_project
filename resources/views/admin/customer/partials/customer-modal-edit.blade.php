@@ -270,21 +270,21 @@
 
         // Isi data form
         document.getElementById('editCustomerId').value = customer.id;
-        document.getElementById('editName').value = customer.nama_customer || '';
+        document.getElementById('editName').value = customer.customer_name || customer.nama_customer || '';
         document.getElementById('editNpwp').value = customer.npwp || '';
-        document.getElementById('editTipeCustomer').value = customer.tipe_customer ? customer.tipe_customer
-            .toLowerCase() : 'pribadi';
+        document.getElementById('editTipeCustomer').value = (customer.customer_type || customer.tipe_customer) ? 
+            (customer.customer_type || customer.tipe_customer).toLowerCase() : 'pribadi';
         document.getElementById('editTermOfPayments').value = customer.term_of_payments || '';
         
-        const rawLimit = customer.kredit_limit || '';
+        const rawLimit = customer.credit_limit || customer.kredit_limit || '';
         document.getElementById('editKreditLimit').value = rawLimit.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         
-        document.getElementById('editAlamatPenagihan').value = customer.alamat_penagihan || '';
-        document.getElementById('editAlamatPengiriman').value = customer.alamat_pengiriman || '';
-        document.getElementById('editKota').value = customer.kota || '';
-        document.getElementById('editProvinsi').value = customer.provinsi || '';
-        document.getElementById('editKodePos').value = customer.kode_pos || '';
-        document.getElementById('editTelepon').value = customer.telepon || '';
+        document.getElementById('editAlamatPenagihan').value = customer.billing_address || customer.alamat_penagihan || '';
+        document.getElementById('editAlamatPengiriman').value = customer.shipping_address || customer.alamat_pengiriman || '';
+        document.getElementById('editKota').value = customer.city || customer.kota || '';
+        document.getElementById('editProvinsi').value = customer.province || customer.provinsi || '';
+        document.getElementById('editKodePos').value = customer.postal_code || customer.kode_pos || '';
+        document.getElementById('editTelepon').value = customer.phone || customer.telepon || '';
         document.getElementById('editEmail').value = customer.email || '';
 
         // Populate Status Toggle or Badge

@@ -17,10 +17,10 @@
         <tbody>
             @foreach ($requestOrders as $ro)
             <tr>
-                <td>{{ $ro->nomor_penawaran }}</td>
+                <td>{{ $ro->quotation_number }}</td>
                 <td>{{ $ro->customer_name }}</td>
                 <td>{{ $ro->sales->name ?? '-' }}</td>
-                <td>{{ $ro->items->max('diskon_percent') }}%</td>
+                <td>{{ $ro->items->max('discount_percent') }}%</td>
                 <td>Rp {{ number_format($ro->grand_total, 2, ',', '.') }}</td>
                 <td>{{ $ro->created_at->format('d-m-Y H:i') }}</td>
                 <td>

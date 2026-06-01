@@ -88,8 +88,8 @@
                 </div>
             @elseif (request()->routeIs('sales.quotation.*'))
                 @php
-                    $ro = request()->route('requestOrder') ?? request()->route('request_order');
-                    $requestNumber = optional($ro)->request_number ?? (optional($ro)->nomor_penawaran ?? '');
+                    $ro = request()->route('quotation') ?? request()->route('requestOrder') ?? request()->route('request_order');
+                    $requestNumber = optional($ro)->request_number ?? (optional($ro)->quotation_number ?? '');
                 @endphp
                 <div class="hidden text-gray-100 md:block">
                     @if (request()->routeIs('sales.quotation.show'))
