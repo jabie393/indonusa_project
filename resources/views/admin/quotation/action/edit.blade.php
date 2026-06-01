@@ -1806,17 +1806,12 @@
 
             function updateRemoveButtons() {
                 const rows = document.querySelectorAll('.item-row');
-                const isSingleRow = rows.length <= 1;
                 rows.forEach((row) => {
                     const btn = row.querySelector('.remove-row');
                     if (!btn) return;
                     btn.style.display = 'inline-block';
-                    btn.disabled = isSingleRow;
-                    if (isSingleRow) {
-                        btn.classList.add('opacity-50', 'cursor-not-allowed');
-                    } else {
-                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    }
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
                 });
             }
 

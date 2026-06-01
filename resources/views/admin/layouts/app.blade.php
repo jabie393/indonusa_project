@@ -13,7 +13,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <link rel="icon"
-          href="{{ asset('images/icon/ryu.png') }}">
+          href="{{ asset('images/icon/logo.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect"

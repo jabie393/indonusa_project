@@ -8,7 +8,7 @@
         <meta name="keywords" content="Indonusa Jaya Bersama, building materials, hardware tools, laboratory equipment, Surabaya distributor">
 
         <title>{{ config('app.name', 'PT Indonusa Jaya Bersama') }} - One Stop Solution</title>
-        <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
+        <link rel="icon" href="{{ asset('images/icon/logo.png') }}">
 
         <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
