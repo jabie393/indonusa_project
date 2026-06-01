@@ -40,20 +40,85 @@
                             <div class="col-span-2 flex flex-col">
                                 <label for="customer_id" class="form-label text-gray-700 dark:text-gray-300">Pilih
                                     Customer <span class="text-danger">*</span></label>
-                                <select
-                                    class="@error('customer_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
-                                    <option value="">-- Pilih Customer --</option>
-                                    @foreach ($customers as $c)
-                                        <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
-                                            @selected(old('customer_id') == $c->id)>
-                                            {{ $c->nama_customer }}
-                                            @if ($c->email)
-                                                ({{ $c->email }})
-                                            @endif
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <div class="customer-dropdown-container relative">
+                                    <button type="button"
+                                        class="border-subtle bg-surface text-body-sm text-on-surface-variant hover:border-primary customer-dropdown-toggle-btn flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all">
+                                        <span class="selected-customer-label text-nowrap">
+                                            @php
+                                                $selectedCustomer = $customers->firstWhere('id', old('customer_id'));
+                                            @endphp
+                                            {{ $selectedCustomer ? $selectedCustomer->nama_customer : '-- Pilih Customer --' }}
+                                        </span>
+                                        <span class="h-[16px] w-[16px] text-[4px]">
+                                            <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z"
+                                                    fill="currentColor"></path>
+                                            </svg>
+                                        </span>
+                                    </button>
+
+                                    <select class="@error('customer_id') is-invalid @enderror hidden" id="customer_id" name="customer_id" required onchange="populateCustomerData(this.value)">
+                                        <option value="">-- Pilih Customer --</option>
+                                        @foreach ($customers as $c)
+                                            <option value="{{ $c->id }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
+                                                @selected(old('customer_id') == $c->id)>
+                                                {{ $c->nama_customer }}
+                                                @if ($c->email)
+                                                    ({{ $c->email }})
+                                                @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <div class="border-subtle customer-dropdown-menu fixed z-[9999] hidden w-[600px] overflow-hidden rounded-xl border bg-white shadow-2xl">
+                                        <div class="border-subtle bg-surface-container-low border-b p-3">
+                                            <div class="relative">
+                                                <span class="text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2 text-[18px]">
+                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M14.9536 14.9458L21 21M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                </span>
+                                                <input
+                                                    class="border-subtle text-body-sm focus:ring-primary focus:border-primary search-customer-input w-full rounded-lg border bg-white py-2 pl-10 pr-4 outline-none focus:ring-1"
+                                                    placeholder="Cari nama, email, telepon, atau kota customer..." type="text">
+                                            </div>
+                                        </div>
+                                        <div class="max-h-[300px] overflow-y-auto">
+                                            <table class="w-full text-left">
+                                                <thead class="border-subtle sticky top-0 border-b bg-white">
+                                                    <tr>
+                                                        <th class="font-table-header text-on-surface-variant px-4 py-2 text-[11px] uppercase tracking-wider">Nama Customer</th>
+                                                        <th class="font-table-header text-on-surface-variant px-4 py-2 text-[11px] uppercase tracking-wider">Email</th>
+                                                        <th class="font-table-header text-on-surface-variant px-4 py-2 text-[11px] uppercase tracking-wider">Telepon</th>
+                                                        <th class="font-table-header text-on-surface-variant px-4 py-2 text-[11px] uppercase tracking-wider">Kota</th>
+                                                        <th class="w-8"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-subtle/30 customer-options-body divide-y">
+                                                    @foreach ($customers as $c)
+                                                        <tr class="hover:bg-surface-container-high customer-option-row cursor-pointer" data-id="{{ $c->id }}"
+                                                            data-nama="{{ $c->nama_customer }}" data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}">
+                                                            <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">{{ $c->nama_customer }}</td>
+                                                            <td class="text-body-sm text-nowrap px-4 py-3">{{ $c->email ?? '-' }}</td>
+                                                            <td class="text-body-sm text-nowrap px-4 py-3">{{ $c->telepon ?? '-' }}</td>
+                                                            <td class="text-on-surface-variant px-4 py-3 text-[12px]">{{ $c->kota ?? '-' }}</td>
+                                                            <td class="text-primary select-check-icon pr-4 text-right">
+                                                                <span class="customer-checked-icon hidden text-[18px]">
+                                                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                        </path>
+                                                                    </svg>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                                 @error('customer_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -454,8 +519,173 @@
                                             <p class="text-2xl font-bold text-gray-900 dark:text-white" id="summaryPPN">Rp 0</p>
                                         </div>
                                         <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
-                                            <svg class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-6 0l6 6m-6-6v12"></path>
+                                            <svg fill="currentColor"class="h-6 w-6 text-green-600 dark:text-green-300" fill="none" stroke="currentColor" version="1.1" id="Layer_1"
+                                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
+                                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                                <g id="SVGRepo_iconCarrier">
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M427.023,0H84.977C71.126,0,59.858,11.268,59.858,25.119v461.762c0,13.851,11.268,25.119,25.119,25.119h265.086 c2.126,0,4.166-0.844,5.668-2.348l94.063-94.063c1.504-1.503,2.348-3.542,2.348-5.668V25.119C452.142,11.268,440.874,0,427.023,0z M358.079,484.63v-57.607c0-5.01,4.076-9.086,9.086-9.086h57.607L358.079,484.63z M436.109,401.904h-68.944 c-13.851,0-25.119,11.268-25.119,25.119v68.944H84.977c-5.01,0-9.086-4.076-9.086-9.086V25.119c0-5.01,4.076-9.086,9.086-9.086 h342.046c5.01,0,9.086,4.076,9.086,9.086V401.904z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M204.693,68.409h-68.409c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h26.188v77.495 c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017V84.443h26.188c4.427,0,8.017-3.589,8.017-8.017 S209.12,68.409,204.693,68.409z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M289.332,159.634l-23.826-79.418c-2.119-7.062-8.496-11.807-15.869-11.807h-4.378c-7.373,0-13.75,4.745-15.869,11.807 l-23.826,79.418c-1.272,4.241,1.134,8.71,5.375,9.982c4.241,1.275,8.71-1.134,9.982-5.374l3.416-11.39h46.219l3.417,11.389 c1.042,3.473,4.227,5.715,7.676,5.715c0.762,0,1.538-0.11,2.307-0.34C288.198,168.344,290.605,163.875,289.332,159.634z M229.149,136.818l15.598-51.995c0.067-0.224,0.278-0.381,0.512-0.381h4.378c0.234,0,0.445,0.156,0.512,0.381l15.598,51.995 H229.149z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M373.732,157.34l-26.712-38.158l26.712-38.158c2.539-3.627,1.657-8.626-1.97-11.165c-3.627-2.539-8.626-1.658-11.165,1.97 l-23.362,33.374l-23.362-33.374c-2.539-3.628-7.539-4.51-11.165-1.97c-3.628,2.539-4.51,7.538-1.97,11.165l26.712,38.158 L300.74,157.34c-2.539,3.627-1.657,8.626,1.97,11.165c1.399,0.98,3.003,1.449,4.59,1.449c2.527,0,5.015-1.192,6.574-3.42 l23.362-33.374l23.362,33.374c1.56,2.228,4.047,3.42,6.574,3.42c1.587,0,3.192-0.47,4.59-1.449 C375.389,165.966,376.272,160.967,373.732,157.34z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M136.284,213.779h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,213.779,136.284,213.779z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M136.284,247.983h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,247.983,136.284,247.983z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M136.284,282.188h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,282.188,136.284,282.188z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M392.818,213.779h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,213.779,392.818,213.779z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M392.818,247.983h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,247.983,392.818,247.983z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M392.818,282.188h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,282.188,392.818,282.188z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M273.102,213.779H170.489c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h102.614 c4.427,0,8.017-3.589,8.017-8.017S277.53,213.779,273.102,213.779z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M238.898,247.983h-68.409c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h68.409 c4.427,0,8.017-3.589,8.017-8.017S243.325,247.983,238.898,247.983z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M273.102,282.188H170.489c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h102.614 c4.427,0,8.017-3.589,8.017-8.017S277.53,282.188,273.102,282.188z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M152.852,387.18v-27.859c5.907,1.936,9.62,5.833,9.62,9.447c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017 c0-12.784-10.768-23.198-25.653-25.984v-1.273c0-4.427-3.589-8.017-8.017-8.017s-8.017,3.589-8.017,8.017v1.273 c-14.885,2.786-25.653,13.2-25.653,25.984c0,17.862,14.265,25.369,25.653,29.69v27.859c-5.907-1.936-9.62-5.834-9.62-9.447 c0-4.427-3.589-8.017-8.017-8.017s-8.017,3.589-8.017,8.017c0,12.784,10.768,23.198,25.653,25.984v1.273 c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017v-1.273c14.885-2.786,25.653-13.2,25.653-25.984 C178.505,399.007,164.24,391.5,152.852,387.18z M136.818,380.966c-7.992-3.916-9.62-7.337-9.62-12.198 c0-3.614,3.713-7.511,9.62-9.447V380.966z M152.852,426.315V404.67c7.992,3.916,9.62,7.337,9.62,12.198 C162.472,420.482,158.758,424.38,152.852,426.315z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M264.551,350.597h-59.858c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h59.858 c4.427,0,8.017-3.589,8.017-8.017S268.979,350.597,264.551,350.597z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M238.898,419.006h-34.205c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h34.205 c4.427,0,8.017-3.589,8.017-8.017C246.914,422.596,243.325,419.006,238.898,419.006z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M290.205,419.006h-17.102c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017C298.221,422.596,294.632,419.006,290.205,419.006z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <path
+                                                                d="M315.858,384.802H204.693c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h111.165 c4.427,0,8.017-3.589,8.017-8.017C323.875,388.391,320.285,384.802,315.858,384.802z">
+                                                            </path>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="273.102" cy="256" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="307.307" cy="256" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="341.511" cy="256" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="307.307" cy="221.795" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="341.511" cy="221.795" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="307.307" cy="290.205" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                    <g>
+                                                        <g>
+                                                            <circle cx="341.511" cy="290.205" r="8.017"></circle>
+                                                        </g>
+                                                    </g>
+                                                </g>
                                             </svg>
                                         </div>
                                     </div>
@@ -651,12 +881,21 @@
         function populateCustomerData(customerId) {
             const customerSelect = document.getElementById('customer_id');
             const selectedOption = customerSelect.options[customerSelect.selectedIndex];
+            const customerContainer = document.querySelector('.customer-dropdown-container');
+            const customerLabel = customerContainer ? customerContainer.querySelector('.selected-customer-label') : null;
+            const customerRows = customerContainer ? customerContainer.querySelectorAll('.customer-option-row') : [];
 
             if (!customerId) {
                 document.getElementById('customer_name').value = '';
                 document.getElementById('customer_email').value = '';
                 document.getElementById('customer_telepon').value = '';
                 document.getElementById('customer_kota').value = '';
+                if (customerLabel) customerLabel.textContent = '-- Pilih Customer --';
+                customerRows.forEach(row => {
+                    row.classList.remove('bg-secondary-container/10', 'hover:bg-secondary-container/20');
+                    const icon = row.querySelector('.customer-checked-icon');
+                    if (icon) icon.classList.add('hidden');
+                });
                 return;
             }
 
@@ -664,6 +903,14 @@
             document.getElementById('customer_email').value = selectedOption.dataset.email || '';
             document.getElementById('customer_telepon').value = selectedOption.dataset.telepon || '';
             document.getElementById('customer_kota').value = selectedOption.dataset.kota || '';
+            if (customerLabel) customerLabel.textContent = selectedOption.textContent.split('(')[0].trim();
+            customerRows.forEach(row => {
+                const isSelected = row.getAttribute('data-id') === String(customerId);
+                row.classList.toggle('bg-secondary-container/10', isSelected);
+                row.classList.toggle('hover:bg-secondary-container/20', isSelected);
+                const icon = row.querySelector('.customer-checked-icon');
+                if (icon) icon.classList.toggle('hidden', !isSelected);
+            });
         }
 
         // Handle Add Customer Form Submission
@@ -705,6 +952,8 @@
                         newOption.dataset.kota = data.customer.kota || '';
                         newOption.selected = true;
                         customerSelect.appendChild(newOption);
+
+                        addCustomerDropdownRow(data.customer);
 
                         // Populate fields with new customer data
                         populateCustomerData(data.customer.id);
@@ -1349,6 +1598,119 @@
                 });
             });
 
+            function selectCustomerFromRow(optRow) {
+                const customerSelect = document.getElementById('customer_id');
+                const menu = document.querySelector('.customer-dropdown-menu');
+
+                customerSelect.value = optRow.getAttribute('data-id');
+                customerSelect.dispatchEvent(new Event('change', {
+                    bubbles: true
+                }));
+
+                if (menu) {
+                    menu.classList.add('hidden');
+                }
+            }
+
+            function bindCustomerOptionRow(optRow) {
+                optRow.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    selectCustomerFromRow(this);
+                });
+            }
+
+            function escapeHtml(value) {
+                return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                    return {
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        '"': '&quot;',
+                        "'": '&#039;'
+                    } [char];
+                });
+            }
+
+            function addCustomerDropdownRow(customer) {
+                const body = document.querySelector('.customer-options-body');
+                if (!body) return;
+
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-surface-container-high customer-option-row cursor-pointer';
+                row.dataset.id = customer.id;
+                row.dataset.nama = customer.nama_customer || '';
+                row.dataset.email = customer.email || '';
+                row.dataset.telepon = customer.telepon || '';
+                row.dataset.kota = customer.kota || '';
+                row.innerHTML = `
+                    <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">${escapeHtml(customer.nama_customer || '-')}</td>
+                    <td class="text-body-sm text-nowrap px-4 py-3">${escapeHtml(customer.email || '-')}</td>
+                    <td class="text-body-sm text-nowrap px-4 py-3">${escapeHtml(customer.telepon || '-')}</td>
+                    <td class="text-on-surface-variant px-4 py-3 text-[12px]">${escapeHtml(customer.kota || '-')}</td>
+                    <td class="text-primary select-check-icon pr-4 text-right">
+                        <span class="customer-checked-icon hidden text-[18px]">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </td>
+                `;
+                bindCustomerOptionRow(row);
+                body.appendChild(row);
+            }
+
+            function attachCustomerDropdownEvents() {
+                const container = document.querySelector('.customer-dropdown-container');
+                if (!container) return;
+
+                const toggleBtn = container.querySelector('.customer-dropdown-toggle-btn');
+                const menu = container.querySelector('.customer-dropdown-menu');
+                const searchInput = container.querySelector('.search-customer-input');
+                const optionRows = container.querySelectorAll('.customer-option-row');
+
+                toggleBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.querySelectorAll('.dropdown-menu-container, .customer-dropdown-menu').forEach(m => {
+                        if (m !== menu) {
+                            m.classList.add('hidden');
+                        }
+                    });
+                    menu.classList.toggle('hidden');
+                    if (!menu.classList.contains('hidden')) {
+                        const rect = toggleBtn.getBoundingClientRect();
+                        const menuWidth = Math.max(280, Math.min(720, window.innerWidth - 24));
+                        const left = Math.min(rect.left, window.innerWidth - menuWidth - 12);
+                        menu.style.width = menuWidth + 'px';
+                        menu.style.top = (rect.bottom + 4) + 'px';
+                        menu.style.left = Math.max(12, left) + 'px';
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                        searchInput.focus();
+                    }
+                });
+
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+
+                    container.querySelectorAll('.customer-option-row').forEach(optRow => {
+                        const nama = (optRow.getAttribute('data-nama') || '').toLowerCase();
+                        const email = (optRow.getAttribute('data-email') || '').toLowerCase();
+                        const telepon = (optRow.getAttribute('data-telepon') || '').toLowerCase();
+                        const kota = (optRow.getAttribute('data-kota') || '').toLowerCase();
+                        const matchesQuery = !query || nama.includes(query) || email.includes(query) || telepon.includes(query) || kota.includes(query);
+
+                        optRow.style.display = matchesQuery ? '' : 'none';
+                    });
+                });
+
+                searchInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+
+                optionRows.forEach(bindCustomerOptionRow);
+                populateCustomerData(document.getElementById('customer_id').value);
+            }
+
             // Custom Dropdown Event Handlers
             function attachCustomDropdownEvents(row) {
                 const container = row.querySelector('.barang-dropdown-container');
@@ -1364,7 +1726,7 @@
                 toggleBtn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     // Close all other dropdown menus
-                    document.querySelectorAll('.dropdown-menu-container').forEach(m => {
+                    document.querySelectorAll('.dropdown-menu-container, .customer-dropdown-menu').forEach(m => {
                         if (m !== menu) {
                             m.classList.add('hidden');
                         }
@@ -1456,8 +1818,8 @@
 
             // Close dropdowns when clicking outside
             document.addEventListener('click', function(e) {
-                if (!e.target.closest('.barang-dropdown-container')) {
-                    document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
+                if (!e.target.closest('.barang-dropdown-container') && !e.target.closest('.customer-dropdown-container')) {
+                    document.querySelectorAll('.dropdown-menu-container, .customer-dropdown-menu').forEach(menu => {
                         menu.classList.add('hidden');
                     });
                 }
@@ -1468,10 +1830,11 @@
                 const target = e.target;
                 const isInsideDropdown =
                     target instanceof Element &&
-                    (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container'));
+                    (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container') || target.closest('.customer-dropdown-menu') || target.closest(
+                        '.customer-dropdown-container'));
 
                 if (!isInsideDropdown) {
-                    document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
+                    document.querySelectorAll('.dropdown-menu-container, .customer-dropdown-menu').forEach(menu => {
                         menu.classList.add('hidden');
                     });
                 }
@@ -1482,6 +1845,7 @@
                 attachRowEvents(row);
                 attachCustomDropdownEvents(row);
             });
+            attachCustomerDropdownEvents();
             // Initialize thousand separator for existing inputs
             document.querySelectorAll('.harga-input').forEach(input => initThousandSeparator(input));
 
@@ -1531,4 +1895,3 @@
         }
     </style>
 </x-app-layout>
-
