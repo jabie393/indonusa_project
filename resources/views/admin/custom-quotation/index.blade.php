@@ -46,81 +46,89 @@
                 <thead
                     class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="selectCol text-nowrap px-4 py-3"></th>
-                        <th class="text-nowrap px-4 py-3">No Penawaran</th>
-                        <th class="text-nowrap px-4 py-3">Kepada</th>
-                        <th class="text-nowrap px-4 py-3">Subject</th>
-                        <th class="text-nowrap px-4 py-3">Our Ref</th>
-                        <th class="text-nowrap px-4 py-3">Diskon</th>
-                        <th class="text-nowrap px-4 py-3">Total</th>
-                        <th class="text-nowrap px-4 py-3">Tanggal Dibuat</th>
-                        <th class="text-nowrap px-4 py-3">Berlaku Sampai</th>
-                        <th class="text-nowrap px-4 py-3">Status</th>
-                        <th class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
+                        <th scope="col" class="text-nowrap pl-4 py-2">#</th>
+                        <th scope="col" class="text-nowrap pr-3 py-4">No. Dokumen</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Kepada</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Subject</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Item & Total</th>
+                        <th scope="col" class="text-nowrap px-4 py-3">Tanggal</th>
+                        <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @foreach ($customPenawarans as $penawaran)
-                        <tr class="border-b border-gray-200 hover:bg-gray-50">
-                            <td class="px-4 py-4">{{ $penawaran->id }}</td>
-                            <td class="px-4 py-4">
-                                <span class="text-nowrap font-semibold">{{ $penawaran->quotation_number }}</span>
-                            </td>
-                            <td class="text-nowrap px-4 py-4">{{ $penawaran->to }}</td>
-                            <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
-                            <td class="text-nowrap px-4 py-4">{{ $penawaran->our_ref }}</td>
-                            <td class="px-4 py-4 text-center">
-                                @php
-                                    $discounts = $penawaran->items->pluck('diskon')->map(fn($d) => (float) ($d ?? 0));
-                                    $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
-                                    $hasAbove = $discounts->contains(fn($d) => $d > 20);
-                                @endphp
-                                @if ($hasBelow && $hasAbove)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
-                                        &lt;20% &amp; &gt;20%
-                                    </span>
-                                @elseif ($hasAbove)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
-                                        &gt;20%
-                                    </span>
-                                @elseif ($hasBelow)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
-                                        &lt;20%
-                                    </span>
-                                @else
-                                    <span class="text-gray-300 dark:text-gray-600">-</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-right">
-                                <div class="flex w-full items-center justify-between">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($penawaran->grand_total, 0, '.', ',') }}</span>
+                        @php
+                            $discounts = $penawaran->items->pluck('diskon')->map(fn($d) => (float) ($d ?? 0));
+                            $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
+                            $hasAbove = $discounts->contains(fn($d) => $d > 20);
+                            $expiredAt = $penawaran->expired_at ?: $penawaran->created_at->copy()->addDays(14);
+                        @endphp
+                        <tr class="border-b border-gray-100 align-top hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/30">
+                            <td class="px-4 py-3 text-[#225A97]">{{ $loop->iteration + ($customPenawarans->firstItem() ?? 1) - 1 }}</td>
+                            <td class="py-3 pr-4">
+                                <div class="flex flex-col gap-1">
+                                    <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}" class="text-base font-bold text-[#0067B1] hover:underline">
+                                        {{ $penawaran->quotation_number ?? '-' }}
+                                    </a>
+                                    <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
+                                        <span class="font-semibold uppercase text-slate-400">REF</span>
+                                        <span class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-4 text-center">
-                                {{ \Carbon\Carbon::parse($penawaran->created_at)->format('d F Y') }}
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-2">
+                                    <span class="text-base font-bold text-slate-900 dark:text-white">{{ $penawaran->to ?? '-' }}</span>
+                                    <span class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span>{{ $penawaran->up ?? '-' }}</span>
+                                        <span class="text-slate-300">•</span>
+                                        <span>{{ auth()->user()->role ?? '-' }}</span>
+                                    </span>
+                                </div>
                             </td>
-                            <td class="px-4 py-4 text-center">
-                                @if ($penawaran->expired_at)
-                                    {{ \Carbon\Carbon::parse($penawaran->expired_at)->format('d F Y') }}
-                                    @if ($penawaran->isExpired())
-                                        <br><small class="text-danger">Kadaluarsa</small>
-                                    @else
-                                        @php
-                                            $daysLeft = (int) $penawaran->expired_at->diffInDays(now());
-                                        @endphp
-                                        <br><small class="text-success">Berlaku {{ $daysLeft }} hari lagi</small>
+                            <td class="px-4 py-3 align-middle">
+                                <div class="flex max-w-[260px] h-full items-center">
+                                    <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ Str::limit($penawaran->subject, 48) }}</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-2">
+                                    <span class="text-base font-bold text-slate-900 dark:text-white">Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}</span>
+                                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                        <span>{{ $penawaran->items->count() }} item</span>
+                                        @if ($hasBelow && $hasAbove)
+                                            <span class="inline-flex items-center justify-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">&lt;20% &amp; &gt;20%</span>
+                                        @elseif ($hasAbove)
+                                            <span class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">&gt;20%</span>
+                                        @elseif ($hasBelow)
+                                            <span class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">&lt;20%</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-nowrap px-4 py-3 align-middle">
+                                <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
+                                    <span>{{ \Carbon\Carbon::parse($penawaran->created_at)->format('Y-m-d') }}</span>
+                                    <span class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                                            <line x1="16" x2="16" y1="2" y2="6"></line>
+                                            <line x1="8" x2="8" y1="2" y2="6"></line>
+                                            <line x1="3" x2="21" y1="10" y2="10"></line>
+                                        </svg>
+                                        s/d {{ \Carbon\Carbon::parse($expiredAt)->format('Y-m-d') }}
+                                    </span>
+                                    @if ($penawaran->expired_at && $penawaran->isExpired())
+                                        <span class="text-xs font-semibold text-red-600">Kadaluarsa</span>
                                     @endif
-                                @else
-                                    {{ \Carbon\Carbon::parse($penawaran->created_at)->addDays(14)->format('d/m/Y') }}
-                                    <br><small class="text-success">Berlaku 14 hari dari dibuat</small>
-                                    -
-                                @endif
+                                </div>
                             </td>
-                            <td class="px-4 py-4 text-center">
+                            <td class="px-4 py-4 text-center align-middle">
                                 @php
                                     $statusLabel =
                                         [
@@ -168,10 +176,12 @@
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock3 mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>';
                                     }
                                 @endphp
-                                <span
-                                    class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
-                                    {!! $iconSvg !!}{{ $statusLabel }}
-                                </span>
+                                <div class="flex w-full justify-center">
+                                    <span
+                                        class="inline-flex w-full items-center justify-center rounded-full px-2 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                        {!! $iconSvg !!}{{ $statusLabel }}
+                                    </span>
+                                </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                                 <div class="flex justify-center">

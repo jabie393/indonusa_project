@@ -54,40 +54,80 @@
             <table id="" class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                 <thead class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="text-nowrap px-4 py-3">#</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">No. Request</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">No. Penawaran</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">No. PO</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">No. Sales Order</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Tanggal</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Nama Customer</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Jumlah Item</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Total</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Stok</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Diskon</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Status</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Berlaku Sampai</th>
-                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
+                        <th scope="col" class="text-nowrap pl-4 py-2">#</th>
+                        <th scope="col" class="text-nowrap pr-4 py-4">No. Dokumen</th>
+                        <th scope="col" class="text-nowrap px-4 py-4">Customer</th>
+                        <th scope="col" class="text-nowrap px-4 py-4">Item & Total</th>
+                        <th scope="col" class="text-nowrap text-center px-4 py-4">Stock</th>
+                        <th scope="col" class="text-nowrap text-center px-4 py-4">Status</th>
+                        <th scope="col" class="text-nowrap px-4 py-4">Tanggal</th>
+                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
                     @forelse($requestOrders as $ro)
-                        <tr class="max-h-16 dark:border-gray-700">
-                            <td class="px-4 py-3">{{ $ro->id }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->request_number }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->quotation_number ?? '-' }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->no_po ?? '-' }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->sales_order_number ?? '-' }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->created_at->format('d M Y') }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->customer_name }}</td>
-                            <td class="text-nowrap px-4 py-3">{{ $ro->items->count() }} item(s)</td>
-                            <td class="px-4 py-3 text-right">
-                                <div class="flex w-full items-center justify-between">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($ro->grand_total, 0, '.', ',') }}</span>
+                        @php
+                            $discounts = $ro->items->pluck('diskon_percent')->map(fn($d) => (float) ($d ?? 0));
+                            $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
+                            $hasAbove = $discounts->contains(fn($d) => $d > 20);
+                        @endphp
+                        <tr class="border-b border-gray-100 align-top dark:border-gray-700">
+                            <td class="px-4 py-3 text-[#225A97]">{{ $loop->iteration + ($requestOrders->firstItem() ?? 1) - 1 }}</td>
+                            <td class="pr-4 py-3">
+                                <div class="flex flex-col gap-1">
+                                    <a href="{{ route('sales.quotation.show', $ro->id) }}" class="text-base font-bold text-[#0067B1] hover:underline">
+                                        {{ $ro->quotation_number ?? '-' }}
+                                    </a>
+                                    <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
+                                        <span class="font-semibold uppercase text-slate-400">SO</span>
+                                        <span class="text-slate-600 dark:text-slate-300">{{ $ro->sales_order_number ?? '-' }}</span>
+                                        <span class="font-semibold uppercase text-slate-400">REQ</span>
+                                        <span class="text-slate-600 dark:text-slate-300">{{ $ro->request_number ?? '-' }}</span>
+                                        <span class="font-semibold uppercase text-slate-400">PO</span>
+                                        <span class="text-slate-600 dark:text-slate-300">{{ $ro->no_po ?? '-' }}</span>
+                                    </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-center">
+                            <td class="px-4 py-3 align-middle">
+                                <div class="flex flex-col gap-2">
+                                    <span class="text-base font-bold text-slate-900 dark:text-white">{{ $ro->customer_name }}</span>
+                                    <span class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span>{{ $ro->sales->name ?? '-' }}</span>
+                                        <span class="text-slate-300">•</span>
+                                        <span>{{ $ro->sales->role ?? 'Sales' }}</span>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 align-middle">
+                                <div class="flex flex-col gap-2">
+                                    <span class="text-base font-bold text-slate-900 dark:text-white">Rp {{ number_format($ro->grand_total, 0, '.', ',') }}</span>
+                                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                        <span>{{ $ro->items->count() }} item</span>
+                                        @if ($hasBelow && $hasAbove)
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
+                                                &lt;20% &amp; &gt;20%
+                                            </span>
+                                        @elseif ($hasAbove)
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                                &gt;20%
+                                            </span>
+                                        @elseif ($hasBelow)
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                                &lt;20%
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-center align-middle">
                                 @php
                                     $stokKurangItems = [];
                                     $stokCukupCount = 0;
@@ -122,9 +162,9 @@
                                 @if ($totalItemsCount === 0)
                                     <span class="text-xs text-gray-300 dark:text-gray-600">-</span>
                                 @elseif ($adaStokKurang)
-                                    <div class="group relative inline-block">
+                                    <div class="group relative flex w-full justify-center">
                                         <span
-                                            class="inline-flex cursor-pointer items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-center text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0">
                                                 <circle cx="12" cy="12" r="10" />
@@ -161,7 +201,7 @@
                                     </div>
                                 @else
                                     <span
-                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                        class="inline-flex w-full items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-center text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0">
                                             <circle cx="12" cy="12" r="10" />
@@ -171,35 +211,7 @@
                                     </span>
                                 @endif
                             </td>
-                            @php
-                                $discounts = $ro->items->pluck('diskon_percent')->map(fn($d) => (float) ($d ?? 0));
-                                $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
-                                $hasAbove = $discounts->contains(fn($d) => $d > 20);
-                            @endphp
-                            <td class="px-4 py-3 text-center">
-                                @if ($hasBelow && $hasAbove)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
-                                        
-                                        &lt;20% &amp; &gt;20%
-                                    </span>
-                                @elseif ($hasAbove)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-1 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
-                                        
-                                        &gt;20%
-                                    </span>
-                                @elseif ($hasBelow)
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-1 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
-                                        
-                                        &lt;20%
-                                    </span>
-                                @else
-                                    <span class="text-gray-300 dark:text-gray-600">-</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3">
+                            <td class="px-4 py-3 text-center align-middle">
                                 @php
                                     $orderStatus = $ro->order?->status ?? null;
 
@@ -246,9 +258,9 @@
                                     }
                                 @endphp
 
-                                <div class="flex flex-col items-center gap-1">
+                                <div class="flex w-full flex-col items-center gap-1">
                                     <span
-                                        class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                        class="inline-flex w-full items-center justify-center rounded-full px-2 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                         {!! $iconSvg !!}{{ $displayStatus }}
                                     </span>
 
@@ -301,12 +313,24 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="text-nowrap px-4 py-3">
-                                @if ($ro->valid_date)
-                                    {{ \Carbon\Carbon::parse($ro->valid_date)->translatedFormat('d F Y') }}
-                                @else
-                                    -
-                                @endif
+                            <td class="text-nowrap px-4 py-3 align-middle">
+                                <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
+                                    <span>{{ $ro->created_at->format('Y-m-d') }}</span>
+                                    <span class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                                            <line x1="16" x2="16" y1="2" y2="6"></line>
+                                            <line x1="8" x2="8" y1="2" y2="6"></line>
+                                            <line x1="3" x2="21" y1="10" y2="10"></line>
+                                        </svg>
+                                        @if ($ro->valid_date)
+                                            s/d {{ \Carbon\Carbon::parse($ro->valid_date)->format('Y-m-d') }}
+                                        @else
+                                            -
+                                        @endif
+                                    </span>
+                                </div>
                             </td>
                             <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                                 <div class="flex justify-center">
@@ -459,4 +483,3 @@
     @vite(['resources/js/quotation.js', 'resources/js/table-sort.js'])
     @include('admin.quotation.partials.modal-show-note')
 </x-app-layout>
-
