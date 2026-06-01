@@ -211,7 +211,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     // Supervisor History (all approval processes)
-    Route::get('/supervisor/history', [QuotationApprovalController::class, 'history'])->name('supervisor.history');
+    Route::get('/quotation-history', [QuotationApprovalController::class, 'history'])->name('supervisor.history');
 });
 // End of Supervisor
 

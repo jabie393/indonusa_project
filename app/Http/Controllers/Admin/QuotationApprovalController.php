@@ -128,7 +128,7 @@ class QuotationApprovalController extends Controller
         $search = $request->input('search');
 
         // Quotations (sent quotation)
-        $roQuery = Quotation::with(['order', 'sales'])
+        $roQuery = Quotation::with(['order', 'sales', 'customer.pics'])
             ->whereHas('order', function($q) {
                 $q->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
             });
@@ -149,6 +149,7 @@ class QuotationApprovalController extends Controller
                 'id' => $ro->id,
                 'number' => $ro->quotation_number,
                 'customer' => $ro->customer_name,
+                'pic' => $ro->customer->pics->first()->name ?? '-',
                 'sales' => $ro->sales->name ?? '-',
                 'grand_total' => 'Rp ' . number_format($ro->grand_total, 2, ',', '.'),
                 'status' => $ro->order->status ?? '-',
@@ -178,6 +179,7 @@ class QuotationApprovalController extends Controller
                 'id' => $cp->id,
                 'number' => $cp->quotation_number,
                 'customer' => $cp->to,
+                'pic' => $cp->up ?? '-',
                 'sales' => $cp->sales->name ?? '-',
                 'grand_total' => 'Rp ' . number_format($cp->grand_total, 2, ',', '.'),
                 'status' => $cp->status,
@@ -205,7 +207,7 @@ class QuotationApprovalController extends Controller
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('supervisor.history', [
+        return view('admin.quotation-history.index', [
             'histories' => $paginated,
         ]);
     }
