@@ -100,21 +100,21 @@
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
                     @elseif (request()->routeIs('sales.quotation.create'))
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Quotation Creation Form</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran Harga</p>
                     @else
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Create and Manage Quotations</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat dan Mengelola Penawaran Harga</p>
                     @endif
                 </div>
             @elseif (request()->routeIs('sales.custom-quotation.*'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Custom Quotation (Non-Stock)</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Permintaan Penawaran Harga Khusus (Non-Stock)</p>
                 </div>
             @elseif (request()->routeIs('admin.quotation_approval'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation Approval</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Waiting Approval</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Menunggu Approval</p>
                 </div>
             @elseif (request()->routeIs('orders.history') || request()->routeIs('admin.orders.history'))
                 <div class="text-gray-100">
@@ -123,13 +123,13 @@
                 </div>
             @elseif (request()->routeIs('sales.sales-order.*'))
                 <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
                 </div>
             @elseif (request()->routeIs('sales-order-invoice.*') || request()->routeIs('invoice.*'))
                 <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Daftar Sales Order</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order Invoice</h1>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Invoice sales order</p>
                 </div>
             @elseif (request()->routeIs('supervisor.defect-report.*'))
                 <div class="text-gray-100">
