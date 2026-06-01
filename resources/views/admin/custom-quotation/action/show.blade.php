@@ -1,747 +1,582 @@
-﻿<x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="space-y-3 p-6 md:space-x-4 md:space-y-0">
+<x-app-layout>
+    <div
+        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="p-6">
             @php $orderStatus = $customPenawaran->status; @endphp
 
             @if ($orderStatus === 'rejected_supervisor')
-            {{-- BANNER MERAH: Ditolak --}}
-            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-rose-100 bg-rose-50 shadow-sm dark:border-rose-900/30 dark:bg-rose-900/10">
-                <div class="flex flex-col items-center gap-6 p-5 md:flex-row">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-rose-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-8 w-8 text-rose-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
+                {{-- BANNER MERAH: Ditolak --}}
+                <div
+                    class="mb-6 flex flex-col gap-4 rounded-2xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm dark:border-rose-900/30 dark:bg-rose-950/20 md:flex-row md:items-center">
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
-                    <div class="flex-grow text-center md:text-left">
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-rose-700">Penawaran Ditolak Supervisor</h4>
-                        <div class="mt-2 space-y-1">
-                            <p class="text-sm font-medium text-rose-600 dark:text-rose-300">
-                                <span class="mr-1 text-[10px] font-black uppercase opacity-50">Alasan:</span>
+                    <div class="flex-grow">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">Penawaran Ditolak Supervisor</h4>
+                        <div class="mt-1 space-y-1">
+                            <p class="text-xs text-rose-700/80 dark:text-rose-400/80">
+                                <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
                                 {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
                             </p>
                             @if ($customPenawaran->supervisor)
-                            <p class="text-[10px] font-bold uppercase tracking-tighter text-rose-400">
-                                Oleh {{ $customPenawaran->supervisor->name }}
-                                @if ($customPenawaran->approved_at)
-                                &middot; {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
-                                @endif
-                            </p>
+                                <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
+                                    Oleh {{ $customPenawaran->supervisor->name }}
+                                    @if ($customPenawaran->approved_at)
+                                        &middot;
+                                        {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
+                                    @endif
+                                </p>
                             @endif
                         </div>
                     </div>
-                    <div class="shrink-0">
+                    <div class="shrink-0 mt-3 md:mt-0">
                         @if (Auth::user()->role === 'Sales')
-                        <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
-                            class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-xl shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-95">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                            Perbaiki & Ajukan Ulang
-                        </a>
+                            <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
+                                class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none active:scale-[0.98]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Perbaiki & Ajukan Ulang
+                            </a>
                         @endif
                     </div>
                 </div>
-            </div>
             @elseif ($orderStatus === 'sent_to_supervisor')
-            {{-- BANNER KUNING: Menunggu persetujuan --}}
-            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-amber-100 bg-amber-50 shadow-sm dark:border-amber-900/30 dark:bg-amber-900/10">
-                <div class="flex items-center gap-5 p-5">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-amber-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-8 w-8 animate-pulse text-amber-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
+                {{-- BANNER KUNING: Menunggu persetujuan --}}
+                <div
+                    class="mb-6 flex items-start gap-4 rounded-2xl border border-amber-200 bg-[#FFFDF5] p-5 shadow-sm dark:border-amber-900/30 dark:bg-amber-950/20">
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-amber-700">Dalam Peninjauan Supervisor</h4>
-                        <p class="mt-1 text-sm font-medium text-amber-600 dark:text-amber-300">
-                            Penawaran mengandung diskon besar (>20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Dalam Peninjauan Supervisor</h4>
+                        <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
+                            Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
                         </p>
                     </div>
                 </div>
-            </div>
             @elseif ($orderStatus === 'approved_supervisor')
-            {{-- BANNER HIJAU: Disetujui --}}
-            <div class="m-0 mb-6 overflow-hidden rounded-2xl border border-emerald-100 bg-emerald-50 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10">
-                <div class="flex items-center gap-5 p-5">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-sm dark:bg-emerald-900/20">
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="h-8 w-8 text-emerald-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
+                {{-- BANNER HIJAU: Disetujui --}}
+                <div
+                    class="mb-6 flex items-start gap-4 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-950/20">
+                    <div
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-sm font-black uppercase tracking-[0.2em] text-emerald-700">Verifikasi Disetujui</h4>
-                        <p class="mt-1 text-sm font-bold text-emerald-600 dark:text-emerald-300">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Verifikasi Disetujui</h4>
+                        <p class="mt-1 text-xs text-emerald-700/80 dark:text-emerald-400/80">
                             Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
                         </p>
                     </div>
                 </div>
-            </div>
             @endif
-            {{-- ============================================================
-             END BANNER STATUS SUPERVISOR
-             ============================================================ --}}
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <!-- Main Content -->
-                <div class="lg:col-span-2">
-                    <!-- Header Info -->
-                    <!-- Header Info -->
-                    <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                            <h2 class="flex items-center font-semibold text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-2 h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Detail Custom Quotation
-                            </h2>
-                        </div>
-                        <div class="p-6">
-                            <div class="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
-                                <!-- Group: Order Metadata -->
-                                <div class="space-y-5">
-                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
-                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
-                                        Metadata Penawaran
-                                    </h3>
-                                    <div class="grid grid-cols-2 gap-6">
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">No. Penawaran</label>
-                                            <p class="text-sm font-black text-[#225A97] dark:text-blue-400">{{ $customPenawaran->penawaran_number }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Our Ref</label>
-                                            <p class="font-mono text-[11px] text-sm font-bold text-gray-700 dark:text-gray-300">{{ $customPenawaran->our_ref ?? '-' }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Status</label>
-                                            @php
-                                            $statusClass =
-                                            [
-                                            'pending_approval' => 'bg-amber-50 text-amber-700 ring-amber-600/20',
-                                            'draft' => 'bg-gray-50 text-gray-600 ring-gray-600/20',
-                                            'sent' => 'bg-sky-50 text-sky-700 ring-sky-600/20',
-                                            'approved_supervisor' => 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-                                            'rejected_supervisor' => 'bg-rose-50 text-rose-700 ring-rose-600/20',
-                                            ][$customPenawaran->status] ?? 'bg-gray-50 text-gray-600 ring-gray-600/20';
-                                            $statusLabel =
-                                            [
-                                            'pending_approval' => 'Waiting for Supervisor Approval',
-                                            'draft' => 'Draft',
-                                            'sent' => 'Sent',
-                                            'approved_supervisor' => 'Approved by Supervisor',
-                                            'rejected_supervisor' => 'Rejected by Supervisor',
-                                            ][$customPenawaran->status] ?? strtoupper($customPenawaran->status);
-                                            @endphp
-                                            <div>
-                                                <span class="{{ $statusClass }} inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter ring-1 ring-inset">
-                                                    {{ $statusLabel }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Sales PIC</label>
-                                            <div class="flex items-center space-x-2">
-                                                <div class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-[9px] font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                                                    {{ substr($customPenawaran->sales->name ?? 'S', 0, 1) }}
-                                                </div>
-                                                <p class="text-[11px] font-medium text-gray-700 dark:text-gray-300">{{ $customPenawaran->sales->name ?? '-' }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <!-- Group: Customer info -->
-                                <div class="space-y-5">
-                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
-                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
-                                        Informasi Customer
-                                    </h3>
-                                    <div class="grid grid-cols-2 gap-6">
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Kepada (To)</label>
-                                            <p class="text-sm font-bold leading-tight text-gray-900 dark:text-white">{{ $customPenawaran->to }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Email</label>
-                                            <p class="truncate text-sm font-medium tracking-tighter text-gray-600 dark:text-gray-400"
-                                                title="{{ $customPenawaran->email }}">{{ $customPenawaran->email }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Attention (Up)</label>
-                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $customPenawaran->up ?? '-' }}</p>
-                                        </div>
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Subject</label>
-                                            <p class="text-sm font-medium italic leading-tight text-gray-600 dark:text-gray-400">"{{ $customPenawaran->subject }}"</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Group: Timeline -->
-                                <div class="space-y-5 border-t border-gray-50 pt-4 dark:border-gray-700/50 md:col-span-2">
-                                    <h3 class="flex items-center text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500">
-                                        <span class="mr-2 h-[1px] w-8 bg-gray-200 dark:bg-gray-700"></span>
-                                        Jadwal & Deadline
-                                    </h3>
-                                    <div class="grid grid-cols-2 gap-6 md:grid-cols-4">
-                                        <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Tgl Penawaran</label>
-                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ \Carbon\Carbon::parse($customPenawaran->date)->format('d M Y') }}</p>
-                                        </div>
-                                        <div class="space-y-1 md:col-span-2">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">Berlaku Hingga</label>
-                                            <div class="flex items-center space-x-3">
-                                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ $customPenawaran->expired_at ? $customPenawaran->expired_at->format('d M Y') : '-' }}</p>
-                                                @if ($customPenawaran->expired_at)
-                                                @php
-                                                $isExpired = now() > $customPenawaran->expired_at;
-                                                $daysLeft = now()->diffInDays($customPenawaran->expired_at, false);
-                                                @endphp
-                                                @if ($isExpired)
-                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[9px] font-bold uppercase text-red-700">Expired</span>
-                                                @else
-                                                <span class="{{ $daysLeft <= 3 ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700' }} inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase">
-                                                    {{ floor($daysLeft) }} Hari Lagi
-                                                </span>
-                                                @endif
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+                <!-- Left Column: Informasi Penawaran -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 dark:bg-gray-800 dark:border-gray-700">
+                        <div class="space-y-1">
+                            <span
+                                class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi Penawaran Custom</span>
+                            <div class="flex flex-wrap items-center gap-3">
+                                <h1 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
+                                    {{ $customPenawaran->penawaran_number ?? '-' }}</h1>
+                                @if ($customPenawaran->our_ref)
+                                    <span
+                                        class="inline-flex items-center rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                                        {{ $customPenawaran->our_ref }}
+                                    </span>
+                                @endif
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Intro Text -->
-                    @if ($customPenawaran->intro_text)
-                    <div class="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                            <h2 class="flex items-center font-semibold text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-2 h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h7" />
-                                </svg>
-                                Teks Pembuka
-                            </h2>
-                        </div>
-                        <div class="p-6">
-                            {!! nl2br(e($customPenawaran->intro_text)) !!}
-                        </div>
-                    </div>
-                    @endif
+                        <!-- Status Badge Below Title -->
+                        @php
+                            $statusText = $customPenawaran->status;
+                            $statusClass = 'bg-blue-50/50 text-blue-600 border border-blue-200';
+                            $statusDot = 'bg-blue-500';
 
-                    <!-- Rejection reason (visible when rejected and high discount items present) -->
-                    @php
-                    $hasHighDiscount = $customPenawaran->items->where('diskon', '>', 20)->isNotEmpty();
-                    @endphp
-                    @if ($customPenawaran->status === 'rejected' && $hasHighDiscount)
-                    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-6 overflow-hidden rounded-xl bg-white shadow-md dark:bg-gray-800">
-                        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex flex-col items-center justify-between space-y-3 bg-red-600 p-4 md:flex-row md:space-x-4 md:space-y-0">
+                            if (in_array($statusText, ['pending_approval', 'sent'])) {
+                                $statusClass = 'bg-[#FFFBEB] text-[#D97706] border border-[#FCD34D]';
+                                $statusDot = 'bg-[#D97706]';
+                                $statusText = 'Waiting for Supervisor Approval';
+                            } elseif ($statusText === 'rejected_supervisor') {
+                                $statusClass = 'bg-rose-50/50 text-rose-600 border border-rose-200';
+                                $statusDot = 'bg-rose-500';
+                                $statusText = 'Rejected by Supervisor';
+                            } elseif (in_array($statusText, ['approved_supervisor', 'approved', 'open', 'sent'])) {
+                                $statusClass = 'bg-emerald-50/50 text-emerald-600 border border-emerald-200';
+                                $statusDot = 'bg-emerald-500';
+                                $statusText = 'Approved';
+                            }
+                        @endphp
+                        <div class="mt-4">
+                            <span
+                                class="inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-wider {{ $statusClass }}">
+                                <span class="h-2 w-2 rounded-full {{ $statusDot }}"></span>
+                                {{ $statusText }}
+                            </span>
+                        </div>
+
+                        <!-- Metadata Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8 mt-10">
+                            <!-- KEPADA (TO) -->
                             <div>
-                                <h2 class="mr-3 font-semibold text-white">Alasan Penolakan</h2>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kepada (To)</span>
+                                <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                    {{ $customPenawaran->to }}</p>
+                            </div>
+
+                            <!-- PIC (SALES) -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">PIC (Sales)</span>
+                                <div class="mt-1 flex items-center space-x-2">
+                                    <div
+                                        class="flex h-7 w-7 items-center justify-center text-slate-500 dark:text-gray-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                        {{ $customPenawaran->sales->name ?? '-' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- EMAIL -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Email</span>
+                                <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                    {{ $customPenawaran->email ?? '-' }}</p>
+                            </div>
+
+                            <!-- SUBJECT -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Subject</span>
+                                <p class="mt-1 text-sm font-semibold italic text-slate-800 dark:text-gray-200">
+                                    "{{ $customPenawaran->subject ?? '-' }}"</p>
+                            </div>
+
+                            <!-- ATTENTION (UP) -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Attention (Up)</span>
+                                <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                    {{ $customPenawaran->up ?? '-' }}</p>
+                            </div>
+
+                            <!-- MASA BERLAKU -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Masa Berlaku</span>
+                                <div class="mt-1">
+                                    <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                        {{ $customPenawaran->expired_at ? $customPenawaran->expired_at->format('d M Y') : '-' }}</p>
+                                    @if ($customPenawaran->expired_at)
+                                        @php
+                                            $isExpired = now() > $customPenawaran->expired_at;
+                                            $daysLeft = now()->diffInDays($customPenawaran->expired_at, false);
+                                        @endphp
+                                        @if ($isExpired)
+                                            <span
+                                                class="mt-1 inline-block rounded bg-rose-50 border border-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:bg-rose-950/20 dark:text-rose-400">Expired</span>
+                                        @else
+                                            <span
+                                                class="mt-1 inline-block rounded bg-emerald-50 border border-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
+                                                {{ floor($daysLeft) }} Hari Lagi
+                                            </span>
+                                        @endif
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- TGL PENAWARAN -->
+                            <div>
+                                <span
+                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl Penawaran</span>
+                                <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
+                                    {{ \Carbon\Carbon::parse($customPenawaran->date)->format('d M Y') }}</p>
                             </div>
                         </div>
-                        <div class="p-6 text-red-700 dark:text-red-300">
-                            @if ($customPenawaran->reason)
-                            {!! nl2br(e($customPenawaran->reason)) !!}
-                            @else
-                            <em>Alasan penolakan belum dicatat.</em>
-                            @endif
-                        </div>
-                    </div>
-                    @endif
 
-                    <!-- Items Table -->
-                    <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                            <h2 class="flex items-center font-semibold text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-2 h-5 w-5"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                                Detail Produk & Penawaran
-                            </h2>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm">
-                                <thead class="bg-gray-50 text-xs font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
-                                    <tr class="border-b border-gray-100 dark:border-gray-700">
-                                        <th class="px-6 py-4">Nama Barang & Detail</th>
-                                        <th class="px-6 py-4 text-center">Diskon</th>
-                                        <th class="px-6 py-4 text-center">Qty</th>
-                                        <th class="px-6 py-4">Harga Satuan</th>
-                                        <th class="px-6 py-4">Subtotal</th>
-                                        <th class="px-6 py-4 text-center">Gambar</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                                    @forelse($customPenawaran->items as $index => $item)
-                                    <tr class="group transition-colors hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
-                                        <td class="px-6 py-5">
-                                            <div class="flex flex-col space-y-1">
-                                                <span class="font-bold leading-tight text-gray-900 transition-colors group-hover:text-[#225A97] dark:text-white">
-                                                    {{ $item->product_name }}
-                                                </span>
-                                                @if ($item->description)
-                                                <span class="text-[10px] font-medium italic text-gray-500">Note: {{ $item->description }}</span>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-5 text-center">
-                                            @php $dk = $item->discount ?? 0; @endphp
-                                            @if ($dk > 0)
-                                            <div class="flex flex-col items-center">
-                                                <span class="{{ $dk > 20 ? 'bg-red-50 text-red-700 ring-1 ring-inset ring-red-600/20' : 'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' }} inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold">
-                                                    {{ $dk }}%
-                                                </span>
-                                                @if ($dk > 20)
-                                                <span class="mt-1 text-[8px] font-black uppercase italic tracking-[0.1em] text-rose-500">Need Approval</span>
-                                                @endif
-                                            </div>
-                                            @else
-                                            <span class="text-gray-300 dark:text-gray-600">-</span>
-                                            @endif
-                                        </td>
-                                        <td class="px-6 py-5 text-center">
-                                            <div class="flex flex-col">
-                                                <span class="font-black text-gray-900 dark:text-white">{{ $item->qty }}</span>
-                                                <span class="text-[10px] font-bold uppercase tracking-tighter text-gray-400">{{ $item->unit }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-5">
-                                            <div class="flex items-baseline font-medium text-gray-700 dark:text-gray-300">
-                                                <span class="mr-1 text-[10px] font-bold text-gray-400">Rp</span>
-                                                <span class="text-sm">{{ number_format($item->price, 0, '.', ',') }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-5">
-                                            @php
-                                            $totalSetelahDiskon = $item->qty * $item->price * (1 - ($item->discount ?? 0) / 100);
-                                            @endphp
-                                            <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
-                                                <span class="mr-1 text-[10px] font-bold opacity-60">Rp</span>
-                                                <span class="text-sm tracking-tight">{{ number_format($totalSetelahDiskon, 0, '.', ',') }}</span>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-5 text-center">
-                                            @php
-                                            $images = $item->images;
-                                            if (is_string($images)) {
-                                            // Try to decode JSON string
-                                            $decoded = json_decode($images, true);
-                                            $images = is_array($decoded) ? $decoded : [];
-                                            }
-                                            @endphp
-                                            @if ($images && count($images) > 0)
-                                            <div class="flex items-center justify-center -space-x-2 overflow-hidden">
-                                                @foreach (array_slice($images, 0, 3) as $image)
-                                                @php
-                                                if (is_null($image) || $image === '') {
-                                                $imgUrl = null;
-                                                } elseif (str_starts_with($image, 'http')) {
-                                                $imgUrl = $image;
-                                                } else {
-                                                $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                }
-                                                @endphp
-                                                @if ($imgUrl)
-                                                <button type="button"
-                                                    class="custom-quotation-thumb inline-block transition-transform hover:scale-110 active:scale-95"
-                                                    data-full="{{ $imgUrl }}">
-                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover shadow-sm ring-2 ring-white dark:ring-gray-800"
-                                                        src="{{ $imgUrl }}"
-                                                        alt="Item image">
-                                                </button>
-                                                @endif
-                                                @endforeach
-                                                @if (count($images) > 3)
-                                                <span class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-black text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($images) - 3 }}</span>
-                                                @endif
-                                            </div>
-                                            @else
-                                            <span class="text-[10px] font-bold uppercase text-gray-300 dark:text-gray-600">No Image</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="6"
-                                            class="px-6 py-16 text-center">
-                                            <div class="flex flex-col items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="mb-2 h-12 w-12 text-gray-200"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                                </svg>
-                                                <p class="text-sm font-medium italic text-gray-400">Belum ada item barang yang ditambahkan.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                                <tfoot class="bg-gray-50/80 dark:bg-gray-700/50">
-                                    <tr class="border-t border-gray-100 dark:border-gray-700">
-                                        <td colspan="4"
-                                            class="px-6 py-5 text-right">
-                                            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Total Produk Sub-Total</span>
-                                        </td>
-                                        <td class="whitespace-nowrap px-6 py-5">
-                                            <div class="flex items-baseline font-black text-[#225A97] dark:text-blue-400">
-                                                <span class="mr-1 text-xs opacity-70">Rp</span>
-                                                <span class="text-xl tracking-tighter">{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}</span>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                        <!-- Teks Pembuka (Intro Text) -->
+                        @if ($customPenawaran->intro_text)
+                            <div
+                                class="mt-8 p-5 bg-indigo-50/20 border border-indigo-100/50 rounded-2xl dark:bg-indigo-950/10 dark:border-indigo-950/30">
+                                <label
+                                    class="flex items-center text-[10px] font-bold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 6h16M4 12h16M4 18h7" />
+                                    </svg>
+                                    Teks Pembuka
+                                </label>
+                                <div class="mt-2 text-xs leading-relaxed italic text-slate-600 dark:text-slate-400">
+                                    {!! nl2br(e($customPenawaran->intro_text)) !!}
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Catatan Penolakan Supervisor -->
+                        @if ($customPenawaran->status === 'rejected_supervisor' || !empty($customPenawaran->reason))
+                            <div
+                                class="mt-4 p-5 bg-rose-50/30 border border-rose-100 rounded-2xl dark:bg-rose-950/10 dark:border-rose-950/30">
+                                <label
+                                    class="flex items-center text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    Catatan Penolakan Supervisor
+                                </label>
+                                <div class="mt-2 text-xs leading-relaxed text-rose-700 dark:text-rose-300">
+                                    {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
-                <!-- Sidebar Summary -->
-                <div class="gap-2 lg:col-span-1">
-                    <div class="sticky top-5 space-y-6">
-                        <!-- Action Card -->
-                        <!-- Panel Action -->
-                        <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
-                            <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                                <h2 class="flex items-center font-semibold text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-5 w-5"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                    </svg>
-                                    Panel Action
-                                </h2>
+                <!-- Right Column: Sidebar (Ringkasan Penawaran & Action Buttons) -->
+                <div class="lg:col-span-1 space-y-6">
+                    <!-- Ringkasan Penawaran Card -->
+                    <div
+                        class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 dark:bg-gray-800 dark:border-gray-700">
+                        <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">
+                            Ringkasan Penawaran</h2>
+
+                        <div class="space-y-4 mt-6">
+                            <!-- Subtotal -->
+                            <div class="flex items-center justify-between text-xs">
+                                <span
+                                    class="font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sub-Total Barang</span>
+                                <span class="font-bold text-slate-800 dark:text-white">
+                                    <span
+                                        class="mr-0.5 text-[10px] text-gray-400 font-medium">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
+                                </span>
                             </div>
-                            <div class="p-6">
-                                <div class="flex flex-col gap-4">
-                                    {{-- Approval Actions for Supervisor --}}
-                                    @if (in_array($customPenawaran->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
-                                    <div class="space-y-3 border-b border-gray-100 pb-4 dark:border-gray-700">
-                                        <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-400">Persetujuan Supervisor</h3>
-                                        <div class="grid grid-cols-2 gap-3">
-                                            <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}"
-                                                method="POST"
-                                                class="w-full">
-                                                @csrf
-                                                <button type="submit"
-                                                    name="action"
-                                                    value="approve"
-                                                    class="flex w-full items-center justify-center space-x-2 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-700 hover:shadow-none dark:shadow-none">
-                                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-4 w-4"
-                                                        fill="none"
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor">
-                                                        <path stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M5 13l4 4L19 7" />
-                                                    </svg>
-                                                    <span>Approve</span>
-                                                </button>
-                                            </form>
-                                            <button type="button"
-                                                onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')"
-                                                class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-100 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-4 w-4"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                                <span>Reject</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    @endif
 
-                                    {{-- Standard Actions --}}
-                                    <div class="grid grid-cols-2 gap-3">
-                                        {{-- Edit (Sales Only) --}}
-                                        @if (Auth::user()->role === 'Sales')
-                                        <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
-                                            class="flex items-center justify-center space-x-2 rounded-xl bg-[#F59E0B] py-2.5 text-xs font-bold text-white shadow-lg shadow-amber-100 transition-all hover:bg-amber-600 hover:shadow-none dark:shadow-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                            </svg>
-                                            <span>Edit</span>
-                                        </a>
-                                        @endif
+                            <!-- Pajak / PPN -->
+                            <div class="flex items-center justify-between text-xs">
+                                <div class="flex items-center space-x-1">
+                                    <span
+                                        class="font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Pajak / PPN</span>
+                                    <span
+                                        class="rounded bg-slate-100 dark:bg-gray-700 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:text-gray-400">
+                                        {{ $customPenawaran->tax > 0 ? 'ESTIMATED' : '0%' }}
+                                    </span>
+                                </div>
+                                <span class="font-bold text-slate-800 dark:text-white">
+                                    <span
+                                        class="mr-0.5 text-[10px] text-gray-400 font-medium">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
+                                </span>
+                            </div>
 
-                                        {{-- PDF --}}
-                                        @php
-                                        $isExpired = $customPenawaran->isExpired();
-                                        $canDownload = in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor']) && !$isExpired;
-                                        $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.pdf' : 'admin.custom-quotation-approval.pdf';
-                                        @endphp
-                                        @if ($canDownload && Auth::user()->role !== 'Supervisor')
-                                        <a href="{{ route($pdfRoute, $customPenawaran->id) }}"
-                                            target="_blank"
-                                            class="flex items-center justify-center space-x-2 rounded-xl bg-[#10B981] py-2.5 text-xs font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-600 hover:shadow-none dark:shadow-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <span>Dokumen PDF</span>
-                                        </a>
-                                        @else
-                                        <button disabled
-                                            class="flex cursor-not-allowed items-center justify-center space-x-2 rounded-xl bg-gray-200 py-2.5 text-xs font-bold text-gray-400 opacity-60 dark:bg-gray-700"
-                                            title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                            <span>PDF Locked</span>
-                                        </button>
-                                        @endif
-                                    </div>
+                            <!-- Divider -->
+                            <div class="border-t border-slate-100 dark:border-gray-700 my-4"></div>
 
-                                    {{-- Primary Warehouse Action (Sales Only) --}}
-                                    @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
-                                    <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}"
-                                        method="POST"
-                                        class="w-full">
-                                        @csrf
-                                        <button type="submit"
-                                            class="flex w-full items-center justify-center space-x-3 rounded-xl bg-[#225A97] py-3 text-sm font-black text-white shadow-xl shadow-blue-100 transition-all hover:bg-[#1a4675] hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-5 w-5"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                <path stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
-                                            </svg>
-                                            <span class="uppercase tracking-widest">Send to Warehouse</span>
-                                        </button>
-                                    </form>
-                                    @endif
-
-                                    {{-- Dangerous Actions (Sales Only) --}}
-                                    @if (Auth::user()->role === 'Sales')
-                                    <div class="mt-2 border-t border-gray-50 pt-4 dark:border-gray-700/50">
-                                        <form id="deleteCustomPenawaranForm"
-                                            action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}"
-                                            method="POST"
-                                            class="w-full">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
-                                                id="btnDeleteCustomPenawaran"
-                                                class="flex w-full items-center justify-center space-x-2 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-4 w-4"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor">
-                                                    <path stroke-linecap="round"
-                                                        stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                <span class="uppercase tracking-widest">Delete Custom Quotation</span>
-                                            </button>
-                                        </form>
-                                    </div>
-                                    @endif
+                            <!-- Grand Total -->
+                            <div class="flex items-center justify-between">
+                                <span
+                                    class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Bayar</span>
+                                <div class="text-right">
+                                    <span
+                                        class="block text-[9px] font-extrabold text-[#225A97] dark:text-[#818CF8] uppercase tracking-wider">IDR</span>
+                                    <span
+                                        class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Summary Card -->
-                        <div class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                            <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                                <h2 class="flex items-center font-semibold text-white">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-5 w-5"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor">
-                                        <path stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                    </svg>
-                                    Ringkasan Penawaran
-                                </h2>
+                            <!-- Divider -->
+                            <div class="border-t border-slate-100 dark:border-gray-700 my-4"></div>
+
+                            <!-- Dibuat -->
+                            <div class="flex items-center justify-between text-[10px]">
+                                <span class="font-semibold uppercase tracking-wider text-gray-400">Dibuat</span>
+                                <span
+                                    class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
                             </div>
-                            <div class="p-6">
-                                <div class="space-y-4">
-                                    <!-- Subtotal -->
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="font-medium text-gray-500 dark:text-gray-400">Sub-Total Penawaran</span>
-                                        <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
-                                        </span>
-                                    </div>
 
-                                    <!-- Tax/PPN -->
-                                    <div class="flex items-center justify-between text-sm">
-                                        <div class="flex items-center space-x-1">
-                                            <span class="font-medium text-gray-500 dark:text-gray-400">Pajak / PPN</span>
-                                            <span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-400">
-                                                {{ $customPenawaran->tax > 0 ? 'ESTIMATED' : '0%' }}
-                                            </span>
-                                        </div>
-                                        <span class="font-bold text-gray-900 dark:text-white">
-                                            <span class="mr-0.5 text-[10px] text-gray-400">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
-                                        </span>
-                                    </div>
-
-                                    <!-- Divider -->
-                                    <div class="my-2 border-t border-dashed border-gray-200 dark:border-gray-700"></div>
-
-                                    <!-- Grand Total -->
-                                    <div class="flex flex-col space-y-1">
-                                        <span class="text-[10px] font-bold uppercase tracking-widest text-gray-400">Total Keseluruhan</span>
-                                        <div class="flex items-baseline justify-between">
-                                            <span class="align-top text-xs font-bold text-[#225A97] dark:text-blue-400">Rp</span>
-                                            <span class="text-3xl font-black tracking-tighter text-[#225A97] dark:text-blue-400">
-                                                {{ number_format($customPenawaran->grand_total, 0, '.', ',') }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Metadata Footer -->
-                                <div class="mt-8 space-y-3 border-t border-gray-100 pt-6 dark:border-gray-700">
-                                    <div class="flex items-center text-[11px]">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="mr-2 h-3.5 w-3.5 text-gray-400"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                        </svg>
-                                        <span class="mr-auto font-medium uppercase tracking-tighter text-gray-400">Dibuat</span>
-                                        <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
-                                    </div>
-                                    <div class="flex items-center text-[11px]">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="mr-2 h-3.5 w-3.5 text-gray-400"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                        </svg>
-                                        <span class="mr-auto font-medium uppercase tracking-tighter text-gray-400">Diperbarui</span>
-                                        <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
-                                    </div>
-                                </div>
+                            <!-- Diperbarui -->
+                            <div class="flex items-center justify-between text-[10px]">
+                                <span class="font-semibold uppercase tracking-wider text-gray-400">Diperbarui</span>
+                                <span
+                                    class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        {{-- Approval Actions for Supervisor --}}
+                        @if (in_array($customPenawaran->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
+                            <div
+                                class="p-5 bg-amber-50/50 border border-amber-200 rounded-3xl dark:bg-amber-950/10 dark:border-amber-900/30 space-y-3">
+                                <h3 class="text-[10px] font-black uppercase tracking-wider text-amber-700">Persetujuan Supervisor</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}"
+                                        method="POST" class="w-full">
+                                        @csrf
+                                        <button type="submit" name="action" value="approve"
+                                            class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-lg shadow-emerald-100/50 hover:bg-emerald-700 transition-all active:scale-[0.98] dark:shadow-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 13l4 4L19 7" />
+                                            </svg>
+                                            <span>Approve</span>
+                                        </button>
+                                    </form>
+                                    <button
+                                        onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')"
+                                        title="Tolak"
+                                        class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-rose-600 py-3 text-xs font-bold text-white shadow-lg shadow-rose-100/50 hover:bg-rose-700 transition-all active:scale-[0.98] dark:shadow-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span>Reject</span>
+                                    </button>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Edit Button (Sales Only) --}}
+                        @if (Auth::user()->role === 'Sales')
+                            <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
+                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-100/30 hover:bg-[#1a4675] transition-all active:scale-[0.98] dark:shadow-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                                <span>Edit Custom Quotation</span>
+                            </a>
+                        @endif
+
+                        {{-- PDF Button (Enabled / Disabled) --}}
+                        @php
+                            $isExpired = $customPenawaran->isExpired();
+                            $canDownload = in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor']) && !$isExpired;
+                            $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.pdf' : 'admin.custom-quotation-approval.pdf';
+                        @endphp
+
+                        @if ($canDownload && Auth::user()->role !== 'Supervisor')
+                            <a href="{{ route($pdfRoute, $customPenawaran->id) }}" target="_blank"
+                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#102A47] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 hover:bg-[#0d223a] transition-all active:scale-[0.98] dark:shadow-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <span>Download PDF</span>
+                            </a>
+                        @else
+                            <button disabled
+                                class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-[#EEF2FF] border border-slate-200 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:bg-gray-700/50 dark:border-gray-700 dark:text-gray-500"
+                                title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <span>PDF Locked</span>
+                            </button>
+                        @endif
+
+                        {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
+                        @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
+                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}" method="POST"
+                                class="w-full">
+                                @csrf
+                                <button type="submit"
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 hover:bg-[#1a4675] transition-all active:scale-[0.98] dark:shadow-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                    </svg>
+                                    <span>Send to Warehouse</span>
+                                </button>
+                            </form>
+                        @endif
+
+                        {{-- Dangerous Actions: Delete (Sales Only) --}}
+                        @if (Auth::user()->role === 'Sales')
+                            <form id="deleteCustomPenawaranForm"
+                                action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}" method="POST"
+                                class="w-full">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" id="btnDeleteCustomPenawaran"
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white py-3 text-xs font-bold uppercase tracking-wider text-rose-600 hover:bg-rose-50 transition-all active:scale-[0.98] dark:bg-gray-800 dark:hover:bg-rose-950/20 dark:border-rose-900/30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Delete Custom Quotation</span>
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items Card (Detail Barang) - Full Width Below the Grid -->
+            <div
+                class="mb-6 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
+                <div class="flex items-center justify-between p-6 border-b border-slate-50 dark:border-gray-700">
+                    <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">Detail Barang</h2>
+                </div>
+                <div class="overflow-x-auto overflow-y-auto" style="max-height: 600px;">
+                    <table class="w-full text-left text-sm">
+                        <thead
+                            class="bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-750 dark:text-gray-400 border-b border-slate-100 dark:border-gray-700">
+                            <tr>
+                                <th class="px-6 py-4">Barang & Detail</th>
+                                <th class="px-6 py-4 text-center">Diskon</th>
+                                <th class="px-6 py-4 text-center">Qty</th>
+                                <th class="px-6 py-4">Harga Satuan</th>
+                                <th class="px-6 py-4">Subtotal</th>
+                                <th class="px-6 py-4 text-center">Gambar</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-gray-700">
+                            @forelse($customPenawaran->items as $index => $item)
+                                <tr class="group transition-colors hover:bg-slate-50/50 dark:hover:bg-gray-700/30">
+                                    <td class="px-6 py-5">
+                                        <div class="flex flex-col space-y-0.5">
+                                            <span class="font-bold text-slate-800 dark:text-white">
+                                                {{ $item->product_name }}
+                                            </span>
+                                            @if ($item->description)
+                                                <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase">
+                                                    Note: {{ $item->description }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-5 text-center">
+                                        @php $dk = $item->discount ?? 0; @endphp
+                                        @if ($dk > 0)
+                                            <div class="flex flex-col items-center">
+                                                <span class="text-xs font-bold text-red-500">
+                                                    {{ number_format($dk, 2, '.', ',') }}%
+                                                </span>
+                                                @if ($dk > 20)
+                                                    <span
+                                                        class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-red-500">Approval Required</span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-5 text-center">
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="font-bold text-slate-800 dark:text-white">{{ $item->qty }} {{ $item->unit }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-5 text-slate-600 dark:text-gray-400 text-sm">
+                                        {{ number_format($item->price, 0, '.', ',') }}
+                                    </td>
+                                    <td
+                                        class="whitespace-nowrap px-6 py-5 font-bold text-[#225A97] dark:text-[#818CF8] text-sm">
+                                        @php
+                                            $totalSetelahDiskon = $item->qty * $item->price * (1 - ($item->discount ?? 0) / 100);
+                                        @endphp
+                                        {{ number_format($totalSetelahDiskon, 0, '.', ',') }}
+                                    </td>
+                                    <td class="px-6 py-5 text-center">
+                                        @php
+                                            $images = $item->images;
+                                            if (is_string($images)) {
+                                                $decoded = json_decode($images, true);
+                                                $images = is_array($decoded) ? $decoded : [];
+                                            }
+                                            $images = is_array($images) ? array_filter($images, fn($img) => !empty($img)) : [];
+                                        @endphp
+                                        @if ($images && count($images) > 0)
+                                            <div class="flex items-center justify-center -space-x-2 overflow-hidden">
+                                                @foreach (array_slice($images, 0, 3) as $image)
+                                                    @php
+                                                        if (is_null($image) || $image === '') {
+                                                            $imgUrl = null;
+                                                        } elseif (str_starts_with($image, 'http')) {
+                                                            $imgUrl = $image;
+                                                        } else {
+                                                            $imgUrl = asset('storage/' . ltrim($image, '/'));
+                                                        }
+                                                    @endphp
+                                                    @if ($imgUrl)
+                                                        <button type="button"
+                                                            class="custom-quotation-thumb inline-block transition-transform hover:scale-110 active:scale-95"
+                                                            data-full="{{ $imgUrl }}">
+                                                            <img class="inline-block h-8 w-8 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800"
+                                                                src="{{ $imgUrl }}" alt="Item image">
+                                                        </button>
+                                                    @endif
+                                                @endforeach
+                                                @if (count($images) > 3)
+                                                    <span
+                                                        class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($images) - 3 }}</span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12 text-center text-gray-400">
+                                        <p class="italic">Belum ada item barang yang ditambahkan.</p>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    </div>
+
     <!-- Image modal (lightbox) -->
-    <div id="image-modal"
-        class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black bg-opacity-70">
+    <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-70">
         <button id="image-modal-close"
             class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
-        <img id="image-modal-img"
-            src=""
-            alt="Gambar"
-            class="max-h-[90%] max-w-[95%] rounded shadow-lg">
+        <img id="image-modal-img" src="" alt="Gambar" class="max-h-[90%] max-w-[95%] rounded shadow-lg">
     </div>
 
     <script>
-        (function() {
+        (function () {
             const modal = document.getElementById('image-modal');
             const modalImg = document.getElementById('image-modal-img');
             const closeBtn = document.getElementById('image-modal-close');
@@ -749,32 +584,40 @@
             function openModal(src) {
                 modalImg.src = src;
                 modal.classList.remove('hidden');
+                modal.classList.add('flex');
             }
 
             function closeModal() {
                 modalImg.src = '';
                 modal.classList.add('hidden');
+                modal.classList.remove('flex');
             }
 
-            document.querySelectorAll('.custom-quotation-thumb').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    const src = this.getAttribute('data-full');
-                    if (src) openModal(src);
-                });
+            document.addEventListener('click', function (e) {
+                const btn = e.target.closest('.custom-quotation-thumb');
+                if (btn) {
+                    const src = btn.getAttribute('data-full');
+                    if (src) {
+                        e.preventDefault();
+                        openModal(src);
+                    }
+                }
             });
 
-            closeBtn.addEventListener('click', closeModal);
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) closeModal();
-            });
-            document.addEventListener('keydown', function(e) {
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) closeModal();
+                });
+            }
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') closeModal();
             });
 
             // SweetAlert for Delete
             const btnDelete = document.getElementById('btnDeleteCustomPenawaran');
             if (btnDelete) {
-                btnDelete.addEventListener('click', function() {
+                btnDelete.addEventListener('click', function () {
                     Swal.fire({
                         title: 'Hapus Custom Quotation?',
                         text: "Data ini akan dihapus permanen dari sistem.",
