@@ -461,9 +461,39 @@
             {{-- Menu untuk Supervisor --}}
             @if (in_array(auth()->user()->role, ['Supervisor']))
 
+                        @php
+                            $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
+                            $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
+                            $hasQuotationApprovalNotification = $pendingSentPenawaran > 0 || $pendingCustomQuotation > 0;
+                            $quotationApprovalMenuActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('supervisor.custom-quotation-approval.*');
+                        @endphp
+
+                        {{-- Quotation Approval --}}
+                        <details {{ $quotationApprovalMenuActive ? 'open' : '' }} class="">
+                            <summary
+                                class="{{ $quotationApprovalMenuActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <span class="flex items-center">
+                                    <svg width="28px" height="28px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                        <path fill="currentColor"
+                                            d="M13.098 8H6.902c-.751 0-1.172.754-.708 1.268L9.292 12.7c.36.399 1.055.399 1.416 0l3.098-3.433C14.27 8.754 13.849 8 13.098 8Z">
+                                        </path>
+                                    </svg>
+                                    <span
+                                        class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation Approval</span>
+                                </span>
+                                @if ($hasQuotationApprovalNotification)
+                                    <span class="h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#0D223A]"></span>
+                                @endif
+                            </summary>
+
+                            <ul
+                                class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
+
                         {{-- (Incoming Orders removed) --}}
                         {{-- Sent Penawaran (needs approval) --}}
-                        <li>
+                        <li class="w-[82%]">
                             <a href="{{ route('admin.quotation_approval') }}"
                                 class="{{ request()->routeIs('admin.quotation_approval') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
@@ -497,9 +527,6 @@
                                 </svg>
                                 <span
                                     class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation</span>
-                                @php
-                                    $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
-                                @endphp
                                 @if ($pendingSentPenawaran > 0)
                                     <span
                                         class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 p-3 text-sm font-medium text-white shadow-sm">
@@ -510,7 +537,7 @@
                         </li>
 
                         {{-- Custom Quotation Approval --}}
-                        <li>
+                        <li class="w-[82%]">
                             <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
                                 class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
@@ -636,9 +663,6 @@
                                 <span
                                     class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
                                     Custom Quotation</span>
-                                @php
-                                    $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
-                                @endphp
                                 @if ($pendingCustomQuotation > 0)
                                     <span
                                         class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 p-3 text-sm font-medium text-white shadow-sm">
@@ -647,6 +671,9 @@
                                 @endif
                             </a>
                         </li>
+
+                            </ul>
+                        </details>
 
                         {{-- Customer --}}
                         <li>
