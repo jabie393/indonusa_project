@@ -39,66 +39,131 @@
                 <thead class="sticky top-0 z-30 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="selectCol text-nowrap px-4 py-3"></th>
-                        <th class="text-nowrap px-4 py-3">Nama</th>
-                        <th class="text-nowrap px-4 py-3">Kategori</th>
-                        <th class="text-nowrap px-4 py-3">No. NPWP</th>
-                        <th class="text-nowrap px-4 py-3">Term Of Payment</th>
-                        <th class="text-nowrap px-4 py-3">Kredit Limit</th>
-                        <th class="text-nowrap px-4 py-3">PIC</th>
-                        <th class="text-nowrap px-4 py-3">Kotak</th>
+                        <th class="text-nowrap px-4 py-3">Customer</th>
+                        <th class="text-nowrap px-4 py-3">Term & Kredit</th>
+                        <th class="text-nowrap px-4 py-3">PIC & Kontak</th>
                         <th class="text-nowrap px-4 py-3">Status</th>
                         <th class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($customers as $customer)
-                        <tr class="dark:border-gray-700">
-
-                            <td class="px-4 py-2">{{ $customer->id }}</td>
-                            <td class="px-4 py-2">{{ $customer->nama_customer }}</td>
-                            <td class="px-4 py-2">{{ $customer->tipe_customer }}</td>
-                            <td class="px-4 py-2">{{ !empty($customer->npwp) ? $customer->npwp : '-' }}</td>
-                            <td class="px-4 py-2">
-                                {{ !empty($customer->term_of_payments) ? $customer->term_of_payments . ' Hari' : '-' }}
-                            </td>
-                            <td class="px-4 py-2">
-                                <div class="flex h-full items-center justify-between">
-                                    <span>Rp</span>
-                                    {{ $customer->kredit_limit !== null && is_numeric($customer->kredit_limit) ? number_format($customer->kredit_limit, 0, '.', ',') : $customer->kredit_limit ?? '-' }}
+                        <tr class="border-b border-gray-100 hover:bg-gray-50/50 transition-colors duration-200 dark:border-gray-700 dark:hover:bg-gray-800/30">
+                            <td class="px-4 py-3 text-xs text-gray-400 font-mono">{{ $customer->id }}</td>
+                            
+                            {{-- Customer Column --}}
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-bold text-gray-900 dark:text-white text-[15px]">{{ $customer->nama_customer }}</span>
+                                        @php
+                                            $tipe = strtoupper($customer->tipe_customer);
+                                            $badgeClass = 'text-gray-600 border border-gray-400 bg-gray-50/50 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-900/30';
+                                            if ($tipe === 'SWASTA') {
+                                                $badgeClass = 'text-blue-700 border border-blue-500 bg-blue-50/50 dark:text-blue-400 dark:border-blue-700 dark:bg-blue-950/30';
+                                            } elseif ($tipe === 'PEMERINTAH') {
+                                                $badgeClass = 'text-cyan-600 border border-cyan-500 bg-cyan-50/50 dark:text-cyan-400 dark:border-cyan-700 dark:bg-cyan-950/30';
+                                            } elseif ($tipe === 'BUMN') {
+                                                $badgeClass = 'text-red-600 border border-red-500 bg-red-50/50 dark:text-red-400 dark:border-red-700 dark:bg-red-950/30';
+                                            }
+                                        @endphp
+                                        <span class="rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wider uppercase {{ $badgeClass }}">
+                                            {{ $customer->tipe_customer }}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">
+                                        <span class="font-medium text-gray-400">NPWP:</span> {{ !empty($customer->npwp) ? $customer->npwp : '-' }}
+                                    </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-2">
-                                @if ($customer->pics && $customer->pics->count() > 0)
-                                    @foreach ($customer->pics as $pic)
-                                        <div class="mb-1">
-                                            {{ $pic->name }} ({{ $pic->position }})
+
+                            {{-- Term & Kredit Column --}}
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300 text-sm">
+                                        <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span class="font-semibold text-gray-800 dark:text-gray-200">
+                                            {{ !empty($customer->term_of_payments) ? $customer->term_of_payments . ' Hari' : '-' }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm">
+                                        <svg class="h-4 w-4 text-blue-500/80 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                        <span class="font-bold">
+                                            Rp{{ $customer->kredit_limit !== null && is_numeric($customer->kredit_limit) ? number_format($customer->kredit_limit, 0, ',', '.') : $customer->kredit_limit ?? '-' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+
+                            {{-- PIC & Kontak Column --}}
+                            <td class="px-4 py-3">
+                                <div class="flex items-start gap-2">
+                                    <svg class="h-4 w-4 text-gray-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <div class="flex flex-col gap-1">
+                                        @if ($customer->pics && $customer->pics->count() > 0)
+                                            @foreach ($customer->pics as $pic)
+                                                <div class="mb-0.5">
+                                                    <div class="font-bold text-gray-800 dark:text-gray-200">{{ $pic->name }}</div>
+                                                    <div class="text-[11px] text-gray-500 dark:text-gray-400">{{ $pic->position }}</div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
+                                        
+                                        <div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                            <svg class="h-3 w-3 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                            </svg>
+                                            <span>{{ $customer->telepon }}</span>
                                         </div>
-                                    @endforeach
-                                @else
-                                    -
-                                @endif
+                                        <div class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+                                            <svg class="h-3 w-3 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                            <span>{{ $customer->email }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
-                            <td class="px-4 py-2">No.
-                                Hp<br>{{ $customer->telepon }}<br>Email<br>{{ $customer->email }}
-                            </td>
+
+                            {{-- Status Column --}}
                             @if (in_array(auth()->user()->role, ['Supervisor']))
-                                <td class="px-4 py-2">
-                                    <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
-                                        class="select select-xs inset-ring {{ strtolower($customer->status) == 'active' ? 'inset-ring-green-800 text-green-800 hover:bg-green-200' : 'inset-ring-red-800 text-red-800 hover:bg-red-200' }} h-8 min-w-24 text-nowrap border-none bg-slate-50 font-bold transition-all duration-300 dark:bg-gray-800">
-                                        <option class="text-green-800 hover:bg-green-100" value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }}>
-                                            Aktif</option>
-                                        <option class="text-red-800 hover:bg-red-100" value="inactive" {{ strtolower($customer->status) != 'active' ? 'selected' : '' }}>
-                                            Non-Aktif</option>
-                                    </select>
+                                <td class="px-4 py-3 align-middle">
+                                    <div class="relative inline-block w-32">
+                                        <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
+                                            class="w-full appearance-none rounded-full px-3 py-1.5 pr-8 text-xs font-semibold tracking-wide border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer
+                                            {{ strtolower($customer->status) == 'active' 
+                                                ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100 focus:ring-green-500 focus:border-green-500 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800/50' 
+                                                : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 focus:ring-red-500 focus:border-red-500 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800/50' }}">
+                                            <option value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }} class="bg-white text-green-700 dark:bg-gray-800">
+                                                🟢 Aktif
+                                            </option>
+                                            <option value="inactive" {{ strtolower($customer->status) != 'active' ? 'selected' : '' }} class="bg-white text-red-700 dark:bg-gray-800">
+                                                🔴 Non-Aktif
+                                            </option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 
+                                            {{ strtolower($customer->status) == 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </td>
                             @elseif (in_array(auth()->user()->role, ['Sales', 'General Affair']))
-                                <td class="px-4 py-2">
+                                <td class="px-4 py-3 align-middle">
                                     @php
-                                        $statusLabel =
-                                            [
-                                                'active' => 'Aktif',
-                                                'inactive' => 'Non-Aktif',
-                                            ][$customer->status] ?? $customer->status;
+                                        $statusLabel = [
+                                            'active' => 'Aktif',
+                                            'inactive' => 'Non-Aktif',
+                                        ][$customer->status] ?? $customer->status;
 
                                         $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                         $badgeText = 'text-gray-700 dark:text-gray-300';
@@ -117,51 +182,48 @@
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
                                         }
                                     @endphp
-                                    <span
-                                        class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                    <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                         {!! $iconSvg !!}{{ $statusLabel }}
                                     </span>
                                 </td>
                             @else
-                                <td class="px-4 py-2">
-                                    <span class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ strtolower($customer->status) == 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                <td class="px-4 py-3 align-middle">
+                                    <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ strtolower($customer->status) == 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
                                         {{ strtolower($customer->status) == 'active' ? 'Aktif' : 'Non-Aktif' }}
                                     </span>
                                 </td>
                             @endif
+
+                            {{-- Action Column --}}
                             <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
                                 <div class="flex justify-center">
-                                    <div
-                                        class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
+                                    <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                         {{-- Edit --}}
                                         <button onclick="openEditModal({{ $customer->toJson() }})"
-                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900">
+                                            class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center border-r border-blue-800 bg-blue-700 p-2.5 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil h-4 w-4">
-                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
-                                                </path>
+                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
                                                 <path d="m15 5 4 4"></path>
                                             </svg>
-                                            <span
-                                                class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                         </button>
                                         {{-- Delete --}}
                                         <form action="" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button"
-                                                class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                                                class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2.5 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                 onclick="confirmDelete(() => this.closest('form').submit())">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
                                                     <path d="M10 11v6"></path>
                                                     <path d="M14 11v6"></path>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2 2V6"></path>
                                                     <path d="M3 6h18"></path>
                                                     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                 </svg>
-                                                <span
-                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
                                             </button>
                                         </form>
                                     </div>
