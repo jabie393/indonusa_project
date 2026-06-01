@@ -244,11 +244,11 @@
                                        id="sales_order_number"
                                        name="sales_order_number"
                                        value="{{ old('sales_order_number', $requestOrder->sales_order_number) }}"
-                                       placeholder="Masukkan No. SO">
+                                       placeholder="No. SO akan diisi otomatis" readonly>
                                 @error('sales_order_number')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Nomor Sales Order</small>
+                                <small class="text-muted dark:text-gray-400">Nomor Sales Order (otomatis, tidak bisa diubah)</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">

@@ -311,14 +311,22 @@ class CustomQuotationController extends Controller
                 ]);
             }
 
-            $customPenawaran->update([
+            $updateData = [
                 'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
-                'status' => 'pending_approval',
-                'approved_by' => null,
-                'approved_at' => null,
-                'reason' => null,
-            ]);
+            ];
+
+            if ($customPenawaran->status === 'approved_supervisor') {
+                // Keep supervisor approval if the quotation was already approved.
+                $updateData['status'] = 'approved_supervisor';
+            } else {
+                $updateData['status'] = 'pending_approval';
+                $updateData['approved_by'] = null;
+                $updateData['approved_at'] = null;
+                $updateData['reason'] = null;
+            }
+
+            $customPenawaran->update($updateData);
 
             DB::commit();
 
@@ -611,10 +619,18 @@ class CustomQuotationController extends Controller
         try {
             $nomorPenawaran = Quotation::generateQuotationNumber();
             $tanggalBerlaku = now()->addDays(14);
+<<<<<<< HEAD
+            $requestOrder = \App\Models\RequestOrder::create([
+                'custom_penawaran_id' => $customPenawaran->id,
+                'request_number' => 'REQ-'.strtoupper(\Str::random(8)),
+                'nomor_penawaran' => $nomorPenawaran,
+                'sales_order_number' => \App\Models\RequestOrder::generateSalesOrderNumber(),
+=======
             $requestOrder = Quotation::create([
                 'custom_quotation_id' => $customPenawaran->id,
                 'request_number' => 'REQ-'.strtoupper(Str::random(8)),
                 'quotation_number' => $nomorPenawaran,
+>>>>>>> e46156db4875b6ac578c70eb1e4ba02f968ebde5
                 'sales_id' => $customPenawaran->sales_id,
                 'customer_name' => $customPenawaran->to,
                 'subject' => $customPenawaran->subject,
@@ -626,7 +642,6 @@ class CustomQuotationController extends Controller
                 'tax' => $customPenawaran->tax ?? 0,
                 'grand_total' => $customPenawaran->grand_total,
                 'no_po' => null,
-                'sales_order_number' => null,
             ]);
             Order::create([
                 'order_number' => 'ORD-'.strtoupper(uniqid()),
