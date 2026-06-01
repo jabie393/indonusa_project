@@ -481,12 +481,12 @@
                                             <p class="text-sm font-bold leading-tight text-gray-900 dark:text-white">{{ $requestOrder->customer_name }}</p>
                                         </div>
                                         <div class="space-y-1">
-                                            <label class="text-[10px] font-bold uppercase text-gray-400">PIC (Sales)</label>
+                                            <label class="text-[10px] font-bold uppercase text-gray-400">PIC (Customer)</label>
                                             <div class="flex items-center space-x-2">
                                                 <div class="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-[10px] font-bold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
-                                                    {{ substr($requestOrder->sales->name ?? 'S', 0, 1) }}
+                                                    {{ substr($requestOrder->pic->name ?? $requestOrder->sales->name ?? 'S', 0, 1) }}
                                                 </div>
-                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->sales->name ?? '-' }}</p>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $requestOrder->pic->name ?? $requestOrder->sales->name ?? '-' }}</p>
                                             </div>
                                         </div>
                                         <div class="space-y-1">

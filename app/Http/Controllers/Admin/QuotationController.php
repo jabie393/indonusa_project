@@ -62,6 +62,7 @@ class QuotationController extends Controller
             ->get();
 
         $customers = Customer::where('status', 'active')
+            ->with('pics')
             ->orderBy('customer_name')
             ->get();
 
@@ -72,11 +73,7 @@ class QuotationController extends Controller
             ->sort()
             ->values();
 
-        $salesUsers = \App\Models\User::where('role', 'Sales')
-            ->orderBy('name')
-            ->get();
-
-        return view('admin.quotation.action.create', compact('goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.action.create', compact('goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
     }
 
@@ -90,7 +87,7 @@ class QuotationController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
-            'pic_id' => 'required|integer|exists:users,id',
+            'pic_id' => 'required|integer|exists:pics,id',
             'subject' => 'required|string|max:255',
             'no_po' => 'nullable|string|max:255|unique:quotations,no_po',
             'required_date' => 'nullable|date',
@@ -173,7 +170,8 @@ class QuotationController extends Controller
                 'quotation_number' => $nomorPenawaran,
                 'sales_order_number' => $salesOrderNumber,
                 'no_po' => $validated['no_po'] ?? null,
-                'sales_id' => $validated['pic_id'],
+                'sales_id' => Auth::id(),
+                'pic_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
@@ -371,16 +369,13 @@ class QuotationController extends Controller
             ->get();
 
         $customers = Customer::where('status', 'active')
+            ->with('pics')
             ->orderBy('customer_name')
             ->get();
 
         $categories = Barang::distinct()->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
 
-        $salesUsers = \App\Models\User::where('role', 'Sales')
-            ->orderBy('name')
-            ->get();
-
-        return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories', 'salesUsers'))
+        return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
     }
 
@@ -399,7 +394,7 @@ class QuotationController extends Controller
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
-            'pic_id' => 'required|integer|exists:users,id',
+            'pic_id' => 'required|integer|exists:pics,id',
             'subject' => 'required|string|max:255',
             'no_po' => 'nullable|string|max:255|unique:quotations,no_po,'.$requestOrder->id,
             'sales_order_number' => 'nullable|string|max:255',
@@ -528,7 +523,7 @@ class QuotationController extends Controller
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
             $requestOrder->update([
-                'sales_id' => $validated['pic_id'],
+                'pic_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
