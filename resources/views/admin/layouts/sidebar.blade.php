@@ -259,7 +259,7 @@
                         </span>
                     </div>
                     @if ($hasWarehouseNotification && auth()->user()->role === 'Warehouse')
-                        <span class="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500"></span>
+                        <span class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                     @endif
                 </a>
             </li>
@@ -451,9 +451,6 @@
                                     Order</span>
                             </a>
                         </li>
-
-
-
                     </ul>
                 </details>
             @endif
@@ -465,7 +462,12 @@
                     $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
                     $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
                     $hasQuotationApprovalNotification = $pendingSentPenawaran > 0 || $pendingCustomQuotation > 0;
-                    $quotationApprovalMenuActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('supervisor.custom-quotation-approval.*');
+                    $quotationApprovalItemActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('sales.quotation.show');
+                    $customQuotationApprovalItemActive =
+                        request()->routeIs('supervisor.custom-quotation-approval.*') ||
+                        request()->routeIs('admin.custom-quotation-approval.show') ||
+                        request()->routeIs('sales.custom-quotation.show');
+                    $quotationApprovalMenuActive = $quotationApprovalItemActive || $customQuotationApprovalItemActive;
                 @endphp
 
                 {{-- Customer --}}
@@ -519,12 +521,12 @@
                         {{-- Sent Penawaran (needs approval) --}}
                         <li class="w-[88%]">
                             <a href="{{ route('admin.quotation_approval') }}"
-                                class="{{ request()->routeIs('admin.quotation_approval') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ $quotationApprovalItemActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
                                     <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         viewBox="0 0 491.695 491.695" xml:space="preserve"
-                                        class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                        class="{{ $quotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                         <g id="SVGRepo_iconCarrier">
@@ -551,7 +553,7 @@
                                         </g>
                                     </svg>
                                     <span
-                                        class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
+                                        class="{{ $quotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                                 </div>
                                 @if ($pendingSentPenawaran > 0)
                                     <span
@@ -565,9 +567,9 @@
                         {{-- Custom Quotation Approval --}}
                         <li class="w-[88%]">
                             <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
-                                class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ $customQuotationApprovalItemActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                    <svg class="{{ $customQuotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                                         width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
                                         id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -686,7 +688,7 @@
                                     </svg>
 
                                     <span
-                                        class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
+                                        class="{{ $customQuotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                                         Custom Quotation</span>
                                 </div>
                                 @if ($pendingCustomQuotation > 0)
