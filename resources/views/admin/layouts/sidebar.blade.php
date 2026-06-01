@@ -17,7 +17,7 @@
                         <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
                     </svg>
                     <span
-                        class="{{ request()->routeIs('dashboard') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Dashboard</span>
+                        class="{{ request()->routeIs('dashboard') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Dashboard</span>
                 </a>
             </li>
 
@@ -34,7 +34,7 @@
                                 fill="currentColor" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Goods
+                            class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
                             In</span>
                     </a>
                     {{-- Add Stock --}}
@@ -129,7 +129,7 @@
                                 fill="currentColor" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Goods
+                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
                             In Status</span>
                     </a>
                 </li>
@@ -150,7 +150,7 @@
                             </g>
                         </svg>
                         <span
-                            class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Manajemen
+                            class="{{ request()->routeIs('akun-sales.*') || request()->routeIs('customer.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Manajemen
                             Entitas</span>
                     </summary>
 
@@ -158,7 +158,7 @@
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
 
                         {{-- Akun Sales --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('akun-sales.index') }}"
                                 class="{{ request()->routeIs('akun-sales.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -176,14 +176,14 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('akun-sales.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Akun
+                                    class="{{ request()->routeIs('akun-sales.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Akun
                                     Sales
                                 </span>
                             </a>
                         </li>
 
                         {{-- Customer --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('customer.index') }}"
                                 class="{{ request()->routeIs('customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -201,12 +201,12 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer</span>
+                                    class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Customer</span>
                             </a>
                         </li>
 
                         {{-- PICs --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('pics.index') }}"
                                 class="{{ request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
@@ -220,7 +220,7 @@
                                         fill="currentColor" />
                                 </svg>
                                 <span
-                                    class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">PICs</span>
+                                    class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">PICs</span>
                             </a>
                         </li>
                     </ul>
@@ -253,7 +253,7 @@
                                 d="M6.21582 14.4103H10.0143V18.1884H6.21582V14.4103ZM6.21582 23.2138H10.0143V19.4356H6.21582V23.2138ZM6.21582 28.227H10.0143V24.4489H6.21582V28.227ZM11.1416 23.2138H14.9299V19.4356H11.1314V23.2138H11.1416ZM11.1416 28.227H14.9299V24.4489H11.1314V28.227H11.1416ZM16.0674 24.4489V28.227H19.8658V24.4489H16.0674ZM25.8986 9.71182L13.0307 2.49463L0.172852 9.73603L0.975195 11.7341L2.61035 10.8017V28.2392H4.45879V10.729H21.6229V28.2634H23.4713V10.8259L25.1064 11.7341L25.8986 9.71182Z"
                                 fill="currentColor" />
                         </svg>
-                        <span class="ml-3 flex items-center gap-2">
+                        <span class="ml-2 flex items-center gap-2">
                             <span
                                 class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">Warehouse</span>
                         </span>
@@ -283,7 +283,7 @@
                                 stroke-linejoin="round" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('sales-order-invoice.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales
+                            class="{{ request()->routeIs('sales-order-invoice.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
                             Order Invoice</span>
                     </a>
                     @if (request()->routeIs('invoice.*'))
@@ -331,7 +331,7 @@
                             </g>
                         </svg>
                         <span
-                            class="{{ request()->routeIs('catalog.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Catalog</span>
+                            class="{{ request()->routeIs('catalog.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Catalog</span>
                     </a>
                 </li>
 
@@ -353,7 +353,7 @@
                             </g>
                         </svg>
                         <span
-                            class="{{ request()->routeIs('history.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">History</span>
+                            class="{{ request()->routeIs('history.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">History</span>
                     </a>
                 </li>
 
@@ -380,14 +380,14 @@
                         </svg>
 
                         <span
-                            class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
+                            class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                             Sales Module</span>
                     </summary>
 
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
                         {{-- Quotation --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('sales.quotation.index') }}"
                                 class="{{ request()->routeIs('sales.quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
@@ -406,12 +406,12 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('sales.quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation</span>
+                                    class="{{ request()->routeIs('sales.quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                             </a>
                         </li>
 
                         {{-- Custom Quotation --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('sales.custom-quotation.index') }}"
                                 class="{{ request()->routeIs('sales.custom-quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -427,13 +427,13 @@
 
 
                                 <span
-                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Custom
+                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Custom
                                     Quotation</span>
                             </a>
                         </li>
 
                         {{-- Sales Order --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('sales.sales-order.index') }}"
                                 class="{{ request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
@@ -447,7 +447,7 @@
                                         fill="currentColor" />
                                 </svg>
                                 <span
-                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Sales
+                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
                                     Order</span>
                             </a>
                         </li>
@@ -486,7 +486,7 @@
                         </svg>
 
                         <span
-                            class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Customer</span>
+                            class="{{ request()->routeIs('customer.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Customer</span>
                     </a>
                 </li>
 
@@ -503,11 +503,12 @@
                                 </path>
                             </svg>
                             <span
-                                class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation
+                                class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation
                                 Approval</span>
                         </span>
                         @if ($hasQuotationApprovalNotification)
-                            <span class="h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#0D223A]"></span>
+                            <span
+                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                         @endif
                     </summary>
 
@@ -516,43 +517,45 @@
 
                         {{-- (Incoming Orders removed) --}}
                         {{-- Sent Penawaran (needs approval) --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('admin.quotation_approval') }}"
-                                class="{{ request()->routeIs('admin.quotation_approval') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 491.695 491.695" xml:space="preserve"
-                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                            <path
-                                                d="M436.714,0H149.471c-16.438,0-29.812,13.374-29.812,29.812v66.714c-54.49,15.594-94.489,65.857-94.489,125.288 c0,59.431,39.998,109.694,94.489,125.288v114.783c0,16.438,13.374,29.812,29.812,29.812h234.733c2.785,0,5.455-1.106,7.425-3.075 l71.821-71.822c1.969-1.969,3.075-4.64,3.075-7.425V29.812C466.525,13.374,453.152,0,436.714,0z M149.471,21h287.243 c4.858,0,8.811,3.953,8.811,8.812v31.689H140.659V29.812C140.659,24.953,144.612,21,149.471,21z M46.17,221.813 c0-60.263,49.027-109.29,109.29-109.29c60.263,0,109.29,49.027,109.29,109.29s-49.027,109.291-109.29,109.291 C95.197,331.104,46.17,282.076,46.17,221.813z M140.659,461.884V351.258c4.86,0.552,9.797,0.846,14.802,0.846 c39.135,0,74.292-17.347,98.195-44.752h64.336c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-49.381 c9.133-15.95,14.984-34.005,16.644-53.242h32.736c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-32.603 c-1.42-19.194-7.02-37.242-15.886-53.241h48.488c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-62.974 c-23.918-28.323-59.67-46.347-99.558-46.347c-5.005,0-9.942,0.294-14.802,0.846v-9.867h304.866v316.372h-42.009 c-16.439,0-29.811,13.374-29.811,29.811v42.011H149.471C144.612,470.695,140.659,466.743,140.659,461.884z M394.705,455.845v-27.16 c0-4.859,3.953-8.811,8.811-8.811h27.16L394.705,455.845z">
-                                            </path>
-                                            <path
-                                                d="M359.246,158.869h34.87c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 C348.746,154.168,353.447,158.869,359.246,158.869z">
-                                            </path>
-                                            <path
-                                                d="M359.246,233.11h34.87c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 C348.746,228.409,353.447,233.11,359.246,233.11z">
-                                            </path>
-                                            <path
-                                                d="M359.246,307.352h34.87c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 S353.447,307.352,359.246,307.352z">
-                                            </path>
-                                            <path
-                                                d="M394.116,381.593c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-98.225c-5.799,0-10.5,4.701-10.5,10.5 s4.701,10.5,10.5,10.5H394.116z">
-                                            </path>
-                                            <path
-                                                d="M236.982,168.845l-12.81-12.81c-3.45-3.449-8.036-5.349-12.915-5.349s-9.465,1.9-12.915,5.349l-67.19,67.19l-18.573-18.573 c-3.449-3.448-8.036-5.348-12.914-5.348c-4.878,0-9.465,1.9-12.914,5.349l-12.813,12.812c-7.12,7.121-7.12,18.708,0.001,25.829 l44.297,44.296c3.45,3.451,8.037,5.351,12.916,5.351c0,0,0.001,0,0.001,0c4.878,0,9.465-1.9,12.913-5.349l92.917-92.917 C244.103,187.554,244.103,175.966,236.982,168.845z M131.151,270.807l-40.429-40.428l8.942-8.942l24.062,24.062 c4.101,4.101,10.749,4.101,14.85,0l72.681-72.681l8.942,8.942L131.151,270.807z">
-                                            </path>
+                                class="{{ request()->routeIs('admin.quotation_approval') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <div class="flex items-center">
+                                    <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        viewBox="0 0 491.695 491.695" xml:space="preserve"
+                                        class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <g>
+                                                <path
+                                                    d="M436.714,0H149.471c-16.438,0-29.812,13.374-29.812,29.812v66.714c-54.49,15.594-94.489,65.857-94.489,125.288 c0,59.431,39.998,109.694,94.489,125.288v114.783c0,16.438,13.374,29.812,29.812,29.812h234.733c2.785,0,5.455-1.106,7.425-3.075 l71.821-71.822c1.969-1.969,3.075-4.64,3.075-7.425V29.812C466.525,13.374,453.152,0,436.714,0z M149.471,21h287.243 c4.858,0,8.811,3.953,8.811,8.812v31.689H140.659V29.812C140.659,24.953,144.612,21,149.471,21z M46.17,221.813 c0-60.263,49.027-109.29,109.29-109.29c60.263,0,109.29,49.027,109.29,109.29s-49.027,109.291-109.29,109.291 C95.197,331.104,46.17,282.076,46.17,221.813z M140.659,461.884V351.258c4.86,0.552,9.797,0.846,14.802,0.846 c39.135,0,74.292-17.347,98.195-44.752h64.336c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-49.381 c9.133-15.95,14.984-34.005,16.644-53.242h32.736c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-32.603 c-1.42-19.194-7.02-37.242-15.886-53.241h48.488c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-62.974 c-23.918-28.323-59.67-46.347-99.558-46.347c-5.005,0-9.942,0.294-14.802,0.846v-9.867h304.866v316.372h-42.009 c-16.439,0-29.811,13.374-29.811,29.811v42.011H149.471C144.612,470.695,140.659,466.743,140.659,461.884z M394.705,455.845v-27.16 c0-4.859,3.953-8.811,8.811-8.811h27.16L394.705,455.845z">
+                                                </path>
+                                                <path
+                                                    d="M359.246,158.869h34.87c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 C348.746,154.168,353.447,158.869,359.246,158.869z">
+                                                </path>
+                                                <path
+                                                    d="M359.246,233.11h34.87c5.799,0,10.5-4.701,10.5-10.5c0-5.799-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 C348.746,228.409,353.447,233.11,359.246,233.11z">
+                                                </path>
+                                                <path
+                                                    d="M359.246,307.352h34.87c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-34.87c-5.799,0-10.5,4.701-10.5,10.5 S353.447,307.352,359.246,307.352z">
+                                                </path>
+                                                <path
+                                                    d="M394.116,381.593c5.799,0,10.5-4.701,10.5-10.5s-4.701-10.5-10.5-10.5h-98.225c-5.799,0-10.5,4.701-10.5,10.5 s4.701,10.5,10.5,10.5H394.116z">
+                                                </path>
+                                                <path
+                                                    d="M236.982,168.845l-12.81-12.81c-3.45-3.449-8.036-5.349-12.915-5.349s-9.465,1.9-12.915,5.349l-67.19,67.19l-18.573-18.573 c-3.449-3.448-8.036-5.348-12.914-5.348c-4.878,0-9.465,1.9-12.914,5.349l-12.813,12.812c-7.12,7.121-7.12,18.708,0.001,25.829 l44.297,44.296c3.45,3.451,8.037,5.351,12.916,5.351c0,0,0.001,0,0.001,0c4.878,0,9.465-1.9,12.913-5.349l92.917-92.917 C244.103,187.554,244.103,175.966,236.982,168.845z M131.151,270.807l-40.429-40.428l8.942-8.942l24.062,24.062 c4.101,4.101,10.749,4.101,14.85,0l72.681-72.681l8.942,8.942L131.151,270.807z">
+                                                </path>
+                                            </g>
                                         </g>
-                                    </g>
-                                </svg>
-                                <span
-                                    class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">Quotation</span>
+                                    </svg>
+                                    <span
+                                        class="{{ request()->routeIs('admin.quotation_approval') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
+                                </div>
                                 @if ($pendingSentPenawaran > 0)
                                     <span
-                                        class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 p-3 text-sm font-medium text-white shadow-sm">
+                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
                                         {{ $pendingSentPenawaran }}
                                     </span>
                                 @endif
@@ -560,21 +563,19 @@
                         </li>
 
                         {{-- Custom Quotation Approval --}}
-                        <li class="w-[82%]">
+                        <li class="w-[88%]">
                             <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
-                                class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-
-
-                                <svg class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
-                                    width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
-                                    id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    fill="currentColor">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g id="clipboard">
-                                            <g>
+                                class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <div class="flex items-center">
+                                    <svg class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                        width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
+                                        id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        fill="currentColor">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <g id="clipboard">
                                                 <g>
                                                     <g>
                                                         <path
@@ -681,15 +682,16 @@
                                                     fill="currentColor"></path>
                                             </g>
                                         </g>
-                                    </g>
-                                </svg>
+                                        </g>
+                                    </svg>
 
-                                <span
-                                    class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-3 group-hover:text-white">
-                                    Custom Quotation</span>
+                                    <span
+                                        class="{{ request()->routeIs('supervisor.custom-quotation-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
+                                        Custom Quotation</span>
+                                </div>
                                 @if ($pendingCustomQuotation > 0)
                                     <span
-                                        class="ml-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-red-500 p-3 text-sm font-medium text-white shadow-sm">
+                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
                                         {{ $pendingCustomQuotation }}
                                     </span>
                                 @endif
@@ -708,7 +710,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span class="ml-3 group-hover:text-white">Quotation History</span>
+                        <span class="ml-2 group-hover:text-white">Quotation History</span>
                     </a>
                 </li>
             @endif
@@ -724,7 +726,7 @@
                         fill="currentColor"></path>
                 </g>
             </svg>
-            <span class="ml-3 group-hover:text-white">Manual Guide</span>
+            <span class="ml-2 group-hover:text-white">Manual Guide</span>
         </button>
     </div>
 </aside>
