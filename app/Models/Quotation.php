@@ -43,12 +43,18 @@ class Quotation extends Model
     {
         $maxDiskon = $this->items->max('discount_percent');
         $status = $this->order?->status;
-        if ($maxDiskon === null) return false; // Tidak ada item
-        if ($status === 'approved_supervisor') return true;
-        if ($maxDiskon <= 20 && $status === 'open') return true;
-        if ($maxDiskon > 20 && $status === 'open') return true;
-        if ($status === 'sent_to_supervisor') return false;
-        if ($status === 'rejected_supervisor') return false;
+        if ($maxDiskon === null) {
+            return false; // Tidak ada item
+        }
+
+        if (in_array($status, ['open', 'approved_supervisor', 'sent_to_warehouse', 'approved_warehouse', 'not_completed', 'completed'], true)) {
+            return true;
+        }
+
+        if (in_array($status, ['sent_to_supervisor', 'rejected_supervisor', 'rejected_warehouse'], true)) {
+            return false;
+        }
+
         return false;
     }
 
