@@ -196,7 +196,7 @@
 
             <!-- INTRO TEXT: show only the editable note -->
             <div class="mt-8 text-[9pt]">
-                <p class="whitespace-pre-wrap">{{ $requestOrder->catatan_customer }}</p>
+                <p class="whitespace-pre-wrap">{{ $requestOrder->customer_notes }}</p>
             </div>
 
             <!-- SUPPORTING IMAGES -->
@@ -241,8 +241,8 @@
                         @endphp
                         @forelse($requestOrder->items as $index => $item)
                             @php
-                                $displayHarga = $item->harga ?? round(optional($item->barang)->selling_price * 1.3, 2);
-                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - ($item->diskon_percent ?? 0) / 100), 2);
+                                $displayHarga = $item->price ?? round(optional($item->barang)->selling_price * 1.3, 2);
+                                $computedSubtotal = round($displayHarga * $item->quantity * (1 - ($item->discount_percent ?? 0) / 100), 2);
                                 $ppnAmount = round($computedSubtotal * (($item->ppn_percent ?? 0) / 100), 2);
                                 $total += $computedSubtotal;
                                 $totalPPN += $ppnAmount;
@@ -250,7 +250,7 @@
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                 <td class="border px-2 py-1 text-center">
-                                    {{ optional($item->barang)->goods_name ?? ($item->nama_barang_custom ?? '-') }}
+                                    {{ optional($item->barang)->goods_name ?? ($item->custom_product_name ?? '-') }}
                                 </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
                                 <td class="border px-2 py-1 text-center">{{ optional($item->barang)->unit ?? '-' }}

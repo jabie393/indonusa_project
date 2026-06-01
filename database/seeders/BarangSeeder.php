@@ -13,7 +13,7 @@ class BarangSeeder extends Seeder
             [
                 'request_type' => 'primary',
                 'goods_code' => 'MSC-38274',
-                'goods_status' => 'masuk',
+                'goods_status' => 'approved',
                 'goods_name' => 'Laptop Asus ExpertBook',
                 'category' => 'MISCELLANEOUS',
                 'stock' => 10,
@@ -29,7 +29,7 @@ class BarangSeeder extends Seeder
             [
                 'request_type' => 'primary',
                 'goods_code' => 'MSC-43750',
-                'goods_status' => 'masuk',
+                'goods_status' => 'approved',
                 'goods_name' => 'Printer Canon Pixma',
                 'category' => 'MISCELLANEOUS',
                 'stock' => 5,
@@ -45,7 +45,7 @@ class BarangSeeder extends Seeder
             [
                 'request_type' => 'primary',
                 'goods_code' => 'PKG-32543',
-                'goods_status' => 'masuk',
+                'goods_status' => 'approved',
                 'goods_name' => 'Buble Wrap 1m x 50m',
                 'category' => 'PACKAGING',
                 'stock' => 100,
@@ -60,7 +60,7 @@ class BarangSeeder extends Seeder
             [
                 'request_type' => 'primary',
                 'goods_code' => 'MSC-37281',
-                'goods_status' => 'ditolak',
+                'goods_status' => 'rejected',
                 'goods_name' => 'Pulpen Biru 0.5',
                 'category' => 'MISCELLANEOUS',
                 'stock' => 0,
@@ -78,7 +78,7 @@ class BarangSeeder extends Seeder
             $barang = Barang::create($barangData);
 
             // Seed GoodsReceipt for 'masuk' items
-            if ($barangData['goods_status'] === 'masuk') {
+            if ($barangData['goods_status'] === 'approved') {
                 \Illuminate\Support\Facades\DB::table('goods_receipts')->insert([
                     'good_id' => $barang->id,
                     'supplier_id' => 3, // GA/Fahd

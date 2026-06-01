@@ -57,9 +57,9 @@
                             <td class="px-4 py-2">{{ $customer->id }}</td>
                             <td class="px-4 py-2">{{ $customer->nama_customer }}</td>
                             <td class="px-4 py-2">{{ $customer->tipe_customer }}</td>
-                            <td class="px-4 py-2">{{ $customer->npwp ?? '-' }}</td>
+                            <td class="px-4 py-2">{{ !empty($customer->npwp) ? $customer->npwp : '-' }}</td>
                             <td class="px-4 py-2">
-                                {{ $customer->term_of_payments !== null ? $customer->term_of_payments . ' Hari' : '-' }}
+                                {{ !empty($customer->term_of_payments) ? $customer->term_of_payments . ' Hari' : '-' }}
                             </td>
                             <td class="px-4 py-2">
                                 <div class="flex h-full items-center justify-between">
@@ -120,6 +120,12 @@
                                     <span
                                         class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                         {!! $iconSvg !!}{{ $statusLabel }}
+                                    </span>
+                                </td>
+                            @else
+                                <td class="px-4 py-2">
+                                    <span class="inline-flex items-center justify-center rounded-full px-2 py-1 text-xs font-semibold {{ strtolower($customer->status) == 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
+                                        {{ strtolower($customer->status) == 'active' ? 'Aktif' : 'Non-Aktif' }}
                                     </span>
                                 </td>
                             @endif

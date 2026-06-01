@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('catalog', function (Blueprint $table) {
             $table->id();
-            $table->string('filter_name');
+            $table->string('brand_name');
             $table->string('catalog_name');
             $table->string('catalog_file');
+            $table->string('catalog_cover')->nullable();
             $table->timestamps();
         });
     }

@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
 
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="item-center flex p-3">
@@ -58,7 +58,7 @@
                         <tr class="border-b border-gray-200 hover:bg-gray-50">
                             <td class="px-4 py-4">{{ $penawaran->id }}</td>
                             <td class="px-4 py-4">
-                                <span class="text-nowrap font-semibold">{{ $penawaran->penawaran_number }}</span>
+                                <span class="text-nowrap font-semibold">{{ $penawaran->quotation_number }}</span>
                             </td>
                             <td class="text-nowrap px-4 py-4">{{ $penawaran->to }}</td>
                             <td class="px-4 py-4">{{ Str::limit($penawaran->subject, 30) }}</td>
@@ -281,22 +281,7 @@
                                                     </button>
                                                 @endif
                                             </li>
-                                            {{-- Sent to Warehouse --}}
-                                            @if ($penawaran->status === 'approved_supervisor')
-                                                <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $penawaran->id) }}" method="POST">
-                                                    @csrf
-                                                    <li>
-                                                        <button type="button" onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Warehouse?', 'Ya, Kirim')"
-                                                            class="flex w-full items-center gap-2 text-yellow-600 hover:bg-yellow-50">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                                    d="M3 10h2l1 2h13l1-2h2M5 12v6a2 2 0 002 2h10a2 2 0 002-2v-6" />
-                                                            </svg>
-                                                            Send to Warehouse
-                                                        </button>
-                                                    </li>
-                                                </form>
-                                            @endif
+                                            {{-- Sent to Warehouse removed per request --}}
 
                                             {{-- Send to Penawaran --}}
                                             @if (in_array($penawaran->status, ['open', 'approved_supervisor']))

@@ -13,7 +13,7 @@ class AddStockController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'masuk');
+        $goods = Barang::where('goods_status', 'approved');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
@@ -40,7 +40,7 @@ class AddStockController extends Controller
         $copyData = $barang->replicate();
         $copyData->stock = $validated['stock'];
         $copyData->buy_price = $validated['unit_cost'];
-        $copyData->goods_status = 'ditinjau';
+        $copyData->goods_status = 'pending';
         $copyData->request_type = 'new_stock'; // Set tipe_request ke new_stock
 
         // Simpan id user yang submit ke kolom 'form'

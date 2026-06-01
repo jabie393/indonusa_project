@@ -44,7 +44,7 @@ class SemuaBarangExport implements FromCollection, WithHeadings, ShouldAutoSize,
     */
     public function collection()
     {
-        return Barang::where('goods_status', 'masuk')
+        return Barang::where('goods_status', 'approved')
             ->select('goods_code', 'goods_name', 'category', 'stock', 'selling_price')
             ->get()
             ->map(function ($barang) {

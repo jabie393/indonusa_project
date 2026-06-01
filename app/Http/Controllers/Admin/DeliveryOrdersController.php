@@ -96,7 +96,7 @@ class DeliveryOrdersController extends Controller
         
         foreach ($order->items as $item) {
             $item->delivered_quantity = $item->quantity;
-            $item->status_item = 'delivered';
+            $item->item_status = 'delivered';
             $item->save();
 
             // Deduct stock from goods table
@@ -202,12 +202,12 @@ class DeliveryOrdersController extends Controller
 
                     if ($item->delivered_quantity > 0) {
                         if ($item->delivered_quantity < $item->quantity) {
-                            $item->status_item = 'partially_delivered';
+                            $item->item_status = 'partially_delivered';
                         } else {
-                            $item->status_item = 'delivered';
+                            $item->item_status = 'delivered';
                         }
                     } else {
-                        $item->status_item = 'cancel';
+                        $item->item_status = 'cancel';
                     }
                     $item->save();
                 }
@@ -222,12 +222,12 @@ class DeliveryOrdersController extends Controller
                 foreach ($order->items as $item) {
                     if ($item->delivered_quantity > 0) {
                         if ($item->delivered_quantity < $item->quantity) {
-                            $item->status_item = 'partially_delivered';
+                            $item->item_status = 'partially_delivered';
                         } else {
-                            $item->status_item = 'delivered';
+                            $item->item_status = 'delivered';
                         }
                     } else {
-                        $item->status_item = 'cancel';
+                        $item->item_status = 'cancel';
                     }
                     $item->save();
                 }
@@ -279,9 +279,9 @@ class DeliveryOrdersController extends Controller
 
                     // Jika total terkirim sudah mencapai atau melebihi kuantitas pesanan
                     if ($newDeliveredQuantity >= $item->quantity) {
-                        $item->status_item = 'delivered';
+                        $item->item_status = 'delivered';
                     } else {
-                        $item->status_item = 'partially_delivered';
+                        $item->item_status = 'partially_delivered';
                     }
                     
                     $item->save();
@@ -333,7 +333,7 @@ class DeliveryOrdersController extends Controller
         // Refresh order to get updated item statuses
         $order->load('items');
         
-        $allDelivered = $order->items->every(fn($item) => $item->status_item === 'delivered');
+        $allDelivered = $order->items->every(fn($item) => $item->item_status === 'delivered');
 
         if ($allDelivered) {
             $order->status = 'completed';
@@ -384,7 +384,7 @@ class DeliveryOrdersController extends Controller
                     'delivered_quantity' => $item->delivered_quantity ?? 0, // for compatibility
                     'stok_gudang'  => $item->barang ? ($item->barang->stock ?? 0) : 0,
                     'satuan'       => $item->barang->unit ?? '-',
-                    'status'       => $item->status_item ?? 'pending',
+                    'status'       => $item->item_status ?? 'pending',
                 ];
             });
 
@@ -398,17 +398,17 @@ class DeliveryOrdersController extends Controller
 
             foreach ($order->requestOrder->items as $reqItem) {
                 $existing = \App\Models\OrderItem::where('order_id', $order->id)
-                    ->where('barang_id', $reqItem->barang_id)
+                    ->where('product_id', $reqItem->product_id)
                     ->first();
 
                 if (!$existing) {
                     $existing = \App\Models\OrderItem::create([
                         'order_id'           => $order->id,
-                        'barang_id'          => $reqItem->barang_id,
+                        'product_id'         => $reqItem->product_id,
                         'quantity'           => $reqItem->quantity,
                         'delivered_quantity' => 0,
-                        'status_item'        => 'pending',
-                        'harga'              => $reqItem->harga,
+                        'item_status'        => 'pending',
+                        'price'              => $reqItem->price,
                         'subtotal'           => $reqItem->subtotal,
                     ]);
                     $existing->load('barang');
@@ -424,7 +424,7 @@ class DeliveryOrdersController extends Controller
                     'delivered_quantity' => $existing->delivered_quantity ?? 0, // for compatibility
                     'stok_gudang'  => $existing->barang ? ($existing->barang->stock ?? 0) : 0,
                     'satuan'       => $existing->barang->unit ?? '-',
-                    'status'       => $existing->status_item ?? 'pending',
+                    'status'       => $existing->item_status ?? 'pending',
                 ]);
             }
 

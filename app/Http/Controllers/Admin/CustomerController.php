@@ -33,14 +33,14 @@ class CustomerController extends Controller
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('nama_customer', 'like', "%{$search}%")
+                $q->where('customer_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('npwp', 'like', "%{$search}%")
-                  ->orWhere('telepon', 'like', "%{$search}%")
-                  ->orWhere('alamat_penagihan', 'like', "%{$search}%")
-                  ->orWhere('alamat_pengiriman', 'like', "%{$search}%")
-                  ->orWhere('tipe_customer', 'like', "%{$search}%")
-                  ->orWhere('kota', 'like', "%{$search}%");
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('billing_address', 'like', "%{$search}%")
+                  ->orWhere('shipping_address', 'like', "%{$search}%")
+                  ->orWhere('customer_type', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%");
             });
         }
 
@@ -90,20 +90,27 @@ class CustomerController extends Controller
             // Map 1/0 from checkbox to active/inactive for database enum
             $status = $request->input('status') == '1' ? 'active' : 'inactive';
 
+            $typeInput = strtolower($validatedData['tipe_customer']);
+            $customerType = match ($typeInput) {
+                'gov' => 'GOV',
+                'bumn' => 'BUMN',
+                default => ucfirst($typeInput),
+            };
+
             // Buat customer baru
             $customer = Customer::create([
-                'nama_customer' => $validatedData['name'],
+                'customer_name' => $validatedData['name'],
                 'npwp' => $validatedData['npwp'] ?? null,
                 'term_of_payments' => $validatedData['term_of_payments'] ?? null,
-                'kredit_limit' => $validatedData['kredit_limit'] ?? null,
+                'credit_limit' => $validatedData['kredit_limit'] ?? null,
                 'email' => $validatedData['email'] ?? null,
-                'telepon' => $validatedData['telepon'] ?? null,
-                'alamat_penagihan' => $validatedData['alamat_penagihan'] ?? null,
-                'alamat_pengiriman' => $validatedData['alamat_pengiriman'] ?? null,
-                'kota' => $validatedData['kota'] ?? null,
-                'provinsi' => $validatedData['provinsi'] ?? null,
-                'kode_pos' => $validatedData['kode_pos'] ?? null,
-                'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
+                'phone' => $validatedData['telepon'] ?? null,
+                'billing_address' => $validatedData['alamat_penagihan'] ?? null,
+                'shipping_address' => $validatedData['alamat_pengiriman'] ?? null,
+                'city' => $validatedData['kota'] ?? null,
+                'province' => $validatedData['provinsi'] ?? null,
+                'postal_code' => $validatedData['kode_pos'] ?? null,
+                'customer_type' => $customerType,
                 'created_by' => auth()->id(),
                 'status' => $status,
             ]);
@@ -145,10 +152,13 @@ class CustomerController extends Controller
                     'message' => 'Customer berhasil ditambahkan.',
                     'customer' => [
                         'id' => $customer->id,
-                        'nama_customer' => $customer->nama_customer,
+                        'customer_name' => $customer->customer_name,
+                        'nama_customer' => $customer->customer_name,
                         'email' => $customer->email,
-                        'telepon' => $customer->telepon,
-                        'kota' => $customer->kota,
+                        'phone' => $customer->phone,
+                        'telepon' => $customer->phone,
+                        'city' => $customer->city,
+                        'kota' => $customer->city,
                     ],
                 ]);
             }
@@ -207,19 +217,26 @@ class CustomerController extends Controller
                 $status = $customer->status;
             }
 
+            $typeInput = strtolower($validatedData['tipe_customer']);
+            $customerType = match ($typeInput) {
+                'gov' => 'GOV',
+                'bumn' => 'BUMN',
+                default => ucfirst($typeInput),
+            };
+
             $customer->update([
-                'nama_customer' => $validatedData['name'],
+                'customer_name' => $validatedData['name'],
                 'npwp' => $validatedData['npwp'] ?? null,
                 'term_of_payments' => $validatedData['term_of_payments'] ?? null,
-                'kredit_limit' => $validatedData['kredit_limit'] ?? null,
+                'credit_limit' => $validatedData['kredit_limit'] ?? null,
                 'email' => $validatedData['email'] ?? null,
-                'telepon' => $validatedData['telepon'] ?? null,
-                'alamat_penagihan' => $validatedData['alamat_penagihan'] ?? null,
-                'alamat_pengiriman' => $validatedData['alamat_pengiriman'] ?? null,
-                'kota' => $validatedData['kota'] ?? null,
-                'provinsi' => $validatedData['provinsi'] ?? null,
-                'kode_pos' => $validatedData['kode_pos'] ?? null,
-                'tipe_customer' => ucfirst(strtolower($validatedData['tipe_customer'])),
+                'phone' => $validatedData['telepon'] ?? null,
+                'billing_address' => $validatedData['alamat_penagihan'] ?? null,
+                'shipping_address' => $validatedData['alamat_pengiriman'] ?? null,
+                'city' => $validatedData['kota'] ?? null,
+                'province' => $validatedData['provinsi'] ?? null,
+                'postal_code' => $validatedData['kode_pos'] ?? null,
+                'customer_type' => $customerType,
                 'status' => $status,
             ]);
 

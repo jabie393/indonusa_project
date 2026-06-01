@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('goods', function (Blueprint $table) {
-            $table->foreignId('parent_id')->nullable()->constrained('goods')->onDelete('cascade');
+        Schema::create('delivery_batches', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
+            $table->integer('batch_number');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('goods', function (Blueprint $table) {
-            $table->dropForeign(['parent_id']);
-            $table->dropColumn('parent_id');
-        });
+        Schema::dropIfExists('delivery_batches');
     }
 };

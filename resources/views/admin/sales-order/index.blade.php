@@ -259,8 +259,8 @@
                             <td class="px-4 py-3">
                                 @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
                                     {{ $row['berlaku_sampai'] }}
-                                @elseif (!empty($row['request_order']) && !empty($row['request_order']['tanggal_berlaku_formatted']))
-                                    {{ $row['request_order']['tanggal_berlaku_formatted'] }}
+                                @elseif (!empty($row['request_order']) && !empty($row['request_order']['valid_date_formatted']))
+                                    {{ $row['request_order']['valid_date_formatted'] }}
                                 @else
                                     -
                                 @endif

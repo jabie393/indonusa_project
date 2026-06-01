@@ -13,8 +13,8 @@ class GoodsInStatusController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::whereIn('goods_status', ['ditinjau', 'ditolak'])
-            ->orderByRaw("FIELD(goods_status, 'ditolak', 'ditinjau')")
+        $goods = Barang::whereIn('goods_status', ['pending', 'rejected'])
+            ->orderByRaw("FIELD(goods_status, 'rejected', 'pending')")
             ->latest();
 
         if ($query) {
@@ -48,7 +48,7 @@ class GoodsInStatusController extends Controller
             ]);
             $barang->stock = $request->stock;
             $barang->buy_price = $request->buy_price; // Simpan harga beli baru
-            $barang->goods_status = 'ditinjau'; // ubah status_barang
+            $barang->goods_status = 'pending'; // ubah status_barang
             $barang->note = null; // kosongkan kolom catatan
             $barang->save();
         } else {
@@ -80,7 +80,7 @@ class GoodsInStatusController extends Controller
                 'description'
             ]);
 
-            $data['goods_status'] = 'ditinjau'; // ubah status_barang
+            $data['goods_status'] = 'pending'; // ubah status_barang
             $data['note'] = null; // kosongkan kolom catatan
 
             $oldGambar = $barang->image;

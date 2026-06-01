@@ -78,11 +78,11 @@
                                 </div>
                             </div>
 
-                            @if ($salesOrder->customPenawaran)
+                            @if ($salesOrder->customQuotation)
                                 <hr class="my-6 border-gray-200 dark:border-gray-700">
                                 <div>
                                     <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Asal Penawaran</label>
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $salesOrder->customPenawaran->penawaran_number }}
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $salesOrder->customQuotation->quotation_number }}
                                     </p>
                                 </div>
                             @endif
@@ -146,21 +146,21 @@
                                                 {{ $loop->iteration }}
                                             </td>
                                             <td class="px-4 py-3 text-sm font-semibold text-gray-900 dark:text-white">
-                                                {{ $item->nama_barang }}
+                                                {{ $item->product_name }}
                                             </td>
                                             <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
                                                 {{ $item->qty }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                                {{ $item->satuan }}
+                                                {{ $item->unit }}
                                             </td>
                                             <td class="px-4 py-3 text-right text-sm text-gray-700 dark:text-gray-300">
-                                                {{ number_format($item->harga, 0, '.', ',') }}
+                                                {{ number_format($item->price, 0, '.', ',') }}
                                             </td>
                                             <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
-                                                {{ $item->diskon }}%
+                                                {{ $item->discount }}%
                                             </td>
                                             <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                                                {{ $item->keterangan ?? '-' }}
+                                                {{ $item->description ?? '-' }}
                                             </td>
                                             <td class="px-4 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">
                                                 {{ number_format($item->subtotal, 0, '.', ',') }}
