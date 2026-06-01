@@ -533,17 +533,10 @@ class QuotationController extends Controller
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
                 'no_po' => $validated['no_po'] ?? null,
-<<<<<<< HEAD
-                'sales_order_number' => $requestOrder->sales_order_number ?? ($validated['sales_order_number'] ?? null),
-                'kategori_barang' => isset($validated['kategori_barang'][0]) ? $validated['kategori_barang'][0] : null,
-                'tanggal_kebutuhan' => $validated['tanggal_kebutuhan'] ?? null,
-                'catatan_customer' => $validated['catatan_customer'] ?? null,
-=======
                 'sales_order_number' => $validated['sales_order_number'] ?? null,
                 'product_category' => isset($validated['product_category'][0]) ? $validated['product_category'][0] : null,
                 'required_date' => $validated['required_date'] ?? null,
                 'customer_notes' => $validated['customer_notes'] ?? null,
->>>>>>> e46156db4875b6ac578c70eb1e4ba02f968ebde5
                 'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,

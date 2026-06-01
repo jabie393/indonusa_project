@@ -54,7 +54,7 @@
                                     </g>
                                 </svg>
                                 <a href="{{ route('add-stock.index') }}"
-                                    class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
 
                                     <span class="">Add Stock</span>
                                 </a>
@@ -77,7 +77,7 @@
                                     </g>
                                 </svg>
                                 <a href="{{ route('import-excel.index') }}"
-                                    class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
 
                                     <span class="">Import Excel</span>
                                 </a>
@@ -100,7 +100,7 @@
                                     </g>
                                 </svg>
                                 <a href="{{ route('import-stock-excel.index') }}"
-                                    class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
 
                                     <span class="">Import Stok Excel</span>
                                 </a>
@@ -158,7 +158,7 @@
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
 
                         {{-- Akun Sales --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('akun-sales.index') }}"
                                 class="{{ request()->routeIs('akun-sales.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -183,7 +183,7 @@
                         </li>
 
                         {{-- Customer --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('customer.index') }}"
                                 class="{{ request()->routeIs('customer.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
@@ -206,7 +206,7 @@
                         </li>
 
                         {{-- PICs --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('pics.index') }}"
                                 class="{{ request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
@@ -293,7 +293,7 @@
                                     </g>
                                 </svg>
                                 <a href="{{ request()->fullUrl() }}"
-                                    class="group ml-2 flex w-[75%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
                                     <span class="">Invoice</span>
                                 </a>
                             </li>
@@ -378,7 +378,7 @@
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
                         {{-- Quotation --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('sales.quotation.index') }}"
                                 class="{{ request()->routeIs('sales.quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
@@ -401,7 +401,7 @@
                         </li>
 
                         {{-- Custom Quotation --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('sales.custom-quotation.index') }}"
                                 class="{{ request()->routeIs('sales.custom-quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
@@ -426,7 +426,7 @@
                         </li>
 
                         {{-- Sales Order --}}
-                        <li class="w-[75%]">
+                        <li class="w-[82%]">
                             <a href="{{ route('sales.sales-order.index') }}"
                                 class="{{ request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
