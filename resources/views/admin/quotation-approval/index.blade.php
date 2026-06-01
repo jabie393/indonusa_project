@@ -183,18 +183,25 @@
                                 {{ $penawaran->offer_type === 'custom' ? $penawaran->to : ($penawaran->customer?->nama_customer ?? $penawaran->customer_name) }}
                             </div>
                             @php
-                                $firstPic = $penawaran->offer_type === 'custom' ? null : $penawaran->customer?->pics?->first();
+                                $picName = null;
+                                $picPosition = null;
+                                if ($penawaran->offer_type === 'custom') {
+                                    $picName = $penawaran->up;
+                                } else {
+                                    $picName = $penawaran->pic->name ?? ($penawaran->customer?->pics?->first()?->name ?? null);
+                                    $picPosition = $penawaran->pic->position ?? ($penawaran->customer?->pics?->first()?->position ?? null);
+                                }
                             @endphp
-                            @if ($firstPic)
+                            @if ($picName)
                                 <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
                                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                         <circle cx="12" cy="7" r="4" />
                                     </svg>
-                                    <span class="truncate">{{ $firstPic->name }}</span>
-                                    @if ($firstPic->position)
+                                    <span class="truncate">{{ $picName }}</span>
+                                    @if ($picPosition)
                                         <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                        <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
+                                        <span class="text-gray-400 dark:text-gray-500 truncate">{{ $picPosition }}</span>
                                     @endif
                                 </div>
                             @endif

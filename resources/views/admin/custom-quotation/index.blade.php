@@ -86,8 +86,10 @@
                                             <circle cx="12" cy="7" r="4"></circle>
                                         </svg>
                                         <span>{{ $penawaran->up ?? '-' }}</span>
-                                        <span class="text-slate-300">•</span>
-                                        <span>{{ auth()->user()->role ?? '-' }}</span>
+                                        @if ($penawaran->email)
+                                            <span class="text-slate-300">•</span>
+                                            <span>{{ $penawaran->email }}</span>
+                                        @endif
                                     </span>
                                 </div>
                             </td>

@@ -80,13 +80,17 @@ document.addEventListener("submit", function (e) {
 // Success alert
 document.addEventListener("DOMContentLoaded", function () {
     if (window.sweetTitle || window.sweetText) {
+        const titleLower = (window.sweetTitle || "").toLowerCase();
+        const isError = titleLower.includes("gagal") || titleLower.includes("error") || titleLower.includes("failed");
+
         Swal.fire({
-            title: window.sweetTitle || "Berhasil!",
+            title: window.sweetTitle || (isError ? "Gagal!" : "Berhasil!"),
             text: window.sweetText || "",
-            icon: "success",
-            showConfirmButton: false,
-            timer: 3500,
-            timerProgressBar: true,
+            icon: isError ? "error" : "success",
+            showConfirmButton: isError,
+            confirmButtonColor: isError ? "#d33" : undefined,
+            timer: isError ? undefined : 3500,
+            timerProgressBar: !isError,
             customClass: {
                 popup: "rounded-2xl!",
             },

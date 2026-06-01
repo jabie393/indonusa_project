@@ -1,10 +1,6 @@
 ﻿<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Buat Custom Quotation</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Buat Custom Quotation untuk customer</p>
-            </div>
         </div>
         <div class="card">
             <div class="card-body">

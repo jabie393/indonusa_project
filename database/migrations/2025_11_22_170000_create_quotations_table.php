@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('sales_id');
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('pic_id')->nullable();
             $table->string('subject')->nullable();
             $table->text('reason')->nullable()->comment('Alasan penolakan dari supervisor');
             $table->date('required_date')->nullable();
@@ -41,6 +42,7 @@ return new class extends Migration {
             $table->foreign('custom_quotation_id')->references('id')->on('custom_quotations')->onDelete('set null');
             $table->foreign('sales_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('pic_id')->references('id')->on('pics')->onDelete('set null');
         });
     }
 
