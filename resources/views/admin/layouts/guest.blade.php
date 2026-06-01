@@ -10,7 +10,7 @@
     <meta name="user-id" content="{{ auth()->id() }}">
 
     <title>{{ config('app.name', 'PT Indonusa Jaya Bersama') }} - Login</title>
-    <link rel="icon" href="{{ asset('images/icon/ryu.png') }}">
+    <link rel="icon" href="{{ asset('images/icon/logo.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
