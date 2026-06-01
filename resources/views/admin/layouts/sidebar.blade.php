@@ -259,7 +259,8 @@
                         </span>
                     </div>
                     @if ($hasWarehouseNotification && auth()->user()->role === 'Warehouse')
-                        <span class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
+                        <span
+                            class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                     @endif
                 </a>
             </li>
@@ -389,10 +390,10 @@
                         {{-- Quotation --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.quotation.index') }}"
-                                class="{{ request()->routeIs('sales.quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ (request()->routeIs('sales.quotation.*') && !request()->routeIs('sales.quotation.show')) ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales.quotation.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    class="{{ (request()->routeIs('sales.quotation.*') && !request()->routeIs('sales.quotation.show')) ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                                     <g clip-path="url(#clip0_931_10)">
                                         <path
                                             d="M9.375 20.625C10.3696 20.625 11.3234 20.2299 12.0266 19.5266C12.7299 18.8234 13.125 17.8696 13.125 16.875C13.125 15.8804 12.7299 14.9266 12.0266 14.2233C11.3234 13.5201 10.3696 13.125 9.375 13.125C8.38044 13.125 7.42661 13.5201 6.72335 14.2233C6.02009 14.9266 5.625 15.8804 5.625 16.875C5.625 17.8696 6.02009 18.8234 6.72335 19.5266C7.42661 20.2299 8.38044 20.625 9.375 20.625ZM9.375 15C9.87228 15 10.3492 15.1975 10.7008 15.5492C11.0525 15.9008 11.25 16.3777 11.25 16.875C11.25 17.3723 11.0525 17.8492 10.7008 18.2008C10.3492 18.5525 9.87228 18.75 9.375 18.75C8.87772 18.75 8.4008 18.5525 8.04917 18.2008C7.69754 17.8492 7.5 17.3723 7.5 16.875C7.5 16.3777 7.69754 15.9008 8.04917 15.5492C8.4008 15.1975 8.87772 15 9.375 15ZM14.0625 22.5H4.6875C3.4443 22.5 2.25201 22.9939 1.37294 23.8729C0.49386 24.752 0 25.9443 0 27.1875C0 27.9334 0.296318 28.6488 0.823764 29.1762C1.35121 29.7037 2.06658 30 2.8125 30H15.9375C16.6834 30 17.3988 29.7037 17.9262 29.1762C18.4537 28.6488 18.75 27.9334 18.75 27.1875C18.75 25.9443 18.2561 24.752 17.3771 23.8729C16.498 22.9939 15.3057 22.5 14.0625 22.5ZM15.9375 28.125H2.8125C2.56386 28.125 2.3254 28.0262 2.14959 27.8504C1.97377 27.6746 1.875 27.4361 1.875 27.1875C1.875 26.4416 2.17132 25.7262 2.69876 25.1988C3.22621 24.6713 3.94158 24.375 4.6875 24.375H14.0625C14.8084 24.375 15.5238 24.6713 16.0512 25.1988C16.5787 25.7262 16.875 26.4416 16.875 27.1875C16.875 27.4361 16.7762 27.6746 16.6004 27.8504C16.4246 28.0262 16.1861 28.125 15.9375 28.125ZM30 4.6875V14.0625C30 15.3057 29.5061 16.498 28.6271 17.3771C27.748 18.2561 26.5557 18.75 25.3125 18.75H20.0756L16.6013 22.2263C16.514 22.3133 16.4105 22.3822 16.2966 22.4292C16.1827 22.4762 16.0607 22.5002 15.9375 22.5C15.8146 22.5003 15.6928 22.4761 15.5794 22.4287C15.4079 22.3579 15.2614 22.2377 15.1582 22.0835C15.0551 21.9293 15 21.748 15 21.5625V17.8125C15 17.5639 15.0988 17.3254 15.2746 17.1496C15.4504 16.9738 15.6889 16.875 15.9375 16.875C16.1861 16.875 16.4246 16.9738 16.6004 17.1496C16.7762 17.3254 16.875 17.5639 16.875 17.8125V19.2994L19.0237 17.1487C19.111 17.0617 19.2145 16.9928 19.3284 16.9458C19.4423 16.8988 19.5643 16.8748 19.6875 16.875H25.3125C26.0584 16.875 26.7738 16.5787 27.3012 16.0512C27.8287 15.5238 28.125 14.8084 28.125 14.0625V4.6875C28.125 3.94158 27.8287 3.22621 27.3012 2.69876C26.7738 2.17132 26.0584 1.875 25.3125 1.875H12.1875C11.4416 1.875 10.7262 2.17132 10.1988 2.69876C9.67132 3.22621 9.375 3.94158 9.375 4.6875V10.3125C9.375 10.5611 9.27623 10.7996 9.10041 10.9754C8.9246 11.1512 8.68614 11.25 8.4375 11.25C8.18886 11.25 7.9504 11.1512 7.77459 10.9754C7.59877 10.7996 7.5 10.5611 7.5 10.3125V4.6875C7.5 3.4443 7.99386 2.25201 8.87294 1.37294C9.75201 0.49386 10.9443 0 12.1875 0L25.3125 0C26.5557 0 27.748 0.49386 28.6271 1.37294C29.5061 2.25201 30 3.4443 30 4.6875ZM15.2737 11.5237L19.2994 7.5H15.9375C15.6889 7.5 15.4504 7.40123 15.2746 7.22541C15.0988 7.0496 15 6.81114 15 6.5625C15 6.31386 15.0988 6.0754 15.2746 5.89959C15.4504 5.72377 15.6889 5.625 15.9375 5.625H21.5625C21.6854 5.62505 21.8071 5.64926 21.9206 5.69625C22.1501 5.79245 22.3326 5.97493 22.4287 6.20438C22.4757 6.31793 22.5 6.43961 22.5 6.5625V12.1875C22.5 12.4361 22.4012 12.6746 22.2254 12.8504C22.0496 13.0262 21.8111 13.125 21.5625 13.125C21.3139 13.125 21.0754 13.0262 20.8996 12.8504C20.7238 12.6746 20.625 12.4361 20.625 12.1875V8.82562L16.6013 12.8513C16.514 12.9383 16.4105 13.0072 16.2966 13.0542C16.1827 13.1012 16.0607 13.1252 15.9375 13.125C15.8143 13.1252 15.6923 13.1012 15.5784 13.0542C15.4645 13.0072 15.361 12.9383 15.2737 12.8513C15.1864 12.7642 15.1172 12.6607 15.0699 12.5468C15.0227 12.4329 14.9983 12.3108 14.9983 12.1875C14.9983 12.0642 15.0227 11.9421 15.0699 11.8282C15.1172 11.7143 15.1864 11.6108 15.2737 11.5237Z"
@@ -406,39 +407,81 @@
                                 </svg>
 
                                 <span
-                                    class="{{ request()->routeIs('sales.quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
+                                    class="{{ (request()->routeIs('sales.quotation.*') && !request()->routeIs('sales.quotation.show')) ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                             </a>
+                            @if (request()->routeIs('sales.quotation.show'))
+                                <ul class="pt-2">
+                                    <li class="flex items-center justify-end">
+                                        <svg width="64px"
+                                            class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white"
+                                            height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                                    fill="currentColor">
+                                                </path>
+                                            </g>
+                                        </svg>
+                                        <a href="{{ request()->fullUrl() }}"
+                                            class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                                            <span class="">Detail Quotation</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
 
                         {{-- Custom Quotation --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.custom-quotation.index') }}"
-                                class="{{ request()->routeIs('sales.custom-quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ (request()->routeIs('sales.custom-quotation.*') && !request()->routeIs('sales.custom-quotation.show')) ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    class="{{ (request()->routeIs('sales.custom-quotation.*') && !request()->routeIs('sales.custom-quotation.show')) ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                                     <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M20.6943 0.900204C20.5117 1.05585 20.4203 1.13369 20.3228 1.19906C20.0992 1.34891 19.8481 1.45291 19.5841 1.50504C19.4689 1.52779 19.3493 1.53733 19.1101 1.55642C18.509 1.60439 18.2085 1.62836 17.9578 1.71692C17.3779 1.92175 16.9217 2.37788 16.7169 2.95778C16.6284 3.2085 16.6044 3.50903 16.5564 4.11006C16.5373 4.34927 16.5278 4.46888 16.505 4.58408C16.4529 4.84813 16.3489 5.09922 16.1991 5.3228C16.1337 5.42033 16.0559 5.51165 15.9002 5.6943C15.5091 6.15323 15.3136 6.38265 15.1989 6.62258C14.9337 7.1775 14.9337 7.8225 15.1989 8.37743C15.3136 8.61735 15.5091 8.84678 15.9002 9.3057C16.0558 9.48833 16.1337 9.57968 16.1991 9.67718C16.3489 9.90075 16.4529 10.1519 16.505 10.4159C16.5278 10.5311 16.5373 10.6508 16.5564 10.8899C16.6044 11.491 16.6284 11.7915 16.7169 12.0422C16.9217 12.6221 17.3779 13.0783 17.9578 13.2831C18.2085 13.3716 18.509 13.3956 19.1101 13.4436C19.3493 13.4627 19.4689 13.4723 19.5841 13.495C19.8481 13.5471 20.0992 13.6511 20.3228 13.801C20.4203 13.8663 20.5117 13.9442 20.6943 14.0998C21.1532 14.4909 21.3827 14.6864 21.6226 14.8011C22.1775 15.0663 22.8225 15.0663 23.3774 14.8011C23.6174 14.6864 23.8468 14.4909 24.3057 14.0998C24.4883 13.9442 24.5797 13.8663 24.6772 13.801C24.9008 13.6511 25.1519 13.5471 25.4159 13.495C25.5311 13.4723 25.6508 13.4627 25.8899 13.4436C26.491 13.3956 26.7915 13.3716 27.0422 13.2831C27.6221 13.0783 28.0783 12.6221 28.2831 12.0422C28.3716 11.7915 28.3956 11.491 28.4436 10.8899C28.4627 10.6508 28.4723 10.5311 28.495 10.4159C28.5471 10.1519 28.6511 9.90075 28.801 9.67718C28.8663 9.57968 28.9442 9.48833 29.0998 9.3057C29.4909 8.84678 29.6864 8.61735 29.8011 8.37743C30.0663 7.8225 30.0663 7.1775 29.8011 6.62258C29.6864 6.38265 29.4909 6.15323 29.0998 5.6943C28.9442 5.51165 28.8663 5.42033 28.801 5.3228C28.6511 5.09922 28.5471 4.84813 28.495 4.58408C28.4723 4.46888 28.4627 4.34927 28.4436 4.11006C28.3956 3.50903 28.3716 3.2085 28.2831 2.95778C28.0783 2.37788 27.6221 1.92175 27.0422 1.71692C26.7915 1.62836 26.491 1.60439 25.8899 1.55642C25.6508 1.53733 25.5311 1.52779 25.4159 1.50504C25.1519 1.45291 24.9008 1.34891 24.6772 1.19906C24.5797 1.13369 24.4883 1.05586 24.3057 0.900204C23.8468 0.509124 23.6174 0.313584 23.3774 0.198917C22.8225 -0.0663056 22.1775 -0.0663056 21.6226 0.198917C21.3827 0.313577 21.1532 0.509124 20.6943 0.900204ZM25.3732 4.62719C25.6115 4.86557 25.6115 5.25205 25.3732 5.49042L20.49 10.3736C20.2517 10.612 19.8652 10.612 19.6268 10.3736C19.3884 10.1352 19.3884 9.74873 19.6268 9.51038L24.5099 4.62719C24.7484 4.38882 25.1348 4.38882 25.3732 4.62719ZM25.3485 9.53505C25.3485 9.98453 24.9842 10.3489 24.5347 10.3489C24.0851 10.3489 23.7208 9.98453 23.7208 9.53505C23.7208 9.08558 24.0851 8.72115 24.5347 8.72115C24.9842 8.72115 25.3485 9.08558 25.3485 9.53505ZM20.4653 6.2796C20.9148 6.2796 21.2792 5.91522 21.2792 5.46574C21.2792 5.01626 20.9148 4.65188 20.4653 4.65188C20.0159 4.65188 19.6515 5.01626 19.6515 5.46574C19.6515 5.91522 20.0159 6.2796 20.4653 6.2796Z"
+                                        d="M20.6943 0.900204C20.5117 1.05585 20.4203 1.13369 20.3228 1.19906C20.0992 1.34891 19.8481 1.45291 19.5841 1.50504C19.4689 1.52779 19.3493 1.53733 19.1101 1.55642C18.509 1.60439 18.2085 1.62836 17.9578 1.71692C17.3779 1.92175 16.9217 2.37788 16.7169 2.95778C16.6284 3.2085 16.6044 3.50903 16.5564 4.11006C16.5373 4.34927 16.5278 4.46888 16.505 4.58408C16.4529 4.84813 16.3489 5.09922 16.1991 5.3228C16.1337 5.42033 16.0559 5.51165 15.9002 5.6943C15.5091 6.15323 15.3136 6.38265 15.1989 6.62258C14.9337 7.1775 14.9337 7.8225 15.1989 8.37743C15.3166 8.61735 15.5091 8.84678 15.9002 9.3057C16.0558 9.48833 16.1337 9.57968 16.1991 9.67718C16.3489 9.90075 16.4529 10.1519 16.505 10.4159C16.5278 10.5311 16.5373 10.6508 16.5564 10.8899C16.6044 11.491 16.6284 11.7915 16.7169 12.0422C16.9217 12.6221 17.3779 13.0783 17.9578 13.2831C18.2085 13.3716 18.509 13.3956 19.1101 13.4436C19.3493 13.4627 19.4689 13.4723 19.5841 13.495C19.8481 13.5471 20.0992 13.6511 20.3228 13.801C20.4203 13.8663 20.5117 13.9442 20.6943 14.0998C21.1532 14.4909 21.3827 14.6864 21.6226 14.8011C22.1775 15.0663 22.8225 15.0663 23.3774 14.8011C23.6174 14.6864 23.8468 14.4909 24.3057 14.0998C24.4883 13.9442 24.5797 13.8663 24.6772 13.801C24.9008 13.6511 25.1519 13.5471 25.4159 13.495C25.5311 13.4723 25.6508 13.4627 25.8899 13.4436C26.491 13.3956 26.7915 13.3716 27.0422 13.2831C27.6221 13.0783 28.0783 12.6221 28.2831 12.0422C28.3716 11.7915 28.3956 11.491 28.4436 10.8899C28.4627 10.6508 28.4723 10.5311 28.495 10.4159C28.5471 10.1519 28.6511 9.90075 28.801 9.67718C28.8663 9.57968 28.9442 9.48833 29.0998 9.3057C29.4909 8.84678 29.6864 8.61735 29.8011 8.37743C30.0663 7.8225 30.0663 7.1775 29.8011 6.62258C29.6864 6.38265 29.4909 6.15323 29.0998 5.6943C28.9442 5.51165 28.8663 5.42033 28.801 5.3228C28.6511 5.09922 28.5471 4.84813 28.495 4.58408C28.4723 4.46888 28.4627 4.34927 28.4436 4.11006C28.3956 3.50903 28.3716 3.2085 28.2831 2.95778C28.0783 2.37788 27.6221 1.92175 27.0422 1.71692C26.7915 1.62836 26.491 1.60439 25.8899 1.55642C25.6508 1.53733 25.5311 1.52779 25.4159 1.50504C25.1519 1.45291 24.9008 1.34891 24.6772 1.19906C24.5797 1.13369 24.4883 1.05586 24.3057 0.900204C23.8468 0.509124 23.6174 0.313584 23.3774 0.198917C22.8225 -0.0663056 22.1775 -0.0663056 21.6226 0.198917C21.3827 0.313577 21.1532 0.509124 20.6943 0.900204ZM25.3732 4.62719C25.6115 4.86557 25.6115 5.25205 25.3732 5.49042L20.49 10.3736C20.2517 10.612 19.8652 10.612 19.6268 10.3736C19.3884 10.1352 19.3884 9.74873 19.6268 9.51038L24.5099 4.62719C24.7484 4.38882 25.1348 4.38882 25.3732 4.62719ZM25.3485 9.53505C25.3485 9.98453 24.9842 10.3489 24.5347 10.3489C24.0851 10.3489 23.7208 9.98453 23.7208 9.53505C23.7208 9.08558 24.0851 8.72115 24.5347 8.72115C24.9842 8.72115 25.3485 9.08558 25.3485 9.53505ZM20.4653 6.2796C20.9148 6.2796 21.2792 5.91522 21.2792 5.46574C21.2792 5.01626 20.9148 4.65188 20.4653 4.65188C20.0159 4.65188 19.6515 5.01626 19.6515 5.46574C19.6515 5.91522 20.0159 6.2796 20.4653 6.2796Z"
                                         fill="currentColor" />
                                     <path
                                         d="M3.98811 28.9722H3.52941C1.86563 28.9722 1.03375 28.9722 0.516865 28.4799C1.05185e-07 27.9876 0 27.1954 0 25.6108V23.7419C0 22.8705 2.36666e-07 22.4349 0.235024 22.0458C0.470048 21.6565 0.824595 21.4602 1.53371 21.0675C6.20219 18.4814 12.8321 17.0258 17.2572 19.5394C17.5544 19.7083 17.822 19.9122 18.0503 20.1565C19.0352 21.2102 18.9635 22.8002 17.8285 23.7438C17.5887 23.9429 17.3333 24.0942 17.076 24.1466C17.2874 24.1233 17.49 24.0965 17.6834 24.0671C19.2918 23.8228 20.6418 23.0043 21.8778 22.115L25.067 19.8207C26.1912 19.0118 27.86 19.0117 28.9844 19.8202C29.9968 20.5483 30.3064 21.747 29.6663 22.7239C28.92 23.8634 27.8684 25.3211 26.8587 26.2117C25.8475 27.1036 24.3422 27.8999 23.1132 28.4648C21.7518 29.0907 20.2479 29.4512 18.7181 29.6871C15.6155 30.1653 12.3822 30.0923 9.31118 29.4898C7.57506 29.1491 5.77199 28.9722 3.98811 28.9722Z"
                                         fill="currentColor" />
                                 </svg>
-
-
                                 <span
-                                    class="{{ request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Custom
+                                    class="{{ (request()->routeIs('sales.custom-quotation.*') && !request()->routeIs('sales.custom-quotation.show')) ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Custom
                                     Quotation</span>
                             </a>
+                            @if (request()->routeIs('sales.custom-quotation.show'))
+                                <ul class="pt-2">
+                                    <li class="flex items-center justify-end">
+                                        <svg width="64px"
+                                            class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white"
+                                            height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                                    fill="currentColor">
+                                                </path>
+                                            </g>
+                                        </svg>
+                                        <a href="{{ request()->fullUrl() }}"
+                                            class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                                            <span class="">Detail Quotation</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
 
                         {{-- Sales Order --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.sales-order.index') }}"
-                                class="{{ request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ (request()->routeIs('sales.sales-order.*') && !request()->routeIs('sales.sales-order.show')) ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    class="{{ (request()->routeIs('sales.sales-order.*') && !request()->routeIs('sales.sales-order.show')) ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
                                     <path
                                         d="M15 2C8.37256 2 3 7.37256 3 14C3 20.6274 8.37256 26 15 26C21.6274 26 27 20.6274 27 14C27 7.37256 21.6274 2 15 2ZM15 4C20.5228 4 25 8.47715 25 14C25 19.5228 20.5228 24 15 24C9.47715 24 5 19.5228 5 14C5 8.47715 9.47715 4 15 4Z"
                                         fill="currentColor" />
@@ -447,9 +490,31 @@
                                         fill="currentColor" />
                                 </svg>
                                 <span
-                                    class="{{ request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
+                                    class="{{ (request()->routeIs('sales.sales-order.*') && !request()->routeIs('sales.sales-order.show')) ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
                                     Order</span>
                             </a>
+                            @if (request()->routeIs('sales.sales-order.show'))
+                                <ul class="pt-2">
+                                    <li class="flex items-center justify-end">
+                                        <svg width="64px"
+                                            class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white"
+                                            height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                                    fill="currentColor">
+                                                </path>
+                                            </g>
+                                        </svg>
+                                        <a href="{{ request()->fullUrl() }}"
+                                            class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                                            <span class="">Detail Sales Order</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
                     </ul>
                 </details>
@@ -468,6 +533,8 @@
                         request()->routeIs('admin.custom-quotation-approval.show') ||
                         request()->routeIs('sales.custom-quotation.show');
                     $quotationApprovalMenuActive = $quotationApprovalItemActive || $customQuotationApprovalItemActive;
+                    $quotationApprovalItemHighlight = request()->routeIs('admin.quotation_approval');
+                    $customQuotationApprovalItemHighlight = request()->routeIs('supervisor.custom-quotation-approval.index');
                 @endphp
 
                 {{-- Customer --}}
@@ -521,12 +588,12 @@
                         {{-- Sent Penawaran (needs approval) --}}
                         <li class="w-[88%]">
                             <a href="{{ route('admin.quotation_approval') }}"
-                                class="{{ $quotationApprovalItemActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ $quotationApprovalItemHighlight ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
                                     <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         viewBox="0 0 491.695 491.695" xml:space="preserve"
-                                        class="{{ $quotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                        class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                         <g id="SVGRepo_iconCarrier">
@@ -553,7 +620,7 @@
                                         </g>
                                     </svg>
                                     <span
-                                        class="{{ $quotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
+                                        class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                                 </div>
                                 @if ($pendingSentPenawaran > 0)
                                     <span
@@ -562,14 +629,36 @@
                                     </span>
                                 @endif
                             </a>
+                            @if (request()->routeIs('sales.quotation.show'))
+                                <ul class="pt-2">
+                                    <li class="flex items-center justify-end">
+                                        <svg width="64px"
+                                            class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white"
+                                            height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                                    fill="currentColor">
+                                                </path>
+                                            </g>
+                                        </svg>
+                                        <a href="{{ request()->fullUrl() }}"
+                                            class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                                            <span class="">Detail Quotation</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
 
                         {{-- Custom Quotation Approval --}}
                         <li class="w-[88%]">
                             <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
-                                class="{{ $customQuotationApprovalItemActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ $customQuotationApprovalItemHighlight ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg class="{{ $customQuotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                                    <svg class="{{ $customQuotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
                                         width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
                                         id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -688,7 +777,7 @@
                                     </svg>
 
                                     <span
-                                        class="{{ $customQuotationApprovalItemActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
+                                        class="{{ $customQuotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                                         Custom Quotation</span>
                                 </div>
                                 @if ($pendingCustomQuotation > 0)
@@ -698,6 +787,28 @@
                                     </span>
                                 @endif
                             </a>
+                            @if (request()->routeIs('admin.custom-quotation-approval.show') || request()->routeIs('sales.custom-quotation.show'))
+                                <ul class="pt-2">
+                                    <li class="flex items-center justify-end">
+                                        <svg width="64px"
+                                            class="h-6 w-6 text-black transition duration-75 group-hover:text-gray-900 dark:text-gray-100 dark:group-hover:text-white"
+                                            height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M3 4C3 3.44772 3.44771 3 4 3C4.55229 3 5 3.44772 5 4L5 11C5 11.7956 5.31607 12.5587 5.87868 13.1213C6.44129 13.6839 7.20435 14 8 14H17.5858L14.2929 10.7071C13.9024 10.3166 13.9024 9.68342 14.2929 9.29289C14.6834 8.90237 15.3166 8.90237 15.7071 9.29289L20.7071 14.2929C21.0976 14.6834 21.0976 15.3166 20.7071 15.7071L15.7071 20.7071C15.3166 21.0976 14.6834 21.0976 14.2929 20.7071C13.9024 20.3166 13.9024 19.6834 14.2929 19.2929L17.5858 16H8C6.67392 16 5.40215 15.4732 4.46447 14.5355C3.52678 13.5979 3 12.3261 3 11V4Z"
+                                                    fill="currentColor">
+                                                </path>
+                                            </g>
+                                        </svg>
+                                        <a href="{{ request()->fullUrl() }}"
+                                            class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
+                                            <span class="">Detail Quotation</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
 
                     </ul>

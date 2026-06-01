@@ -278,7 +278,7 @@ class QuotationController extends Controller
         $requestOrder->refresh();
         $requestOrder->load('items.barang', 'sales', 'approvedBy');
 
-        return view('admin.quotation.action.show', compact('requestOrder'));
+        return view('admin.quotation-detail.index', compact('requestOrder'));
     }
 
     public function pdf(Quotation $quotation)

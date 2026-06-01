@@ -302,7 +302,7 @@ class SalesOrderController extends Controller
             abort(403);
         }
 
-        return view('admin.quotation.action.show', compact('requestOrder'));
+        return view('admin.quotation-detail.index', compact('requestOrder'));
     }
 
     public function edit($id)

@@ -184,7 +184,7 @@ Route::middleware(['auth'])->group(function () {
     // Supervisor approval route for Custom Quotation (allow Supervisor to POST approve/reject)
     Route::post('/custom-quotation-approval/{customQuotation}/approval', [CustomQuotationApprovalController::class, 'approve'])->name('admin.custom-quotation-approval.approval');
     // Supervisor view detail for custom quotation (so Supervisor can access without Sales role)
-    Route::get('/custom-quotation-approval/{customQuotation}', [CustomQuotationController::class, 'show'])->name('admin.custom-quotation-approval.show');
+    Route::get('/detail-custom-quotation-approval/{customQuotation}', [CustomQuotationController::class, 'show'])->name('admin.custom-quotation-approval.show');
     Route::get('/custom-quotation-approval', [CustomQuotationApprovalController::class, 'index'])->name('supervisor.custom-quotation-approval.index');
     Route::post('/custom-quotation-approval/bulk-approval', [CustomQuotationApprovalController::class, 'bulkApproval'])->name('supervisor.custom-quotation-approval.bulk-approval');
     Route::get('/orders/{id}', [QuotationApprovalController::class, 'incomingShow'])->name('orders.show');
@@ -245,7 +245,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/custom-quotation', [CustomQuotationController::class, 'store'])->name('sales.custom-quotation.store');
     Route::post('/custom-quotation/bulk/delete', [CustomQuotationController::class, 'bulkDelete'])->name('sales.custom-quotation.bulk-delete');
     Route::post('/custom-quotation/bulk/send-to-warehouse', [CustomQuotationController::class, 'bulkSendToWarehouse'])->name('sales.custom-quotation.bulk-send-to-warehouse');
-    Route::get('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'show'])->name('sales.custom-quotation.show');
+    Route::get('/detail-custom-quotation/{customQuotation}', [CustomQuotationController::class, 'show'])->name('sales.custom-quotation.show');
     Route::get('/custom-quotation/{customQuotation}/edit', [CustomQuotationController::class, 'edit'])->name('sales.custom-quotation.edit');
     Route::put('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'update'])->name('sales.custom-quotation.update');
     Route::delete('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'destroy'])->name('sales.custom-quotation.destroy');
@@ -291,8 +291,19 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 
 // Shared Detail and PDF views for Quotation (registered below specific routes to avoid parameter clashes)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');
+    Route::get('/detail-quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');
     Route::get('/quotation/{quotation}/pdf', [QuotationController::class, 'pdf'])->name('sales.quotation.pdf');
+
+    // Fallback redirect routes for old URLs to prevent MethodNotAllowedHttpException on old bookmarks/refreshes
+    Route::get('/quotation/{quotation}', function ($quotation) {
+        return redirect()->route('sales.quotation.show', $quotation);
+    });
+    Route::get('/custom-quotation/{customQuotation}', function ($customQuotation) {
+        return redirect()->route('sales.custom-quotation.show', $customQuotation);
+    });
+    Route::get('/custom-quotation-approval/{customQuotation}', function ($customQuotation) {
+        return redirect()->route('admin.custom-quotation-approval.show', $customQuotation);
+    });
 });
 
 // === End Admin Routes === //

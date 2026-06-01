@@ -193,7 +193,7 @@ class CustomQuotationController extends Controller
 
         $customPenawaran->load('items', 'sales');
 
-        return view('admin.custom-quotation.action.show', compact('customPenawaran'));
+        return view('admin.custom-quotation-detail.index', compact('customPenawaran'));
     }
 
     /**
