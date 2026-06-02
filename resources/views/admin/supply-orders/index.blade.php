@@ -1,7 +1,7 @@
 <x-app-layout>
-
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="p-4">
             {{-- Bulk Actions --}}
             <div id="bulk-actions" class="hidden flex-row items-center space-x-2"
@@ -40,8 +40,8 @@
         </div>
     </div>
 
-    <div
-        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div
             class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
@@ -210,6 +210,7 @@
                 {{ $goods->links() }}
             </div>
         </nav>
+    </div>
     </div>
 
     <!-- Modals -->

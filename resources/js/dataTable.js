@@ -19,10 +19,26 @@ let dashTableCat = new DataTable('#DataTableCat', {
 
 let datatableExcel = new DataTable('#DataTableExcel', {
     ...commonConfig,
+    paging: true,
+    searching: true,
+    info: true,
+    pageLength: 10,
     fixedColumns: {
         left: 0,
         right: 1
     },
     select: false,
-    columnDefs:false,
+    columnDefs: false,
+    layout: {
+        topStart: null,
+        topEnd: 'search',
+        bottomStart: ['info', 'length'],
+        bottomEnd: 'paging'
+    },
+    language: {
+        info: "Showing _START_-_END_ of _TOTAL_",
+        lengthMenu: "_MENU_ per page",
+        search: "",
+        searchPlaceholder: "Search"
+    }
 });

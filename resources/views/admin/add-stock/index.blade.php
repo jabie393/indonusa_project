@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="p-4">
             {{-- Search --}}
             <form action="{{ route('add-stock.index') }}" method="GET" class="block pl-2">
@@ -20,8 +20,7 @@
             </form>
         </div>
     </div>
-    <div
-        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
         <div
             class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 shadow-2xl md:flex-row md:space-x-4 md:space-y-0">
         </div>
@@ -127,6 +126,7 @@
                 {{ $goods->links() }}
             </div>
         </nav>
+        </div>
     </div>
 
     <!-- Modals -->

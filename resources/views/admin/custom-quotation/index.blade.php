@@ -1,7 +1,8 @@
 <x-app-layout>
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
 
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="item-center flex p-3">
             <div
                 class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
@@ -36,8 +37,8 @@
     </div>
 
 
-    <div
-        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
 
@@ -46,14 +47,12 @@
                 <thead
                     class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="text-nowrap pl-4 py-2">#</th>
-                        <th scope="col" class="text-nowrap pr-3 py-4">No. Dokumen</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Kepada</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Subject</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Item & Total</th>
-                        <th scope="col" class="text-nowrap px-4 py-3">Tanggal</th>
-                        <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
-                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
+                        <th scope="col" class="text-nowrap p-4">No. Dokumen</th>
+                        <th scope="col" class="text-nowrap p-4">Kepada, Item & Total</th>
+                        <th scope="col" class="text-nowrap p-4">Subject</th>
+                        <th scope="col" class="text-nowrap p-4">Tanggal</th>
+                        <th scope="col" class="text-nowrap p-4 text-center">Status</th>
+                        <th scope="col" class="flex justify-center text-nowrap p-4 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
@@ -64,60 +63,88 @@
                             $hasAbove = $discounts->contains(fn($d) => $d > 20);
                             $expiredAt = $penawaran->expired_at ?: $penawaran->created_at->copy()->addDays(14);
                         @endphp
-                        <tr class="border-b border-gray-100 align-top hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/30">
-                            <td class="px-4 py-3 text-[#225A97]">{{ $loop->iteration + ($customPenawarans->firstItem() ?? 1) - 1 }}</td>
-                            <td class="py-3 pr-4">
+                        <tr
+                            class="border-b border-gray-100 align-top hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/30">
+                            <td class="p-4">
                                 <div class="flex flex-col gap-1">
-                                    <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}" class="text-base font-bold text-[#0067B1] hover:underline">
+                                    <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}"
+                                        class="text-base font-bold text-[#0067B1] hover:underline">
                                         {{ $penawaran->quotation_number ?? '-' }}
                                     </a>
                                     <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
                                         <span class="font-semibold uppercase text-slate-400">REF</span>
-                                        <span class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
+                                        <span
+                                            class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-base font-bold text-slate-900 dark:text-white">{{ $penawaran->to ?? '-' }}</span>
-                                    <span class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
-                                        <span>{{ $penawaran->up ?? '-' }}</span>
-                                        @if ($penawaran->email)
-                                            <span class="text-slate-300">•</span>
-                                            <span>{{ $penawaran->email }}</span>
-                                        @endif
-                                    </span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 align-middle">
-                                <div class="flex max-w-[260px] h-full items-center">
-                                    <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ Str::limit($penawaran->subject, 48) }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex flex-col gap-2">
-                                    <span class="text-base font-bold text-slate-900 dark:text-white">Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}</span>
-                                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                        <span>{{ $penawaran->items->count() }} item</span>
+                            <td class="p-4 align-middle">
+                                <div class="flex flex-col gap-2.5">
+                                    <!-- Recipient Details -->
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-base font-bold text-slate-900 dark:text-white">
+                                            {{ $penawaran->to ?? '-' }}
+                                        </span>
+                                        <span class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                <circle cx="12" cy="7" r="4"></circle>
+                                            </svg>
+                                            <span class="font-medium">{{ $penawaran->up ?? '-' }}</span>
+                                            @if ($penawaran->email)
+                                                <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                <span class="text-slate-400 dark:text-slate-500">{{ $penawaran->email }}</span>
+                                            @endif
+                                        </span>
+                                    </div>
+
+                                    <!-- Divider -->
+                                    <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                    <!-- Total & Items Summary -->
+                                    <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                        <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
+                                            Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}
+                                        </span>
+                                        <span
+                                            class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                            {{ $penawaran->items->count() }} item
+                                        </span>
                                         @if ($hasBelow && $hasAbove)
-                                            <span class="inline-flex items-center justify-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">&lt;20% &amp; &gt;20%</span>
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
+                                                &lt;20% &amp; &gt;20%
+                                            </span>
                                         @elseif ($hasAbove)
-                                            <span class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">&gt;20%</span>
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                                &gt;20%
+                                            </span>
                                         @elseif ($hasBelow)
-                                            <span class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">&lt;20%</span>
+                                            <span
+                                                class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                                &lt;20%
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
                             </td>
-                            <td class="text-nowrap px-4 py-3 align-middle">
+                            <td class="p-4 align-middle">
+                                <div class="flex max-w-[260px] h-full items-center">
+                                    <span
+                                        class="text-sm font-semibold text-slate-900 dark:text-white">{{ Str::limit($penawaran->subject, 48) }}</span>
+                                </div>
+                            </td>
+                            <td class="text-nowrap p-4 align-middle">
                                 <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
                                     <span>{{ \Carbon\Carbon::parse($penawaran->created_at)->format('Y-m-d') }}</span>
                                     <span class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
                                             <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
                                             <line x1="16" x2="16" y1="2" y2="6"></line>
                                             <line x1="8" x2="8" y1="2" y2="6"></line>
@@ -130,7 +157,7 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-4 py-4 text-center align-middle">
+                            <td class="p-4 align-middle">
                                 @php
                                     $statusLabel =
                                         [
@@ -178,14 +205,14 @@
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock3 mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>';
                                     }
                                 @endphp
-                                <div class="flex w-full justify-center">
+                                <div class="flex items-center justify-center w-40 mx-auto">
                                     <span
-                                        class="inline-flex w-full items-center justify-center rounded-full px-2 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                        class="inline-flex w-full items-center justify-center rounded-full px-2.5 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                         {!! $iconSvg !!}{{ $statusLabel }}
                                     </span>
                                 </div>
                             </td>
-                            <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
+                            <td class="whitespace-nowrap p-4 text-right align-middle">
                                 <div class="flex justify-center">
                                     <div
                                         class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
@@ -386,6 +413,7 @@
                 {{ $customPenawarans->links() }}
             </div>
         </nav>
+    </div>
     </div>
     @vite(['resources/js/custom-quotation.js', 'resources/js/table-sort.js'])
     @include('admin.custom-quotation.partials.modal-show-note')

@@ -48,7 +48,7 @@
         </div>
 
         {{-- Content --}}
-        <div id="guideContent" class="bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7">
+        <div id="guideContent" class="bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7 flex-1 overflow-y-auto min-h-0">
             {{-- Guide selector --}}
             <div id="guideSelector" class="grid gap-4 md:grid-cols-2">
                 <div class="col-span-2 mb-2">
@@ -94,7 +94,7 @@
                 <div class="mb-4 flex items-center justify-between">
                     <h4 id="guideViewerTitle" class="text-lg font-semibold text-slate-900 dark:text-white"></h4>
                 </div>
-                <div id="guideViewerContent" class="h-[60vh] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900"></div>
+                <div id="guideViewerContent" class="h-[50vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900"></div>
                 <footer class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 pt-5 dark:bg-gray-800 dark:border-gray-700">
                     <button id="backToGuideSelector" class="px-6 py-2 text-sm font-medium text-slate-600 transition ring-1 ring-slate-200 hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
                         Kembali

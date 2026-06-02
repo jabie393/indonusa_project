@@ -1,6 +1,7 @@
 <x-app-layout>
-
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
 
         <div class="p-4">
             {{-- Search --}}
@@ -31,7 +32,7 @@
         </div>
     </div>
 
-    <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
         </div>
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
@@ -374,6 +375,7 @@
                 {{ $penawarans->links() }}
             </div>
         </nav>
+    </div>
     </div>
 
     @include('admin.quotation-approval.partials.quotation-approval-modal-reject')

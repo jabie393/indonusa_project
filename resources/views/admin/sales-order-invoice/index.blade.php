@@ -1,29 +1,29 @@
 <x-app-layout>
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div class="shrink-0">
+            @if (session('title'))
+                <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
+                    <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
+                    @if (session('text'))
+                        <p class="mt-1 text-sm text-green-700 dark:text-green-400">{{ session('text') }}</p>
+                    @endif
+                </div>
+            @endif
 
-    <div>
-        @if (session('title'))
-            <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
-                <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
-                @if (session('text'))
-                    <p class="mt-1 text-sm text-green-700 dark:text-green-400">{{ session('text') }}</p>
-                @endif
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/30">
-                <p class="font-semibold text-red-800 dark:text-red-300">Terjadi kesalahan:</p>
-                <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-400">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-    </div>
+            @if ($errors->any())
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/30">
+                    <p class="font-semibold text-red-800 dark:text-red-300">Terjadi kesalahan:</p>
+                    <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-400">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
 
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-show relative mb-5 flex justify-between rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-show relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="flex items-center p-3">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-h-[calc(100vh-200px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex shrink-0 items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
         </div>
 
@@ -327,6 +327,7 @@
                 </div>
             </nav>
         @endif
+    </div>
     </div>
 
     <script>

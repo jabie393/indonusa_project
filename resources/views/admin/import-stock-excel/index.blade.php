@@ -41,6 +41,10 @@
                    name="import_file_path"
                    id="import_file_path"
                    value="">
+            <input type="hidden"
+                   name="rows_json"
+                   id="rows_json"
+                   value="">
             <div class="h-full overflow-auto">
                 <div class="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div class="col-span-3">
@@ -184,6 +188,229 @@
                     .dark .dataTables_wrapper .sorting_desc,
                     .dark .dataTables_wrapper thead th {
                         background-image: none !important;
+                    }
+
+                    /* Styling untuk DataTable Excel Controls */
+                    div.dt-container {
+                        padding: 1rem 0;
+                    }
+
+                    /* Reset and layout Zurb Foundation grid classes to flexbox */
+                    div.dt-container div.grid-x {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: wrap !important;
+                        justify-content: space-between !important;
+                        align-items: center !important;
+                        width: 100% !important;
+                        gap: 1rem !important;
+                        padding: 0.75rem 1rem !important;
+                        margin: 0 !important;
+                    }
+                    div.dt-container div.grid-x > div.cell {
+                        display: flex !important;
+                        flex: 1 1 auto !important;
+                        align-items: center !important;
+                    }
+                    /* Ensure cells align their contents properly */
+                    div.dt-container div.grid-x > div.cell:first-child {
+                        justify-content: flex-start !important;
+                    }
+                    div.dt-container div.grid-x > div.cell:last-child {
+                        justify-content: flex-end !important;
+                    }
+
+                    /* For responsiveness: stack on small screens */
+                    @media (max-width: 640px) {
+                        div.dt-container div.grid-x {
+                            flex-direction: column !important;
+                            align-items: stretch !important;
+                        }
+                        div.dt-container div.grid-x > div.cell {
+                            justify-content: center !important;
+                            width: 100% !important;
+                        }
+                    }
+
+                    div.dt-container div.dt-length,
+                    div.dt-container div.dt-info {
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: flex-start !important;
+                    }
+                    div.dt-container div.dt-search,
+                    div.dt-container div.dt-paging {
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: flex-end !important;
+                        margin-left: auto !important;
+                    }
+
+                    /* Styling Search Input */
+                    div.dt-container div.dt-search input {
+                        border-radius: 0.5rem;
+                        border: 1px solid #d1d5db;
+                        background-color: #f9fafb;
+                        padding: 0.5rem 1rem;
+                        font-size: 0.875rem;
+                        color: #111827;
+                        outline: none;
+                        width: auto;
+                        min-width: 200px;
+                    }
+                    .dark div.dt-container div.dt-search input {
+                        border-color: #4b5563;
+                        background-color: #374151;
+                        color: #ffffff;
+                    }
+                    div.dt-container div.dt-search label {
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 0.5rem !important;
+                        font-size: 0.875rem !important;
+                        color: #4b5563 !important;
+                    }
+                    .dark div.dt-container div.dt-search label {
+                        color: #d1d5db !important;
+                    }
+
+                    /* Styling Length Select */
+                    div.dt-container div.dt-length select {
+                        border-radius: 0.5rem;
+                        border: 1px solid #d1d5db;
+                        background-color: #f9fafb;
+                        padding: 0.5rem 2rem 0.5rem 1rem;
+                        font-size: 0.875rem;
+                        color: #111827;
+                        outline: none;
+                    }
+                    .dark div.dt-container div.dt-length select {
+                        border-color: #4b5563;
+                        background-color: #374151;
+                        color: #ffffff;
+                    }
+                    div.dt-container div.dt-length label {
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 0.5rem !important;
+                        font-size: 0.875rem !important;
+                        color: #4b5563 !important;
+                    }
+                    .dark div.dt-container div.dt-length label {
+                        color: #d1d5db !important;
+                    }
+
+                    /* Styling Info Text */
+                    div.dt-container div.dt-info {
+                        font-size: 0.875rem;
+                        color: #6b7280;
+                    }
+                    .dark div.dt-container div.dt-info {
+                        color: #9ca3af;
+                    }
+
+                    /* Styling Zurb Foundation Pagination list structure */
+                    div.dt-paging ul.pagination {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        flex-wrap: wrap !important;
+                        align-items: center !important;
+                        list-style: none !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        gap: 0.25rem !important;
+                    }
+                    div.dt-paging ul.pagination li {
+                        display: inline-block !important;
+                        list-style-type: none !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+
+                    /* Styling Pagination Buttons */
+                    div.dt-container div.dt-paging button,
+                    div.dt-container div.dt-paging a,
+                    div.dt-container div.dt-paging span,
+                    div.dt-container div.dt-paging ul.pagination li a,
+                    div.dt-container div.dt-paging ul.pagination li span {
+                        background-color: #ffffff !important;
+                        border: 1px solid #d1d5db !important;
+                        color: #374151 !important;
+                        border-radius: 0.5rem !important;
+                        padding: 0.4rem 0.8rem !important;
+                        font-size: 0.875rem !important;
+                        font-weight: 500 !important;
+                        cursor: pointer !important;
+                        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+                        margin: 0 0.125rem !important;
+                        text-decoration: none !important;
+                        display: inline-block !important;
+                        transition: all 0.2s !important;
+                        line-height: 1.25rem !important;
+                    }
+                    div.dt-container div.dt-paging button:hover,
+                    div.dt-container div.dt-paging a:hover,
+                    div.dt-container div.dt-paging ul.pagination li a:hover {
+                        background-color: #f3f4f6 !important;
+                        border-color: #9ca3af !important;
+                        color: #111827 !important;
+                    }
+                    div.dt-container div.dt-paging button.current,
+                    div.dt-container div.dt-paging a.current,
+                    div.dt-container div.dt-paging li.current a,
+                    div.dt-container div.dt-paging li.current span,
+                    div.dt-container div.dt-paging li.active a,
+                    div.dt-container div.dt-paging li.active span,
+                    div.dt-container div.dt-paging .active a {
+                        background-color: #225A97 !important;
+                        border-color: #225A97 !important;
+                        color: #ffffff !important;
+                    }
+                    div.dt-container div.dt-paging button.disabled,
+                    div.dt-container div.dt-paging a.disabled,
+                    div.dt-container div.dt-paging li.disabled a,
+                    div.dt-container div.dt-paging li.disabled span,
+                    div.dt-container div.dt-paging .disabled a {
+                        opacity: 0.5 !important;
+                        cursor: not-allowed !important;
+                        pointer-events: none !important;
+                        background-color: #f9fafb !important;
+                        color: #9ca3af !important;
+                    }
+                    .dark div.dt-container div.dt-paging button,
+                    .dark div.dt-container div.dt-paging a,
+                    .dark div.dt-container div.dt-paging span,
+                    .dark div.dt-container div.dt-paging ul.pagination li a,
+                    .dark div.dt-container div.dt-paging ul.pagination li span {
+                        background-color: #1f2937 !important;
+                        border-color: #4b5563 !important;
+                        color: #d1d5db !important;
+                    }
+                    .dark div.dt-container div.dt-paging button:hover,
+                    .dark div.dt-container div.dt-paging a:hover,
+                    .dark div.dt-container div.dt-paging ul.pagination li a:hover {
+                        background-color: #374151 !important;
+                        color: #ffffff !important;
+                    }
+                    .dark div.dt-container div.dt-paging button.current,
+                    .dark div.dt-container div.dt-paging a.current,
+                    .dark div.dt-container div.dt-paging li.current a,
+                    .dark div.dt-container div.dt-paging li.current span,
+                    .dark div.dt-container div.dt-paging li.active a,
+                    .dark div.dt-container div.dt-paging li.active span,
+                    .dark div.dt-container div.dt-paging .active a {
+                        background-color: #3b82f6 !important;
+                        border-color: #3b82f6 !important;
+                        color: #ffffff !important;
+                    }
+                    .dark div.dt-container div.dt-paging button.disabled,
+                    .dark div.dt-container div.dt-paging a.disabled,
+                    .dark div.dt-container div.dt-paging li.disabled a,
+                    .dark div.dt-container div.dt-paging li.disabled span,
+                    .dark div.dt-container div.dt-paging .disabled a {
+                        background-color: #111827 !important;
+                        color: #6b7280 !important;
+                        opacity: 0.5 !important;
                     }
                 </style>
 

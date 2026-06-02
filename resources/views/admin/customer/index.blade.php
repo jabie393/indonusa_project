@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
 
         <div class="px-4">
             <button onclick="createCustomerModal.showModal()"
@@ -31,7 +32,7 @@
 
     </div>
 
-    <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
@@ -260,6 +261,7 @@
             </div>
         </nav>
 
+        </div>
     </div>
 
     <!-- Modals -->

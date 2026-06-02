@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="px-4">
                 <button onclick="createUserModal.showModal()"
                     class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
@@ -45,7 +46,7 @@
         </div>
     </div>
 
-    <div class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
@@ -161,6 +162,7 @@
             </div>
         </nav>
 
+        </div>
     </div>
 
     <!-- Modals -->

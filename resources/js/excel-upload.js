@@ -19,8 +19,100 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Intercept form submission
     form.addEventListener("submit", function (e) {
-        // Run validation one last time
-        const hasDuplicates = validateDuplicateCodes(true); // true = silent check, but we want to show alert
+        if (window.allExcelRows && window.excelMapping) {
+            const dt = $("#DataTableExcel").DataTable();
+            const visibleRows = dt.rows().nodes();
+
+            Array.from(visibleRows).forEach((tr) => {
+                const rowIndex = dt.row(tr).index();
+                if (rowIndex === undefined || rowIndex === null || rowIndex >= window.allExcelRows.length) return;
+
+                const rowData = window.allExcelRows[rowIndex];
+                let r = rowData;
+                if (rowData && typeof rowData === 'object' && !Array.isArray(rowData) && rowData.data) {
+                    r = rowData.data;
+                }
+
+                const getDomVal = (colIdx, selector) => {
+                    const td = tr.children[colIdx];
+                    if (!td) return '';
+                    const el = td.querySelector(selector);
+                    return el ? el.value : '';
+                };
+
+                const domValues = {
+                    goods_code: getDomVal(0, "input[type='hidden']") || getDomVal(0, "input[type='text']"),
+                    goods_name: getDomVal(1, "input[type='hidden']") || getDomVal(1, "input[type='text']"),
+                    description: getDomVal(2, "input[type='hidden']") || getDomVal(2, "input[type='text']"),
+                    category: getDomVal(3, "input[type='hidden']") || getDomVal(3, "select"),
+                    stock: getDomVal(4, "input[type='hidden']") || getDomVal(4, "input[type='text']"),
+                    buy_price: getDomVal(5, "input[type='hidden']") || getDomVal(5, "input[type='text']"),
+                };
+
+                if (tr.children.length > 7) {
+                    domValues.selling_price = getDomVal(6, "input[type='hidden']") || getDomVal(6, "input[type='text']");
+                    domValues.unit = getDomVal(7, "input[type='hidden']") || getDomVal(7, "input[type='text']");
+                    domValues.status_listing = getDomVal(8, "input[type='hidden']") || getDomVal(8, "select");
+                }
+
+                for (const field in domValues) {
+                    const excelColIdx = window.excelMapping[field];
+                    if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
+                        let val = domValues[field];
+                        if (field === 'buy_price' || field === 'selling_price' || field === 'stock') {
+                            val = val.replace(/[^\d]/g, "");
+                        }
+                        r[excelColIdx] = val;
+                    }
+                }
+            });
+
+            const rowsToSubmit = window.allExcelRows.map((rowObj, index) => {
+                let r = rowObj;
+                if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                    r = rowObj.data;
+                }
+
+                const getVal = (field) => {
+                    const col = window.excelMapping[field];
+                    if (col === null || col === undefined || col === "") return "";
+                    return r[col] !== undefined && r[col] !== null ? r[col] : "";
+                };
+
+                let buyPriceRaw = getVal("buy_price") || "0";
+                if (typeof buyPriceRaw === "string") buyPriceRaw = buyPriceRaw.replace(/[^\d]/g, "");
+                
+                let sellPriceRaw = getVal("selling_price") || "";
+                if (typeof sellPriceRaw === "string") sellPriceRaw = sellPriceRaw.replace(/[^\d]/g, "");
+
+                let stockRaw = getVal("stock") || "0";
+                if (typeof stockRaw === "string") stockRaw = stockRaw.replace(/[^\d]/g, "");
+
+                let codeVal = getVal("goods_code");
+                if (!codeVal) {
+                    codeVal = generateKodeFromCategory(getVal("category"), getVal("goods_name"), index);
+                }
+
+                return {
+                    goods_code: codeVal,
+                    goods_name: getVal("goods_name") || "Unnamed",
+                    description: getVal("description") || "Deskripsi otomatis",
+                    category: getVal("category") || "",
+                    stock: stockRaw,
+                    buy_price: buyPriceRaw,
+                    selling_price: sellPriceRaw,
+                    unit: getVal("unit") || "pcs",
+                    status_listing: getVal("status_listing") || "listing",
+                };
+            });
+
+            const rowsJsonInput = document.getElementById("rows_json");
+            if (rowsJsonInput) {
+                rowsJsonInput.value = JSON.stringify(rowsToSubmit);
+            }
+        }
+
+        const hasDuplicates = validateDuplicateCodes(true);
         if (hasDuplicates) {
             e.preventDefault();
             e.stopImmediatePropagation();
@@ -34,13 +126,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     allowEscapeKey: false,
                 });
             } else {
-                alert(
-                    "Terdapat kode barang duplikat. Harap perbaiki sebelum submit."
-                );
+                alert("Terdapat kode barang duplikat. Harap perbaiki sebelum submit.");
             }
             return false;
         }
-        // If valid, allow submit
+
+        if (window.Swal) {
+            window.Swal.fire({
+                title: "Sedang Mengimpor Data...",
+                html: "Harap tunggu beberapa saat. Jangan menutup atau memuat ulang halaman ini.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    window.Swal.showLoading();
+                }
+            });
+        }
     });
 
     // Simpan template row di awal sebelum DataTable diinisialisasi
@@ -349,7 +450,6 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderDataTableFromPreviewAll(rows, mapping, headers) {
         const tableEl = document.getElementById("DataTableExcel");
         if (!tableEl) return;
-
         // Get atau inisialisasi DataTable instance dengan aman
         let dt;
         if ($.fn.DataTable.isDataTable("#DataTableExcel")) {
@@ -361,10 +461,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 paging: true,
                 searching: true,
                 ordering: true,
+                pageLength: 10,
+                layout: {
+                    topStart: null,
+                    topEnd: 'search',
+                    bottomStart: ['info', 'length'],
+                    bottomEnd: 'paging'
+                },
+                language: {
+                    info: "Showing _START_-_END_ of _TOTAL_",
+                    lengthMenu: "_MENU_ per page",
+                    search: "",
+                    searchPlaceholder: "Search"
+                }
             });
-        }
-
-        const tbody = tableEl.querySelector("tbody");
+        }        const tbody = tableEl.querySelector("tbody");
         if (!tbody) return;
 
         // Gunakan template row yang sudah disimpan di awal
@@ -393,10 +504,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Save to window
+        window.allExcelRows = rows;
+        window.excelMapping = mapping;
+
         // clear existing rows using DataTable API
         dt.clear();
 
-        const newRows = rows.map((r, rowIndex) => {
+        const renderLimit = 100;
+        if (rows.length > renderLimit && window.Swal) {
+            window.Swal.fire({
+                icon: "info",
+                title: "File Excel Besar Terdeteksi",
+                text: `Menampilkan ${renderLimit} baris pertama sebagai preview untuk memverifikasi pemetaan kolom. Seluruh ${rows.length} baris akan diimpor secara langsung saat Anda menekan tombol Simpan.`,
+                confirmButtonText: "Mengerti"
+            });
+        }
+
+        const rowsToRender = rows.slice(0, renderLimit);
+        const newRows = rowsToRender.map((r, rowIndex) => {
             const newRow = baseRow.cloneNode(true);
 
             const getVal = (field) => {
@@ -1400,12 +1526,12 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             const nama = namaEl ? (namaEl.value || "").toString().trim() : "";
 
-            // compute row index for naming hidden inputs
-            let rowIndex = Array.prototype.indexOf.call(
-                tr.parentNode.children,
-                tr
-            );
-            if (rowIndex < 0) rowIndex = 0;
+            // compute row index for naming hidden inputs using DataTable API to handle pagination correctly
+            const dt = $("#DataTableExcel").DataTable();
+            let rowIndex = dt.row(tr).index();
+            if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+                rowIndex = 0;
+            }
 
             const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
 
@@ -1496,12 +1622,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const value = (inp.value || "").toString().trim();
 
-            // compute row index
-            let rowIndex = Array.prototype.indexOf.call(
-                tr.parentNode.children,
-                tr
-            );
-            if (rowIndex < 0) rowIndex = 0;
+            // compute row index using DataTable API to handle pagination correctly
+            const dt = $("#DataTableExcel").DataTable();
+            let rowIndex = dt.row(tr).index();
+            if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+                rowIndex = 0;
+            }
 
             // update/create hidden input
             let hidden = td.querySelector(
@@ -1514,6 +1640,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 td.appendChild(hidden);
             }
             hidden.value = value;
+
+            // Sync with window.allExcelRows
+            if (window.allExcelRows && window.excelMapping) {
+                const rowObj = window.allExcelRows[rowIndex];
+                let r = rowObj;
+                if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                    r = rowObj.data;
+                }
+                const excelColIdx = window.excelMapping[fieldName];
+                if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
+                    let valueToStore = value;
+                    if (fieldName === "stock" || fieldName === "buy_price" || fieldName === "selling_price") {
+                        valueToStore = value.replace(/\D/g, "");
+                    }
+                    r[excelColIdx] = valueToStore;
+                }
+            }
 
             // Special handling for category change (to update goods_code)
             if (fieldName === "category") {

@@ -2,8 +2,9 @@
 
 use App\Models\Barang; ?>
 <x-app-layout>
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="px-4">
             {{-- Search --}}
             <form action="{{ route('goods-in-status.index') }}" method="GET" class="block pl-2">
@@ -23,8 +24,8 @@ use App\Models\Barang; ?>
             </form>
         </div>
     </div>
-    <div
-        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
         <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
@@ -341,6 +342,7 @@ use App\Models\Barang; ?>
         </nav>
 
 
+    </div>
     </div>
 
     <!-- Modals -->

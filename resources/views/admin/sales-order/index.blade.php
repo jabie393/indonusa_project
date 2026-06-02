@@ -1,6 +1,6 @@
 <x-app-layout>
-
-    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-show rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-show rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="p-3 flex items-center">
             <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
@@ -41,7 +41,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="shrink-0">
         @if (session('title'))
             <div class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-900 dark:bg-green-900/30">
                 <p class="font-semibold text-green-800 dark:text-green-300">{{ session('title') }}</p>
@@ -64,7 +64,7 @@
     </div>
 
 
-    <div class="relative flex max-h-[calc(100vh-200px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
         </div>
 
@@ -442,6 +442,7 @@
                 </div>
             </nav>
         @endif
+    </div>
     </div>
 
     <!-- Modal Detail Penawaran -->

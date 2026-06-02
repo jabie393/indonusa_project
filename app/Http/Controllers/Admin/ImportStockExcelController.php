@@ -125,8 +125,16 @@ class ImportStockExcelController extends Controller
     // proses import ketika form submit: gunakan file yang sudah diupload + mapping dari user
     public function import(Request $request)
     {
-        // prefer rows[] yang dikirim dari form (di-inject oleh excel-upload.js)
+        // Tingkatkan batas waktu eksekusi agar tidak timeout saat memproses ribuan data
+        ini_set('max_execution_time', 300);
+        set_time_limit(300);
+
+        // prefer rows[] atau rows_json yang dikirim dari form
         $formRows = $request->input('rows', null);
+        if ($request->has('rows_json') && !empty($request->input('rows_json'))) {
+            $formRows = json_decode($request->input('rows_json'), true);
+        }
+        
         $created = 0;
         $errors = [];
 

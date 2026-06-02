@@ -142,14 +142,33 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableEl = document.getElementById("DataTableExcel");
         if (!tableEl) return;
 
-        // Get DataTable instance safely
+        // Get atau inisialisasi DataTable instance dengan aman
         let dt;
-        try {
-            dt = new DataTable("#DataTableExcel");
-        } catch (e) {
-            console.warn("DataTable re-init managed:", e);
-            return;
+        if ($.fn.DataTable.isDataTable("#DataTableExcel")) {
+            // Jika sudah ada instance, ambil instance yang ada
+            dt = $("#DataTableExcel").DataTable();
+        } else {
+            // Jika belum ada, inisialisasi baru
+            dt = $("#DataTableExcel").DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                pageLength: 10,
+                layout: {
+                    topStart: null,
+                    topEnd: 'search',
+                    bottomStart: ['info', 'length'],
+                    bottomEnd: 'paging'
+                },
+                language: {
+                    info: "Showing _START_-_END_ of _TOTAL_",
+                    lengthMenu: "_MENU_ per page",
+                    search: "",
+                    searchPlaceholder: "Search"
+                }
+            });
         }
+
 
         const tbody = tableEl.querySelector("tbody");
         if (!tbody) return;
@@ -182,10 +201,25 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        // Save to window
+        window.allExcelRows = rows;
+        window.excelMapping = mapping;
+
         // clear existing using DataTable API
         dt.clear();
 
-        const newRows = rows.map((rowObj, rowIndex) => {
+        const renderLimit = 100;
+        if (rows.length > renderLimit && window.Swal) {
+            window.Swal.fire({
+                icon: "info",
+                title: "File Excel Besar Terdeteksi",
+                text: `Menampilkan ${renderLimit} baris pertama sebagai preview untuk memverifikasi pemetaan kolom. Seluruh ${rows.length} baris akan diimpor secara langsung saat Anda menekan tombol Simpan.`,
+                confirmButtonText: "Mengerti"
+            });
+        }
+
+        const rowsToRender = rows.slice(0, renderLimit);
+        const newRows = rowsToRender.map((rowObj, rowIndex) => {
             // Handle rowObj structure: it might be raw array (old) or { data: [], is_known: bool } (new)
             let r = rowObj;
             let isKnown = true;
@@ -930,13 +964,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? (kategoriEl.value || "").toString().trim()
                 : "";
 
-            // generate kode berdasarkan nama + kategori
-            // try to compute a rowIndex if possible (fallback 0)
-            let rowIndex = Array.prototype.indexOf.call(
-                tr.parentNode.children,
-                tr
-            );
-            if (rowIndex < 0) rowIndex = 0;
+            // compute row index using DataTable API to handle pagination correctly
+            const dt = $("#DataTableExcel").DataTable();
+            let rowIndex = dt.row(tr).index();
+            if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+                rowIndex = 0;
+            }
             const newKode = generateKodeFromCategory(kategori, nama, rowIndex);
 
             // update visible kode input (col 0)
@@ -1010,12 +1043,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const value = (inp.value || "").toString().trim();
 
-            // compute row index
-            let rowIndex = Array.prototype.indexOf.call(
-                tr.parentNode.children,
-                tr
-            );
-            if (rowIndex < 0) rowIndex = 0;
+            // compute row index using DataTable API to handle pagination correctly
+            const dt = $("#DataTableExcel").DataTable();
+            let rowIndex = dt.row(tr).index();
+            if (rowIndex === undefined || rowIndex === null || rowIndex < 0) {
+                rowIndex = 0;
+            }
 
             // update/create hidden input
             let hidden = td.querySelector(
@@ -1039,6 +1072,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             hidden.value = valueToStore;
+
+            // Sync with window.allExcelRows
+            if (window.allExcelRows && window.excelMapping) {
+                const rowObj = window.allExcelRows[rowIndex];
+                let r = rowObj;
+                if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                    r = rowObj.data;
+                }
+                const excelColIdx = window.excelMapping[fieldName];
+                if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
+                    r[excelColIdx] = valueToStore;
+                }
+            }
 
             // Special handling for category change (to update goods_code)
             if (fieldName === "category") {
@@ -1079,9 +1125,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     })();
 
-    // Keep form submit as backup
-    if (submitButton && form) {
-        submitButton.addEventListener("click", function (e) {
+    // Intercept form submission
+    if (form) {
+        form.addEventListener("submit", function (e) {
             if (uploadInProgress) {
                 e.preventDefault();
                 Swal.fire({
@@ -1089,9 +1135,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     title: "Tunggu",
                     text: "Upload sedang berlangsung. Tunggu hingga selesai.",
                 });
-                return;
+                return false;
             }
-            
+
             // ensure file uploaded
             if (!importFilePathInput || !importFilePathInput.value) {
                 e.preventDefault();
@@ -1100,10 +1146,103 @@ document.addEventListener("DOMContentLoaded", function () {
                     title: "Perhatian",
                     text: "Silakan unggah file Excel sebelum submit.",
                 });
-                return;
+                return false;
             }
-            
-            // allow submit to proceed
-        }, { once: false });
+
+            if (window.allExcelRows && window.excelMapping) {
+                const dt = $("#DataTableExcel").DataTable();
+                const visibleRows = dt.rows().nodes();
+
+                // Sync visible edits to memory
+                Array.from(visibleRows).forEach((tr) => {
+                    const rowIndex = dt.row(tr).index();
+                    if (rowIndex === undefined || rowIndex === null || rowIndex >= window.allExcelRows.length) return;
+
+                    const rowObj = window.allExcelRows[rowIndex];
+                    let r = rowObj;
+                    if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                        r = rowObj.data;
+                    }
+
+                    const getDomVal = (colIdx, selector) => {
+                        const td = tr.children[colIdx];
+                        if (!td) return '';
+                        const el = td.querySelector(selector);
+                        return el ? el.value : '';
+                    };
+
+                    const domValues = {
+                        goods_code: getDomVal(0, "input[type='hidden']") || getDomVal(0, "input[type='text']"),
+                        goods_name: getDomVal(1, "input[type='hidden']") || getDomVal(1, "input[type='text']"),
+                        description: getDomVal(2, "input[type='hidden']") || getDomVal(2, "input[type='text']"),
+                        category: getDomVal(3, "input[type='hidden']") || getDomVal(3, "select"),
+                        stock: getDomVal(4, "input[type='hidden']") || getDomVal(4, "input[type='text']"),
+                        selling_price: getDomVal(5, "input[type='hidden']") || getDomVal(5, "input[type='text']"),
+                    };
+
+                    for (const field in domValues) {
+                        const excelColIdx = window.excelMapping[field];
+                        if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
+                            let val = domValues[field];
+                            if (field === 'selling_price' || field === 'stock') {
+                                val = val.replace(/[^\d]/g, "");
+                            }
+                            r[excelColIdx] = val;
+                        }
+                    }
+                });
+
+                // Map memory to submit structure
+                const rowsToSubmit = window.allExcelRows.map((rowObj, index) => {
+                    let r = rowObj;
+                    if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                        r = rowObj.data;
+                    }
+
+                    const getVal = (field) => {
+                        const col = window.excelMapping[field];
+                        if (col === null || col === undefined || col === "") return "";
+                        return r[col] !== undefined && r[col] !== null ? r[col] : "";
+                    };
+
+                    let sellPriceRaw = getVal("selling_price") || "";
+                    if (typeof sellPriceRaw === "string") sellPriceRaw = sellPriceRaw.replace(/[^\d]/g, "");
+
+                    let stockRaw = getVal("stock") || "0";
+                    if (typeof stockRaw === "string") stockRaw = stockRaw.replace(/[^\d]/g, "");
+
+                    let codeVal = getVal("goods_code");
+                    if (!codeVal) {
+                        codeVal = generateKodeFromCategory(getVal("category"), getVal("goods_name"), index);
+                    }
+
+                    return {
+                        goods_code: codeVal,
+                        goods_name: getVal("goods_name") || "Unnamed",
+                        description: getVal("description") || "Deskripsi otomatis",
+                        category: getVal("category") || "",
+                        stock: stockRaw,
+                        selling_price: sellPriceRaw,
+                    };
+                });
+
+                const rowsJsonInput = document.getElementById("rows_json");
+                if (rowsJsonInput) {
+                    rowsJsonInput.value = JSON.stringify(rowsToSubmit);
+                }
+            }
+
+            if (window.Swal) {
+                window.Swal.fire({
+                    title: "Sedang Mengimpor Data...",
+                    html: "Harap tunggu beberapa saat. Jangan menutup atau memuat ulang halaman ini.",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        window.Swal.showLoading();
+                    }
+                });
+            }
+        });
     }
 });

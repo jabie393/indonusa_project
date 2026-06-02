@@ -1,6 +1,7 @@
 <x-app-layout>
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="p-4">
             {{-- Search --}}
             <form action="{{ route('delivery-orders.index') }}" method="GET" class="block pl-2">
@@ -22,8 +23,8 @@
         </div>
     </div>
 
-    <div
-        class="relative flex max-h-[calc(100vh-210px)] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div
+            class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div
             class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
             @php
@@ -99,18 +100,18 @@
                                     {{ $order->customer?->nama_customer ?? $order->customer_name }}
                                 </div>
                                 @php
-                                    $firstPic = $order->customer?->pics?->first();
+                                    $pic = $order->requestOrder?->pic;
                                 @endphp
-                                @if ($firstPic)
+                                @if ($pic)
                                     <div class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
                                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                             <circle cx="12" cy="7" r="4" />
                                         </svg>
-                                        <span class="truncate">{{ $firstPic->name }}</span>
-                                        @if ($firstPic->position)
+                                        <span class="truncate">{{ $pic->name }}</span>
+                                        @if ($pic->position)
                                             <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $firstPic->position }}</span>
+                                            <span class="text-gray-400 dark:text-gray-500 truncate">{{ $pic->position }}</span>
                                         @endif
                                     </div>
                                 @endif
@@ -304,6 +305,7 @@
                 {{ $orders->links() }}
             </div>
         </nav>
+    </div>
     </div>
 
     <!-- Modals -->
