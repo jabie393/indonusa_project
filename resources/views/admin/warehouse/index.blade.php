@@ -66,7 +66,7 @@
                 <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         @if (Auth::user() && Auth::user()->role !== 'Sales')
-                        <th scope="col" class="text-nowrap px-4 py-3">Status Listing</th>
+                            <th scope="col" class="text-nowrap px-4 py-3">Status Listing</th>
                         @endif
                         <th scope="col" class="text-nowrap px-4 py-3">Barang</th>
                         <th scope="col" class="text-nowrap px-4 py-3">Deskripsi</th>
@@ -85,7 +85,7 @@
                     @forelse ($goods as $barang)
                         <tr class="border-b transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
                             @if (Auth::user() && Auth::user()->role !== 'Sales')
-                            <td class="px-4 py-3">{{ $barang->status_listing }}</td>
+                                <td class="px-4 py-3">{{ $barang->status_listing }}</td>
                             @endif
                             <td class="flex-shrink-0 px-4 py-3">
                                 <div class="mb-0.5 text-[10px] font-semibold uppercase tracking-wider text-black dark:text-white">
@@ -248,14 +248,15 @@
             aria-label="Table navigation">
             <div class="flex items-center space-x-2">
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
+                    Menampilkan
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $goods->firstItem() ?? 0 }}-{{ $goods->lastItem() ?? 0 }}</span>
-                    of
+                    dari
                     <span class="font-semibold text-gray-900 dark:text-white">{{ $goods->total() ?? $goods->count() }}</span>
                 </span>
                 <form method="GET" action="{{ route('warehouse.index') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="ml-2 rounded border-gray-300 p-1 pl-2 pr-5 text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                    <select name="perPage" onchange="this.form.submit()"
+                        class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                         @foreach ([10, 25, 50, 100] as $size)
                             <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}
                             </option>

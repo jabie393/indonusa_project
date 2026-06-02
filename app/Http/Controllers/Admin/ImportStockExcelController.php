@@ -134,6 +134,11 @@ class ImportStockExcelController extends Controller
         if ($request->has('rows_json') && !empty($request->input('rows_json'))) {
             $formRows = json_decode($request->input('rows_json'), true);
         }
+        \Log::info('ImportStockExcel formRows:', [
+            'count' => is_array($formRows) ? count($formRows) : 0,
+            'rows' => $formRows,
+            'raw_json' => $request->input('rows_json')
+        ]);
         
         $created = 0;
         $errors = [];

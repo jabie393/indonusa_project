@@ -60,6 +60,89 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // tambahkan map singkatan & helper generator (pakai window.kategoriSingkatan bila ada)
+    const kategoriSingkatanLocal = window.kategoriSingkatan || {
+        HANDTOOLS: "HT",
+        "ADHESIVE AND SEALANT": "AS",
+        "AUTOMOTIVE EQUIPMENT": "AE",
+        CLEANING: "CLN",
+        COMPRESSOR: "CMP",
+        CONSTRUCTION: "CST",
+        "CUTTING TOOLS": "CT",
+        LIGHTING: "LTG",
+        FASTENING: "FST",
+        GENERATOR: "GEN",
+        "HEALTH CARE EQUIPMENT": "HCE",
+        HOSPITALITY: "HSP",
+        "HYDRAULIC TOOLS": "HYD",
+        "MARKING MACHINE": "MM",
+        "MATERIAL HANDLING EQUIPMENT": "MHE",
+        "MEASURING AND TESTING EQUIPMENT": "MTE",
+        "METAL CUTTING MACHINERY": "MCM",
+        PACKAGING: "PKG",
+        "PAINTING AND COATING": "PC",
+        "PNEUMATIC TOOLS": "PN",
+        "POWER TOOLS": "PT",
+        "SAFETY AND PROTECTION EQUIPMENT": "SPE",
+        SECURITY: "SEC",
+        "SHEET METAL MACHINERY": "SMM",
+        "STORAGE SYSTEM": "STS",
+        "WELDING EQUIPMENT": "WLD",
+        "WOODWORKING EQUIPMENT": "WWE",
+        MISCELLANEOUS: "MSC",
+        "OTHER CATEGORIES": "OC",
+    };
+
+    const existingCodesSet = new Set(
+        (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
+    );
+    const dbCodesSet = new Set(
+        (window.EXISTING_KODES || []).map((k) => String(k).toUpperCase())
+    );
+
+    function generateKodeFromCategory(kategori, nama, rowIndex) {
+        let sing = "";
+        if (kategori) {
+            const key = String(kategori).trim().toUpperCase();
+            sing = kategoriSingkatanLocal[kategori] || kategoriSingkatanLocal[key] || "";
+        }
+        if (!sing) {
+            if (nama) {
+                const parts = String(nama).trim().split(/\s+/);
+                sing = parts
+                    .map((p) => p[0] || "")
+                    .join("")
+                    .slice(0, 3)
+                    .toUpperCase();
+            } else {
+                sing = "UNK";
+            }
+            if (!sing) sing = "UNK";
+        }
+
+        let seed = Math.floor(Math.random() * 10000000);
+        let candidate = ``;
+
+        let attempt = 0;
+        while (attempt < 2000) {
+            candidate = `${sing}-${seed.toString().padStart(7, "0")}`;
+
+            const isTaken =
+                existingCodesSet.has(candidate.toUpperCase()) ||
+                dbCodesSet.has(candidate.toUpperCase());
+
+            if (!isTaken) {
+                existingCodesSet.add(candidate.toUpperCase());
+                return candidate;
+            }
+
+            seed = (seed + 1) % 10000000;
+            attempt++;
+        }
+
+        return `${sing}-9999999`;
+    }
+
     // Strict Header Validation
     function validateHeaders(headers) {
         if (!Array.isArray(headers))
@@ -142,32 +225,69 @@ document.addEventListener("DOMContentLoaded", function () {
         const tableEl = document.getElementById("DataTableExcel");
         if (!tableEl) return;
 
-        // Get atau inisialisasi DataTable instance dengan aman
-        let dt;
+        window.dataTableSearchTerm = ""; // Reset search term for new uploads
+
         if ($.fn.DataTable.isDataTable("#DataTableExcel")) {
-            // Jika sudah ada instance, ambil instance yang ada
-            dt = $("#DataTableExcel").DataTable();
-        } else {
-            // Jika belum ada, inisialisasi baru
-            dt = $("#DataTableExcel").DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                pageLength: 10,
-                layout: {
-                    topStart: null,
-                    topEnd: 'search',
-                    bottomStart: ['info', 'length'],
-                    bottomEnd: 'paging'
-                },
-                language: {
-                    info: "Showing _START_-_END_ of _TOTAL_",
-                    lengthMenu: "_MENU_ per page",
-                    search: "",
-                    searchPlaceholder: "Search"
-                }
-            });
+            $("#DataTableExcel").DataTable().destroy();
         }
+
+        let dt = $("#DataTableExcel").DataTable({
+            scrollX: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            pageLength: 10,
+            pagingType: 'simple_numbers',
+            columnDefs: [
+                {
+                    targets: '_all',
+                    searchable: false
+                }
+            ],
+            layout: {
+                topStart: null,
+                topEnd: 'search',
+                bottomStart: ['info', 'pageLength'],
+                bottomEnd: 'paging'
+            },
+            drawCallback: function(settings) {
+                const api = this.api();
+                const container = api.table().container();
+                if (container) {
+                    const pagingEl = container.querySelector('.dt-paging');
+                    if (pagingEl) {
+                        if (api.page.info().pages <= 1) {
+                            pagingEl.style.setProperty('display', 'none', 'important');
+                        } else {
+                            pagingEl.style.removeProperty('display');
+                        }
+                    }
+                }
+            },
+            language: {
+                info: "Menampilkan <span class='font-semibold text-gray-900 dark:text-white'>_START_-_END_</span> dari <span class='font-semibold text-gray-900 dark:text-white'>_TOTAL_</span>",
+                lengthMenu: "_MENU_ per halaman",
+                search: "",
+                searchPlaceholder: "Search",
+                paginate: {
+                    previous: '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>',
+                    next: '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>'
+                }
+            }
+        });
+
+        // Intercept default search input to bypass built-in DataTable search
+        const container = dt.table().container();
+        if (container) {
+            const searchInput = container.querySelector('.dt-search input');
+            if (searchInput) {
+                $(searchInput).off().on('keyup input search', function() {
+                    window.dataTableSearchTerm = this.value;
+                    dt.draw();
+                });
+            }
+        }
+
 
 
         const tbody = tableEl.querySelector("tbody");
@@ -256,15 +376,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     inp.type = "text";
                     tdKode.appendChild(inp);
                 }
-                inp.readOnly = true;
+                const rowObj = rowsToRender[rowIndex];
                 const kodeVal =
                     getVal("goods_code") ||
+                    rowObj.goods_code ||
                     generateKodeFromCategory(
                         getVal("category"),
                         getVal("goods_name"),
                         rowIndex
                     );
                 inp.value = kodeVal;
+                rowObj.goods_code = kodeVal;
 
                 // add hidden input ONLY IF KNOWN
                 if (isKnown) {
@@ -531,8 +653,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return newRow;
         });
 
-        // Add all rows using the requested API and add the 'new' class
-        dt.rows.add(newRows).draw().nodes().to$().addClass("new");
+        // Add all rows using the requested API and add the 'new' class safely
+        const nodes = dt.rows.add(newRows).draw().nodes();
+        if (nodes && typeof nodes.to$ === "function") {
+            nodes.to$().addClass("new");
+        } else if (nodes) {
+            $(nodes).addClass("new");
+        }
 
         // Add SweetAlert Toast for AJAX Success
         if (window.Swal) {
@@ -548,6 +675,11 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
+
+    // Clear value on click to allow re-upload of the same file
+    fileInput.addEventListener("click", function () {
+        this.value = "";
+    });
 
     // Handle file selection
     fileInput.addEventListener("change", function (e) {
@@ -663,19 +795,19 @@ document.addEventListener("DOMContentLoaded", function () {
                                     const isPresent =
                                         upperHeaders.includes(req);
                                     const bgColor = isPresent
-                                        ? "bg-emerald-50"
-                                        : "bg-red-50";
+                                        ? "bg-white dark:bg-gray-800"
+                                        : "bg-red-50 dark:bg-red-950/20";
                                     const textColor = isPresent
-                                        ? "text-emerald-600"
-                                        : "text-red-500";
+                                        ? "text-slate-800 dark:text-gray-200"
+                                        : "text-red-600 dark:text-red-400";
                                     const borderColor = isPresent
-                                        ? "border-emerald-100"
-                                        : "border-red-100";
+                                        ? "border-slate-200 dark:border-gray-700"
+                                        : "border-red-200 dark:border-red-900/30";
                                     const icon = isPresent
-                                        ? `<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>`
-                                        : `<svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+                                        ? `<svg class="w-3.5 h-3.5 mr-1.5 text-slate-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>`
+                                        : `<svg class="w-3.5 h-3.5 mr-1.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>`;
 
-                                    return `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold border ${bgColor} ${textColor} ${borderColor} m-0.5 uppercase">
+                                    return `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold border ${bgColor} ${textColor} ${borderColor} m-0.5 uppercase shadow-sm">
                                         ${icon}${req}
                                     </span>`;
                                 })
@@ -684,107 +816,168 @@ document.addEventListener("DOMContentLoaded", function () {
                             Swal.fire({
                                 html: `
                                     <style>
-                                        .swal-error-popup {
-                                            border-radius: 24px !important;
-                                            padding: 1.5rem 1rem !important;
+                                        .swal2-html-container {
+                                            padding: 0!important;
                                         }
-                                        .swal-error-confirm {
+                                        .swal-modal-custom {
+                                            border-radius: 16px !important;
+                                            overflow: hidden !important;
+                                            padding: 0 !important;
+                                            background-color: #ffffff !important;
+                                            border: none !important;
+                                            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
                                             width: 100% !important;
+                                            max-width: 640px !important;
+                                        }
+                                        .dark .swal-modal-custom {
+                                            background-color: #1f2937 !important;
+                                        }
+                                        .swal-modal-header {
+                                            display: flex !important;
+                                            align-items: center !important;
+                                            justify-content: space-between !important;
+                                            padding: 1.25rem 1.75rem !important;
+                                            color: #ffffff !important;
+                                            background: linear-gradient(to right, #225A97, #0D223A) !important;
+                                        }
+                                        .swal-modal-header-title {
+                                            text-align: left !important;
+                                        }
+                                        .swal-modal-body {
+                                            padding: 1.75rem !important;
+                                            text-align: left !important;
+                                        }
+                                        .swal-modal-footer {
+                                            display: flex !important;
+                                            align-items: center !important;
+                                            justify-content: space-between !important;
+                                            padding: 1.25rem 1.75rem !important;
+                                            background-color: #f8fafc !important;
+                                            border-top: 1px solid #e2e8f0 !important;
+                                        }
+                                        .dark .swal-modal-footer {
+                                            background-color: #1f2937 !important;
+                                            border-top-color: #374151 !important;
+                                        }
+                                        .swal-modal-btn-confirm {
+                                            padding: 0.625rem 1.75rem !important;
+                                            font-size: 0.875rem !important;
+                                            font-weight: 600 !important;
+                                            color: #ffffff !important;
+                                            border-radius: 0.75rem !important;
+                                            background: linear-gradient(to right, #225A97, #0D223A) !important;
+                                            box-shadow: 0 4px 6px -1px rgba(34, 90, 151, 0.2) !important;
+                                            border: none !important;
+                                            cursor: pointer !important;
+                                            transition: opacity 0.2s ease-in-out !important;
+                                        }
+                                        .swal-modal-btn-confirm:hover {
+                                            opacity: 0.9 !important;
+                                        }
+                                        .alert-boxes-grid {
+                                            display: grid !important;
+                                            grid-template-columns: 1fr !important;
+                                            gap: 1rem !important;
                                             margin-top: 1rem !important;
-                                            border-radius: 14px !important;
-                                            padding: 14px !important;
-                                            font-size: 16px !important;
-                                            font-weight: 700 !important;
-                                            background-color: #5850ec !important;
-                                            box-shadow: 0 4px 6px -1px rgba(88, 80, 236, 0.2), 0 2px 4px -1px rgba(88, 80, 236, 0.1) !important;
                                         }
-                                        .swal-error-close {
-                                            color: #9ca3af !important;
-                                            top: 15px !important;
-                                            right: 15px !important;
-                                        }
-                                        .swal-error-close:hover {
-                                            color: #4b5563 !important;
+                                        @media (min-width: 640px) {
+                                            .alert-boxes-grid {
+                                                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+                                            }
                                         }
                                     </style>
-                                    <div class="mt-2">
-                                        <!-- Error Icon -->
-                                        <div class="flex justify-center mb-6">
-                                            <div class="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center">
-                                                <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                                    <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white">
-                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
-                                                        </svg>
-                                                    </div>
+                                    <div class="swal-modal-container">
+                                        <!-- Header -->
+                                        <header class="swal-modal-header">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+                                                    <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+                                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                                    </svg>
+                                                </div>
+                                                <div class="swal-modal-header-title">
+                                                    <h1 class="text-lg font-semibold leading-tight text-white">Format Header Tidak Sesuai</h1>
+                                                    <p class="text-xs text-white/80">File Excel harus memiliki kolom yang sesuai dengan format yang ditentukan.</p>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <h2 class="text-2xl font-bold text-gray-800 mb-2">Format Header Tidak Sesuai</h2>
-                                        <p class="text-gray-500 text-sm mb-6 px-6">File Excel harus memiliki kolom yang sesuai dengan format yang ditentukan.</p>
-
-                                        <!-- Required Columns Grid -->
-                                        <div class="bg-gray-50 rounded-2xl p-5 mb-6">
-                                            <div class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-4 text-center">KOLOM YANG DIPERLUKAN</div>
-                                            <div class="flex flex-wrap justify-center gap-1.5">
-                                                ${badgesHtml}
-                                            </div>
-                                        </div>
-
-                                        <!-- Alert Boxes -->
-                                        ${
-                                            valResult.missing.length > 0
-                                                ? `
-                                        <div class="bg-red-50 border border-red-100 rounded-2xl p-4 mb-4 text-left flex items-start">
-                                            <div class="text-red-500 mr-3 mt-0.5">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            <button type="button" onclick="Swal.close()" aria-label="Tutup" class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                                 </svg>
-                                            </div>
-                                            <div>
-                                                <div class="text-red-500 font-bold text-sm">Kolom yang Hilang</div>
-                                                <div class="text-red-700 font-extrabold text-base uppercase mt-1 tracking-tight">${valResult.missing.join(
-                                                    ", "
-                                                )}</div>
-                                            </div>
-                                        </div>
-                                        `
-                                                : ""
-                                        }
+                                            </button>
+                                        </header>
 
-                                        ${
-                                            valResult.extra &&
-                                            valResult.extra.length > 0
-                                                ? `
-                                        <div class="bg-orange-50 border border-amber-100 rounded-2xl p-4 mb-2 text-left flex items-start">
-                                            <div class="text-amber-500 mr-3 mt-0.5">
-                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                                </svg>
+                                        <!-- Body -->
+                                        <div class="swal-modal-body">
+                                            <!-- Required Columns -->
+                                            <div class="bg-gray-50 dark:bg-gray-800/40 rounded-2xl p-5 mb-4 border border-gray-100 dark:border-gray-700/50 shadow-inner">
+                                                <div class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-3 text-center">KOLOM YANG DIPERLUKAN</div>
+                                                <div class="flex flex-wrap justify-center gap-1.5">
+                                                    ${badgesHtml}
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="text-amber-800 font-bold text-sm">Kolom Tidak Dikenal (harus dihapus)</div>
-                                                <div class="text-amber-900 font-extrabold text-base uppercase mt-1 tracking-tight">${valResult.extra.join(
-                                                    ", "
-                                                )}</div>
+
+                                            <!-- Alert Boxes Grid -->
+                                            <div class="alert-boxes-grid">
+                                                <!-- Column Missing Alert -->
+                                                ${
+                                                    valResult.missing.length > 0
+                                                        ? `
+                                                        <div class="bg-red-50/50 dark:bg-red-950/20 border border-red-200/60 dark:border-red-900/30 rounded-2xl p-4 text-left flex items-start h-full">
+                                                            <div class="text-red-500 mr-3 mt-0.5">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="flex-1">
+                                                                <div class="text-red-800 dark:text-red-400 font-bold text-sm">Kolom yang Hilang</div>
+                                                                <div class="flex flex-wrap gap-1 mt-2">
+                                                                    ${valResult.missing.map(m => `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold bg-red-100/60 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/40 uppercase shadow-sm"><svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>${m}</span>`).join('')}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        `
+                                                        : ''
+                                                }
+
+                                                <!-- Column Extra Alert -->
+                                                ${
+                                                    valResult.extra && valResult.extra.length > 0
+                                                        ? `
+                                                        <div class="bg-orange-50/50 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/30 rounded-2xl p-4 text-left flex items-start h-full">
+                                                            <div class="text-amber-500 mr-3 mt-0.5">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                                </svg>
+                                                            </div>
+                                                            <div class="flex-1">
+                                                                <div class="text-amber-800 dark:text-amber-400 font-bold text-sm">Kolom Tidak Dikenal</div>
+                                                                <div class="flex flex-wrap gap-1 mt-2">
+                                                                    ${valResult.extra.map(m => `<span class="inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-bold bg-amber-100/60 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/40 uppercase shadow-sm"><svg class="w-3.5 h-3.5 mr-1.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>${m}</span>`).join('')}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        `
+                                                        : ''
+                                                }
                                             </div>
                                         </div>
-                                        `
-                                                : ""
-                                        }
+
+                                        <!-- Footer -->
+                                        <footer class="swal-modal-footer">
+                                            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan format kolom sudah sesuai sebelum melanjutkan.</p>
+                                            <button type="button" onclick="Swal.close()" class="swal-modal-btn-confirm">Mengerti</button>
+                                        </footer>
                                     </div>
                                 `,
-                                showConfirmButton: true,
-                                confirmButtonText: "Mengerti",
-                                showCloseButton: true,
+                                showConfirmButton: false,
                                 customClass: {
-                                    popup: "swal-error-popup",
-                                    confirmButton: "swal-error-confirm",
-                                    closeButton: "swal-error-close",
+                                    popup: "swal-modal-custom"
                                 },
-                                width: "480px",
-                                allowOutsideClick: false,
+                                width: "640px",
+                                allowOutsideClick: true,
                             });
                             // Reset UI
                             progressBar.style.width = "0%";
@@ -853,6 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         uploadResult.classList.remove("hidden");
                     }
                 } catch (err) {
+                    console.error("Preview stock processing error details:", err);
                     Swal.fire({
                         icon: "error",
                         title: "Error",
@@ -1128,121 +1322,244 @@ document.addEventListener("DOMContentLoaded", function () {
     // Intercept form submission
     if (form) {
         form.addEventListener("submit", function (e) {
-            if (uploadInProgress) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: "info",
-                    title: "Tunggu",
-                    text: "Upload sedang berlangsung. Tunggu hingga selesai.",
-                });
-                return false;
-            }
+            e.preventDefault(); // Always prevent default first to handle asynchronously
 
-            // ensure file uploaded
-            if (!importFilePathInput || !importFilePathInput.value) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: "warning",
-                    title: "Perhatian",
-                    text: "Silakan unggah file Excel sebelum submit.",
-                });
-                return false;
-            }
+            try {
+                if (uploadInProgress) {
+                    Swal.fire({
+                        icon: "info",
+                        title: "Tunggu",
+                        text: "Upload sedang berlangsung. Tunggu hingga selesai.",
+                    });
+                    return false;
+                }
 
-            if (window.allExcelRows && window.excelMapping) {
-                const dt = $("#DataTableExcel").DataTable();
-                const visibleRows = dt.rows().nodes();
+                // ensure file uploaded
+                if (!importFilePathInput || !importFilePathInput.value) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Perhatian",
+                        text: "Silakan unggah file Excel sebelum submit.",
+                    });
+                    return false;
+                }
 
-                // Sync visible edits to memory
-                Array.from(visibleRows).forEach((tr) => {
-                    const rowIndex = dt.row(tr).index();
-                    if (rowIndex === undefined || rowIndex === null || rowIndex >= window.allExcelRows.length) return;
+                if (window.allExcelRows && window.excelMapping) {
+                    const dt = $("#DataTableExcel").DataTable();
+                    const visibleRows = dt.rows().nodes();
 
-                    const rowObj = window.allExcelRows[rowIndex];
-                    let r = rowObj;
-                    if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
-                        r = rowObj.data;
-                    }
+                    Array.from(visibleRows).forEach((tr) => {
+                        if (!tr) return;
+                        const rowIndex = dt.row(tr).index();
+                        if (rowIndex === undefined || rowIndex === null || rowIndex >= window.allExcelRows.length) return;
 
-                    const getDomVal = (colIdx, selector) => {
-                        const td = tr.children[colIdx];
-                        if (!td) return '';
-                        const el = td.querySelector(selector);
-                        return el ? el.value : '';
-                    };
+                        const rowObj = window.allExcelRows[rowIndex];
+                        let r = rowObj;
+                        if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                            r = rowObj.data;
+                        }
 
-                    const domValues = {
-                        goods_code: getDomVal(0, "input[type='hidden']") || getDomVal(0, "input[type='text']"),
-                        goods_name: getDomVal(1, "input[type='hidden']") || getDomVal(1, "input[type='text']"),
-                        description: getDomVal(2, "input[type='hidden']") || getDomVal(2, "input[type='text']"),
-                        category: getDomVal(3, "input[type='hidden']") || getDomVal(3, "select"),
-                        stock: getDomVal(4, "input[type='hidden']") || getDomVal(4, "input[type='text']"),
-                        selling_price: getDomVal(5, "input[type='hidden']") || getDomVal(5, "input[type='text']"),
-                    };
+                        const getDomVal = (colIdx, selector) => {
+                            const td = tr.children[colIdx];
+                            if (!td) return '';
+                            const el = td.querySelector(selector);
+                            return el ? el.value : '';
+                        };
 
-                    for (const field in domValues) {
-                        const excelColIdx = window.excelMapping[field];
-                        if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
-                            let val = domValues[field];
-                            if (field === 'selling_price' || field === 'stock') {
-                                val = val.replace(/[^\d]/g, "");
+                        const domValues = {
+                            goods_code: getDomVal(0, "input[type='text']") || getDomVal(0, "input[type='hidden']"),
+                            goods_name: getDomVal(1, "input[type='text']") || getDomVal(1, "input[type='hidden']"),
+                            description: getDomVal(2, "input[type='text']") || getDomVal(2, "input[type='hidden']"),
+                            category: getDomVal(3, "select") || getDomVal(3, "input[type='hidden']"),
+                            stock: getDomVal(4, "input[type='number']") || getDomVal(4, "input[type='text']") || getDomVal(4, "input[type='hidden']"),
+                            selling_price: getDomVal(5, "input[type='text']") || getDomVal(5, "input[type='hidden']"),
+                        };
+
+                        for (const field in domValues) {
+                            const excelColIdx = window.excelMapping[field];
+                            if (excelColIdx !== null && excelColIdx !== undefined && excelColIdx !== "") {
+                                let val = domValues[field];
+                                if (field === 'selling_price' || field === 'stock') {
+                                    val = val.replace(/[^\d]/g, "");
+                                }
+                                r[excelColIdx] = val;
                             }
-                            r[excelColIdx] = val;
+                        }
+                        rowObj.goods_code = domValues.goods_code;
+                    });
+
+                    // Map memory to submit structure
+                    const rowsToSubmit = window.allExcelRows.map((rowObj, index) => {
+                        let r = rowObj;
+                        if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
+                            r = rowObj.data;
+                        }
+
+                        const getVal = (field) => {
+                            const col = window.excelMapping[field];
+                            if (col === null || col === undefined || col === "") return "";
+                            return r[col] !== undefined && r[col] !== null ? r[col] : "";
+                        };
+
+                        let sellPriceRaw = getVal("selling_price") || "";
+                        if (typeof sellPriceRaw === "string") sellPriceRaw = sellPriceRaw.replace(/[^\d]/g, "");
+
+                        let stockRaw = getVal("stock") || "0";
+                        if (typeof stockRaw === "string") stockRaw = stockRaw.replace(/[^\d]/g, "");
+
+                        let codeVal = rowObj.goods_code || getVal("goods_code");
+                        if (!codeVal) {
+                            codeVal = generateKodeFromCategory(getVal("category"), getVal("goods_name"), index);
+                            rowObj.goods_code = codeVal;
+                        }
+
+                        return {
+                            goods_code: codeVal,
+                            goods_name: getVal("goods_name") || "Unnamed",
+                            description: getVal("description") || "Deskripsi otomatis",
+                            category: getVal("category") || "",
+                            stock: stockRaw,
+                            selling_price: sellPriceRaw,
+                        };
+                    });
+
+                    // Check if there are rows outside mapping/preview (index >= 100) with empty/0 price
+                    let hasInvalidPriceOutsideMapping = false;
+                    if (rowsToSubmit.length > 100) {
+                        for (let i = 100; i < rowsToSubmit.length; i++) {
+                            const price = rowsToSubmit[i].selling_price;
+                            if (!price || parseInt(price) === 0) {
+                                hasInvalidPriceOutsideMapping = true;
+                                break;
+                            }
                         }
                     }
-                });
 
-                // Map memory to submit structure
-                const rowsToSubmit = window.allExcelRows.map((rowObj, index) => {
-                    let r = rowObj;
-                    if (rowObj && typeof rowObj === 'object' && !Array.isArray(rowObj) && rowObj.data) {
-                        r = rowObj.data;
-                    }
+                    const submitData = (filteredRows) => {
+                        const rowsJsonInput = document.getElementById("rows_json");
+                        if (rowsJsonInput) {
+                            rowsJsonInput.value = JSON.stringify(filteredRows);
+                        }
 
-                    const getVal = (field) => {
-                        const col = window.excelMapping[field];
-                        if (col === null || col === undefined || col === "") return "";
-                        return r[col] !== undefined && r[col] !== null ? r[col] : "";
+                        if (window.Swal) {
+                            window.Swal.fire({
+                                title: "Sedang Mengimpor Data...",
+                                html: "Harap tunggu beberapa saat. Jangan menutup atau memuat ulang halaman ini.",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                    window.Swal.showLoading();
+                                }
+                            });
+                        }
+                        form.submit();
                     };
 
-                    let sellPriceRaw = getVal("selling_price") || "";
-                    if (typeof sellPriceRaw === "string") sellPriceRaw = sellPriceRaw.replace(/[^\d]/g, "");
-
-                    let stockRaw = getVal("stock") || "0";
-                    if (typeof stockRaw === "string") stockRaw = stockRaw.replace(/[^\d]/g, "");
-
-                    let codeVal = getVal("goods_code");
-                    if (!codeVal) {
-                        codeVal = generateKodeFromCategory(getVal("category"), getVal("goods_name"), index);
+                    if (hasInvalidPriceOutsideMapping) {
+                        Swal.fire({
+                            title: "Konfirmasi",
+                            text: "ada baris data diluar mapping yang tidak memiliki harga beli, apakah anda yakin untuk melanjutkan?. jika iya maka baris tersebut tidak akan ikut tersubmit.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#225A97",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Ya, Lanjutkan",
+                            cancelButtonText: "Batal",
+                            customClass: {
+                                popup: "rounded-2xl!",
+                            },
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Filter out invalid rows (index >= 100 and price is empty or 0)
+                                const filtered = rowsToSubmit.filter((row, idx) => {
+                                    if (idx >= 100) {
+                                        const price = row.selling_price;
+                                        if (!price || parseInt(price) === 0) {
+                                            return false;
+                                        }
+                                    }
+                                    return true;
+                                });
+                                submitData(filtered);
+                            }
+                        });
+                    } else {
+                        submitData(rowsToSubmit);
                     }
-
-                    return {
-                        goods_code: codeVal,
-                        goods_name: getVal("goods_name") || "Unnamed",
-                        description: getVal("description") || "Deskripsi otomatis",
-                        category: getVal("category") || "",
-                        stock: stockRaw,
-                        selling_price: sellPriceRaw,
-                    };
-                });
-
-                const rowsJsonInput = document.getElementById("rows_json");
-                if (rowsJsonInput) {
-                    rowsJsonInput.value = JSON.stringify(rowsToSubmit);
+                } else {
+                    form.submit();
                 }
-            }
-
-            if (window.Swal) {
-                window.Swal.fire({
-                    title: "Sedang Mengimpor Data...",
-                    html: "Harap tunggu beberapa saat. Jangan menutup atau memuat ulang halaman ini.",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        window.Swal.showLoading();
-                    }
-                });
+            } catch (err) {
+                console.error("Submission failed:", err);
+                if (window.Swal) {
+                    window.Swal.fire({
+                        icon: "error",
+                        title: "Gagal Mengimpor",
+                        text: "Terjadi kesalahan sistem saat memproses data sebelum dikirim: " + err.message,
+                    });
+                } else {
+                    alert("Terjadi kesalahan sistem saat memproses data sebelum dikirim: " + err.message);
+                }
+                return false;
             }
         });
     }
 });
+
+// Custom search function to match text within inputs and select elements inside cells
+if (typeof $.fn.dataTable !== 'undefined' && $.fn.dataTable.ext && $.fn.dataTable.ext.search) {
+    if (!window.hasRegisteredExcelSearch) {
+        window.hasRegisteredExcelSearch = true;
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            try {
+                if (!settings || !settings.nTable || settings.nTable.id !== 'DataTableExcel') {
+                    return true;
+                }
+                
+                const rowNode = settings.aoData && settings.aoData[dataIndex] ? settings.aoData[dataIndex].nTr : null;
+                if (!rowNode) {
+                    if (dataIndex === 0) {
+                        console.warn("[DataTableExcel Search] rowNode is null for index 0");
+                    }
+                    return true;
+                }
+                
+                const searchObj = settings.oPreviousSearch || {};
+                const searchTerm = (window.dataTableSearchTerm || searchObj.sSearch || searchObj.search || "").trim().toLowerCase();
+                if (!searchTerm) {
+                    return true;
+                }
+                
+                // Check all inputs, select, and textarea elements in the row
+                const inputs = rowNode.querySelectorAll('input, select, textarea');
+                
+                // Detailed log for debugging
+                if (dataIndex === 0) {
+                    console.log(`[DataTableExcel Search] Term: "${searchTerm}"`);
+                    console.log(`[DataTableExcel Search] Row 0 outerHTML:`, rowNode.outerHTML);
+                    console.log(`[DataTableExcel Search] Row 0 inputs count: ${inputs.length}`);
+                    console.log(`[DataTableExcel Search] Row 0 inputs values:`, Array.from(inputs).map(inp => `${inp.tagName}:${inp.type}:${inp.value}`));
+                }
+                
+                for (let i = 0; i < inputs.length; i++) {
+                    const val = (inputs[i].value || "").toString().toLowerCase();
+                    if (val.includes(searchTerm)) {
+                        return true;
+                    }
+                }
+                
+                // Also fallback to the default textual values (if any columns don't have inputs)
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i] && data[i].toString().toLowerCase().includes(searchTerm)) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            } catch (e) {
+                console.error("Error in DataTables custom search filter:", e);
+                return true; // Keep row on error to avoid blank screen
+            }
+        });
+    }
+}

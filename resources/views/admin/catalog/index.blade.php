@@ -1,255 +1,219 @@
 <x-app-layout>
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
-        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
 
-        <div class="flex gap-2 px-4">
+            <div class="flex gap-2 px-4">
                 <button onclick="createCatalogModal.showModal()"
                     class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
-                <svg class="mr-2 h-4 w-4"
-                     fill="currentColor"
-                     viewbox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg"
-                     aria-hidden="true">
-                    <path clip-rule="evenodd"
-                          fill-rule="evenodd"
-                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                </svg>
-                Tambah Katalog
-            </button>
+                    <svg class="mr-2 h-4 w-4" fill="currentColor" viewbox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Tambah Katalog
+                </button>
                 <button onclick="bulkCatalogModal.showModal()"
                     class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     class="mr-2 h-4 w-4"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Tambah Banyak
-            </button>
-        </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Tambah Banyak
+                </button>
+            </div>
 
-        <div class="px-4">
-            {{-- Search --}}
-            <form action="{{ route('catalog.index') }}"
-                  method="GET"
-                  class="block pl-2">
-                <label for="topbar-search"
-                       class="sr-only">Search</label>
-                <div class="relative md:w-96">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
-                             fill="currentColor"
-                             viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                  clip-rule="evenodd"
-                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
-                            </path>
-                        </svg>
+            <div class="px-4">
+                {{-- Search --}}
+                <form action="{{ route('catalog.index') }}" method="GET" class="block pl-2">
+                    <label for="topbar-search" class="sr-only">Search</label>
+                    <div class="relative md:w-96">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                                </path>
+                            </svg>
+                        </div>
+                        <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="catalogTable"
+                            value="{{ request('search') }}"
+                            class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                            placeholder="Cari..." />
                     </div>
-                    <input type="search"
-                           name="search"
-                           id="topbar-search dt-search-0"
-                           aria-controls="catalogTable"
-                           value="{{ request('search') }}"
-                           class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                           placeholder="Cari..." />
-                </div>
-            </form>
+                </form>
+            </div>
+
         </div>
 
-    </div>
-
-        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-        <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-        </div>
-        <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
-            <table id="" class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th class="w-[50px] px-4 py-2 text-nowrap">ID</th>
-                        <th class="px-4 py-2 text-nowrap">Nama Brand</th>
-                        <th class="w-[100px] px-4 py-2 text-nowrap">Nama Katalog</th>
-                        <th class="px-4 py-2 text-nowrap">Nama File</th>
-                        <th class="px-4 py-2 text-nowrap">Cover Katalog</th>
-                        <th class="px-4 py-2 no-sort text-nowrap">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="text-nowrap">
-                    @foreach ($catalogs as $catalog)
-                        <tr class="dark:border-gray-700">
-                            <td class="px-4 py-2">{{ $catalog->id }}</td>
-                            <td class="text-nowrap px-4 py-2">{{ $catalog->brand_name }}</td>
-                            <td class="px-4 py-2"><span class="inline-block max-w-[300px] truncate">{{ $catalog->catalog_name }}</span></td>
-                            <td class="px-4 py-2">
-                                @if ($catalog->catalog_file)
-                                    <div class="flex items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             width="16"
-                                             height="16"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             stroke-width="2"
-                                             stroke-linecap="round"
-                                             stroke-linejoin="round"
-                                             class="text-blue-500">
-                                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                                            <polyline points="14 2 14 8 20 8"></polyline>
-                                        </svg>
-                                        <span class="inline-block max-w-[300px] truncate text-xs font-medium text-gray-600"
-                                              title="{{ $catalog->catalog_file }}">
-                                            {{ basename($catalog->catalog_file) }}
-                                        </span>
-                                    </div>
-                                @else
-                                    <span class="text-xs italic text-gray-400">Tidak ada file</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-2">
-                                @if ($catalog->catalog_cover)
-                                    <img src="{{ asset('files/' . $catalog->catalog_cover) }}"
-                                         class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105"
-                                         alt="Catalog Cover"
-                                         onclick="openImagePreview(this.src)"
-                                         onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
-                                @else
-                                    <div class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-center text-xs text-gray-400">
-                                        Tidak ada gambar
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="w-fit px-4 py-3 text-right">
-                                <div class="relative flex min-h-[40px] w-fit items-center justify-end">
-                                    <div class="pointer-events-none invisible h-9 w-40 opacity-0">Placeholder</div>
-                                    <div class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
-
-                                        @if ($catalog->catalog_file)
-                                            {{-- View --}}
-                                            <a href="{{ asset('files/' . $catalog->catalog_file) }}"
-                                               target="_blank"
-                                               class="group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="lucide lucide-eye h-4 w-4">
-                                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"></path>
-                                                    <circle cx="12"
-                                                            cy="12"
-                                                            r="3"></circle>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">View</span>
-                                            </a>
-                                            {{-- Download --}}
-                                            <a href="{{ asset('files/' . $catalog->catalog_file) }}"
-                                               download
-                                               class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="lucide lucide-download h-4 w-4">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                                    <line x1="12"
-                                                          y1="15"
-                                                          x2="12"
-                                                          y2="3"></line>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Download</span>
-                                            </a>
-                                        @endif
-
-                                        {{-- Edit --}}
-                                        <button onclick="openEditModal({{ $catalog->toJson() }})"
-                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 width="24"
-                                                 height="24"
-                                                 viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 stroke-width="2"
-                                                 stroke-linecap="round"
-                                                 stroke-linejoin="round"
-                                                 class="lucide lucide-pencil h-4 w-4">
-                                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
-                                                <path d="m15 5 4 4"></path>
+        <div
+            class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+            <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+            </div>
+            <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
+                <table id="" class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                    <thead
+                        class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                            <th class="w-[50px] px-4 py-2 text-nowrap">ID</th>
+                            <th class="px-4 py-2 text-nowrap">Nama Brand</th>
+                            <th class="w-[100px] px-4 py-2 text-nowrap">Nama Katalog</th>
+                            <th class="px-4 py-2 text-nowrap">Nama File</th>
+                            <th class="px-4 py-2 text-nowrap">Cover Katalog</th>
+                            <th class="px-4 py-2 no-sort text-nowrap">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-nowrap">
+                        @foreach ($catalogs as $catalog)
+                            <tr class="dark:border-gray-700">
+                                <td class="px-4 py-2">{{ $catalog->id }}</td>
+                                <td class="text-nowrap px-4 py-2">{{ $catalog->brand_name }}</td>
+                                <td class="px-4 py-2"><span
+                                        class="inline-block max-w-[300px] truncate">{{ $catalog->catalog_name }}</span></td>
+                                <td class="px-4 py-2">
+                                    @if ($catalog->catalog_file)
+                                        <div class="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" class="text-blue-500">
+                                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z">
+                                                </path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
                                             </svg>
-                                            <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
-                                        </button>
-                                        {{-- Delete --}}
-                                        <form action="{{ route('catalog.destroy', $catalog->id) }}"
-                                              method="POST"
-                                              style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button"
+                                            <span class="inline-block max-w-[300px] truncate text-xs font-medium text-gray-600"
+                                                title="{{ $catalog->catalog_file }}">
+                                                {{ basename($catalog->catalog_file) }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <span class="text-xs italic text-gray-400">Tidak ada file</span>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-2">
+                                    @if ($catalog->catalog_cover)
+                                        <img src="{{ asset('files/' . $catalog->catalog_cover) }}"
+                                            class="h-24 w-16 cursor-zoom-in rounded-lg border border-gray-200 object-cover shadow-sm transition-transform hover:scale-105"
+                                            alt="Catalog Cover" onclick="openImagePreview(this.src)"
+                                            onerror="this.onerror=null; this.src='https://placehold.co/100x150?text=No+Preview';">
+                                    @else
+                                        <div
+                                            class="flex h-24 w-16 items-center justify-center rounded-lg border border-dashed border-gray-300 bg-gray-50 text-center text-xs text-gray-400">
+                                            Tidak ada gambar
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="w-fit px-4 py-3 text-right">
+                                    <div class="relative flex min-h-[40px] w-fit items-center justify-end">
+                                        <div class="pointer-events-none invisible h-9 w-40 opacity-0">Placeholder</div>
+                                        <div
+                                            class="absolute left-0 z-10 flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700">
+
+                                            @if ($catalog->catalog_file)
+                                                {{-- View --}}
+                                                <a href="{{ asset('files/' . $catalog->catalog_file) }}" target="_blank"
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:bg-yellow-500 dark:hover:bg-yellow-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-eye h-4 w-4">
+                                                        <path
+                                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z">
+                                                        </path>
+                                                        <circle cx="12" cy="12" r="3"></circle>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">View</span>
+                                                </a>
+                                                {{-- Download --}}
+                                                <a href="{{ asset('files/' . $catalog->catalog_file) }}" download
+                                                    class="group flex h-full cursor-pointer items-center justify-center bg-green-600 p-2 text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-500 dark:hover:bg-green-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-download h-4 w-4">
+                                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Download</span>
+                                                </a>
+                                            @endif
+
+                                            {{-- Edit --}}
+                                            <button onclick="openEditModal({{ $catalog->toJson() }})"
+                                                class="edit-barang-btn group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-pencil h-4 w-4">
+                                                    <path
+                                                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                    </path>
+                                                    <path d="m15 5 4 4"></path>
+                                                </svg>
+                                                <span
+                                                    class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
+                                            </button>
+                                            {{-- Delete --}}
+                                            <form action="{{ route('catalog.destroy', $catalog->id) }}" method="POST"
+                                                style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button"
                                                     class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                     onclick="confirmDelete(() => this.closest('form').submit())">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
-                                                     viewBox="0 0 24 24"
-                                                     fill="none"
-                                                     stroke="currentColor"
-                                                     stroke-width="2"
-                                                     stroke-linecap="round"
-                                                     stroke-linejoin="round"
-                                                     class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
-                                                    <path d="M10 11v6"></path>
-                                                    <path d="M14 11v6"></path>
-                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                                                    <path d="M3 6h18"></path>
-                                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                </svg>
-                                                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
-                                            </button>
-                                        </form>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-trash2 lucide-trash-2 h-4 w-4">
+                                                        <path d="M10 11v6"></path>
+                                                        <path d="M14 11v6"></path>
+                                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                        <path d="M3 6h18"></path>
+                                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Delete</span>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
-            <div class="flex items-center space-x-2">
-                <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->firstItem() ?? 0 }}-{{ $catalogs->lastItem() ?? 0 }}</span>
-                    of
-                    <span class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->total() ?? $catalogs->count() }}</span>
-                </span>
-                <form method="GET" action="{{ route('catalog.index') }}">
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                    <select name="perPage" onchange="this.form.submit()" class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                        @foreach ([10, 25, 50, 100] as $size)
-                            <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                                </td>
+                            </tr>
                         @endforeach
-                    </select>
-                </form>
-                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                    </tbody>
+                </table>
             </div>
-            <div>
-                {{ $catalogs->links() }}
-            </div>
-        </nav>
+            <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                aria-label="Table navigation">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Menampilkan
+                        <span
+                            class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->firstItem() ?? 0 }}-{{ $catalogs->lastItem() ?? 0 }}</span>
+                        dari
+                        <span
+                            class="font-semibold text-gray-900 dark:text-white">{{ $catalogs->total() ?? $catalogs->count() }}</span>
+                    </span>
+                    <form method="GET" action="{{ route('catalog.index') }}">
+                        <input type="hidden" name="search" value="{{ request('search') }}">
+                        <select name="perPage" onchange="this.form.submit()"
+                            class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                            @foreach ([10, 25, 50, 100] as $size)
+                                <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>
+                                    {{ $size }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                </div>
+                <div>
+                    {{ $catalogs->links() }}
+                </div>
+            </nav>
 
         </div>
     </div>
@@ -259,21 +223,18 @@
     @include('admin.catalog.partials.catalog-modal-bulk')
 
     <!-- Image Preview Modal -->
-    <dialog id="image_preview_modal"
-            class="modal">
+    <dialog id="image_preview_modal" class="modal">
         <div class="modal-box max-w-4xl overflow-hidden bg-transparent p-0 shadow-none">
             <form method="dialog">
-                <button class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4 z-50 bg-black/50 text-white hover:bg-black/70">✕</button>
+                <button
+                    class="btn btn-circle btn-ghost btn-sm absolute right-4 top-4 z-50 bg-black/50 text-white hover:bg-black/70">✕</button>
             </form>
             <div class="flex items-center justify-center p-4">
-                <img id="preview_image_src"
-                     src=""
-                     class="h-auto max-h-[90vh] w-auto rounded-xl object-contain shadow-2xl"
-                     alt="Preview">
+                <img id="preview_image_src" src=""
+                    class="h-auto max-h-[90vh] w-auto rounded-xl object-contain shadow-2xl" alt="Preview">
             </div>
         </div>
-        <form method="dialog"
-              class="modal-backdrop bg-black/90 backdrop-blur-sm">
+        <form method="dialog" class="modal-backdrop bg-black/90 backdrop-blur-sm">
             <button>close</button>
         </form>
     </dialog>
@@ -338,7 +299,7 @@
 
         // If DataTable is initialized, re-run after table draws
         if (typeof jQuery !== 'undefined' && typeof DataTable !== 'undefined') {
-            $(document).on('draw.dt', function() {
+            $(document).on('draw.dt', function () {
                 initPdfPreviews();
             });
         }

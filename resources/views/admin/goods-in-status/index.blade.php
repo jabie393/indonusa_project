@@ -316,10 +316,10 @@ use App\Models\Barang; ?>
             <div class="flex items-center space-x-2">
 
                 <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                    Showing
+                    Menampilkan
                     <span
                         class="font-semibold text-gray-900 dark:text-white">{{ $goods->firstItem() ?? 0 }}-{{ $goods->lastItem() ?? 0 }}</span>
-                    of
+                    dari
                     <span
                         class="font-semibold text-gray-900 dark:text-white">{{ $goods->total() ?? $goods->count() }}</span>
                 </span>
@@ -333,7 +333,7 @@ use App\Models\Barang; ?>
                         @endforeach
                     </select>
                 </form>
-                <span class="text-sm text-gray-500 dark:text-gray-400">per page</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
             </div>
 
             <div>
