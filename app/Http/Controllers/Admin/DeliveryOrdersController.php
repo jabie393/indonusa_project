@@ -19,7 +19,7 @@ class DeliveryOrdersController extends Controller
         $search  = $request->input('search', '');
         $perPage = $request->input('perPage', 10);
 
-        $query = \App\Models\Order::with(['items.barang', 'requestOrder.sales', 'customer'])
+        $query = \App\Models\Order::with(['items.barang', 'requestOrder.sales', 'requestOrder.pic', 'customer'])
             ->whereHas('requestOrder', function ($q) {
                 $q->where('sales_id', \Illuminate\Support\Facades\Auth::id());
             });
@@ -51,7 +51,7 @@ class DeliveryOrdersController extends Controller
         $query = $request->input('search');
 
         // Baseline query: eager-load relations and filter by status
-        $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales'])
+        $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales', 'requestOrder.pic'])
             ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse'])
             ->orderBy('created_at', 'desc');
 
@@ -378,6 +378,7 @@ class DeliveryOrdersController extends Controller
                     'id'           => $item->id,
                     'goods_code'   => $item->barang->goods_code ?? '-',
                     'goods_name'   => $item->barang->goods_name ?? '-',
+                    'goods_description' => $item->barang->description ?? '-',
                     'qty_pesanan'  => $item->quantity,
                     'quantity'     => $item->quantity, // for compatibility
                     'qty_terkirim' => $item->delivered_quantity ?? 0,
@@ -418,6 +419,7 @@ class DeliveryOrdersController extends Controller
                     'id'           => $existing->id,
                     'goods_code'   => $existing->barang->goods_code ?? '-',
                     'goods_name'   => $existing->barang->goods_name ?? '-',
+                    'goods_description' => $existing->barang->description ?? '-',
                     'qty_pesanan'  => $existing->quantity,
                     'quantity'     => $existing->quantity, // for compatibility
                     'qty_terkirim' => $existing->delivered_quantity ?? 0,
@@ -446,6 +448,7 @@ class DeliveryOrdersController extends Controller
                 'items' => $batch->items->map(function ($item) {
                     return [
                         'goods_name' => $item->orderItem->barang->goods_name ?? ($item->orderItem->goods_name ?? ($item->orderItem->nama_barang ?? '-')),
+                        'goods_description' => $item->orderItem->barang->description ?? '-',
                         'quantity_sent' => $item->quantity_sent,
                     ];
                 }),

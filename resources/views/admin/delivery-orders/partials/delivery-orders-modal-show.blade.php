@@ -31,23 +31,25 @@
                 <h4 class="text-sm font-medium text-gray-700 dark:text-white">Items</h4>
             </div>
 
-            <div class="w-full overflow-x-auto">
-                <table id="DataTable" class="hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400"">
+            <div class="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Kode Barang</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Nama Barang</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                Deskripsi</th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Qty</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Delivered</th>
-                            <th scope="col" class="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                 Status</th>
                         </tr>
                     </thead>
-                    <tbody id="delivery-order-items-body" class="">
+                    <tbody id="delivery-order-items-body" class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
                         <!-- JS will populate rows here -->
                     </tbody>
                 </table>

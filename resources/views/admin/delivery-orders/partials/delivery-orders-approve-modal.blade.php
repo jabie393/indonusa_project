@@ -71,7 +71,7 @@
         </div>
 
         {{-- Partial View --}}
-        <div id="partial-view" class="flex hidden h-full flex-col overflow-hidden">
+        <div id="partial-view" class="flex-1 flex hidden flex-col overflow-hidden min-h-0">
             <div class="flex-1 overflow-auto p-4">
                 <div class="mb-4 flex items-center justify-between">
                     <h4 class="text-sm font-medium text-gray-700 dark:text-white">Sesuaikan Item Pengiriman</h4>
@@ -86,6 +86,9 @@
                                 <th
                                     class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     Barang</th>
+                                <th
+                                    class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                    Deskripsi</th>
                                 <th
                                     class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     Pesanan</th>

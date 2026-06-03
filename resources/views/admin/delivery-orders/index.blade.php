@@ -102,26 +102,20 @@
                                     <div class="font-bold text-gray-900 dark:text-white text-[14px]">
                                         {{ $order->customer?->nama_customer ?? $order->customer_name }}
                                     </div>
-                                    @php
-                                        $pic = $order->requestOrder?->pic;
-                                    @endphp
-                                    @if ($pic)
-                                        <div
-                                            class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
-                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                                <circle cx="12" cy="7" r="4" />
-                                            </svg>
-                                            <span class="truncate">{{ $pic->name }}</span>
-                                            @if ($pic->position)
-                                                <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                                <span class="text-gray-400 dark:text-gray-500 truncate">{{ $pic->position }}</span>
-                                            @endif
-                                        </div>
-                                    @endif
+                                    <span
+                                        class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span class="font-medium">{{ $order->requestOrder?->pic->name ?? '-' }}</span>
+                                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                                        <span
+                                            class="text-slate-400 dark:text-slate-500">{{ $order->requestOrder?->pic->position ?? 'PIC' }}</span>
+                                    </span>
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
                                     {{ $order->requestOrder?->sales?->name ?? '-' }}

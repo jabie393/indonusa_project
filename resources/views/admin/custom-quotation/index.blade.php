@@ -50,7 +50,6 @@
                         <tr>
                             <th scope="col" class="text-nowrap p-4">No. Dokumen</th>
                             <th scope="col" class="text-nowrap p-4">Kepada, Item & Total</th>
-                            <th scope="col" class="text-nowrap p-4">Subject</th>
                             <th scope="col" class="text-nowrap p-4">Tanggal</th>
                             <th scope="col" class="text-nowrap p-4 text-center">Status</th>
                             <th scope="col" class="flex justify-center text-nowrap p-4 text-right">Aksi</th>
@@ -135,12 +134,6 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 align-middle">
-                                    <div class="flex max-w-[260px] h-full items-center">
-                                        <span
-                                            class="text-sm font-semibold text-slate-900 dark:text-white">{{ Str::limit($penawaran->subject, 48) }}</span>
-                                    </div>
-                                </td>
                                 <td class="text-nowrap p-4 align-middle">
                                     <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
                                         <span>{{ \Carbon\Carbon::parse($penawaran->created_at)->format('Y-m-d') }}</span>
@@ -208,7 +201,7 @@
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock3 mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>';
                                         }
                                     @endphp
-                                    <div class="flex items-center justify-center w-40 mx-auto">
+                                    <div class="flex items-center justify-center mx-auto">
                                         <span
                                             class="inline-flex w-full items-center justify-center rounded-full px-2.5 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
                                             {!! $iconSvg !!}{{ $statusLabel }}

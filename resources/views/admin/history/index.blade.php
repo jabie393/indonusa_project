@@ -78,25 +78,21 @@
                                         class="text-sm font-semibold text-gray-900 dark:text-white">{{ $history->stock }}</span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <div class="mx-auto grid max-w-[280px] grid-cols-[1fr_auto_1fr] items-center gap-4">
-                                        <div class="text-right">
-                                            <span
-                                                class="flex justify-center items-center rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200">
-                                                {{ ucfirst($history->old_status) }}
-                                            </span>
-                                        </div>
-                                        <svg class="h-6 w-6 flex-shrink-0 text-gray-400" fill="none" stroke="currentColor"
-                                            stroke-width="1.2" viewBox="0 0 24 24">
+                                    <div class="flex flex-col items-center justify-center gap-1 w-32 mx-auto">
+                                        <span
+                                            class="inline-flex items-center justify-center rounded-full bg-yellow-100 px-3 py-1 text-[11px] font-semibold text-yellow-700 dark:bg-yellow-900/40 dark:text-yellow-200">
+                                            {{ ucfirst($history->old_status) }}
+                                        </span>
+                                        <svg class="h-4 w-4 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor"
+                                            stroke-width="2.5" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M8.25 4.5l7.5 7.5-7.5 7.5">
+                                                d="M19.5 8.25l-7.5 7.5-7.5-7.5">
                                             </path>
                                         </svg>
-                                        <div class="text-left">
-                                            <span
-                                                class="flex justify-center items-center rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-200">
-                                                {{ ucfirst($history->new_status) }}
-                                            </span>
-                                        </div>
+                                        <span
+                                            class="inline-flex items-center justify-center rounded-full bg-green-100 px-3 py-1 text-[11px] font-semibold text-green-700 dark:bg-green-900/40 dark:text-green-200">
+                                            {{ ucfirst($history->new_status) }}
+                                        </span>
                                     </div>
                                 </td>
                                 <td class="flex-shrink-0 px-4 py-3">

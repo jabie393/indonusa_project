@@ -95,10 +95,7 @@
                                 No. Dokumen</th>
                             <th
                                 class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Customer</th>
-                            <th
-                                class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Item & Total</th>
+                                Customer, Item & Total</th>
                             <th
                                 class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Status</th>
@@ -172,43 +169,52 @@
                                         @endif
                                     </div>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                    <div class="text-[14px] font-bold text-gray-900 dark:text-white">
-                                        {{ $row['customer_name'] ?? '-' }}
-                                    </div>
-                                    @if (!empty($row['first_pic_name']))
-                                        <div
-                                            class="mt-1 flex items-center text-[12px] font-normal text-gray-500 dark:text-gray-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="lucide lucide-user mr-1.5 shrink-0 text-gray-400 dark:text-gray-500">
-                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                                <circle cx="12" cy="7" r="4" />
-                                            </svg>
-                                            <span class="truncate">{{ $row['first_pic_name'] }}</span>
-                                            @if (!empty($row['first_pic_position']))
-                                                <span class="mx-1.5 font-bold text-gray-300 dark:text-gray-600">·</span>
+                                <td class="px-4 py-3.5 align-middle text-gray-900 dark:text-white">
+                                    <div class="flex flex-col gap-2.5">
+                                        <!-- Customer Details -->
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-base font-bold text-slate-900 dark:text-white">
+                                                {{ $row['customer_name'] ?? '-' }}
+                                            </span>
+                                            @if (!empty($row['first_pic_name']))
                                                 <span
-                                                    class="truncate text-gray-400 dark:text-gray-500">{{ $row['first_pic_position'] }}</span>
+                                                    class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                    <span class="font-medium">{{ $row['first_pic_name'] }}</span>
+                                                    @if (!empty($row['first_pic_position']))
+                                                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                        <span
+                                                            class="text-slate-400 dark:text-slate-500">{{ $row['first_pic_position'] }}</span>
+                                                    @endif
+                                                </span>
                                             @endif
                                         </div>
-                                    @endif
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                    <div class="text-[14px] font-bold text-gray-900 dark:text-white">
-                                        Rp {{ number_format($row['total'] ?? 0, 0, '.', ',') }}
-                                    </div>
-                                    <div
-                                        class="mt-1 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
-                                        <span>{{ $row['jumlah_item'] ?? 0 }}
-                                            {{ ($row['jumlah_item'] ?? 0) > 1 ? 'items' : 'item' }}</span>
-                                        @if (!empty($row['diskon']) && $row['diskon'] > 0)
-                                            <span
-                                                class="ml-1.5 inline-flex items-center gap-0.5 rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-400">
-                                                % {{ $row['diskon'] }}%
+
+                                        <!-- Divider -->
+                                        <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                        <!-- Total & Items Summary -->
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                            <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
+                                                Rp {{ number_format($row['total'] ?? 0, 0, '.', ',') }}
                                             </span>
-                                        @endif
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                                {{ $row['jumlah_item'] ?? 0 }} {{ ($row['jumlah_item'] ?? 0) > 1 ? 'items' : 'item' }}
+                                            </span>
+                                            @if (!empty($row['diskon']) && $row['diskon'] > 0)
+                                                <span
+                                                    class="inline-flex items-center gap-0.5 rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-400">
+                                                    % {{ $row['diskon'] }}%
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-3.5 text-center text-gray-900 dark:text-white">
@@ -314,7 +320,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="mx-auto mb-4 text-gray-400 dark:text-gray-600">

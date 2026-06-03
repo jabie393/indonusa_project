@@ -36,8 +36,8 @@
                         class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th class="text-nowrap px-4 py-3">Quotation</th>
+                            <th class="text-nowrap px-4 py-3">Keterangan (Subject)</th>
                             <th class="text-nowrap px-4 py-3">Sales</th>
-                            <th class="text-nowrap px-4 py-3">Item & Keterangan (Subject)</th>
                             <th class="text-nowrap px-4 py-3">Tgl. Kirim</th>
                             <th class="text-nowrap px-4 py-3 no-sort text-center">Action</th>
                         </tr>
@@ -47,11 +47,12 @@
                             @php
                                 $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('sales.quotation.show', $penawaran->id);
 
-                                $maxDiskon = $penawaran->items->max('diskon_percent') ?? 0;
+                                $maxDiskon = $penawaran->offer_type === 'custom' ? ($penawaran->items->max('diskon') ?? 0) : ($penawaran->items->max('diskon_percent') ?? 0);
 
                                 $keteranganText = null;
-                                $highDiscountItem = $penawaran->items->first(function ($item) {
-                                    return ($item->diskon_percent ?? 0) > 20 && !empty($item->keterangan);
+                                $highDiscountItem = $penawaran->items->first(function ($item) use ($penawaran) {
+                                    $disc = $penawaran->offer_type === 'custom' ? ($item->diskon ?? 0) : ($item->diskon_percent ?? 0);
+                                    return $disc > 20 && !empty($item->keterangan);
                                 });
                                 if ($highDiscountItem) {
                                     $keteranganText = $highDiscountItem->keterangan;
@@ -166,94 +167,92 @@
                                     'border' => 'border border-gray-200 dark:border-gray-700/50',
                                     'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>'
                                 ];
+
+                                $picName = null;
+                                $picPosition = null;
+                                if ($penawaran->offer_type === 'custom') {
+                                    $picName = $penawaran->up;
+                                } else {
+                                    $picName = $penawaran->pic->name ?? ($penawaran->customer?->pics?->first()?->name ?? null);
+                                    $picPosition = $penawaran->pic->position ?? ($penawaran->customer?->pics?->first()?->position ?? null);
+                                }
                             @endphp
                             <tr
                                 class="group border-b border-gray-50 transition-colors hover:bg-gray-50/80 dark:border-gray-700/50 dark:hover:bg-gray-700/30">
                                 {{-- Penawaran & Customer --}}
-                                <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">
-                                    <div>
-                                        <a href="{{ $detailRoute }}"
-                                            class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
-                                            {{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}
-                                        </a>
-                                    </div>
-                                    <div class="font-bold text-gray-900 dark:text-white text-[14px] mt-1.5">
-                                        {{ $penawaran->offer_type === 'custom' ? $penawaran->to : ($penawaran->customer?->nama_customer ?? $penawaran->customer_name) }}
-                                    </div>
-                                    @php
-                                        $picName = null;
-                                        $picPosition = null;
-                                        if ($penawaran->offer_type === 'custom') {
-                                            $picName = $penawaran->up;
-                                        } else {
-                                            $picName = $penawaran->pic->name ?? ($penawaran->customer?->pics?->first()?->name ?? null);
-                                            $picPosition = $penawaran->pic->position ?? ($penawaran->customer?->pics?->first()?->position ?? null);
-                                        }
-                                    @endphp
-                                    @if ($picName)
-                                        <div
-                                            class="flex items-center text-[12px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="lucide lucide-user text-gray-400 dark:text-gray-500 mr-1.5 shrink-0">
-                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                                <circle cx="12" cy="7" r="4" />
-                                            </svg>
-                                            <span class="truncate">{{ $picName }}</span>
-                                            @if ($picPosition)
-                                                <span class="text-gray-300 dark:text-gray-600 font-bold mx-1.5">·</span>
-                                                <span class="text-gray-400 dark:text-gray-500 truncate">{{ $picPosition }}</span>
+                                <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white align-middle">
+                                    <div class="flex flex-col gap-2.5">
+                                        <!-- Quotation & Customer Details -->
+                                        <div class="flex flex-col gap-1">
+                                            <div>
+                                                <a href="{{ $detailRoute }}"
+                                                    class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
+                                                    {{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}
+                                                </a>
+                                            </div>
+                                            <span class="text-base font-bold text-slate-900 dark:text-white">
+                                                {{ $penawaran->offer_type === 'custom' ? $penawaran->to : ($penawaran->customer?->nama_customer ?? $penawaran->customer_name) }}
+                                            </span>
+                                            @if ($picName)
+                                                <span
+                                                    class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                    <span class="font-medium">{{ $picName }}</span>
+                                                    @if ($picPosition)
+                                                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                        <span class="text-slate-400 dark:text-slate-500">{{ $picPosition }}</span>
+                                                    @endif
+                                                </span>
                                             @endif
                                         </div>
+
+                                        <!-- Divider -->
+                                        <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                        <!-- Total & Items Summary -->
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                            <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
+                                                Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                                {{ $penawaran->items->count() }} item
+                                            </span>
+                                            @if ($maxDiskon > 20)
+                                                <span
+                                                    class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                                    >20%
+                                                </span>
+                                            @elseif ($maxDiskon > 0)
+                                                <span
+                                                    class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
+                                                    <20% </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+
+                                {{-- Remarks --}}
+                                <td class="px-4 py-3 align-middle">
+                                    @if (!empty($keteranganText))
+                                        <div
+                                            class="max-w-[220px] whitespace-normal break-words line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $keteranganText }}
+                                        </div>
+                                    @else
+                                        <span class="italic text-gray-400 dark:text-gray-500 text-xs">No remarks</span>
                                     @endif
                                 </td>
 
                                 {{-- Sales --}}
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
                                     {{ optional($penawaran->sales)->name ?? '-' }}
-                                </td>
-
-                                {{-- Item & Remarks --}}
-                                <td class="px-4 py-3">
-                                    <div class="flex flex-col items-start gap-1">
-                                        <div class="flex flex-row items-center gap-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-[#225A97] dark:bg-blue-950/30 dark:text-blue-300">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
-                                                    <path d="m7.5 4.27 9 5.15" />
-                                                    <path
-                                                        d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                    <path d="m3.3 7 8.7 5 8.7-5" />
-                                                    <path d="M12 22V12" />
-                                                </svg>
-                                                {{ $penawaran->items->count() }} items
-                                            </span>
-                                            @if ($maxDiskon > 20)
-                                                <span
-                                                    class="inline-flex items-center justify-center rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
-                                                    >20%
-                                                </span>
-                                            @elseif ($maxDiskon > 0)
-                                                <span
-                                                    class="inline-flex items-center justify-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
-                                                    <20% </span>
-                                            @else
-                                                        <span
-                                                            class="text-gray-300 dark:text-gray-600 text-xs font-semibold">-</span>
-                                                    @endif
-                                        </div>
-                                        @if (!empty($keteranganText))
-                                            <div
-                                                class="max-w-[220px] whitespace-normal break-words line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
-                                                {{ $keteranganText }}
-                                            </div>
-                                        @else
-                                            <span class="italic text-gray-400 dark:text-gray-500 text-xs">No remarks</span>
-                                        @endif
-                                    </div>
                                 </td>
 
                                 {{-- Tgl. Kirim --}}

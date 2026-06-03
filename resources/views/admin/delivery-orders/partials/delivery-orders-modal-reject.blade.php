@@ -1,5 +1,5 @@
 <dialog id="modalTolakGlobal" class="modal">
-    <div class="modal-box max-w-2xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800">
+    <div class="modal-box max-w-2xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800 flex flex-col">
         {{-- Header --}}
         <header class="relative flex items-center justify-between px-7 py-5 text-white"
             style="background-image: var(--gradient-header)">
@@ -25,10 +25,10 @@
         </header>
 
         {{-- Body --}}
-        <form id="formTolakGlobal" method="POST" action="">
+        <form id="formTolakGlobal" method="POST" action="" class="flex-1 flex flex-col min-h-0">
             @csrf
             <div
-                class="max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700">
+                class="flex-1 overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-700 min-h-0">
                 <div class="grid grid-cols-8 gap-4 px-7 py-6">
                     <!-- Step 1: Opsi Pemilihan -->
                     <div id="step1Container" class="col-span-8 space-y-6">
@@ -101,6 +101,9 @@
                                         <th
                                             class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                             Barang</th>
+                                        <th
+                                            class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                            Deskripsi</th>
                                         <th
                                             class="px-5 py-3 text-left text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                             Jml Terkirim</th>
@@ -248,15 +251,24 @@
 
         [s1, s2, s3, bNext, bBack, bSubmit, bCancel].forEach(el => el?.classList.add('!hidden'));
 
+        const modalBox = document.querySelector('#modalTolakGlobal .modal-box');
+
         if (step === 1) {
             s1.classList.remove('!hidden');
-            // User requested no buttons on Step 1 (Batal and Lanjut are now hidden)
+            if (modalBox) {
+                modalBox.classList.remove('max-w-5xl', 'h-full', 'sm:max-h-[90vh]');
+                modalBox.classList.add('max-w-2xl');
+            }
         } else if (step === 2) {
             s2.classList.remove('!hidden');
             bNext.classList.remove('!hidden');
             bBack.classList.remove('!hidden');
             bBack.onclick = () => goToStep(1);
             bNext.onclick = () => goToStep(3);
+            if (modalBox) {
+                modalBox.classList.remove('max-w-2xl');
+                modalBox.classList.add('max-w-5xl', 'h-full', 'sm:max-h-[90vh]');
+            }
         } else if (step === 3) {
             s3.classList.remove('!hidden');
             bSubmit.classList.remove('!hidden');
@@ -265,6 +277,10 @@
                 const opt = document.querySelector('input[name="cancel_option"]:checked')?.value;
                 goToStep(opt === 'cancel_return' ? 2 : 1);
             };
+            if (modalBox) {
+                modalBox.classList.remove('max-w-5xl', 'h-full', 'sm:max-h-[90vh]');
+                modalBox.classList.add('max-w-2xl');
+            }
             setTimeout(() => document.getElementById('modalTolakReason').focus(), 100);
         }
     }
@@ -326,12 +342,16 @@
                         const itemName = item.barang ? item.barang.goods_name : (item.nama_barang ? item.nama_barang : 'Barang');
                         const itemCode = item.barang ? item.barang.goods_code : (item.kode_barang ? item.kode_barang : '-');
                         const itemUnit = item.barang ? item.barang.unit : (item.satuan ? item.satuan : '-');
+                        const itemDesc = item.barang ? (item.barang.description || '-') : '-';
 
                         returnItemsWrapper.innerHTML += `
                             <tr class="text-sm">
                                 <td class="px-5 py-4">
                                     <p class="font-bold text-gray-900 dark:text-white">` + itemName + `</p>
                                     <p class="text-[10px] font-medium tracking-wider text-gray-400 uppercase mt-0.5">` + itemCode + `</p>
+                                </td>
+                                <td class="px-5 py-4 text-left text-gray-700 dark:text-gray-300">
+                                    ` + itemDesc + `
                                 </td>
                                 <td class="px-5 py-4 text-left">
                                     <p class="text-xs font-bold text-gray-900 dark:text-white">` + deliveredQty + ' ' + itemUnit + `</p>

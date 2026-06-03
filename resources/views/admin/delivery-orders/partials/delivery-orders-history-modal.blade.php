@@ -1,6 +1,6 @@
 <!-- Modal Histori PDO -->
 <dialog id="historyModal" class="modal">
-    <div class="modal-box max-w-4xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800">
+    <div class="modal-box w-full max-w-5xl overflow-hidden rounded-2xl bg-white p-0 dark:bg-gray-800">
         <!-- Header -->
         <header class="relative flex items-center justify-between px-7 py-5 text-white"
             style="background-image: var(--gradient-header)">

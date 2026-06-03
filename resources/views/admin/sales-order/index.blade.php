@@ -89,19 +89,10 @@
                                 No. Dokumen</th>
                             <th scope="col"
                                 class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Customer</th>
-                            <th scope="col"
-                                class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Item & Total</th>
+                                Customer, Item & Total</th>
                             <th scope="col"
                                 class="text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Status</th>
-                            <th scope="col"
-                                class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Tanggal</th>
-                            <th scope="col"
-                                class="flex justify-center text-nowrap px-4 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                Aksi</th>
+                                Status & Tanggal</th>
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
@@ -237,33 +228,44 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-6 align-middle">
-                                    <div class="flex flex-col gap-2">
-                                        <span
-                                            class="text-base font-bold text-slate-900 dark:text-white">{{ $row['customer_name'] ?? '-' }}</span>
-                                        <span class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                                <circle cx="12" cy="7" r="4"></circle>
-                                            </svg>
-                                            <span>{{ $row['first_pic_name'] ?? auth()->user()->name ?? '-' }}</span>
-                                            <span class="text-slate-300">•</span>
-                                            <span>{{ $row['first_pic_position'] ?? 'Sales' }}</span>
-                                        </span>
-                                        @if (($row['customer_status'] ?? 'active') === 'inactive')
+                                    <div class="flex flex-col gap-2.5">
+                                        <!-- Customer Details -->
+                                        <div class="flex flex-col gap-1">
                                             <span
-                                                class="w-fit rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-600">Non
-                                                Aktif</span>
-                                        @endif
-                                    </div>
-                                </td>
-                                <td class="px-4 py-6 align-middle">
-                                    <div class="flex flex-col gap-2">
-                                        <span class="text-base font-bold text-slate-900 dark:text-white">Rp
-                                            {{ number_format($row['total'], 0, '.', ',') }}</span>
-                                        <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                            <span>{{ $row['jumlah_item'] ?? '-' }} item</span>
+                                                class="text-base font-bold text-slate-900 dark:text-white">{{ $row['customer_name'] ?? '-' }}</span>
+                                            <span class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round">
+                                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                    <circle cx="12" cy="7" r="4"></circle>
+                                                </svg>
+                                                <span class="font-medium">{{ $row['first_pic_name'] ?? auth()->user()->name ?? '-' }}</span>
+                                                <span class="text-slate-300">•</span>
+                                                <span class="text-slate-400 dark:text-slate-500">{{ $row['first_pic_position'] ?? 'Sales' }}</span>
+                                            </span>
+                                            @if (($row['customer_status'] ?? 'active') === 'inactive')
+                                                <div class="mt-1">
+                                                    <span
+                                                        class="rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-600 dark:bg-red-950/30 dark:text-red-400">Non
+                                                        Aktif</span>
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <!-- Divider -->
+                                        <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                        <!-- Total & Items Summary -->
+                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                            <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
+                                                Rp {{ number_format($row['total'], 0, '.', ',') }}
+                                            </span>
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                                {{ $row['jumlah_item'] ?? '-' }} item
+                                            </span>
                                             <span
                                                 class="inline-flex items-center justify-center rounded border px-1.5 py-0.5 text-xs font-semibold {{ $discountBadgeClass }}">
                                                 {{ $discountValue > 20 ? '>20%' : ($discountValue > 0 ? '<20%' : '0%') }}
@@ -271,69 +273,70 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-6 text-center align-middle">
-                                    @php
-                                        $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
-                                        $badgeText = 'text-gray-700 dark:text-gray-300';
-                                        $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
-                                        $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
+                                <td class="px-4 py-6 align-middle">
+                                    <div class="flex flex-col items-center justify-center gap-1.5 w-44 mx-auto">
+                                        @php
+                                            $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
+                                            $badgeText = 'text-gray-700 dark:text-gray-300';
+                                            $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
 
-                                        if (in_array($row['status'], ['Completed', 'Approved by Supervisor', 'Approved by Warehouse', 'Open'])) {
-                                            $badgeBg = 'bg-green-50 dark:bg-green-950/30';
-                                            $badgeText = 'text-green-700 dark:text-green-300';
-                                            $badgeBorder = 'border border-green-200 dark:border-green-800/50';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                                        } elseif (in_array($row['status'], ['Partial Delivery', 'Waiting for Supervisor Approval'])) {
-                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
-                                            $badgeText = 'text-amber-800 dark:text-amber-300';
-                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif (in_array($row['status'], ['Sent to Supervisor', 'Sent to Warehouse'])) {
-                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
-                                            $badgeText = 'text-blue-700 dark:text-blue-300';
-                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif (in_array($row['status'], ['Rejected by Supervisor', 'Rejected by Warehouse'])) {
-                                            $badgeBg = 'bg-red-50 dark:bg-red-950/30';
-                                            $badgeText = 'text-red-700 dark:text-red-300';
-                                            $badgeBorder = 'border border-red-200 dark:border-red-800/50';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
-                                        }
-                                    @endphp
-                                    <span
-                                        class="inline-flex w-full items-center justify-center rounded-full px-2 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
-                                        {!! $iconSvg !!}{{ $row['status'] }}
-                                    </span>
-                                </td>
-                                <td class="text-nowrap px-4 py-6 align-middle">
-                                    <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
-                                        <span>{{ $row['tanggal'] ?? '-' }}</span>
-                                        <span class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
-                                                <line x1="16" x2="16" y1="2" y2="6"></line>
-                                                <line x1="8" x2="8" y1="2" y2="6"></line>
-                                                <line x1="3" x2="21" y1="10" y2="10"></line>
-                                            </svg>
-                                            @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
-                                                s/d {{ $row['berlaku_sampai'] }}
-                                            @elseif (!empty($row['request_order']) && !empty($row['request_order']['valid_date_formatted']))
-                                                s/d {{ $row['request_order']['valid_date_formatted'] }}
-                                            @else
-                                                -
-                                            @endif
+                                            if (in_array($row['status'], ['Completed', 'Approved by Supervisor', 'Approved by Warehouse', 'Open'])) {
+                                                $badgeBg = 'bg-green-50 dark:bg-green-950/30';
+                                                $badgeText = 'text-green-700 dark:text-green-300';
+                                                $badgeBorder = 'border border-green-200 dark:border-green-800/50';
+                                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                            } elseif (in_array($row['status'], ['Partial Delivery', 'Waiting for Supervisor Approval'])) {
+                                                $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                                $badgeText = 'text-amber-800 dark:text-amber-300';
+                                                $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            } elseif (in_array($row['status'], ['Sent to Supervisor', 'Sent to Warehouse'])) {
+                                                $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                                $badgeText = 'text-blue-700 dark:text-blue-300';
+                                                $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            } elseif (in_array($row['status'], ['Rejected by Supervisor', 'Rejected by Warehouse'])) {
+                                                $badgeBg = 'bg-red-50 dark:bg-red-950/30';
+                                                $badgeText = 'text-red-700 dark:text-red-300';
+                                                $badgeBorder = 'border border-red-200 dark:border-red-800/50';
+                                                $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                            }
+                                        @endphp
+                                        <span
+                                            class="inline-flex w-full items-center justify-center rounded-full px-2 py-1 text-center text-xs font-semibold {{ $badgeBg }} {{ $badgeText }} {{ $badgeBorder }}">
+                                            {!! $iconSvg !!}{{ $row['status'] }}
                                         </span>
-                                    </div>
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
-                                    <div class="flex justify-center">
+
+                                        <div class="flex flex-col gap-0.5 text-center text-xs text-slate-500 dark:text-slate-400">
+                                            <span class="font-medium text-slate-700 dark:text-slate-300">{{ $row['tanggal'] ?? '-' }}</span>
+                                            @if ((!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-') || (!empty($row['request_order']) && !empty($row['request_order']['valid_date_formatted'])))
+                                                <span class="flex items-center justify-center gap-1 text-[11px] text-slate-400 dark:text-slate-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                                                        <line x1="16" x2="16" y1="2" y2="6"></line>
+                                                        <line x1="8" x2="8" y1="2" y2="6"></line>
+                                                        <line x1="3" x2="21" y1="10" y2="10"></line>
+                                                    </svg>
+                                                    @if (!empty($row['berlaku_sampai']) && $row['berlaku_sampai'] !== '-')
+                                                        s/d {{ $row['berlaku_sampai'] }}
+                                                    @else
+                                                        s/d {{ $row['request_order']['valid_date_formatted'] }}
+                                                    @endif
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <div class="w-full border-t border-dashed border-gray-200 dark:border-gray-700/80 my-1"></div>
+
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Lihat Detail --}}
                                             <a href="{{ $row['aksi_url'] }}"
-                                                class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900">
+                                                class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                                                title="Lihat Detail">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                                                     stroke-linecap="round" stroke-linejoin="round">
@@ -345,12 +348,12 @@
                                             </a>
 
                                             @if ($row['type'] === 'sales_order')
-                                                <div id="image-preview-aksi-{{ $row['id'] }}-sales_order">
+                                                <div id="image-preview-aksi-{{ $row['id'] }}-sales_order" class="flex items-center justify-center border-r border-gray-300 dark:border-gray-600 px-1 bg-white dark:bg-gray-700">
                                                     @if ($row['image_url'])
                                                         <div class="group relative inline-block">
                                                             <a href="{{ $row['image_url'] }}" target="_blank">
                                                                 <img src="{{ $row['image_url'] }}" alt="SO Image"
-                                                                    class="h-8 w-8 rounded border border-gray-300 object-cover shadow-sm" />
+                                                                    class="h-7 w-7 rounded border border-gray-300 object-cover shadow-sm" />
                                                             </a>
                                                             @if (($row['customer_status'] ?? 'active') === 'active')
                                                                 <button
@@ -368,7 +371,7 @@
                                                         </div>
                                                     @elseif (($row['customer_status'] ?? 'active') === 'active')
                                                         <label
-                                                            class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-2 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
+                                                            class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-1.5 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -376,7 +379,6 @@
                                                                 <polyline points="17 8 12 3 7 8" />
                                                                 <line x1="12" x2="12" y1="3" y2="15" />
                                                             </svg>
-                                                            Gambar
                                                             <input type="file" class="hidden"
                                                                 accept="image/jpeg,image/png,image/jpg"
                                                                 onchange="handleUploadImage(this, 'sales_order', {{ $row['id'] }}, 'main')">
@@ -432,7 +434,7 @@
                                                             data-confirm-button-text="Ya, Kirim" class="approve-form w-full">
                                                             @csrf
                                                             <li>
-                                                                <button type="submit"
+                                                                 <button type="submit"
                                                                     class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -478,7 +480,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="mx-auto mb-4 text-gray-400 dark:text-gray-600">

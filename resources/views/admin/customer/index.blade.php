@@ -47,7 +47,6 @@
                     <thead
                         class="sticky top-0 z-30 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th class="selectCol text-nowrap px-4 py-3"></th>
                             <th class="text-nowrap px-4 py-3">Customer</th>
                             <th class="text-nowrap px-4 py-3">Term & Kredit</th>
                             <th class="text-nowrap px-4 py-3">PIC & Kontak</th>
@@ -59,8 +58,6 @@
                         @foreach ($customers as $customer)
                             <tr
                                 class="border-b border-gray-100 hover:bg-gray-50/50 transition-colors duration-200 dark:border-gray-700 dark:hover:bg-gray-800/30">
-                                <td class="px-4 py-3 text-xs text-gray-400 font-mono">{{ $customer->id }}</td>
-
                                 {{-- Customer Column --}}
                                 <td class="px-4 py-3">
                                     <div class="flex flex-col gap-1.5">
@@ -166,7 +163,7 @@
                                                         <div class="relative inline-block w-32">
                                                             <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
                                                                 class="w-full appearance-none rounded-full px-3 py-1.5 pr-8 text-xs font-semibold tracking-wide border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer
-                                                                                            {{ strtolower($customer->status) == 'active'
+                                                                                                                    {{ strtolower($customer->status) == 'active'
                                     ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100 focus:ring-green-500 focus:border-green-500 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800/50'
                                     : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 focus:ring-red-500 focus:border-red-500 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800/50' }}">
                                                                 <option value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }} class="bg-white text-green-700 dark:bg-gray-800">
@@ -178,7 +175,7 @@
                                                             </select>
                                                             <div
                                                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 
-                                                                                            {{ strtolower($customer->status) == 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                                                                                                    {{ strtolower($customer->status) == 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                                                     stroke-width="2.5">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />

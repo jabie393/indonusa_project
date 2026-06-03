@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!Array.isArray(items) || items.length === 0) {
             const tr = document.createElement("tr");
             const td = document.createElement("td");
-            td.setAttribute("colspan", "5");
+            td.setAttribute("colspan", "6");
             td.className = "px-4 py-2 text-sm text-gray-900 dark:text-white";
             td.textContent = "Tidak ada item pada order ini.";
             tr.appendChild(td);
@@ -62,6 +62,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         item.barang.goods_name)) ||
                 item.goods_name ||
                 "-";
+            const deskripsi =
+                (item.barang && item.barang.description) ||
+                item.goods_description ||
+                item.description ||
+                "-";
+
             const qty = item.quantity ?? "-";
             const delivered = item.delivered_quantity ?? "-";
             let status = item.status_item ?? item.status ?? "-";
@@ -75,12 +81,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 status = "Pending";
             }
 
-            const cells = [kodeBarang, namaBarang, qty, delivered, status];
+            const cells = [kodeBarang, namaBarang, deskripsi, qty, delivered, status];
 
-            cells.forEach(function (val) {
+            cells.forEach(function (val, idx) {
                 const td = document.createElement("td");
                 td.className =
-                    "px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-white";
+                    "px-4 py-3 text-sm text-gray-700 dark:text-gray-300" +
+                    (idx !== 2 ? " whitespace-nowrap" : "");
                 td.textContent = val;
                 tr.appendChild(td);
             });
@@ -117,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
             clearTbody();
             const trLoading = document.createElement("tr");
             const tdLoading = document.createElement("td");
-            tdLoading.setAttribute("colspan", "5");
+            tdLoading.setAttribute("colspan", "6");
             tdLoading.className =
                 "px-4 py-2 text-center text-sm text-gray-500 dark:text-gray-400";
             tdLoading.textContent = "Loading items...";
@@ -183,14 +190,23 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentOrderId = null;
 
     function toggleView(view) {
+        const modalBox = approveModal?.querySelector(".modal-box");
         if (view === "partial") {
             selectionView?.classList.add("hidden");
             partialView?.classList.remove("hidden");
             partialView?.classList.add("flex");
+            if (modalBox) {
+                modalBox.classList.remove("max-w-lg");
+                modalBox.classList.add("max-w-5xl", "h-full", "sm:max-h-[90vh]");
+            }
         } else {
             selectionView?.classList.remove("hidden");
             partialView?.classList.add("hidden");
             partialView?.classList.remove("flex");
+            if (modalBox) {
+                modalBox.classList.remove("max-w-5xl", "h-full", "sm:max-h-[90vh]");
+                modalBox.classList.add("max-w-lg");
+            }
         }
     }
 
@@ -222,6 +238,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="text-xs text-gray-500 dark:text-gray-400">${
                         item.goods_code
                     }</div>
+                </td>
+                <td class="px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300">
+                    ${item.goods_description || "-"}
                 </td>
                 <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
                     <div>${item.qty_pesanan} ${item.satuan}</div>
@@ -316,7 +335,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             toggleView("partial");
             partialItemsBody.innerHTML =
-                '<tr><td colspan="4" class="p-4 text-center">Loading...</td></tr>';
+                '<tr><td colspan="5" class="p-4 text-center">Loading...</td></tr>';
 
             fetch(`/delivery-orders/${currentOrderId}/items`)
                 .then((res) => res.json())
@@ -326,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch((err) => {
                     console.error("Failed to fetch items", err);
                     partialItemsBody.innerHTML =
-                        '<tr><td colspan="4" class="p-4 text-center text-red-500">Gagal mengambil data.</td></tr>';
+                        '<tr><td colspan="5" class="p-4 text-center text-red-500">Gagal mengambil data.</td></tr>';
                 });
         });
     }
@@ -466,7 +485,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             const itemsList = batch.items
                                 .map(
                                     (item) =>
-                                        `<li>${item.goods_name} (${item.quantity_sent})</li>`,
+                                        `<li>
+                                            <span class="font-semibold">${item.goods_name}</span> (${item.quantity_sent})
+                                            ${item.goods_description && item.goods_description !== '-' ? `<div class="text-[11px] text-gray-500 dark:text-gray-400 pl-2 italic">${item.goods_description}</div>` : ''}
+                                         </li>`,
                                 )
                                 .join("");
 
