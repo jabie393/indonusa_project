@@ -331,7 +331,7 @@ class QuotationController extends Controller
             <img src="'.$footerLogoBase64.'" style="height: 70px; object-fit: contain; margin: 0 auto;" />
         </div>';
 
-        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+        $pdf = $this->getBrowsershot($html)
             ->format('A4')
             ->margins(12.7, 12.7, 25.4, 12.7)
             ->showBrowserHeaderAndFooter()

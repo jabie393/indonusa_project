@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'browsershot' => [
+        'chrome_path' => env('CHROME_PATH'),
+        'no_sandbox' => env('BROWSERSHOT_NO_SANDBOX', true),
+        'node_binary' => env('NODE_BINARY'),
+        'npm_binary' => env('NPM_BINARY'),
+        'puppeteer_cache_dir' => env('PUPPETEER_CACHE_DIR'),
+    ],
+
 ];
