@@ -247,16 +247,9 @@ class CatalogController extends Controller
             </html>
             HTML;
 
-            $browsershot = Browsershot::html($html)
-                ->setOption('args', ['--no-sandbox', '--disable-setuid-sandbox'])
+            $browsershot = $this->getBrowsershot($html)
                 ->waitForSelector('#ready', ['timeout' => 15000])
                 ->windowSize(800, 1100);
-            
-            // Set Node and NPM paths for Windows compatibility
-            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                $browsershot->setNodeBinary('C:\Program Files\nodejs\node.exe')
-                           ->setNpmBinary('C:\Program Files\nodejs\npm.cmd');
-            }
 
             $browsershot->save($thumbnailPath);
 

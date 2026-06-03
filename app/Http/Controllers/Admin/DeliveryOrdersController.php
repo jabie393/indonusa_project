@@ -356,7 +356,7 @@ class DeliveryOrdersController extends Controller
         $orders = Order::with('items.barang')->findOrFail($id);
         $html = view('admin.pdf.delivery-order-pdf', compact('orders'))->render();
 
-        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+        $pdf = $this->getBrowsershot($html)
             ->format('A4')
             ->margins(12.7, 12.7, 12.7, 12.7)
             ->showBackground()
@@ -469,7 +469,7 @@ class DeliveryOrdersController extends Controller
         // Actually, let's pass the batch specifically.
         $html = view('admin.pdf.delivery-batch-pdf', compact('batch', 'order'))->render();
 
-        $pdf = \Spatie\Browsershot\Browsershot::html($html)
+        $pdf = $this->getBrowsershot($html)
             ->format('A4')
             ->margins(12.7, 12.7, 12.7, 12.7)
             ->showBackground()

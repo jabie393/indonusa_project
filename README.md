@@ -92,3 +92,38 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 8. and lastly in another terminal tab run react locally
 
    `npm run dev`
+
+## PDF / Browsershot Setup on Linux VPS
+
+Untuk memastikan fitur cetak PDF menggunakan `spatie/browsershot` berfungsi dengan benar di server Linux VPS (Ubuntu/Debian) Anda:
+
+1. **Instal Google Chrome Resmi (Versi Non-Snap)**:
+   Jalankan perintah berikut secara berurutan di terminal SSH server (menggunakan user `root` atau `sudo`):
+   ```bash
+   # Hapus Chromium Snap bawaan Ubuntu (jika ada) untuk menghindari permission issues
+   sudo apt purge -y chromium-browser
+   sudo snap remove chromium
+
+   # Unduh paket installer Google Chrome resmi (.deb)
+   wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+   # Instal Google Chrome
+   sudo dpkg -i google-chrome-stable_current_amd64.deb
+   sudo apt-get install -f
+   ```
+
+2. **Dapatkan Path Google Chrome**:
+   Jalankan perintah `which google-chrome` (biasanya mengembalikan `/usr/bin/google-chrome`).
+
+3. **Konfigurasikan `.env` Server**:
+   Tambahkan baris berikut ke file `.env` di VPS Anda:
+   ```env
+   CHROME_PATH=/usr/bin/google-chrome
+   BROWSERSHOT_NO_SANDBOX=true
+   ```
+
+4. **Perbarui Cache Konfigurasi**:
+   Jalankan perintah berikut di root folder proyek:
+   ```bash
+   php artisan config:cache
+   ```
