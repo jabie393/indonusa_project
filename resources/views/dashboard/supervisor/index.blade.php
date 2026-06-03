@@ -2,9 +2,9 @@
     <div class="relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-6 md:flex-row md:space-x-4 md:space-y-0">
             <!-- FILTER FORM -->
-            <div id="filters-form"
-                 class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
-                <form action="{{ route('dashboard') }}"
+            <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
+                <form id="filters-form"
+                      action="{{ route('dashboard') }}"
                       method="GET"
                       class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col">
@@ -125,16 +125,8 @@
                 <div class="w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Menunggu Persetujuan</h1>
                 </div>
-                <div class="flex flex-col justify-center p-6">
-                    <div class="flex flex-col items-center">
-                        <div class="flex w-full flex-row items-end justify-center">
-                            <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">{{ $totalPending }}</h1>
-                        </div>
-                        <div class="mt-2 flex w-full flex-row items-center justify-center gap-2">
-                            <p class="text-lg font-bold text-gray-700 dark:text-gray-300">{{ $lastMonthPending }}</p>
-                            <span class="text-xs text-gray-500">bulan lalu</span>
-                        </div>
-                    </div>
+                <div class="flex h-full flex-col items-center justify-center p-6">
+                    <h1 class="text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">{{ $totalPending }}</h1>
                 </div>
             </div>
 

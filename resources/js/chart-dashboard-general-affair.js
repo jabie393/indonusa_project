@@ -12,6 +12,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const imcMasuk = JSON.parse(imcCanvas.dataset.masuk || '[]');
     const imcKeluar = JSON.parse(imcCanvas.dataset.keluar || '[]');
 
+    function formatRupiahShort(value) {
+        const number = Number(value) || 0;
+        const abs = Math.abs(number);
+        const formatter = new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 });
+
+        if (abs >= 1000000000) {
+            return `Rp ${formatter.format(number / 1000000000)} M`;
+        }
+
+        if (abs >= 1000000) {
+            return `Rp ${formatter.format(number / 1000000)} jt`;
+        }
+
+        if (abs >= 1000) {
+            return `Rp ${formatter.format(number / 1000)} rb`;
+        }
+
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            maximumFractionDigits: 0,
+        }).format(number);
+    }
+
     // create IMC chart
     const imcCtx = imcCanvas.getContext('2d');
     window.imcChart = new Chart(imcCtx, {
@@ -44,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 y: {
                     ticks: {
                         callback: function(value) {
-                            return 'Rp ' + (value / 1000000) + 'jt';
+                            return formatRupiahShort(value);
                         }
                     }
                 }
@@ -73,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // gather filters and build query string
     function buildQuery() {
         const form = document.getElementById('filters-form');
+        if (!form) return '';
         const formData = new FormData(form);
         const params = new URLSearchParams();
         for (const [k,v] of formData.entries()) {

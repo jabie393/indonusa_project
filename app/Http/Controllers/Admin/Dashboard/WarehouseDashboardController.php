@@ -34,6 +34,12 @@ class WarehouseDashboardController extends Controller
             $dateEnd = null;
         }
 
+        $applyChangedAtFilter = function ($query) use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where('changed_at', '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where('changed_at', '<=', $dateEnd));
+        };
+
         // query dasar untuk barang stok rendah (status 'approved' + stok < threshold)
         $baseLowQuery = Barang::where('goods_status', 'approved')
             ->where('stock', '<', $threshold);
@@ -49,9 +55,7 @@ class WarehouseDashboardController extends Controller
 
         // recent inbound: prioritas date range jika ada, kalau tidak ambil semua (atau bisa pakai periode)
         $recentQuery = BarangHistory::where('new_status', 'approved');
-        if ($dateStart && $dateEnd) {
-            $recentQuery->whereBetween('changed_at', [$dateStart, $dateEnd]);
-        }
+        $applyChangedAtFilter($recentQuery);
         // jika ingin fallback periode (today/month/year) tambahkan logika di sini
 
         // eager load submitter (form)
@@ -59,16 +63,12 @@ class WarehouseDashboardController extends Controller
 
         // recent outbound: ambil dari history dengan new_status 'out' (filter date range sama seperti inbound)
         $recentOutboundQuery = BarangHistory::where('new_status', 'out');
-        if ($dateStart && $dateEnd) {
-            $recentOutboundQuery->whereBetween('changed_at', [$dateStart, $dateEnd]);
-        }
+        $applyChangedAtFilter($recentOutboundQuery);
         $data['recentOutbound'] = $recentOutboundQuery->with('formUser')->latest('changed_at')->take(5)->get();
 
         // barangMasukToday / atau jumlah masuk di rentang tanggal
-        if ($dateStart && $dateEnd) {
-            $data['barangMasukToday'] = BarangHistory::where('new_status', 'approved')
-                ->whereBetween('changed_at', [$dateStart, $dateEnd])
-                ->count();
+        if ($dateStart || $dateEnd) {
+            $data['barangMasukToday'] = $applyChangedAtFilter(BarangHistory::where('new_status', 'approved'))->count();
         } else {
             $data['barangMasukToday'] = BarangHistory::where('new_status', 'approved')
                 ->whereDate('changed_at', now())
@@ -76,10 +76,8 @@ class WarehouseDashboardController extends Controller
         }
 
         // barangKeluarToday / jumlah keluar di rentang tanggal (atau hari ini jika tidak ada filter)
-        if ($dateStart && $dateEnd) {
-            $data['barangKeluarToday'] = BarangHistory::where('new_status', 'out')
-                ->whereBetween('changed_at', [$dateStart, $dateEnd])
-                ->count();
+        if ($dateStart || $dateEnd) {
+            $data['barangKeluarToday'] = $applyChangedAtFilter(BarangHistory::where('new_status', 'out'))->count();
         } else {
             $data['barangKeluarToday'] = BarangHistory::where('new_status', 'out')
                 ->whereDate('changed_at', now())
@@ -118,14 +116,14 @@ class WarehouseDashboardController extends Controller
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = BarangHistory::where('new_status', 'approved')
+            $imcMasuk[] = $applyChangedAtFilter(BarangHistory::where('new_status', 'approved')
                 ->whereYear('changed_at', $year)
                 ->whereMonth('changed_at', $m)
-                ->count();
-            $imcKeluar[] = BarangHistory::where('new_status', 'out')
+            )->count();
+            $imcKeluar[] = $applyChangedAtFilter(BarangHistory::where('new_status', 'out')
                 ->whereYear('changed_at', $year)
                 ->whereMonth('changed_at', $m)
-                ->count();
+            )->count();
         }
 
         // ambil semua tahun yang ada di history (descending). pastikan setidaknya ada tahun sekarang
@@ -167,20 +165,41 @@ class WarehouseDashboardController extends Controller
     public function chartData(Request $request)
     {
         $selectedYear = (int) $request->query('year', now()->year);
+        $dateStartRaw = $request->query('date_start');
+        $dateEndRaw = $request->query('date_end');
+        $dateStart = null;
+        $dateEnd = null;
+        try {
+            if ($dateStartRaw) {
+                $dateStart = Carbon::parse($dateStartRaw)->startOfDay();
+            }
+            if ($dateEndRaw) {
+                $dateEnd = Carbon::parse($dateEndRaw)->endOfDay();
+            }
+        } catch (\Exception $e) {
+            $dateStart = null;
+            $dateEnd = null;
+        }
+
+        $applyChangedAtFilter = function ($query) use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where('changed_at', '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where('changed_at', '<=', $dateEnd));
+        };
 
         $months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = BarangHistory::where('new_status', 'approved')
+            $imcMasuk[] = $applyChangedAtFilter(BarangHistory::where('new_status', 'approved')
                 ->whereYear('changed_at', $selectedYear)
                 ->whereMonth('changed_at', $m)
-                ->count();
-            $imcKeluar[] = BarangHistory::where('new_status', 'out')
+            )->count();
+            $imcKeluar[] = $applyChangedAtFilter(BarangHistory::where('new_status', 'out')
                 ->whereYear('changed_at', $selectedYear)
                 ->whereMonth('changed_at', $m)
-                ->count();
+            )->count();
         }
 
         $imcYears = BarangHistory::selectRaw('YEAR(changed_at) as year')

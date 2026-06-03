@@ -71,15 +71,20 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order Aktif</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
+                <div class="flex h-full flex-col justify-center p-4">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
-                            <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
                                 {{ $totalApproved ?? 0 }}
-                            </h1>
+                            </h2>
                             <span class="text-lg text-gray-500 dark:text-gray-400">Sales Order</span>
+                        </div>
+                        <div class="mt-2 flex flex-row items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalOpen ?? 0 }}</strong> Open</span>
+                            <span>•</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalApprovedSupervisor ?? 0 }}</strong> Approved</span>
                         </div>
                     </div>
                 </div>
@@ -89,19 +94,19 @@
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Total Penjualan</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
-                    <div class="flex flex-col items-center justify-center">
+                <div class="flex h-full flex-col justify-center p-4">
+                    <div class="flex w-full flex-col items-center justify-center">
                         <div class="flex w-full flex-row items-end justify-center">
-                            <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
                                 {{ $totalSales ?? 0 }}
-                            </h1>
+                            </h2>
                             <span class="text-lg text-gray-500 dark:text-gray-400">Penjualan</span>
                         </div>
-                        <div class="flex w-full flex-row items-end">
-                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
+                        <div class="mt-2 flex w-full flex-row items-center justify-center gap-1">
+                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
                                 {{ $lastMonthSales ?? 0 }}
                             </p>
-                            <span class="w-full text-sm text-gray-500 dark:text-gray-400">bulan lalu</span>
+                            <span class="text-[10px] text-gray-500 dark:text-gray-400">bulan lalu</span>
                         </div>
                     </div>
                 </div>

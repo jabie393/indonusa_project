@@ -43,7 +43,7 @@
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Jumlah Barang</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center p-4">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $totalBarang ?? 0 }}
@@ -58,7 +58,7 @@
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Jumlah Stok</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
+                <div class="flex h-full flex-col justify-center p-4">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
@@ -74,19 +74,13 @@
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Barang masuk hari ini</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
+                <div class="flex h-full flex-col justify-center p-4">
                     <div class="flex flex-col items-center justify-center">
                         <div class="flex w-full flex-row items-end justify-center">
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $barangMasukToday ?? 0 }}
                             </h1>
                             <span class="text-lg text-gray-500 dark:text-gray-400">Barang</span>
-                        </div>
-                        <div class="flex w-full flex-row items-end">
-                            <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                                {{ $barangMasukLastMonth ?? 0 }}
-                            </p>
-                            <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
                         </div>
                     </div>
                 </div>
@@ -95,7 +89,7 @@
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
                     <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90 dark:text-white">Barang keluar hari ini</h1>
                 </div>
-                <div class="flex h-full flex-col justify-center">
+                <div class="flex h-full flex-col justify-center p-4">
 
                     <div class="flex w-full flex-row items-end justify-center">
                         <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
@@ -103,12 +97,7 @@
                         </h1>
                         <span class="text-lg text-gray-500 dark:text-gray-400">Barang</span>
                     </div>
-                    <div class="flex w-full flex-row items-end">
-                        <p class="w-full pr-2 text-end text-lg font-bold text-gray-700 dark:text-gray-300">
-                            {{ $barangKeluarLastMonth ?? 0 }}
-                        </p>
-                        <span class="w-full text-sm text-gray-500 dark:text-gray-400">last month</span>
-                    </div>
+
                 </div>
             </div>
 
@@ -163,7 +152,7 @@
                                 <tr>
                                     <td class="px-4 py-3">{{ $item->goods_name }}</td>
                                     <td class="px-4 py-3">{{ $item->stock }}</td>
-                                    <td class="px-4 py-3">20</td>
+                                    <td class="px-4 py-3">{{ $selectedThreshold ?? 20 }}</td>
                                     <td class="px-4 py-3">{{ $item->stock <= 0 ? 'Out' : 'Low' }}</td>
                                 </tr>
                             @empty

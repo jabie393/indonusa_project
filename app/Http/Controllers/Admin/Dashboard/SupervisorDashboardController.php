@@ -51,6 +51,12 @@ class SupervisorDashboardController extends Controller
             $end = clone $temp->endOfDay();
         }
 
+        $applySelectedDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
+        };
+
         // Comparison range (Last month or previous equivalent slice)
         if ($dateStart && $dateEnd) {
             $diffInDays = $start->diffInDays($end) + 1;
@@ -97,16 +103,16 @@ class SupervisorDashboardController extends Controller
         $imcMasuk = []; // Requests
         $imcKeluar = []; // Completed
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = (float) \App\Models\Quotation::whereYear('created_at', $selectedYear)
+            $imcMasuk[] = (float) $applySelectedDateFilter(\App\Models\Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
 
-            $imcKeluar[] = (float) \App\Models\Quotation::whereHas('order', function($q) {
+            $imcKeluar[] = (float) $applySelectedDateFilter(\App\Models\Quotation::whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
                 })
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
         }
 
         $imcYears = \App\Models\Quotation::selectRaw('YEAR(created_at) as year')
@@ -119,6 +125,7 @@ class SupervisorDashboardController extends Controller
         // 4. Chart Data (SVC - Order Status Distribution)
         // We'll count orders by status for the pie chart
         $statusCounts = \App\Models\Order::select('status', DB::raw('count(*) as total'))
+            ->whereBetween('created_at', [$start, $end])
             ->groupBy('status')
             ->get();
         $svcLabels = $statusCounts->pluck('status')->map(fn($s) => ucwords(str_replace('_', ' ', $s)))->toArray();
@@ -213,26 +220,32 @@ class SupervisorDashboardController extends Controller
             if ($dateEndRaw) $dateEnd = \Carbon\Carbon::parse($dateEndRaw)->endOfDay();
         } catch (\Exception $e) {}
 
+        $applyDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
+        };
+
         $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = \App\Models\Quotation::whereYear('created_at', $selectedYear)
+            $imcMasuk[] = (float) $applyDateFilter(\App\Models\Quotation::whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
 
-            $imcKeluar[] = \App\Models\Quotation::whereHas('order', function($q) {
+            $imcKeluar[] = (float) $applyDateFilter(\App\Models\Quotation::whereHas('order', function($q) {
                     $q->whereIn('status', ['approved_warehouse', 'completed']);
                 })
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
         }
 
         $svcQuery = \App\Models\Order::query();
-        if ($dateStart && $dateEnd) {
-            $svcQuery->whereBetween('created_at', [$dateStart, $dateEnd]);
+        if ($dateStart || $dateEnd) {
+            $applyDateFilter($svcQuery);
         } else {
             $svcQuery->whereYear('created_at', $selectedYear);
         }

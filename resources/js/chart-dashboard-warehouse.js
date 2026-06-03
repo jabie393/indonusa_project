@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // gather filters and build query string
     function buildQuery() {
         const form = document.getElementById('filters-form');
+        if (!form) return '';
         const formData = new FormData(form);
         const params = new URLSearchParams();
         for (const [k,v] of formData.entries()) {

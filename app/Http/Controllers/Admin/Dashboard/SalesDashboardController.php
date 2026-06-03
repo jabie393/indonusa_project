@@ -41,6 +41,12 @@ class SalesDashboardController extends Controller
             $dateEnd = null;
         }
 
+        $applyDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
+        };
+
         // 2. Calculate Stats
         // Ranges for comparison
         $currentMonthStart = \Carbon\Carbon::now()->startOfMonth();
@@ -53,7 +59,8 @@ class SalesDashboardController extends Controller
         $totalCustomQuotationQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
             ->whereIn('status', ['pending_approval', 'sent_to_warehouse', 'open','approved_supervisor', 'approved_warehouse']);
 
-        $totalQuotation = $totalQuotationQuery->count() + $totalCustomQuotationQuery->count();
+        $totalQuotation = $applyDateFilter(clone $totalQuotationQuery)->count()
+            + $applyDateFilter(clone $totalCustomQuotationQuery)->count();
         $lastMonthQuotation = (clone $totalQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
             + (clone $totalCustomQuotationQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
 
@@ -63,14 +70,31 @@ class SalesDashboardController extends Controller
         $approvedCustomQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
             ->whereIn('status', ['approved_supervisor', 'open']);
 
-        $totalApproved = $approvedOrderQuery->count() + $approvedCustomQuery->count();
+        $totalApproved = $applyDateFilter(clone $approvedOrderQuery)->count()
+            + $applyDateFilter(clone $approvedCustomQuery)->count();
         $lastMonthApproved = (clone $approvedOrderQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count()
             + (clone $approvedCustomQuery)->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])->count();
+
+        // Open Orders
+        $openOrderQuery = \App\Models\Order::where('sales_id', $user->id)
+            ->where('status', 'open');
+        $openCustomQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
+            ->where('status', 'open');
+        $totalOpen = $applyDateFilter(clone $openOrderQuery)->count()
+            + $applyDateFilter(clone $openCustomQuery)->count();
+
+        // Approved by Supervisor Orders
+        $supervisorOrderQuery = \App\Models\Order::where('sales_id', $user->id)
+            ->where('status', 'approved_supervisor');
+        $supervisorCustomQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
+            ->where('status', 'approved_supervisor');
+        $totalApprovedSupervisor = $applyDateFilter(clone $supervisorOrderQuery)->count()
+            + $applyDateFilter(clone $supervisorCustomQuery)->count();
 
         // Total Sales (Completed Orders count)
         $salesQuery = \App\Models\Order::where('sales_id', $user->id)
             ->where('status', 'completed');
-        $totalSales = $salesQuery->count();
+        $totalSales = $applyDateFilter(clone $salesQuery)->count();
         $lastMonthSales = (clone $salesQuery)
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->count();
@@ -80,7 +104,7 @@ class SalesDashboardController extends Controller
             ->whereHas('order', function($q) {
                 $q->where('status', 'completed');
             });
-        $totalProfit = $profitQuery->sum('subtotal');
+        $totalProfit = $applyDateFilter(clone $profitQuery)->sum('subtotal');
         $lastMonthProfit = (clone $profitQuery)
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->sum('subtotal');
@@ -92,19 +116,19 @@ class SalesDashboardController extends Controller
         $imcKeluar = []; // We'll use this for 'Approved'
         for ($m = 1; $m <= 12; $m++) {
             // Potensi Laba (Subtotal all Quotations)
-            $imcMasuk[] = (float) \App\Models\Quotation::where('sales_id', $user->id)
+            $imcMasuk[] = (float) $applyDateFilter(\App\Models\Quotation::where('sales_id', $user->id)
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
 
             // Laba Selesai (Subtotal where associated order is completed)
-            $imcKeluar[] = (float) \App\Models\Quotation::where('sales_id', $user->id)
+            $imcKeluar[] = (float) $applyDateFilter(\App\Models\Quotation::where('sales_id', $user->id)
                 ->whereHas('order', function($q) {
                     $q->where('status', 'completed');
                 })
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->sum('subtotal');
+            )->sum('subtotal');
         }
 
         $imcYears = \App\Models\Quotation::where('sales_id', $user->id)
@@ -124,6 +148,8 @@ class SalesDashboardController extends Controller
             ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
             ->where('quotations.sales_id', $user->id)
             ->where('orders.status', 'completed')
+            ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
+            ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
             ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
                 DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
@@ -139,6 +165,8 @@ class SalesDashboardController extends Controller
         // 5. Table Data (Latest Request Orders)
         $salesOrders = \App\Models\Quotation::where('sales_id', $user->id)
             ->with(['order', 'items'])
+            ->when($dateStart, fn($q) => $q->where('created_at', '>=', $dateStart))
+            ->when($dateEnd, fn($q) => $q->where('created_at', '<=', $dateEnd))
             ->latest()
             ->take(10)
             ->get();
@@ -154,6 +182,8 @@ class SalesDashboardController extends Controller
             'lastMonthQuotation' => $lastMonthQuotation,
             'totalApproved' => $totalApproved,
             'lastMonthApproved' => $lastMonthApproved,
+            'totalOpen' => $totalOpen,
+            'totalApprovedSupervisor' => $totalApprovedSupervisor,
             'totalSales' => $totalSales,
             'lastMonthSales' => $lastMonthSales,
             'totalProfit' => $totalProfit,
@@ -180,26 +210,48 @@ class SalesDashboardController extends Controller
     {
         $user = Auth::user();
         $selectedYear = (int) $request->query('year', now()->year);
+        $dateStartRaw = $request->query('date_start');
+        $dateEndRaw = $request->query('date_end');
+        $dateStart = null;
+        $dateEnd = null;
+        try {
+            if ($dateStartRaw) $dateStart = \Carbon\Carbon::parse($dateStartRaw)->startOfDay();
+            if ($dateEndRaw) $dateEnd = \Carbon\Carbon::parse($dateEndRaw)->endOfDay();
+        } catch (\Exception $e) {
+            $dateStart = null;
+            $dateEnd = null;
+        }
+
+        $applyDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
+            return $query
+                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
+                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
+        };
+
         $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         
         $imcMasuk = [];
         $imcKeluar = [];
         for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = \App\Models\Quotation::where('sales_id', $user->id)
+            $imcMasuk[] = (float) $applyDateFilter(\App\Models\Quotation::where('sales_id', $user->id)
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->count();
-            $imcKeluar[] = \App\Models\Order::where('sales_id', $user->id)
-                ->whereIn('status', ['approved_supervisor', 'approved_warehouse', 'completed'])
+            )->sum('subtotal');
+            $imcKeluar[] = (float) $applyDateFilter(\App\Models\Quotation::where('sales_id', $user->id)
+                ->whereHas('order', function($q) {
+                    $q->where('status', 'completed');
+                })
                 ->whereYear('created_at', $selectedYear)
                 ->whereMonth('created_at', $m)
-                ->count();
+            )->sum('subtotal');
         }
 
         $topItems = \App\Models\QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
             ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
             ->where('quotations.sales_id', $user->id)
             ->where('orders.status', 'completed')
+            ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
+            ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
             ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
             ->select(
                 DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
