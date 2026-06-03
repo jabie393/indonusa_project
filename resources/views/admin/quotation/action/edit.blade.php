@@ -6,16 +6,41 @@
     <div
         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle"></i> <strong>Gagal:</strong>
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        html: `<div class="text-center text-md">@foreach ($errors->all() as $error)<span>{{ $error }}</span><br>@endforeach</div>`,
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
+                });
+            </script>
         @endif
+
+        <div id="discountWarning"
+            class="m-5 hidden items-start gap-4 rounded-2xl border border-amber-200 bg-[#FFFDF5] p-4 dark:border-amber-900/30 dark:bg-amber-950/20">
+            <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-amber-800 dark:text-amber-300">
+                    Peringatan Diskon
+                </h3>
+                <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
+                    Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
+                    Supervisor.
+                </p>
+            </div>
+        </div>
 
         <div class="card">
             <div class="card-body">
@@ -39,11 +64,6 @@
                         </div>
 
                         <div class="mb-8 grid grid-cols-1 gap-6 p-5 lg:grid-cols-2">
-                            <div id="discountWarning" class="alert alert-warning col-span-2" style="display:none;">
-                                Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
-                                Supervisor.
-                            </div>
-
                             <div class="col-span-2 flex flex-col">
                                 <label for="customer_id" class="form-label dark:text-gray-300">Pilih Customer <span
                                         class="text-danger">*</span></label>
@@ -333,10 +353,6 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <div id="discountWarning" class="alert alert-warning m-4" style="display:none;">
-                                Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
-                                Supervisor.
-                            </div>
                             <table class="h-full w-full border-collapse" id="itemsTable">
                                 <thead>
                                     <tr class="">
@@ -385,7 +401,8 @@
                                                         value="{{ $existingImg }}">
                                                 @endforeach
                                                 <select name="product_category[]"
-                                                    class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                                    class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                    required>
                                                     <option value="">Pilih Kategori</option>
                                                     @foreach ($categories as $cat)
                                                         <option value="{{ $cat }}" @selected(($item->product_category ?? optional($item->barang)->category) === $cat)>
@@ -429,7 +446,7 @@
                                                         <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
                                                         <select name="product_id[]"
                                                             class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
-                                                            required onchange="updateKategoriBarang(this)">
+                                                            onchange="updateKategoriBarang(this)">
                                                             <option value="">Pilih Barang</option>
                                                             @foreach ($goods as $b)
                                                                 <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}"
@@ -566,8 +583,8 @@
                                                 <input type="text" name="keterangan[]" maxlength="255"
                                                     class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     placeholder="Isi jika diskon > 20%"
-                                                    value="{{ is_array(old('keterangan', $item->keterangan)) ? old('keterangan', $item->keterangan)[0] ?? '' : old('keterangan', $item->keterangan) }}"
-                                                    {{ ($item->discount_percent ?? 0) > 20 ? '' : 'disabled' }}>
+                                                    value="{{ old('keterangan.' . $loop->index, $item->notes) }}"
+                                                    {{ ($item->discount_percent ?? 0) > 20 ? '' : 'readonly' }}>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="quantity[]"
@@ -655,7 +672,8 @@
                                         <tr class="item-row">
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <select name="product_category[]"
-                                                    class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                                    class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                    required>
                                                     <option value="">Pilih Kategori</option>
                                                     @foreach ($categories as $cat)
                                                         <option value="{{ $cat }}">{{ $cat }}
@@ -690,7 +708,7 @@
                                                     <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
                                                     <select name="product_id[]"
                                                         class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
-                                                        required onchange="updateKategoriBarang(this)">
+                                                        onchange="updateKategoriBarang(this)">
                                                         <option value="">Pilih Barang</option>
                                                         @foreach ($goods as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}"
@@ -812,7 +830,7 @@
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="keterangan[]" maxlength="255"
                                                     class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                    placeholder="Isi jika diskon > 20%" disabled>
+                                                    placeholder="Isi jika diskon > 20%" readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="quantity[]"
@@ -1547,12 +1565,44 @@
                 updateDiscountWarning();
             }
 
+            function validateRequiredItemRows(showMessage = false) {
+                const rows = Array.from(document.querySelectorAll('.item-row'));
+                const invalidRow = rows.find(row => {
+                    const category = row.querySelector('.kategori-barang-select');
+                    const barang = row.querySelector('.barang-select');
+                    return !category?.value || (barang && !barang.value);
+                });
+
+                if (invalidRow && showMessage) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Barang Belum Lengkap',
+                        text: 'Kategori dan kode barang wajib dipilih pada setiap baris barang.',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
+
+                    const category = invalidRow.querySelector('.kategori-barang-select');
+                    const barang = invalidRow.querySelector('.barang-select');
+                    const dropdownButton = invalidRow.querySelector('.dropdown-toggle-btn');
+
+                    if (!category?.value) {
+                        category?.focus();
+                    } else if (barang && !barang.value) {
+                        dropdownButton?.focus();
+                    }
+                }
+
+                return !invalidRow;
+            }
+
             addRowBtn.addEventListener('click', function () {
                 const newRow = document.createElement('tr');
                 newRow.className = 'item-row';
                 newRow.innerHTML = `
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <select name="product_category[]" class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <select name="product_category[]" class="kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                             <option value="">Pilih Kategori</option>
                             @foreach ($categories as $cat)
                                 <option value="{{ $cat }}">{{ $cat }}</option>
@@ -1567,7 +1617,7 @@
                                     <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="currentColor"></path> </g></svg>
                                 </span>
                             </button>
-                            <select name="product_id[]" class="form-control barang-select hidden" required onchange="updateKategoriBarang(this)">
+                            <select name="product_id[]" class="form-control barang-select hidden" onchange="updateKategoriBarang(this)">
                                 ${getBarangOptionsHTML()}
                             </select>
                             <div class="fixed w-[600px] bg-white border border-subtle rounded-xl shadow-2xl z-[9999] overflow-hidden hidden dropdown-menu-container">
@@ -1602,7 +1652,7 @@
                         <input type="number" name="discount_percent[]" class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="0" max="100" step="0.01" value="0">
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                        <input type="text" name="keterangan[]" maxlength="255" class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" disabled>
+                        <input type="text" name="keterangan[]" maxlength="255" class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" placeholder="Isi jika diskon > 20%" readonly>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                         <input type="number" name="quantity[]" class="quantity-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" min="1" value="1" required>
@@ -1935,7 +1985,7 @@
                     return v > 20;
                 });
                 if (anyHigh) {
-                    warning.style.display = 'block';
+                    warning.style.display = 'flex';
                 } else {
                     warning.style.display = 'none';
                 }
@@ -2054,6 +2104,11 @@
             document.addEventListener('submit', function (e) {
                 const form = e.target;
                 if (form) {
+                    if (form.id === 'requestOrderForm' && !validateRequiredItemRows(true)) {
+                        e.preventDefault();
+                        return;
+                    }
+
                     form.querySelectorAll('.harga-input').forEach(input => {
                         input.value = input.value.replace(/,/g, '');
                     });

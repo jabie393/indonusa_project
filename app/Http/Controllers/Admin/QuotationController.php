@@ -74,7 +74,7 @@ class QuotationController extends Controller
             ->values();
 
         return view('admin.quotation.action.create', compact('goods', 'customers', 'categories'))
-            ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil dibuat!']);
+            ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil dibuat!']);
     }
 
     public function store(Request $request)
@@ -238,19 +238,21 @@ class QuotationController extends Controller
 
             if ($requestOrder->sales_id == Auth::id()) {
                 return redirect()->route('sales.quotation.show', $requestOrder->id)
-                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat.");
+                    ->with('success', "Quotation {$requestOrder->quotation_number} berhasil dibuat.")
+                    ->with(['title' => 'Berhasil', 'text' => "Quotation {$requestOrder->quotation_number} berhasil dibuat."]);
             } else {
                 return redirect()->route('sales.quotation.index')
-                    ->with('success', "Request Order {$requestOrder->request_number} berhasil dibuat untuk sales lain.");
+                    ->with('success', "Quotation {$requestOrder->quotation_number} berhasil dibuat untuk sales lain.")
+                    ->with(['title' => 'Berhasil', 'text' => "Quotation {$requestOrder->quotation_number} berhasil dibuat untuk sales lain."]);
             }
 
         } catch (\Throwable $e) {
             DB::rollBack();
 
             return back()
-                ->withErrors('Gagal membuat Request Order: '.$e->getMessage())
+                ->withErrors('Gagal membuat Quotation: '.$e->getMessage())
                 ->withInput()
-                ->with(['title' => 'Gagal', 'text' => 'Gagal membuat Request Order!']);
+                ->with(['title' => 'Gagal', 'text' => 'Gagal membuat Quotation!']);
         }
     }
 
@@ -376,7 +378,7 @@ class QuotationController extends Controller
         $categories = Barang::distinct()->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
 
         return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories'))
-            ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diupdate!']);
+            ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diupdate!']);
     }
 
     public function update(Request $request, Quotation $quotation)
@@ -609,15 +611,15 @@ class QuotationController extends Controller
             DB::commit();
 
             return redirect()->route('sales.quotation.show', $requestOrder->id)
-                ->with('success', 'Request Order berhasil diubah.')
-                ->with(['title' => 'Berhasil', 'text' => 'Request Order berhasil diubah!']);
+                ->with('success', 'Quotation berhasil diubah.')
+                ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diubah!']);
 
         } catch (\Throwable $e) {
             DB::rollBack();
 
-            return back()->withErrors('Gagal mengubah Request Order: '.$e->getMessage())
+            return back()->withErrors('Gagal mengubah Quotation: '.$e->getMessage())
                 ->withInput()
-                ->with(['title' => 'Gagal', 'text' => 'Gagal mengubah Request Order!']);
+                ->with(['title' => 'Gagal', 'text' => 'Gagal mengubah Quotation!']);
         }
     }
 
@@ -629,15 +631,15 @@ class QuotationController extends Controller
         }
 
         if ($requestOrder->order && in_array($requestOrder->order->status, ['sent_to_warehouse', 'approved_warehouse', 'completed'])) {
-            return back()->withErrors('Request Order ini sudah dikirim ke Warehouse.');
+            return back()->withErrors('Quotation ini sudah dikirim ke Warehouse.');
         }
 
         try {
             $this->processSentToWarehouse($requestOrder);
 
             return redirect()->route('sales.quotation.index')
-                ->with('success', 'Request Order berhasil dikirim ke Warehouse.')
-                ->with(['title' => 'Berhasil', 'text' => 'Order berhasil dikirim ke Warehouse!']);
+                ->with('success', 'Quotation berhasil dikirim ke Warehouse.')
+                ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil dikirim ke Warehouse!']);
         } catch (\Throwable $e) {
             return back()->withErrors('Gagal mengirim ke Warehouse: '.$e->getMessage())
                 ->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
@@ -662,12 +664,12 @@ class QuotationController extends Controller
             });
 
             return redirect()->route('sales.quotation.index')->with([
-                'success' => 'Request Order berhasil dihapus.',
+                'success' => 'Quotation berhasil dihapus.',
                 'title' => 'Terhapus!',
-                'text' => 'Request Order dan data terkait telah berhasil dihapus dari sistem.',
+                'text' => 'Quotation dan data terkait telah berhasil dihapus dari sistem.',
             ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus Request Order: '.$e->getMessage())->with([
+            return back()->withErrors('Gagal menghapus Quotation: '.$e->getMessage())->with([
                 'title' => 'Gagal!',
                 'text' => 'Terjadi kesalahan saat mencoba menghapus data.',
             ]);

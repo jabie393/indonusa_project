@@ -162,7 +162,7 @@ class SalesDashboardController extends Controller
         $svcLabels = $topItems->pluck('item_name')->toArray();
         $svcData = $topItems->pluck('total_qty')->toArray();
 
-        // 5. Table Data (Latest Request Orders)
+        // 5. Table Data (Latest Quotation)
         $salesOrders = \App\Models\Quotation::where('sales_id', $user->id)
             ->with(['order', 'items'])
             ->when($dateStart, fn($q) => $q->where('created_at', '>=', $dateStart))

@@ -290,7 +290,8 @@
                                     <tr class="item-row">
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <select name="product_category[]"
-                                                class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                                class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                required>
                                                 <option value="">Pilih Kategori</option>
                                                 @foreach ($categories as $cat)
                                                     <option value="{{ $cat }}">{{ $cat }}</option>
@@ -319,7 +320,7 @@
                                                 </button>
 
                                                 <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                <select name="product_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden" required
+                                                <select name="product_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                     onchange="updateKategoriBarang(this)">
                                                     <option value="">Pilih Barang</option>
                                                     @foreach ($goods as $b)
@@ -403,7 +404,7 @@
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <input type="text" name="keterangan[]" maxlength="255"
                                                 class="form-control keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                placeholder="Isi jika diskon > 20%" disabled>
+                                                placeholder="Isi jika diskon > 20%" readonly>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                             <input type="number" name="quantity[]"
@@ -1143,12 +1144,41 @@
                 updateSubmitState();
             };
 
-            // Update submit button state depending on kategori selection or any selected barang
+            function validateRequiredItemRows(showMessage = false) {
+                const rows = Array.from(document.querySelectorAll('.item-row'));
+                const invalidRow = rows.find(row => {
+                    const category = row.querySelector('.kategori-barang-select');
+                    const barang = row.querySelector('.barang-select');
+                    return !category?.value || !barang?.value;
+                });
+
+                if (invalidRow && showMessage) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Data Barang Belum Lengkap',
+                        text: 'Kategori dan kode barang wajib dipilih pada setiap baris barang.',
+                        customClass: {
+                            popup: 'rounded-2xl!'
+                        }
+                    });
+
+                    const category = invalidRow.querySelector('.kategori-barang-select');
+                    const barang = invalidRow.querySelector('.barang-select');
+                    const dropdownButton = invalidRow.querySelector('.dropdown-toggle-btn');
+
+                    if (!category?.value) {
+                        category?.focus();
+                    } else if (barang && !barang.value) {
+                        dropdownButton?.focus();
+                    }
+                }
+
+                return !invalidRow;
+            }
+
+            // Update submit button state depending on complete item rows
             function updateSubmitState() {
-                const hasKategori = kategoriSelect && kategoriSelect.value;
-                const anyBarangSelected = Array.from(document.querySelectorAll('.barang-select')).some(s => s
-                    .value && s.value !== '');
-                submitBtn.disabled = !(hasKategori || anyBarangSelected);
+                submitBtn.disabled = !validateRequiredItemRows();
             }
 
             // Handle barang selection change
@@ -1419,11 +1449,11 @@
                 newRow.querySelectorAll('input[type="text"], input[type="number"]').forEach(inp => {
                     inp.value = '';
                 });
-                // Ensure keterangan input is cleared and disabled by default
+                // Ensure keterangan input is cleared and locked by default
                 const keteranganNew = newRow.querySelector('.keterangan-input');
                 if (keteranganNew) {
                     keteranganNew.value = '';
-                    keteranganNew.disabled = true;
+                    keteranganNew.readOnly = true;
                     keteranganNew.required = false;
                 }
 
@@ -1481,10 +1511,16 @@
                 handleItemImagePreview(newRow);
                 updateRemoveButtons();
                 calculateTotals();
+                updateSubmitState();
             });
 
             // Attach events to row
             function attachRowEvents(row) {
+                const categorySelect = row.querySelector('.kategori-barang-select');
+                if (categorySelect) {
+                    categorySelect.addEventListener('change', updateSubmitState);
+                }
+
                 const barangSelect = row.querySelector('.barang-select');
                 barangSelect.addEventListener('change', function() {
                     handleBarangChange(this);
@@ -1590,10 +1626,10 @@
                 if (!disk || !ket) return;
                 const val = parseFloat(disk.value) || 0;
                 if (val > 20) {
-                    ket.disabled = false;
+                    ket.readOnly = false;
                     ket.required = true;
                 } else {
-                    ket.disabled = true;
+                    ket.readOnly = true;
                     ket.required = false;
                     ket.value = '';
                 }
@@ -1897,6 +1933,11 @@
             document.addEventListener('submit', function(e) {
                 const form = e.target;
                 if (form) {
+                    if (form.id === 'requestOrderForm' && !validateRequiredItemRows(true)) {
+                        e.preventDefault();
+                        return;
+                    }
+
                     form.querySelectorAll('.harga-input').forEach(input => {
                         input.value = input.value.replace(/,/g, '');
                     });

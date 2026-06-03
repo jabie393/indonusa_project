@@ -10,7 +10,7 @@ window.confirmDelete = function (callback) {
         showCancelButton: true,
         confirmButtonColor: "#225A97",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, hapus!",
+        confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         customClass: {
             popup: "rounded-2xl!",

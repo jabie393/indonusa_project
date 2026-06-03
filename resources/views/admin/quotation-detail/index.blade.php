@@ -18,7 +18,7 @@
             @endif
 
             @if (session('success'))
-                <div class="mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300"
+                <div class="alert mb-6 flex items-center justify-between rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-900 dark:text-green-300"
                     role="alert">
                     <div class="flex items-center">
                         <i class="fas fa-check-circle mr-2"></i>
@@ -38,7 +38,7 @@
             @endif
 
             @if ($errors->any())
-                <div class="mb-6 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
+                <div class="alert mb-6 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-900 dark:text-red-300" role="alert">
                     <div class="mb-2 flex items-center">
                         <i class="fas fa-exclamation-circle mr-2"></i>
                         <span class="font-medium">Terdapat kesalahan:</span>
@@ -53,41 +53,84 @@
                 </div>
             @endif
 
-            @php $orderStatus = $requestOrder->order?->status; @endphp
+            @php
+                $orderStatus = $requestOrder->order?->status;
 
-            @if ($orderStatus === 'rejected_supervisor')
-                {{-- BANNER MERAH: Ditolak --}}
-                <div
-                    class="mb-6 flex flex-col gap-4 rounded-2xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm dark:border-rose-900/30 dark:bg-rose-950/20 md:flex-row md:items-center">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+                $bannerKey = $orderStatus;
+                if (in_array($orderStatus, ['pending_approval', 'sent'])) {
+                    $bannerKey = 'sent_to_supervisor';
+                }
+
+                $bannerConfig = [
+                    'rejected_supervisor' => [
+                        'border' => 'border-rose-200 dark:border-rose-900/30',
+                        'bg' => 'bg-rose-50/50 dark:bg-rose-950/20',
+                        'icon_bg' => 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400',
+                        'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+                        'title' => 'Penawaran Ditolak Supervisor',
+                        'title_text' => 'text-rose-800 dark:text-rose-300',
+                        'desc_text' => 'text-rose-700/80 dark:text-rose-400/80',
+                    ],
+                    'sent_to_supervisor' => [
+                        'border' => 'border-amber-200 dark:border-amber-900/30',
+                        'bg' => 'bg-[#FFFDF5] dark:bg-amber-950/20',
+                        'icon_bg' => 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
+                        'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+                        'title' => 'Dalam Peninjauan Supervisor',
+                        'title_text' => 'text-amber-800 dark:text-amber-300',
+                        'desc_text' => 'text-amber-700/80 dark:text-amber-400/80',
+                    ],
+                    'approved_supervisor' => [
+                        'border' => 'border-emerald-200 dark:border-emerald-900/30',
+                        'bg' => 'bg-emerald-50/50 dark:bg-emerald-950/20',
+                        'icon_bg' => 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
+                        'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                        'title' => 'Verifikasi Disetujui',
+                        'title_text' => 'text-emerald-800 dark:text-emerald-300',
+                        'desc_text' => 'text-emerald-700/80 dark:text-emerald-400/80',
+                    ],
+                ];
+
+                $activeConfig = $bannerConfig[$bannerKey] ?? null;
+            @endphp
+
+            @if ($activeConfig)
+                <div class="mb-6 flex flex-col gap-4 rounded-2xl border {{ $activeConfig['border'] }} {{ $activeConfig['bg'] }} p-5 shadow-sm md:flex-row md:items-center">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl {{ $activeConfig['icon_bg'] }}">
+                        {!! $activeConfig['icon'] !!}
                     </div>
                     <div class="flex-grow">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">Penawaran
-                            Ditolak Supervisor</h4>
-                        <div class="mt-1 space-y-1">
-                            <p class="text-xs text-rose-700/80 dark:text-rose-400/80">
-                                <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
-                                {{ $requestOrder->reason ?? ($requestOrder->order?->reason ?? 'Keterangan tidak tersedia') }}
-                            </p>
-                            @if ($requestOrder->order?->supervisor)
-                                <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
-                                    Oleh {{ $requestOrder->order->supervisor->name }}
-                                    @if ($requestOrder->order->approved_at)
-                                        &middot;
-                                        {{ \Carbon\Carbon::parse($requestOrder->order->approved_at)->translatedFormat('d M Y, H:i') }}
-                                    @endif
+                        <h4 class="text-sm font-bold uppercase tracking-wider {{ $activeConfig['title_text'] }}">{{ $activeConfig['title'] }}</h4>
+                        
+                        @if ($bannerKey === 'rejected_supervisor')
+                            <div class="mt-1 space-y-1">
+                                <p class="text-xs {{ $activeConfig['desc_text'] }}">
+                                    <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
+                                    {{ $requestOrder->reason ?? ($requestOrder->order?->reason ?? 'Keterangan tidak tersedia') }}
                                 </p>
-                            @endif
-                        </div>
+                                @if ($requestOrder->order?->supervisor)
+                                    <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
+                                        Oleh {{ $requestOrder->order->supervisor->name }}
+                                        @if ($requestOrder->order->approved_at)
+                                            &middot;
+                                            {{ \Carbon\Carbon::parse($requestOrder->order->approved_at)->translatedFormat('d M Y, H:i') }}
+                                        @endif
+                                    </p>
+                                @endif
+                            </div>
+                        @elseif ($bannerKey === 'sent_to_supervisor')
+                            <p class="mt-1 text-xs {{ $activeConfig['desc_text'] }}">
+                                Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                            </p>
+                        @elseif ($bannerKey === 'approved_supervisor')
+                            <p class="mt-1 text-xs {{ $activeConfig['desc_text'] }}">
+                                Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
+                            </p>
+                        @endif
                     </div>
-                    <div class="shrink-0 mt-3 md:mt-0">
-                        @if (Auth::user()->role === 'Sales')
+                    
+                    @if ($bannerKey === 'rejected_supervisor' && Auth::user()->role === 'Sales')
+                        <div class="shrink-0 mt-3 md:mt-0">
                             <a href="{{ route('sales.quotation.edit', $requestOrder->id) }}"
                                 class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none active:scale-[0.98]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -97,31 +140,12 @@
                                 </svg>
                                 Perbaiki & Ajukan Ulang
                             </a>
-                        @endif
-                    </div>
+                        </div>
+                    @endif
                 </div>
-            @elseif ($orderStatus === 'sent_to_supervisor')
-                {{-- BANNER KUNING: Menunggu persetujuan --}}
-                <div
-                    class="mb-6 flex items-start gap-4 rounded-2xl border border-amber-200 bg-[#FFFDF5] p-5 shadow-sm dark:border-amber-900/30 dark:bg-amber-950/20">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Dalam
-                            Peninjauan Supervisor</h4>
-                        <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
-                            Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan
-                            persetujuan.
-                        </p>
-                    </div>
-                </div>
-            @elseif ($orderStatus === 'not_completed')
+            @endif
+
+            @if ($orderStatus === 'not_completed')
                 {{-- BANNER ORANGE: Partial Delivery --}}
                 <div
                     class="mb-6 overflow-hidden rounded-2xl border border-orange-200 bg-orange-50/50 shadow-sm dark:border-orange-900/30 dark:bg-orange-950/20">
@@ -214,27 +238,6 @@
                             </div>
                         </div>
                     @endif
-                </div>
-            @elseif ($orderStatus === 'approved_supervisor')
-                {{-- BANNER HIJAU: Disetujui --}}
-                <div
-                    class="mb-6 flex items-start gap-4 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-950/20">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                            Verifikasi Disetujui</h4>
-                        <p class="mt-1 text-xs text-emerald-700/80 dark:text-emerald-400/80">
-                            Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih
-                            lanjut.
-                        </p>
-                    </div>
                 </div>
             @endif
             {{-- ============================================================
@@ -908,14 +911,12 @@
                         text: "Data ini akan dihapus permanen dari sistem.",
                         icon: 'warning',
                         showCancelButton: true,
-                        confirmButtonColor: '#e11d48', // rose-600
-                        cancelButtonColor: '#64748b', // slate-500
+                        confirmButtonColor: "#225A97",
+                        cancelButtonColor: "#d33",// slate-500
                         confirmButtonText: 'Ya, Hapus!',
                         cancelButtonText: 'Batal',
                         customClass: {
-                            popup: 'rounded-2xl border-none shadow-2xl',
-                            confirmButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest',
-                            cancelButton: 'rounded-xl px-6 py-3 text-xs font-black uppercase tracking-widest'
+                            popup: 'rounded-2xl',
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {

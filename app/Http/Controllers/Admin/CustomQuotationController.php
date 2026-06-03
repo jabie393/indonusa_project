@@ -598,7 +598,7 @@ class CustomQuotationController extends Controller
     }
 
     /**
-     * Kirim Custom Penawaran ke Penawaran (Request Order)
+     * Kirim Custom Penawaran ke Penawaran (Quotation)
      */
     public function sentToPenawaran(CustomQuotation $customQuotation)
     {

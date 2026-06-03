@@ -1,101 +1,106 @@
 <x-app-layout>
-    <div
-        class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
+    <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
-            @php $orderStatus = $customPenawaran->status; @endphp
+            @php
+                $orderStatus = $customPenawaran->status;
 
-            @if ($orderStatus === 'rejected_supervisor')
-                {{-- BANNER MERAH: Ditolak --}}
-                <div
-                    class="mb-6 flex flex-col gap-4 rounded-2xl border border-rose-200 bg-rose-50/50 p-5 shadow-sm dark:border-rose-900/30 dark:bg-rose-950/20 md:flex-row md:items-center">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+                $bannerKey = $orderStatus;
+                if (in_array($orderStatus, ['pending_approval', 'sent'])) {
+                    $bannerKey = 'sent_to_supervisor';
+                }
+
+                $bannerConfig = [
+                    'rejected_supervisor' => [
+                        'border' => 'border-rose-200 dark:border-rose-900/30',
+                        'bg' => 'bg-rose-50/50 dark:bg-rose-950/20',
+                        'icon_bg' => 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+                        'title' => 'Penawaran Ditolak Supervisor',
+                        'title_text' => 'text-rose-800 dark:text-rose-300',
+                        'desc_text' => 'text-rose-700/80 dark:text-rose-400/80',
+                    ],
+                    'sent_to_supervisor' => [
+                        'border' => 'border-amber-200 dark:border-amber-900/30',
+                        'bg' => 'bg-[#FFFDF5] dark:bg-amber-950/20',
+                        'icon_bg' => 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
+                        'title' => 'Dalam Peninjauan Supervisor',
+                        'title_text' => 'text-amber-800 dark:text-amber-300',
+                        'desc_text' => 'text-amber-700/80 dark:text-amber-400/80',
+                    ],
+                    'approved_supervisor' => [
+                        'border' => 'border-emerald-200 dark:border-emerald-900/30',
+                        'bg' => 'bg-emerald-50/50 dark:bg-emerald-950/20',
+                        'icon_bg' => 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400',
+                        'icon' =>
+                            '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
+                        'title' => 'Verifikasi Disetujui',
+                        'title_text' => 'text-emerald-800 dark:text-emerald-300',
+                        'desc_text' => 'text-emerald-700/80 dark:text-emerald-400/80',
+                    ],
+                ];
+
+                $activeConfig = $bannerConfig[$bannerKey] ?? null;
+            @endphp
+
+            @if ($activeConfig)
+                <div class="{{ $activeConfig['border'] }} {{ $activeConfig['bg'] }} mb-6 flex flex-col gap-4 rounded-2xl border p-5 shadow-sm md:flex-row md:items-center">
+                    <div class="{{ $activeConfig['icon_bg'] }} flex h-12 w-12 shrink-0 items-center justify-center rounded-xl">
+                        {!! $activeConfig['icon'] !!}
                     </div>
                     <div class="flex-grow">
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-rose-800 dark:text-rose-300">Penawaran Ditolak Supervisor</h4>
-                        <div class="mt-1 space-y-1">
-                            <p class="text-xs text-rose-700/80 dark:text-rose-400/80">
-                                <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
-                                {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
-                            </p>
-                            @if ($customPenawaran->supervisor)
-                                <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
-                                    Oleh {{ $customPenawaran->supervisor->name }}
-                                    @if ($customPenawaran->approved_at)
-                                        &middot;
-                                        {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
-                                    @endif
+                        <h4 class="{{ $activeConfig['title_text'] }} text-sm font-bold uppercase tracking-wider">{{ $activeConfig['title'] }}</h4>
+
+                        @if ($bannerKey === 'rejected_supervisor')
+                            <div class="mt-1 space-y-1">
+                                <p class="{{ $activeConfig['desc_text'] }} text-xs">
+                                    <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
+                                    {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
                                 </p>
-                            @endif
-                        </div>
+                                @if ($customPenawaran->supervisor)
+                                    <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
+                                        Oleh {{ $customPenawaran->supervisor->name }}
+                                        @if ($customPenawaran->approved_at)
+                                            &middot;
+                                            {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
+                                        @endif
+                                    </p>
+                                @endif
+                            </div>
+                        @elseif ($bannerKey === 'sent_to_supervisor')
+                            <p class="{{ $activeConfig['desc_text'] }} mt-1 text-xs">
+                                Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                            </p>
+                        @elseif ($bannerKey === 'approved_supervisor')
+                            <p class="{{ $activeConfig['desc_text'] }} mt-1 text-xs">
+                                Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
+                            </p>
+                        @endif
                     </div>
-                    <div class="shrink-0 mt-3 md:mt-0">
-                        @if (Auth::user()->role === 'Sales')
+
+                    @if ($bannerKey === 'rejected_supervisor' && Auth::user()->role === 'Sales')
+                        <div class="mt-3 shrink-0 md:mt-0">
                             <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
-                                class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none dark:shadow-none active:scale-[0.98]">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                                 Perbaiki & Ajukan Ulang
                             </a>
-                        @endif
-                    </div>
-                </div>
-            @elseif ($orderStatus === 'sent_to_supervisor')
-                {{-- BANNER KUNING: Menunggu persetujuan --}}
-                <div
-                    class="mb-6 flex items-start gap-4 rounded-2xl border border-amber-200 bg-[#FFFDF5] p-5 shadow-sm dark:border-amber-900/30 dark:bg-amber-950/20">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300">Dalam Peninjauan Supervisor</h4>
-                        <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
-                            Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
-                        </p>
-                    </div>
-                </div>
-            @elseif ($orderStatus === 'approved_supervisor')
-                {{-- BANNER HIJAU: Disetujui --}}
-                <div
-                    class="mb-6 flex items-start gap-4 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-950/20">
-                    <div
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">Verifikasi Disetujui</h4>
-                        <p class="mt-1 text-xs text-emerald-700/80 dark:text-emerald-400/80">
-                            Supervisor telah memberikan persetujuan. Dokumen PDF kini dapat diunduh dan diproses lebih lanjut.
-                        </p>
-                    </div>
+                        </div>
+                    @endif
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+            <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Left Column: Informasi Penawaran -->
-                <div class="lg:col-span-2 space-y-6">
-                    <div
-                        class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div class="space-y-6 lg:col-span-2">
+                    <div class="rounded-3xl border border-slate-100 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="space-y-1">
-                            <span
-                                class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi Penawaran Custom</span>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi Penawaran Custom</span>
                             <div class="flex flex-wrap items-center gap-3">
                                 <h1 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
                                     {{ $customPenawaran->penawaran_number ?? '-' }}</h1>
@@ -129,30 +134,26 @@
                             }
                         @endphp
                         <div class="mt-4">
-                            <span
-                                class="inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-wider {{ $statusClass }}">
-                                <span class="h-2 w-2 rounded-full {{ $statusDot }}"></span>
+                            <span class="{{ $statusClass }} inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold uppercase tracking-wider">
+                                <span class="{{ $statusDot }} h-2 w-2 rounded-full"></span>
                                 {{ $statusText }}
                             </span>
                         </div>
 
                         <!-- Metadata Grid -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-y-6 gap-x-8 mt-10">
+                        <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-3">
                             <!-- KEPADA (TO) -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kepada (To)</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kepada (To)</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
                                     {{ $customPenawaran->to }}</p>
                             </div>
 
                             <!-- PIC (SALES) -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">PIC (Sales)</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">PIC (Sales)</span>
                                 <div class="mt-1 flex items-center space-x-2">
-                                    <div
-                                        class="flex h-7 w-7 items-center justify-center text-slate-500 dark:text-gray-400">
+                                    <div class="flex h-7 w-7 items-center justify-center text-slate-500 dark:text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
@@ -164,32 +165,28 @@
 
                             <!-- EMAIL -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Email</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Email</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
                                     {{ $customPenawaran->email ?? '-' }}</p>
                             </div>
 
                             <!-- SUBJECT -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Subject</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Subject</span>
                                 <p class="mt-1 text-sm font-semibold italic text-slate-800 dark:text-gray-200">
                                     "{{ $customPenawaran->subject ?? '-' }}"</p>
                             </div>
 
                             <!-- ATTENTION (UP) -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Attention (Up)</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Attention (Up)</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
                                     {{ $customPenawaran->up ?? '-' }}</p>
                             </div>
 
                             <!-- MASA BERLAKU -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Masa Berlaku</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Masa Berlaku</span>
                                 <div class="mt-1">
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
                                         {{ $customPenawaran->expired_at ? $customPenawaran->expired_at->format('d M Y') : '-' }}</p>
@@ -200,10 +197,10 @@
                                         @endphp
                                         @if ($isExpired)
                                             <span
-                                                class="mt-1 inline-block rounded bg-rose-50 border border-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:bg-rose-950/20 dark:text-rose-400">Expired</span>
+                                                class="mt-1 inline-block rounded border border-rose-100 bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-600 dark:bg-rose-950/20 dark:text-rose-400">Expired</span>
                                         @else
                                             <span
-                                                class="mt-1 inline-block rounded bg-emerald-50 border border-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
+                                                class="mt-1 inline-block rounded border border-emerald-100 bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
                                                 {{ floor($daysLeft) }} Hari Lagi
                                             </span>
                                         @endif
@@ -213,8 +210,7 @@
 
                             <!-- TGL PENAWARAN -->
                             <div>
-                                <span
-                                    class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl Penawaran</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl Penawaran</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
                                     {{ \Carbon\Carbon::parse($customPenawaran->date)->format('d M Y') }}</p>
                             </div>
@@ -222,18 +218,14 @@
 
                         <!-- Teks Pembuka (Intro Text) -->
                         @if ($customPenawaran->intro_text)
-                            <div
-                                class="mt-8 p-5 bg-indigo-50/20 border border-indigo-100/50 rounded-2xl dark:bg-indigo-950/10 dark:border-indigo-950/30">
-                                <label
-                                    class="flex items-center text-[10px] font-bold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6h16M4 12h16M4 18h7" />
+                            <div class="mt-8 rounded-2xl border border-indigo-100/50 bg-indigo-50/20 p-5 dark:border-indigo-950/30 dark:bg-indigo-950/10">
+                                <label class="flex items-center text-[10px] font-bold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
                                     </svg>
                                     Teks Pembuka
                                 </label>
-                                <div class="mt-2 text-xs leading-relaxed italic text-slate-600 dark:text-slate-400">
+                                <div class="mt-2 text-xs italic leading-relaxed text-slate-600 dark:text-slate-400">
                                     {!! nl2br(e($customPenawaran->intro_text)) !!}
                                 </div>
                             </div>
@@ -241,12 +233,9 @@
 
                         <!-- Catatan Penolakan Supervisor -->
                         @if ($customPenawaran->status === 'rejected_supervisor' || !empty($customPenawaran->reason))
-                            <div
-                                class="mt-4 p-5 bg-rose-50/30 border border-rose-100 rounded-2xl dark:bg-rose-950/10 dark:border-rose-950/30">
-                                <label
-                                    class="flex items-center text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
+                            <div class="mt-4 rounded-2xl border border-rose-100 bg-rose-50/30 p-5 dark:border-rose-950/30 dark:bg-rose-950/10">
+                                <label class="flex items-center text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
@@ -261,70 +250,59 @@
                 </div>
 
                 <!-- Right Column: Sidebar (Ringkasan Penawaran & Action Buttons) -->
-                <div class="lg:col-span-1 space-y-6">
+                <div class="space-y-6 lg:col-span-1">
                     <!-- Ringkasan Penawaran Card -->
-                    <div
-                        class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 dark:bg-gray-800 dark:border-gray-700">
+                    <div class="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">
                             Ringkasan Penawaran</h2>
 
-                        <div class="space-y-4 mt-6">
+                        <div class="mt-6 space-y-4">
                             <!-- Subtotal -->
                             <div class="flex items-center justify-between text-xs">
-                                <span
-                                    class="font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sub-Total Barang</span>
+                                <span class="font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Sub-Total Barang</span>
                                 <span class="font-bold text-slate-800 dark:text-white">
-                                    <span
-                                        class="mr-0.5 text-[10px] text-gray-400 font-medium">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
+                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
                                 </span>
                             </div>
 
                             <!-- Pajak / PPN -->
                             <div class="flex items-center justify-between text-xs">
                                 <div class="flex items-center space-x-1">
-                                    <span
-                                        class="font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Pajak / PPN</span>
-                                    <span
-                                        class="rounded bg-slate-100 dark:bg-gray-700 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:text-gray-400">
+                                    <span class="font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pajak / PPN</span>
+                                    <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-gray-700 dark:text-gray-400">
                                         {{ $customPenawaran->tax > 0 ? 'ESTIMATED' : '0%' }}
                                     </span>
                                 </div>
                                 <span class="font-bold text-slate-800 dark:text-white">
-                                    <span
-                                        class="mr-0.5 text-[10px] text-gray-400 font-medium">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
+                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
                                 </span>
                             </div>
 
                             <!-- Divider -->
-                            <div class="border-t border-slate-100 dark:border-gray-700 my-4"></div>
+                            <div class="my-4 border-t border-slate-100 dark:border-gray-700"></div>
 
                             <!-- Grand Total -->
                             <div class="flex items-center justify-between">
-                                <span
-                                    class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Bayar</span>
+                                <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Bayar</span>
                                 <div class="text-right">
-                                    <span
-                                        class="block text-[9px] font-extrabold text-[#225A97] dark:text-[#818CF8] uppercase tracking-wider">IDR</span>
-                                    <span
-                                        class="text-2xl font-black text-slate-800 dark:text-white tracking-tight">{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
+                                    <span class="block text-[9px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">IDR</span>
+                                    <span class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
                                 </div>
                             </div>
 
                             <!-- Divider -->
-                            <div class="border-t border-slate-100 dark:border-gray-700 my-4"></div>
+                            <div class="my-4 border-t border-slate-100 dark:border-gray-700"></div>
 
                             <!-- Dibuat -->
                             <div class="flex items-center justify-between text-[10px]">
                                 <span class="font-semibold uppercase tracking-wider text-gray-400">Dibuat</span>
-                                <span
-                                    class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
+                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
                             </div>
 
                             <!-- Diperbarui -->
                             <div class="flex items-center justify-between text-[10px]">
                                 <span class="font-semibold uppercase tracking-wider text-gray-400">Diperbarui</span>
-                                <span
-                                    class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
+                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
                             </div>
                         </div>
                     </div>
@@ -333,31 +311,23 @@
                     <div class="space-y-3">
                         {{-- Approval Actions for Supervisor --}}
                         @if (in_array($customPenawaran->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
-                            <div
-                                class="p-5 bg-amber-50/50 border border-amber-200 rounded-3xl dark:bg-amber-950/10 dark:border-amber-900/30 space-y-3">
+                            <div class="space-y-3 rounded-3xl border border-amber-200 bg-amber-50/50 p-5 dark:border-amber-900/30 dark:bg-amber-950/10">
                                 <h3 class="text-[10px] font-black uppercase tracking-wider text-amber-700">Persetujuan Supervisor</h3>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}"
-                                        method="POST" class="w-full">
+                                    <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}" method="POST" class="w-full">
                                         @csrf
                                         <button type="submit" name="action" value="approve"
-                                            class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-lg shadow-emerald-100/50 hover:bg-emerald-700 transition-all active:scale-[0.98] dark:shadow-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M5 13l4 4L19 7" />
+                                            class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-lg shadow-emerald-100/50 transition-all hover:bg-emerald-700 active:scale-[0.98] dark:shadow-none">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                                             </svg>
                                             <span>Approve</span>
                                         </button>
                                     </form>
-                                    <button
-                                        onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')"
-                                        title="Tolak"
-                                        class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-rose-600 py-3 text-xs font-bold text-white shadow-lg shadow-rose-100/50 hover:bg-rose-700 transition-all active:scale-[0.98] dark:shadow-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M6 18L18 6M6 6l12 12" />
+                                    <button onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')" title="Tolak"
+                                        class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-rose-600 py-3 text-xs font-bold text-white shadow-lg shadow-rose-100/50 transition-all hover:bg-rose-700 active:scale-[0.98] dark:shadow-none">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                         <span>Reject</span>
                                     </button>
@@ -368,9 +338,8 @@
                         {{-- Edit Button (Sales Only) --}}
                         @if (Auth::user()->role === 'Sales')
                             <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
-                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-100/30 hover:bg-[#1a4675] transition-all active:scale-[0.98] dark:shadow-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-100/30 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
@@ -387,9 +356,8 @@
 
                         @if ($canDownload && Auth::user()->role !== 'Supervisor')
                             <a href="{{ route($pdfRoute, $customPenawaran->id) }}" target="_blank"
-                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#102A47] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 hover:bg-[#0d223a] transition-all active:scale-[0.98] dark:shadow-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#102A47] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 transition-all hover:bg-[#0d223a] active:scale-[0.98] dark:shadow-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
@@ -397,10 +365,9 @@
                             </a>
                         @else
                             <button disabled
-                                class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-2xl bg-[#EEF2FF] border border-slate-200 py-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:bg-gray-700/50 dark:border-gray-700 dark:text-gray-500"
+                                class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-[#EEF2FF] py-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:border-gray-700 dark:bg-gray-700/50 dark:text-gray-500"
                                 title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                 </svg>
@@ -410,13 +377,11 @@
 
                         {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
                         @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
-                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}" method="POST"
-                                class="w-full">
+                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}" method="POST" class="w-full">
                                 @csrf
                                 <button type="submit"
-                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 hover:bg-[#1a4675] transition-all active:scale-[0.98] dark:shadow-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
@@ -428,15 +393,12 @@
 
                         {{-- Dangerous Actions: Delete (Sales Only) --}}
                         @if (Auth::user()->role === 'Sales')
-                            <form id="deleteCustomPenawaranForm"
-                                action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}" method="POST"
-                                class="w-full">
+                            <form id="deleteCustomPenawaranForm" action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}" method="POST" class="w-full">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" id="btnDeleteCustomPenawaran"
-                                    class="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white py-3 text-xs font-bold uppercase tracking-wider text-rose-600 hover:bg-rose-50 transition-all active:scale-[0.98] dark:bg-gray-800 dark:hover:bg-rose-950/20 dark:border-rose-900/30">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                        stroke="currentColor">
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white py-3 text-xs font-bold uppercase tracking-wider text-rose-600 transition-all hover:bg-rose-50 active:scale-[0.98] dark:border-rose-900/30 dark:bg-gray-800 dark:hover:bg-rose-950/20">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                     </svg>
@@ -449,15 +411,13 @@
             </div>
 
             <!-- Items Card (Detail Barang) - Full Width Below the Grid -->
-            <div
-                class="mb-6 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-                <div class="flex items-center justify-between p-6 border-b border-slate-50 dark:border-gray-700">
+            <div class="mb-6 overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-between border-b border-slate-50 p-6 dark:border-gray-700">
                     <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">Detail Barang</h2>
                 </div>
                 <div class="overflow-x-auto overflow-y-auto" style="max-height: 600px;">
                     <table class="w-full text-left text-sm">
-                        <thead
-                            class="bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-750 dark:text-gray-400 border-b border-slate-100 dark:border-gray-700">
+                        <thead class="dark:bg-gray-750 border-b border-slate-100 bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:border-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="px-6 py-4">Barang & Detail</th>
                                 <th class="px-6 py-4 text-center">Diskon</th>
@@ -476,7 +436,7 @@
                                                 {{ $item->product_name }}
                                             </span>
                                             @if ($item->description)
-                                                <span class="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase">
+                                                <span class="text-[10px] font-semibold uppercase text-gray-400 dark:text-gray-500">
                                                     Note: {{ $item->description }}
                                                 </span>
                                             @endif
@@ -490,8 +450,7 @@
                                                     {{ number_format($dk, 2, '.', ',') }}%
                                                 </span>
                                                 @if ($dk > 20)
-                                                    <span
-                                                        class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-red-500">Approval Required</span>
+                                                    <span class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-red-500">Approval Required</span>
                                                 @endif
                                             </div>
                                         @else
@@ -500,15 +459,13 @@
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         <div class="flex flex-col">
-                                            <span
-                                                class="font-bold text-slate-800 dark:text-white">{{ $item->qty }} {{ $item->unit }}</span>
+                                            <span class="font-bold text-slate-800 dark:text-white">{{ $item->qty }} {{ $item->unit }}</span>
                                         </div>
                                     </td>
-                                    <td class="whitespace-nowrap px-6 py-5 text-slate-600 dark:text-gray-400 text-sm">
+                                    <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-600 dark:text-gray-400">
                                         {{ number_format($item->price, 0, '.', ',') }}
                                     </td>
-                                    <td
-                                        class="whitespace-nowrap px-6 py-5 font-bold text-[#225A97] dark:text-[#818CF8] text-sm">
+                                    <td class="whitespace-nowrap px-6 py-5 text-sm font-bold text-[#225A97] dark:text-[#818CF8]">
                                         @php
                                             $totalSetelahDiskon = $item->qty * $item->price * (1 - ($item->discount ?? 0) / 100);
                                         @endphp
@@ -536,8 +493,7 @@
                                                         }
                                                     @endphp
                                                     @if ($imgUrl)
-                                                        <button type="button"
-                                                            class="custom-quotation-thumb inline-block transition-transform hover:scale-110 active:scale-95"
+                                                        <button type="button" class="custom-quotation-thumb inline-block transition-transform hover:scale-110 active:scale-95"
                                                             data-full="{{ $imgUrl }}">
                                                             <img class="inline-block h-8 w-8 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800"
                                                                 src="{{ $imgUrl }}" alt="Item image">
@@ -570,13 +526,12 @@
 
     <!-- Image modal (lightbox) -->
     <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-70">
-        <button id="image-modal-close"
-            class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
+        <button id="image-modal-close" class="absolute right-6 top-6 text-3xl leading-none text-white">&times;</button>
         <img id="image-modal-img" src="" alt="Gambar" class="max-h-[90%] max-w-[95%] rounded shadow-lg">
     </div>
 
     <script>
-        (function () {
+        (function() {
             const modal = document.getElementById('image-modal');
             const modalImg = document.getElementById('image-modal-img');
             const closeBtn = document.getElementById('image-modal-close');
@@ -593,7 +548,7 @@
                 modal.classList.remove('flex');
             }
 
-            document.addEventListener('click', function (e) {
+            document.addEventListener('click', function(e) {
                 const btn = e.target.closest('.custom-quotation-thumb');
                 if (btn) {
                     const src = btn.getAttribute('data-full');
@@ -606,18 +561,18 @@
 
             if (closeBtn) closeBtn.addEventListener('click', closeModal);
             if (modal) {
-                modal.addEventListener('click', function (e) {
+                modal.addEventListener('click', function(e) {
                     if (e.target === modal) closeModal();
                 });
             }
-            document.addEventListener('keydown', function (e) {
+            document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') closeModal();
             });
 
             // SweetAlert for Delete
             const btnDelete = document.getElementById('btnDeleteCustomPenawaran');
             if (btnDelete) {
-                btnDelete.addEventListener('click', function () {
+                btnDelete.addEventListener('click', function() {
                     Swal.fire({
                         title: 'Hapus Custom Quotation?',
                         text: "Data ini akan dihapus permanen dari sistem.",

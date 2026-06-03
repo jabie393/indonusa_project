@@ -192,7 +192,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/orders/{id}/reject', [QuotationApprovalController::class, 'incomingReject'])->name('orders.reject');
     Route::get('/orders/history', [QuotationApprovalController::class, 'incomingHistory'])->name('orders.history');
 
-    // Supervisor approval for Request Orders (from Sales)
+    // Supervisor approval for Quotations (from Sales)
     Route::post('/quotation/{quotation}/approve', [QuotationApprovalController::class, 'approve'])->name('supervisor.quotation.approve');
     Route::post('/quotation/{quotation}/reject', [QuotationApprovalController::class, 'reject'])->name('supervisor.quotation.reject');
     Route::get('/custom-quotation-approval/{customQuotation}/pdf', [CustomQuotationController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');

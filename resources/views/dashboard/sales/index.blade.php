@@ -166,13 +166,13 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Riwayat Request Order</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Riwayat Quotation</h1>
                 </div>
                 <div id="tableContainer" class="grow overflow-x-auto overflow-y-auto">
                     <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400" id="">
                         <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="text-nowrap px-4 py-3">No. Request Order</th>
+                                <th class="text-nowrap px-4 py-3">No. Quotation</th>
                                 <th class="text-nowrap px-4 py-3">No. Sales Order</th>
                                 <th class="text-nowrap px-4 py-3">Tanggal</th>
                                 <th class="text-nowrap px-4 py-3">Nama Pelanggan</th>

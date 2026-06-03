@@ -127,6 +127,10 @@
     <script>
         window.sweetTitle = @json(session('title'));
         window.sweetText = @json(session('text'));
+        @if ($errors->any())
+            window.errorTitle = "Gagal!";
+            window.errorText = {!! json_encode(implode("\n", $errors->all())) !!};
+        @endif
     </script>
 
     {{-- DataTable --}}
