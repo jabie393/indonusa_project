@@ -95,10 +95,13 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## PDF / Browsershot Setup on Linux VPS
 
-Untuk memastikan fitur cetak PDF menggunakan `spatie/browsershot` berfungsi dengan benar di server Linux VPS (Ubuntu/Debian) Anda:
+Untuk memastikan fitur cetak PDF menggunakan `spatie/browsershot` berfungsi dengan benar di server Linux VPS (Ubuntu/Debian):
+
+### Opsi A: Untuk VPS berbasis Intel/AMD (x86_64)
+
+Jalankan perintah berikut secara berurutan di terminal SSH server (menggunakan user `root` atau `sudo`):
 
 1. **Instal Google Chrome Resmi (Versi Non-Snap)**:
-   Jalankan perintah berikut secara berurutan di terminal SSH server (menggunakan user `root` atau `sudo`):
    ```bash
    # Hapus Chromium Snap bawaan Ubuntu (jika ada) untuk menghindari permission issues
    sudo apt purge -y chromium-browser
@@ -113,17 +116,48 @@ Untuk memastikan fitur cetak PDF menggunakan `spatie/browsershot` berfungsi deng
    ```
 
 2. **Dapatkan Path Google Chrome**:
-   Jalankan perintah `which google-chrome` (biasanya mengembalikan `/usr/bin/google-chrome`).
+   Jalankan `which google-chrome` (biasanya mengembalikan `/usr/bin/google-chrome`).
 
 3. **Konfigurasikan `.env` Server**:
-   Tambahkan baris berikut ke file `.env` di VPS Anda:
    ```env
    CHROME_PATH=/usr/bin/google-chrome
    BROWSERSHOT_NO_SANDBOX=true
    ```
 
-4. **Perbarui Cache Konfigurasi**:
-   Jalankan perintah berikut di root folder proyek:
+---
+
+### Opsi B: Untuk VPS berbasis ARM64 (seperti Oracle Cloud Free Tier / Ampere)
+
+Jalankan perintah berikut secara berurutan di terminal SSH server (menggunakan user `root` atau `sudo`):
+
+1. **Instal Chromium Native (.deb via PPA)**:
    ```bash
-   php artisan config:cache
+   # Hapus Chromium Snap bawaan Ubuntu (jika ada) untuk menghindari permission issues
+   sudo snap remove chromium
+   sudo apt purge -y chromium-browser
+
+   # Tambahkan PPA xtradeb yang menyediakan Chromium versi native (.deb) untuk ARM64
+   sudo add-apt-repository ppa:xtradeb/apps -y
+   sudo apt update
+
+   # Instal Chromium
+   sudo apt install -y chromium
    ```
+
+2. **Dapatkan Path Chromium**:
+   Jalankan `which chromium` (biasanya mengembalikan `/usr/bin/chromium`).
+
+3. **Konfigurasikan `.env` Server**:
+   ```env
+   CHROME_PATH=/usr/bin/chromium
+   BROWSERSHOT_NO_SANDBOX=true
+   ```
+
+---
+
+### Langkah Final (Semua Arsitektur)
+
+Setelah melakukan perubahan konfigurasi `.env`, jalankan perintah pembersihan cache di root folder proyek:
+```bash
+php artisan config:cache
+```
