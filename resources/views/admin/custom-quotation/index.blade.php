@@ -161,7 +161,7 @@
                                                 'pending_approval' => 'Waiting for Supervisor Approval',
                                                 'open' => 'Open',
                                                 'sent_to_warehouse' => 'Sent to Warehouse',
-                                                'sent_to_penawaran' => 'Sent to Penawaran',
+                                                'sent_to_quotation' => 'Sent to Quotation',
                                                 'approved' => 'Approved / Open',
                                                 'rejected' => 'Rejected',
                                                 'expired' => 'Expired',
@@ -189,7 +189,7 @@
                                             $badgeText = 'text-amber-800 dark:text-amber-300';
                                             $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif (in_array($penawaran->status, ['open', 'sent_to_warehouse', 'sent_to_penawaran'])) {
+                                        } elseif (in_array($penawaran->status, ['open', 'sent_to_warehouse', 'sent_to_quotation'])) {
                                             $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
                                             $badgeText = 'text-blue-700 dark:text-blue-300';
                                             $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
