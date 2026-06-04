@@ -13,7 +13,7 @@
             ],
             'warehouse' => [
                 'pdf' => asset('docs/manual-guide-warehouse.pdf'),
-                'video' => 'https://www.youtube.com/watch?v=uV9koQm__fI',
+                'video' => 'https://youtu.be/ZwLUoh1OuYo?si=vQKQzn65F7hSL_iR',
             ],
             'general affair' => [
                 'pdf' => asset('file/docs/PEDOMAN.pdf'),
@@ -30,7 +30,8 @@
     <div
         class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-4xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         {{-- Header --}}
-        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+        <div
+            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">Panduan Manual</h3>
             <div class="modal-action m-0">
                 <form method="dialog">
@@ -48,7 +49,8 @@
         </div>
 
         {{-- Content --}}
-        <div id="guideContent" class="bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7 flex-1 overflow-y-auto min-h-0">
+        <div id="guideContent"
+            class="bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7 flex-1 overflow-y-auto min-h-0">
             {{-- Guide selector --}}
             <div id="guideSelector" class="grid gap-4 md:grid-cols-2">
                 <div class="col-span-2 mb-2">
@@ -85,7 +87,8 @@
                         </svg>
                     </div>
                     <h4 class="text-xl font-semibold text-slate-900 dark:text-white">Panduan Video</h4>
-                    <p class="mt-1 text-sm text-slate-600 dark:text-gray-300">Tonton langkah-langkah penggunaan panduan.</p>
+                    <p class="mt-1 text-sm text-slate-600 dark:text-gray-300">Tonton langkah-langkah penggunaan panduan.
+                    </p>
                 </button>
             </div>
 
@@ -94,9 +97,14 @@
                 <div class="mb-4 flex items-center justify-between">
                     <h4 id="guideViewerTitle" class="text-lg font-semibold text-slate-900 dark:text-white"></h4>
                 </div>
-                <div id="guideViewerContent" class="h-[50vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900"></div>
-                <footer class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 pt-5 dark:bg-gray-800 dark:border-gray-700">
-                    <button id="backToGuideSelector" class="px-6 py-2 text-sm font-medium text-slate-600 transition ring-1 ring-slate-200 hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700" type="submit">
+                <div id="guideViewerContent"
+                    class="h-[50vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900">
+                </div>
+                <footer
+                    class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 pt-5 dark:bg-gray-800 dark:border-gray-700">
+                    <button id="backToGuideSelector"
+                        class="px-6 py-2 text-sm font-medium text-slate-600 transition ring-1 ring-slate-200 hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        type="submit">
                         Kembali
                     </button>
                 </footer>
@@ -109,7 +117,7 @@
 </dialog>
 
 <script>
-    (function() {
+    (function () {
         const guideModal = document.getElementById('guide');
         const selector = document.getElementById('guideSelector');
         const viewer = document.getElementById('guideViewer');
@@ -199,19 +207,19 @@
         };
 
         selector.querySelectorAll('.guide-option').forEach((button) => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 renderViewer(this.dataset.guideType);
             });
         });
 
-        backButton.addEventListener('click', function() {
+        backButton.addEventListener('click', function () {
             viewer.classList.add('hidden');
             selector.classList.remove('hidden');
             viewerContent.innerHTML = '';
         });
 
         // Stop video only whenever modal is closed, without changing current view.
-        guideModal.addEventListener('close', function() {
+        guideModal.addEventListener('close', function () {
             stopYoutubePlayback();
         });
     })();
