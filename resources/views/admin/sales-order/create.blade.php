@@ -3,7 +3,7 @@
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Buat Sales Order</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Buat sales order dari penawaran yang ada</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Buat sales order dari quotation yang ada</p>
             </div>
         </div>
         <div class="card">
@@ -13,7 +13,7 @@
                       enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Penawaran Selection -->
+                    <!-- Quotation Selection -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-sm">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
@@ -27,21 +27,21 @@
                                      stroke-linecap="round"
                                      stroke-linejoin="round">
                                     <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path>
-                                </svg> Pilih Penawaran
+                                </svg> Pilih Quotation
                             </h3>
                         </div>
                         <div class="p-5">
                             <div>
-                                <label for="custom_penawaran_id"
-                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Penawaran</label>
-                                <select id="custom_penawaran_id"
-                                        name="custom_penawaran_id"
+                                <label for="custom_quotation_id"
+                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Quotation</label>
+                                <select id="custom_quotation_id"
+                                        name="custom_quotation_id"
                                         class="w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
-                                    <option value="">-- Pilih Penawaran --</option>
-                                    @foreach ($customPenawarans as $penawaran)
-                                        <option value="{{ $penawaran->id }}"
-                                                data-penawaran="{{ json_encode($penawaran) }}">
-                                            {{ $penawaran->penawaran_number }} - {{ $penawaran->to }} - {{ $penawaran->subject }}
+                                    <option value="">-- Pilih Quotation --</option>
+                                    @foreach ($customQuotations as $quotation)
+                                        <option value="{{ $quotation->id }}"
+                                                data-quotation="{{ json_encode($quotation) }}">
+                                            {{ $quotation->quotation_number }} - {{ $quotation->to }} - {{ $quotation->subject }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -508,12 +508,12 @@
                 return parseInt(value.replace(/\D/g, '')) || 0;
             }
 
-            // Load penawaran data
-            document.getElementById('custom_penawaran_id').addEventListener('change', function() {
+            // Load quotation data
+            document.getElementById('custom_quotation_id').addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
-                const penawaran = selectedOption.dataset.penawaran ? JSON.parse(selectedOption.dataset.penawaran) : null;
+                const quotation = selectedOption.dataset.quotation ? JSON.parse(selectedOption.dataset.quotation) : null;
 
-                if (!penawaran) {
+                if (!quotation) {
                     // Clear form
                     document.getElementById('to').value = '';
                     document.getElementById('up').value = '';
@@ -526,17 +526,17 @@
                 }
 
                 // Fill in the form fields
-                document.getElementById('to').value = penawaran.to || '';
-                document.getElementById('up').value = penawaran.up || '';
-                document.getElementById('subject').value = penawaran.subject || '';
-                document.getElementById('email').value = penawaran.email || '';
-                document.getElementById('intro_text').value = penawaran.intro_text || '';
-                document.getElementById('date').value = penawaran.date || '';
+                document.getElementById('to').value = quotation.to || '';
+                document.getElementById('up').value = quotation.up || '';
+                document.getElementById('subject').value = quotation.subject || '';
+                document.getElementById('email').value = quotation.email || '';
+                document.getElementById('intro_text').value = quotation.intro_text || '';
+                document.getElementById('date').value = quotation.date || '';
 
                 // Load items if available
-                if (penawaran.items && penawaran.items.length > 0) {
+                if (quotation.items && quotation.items.length > 0) {
                     clearItems();
-                    penawaran.items.forEach((item, index) => {
+                    quotation.items.forEach((item, index) => {
                         if (index === 0) {
                             // Modify first row
                             const row = document.querySelector('.item-row[data-index="0"]');
@@ -546,7 +546,7 @@
                             addNewItemRow(item, index);
                         }
                     });
-                    itemCount = penawaran.items.length;
+                    itemCount = quotation.items.length;
                 }
 
                 calculateTotals();

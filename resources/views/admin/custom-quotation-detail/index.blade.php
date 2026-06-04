@@ -2,7 +2,7 @@
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
             @php
-                $orderStatus = $customPenawaran->status;
+                $orderStatus = $customQuotation->status;
 
                 $bannerKey = $orderStatus;
                 if (in_array($orderStatus, ['pending_approval', 'sent'])) {
@@ -16,7 +16,7 @@
                         'icon_bg' => 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400',
                         'icon' =>
                             '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
-                        'title' => 'Penawaran Ditolak Supervisor',
+                        'title' => 'Quotation Ditolak Supervisor',
                         'title_text' => 'text-rose-800 dark:text-rose-300',
                         'desc_text' => 'text-rose-700/80 dark:text-rose-400/80',
                     ],
@@ -57,21 +57,21 @@
                             <div class="mt-1 space-y-1">
                                 <p class="{{ $activeConfig['desc_text'] }} text-xs">
                                     <span class="mr-1 text-[10px] font-black uppercase opacity-60">Alasan:</span>
-                                    {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
+                                    {{ $customQuotation->reason ?? 'Keterangan tidak tersedia' }}
                                 </p>
-                                @if ($customPenawaran->supervisor)
+                                @if ($customQuotation->supervisor)
                                     <p class="text-[10px] font-semibold uppercase tracking-wider text-rose-500/80">
-                                        Oleh {{ $customPenawaran->supervisor->name }}
-                                        @if ($customPenawaran->approved_at)
+                                        Oleh {{ $customQuotation->supervisor->name }}
+                                        @if ($customQuotation->approved_at)
                                             &middot;
-                                            {{ \Carbon\Carbon::parse($customPenawaran->approved_at)->translatedFormat('d M Y, H:i') }}
+                                            {{ \Carbon\Carbon::parse($customQuotation->approved_at)->translatedFormat('d M Y, H:i') }}
                                         @endif
                                     </p>
                                 @endif
                             </div>
                         @elseif ($bannerKey === 'sent_to_supervisor')
                             <p class="{{ $activeConfig['desc_text'] }} mt-1 text-xs">
-                                Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                                Quotation mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
                             </p>
                         @elseif ($bannerKey === 'approved_supervisor')
                             <p class="{{ $activeConfig['desc_text'] }} mt-1 text-xs">
@@ -82,7 +82,7 @@
 
                     @if ($bannerKey === 'rejected_supervisor' && Auth::user()->role === 'Sales')
                         <div class="mt-3 shrink-0 md:mt-0">
-                            <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
+                            <a href="{{ route('sales.custom-quotation.edit', $customQuotation->id) }}"
                                 class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -96,18 +96,18 @@
             @endif
 
             <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-                <!-- Left Column: Informasi Penawaran -->
+                <!-- Left Column: Informasi Quotation -->
                 <div class="space-y-6 lg:col-span-2">
                     <div class="rounded-3xl border border-slate-100 bg-white p-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="space-y-1">
-                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi Penawaran Custom</span>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi Quotation Custom</span>
                             <div class="flex flex-wrap items-center gap-3">
                                 <h1 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
-                                    {{ $customPenawaran->penawaran_number ?? '-' }}</h1>
-                                @if ($customPenawaran->our_ref)
+                                    {{ $customQuotation->quotation_number ?? '-' }}</h1>
+                                @if ($customQuotation->our_ref)
                                     <span
                                         class="inline-flex items-center rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
-                                        {{ $customPenawaran->our_ref }}
+                                        {{ $customQuotation->our_ref }}
                                     </span>
                                 @endif
                             </div>
@@ -115,7 +115,7 @@
 
                         <!-- Status Badge Below Title -->
                         @php
-                            $statusText = $customPenawaran->status;
+                            $statusText = $customQuotation->status;
                             $statusClass = 'bg-blue-50/50 text-blue-600 border border-blue-200';
                             $statusDot = 'bg-blue-500';
 
@@ -146,7 +146,7 @@
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kepada (To)</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                    {{ $customPenawaran->to }}</p>
+                                    {{ $customQuotation->to }}</p>
                             </div>
 
                             <!-- PIC (SALES) -->
@@ -159,7 +159,7 @@
                                         </svg>
                                     </div>
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                        {{ $customPenawaran->sales->name ?? '-' }}</p>
+                                        {{ $customQuotation->sales->name ?? '-' }}</p>
                                 </div>
                             </div>
 
@@ -167,21 +167,21 @@
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Email</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                    {{ $customPenawaran->email ?? '-' }}</p>
+                                    {{ $customQuotation->email ?? '-' }}</p>
                             </div>
 
                             <!-- SUBJECT -->
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Subject</span>
                                 <p class="mt-1 text-sm font-semibold italic text-slate-800 dark:text-gray-200">
-                                    "{{ $customPenawaran->subject ?? '-' }}"</p>
+                                    "{{ $customQuotation->subject ?? '-' }}"</p>
                             </div>
 
                             <!-- ATTENTION (UP) -->
                             <div>
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Attention (Up)</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                    {{ $customPenawaran->up ?? '-' }}</p>
+                                    {{ $customQuotation->up ?? '-' }}</p>
                             </div>
 
                             <!-- MASA BERLAKU -->
@@ -189,11 +189,11 @@
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Masa Berlaku</span>
                                 <div class="mt-1">
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                        {{ $customPenawaran->expired_at ? $customPenawaran->expired_at->format('d M Y') : '-' }}</p>
-                                    @if ($customPenawaran->expired_at)
+                                        {{ $customQuotation->expired_at ? $customQuotation->expired_at->format('d M Y') : '-' }}</p>
+                                    @if ($customQuotation->expired_at)
                                         @php
-                                            $isExpired = now() > $customPenawaran->expired_at;
-                                            $daysLeft = now()->diffInDays($customPenawaran->expired_at, false);
+                                            $isExpired = now() > $customQuotation->expired_at;
+                                            $daysLeft = now()->diffInDays($customQuotation->expired_at, false);
                                         @endphp
                                         @if ($isExpired)
                                             <span
@@ -208,16 +208,16 @@
                                 </div>
                             </div>
 
-                            <!-- TGL PENAWARAN -->
+                            <!-- TGL QUOTATION -->
                             <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl Penawaran</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl Quotation</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                    {{ \Carbon\Carbon::parse($customPenawaran->date)->format('d M Y') }}</p>
+                                    {{ \Carbon\Carbon::parse($customQuotation->date)->format('d M Y') }}</p>
                             </div>
                         </div>
 
                         <!-- Teks Pembuka (Intro Text) -->
-                        @if ($customPenawaran->intro_text)
+                        @if ($customQuotation->intro_text)
                             <div class="mt-8 rounded-2xl border border-indigo-100/50 bg-indigo-50/20 p-5 dark:border-indigo-950/30 dark:bg-indigo-950/10">
                                 <label class="flex items-center text-[10px] font-bold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,13 +226,13 @@
                                     Teks Pembuka
                                 </label>
                                 <div class="mt-2 text-xs italic leading-relaxed text-slate-600 dark:text-slate-400">
-                                    {!! nl2br(e($customPenawaran->intro_text)) !!}
+                                    {!! nl2br(e($customQuotation->intro_text)) !!}
                                 </div>
                             </div>
                         @endif
 
                         <!-- Catatan Penolakan Supervisor -->
-                        @if ($customPenawaran->status === 'rejected_supervisor' || !empty($customPenawaran->reason))
+                        @if ($customQuotation->status === 'rejected_supervisor' || !empty($customQuotation->reason))
                             <div class="mt-4 rounded-2xl border border-rose-100 bg-rose-50/30 p-5 dark:border-rose-950/30 dark:bg-rose-950/10">
                                 <label class="flex items-center text-[10px] font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -242,26 +242,26 @@
                                     Catatan Penolakan Supervisor
                                 </label>
                                 <div class="mt-2 text-xs leading-relaxed text-rose-700 dark:text-rose-300">
-                                    {{ $customPenawaran->reason ?? 'Keterangan tidak tersedia' }}
+                                    {{ $customQuotation->reason ?? 'Keterangan tidak tersedia' }}
                                 </div>
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <!-- Right Column: Sidebar (Ringkasan Penawaran & Action Buttons) -->
+                <!-- Right Column: Sidebar (Ringkasan Quotation & Action Buttons) -->
                 <div class="space-y-6 lg:col-span-1">
-                    <!-- Ringkasan Penawaran Card -->
+                    <!-- Ringkasan Quotation Card -->
                     <div class="rounded-3xl border border-slate-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <h2 class="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-white">
-                            Ringkasan Penawaran</h2>
+                            Ringkasan Quotation</h2>
 
                         <div class="mt-6 space-y-4">
                             <!-- Subtotal -->
                             <div class="flex items-center justify-between text-xs">
                                 <span class="font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Sub-Total Barang</span>
                                 <span class="font-bold text-slate-800 dark:text-white">
-                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}
+                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customQuotation->subtotal, 0, '.', ',') }}
                                 </span>
                             </div>
 
@@ -270,11 +270,11 @@
                                 <div class="flex items-center space-x-1">
                                     <span class="font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Pajak / PPN</span>
                                     <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-gray-700 dark:text-gray-400">
-                                        {{ $customPenawaran->tax > 0 ? 'ESTIMATED' : '0%' }}
+                                        {{ $customQuotation->tax > 0 ? 'ESTIMATED' : '0%' }}
                                     </span>
                                 </div>
                                 <span class="font-bold text-slate-800 dark:text-white">
-                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}
+                                    <span class="mr-0.5 text-[10px] font-medium text-gray-400">Rp</span>{{ number_format($customQuotation->tax, 0, '.', ',') }}
                                 </span>
                             </div>
 
@@ -286,7 +286,7 @@
                                 <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Total Bayar</span>
                                 <div class="text-right">
                                     <span class="block text-[9px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">IDR</span>
-                                    <span class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
+                                    <span class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">{{ number_format($customQuotation->grand_total, 0, '.', ',') }}</span>
                                 </div>
                             </div>
 
@@ -296,13 +296,13 @@
                             <!-- Dibuat -->
                             <div class="flex items-center justify-between text-[10px]">
                                 <span class="font-semibold uppercase tracking-wider text-gray-400">Dibuat</span>
-                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->created_at->format('d M Y, H:i') }}</span>
+                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customQuotation->created_at->format('d M Y, H:i') }}</span>
                             </div>
 
                             <!-- Diperbarui -->
                             <div class="flex items-center justify-between text-[10px]">
                                 <span class="font-semibold uppercase tracking-wider text-gray-400">Diperbarui</span>
-                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customPenawaran->updated_at->format('d M Y, H:i') }}</span>
+                                <span class="font-bold text-gray-600 dark:text-gray-400">{{ $customQuotation->updated_at->format('d M Y, H:i') }}</span>
                             </div>
                         </div>
                     </div>
@@ -310,11 +310,11 @@
                     <!-- Action Buttons -->
                     <div class="space-y-3">
                         {{-- Approval Actions for Supervisor --}}
-                        @if (in_array($customPenawaran->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
+                        @if (in_array($customQuotation->status, ['sent', 'pending_approval']) && auth()->user()->role === 'Supervisor')
                             <div class="space-y-3 rounded-3xl border border-amber-200 bg-amber-50/50 p-5 dark:border-amber-900/30 dark:bg-amber-950/10">
                                 <h3 class="text-[10px] font-black uppercase tracking-wider text-amber-700">Persetujuan Supervisor</h3>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <form action="{{ route('admin.custom-quotation-approval.approval', $customPenawaran) }}" method="POST" class="w-full">
+                                    <form action="{{ route('admin.custom-quotation-approval.approval', $customQuotation) }}" method="POST" class="w-full">
                                         @csrf
                                         <button type="submit" name="action" value="approve"
                                             class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-emerald-600 py-3 text-xs font-bold text-white shadow-lg shadow-emerald-100/50 transition-all hover:bg-emerald-700 active:scale-[0.98] dark:shadow-none">
@@ -324,7 +324,7 @@
                                             <span>Approve</span>
                                         </button>
                                     </form>
-                                    <button onclick="openTolakModal('custom', '{{ $customPenawaran->id }}', '{{ $customPenawaran->penawaran_number }}')" title="Tolak"
+                                    <button onclick="openTolakModal('custom', '{{ $customQuotation->id }}', '{{ $customQuotation->quotation_number }}')" title="Tolak"
                                         class="flex w-full items-center justify-center space-x-2 rounded-2xl bg-rose-600 py-3 text-xs font-bold text-white shadow-lg shadow-rose-100/50 transition-all hover:bg-rose-700 active:scale-[0.98] dark:shadow-none">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -337,7 +337,7 @@
 
                         {{-- Edit Button (Sales Only) --}}
                         @if (Auth::user()->role === 'Sales')
-                            <a href="{{ route('sales.custom-quotation.edit', $customPenawaran->id) }}"
+                            <a href="{{ route('sales.custom-quotation.edit', $customQuotation->id) }}"
                                 class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-100/30 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -349,13 +349,13 @@
 
                         {{-- PDF Button (Enabled / Disabled) --}}
                         @php
-                            $isExpired = $customPenawaran->isExpired();
-                            $canDownload = in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor']) && !$isExpired;
+                            $isExpired = $customQuotation->isExpired();
+                            $canDownload = in_array($customQuotation->status, ['open', 'approved', 'approved_supervisor']) && !$isExpired;
                             $pdfRoute = Auth::user()->role === 'Sales' ? 'sales.custom-quotation.pdf' : 'admin.custom-quotation-approval.pdf';
                         @endphp
 
                         @if ($canDownload && Auth::user()->role !== 'Supervisor')
-                            <a href="{{ route($pdfRoute, $customPenawaran->id) }}" target="_blank"
+                            <a href="{{ route($pdfRoute, $customQuotation->id) }}" target="_blank"
                                 class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#102A47] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 transition-all hover:bg-[#0d223a] active:scale-[0.98] dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -366,7 +366,7 @@
                         @else
                             <button disabled
                                 class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-[#EEF2FF] py-3 text-xs font-bold uppercase tracking-wider text-slate-400 dark:border-gray-700 dark:bg-gray-700/50 dark:text-gray-500"
-                                title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                title="{{ $isExpired ? 'Quotation sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -376,8 +376,8 @@
                         @endif
 
                         {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
-                        @if (in_array($customPenawaran->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
-                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customPenawaran->id) }}" method="POST" class="w-full">
+                        @if (in_array($customQuotation->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
+                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customQuotation->id) }}" method="POST" class="w-full">
                                 @csrf
                                 <button type="submit"
                                     class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
@@ -393,10 +393,10 @@
 
                         {{-- Dangerous Actions: Delete (Sales Only) --}}
                         @if (Auth::user()->role === 'Sales')
-                            <form id="deleteCustomPenawaranForm" action="{{ route('sales.custom-quotation.destroy', $customPenawaran->id) }}" method="POST" class="w-full">
+                            <form id="deleteCustomQuotationForm" action="{{ route('sales.custom-quotation.destroy', $customQuotation->id) }}" method="POST" class="w-full">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" id="btnDeleteCustomPenawaran"
+                                <button type="button" id="btnDeleteCustomQuotation"
                                     class="flex w-full items-center justify-center gap-2 rounded-2xl border border-rose-200 bg-white py-3 text-xs font-bold uppercase tracking-wider text-rose-600 transition-all hover:bg-rose-50 active:scale-[0.98] dark:border-rose-900/30 dark:bg-gray-800 dark:hover:bg-rose-950/20">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -428,7 +428,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-gray-700">
-                            @forelse($customPenawaran->items as $index => $item)
+                            @forelse($customQuotation->items as $index => $item)
                                 <tr class="group transition-colors hover:bg-slate-50/50 dark:hover:bg-gray-700/30">
                                     <td class="px-6 py-5">
                                         <div class="flex flex-col space-y-0.5">
@@ -570,7 +570,7 @@
             });
 
             // SweetAlert for Delete
-            const btnDelete = document.getElementById('btnDeleteCustomPenawaran');
+            const btnDelete = document.getElementById('btnDeleteCustomQuotation');
             if (btnDelete) {
                 btnDelete.addEventListener('click', function() {
                     Swal.fire({
@@ -589,7 +589,7 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            document.getElementById('deleteCustomPenawaranForm').submit();
+                            document.getElementById('deleteCustomQuotationForm').submit();
                         }
                     });
                 });

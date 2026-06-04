@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Penawaran - Indonusa Jaya Bersama</title>
+        <title>Quotation - Indonusa Jaya Bersama</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Tailwind CDN -->
@@ -182,7 +182,7 @@
 
                         <tr>
                             <td class="">Subject</td>
-                            <td class="">Penawaran ---</td>
+                            <td class="">Quotation ---</td>
                             <td class="w-[75pt]">Email</td>
                             <td class="w-[180pt]">---</td>
                         </tr>

@@ -4,23 +4,23 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\CustomPenawaran;
-use App\Models\CustomPenawaranItem;
+use App\Models\CustomQuotation;
+use App\Models\CustomQuotationItem;
 use App\Models\User;
 
-class TestPenawaranSeeder extends Seeder
+class TestQuotationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        // Create a test penawaran with status 'sent'
+        // Create a test quotation with status 'sent'
         $sales = User::where('role', 'Sales')->first() ?? User::find(4);
         
-        $penawaran = CustomPenawaran::create([
+        $quotation = CustomQuotation::create([
             'sales_id' => $sales->id,
-            'penawaran_number' => 'QUO-20260305-001',
+            'quotation_number' => 'QUO-20260305-001',
             'to' => 'PT. Global Maju Sentosa',
             'up' => 'Bp. Handoko',
             'subject' => 'Penawaran Pengadaan Alat Kantor',
@@ -38,18 +38,17 @@ class TestPenawaranSeeder extends Seeder
         ]);
 
         // Add an item
-        CustomPenawaranItem::create([
-            'custom_penawaran_id' => $penawaran->id,
-            'nama_barang' => 'Kursi Kantor Ergonomis',
+        CustomQuotationItem::create([
+            'custom_quotation_id' => $quotation->id,
+            'product_name' => 'Kursi Kantor Ergonomis',
             'qty' => 5,
-            'satuan' => 'Unit',
-            'harga' => 1000000,
+            'unit' => 'Unit',
+            'price' => 1000000,
             'subtotal' => 5000000,
-            'diskon' => 0,
-            'keterangan' => 'Warna Hitam',
+            'discount' => 0,
+            'description' => 'Warna Hitam',
         ]);
 
-        echo "Test penawaran created: " . $penawaran->penawaran_number . "\n";
+        echo "Test quotation created: " . $quotation->quotation_number . "\n";
     }
 }
-

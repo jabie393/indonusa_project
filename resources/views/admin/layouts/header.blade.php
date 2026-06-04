@@ -100,16 +100,16 @@
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
                     @elseif (request()->routeIs('sales.quotation.create'))
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran Harga</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Quotation Harga</p>
                     @else
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat dan Mengelola Penawaran Harga</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat dan Mengelola Quotation Harga</p>
                     @endif
                 </div>
             @elseif (request()->routeIs('sales.custom-quotation.*'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Permintaan Penawaran Harga Khusus (Non-Stock)</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Permintaan Quotation Harga Khusus (Non-Stock)</p>
                 </div>
             @elseif (request()->routeIs('admin.quotation_approval'))
                 <div class="text-gray-100">

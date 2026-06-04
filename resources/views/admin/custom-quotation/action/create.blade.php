@@ -75,7 +75,7 @@
                                        value="{{ old('subject') }}"
                                        required
                                        class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                       placeholder="Judul penawaran">
+                                       placeholder="Judul quotation">
                                 @error('subject')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -135,7 +135,7 @@
                                           name="intro_text"
                                           rows="4"
                                           class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                          placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', '') }}</textarea>
+                                          placeholder="Masukkan teks pembuka quotation...">{{ old('intro_text', '') }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -315,7 +315,7 @@
                     <!-- Summary Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Quotation</h3>
                         </div>
                         <div class="p-5">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -420,7 +420,7 @@
                         </a>
                         <button type="submit"
                                 class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                            Simpan Penawaran
+                            Simpan Quotation
                         </button>
                     </div>
                     <script>

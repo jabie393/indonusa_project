@@ -101,14 +101,4 @@ class CustomQuotation extends Model
         }
     }
 
-    // Compatibility accessors for old column names
-    public function getPenawaranNumberAttribute()
-    {
-        return $this->quotation_number;
-    }
-
-    public function setPenawaranNumberAttribute($value)
-    {
-        $this->attributes['quotation_number'] = $value;
-    }
 }

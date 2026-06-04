@@ -20,7 +20,7 @@ use Illuminate\Validation\Rule;
 class CustomQuotationController extends Controller
 {
     /**
-     * List semua custom penawarans milik sales
+     * List semua custom quotations milik sales
      */
     public function index(Request $request)
     {
@@ -57,13 +57,13 @@ class CustomQuotationController extends Controller
         }
 
         $perPage = $request->input('perPage', 10);
-        $customPenawarans = $query->paginate($perPage)->withQueryString();
+        $customQuotations = $query->paginate($perPage)->withQueryString();
 
-        return view('admin.custom-quotation.index', compact('customPenawarans'));
+        return view('admin.custom-quotation.index', compact('customQuotations'));
     }
 
     /**
-     * Form untuk membuat custom penawaran baru
+     * Form untuk membuat custom quotation baru
      */
     public function create()
     {
@@ -74,7 +74,7 @@ class CustomQuotationController extends Controller
     }
 
     /**
-     * Simpan custom penawaran baru
+     * Simpan custom quotation baru
      */
     public function store(Request $request)
     {
@@ -110,7 +110,7 @@ class CustomQuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $penawaran = CustomQuotation::create([
+            $quotation = CustomQuotation::create([
                 'sales_id' => Auth::id(),
                 'quotation_number' => CustomQuotation::generateQuotationNumber(),
                 'to' => $validated['to'],
@@ -125,10 +125,10 @@ class CustomQuotationController extends Controller
             ]);
 
             // Set expired_at to 14 days from created_at
-            $penawaran->update(['expired_at' => $penawaran->created_at->addDays(14)]);
+            $quotation->update(['expired_at' => $quotation->created_at->addDays(14)]);
 
-            // Log created penawaran id
-            Log::info('Custom Quotation Created', ['id' => $penawaran->id, 'sales_id' => $penawaran->sales_id]);
+            // Log created quotation id
+            Log::info('Custom Quotation Created', ['id' => $quotation->id, 'sales_id' => $quotation->sales_id]);
 
             $subtotal = 0;
             foreach ($validated['items'] as $i => $itemData) {
@@ -136,7 +136,7 @@ class CustomQuotationController extends Controller
                 if ($request->hasFile("items.$i.images")) {
                     foreach ($request->file("items.$i.images") as $file) {
                         if ($file) {
-                            $itemImages[] = $file->store('custom-penawaran-images', 'public');
+                            $itemImages[] = $file->store('custom-quotation-images', 'public');
                         }
                     }
                 }
@@ -148,7 +148,7 @@ class CustomQuotationController extends Controller
                 $subtotal += $itemSubtotal;
 
                 CustomQuotationItem::create([
-                    'custom_quotation_id' => $penawaran->id,
+                    'custom_quotation_id' => $quotation->id,
                     'product_name' => $itemData['nama_barang'],
                     'qty' => $itemData['qty'],
                     'unit' => $itemData['satuan'],
@@ -163,7 +163,7 @@ class CustomQuotationController extends Controller
                 ]);
             }
 
-            $penawaran->update([
+            $quotation->update([
                 'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
             ]);
@@ -171,60 +171,57 @@ class CustomQuotationController extends Controller
             DB::commit();
 
             // Log commit confirmation
-            Log::info('Custom Quotation Commit Successful', ['id' => $penawaran->id]);
+            Log::info('Custom Quotation Commit Successful', ['id' => $quotation->id]);
 
-            return redirect()->route('sales.custom-quotation.show', $penawaran->id)
-                ->with(['title' => 'Berhasil', 'text' => "Penawaran {$penawaran->quotation_number} berhasil dibuat."]);
+            return redirect()->route('sales.custom-quotation.show', $quotation->id)
+                ->with(['title' => 'Berhasil', 'text' => "Quotation {$quotation->quotation_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Custom Quotation Store Error', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 
-            return back()->withErrors('Gagal membuat penawaran: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Gagal membuat quotation: ' . $e->getMessage())->withInput();
         }
     }
 
     /**
-     * Lihat detail custom penawaran
+     * Lihat detail custom quotation
      */
     public function show(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
-        // Allow owner (Sales) or Supervisor/Admin to view the penawaran
+        // Allow owner (Sales) or Supervisor/Admin to view the quotation
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($customQuotation->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 
-        $customPenawaran->load('items', 'sales');
+        $customQuotation->load('items', 'sales');
 
-        return view('admin.custom-quotation-detail.index', compact('customPenawaran'));
+        return view('admin.custom-quotation-detail.index', compact('customQuotation'));
     }
 
     /**
-     * Form edit custom penawaran
+     * Form edit custom quotation
      */
     public function edit(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
-        if ($customPenawaran->sales_id !== Auth::id()) {
+        if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
 
-        $customPenawaran->load('items');
+        $customQuotation->load('items');
         $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.custom-quotation.action.edit', compact('customPenawaran', 'salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.action.edit', compact('customQuotation', 'salesUsers', 'currentUserName'));
     }
 
     /**
-     * Update custom penawaran
+     * Update custom quotation
      */
     public function update(Request $request, CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
-        if ($customPenawaran->sales_id !== Auth::id()) {
+        if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
 
@@ -253,7 +250,7 @@ class CustomQuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $customPenawaran->update([
+            $customQuotation->update([
                 'to' => $validated['to'],
                 'up' => $validated['up'],
                 'subject' => $validated['subject'],
@@ -264,8 +261,8 @@ class CustomQuotationController extends Controller
             ]);
 
             // Get existing items before deleting so we have a reference
-            $existingItems = $customPenawaran->items()->get();
-            $customPenawaran->items()->delete();
+            $existingItems = $customQuotation->items()->get();
+            $customQuotation->items()->delete();
 
             $needApproval = false;
             foreach ($validated['items'] as $i => $itemData) {
@@ -285,7 +282,7 @@ class CustomQuotationController extends Controller
                 if ($request->hasFile("items.$i.images")) {
                     foreach ($request->file("items.$i.images") as $file) {
                         if ($file) {
-                            $itemImages[] = $file->store('custom-penawaran-images', 'public');
+                            $itemImages[] = $file->store('custom-quotation-images', 'public');
                         }
                     }
                 }
@@ -302,7 +299,7 @@ class CustomQuotationController extends Controller
                 $subtotal += $itemSubtotal;
 
                 CustomQuotationItem::create([
-                    'custom_quotation_id' => $customPenawaran->id,
+                    'custom_quotation_id' => $customQuotation->id,
                     'product_name' => $itemData['nama_barang'],
                     'qty' => $itemData['qty'],
                     'unit' => $itemData['satuan'],
@@ -321,7 +318,7 @@ class CustomQuotationController extends Controller
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
             ];
 
-            if (!in_array($customPenawaran->status, ['approved', 'approved_supervisor'])) {
+            if (!in_array($customQuotation->status, ['approved', 'approved_supervisor'])) {
                 $updateData = array_merge($updateData, [
                     'status' => 'pending_approval',
                     'approved_by' => null,
@@ -330,57 +327,56 @@ class CustomQuotationController extends Controller
                 ]);
             }
 
-            $customPenawaran->update($updateData);
+            $customQuotation->update($updateData);
 
             DB::commit();
 
-            return redirect()->route('sales.custom-quotation.show', $customPenawaran->id)
-                ->with(['title' => 'Berhasil', 'text' => 'Penawaran berhasil diubah.']);
+            return redirect()->route('sales.custom-quotation.show', $customQuotation->id)
+                ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diubah.']);
         } catch (\Throwable $e) {
             DB::rollBack();
 
-            return back()->withErrors('Gagal mengubah penawaran: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Gagal mengubah quotation: ' . $e->getMessage())->withInput();
         }
     }
 
     /**
-     * Hapus custom penawaran
+     * Hapus custom quotation
      */
     public function destroy(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
-        if ($customPenawaran->sales_id !== Auth::id()) {
+        if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
 
         try {
-            DB::transaction(function () use ($customPenawaran) {
+            DB::transaction(function () use ($customQuotation) {
                 // If there is an associated order, delete it
-                if ($customPenawaran->order) {
-                    $customPenawaran->order->items()->delete();
-                    $customPenawaran->order->delete();
+                if ($customQuotation->order) {
+                    $customQuotation->order->items()->delete();
+                    $customQuotation->order->delete();
                 }
 
                 // If there is an associated request order, delete it
-                if ($customPenawaran->quotation) {
-                    $customPenawaran->quotation->items()->delete();
-                    $customPenawaran->quotation->delete();
+                if ($customQuotation->quotation) {
+                    $customQuotation->quotation->items()->delete();
+                    $customQuotation->quotation->delete();
                 }
 
-                // Delete custom penawaran items
-                $customPenawaran->items()->delete();
+                // Delete custom quotation items
+                $customQuotation->items()->delete();
 
-                // Delete the custom penawaran itself
-                $customPenawaran->delete();
+                // Delete the custom quotation itself
+                $customQuotation->delete();
             });
 
             return redirect()->route('sales.custom-quotation.index')->with([
-                'success' => 'Penawaran berhasil dihapus.',
+                'success' => 'Quotation berhasil dihapus.',
                 'title' => 'Terhapus!',
-                'text' => 'Penawaran Kustom dan data terkait telah berhasil dihapus dari sistem.',
+                'text' => 'Quotation Kustom dan data terkait telah berhasil dihapus dari sistem.',
             ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus penawaran: ' . $e->getMessage())->with([
+            return back()->withErrors('Gagal menghapus quotation: ' . $e->getMessage())->with([
                 'title' => 'Gagal!',
                 'text' => 'Terjadi kesalahan saat mencoba menghapus data.',
             ]);
@@ -389,22 +385,21 @@ class CustomQuotationController extends Controller
 
     public function pdf(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
         // Only owner (Sales) or Supervisor/Admin can view, but enforce approval rule:
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-        if ($customPenawaran->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
+        if ($customQuotation->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 
         // PDF hanya bisa didownload jika status approved_supervisor, kecuali Supervisor/Admin
-        if ($customPenawaran->status !== 'approved_supervisor') {
+        if ($customQuotation->status !== 'approved_supervisor') {
             if (!in_array($userRole, $allowed)) {
                 return back()->withErrors('PDF hanya dapat didownload setelah disetujui oleh Supervisor.');
             }
         }
 
-        $html = view('admin.pdf.custom-quotation-pdf', compact('customPenawaran'))->render();
+        $html = view('admin.pdf.custom-quotation-pdf', compact('customQuotation'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
@@ -431,51 +426,50 @@ class CustomQuotationController extends Controller
 
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Custom-Quotation-' . $customPenawaran->quotation_number . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="Custom-Quotation-' . $customQuotation->quotation_number . '.pdf"');
     }
 
     /**
-     * Sent Custom Penawaran to Warehouse (create Order with status sent_to_warehouse)
+     * Sent Custom Quotation to Warehouse (create Order with status sent_to_warehouse)
      */
     public function sentToWarehouse(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
         // Allow if user is admin or the sales who created it
-        if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
+        if (Auth::user()->role !== 'Admin' && $customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
 
-        if (!in_array($customPenawaran->status, ['open', 'approved', 'approved_supervisor'])) {
-            return back()->withErrors('Hanya Custom Penawaran yang open, approved, atau approved supervisor dapat dikirim ke Warehouse.');
+        if (!in_array($customQuotation->status, ['open', 'approved', 'approved_supervisor'])) {
+            return back()->withErrors('Hanya Custom Quotation yang open, approved, atau approved supervisor dapat dikirim ke Warehouse.');
         }
 
-        if ($customPenawaran->order) {
-            return back()->withErrors('Custom Penawaran ini sudah dikirim ke Warehouse.');
+        if ($customQuotation->order) {
+            return back()->withErrors('Custom Quotation ini sudah dikirim ke Warehouse.');
         }
 
-        if ($customPenawaran->items->isEmpty()) {
-            return back()->withErrors('Custom Penawaran tidak memiliki item.');
+        if ($customQuotation->items->isEmpty()) {
+            return back()->withErrors('Custom Quotation tidak memiliki item.');
         }
 
         DB::beginTransaction();
         try {
-            Log::info('Starting sentToWarehouse for custom quotation ID: ' . $customPenawaran->id);
+            Log::info('Starting sentToWarehouse for custom quotation ID: ' . $customQuotation->id);
 
             $order = Order::create([
                 'order_number' => 'DO-' . strtoupper(Str::random(8)),
                 'sales_id' => Auth::id(),
-                'supervisor_id' => $customPenawaran->status === 'approved' ? Auth::id() : null,
-                'custom_quotation_id' => $customPenawaran->id,
+                'supervisor_id' => $customQuotation->status === 'approved' ? Auth::id() : null,
+                'custom_quotation_id' => $customQuotation->id,
                 'status' => 'sent_to_warehouse',
-                'customer_name' => $customPenawaran->to,
+                'customer_name' => $customQuotation->to,
                 'customer_id' => null,
-                'required_date' => $customPenawaran->date,
-                'customer_notes' => $customPenawaran->intro_text,
+                'required_date' => $customQuotation->date,
+                'customer_notes' => $customQuotation->intro_text,
             ]);
 
             Log::info('Order created with ID: ' . $order->id);
 
-            foreach ($customPenawaran->items as $item) {
+            foreach ($customQuotation->items as $item) {
                 if (is_null($item->price) || is_null($item->subtotal) || $item->qty <= 0) {
                     throw new \Exception('Item data invalid: price, subtotal, or qty is invalid for item ID ' . $item->id);
                 }
@@ -491,10 +485,10 @@ class CustomQuotationController extends Controller
 
             Log::info('OrderItems created');
 
-            // Update Custom Penawaran status to sent_to_warehouse
-            $customPenawaran->update(['status' => 'sent_to_warehouse']);
+            // Update Custom Quotation status to sent_to_warehouse
+            $customQuotation->update(['status' => 'sent_to_warehouse']);
 
-            Log::info('Custom penawaran status updated');
+            Log::info('Custom quotation status updated');
 
             DB::commit();
 
@@ -512,7 +506,7 @@ class CustomQuotationController extends Controller
     }
 
     /**
-     * Bulk Hapus Custom Penawarans
+     * Bulk Hapus Custom Quotations
      */
     public function bulkDelete(Request $request)
     {
@@ -523,14 +517,14 @@ class CustomQuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $penawarans = CustomQuotation::whereIn('id', $ids)
+            $quotations = CustomQuotation::whereIn('id', $ids)
                 ->where('sales_id', Auth::id())
                 ->get();
 
-            foreach ($penawarans as $penawaran) {
+            foreach ($quotations as $quotation) {
                 // Delete associated items first
-                $penawaran->items()->delete();
-                $penawaran->delete();
+                $quotation->items()->delete();
+                $quotation->delete();
             }
 
             DB::commit();
@@ -540,12 +534,12 @@ class CustomQuotationController extends Controller
             DB::rollBack();
             Log::error('Custom Quotation Bulk Delete Error', ['message' => $e->getMessage()]);
 
-            return response()->json(['success' => false, 'message' => 'Gagal menghapus penawaran: ' . $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus quotation: ' . $e->getMessage()]);
         }
     }
 
     /**
-     * Bulk Send to Warehouse for Custom Penawarans
+     * Bulk Send to Warehouse for Custom Quotations
      */
     public function bulkSendToWarehouse(Request $request)
     {
@@ -557,26 +551,26 @@ class CustomQuotationController extends Controller
         $successCount = 0;
         foreach ($ids as $id) {
             try {
-                $penawaran = CustomQuotation::where('id', $id)
+                $quotation = CustomQuotation::where('id', $id)
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($penawaran && in_array($penawaran->status, ['open', 'approved', 'approved_supervisor']) && !$penawaran->order) {
-                    if ($penawaran->items->isNotEmpty()) {
-                        DB::transaction(function () use ($penawaran) {
+                if ($quotation && in_array($quotation->status, ['open', 'approved', 'approved_supervisor']) && !$quotation->order) {
+                    if ($quotation->items->isNotEmpty()) {
+                        DB::transaction(function () use ($quotation) {
                             $order = Order::create([
                                 'order_number' => 'DO-' . strtoupper(Str::random(8)),
                                 'sales_id' => Auth::id(),
-                                'supervisor_id' => $penawaran->status === 'approved' ? Auth::id() : null,
-                                'custom_quotation_id' => $penawaran->id,
+                                'supervisor_id' => $quotation->status === 'approved' ? Auth::id() : null,
+                                'custom_quotation_id' => $quotation->id,
                                 'status' => 'sent_to_warehouse',
-                                'customer_name' => $penawaran->to,
+                                'customer_name' => $quotation->to,
                                 'customer_id' => null,
-                                'required_date' => $penawaran->date,
-                                'customer_notes' => $penawaran->intro_text,
+                                'required_date' => $quotation->date,
+                                'customer_notes' => $quotation->intro_text,
                             ]);
 
-                            foreach ($penawaran->items as $item) {
+                            foreach ($quotation->items as $item) {
                                 OrderItem::create([
                                     'order_id' => $order->id,
                                     'barang_id' => null,
@@ -585,7 +579,7 @@ class CustomQuotationController extends Controller
                                     'subtotal' => $item->subtotal,
                                 ]);
                             }
-                            $penawaran->update(['status' => 'sent_to_warehouse']);
+                            $quotation->update(['status' => 'sent_to_warehouse']);
                         });
                         $successCount++;
                     }
@@ -603,53 +597,52 @@ class CustomQuotationController extends Controller
     }
 
     /**
-     * Kirim Custom Penawaran ke Penawaran (Quotation)
+     * Kirim Custom Quotation ke Quotation
      */
-    public function sentToPenawaran(CustomQuotation $customQuotation)
+    public function sentToQuotation(CustomQuotation $customQuotation)
     {
-        $customPenawaran = $customQuotation;
-        if (Auth::user()->role !== 'Admin' && $customPenawaran->sales_id !== Auth::id()) {
+        if (Auth::user()->role !== 'Admin' && $customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
-        if ($customPenawaran->status !== 'open' && $customPenawaran->status !== 'approved_supervisor') {
-            return back()->withErrors('Hanya penawaran dengan status open atau approved supervisor yang bisa dikirim ke Penawaran.');
+        if ($customQuotation->status !== 'open' && $customQuotation->status !== 'approved_supervisor') {
+            return back()->withErrors('Hanya quotation dengan status open atau approved supervisor yang bisa dikirim ke Quotation.');
         }
-        $existing = Quotation::where('custom_quotation_id', $customPenawaran->id)->first();
+        $existing = Quotation::where('custom_quotation_id', $customQuotation->id)->first();
         if ($existing) {
             return redirect()->route('sales.quotation.show', $existing->id)
-                ->with('info', 'Sudah pernah dikirim ke Penawaran.');
+                ->with('info', 'Sudah pernah dikirim ke Quotation.');
         }
         DB::beginTransaction();
         try {
-            $nomorPenawaran = Quotation::generateQuotationNumber();
+            $nomorQuotation = Quotation::generateQuotationNumber();
             $tanggalBerlaku = now()->addDays(14);
             $requestOrder = Quotation::create([
-                'custom_quotation_id' => $customPenawaran->id,
+                'custom_quotation_id' => $customQuotation->id,
                 'request_number' => 'REQ-' . strtoupper(Str::random(8)),
-                'quotation_number' => $nomorPenawaran,
-                'sales_id' => $customPenawaran->sales_id,
-                'customer_name' => $customPenawaran->to,
-                'subject' => $customPenawaran->subject,
-                'required_date' => $customPenawaran->date,
+                'quotation_number' => $nomorQuotation,
+                'sales_id' => $customQuotation->sales_id,
+                'customer_name' => $customQuotation->to,
+                'subject' => $customQuotation->subject,
+                'required_date' => $customQuotation->date,
                 'valid_date' => $tanggalBerlaku,
                 'expired_at' => $tanggalBerlaku,
-                'customer_notes' => $customPenawaran->intro_text,
-                'subtotal' => $customPenawaran->subtotal,
-                'tax' => $customPenawaran->tax ?? 0,
-                'grand_total' => $customPenawaran->grand_total,
+                'customer_notes' => $customQuotation->intro_text,
+                'subtotal' => $customQuotation->subtotal,
+                'tax' => $customQuotation->tax ?? 0,
+                'grand_total' => $customQuotation->grand_total,
                 'no_po' => null,
                 'sales_order_number' => Quotation::generateSalesOrderNumber(),
             ]);
             Order::create([
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
-                'sales_id' => $customPenawaran->sales_id,
+                'sales_id' => $customQuotation->sales_id,
                 'quotation_id' => $requestOrder->id,
-                'customer_name' => $customPenawaran->to,
+                'customer_name' => $customQuotation->to,
                 'status' => 'open',
-                'required_date' => $customPenawaran->date,
-                'customer_notes' => $customPenawaran->intro_text,
+                'required_date' => $customQuotation->date,
+                'customer_notes' => $customQuotation->intro_text,
             ]);
-            foreach ($customPenawaran->items as $cpItem) {
+            foreach ($customQuotation->items as $cpItem) {
                 QuotationItem::create([
                     'quotation_id' => $requestOrder->id,
                     'product_id' => null,
@@ -662,12 +655,12 @@ class CustomQuotationController extends Controller
                     'images' => $cpItem->images,
                 ]);
             }
-            $customPenawaran->update(['status' => 'sent_to_quotation']);
+            $customQuotation->update(['status' => 'sent_to_quotation']);
             DB::commit();
 
-            // Redirect langsung ke halaman penawaran sales
+            // Redirect langsung ke halaman quotation sales
             return redirect()->route('sales.quotation.show', $requestOrder->id)
-                ->with('success', "Berhasil dikirim ke Penawaran: {$requestOrder->request_number}");
+                ->with('success', "Berhasil dikirim ke Quotation: {$requestOrder->request_number}");
         } catch (\Throwable $e) {
             DB::rollBack();
 

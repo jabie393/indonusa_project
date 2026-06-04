@@ -100,7 +100,7 @@
                               stroke-width="2"
                               d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Report Penawaran
+                    Report Quotation
                 </a>
                 <a href="{{ route('dashboard.supervisor.export.semua-barang') }}"
                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 font-semibold text-white hover:bg-[#19426d]">
@@ -253,13 +253,13 @@
             <div
                 class="col-span-8 flex max-h-[400px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
                 <div class="shrink-0 w-full bg-gradient-to-r from-[#225A97] to-[#0D223A] p-5">
-                    <h1 class="text-lg font-bold text-white">Menunggu Persetujuan Penawaran</h1>
+                    <h1 class="text-lg font-bold text-white">Menunggu Persetujuan Quotation</h1>
                 </div>
                 <div id="tableContainer1" class="grow overflow-x-auto overflow-y-auto">
                     <table class="sortable w-full text-left text-sm text-gray-500 dark:text-gray-400">
                         <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="text-nowrap px-4 py-3">No Penawaran</th>
+                                <th class="text-nowrap px-4 py-3">No Quotation</th>
                                 <th class="text-nowrap px-4 py-3">Customer</th>
                                 <th class="text-nowrap px-4 py-3">Tanggal</th>
                                 <th class="text-nowrap px-4 py-3">Total</th>
@@ -305,7 +305,7 @@
                         <thead class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th class="text-nowrap px-4 py-3">Nama Sales</th>
-                                <th class="text-nowrap px-4 py-3 text-center">Total Penawaran</th>
+                                <th class="text-nowrap px-4 py-3 text-center">Total Quotation</th>
                                 <th class="text-nowrap px-4 py-3 text-center">Disetujui</th>
                                 <th class="text-nowrap px-4 py-3 no-sort">Akurasi (%)</th>
                             </tr>

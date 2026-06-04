@@ -6,21 +6,21 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\CustomPenawaran;
+use App\Models\CustomQuotation;
 
-class CustomPenawaranCreateTest extends TestCase
+class CustomQuotationCreateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_sales_can_create_custom_penawaran()
+    public function test_sales_can_create_custom_quotation()
     {
         // Create a sales user
         $sales = User::factory()->create(['role' => 'Sales']);
 
-        // Data for creating penawaran
+        // Data for creating quotation
         $data = [
             'to' => 'PT Test Customer',
-            'up' => 'Manager',
+            'up' => $sales->name,
             'subject' => 'Penawaran Produk',
             'email' => 'customer@test.com',
             'our_ref' => 'REF-TEST12345',
@@ -32,22 +32,22 @@ class CustomPenawaranCreateTest extends TestCase
                     'nama_barang' => 'Laptop',
                     'qty' => 1,
                     'satuan' => 'pcs',
-                    'harga' => 10000000,
+                    'harga' => '10000000',
                     'diskon' => 0,
                     'keterangan' => null,
                 ]
             ]
         ];
 
-        // Post to create penawaran
+        // Post to create quotation
         $response = $this->actingAs($sales)
             ->post(route('sales.custom-quotation.store'), $data);
 
         // Check response redirects to show page
         $response->assertRedirect();
 
-        // Check penawaran created in database
-        $this->assertDatabaseHas('custom_penawarans', [
+        // Check quotation created in database
+        $this->assertDatabaseHas('custom_quotations', [
             'sales_id' => $sales->id,
             'to' => 'PT Test Customer',
             'subject' => 'Penawaran Produk',
@@ -55,12 +55,12 @@ class CustomPenawaranCreateTest extends TestCase
             'our_ref' => 'REF-TEST12345',
         ]);
 
-        // Check penawaran items created
-        $penawaran = CustomPenawaran::where('sales_id', $sales->id)->first();
-        $this->assertEquals(1, $penawaran->items()->count());
+        // Check quotation items created
+        $quotation = CustomQuotation::where('sales_id', $sales->id)->first();
+        $this->assertEquals(1, $quotation->items()->count());
     }
 
-    public function test_sales_cannot_create_penawaran_without_our_ref()
+    public function test_sales_cannot_create_quotation_without_our_ref()
     {
         // Create a sales user
         $sales = User::factory()->create(['role' => 'Sales']);
@@ -68,6 +68,7 @@ class CustomPenawaranCreateTest extends TestCase
         // Data without our_ref
         $data = [
             'to' => 'PT Test Customer',
+            'up' => $sales->name,
             'subject' => 'Penawaran Produk',
             'email' => 'customer@test.com',
             'date' => now()->toDateString(),
@@ -76,13 +77,13 @@ class CustomPenawaranCreateTest extends TestCase
                     'nama_barang' => 'Laptop',
                     'qty' => 1,
                     'satuan' => 'pcs',
-                    'harga' => 10000000,
+                    'harga' => '10000000',
                     'diskon' => 0,
                 ]
             ]
         ];
 
-        // Post to create penawaran
+        // Post to create quotation
         $response = $this->actingAs($sales)
             ->post(route('sales.custom-quotation.store'), $data);
 
@@ -98,6 +99,7 @@ class CustomPenawaranCreateTest extends TestCase
         // Data with diskon > 20% but no keterangan
         $data = [
             'to' => 'PT Test Customer',
+            'up' => $sales->name,
             'subject' => 'Penawaran Produk',
             'email' => 'customer@test.com',
             'our_ref' => 'REF-TEST12345',
@@ -107,14 +109,14 @@ class CustomPenawaranCreateTest extends TestCase
                     'nama_barang' => 'Laptop',
                     'qty' => 1,
                     'satuan' => 'pcs',
-                    'harga' => 10000000,
+                    'harga' => '10000000',
                     'diskon' => 25,  // More than 20%
                     'keterangan' => null,  // No keterangan
                 ]
             ]
         ];
 
-        // Post to create penawaran
+        // Post to create quotation
         $response = $this->actingAs($sales)
             ->post(route('sales.custom-quotation.store'), $data);
 
@@ -130,6 +132,7 @@ class CustomPenawaranCreateTest extends TestCase
         // Data with diskon > 20% and keterangan
         $data = [
             'to' => 'PT Test Customer',
+            'up' => $sales->name,
             'subject' => 'Penawaran Produk',
             'email' => 'customer@test.com',
             'our_ref' => 'REF-TEST12345',
@@ -139,22 +142,22 @@ class CustomPenawaranCreateTest extends TestCase
                     'nama_barang' => 'Laptop',
                     'qty' => 1,
                     'satuan' => 'pcs',
-                    'harga' => 10000000,
+                    'harga' => '10000000',
                     'diskon' => 25,  // More than 20%
                     'keterangan' => 'Diskon diberikan karena pembelian dalam jumlah besar',
                 ]
             ]
         ];
 
-        // Post to create penawaran
+        // Post to create quotation
         $response = $this->actingAs($sales)
             ->post(route('sales.custom-quotation.store'), $data);
 
         // Check response redirects
         $response->assertRedirect();
 
-        // Check penawaran created with status 'sent' (needs approval)
-        $penawaran = CustomPenawaran::where('sales_id', $sales->id)->first();
-        $this->assertEquals('sent', $penawaran->status);
+        // Check quotation created with status 'pending_approval' (needs approval)
+        $quotation = CustomQuotation::where('sales_id', $sales->id)->first();
+        $this->assertEquals('pending_approval', $quotation->status);
     }
 }

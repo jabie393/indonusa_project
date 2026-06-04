@@ -1,7 +1,7 @@
 <x-app-layout>
     @php
-        $dariCustomPenawaran = !empty($requestOrder->custom_penawaran_id) && $requestOrder->customPenawaran !== null;
-        $cp = $dariCustomPenawaran ? $requestOrder->customPenawaran : null;
+        $dariCustomQuotation = !empty($requestOrder->custom_quotation_id) && $requestOrder->customQuotation !== null;
+        $cp = $dariCustomQuotation ? $requestOrder->customQuotation : null;
     @endphp
     <div
         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
@@ -36,7 +36,7 @@
                     Peringatan Diskon
                 </h3>
                 <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
-                    Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
+                    Diskon lebih dari 20% pada salah satu item. Quotation akan menunggu persetujuan
                     Supervisor.
                 </p>
             </div>
@@ -69,8 +69,8 @@
                                         class="text-danger">*</span></label>
                                 <div class="customer-dropdown-container relative">
                                     <button type="button"
-                                        class="border-subtle bg-surface text-body-sm text-on-surface-variant hover:border-primary customer-dropdown-toggle-btn {{ $dariCustomPenawaran ? 'cursor-not-allowed opacity-60' : '' }} flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all"
-                                        {{ $dariCustomPenawaran ? 'disabled' : '' }}>
+                                        class="border-subtle bg-surface text-body-sm text-on-surface-variant hover:border-primary customer-dropdown-toggle-btn {{ $dariCustomQuotation ? 'cursor-not-allowed opacity-60' : '' }} flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all"
+                                        {{ $dariCustomQuotation ? 'disabled' : '' }}>
                                         <span class="selected-customer-label text-nowrap">
                                             @php
                                                 $selectedCustomer = $customers->firstWhere('id', old('customer_id', $requestOrder->customer_id));
@@ -88,8 +88,8 @@
                                     </button>
 
                                     <select class="@error('customer_id') is-invalid @enderror hidden" id="customer_id"
-                                        name="customer_id" {{ $dariCustomPenawaran ? 'disabled' : 'required' }}
-                                        onchange="{{ $dariCustomPenawaran ? '' : 'populateCustomerData(this.value)' }}">
+                                        name="customer_id" {{ $dariCustomQuotation ? 'disabled' : 'required' }}
+                                        onchange="{{ $dariCustomQuotation ? '' : 'populateCustomerData(this.value)' }}">
                                         <option value="">-- Pilih Customer --</option>
                                         @foreach ($customers as $c)
                                             <option value="{{ $c->id }}" data-email="{{ $c->email }}"
@@ -178,14 +178,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                @if ($dariCustomPenawaran)
+                                @if ($dariCustomQuotation)
                                     <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" class="mr-1 inline">
                                             <circle cx="12" cy="12" r="10" />
                                             <path d="M12 16v-4M12 8h.01" />
                                         </svg>
-                                        Customer dikunci karena berasal dari Custom Quotation ({{ $cp->penawaran_number }})
+                                        Customer dikunci karena berasal dari Custom Quotation ({{ $cp->quotation_number }})
                                     </small>
                                 @endif
                                 @error('customer_id')
@@ -211,7 +211,7 @@
                                 <input type="email"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_email"
-                                    value="{{ is_array($dariCustomPenawaran ? $cp->email : '') ? ($dariCustomPenawaran ? $cp->email : '')[0] ?? '' : ($dariCustomPenawaran ? $cp->email : '') }}"
+                                    value="{{ is_array($dariCustomQuotation ? $cp->email : '') ? ($dariCustomQuotation ? $cp->email : '')[0] ?? '' : ($dariCustomQuotation ? $cp->email : '') }}"
                                     readonly>
                             </div>
 
@@ -221,7 +221,7 @@
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_telepon" name="customer_telepon"
                                     value="{{ is_array(old('customer_telepon', $requestOrder->customer_telepon ?? '')) ? old('customer_telepon', $requestOrder->customer_telepon ?? '')[0] ?? '' : old('customer_telepon', $requestOrder->customer_telepon ?? '') }}"
-                                    placeholder="Masukkan nomor telepon" {{ $dariCustomPenawaran ? '' : 'readonly' }}>
+                                    placeholder="Masukkan nomor telepon" {{ $dariCustomQuotation ? '' : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -230,7 +230,7 @@
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_kota" name="customer_kota"
                                     value="{{ is_array(old('customer_kota', $requestOrder->customer_kota ?? '')) ? old('customer_kota', $requestOrder->customer_kota ?? '')[0] ?? '' : old('customer_kota', $requestOrder->customer_kota ?? '') }}"
-                                    placeholder="Masukkan kota" {{ $dariCustomPenawaran ? '' : 'readonly' }}>
+                                    placeholder="Masukkan kota" {{ $dariCustomQuotation ? '' : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -254,12 +254,12 @@
                                 <input type="text"
                                     class="@error('subject') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="subject" name="subject" value="{{ old('subject', $requestOrder->subject) }}"
-                                    placeholder="Masukkan subject untuk penawaran" required>
+                                    placeholder="Masukkan subject untuk quotation" required>
                                 @error('subject')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted dark:text-gray-400">Subject yang akan muncul di PDF
-                                    penawaran</small>
+                                    quotation</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -272,7 +272,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted dark:text-gray-400">Nomor Purchase Order. Harus unik, tidak
-                                    boleh sama dengan penawaran lain.</small>
+                                    boleh sama dengan quotation lain.</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -295,8 +295,8 @@
                                 <input type="date"
                                     class="@error('required_date') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="required_date" name="required_date"
-                                    value="{{ old('required_date', $dariCustomPenawaran ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) }}">
-                                @if ($dariCustomPenawaran && $cp->date)
+                                    value="{{ old('required_date', $dariCustomQuotation ? ($cp->date ? \Carbon\Carbon::parse($cp->date)->format('Y-m-d') : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) : ($requestOrder->required_date ? \Carbon\Carbon::parse($requestOrder->required_date)->format('Y-m-d') : '')) }}">
+                                @if ($dariCustomQuotation && $cp->date)
                                     <small class="mt-1 block text-xs text-indigo-600 dark:text-indigo-400">
                                         Auto-terisi dari tanggal Custom Quotation. Bisa diubah jika perlu.
                                     </small>
@@ -315,7 +315,7 @@
                                 @error('valid_date')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Tanggal dan waktu hingga penawaran
+                                <small class="text-muted dark:text-gray-400">Tanggal dan waktu hingga quotation
                                     berlaku</small>
                             </div>
 
@@ -324,7 +324,7 @@
                                 <textarea
                                     class="@error('customer_notes') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_notes" name="customer_notes"
-                                    rows="4">{{ old('customer_notes', $requestOrder->customer_notes ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                    rows="4">{{ old('customer_notes', $requestOrder->customer_notes ?? "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Quotation berlaku 2 Minggu") }}</textarea>
                                 @error('customer_notes')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -628,14 +628,14 @@
                                                                 <img src="{{ $imgUrl }}"
                                                                     class="h-20 w-20 rounded border border-gray-300 object-cover"
                                                                     alt="Gambar item">
-                                                                @if ($dariCustomPenawaran)
+                                                                @if ($dariCustomQuotation)
                                                                     <span
                                                                         class="absolute -right-1 -top-1 rounded-full bg-indigo-500 px-1 py-0.5 text-[9px] text-white"
                                                                         title="Gambar dari Custom Quotation">CP</span>
                                                                 @endif
                                                             </div>
                                                         @endforeach
-                                                        @if ($dariCustomPenawaran)
+                                                        @if ($dariCustomQuotation)
                                                             <small
                                                                 class="mt-1 block w-full text-xs text-indigo-600 dark:text-indigo-400">
                                                                 Gambar sudah terisi dari Custom Quotation. Upload baru untuk
@@ -915,7 +915,7 @@
                         class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <i class="fas fa-calculator"></i> Ringkasan Penawaran
+                                <i class="fas fa-calculator"></i> Ringkasan Quotation
                             </h3>
                         </div>
                         <div class="p-5">

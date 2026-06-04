@@ -57,24 +57,24 @@
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
-                        @foreach ($customPenawarans as $penawaran)
+                        @foreach ($customQuotations as $quotation)
                             @php
-                                $discounts = $penawaran->items->pluck('diskon')->map(fn($d) => (float) ($d ?? 0));
+                                $discounts = $quotation->items->pluck('diskon')->map(fn($d) => (float) ($d ?? 0));
                                 $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
                                 $hasAbove = $discounts->contains(fn($d) => $d > 20);
-                                $expiredAt = $penawaran->expired_at ?: $penawaran->created_at->copy()->addDays(14);
+                                $expiredAt = $quotation->expired_at ?: $quotation->created_at->copy()->addDays(14);
                             @endphp
                             <tr
                                 class="border-b border-gray-100 align-top hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/30">
                                 <td class="p-4">
                                     <div class="flex flex-col gap-1">
-                                        <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}"
+                                        <a href="{{ route('sales.custom-quotation.show', $quotation->id) }}"
                                             class="text-base font-bold text-[#0067B1] hover:underline">
-                                            {{ $penawaran->quotation_number ?? '-' }}
+                                            {{ $quotation->quotation_number ?? '-' }}
                                         </a>
                                         <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
                                             <span class="font-semibold uppercase text-slate-400">REF</span>
-                                            <span class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
+                                            <span class="text-slate-600 dark:text-slate-300">{{ $quotation->our_ref ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -83,7 +83,7 @@
                                         <!-- Recipient Details -->
                                         <div class="flex flex-col gap-1">
                                             <span class="text-base font-bold text-slate-900 dark:text-white">
-                                                {{ $penawaran->to ?? '-' }}
+                                                {{ $quotation->to ?? '-' }}
                                             </span>
                                             <span
                                                 class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
@@ -94,11 +94,11 @@
                                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                                                     <circle cx="12" cy="7" r="4"></circle>
                                                 </svg>
-                                                <span class="font-medium">{{ $penawaran->up ?? '-' }}</span>
-                                                @if ($penawaran->email)
+                                                <span class="font-medium">{{ $quotation->up ?? '-' }}</span>
+                                                @if ($quotation->email)
                                                     <span class="text-slate-300 dark:text-slate-600">•</span>
                                                     <span
-                                                        class="text-slate-400 dark:text-slate-500">{{ $penawaran->email }}</span>
+                                                        class="text-slate-400 dark:text-slate-500">{{ $quotation->email }}</span>
                                                 @endif
                                             </span>
                                         </div>
@@ -109,11 +109,11 @@
                                         <!-- Total & Items Summary -->
                                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                                             <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
-                                                Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}
+                                                Rp {{ number_format($quotation->grand_total, 0, '.', ',') }}
                                             </span>
                                             <span
                                                 class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
-                                                {{ $penawaran->items->count() }} item
+                                                {{ $quotation->items->count() }} item
                                             </span>
                                             @if ($hasBelow && $hasAbove)
                                                 <span
@@ -136,7 +136,7 @@
                                 </td>
                                 <td class="text-nowrap p-4 align-middle">
                                     <div class="flex flex-col gap-1 text-sm text-slate-700 dark:text-slate-300">
-                                        <span>{{ \Carbon\Carbon::parse($penawaran->created_at)->format('Y-m-d') }}</span>
+                                        <span>{{ \Carbon\Carbon::parse($quotation->created_at)->format('Y-m-d') }}</span>
                                         <span class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -148,7 +148,7 @@
                                             </svg>
                                             s/d {{ \Carbon\Carbon::parse($expiredAt)->format('Y-m-d') }}
                                         </span>
-                                        @if ($penawaran->expired_at && $penawaran->isExpired())
+                                        @if ($quotation->expired_at && $quotation->isExpired())
                                             <span class="text-xs font-semibold text-red-600">Kadaluarsa</span>
                                         @endif
                                     </div>
@@ -167,34 +167,34 @@
                                                 'expired' => 'Expired',
                                                 'approved_supervisor' => 'Approved by Supervisor',
                                                 'rejected_supervisor' => 'Rejected by Supervisor',
-                                            ][$penawaran->status] ?? $penawaran->status;
+                                            ][$quotation->status] ?? $quotation->status;
 
                                         $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                         $badgeText = 'text-gray-700 dark:text-gray-300';
                                         $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
 
-                                        if (in_array($penawaran->status, ['approved', 'approved_supervisor'])) {
+                                        if (in_array($quotation->status, ['approved', 'approved_supervisor'])) {
                                             $badgeBg = 'bg-green-50 dark:bg-green-950/30';
                                             $badgeText = 'text-green-700 dark:text-green-300';
                                             $badgeBorder = 'border border-green-200 dark:border-green-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                                        } elseif (in_array($penawaran->status, ['rejected', 'rejected_supervisor'])) {
+                                        } elseif (in_array($quotation->status, ['rejected', 'rejected_supervisor'])) {
                                             $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                             $badgeText = 'text-red-700 dark:text-red-300';
                                             $badgeBorder = 'border border-red-200 dark:border-red-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
-                                        } elseif (in_array($penawaran->status, ['pending_approval', 'draft'])) {
+                                        } elseif (in_array($quotation->status, ['pending_approval', 'draft'])) {
                                             $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
                                             $badgeText = 'text-amber-800 dark:text-amber-300';
                                             $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif (in_array($penawaran->status, ['open', 'sent_to_warehouse', 'sent_to_quotation'])) {
+                                        } elseif (in_array($quotation->status, ['open', 'sent_to_warehouse', 'sent_to_quotation'])) {
                                             $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
                                             $badgeText = 'text-blue-700 dark:text-blue-300';
                                             $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif ($penawaran->status === 'expired') {
+                                        } elseif ($quotation->status === 'expired') {
                                             $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                             $badgeText = 'text-gray-700 dark:text-gray-300';
                                             $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
@@ -213,7 +213,7 @@
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Detail --}}
-                                            <a href="{{ route('sales.custom-quotation.show', $penawaran->id) }}"
+                                            <a href="{{ route('sales.custom-quotation.show', $quotation->id) }}"
                                                 class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                                                 title="Detail">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -230,11 +230,11 @@
                                             </a>
 
                                             {{-- If supervisor rejects --}}
-                                            @if ($penawaran->status == 'rejected_supervisor')
+                                            @if ($quotation->status == 'rejected_supervisor')
                                                 {{-- Note modal --}}
                                                 <button type="button"
                                                     class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                    data-catatan="{{ $penawaran->reason ?? '' }}"
+                                                    data-catatan="{{ $quotation->reason ?? '' }}"
                                                     title="Lihat Alasan Penolakan">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -253,8 +253,8 @@
                                             {{-- Action Dropdown --}}
                                             <button type="button"
                                                 class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                popovertarget="popover-{{ $penawaran->id }}"
-                                                style="anchor-name:--anchor-{{ $penawaran->id }}" title="Menu Action">
+                                                popovertarget="popover-{{ $quotation->id }}"
+                                                style="anchor-name:--anchor-{{ $quotation->id }}" title="Menu Action">
                                                 <svg width="24px" height="24px" viewBox="0 0 16 16"
                                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                                     class="bi bi-three-dots-vertical h-4 w-4">
@@ -271,11 +271,11 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
                                             </button>
                                             <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
-                                                popover id="popover-{{ $penawaran->id }}"
-                                                style="position-anchor:--anchor-{{ $penawaran->id }}">
+                                                popover id="popover-{{ $quotation->id }}"
+                                                style="position-anchor:--anchor-{{ $quotation->id }}">
                                                 <li>
                                                     {{-- Edit --}}
-                                                    <a href="{{ route('sales.custom-quotation.edit', $penawaran->id) }}"
+                                                    <a href="{{ route('sales.custom-quotation.edit', $quotation->id) }}"
                                                         class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -290,7 +290,7 @@
                                                     </a>
                                                 </li>
                                                 {{-- Tombol Delete --}}
-                                                <form action="{{ route('sales.custom-quotation.destroy', $penawaran->id) }}"
+                                                <form action="{{ route('sales.custom-quotation.destroy', $quotation->id) }}"
                                                     method="POST" style="display:inline;">
                                                     @csrf
                                                     @method('DELETE')
@@ -316,11 +316,11 @@
                                                     {{-- PDF --}}
                                                     @php
                                                         // apakah ada item dengan diskon > 20%
-                                                        $hasHighDiscount = $penawaran->items->where('diskon', '>', 20)->isNotEmpty();
-                                                        $isExpired = $penawaran->isExpired();
+                                                        $hasHighDiscount = $quotation->items->where('diskon', '>', 20)->isNotEmpty();
+                                                        $isExpired = $quotation->isExpired();
                                                     @endphp
-                                                    @if ($penawaran->status === 'approved_supervisor' && !$isExpired)
-                                                        <a href="{{ route('sales.custom-quotation.pdf', $penawaran->id) }}"
+                                                    @if ($quotation->status === 'approved_supervisor' && !$isExpired)
+                                                        <a href="{{ route('sales.custom-quotation.pdf', $quotation->id) }}"
                                                             class="flex items-center gap-2 text-green-600 hover:bg-green-50"
                                                             target="_blank">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -333,7 +333,7 @@
                                                     @else
                                                         <button type="button" disabled
                                                             class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
-                                                            title="{{ $isExpired ? 'Penawaran sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                                            title="{{ $isExpired ? 'Quotation sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -352,22 +352,22 @@
                                                 </li>
                                                 {{-- Sent to Warehouse removed per request --}}
 
-                                                {{-- Send to Penawaran --}}
-                                                @if (in_array($penawaran->status, ['open', 'approved_supervisor']))
+                                                {{-- Send to Quotation --}}
+                                                @if (in_array($quotation->status, ['open', 'approved_supervisor']))
                                                     <form
-                                                        action="{{ route('sales.custom-quotation.sent-to-penawaran', $penawaran->id) }}"
+                                                        action="{{ route('sales.custom-quotation.sent-to-quotation', $quotation->id) }}"
                                                         method="POST" style="display:inline;">
                                                         @csrf
                                                         <li>
                                                             <button type="button"
                                                                 class="flex items-center gap-2 text-blue-700 hover:bg-blue-50"
-                                                                onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Penawaran ini ke Penawaran?', 'Ya, Kirim')">
+                                                                onclick="confirmApprove(() => this.closest('form').submit(), 'Kirim Quotation ini ke Quotation?', 'Ya, Kirim')">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                                                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                                         stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                                                 </svg>
-                                                                Send to Penawaran
+                                                                Send to Quotation
                                                             </button>
                                                         </li>
                                                     </form>
@@ -389,10 +389,10 @@
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                         Menampilkan
                         <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->firstItem() ?? 0 }}-{{ $customPenawarans->lastItem() ?? 0 }}</span>
+                            class="font-semibold text-gray-900 dark:text-white">{{ $customQuotations->firstItem() ?? 0 }}-{{ $customQuotations->lastItem() ?? 0 }}</span>
                         dari
                         <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $customPenawarans->total() ?? $customPenawarans->count() }}</span>
+                            class="font-semibold text-gray-900 dark:text-white">{{ $customQuotations->total() ?? $customQuotations->count() }}</span>
                     </span>
                     <form method="GET" action="{{ route('sales.custom-quotation.index') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
@@ -408,7 +408,7 @@
                     <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
                 </div>
                 <div>
-                    {{ $customPenawarans->links() }}
+                    {{ $customQuotations->links() }}
                 </div>
             </nav>
         </div>

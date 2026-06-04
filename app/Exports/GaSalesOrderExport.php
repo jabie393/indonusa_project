@@ -42,7 +42,7 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
         return [
             'No',
             'Request Order',
-            'Nomor Penawaran',
+            'Nomor Quotation',
             'PO',
             'Sales Order',
             'Tanggal',
