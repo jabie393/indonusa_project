@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class CustomQuotationApprovalController extends Controller
 {
     /**
-     * Indeks persetujuan penawaran kustom oleh Supervisor.
+     * Indeks persetujuan quotation kustom oleh Supervisor.
      */
     public function index(Request $request)
     {
@@ -52,24 +52,24 @@ class CustomQuotationApprovalController extends Controller
             });
         }
 
-        $penawarans = $query->paginate((int) $request->input('perPage', 20))->withQueryString();
+        $quotations = $query->paginate((int) $request->input('perPage', 20))->withQueryString();
 
-        $penawarans->getCollection()->transform(function ($item) {
+        $quotations->getCollection()->transform(function ($item) {
             $item->offer_type = 'custom';
             return $item;
         });
 
-        return view('admin.custom-quotation-approval.index', compact('penawarans'));
+        return view('admin.custom-quotation-approval.index', compact('quotations'));
     }
 
     /**
-     * Supervisor approve/reject a single custom penawaran.
+     * Supervisor approve/reject a single custom quotation.
      */
     public function approve(Request $request, CustomQuotation $customQuotation)
     {
         $action = $request->input('action');
         if (! in_array($customQuotation->status, ['pending_approval', 'sent', 'rejected_supervisor'])) {
-            return back()->withErrors('Penawaran tidak dalam status menunggu persetujuan.');
+            return back()->withErrors('Quotation tidak dalam status menunggu persetujuan.');
         }
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
@@ -83,7 +83,7 @@ class CustomQuotationApprovalController extends Controller
             $customQuotation->reason = null;
             $customQuotation->save();
 
-            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah disetujui.']);
+            return back()->with(['title' => 'Berhasil', 'text' => 'Quotation telah disetujui.']);
         } elseif ($action === 'reject') {
             $validated = $request->validate([
                 'reason' => 'required|string|max:2000',
@@ -92,14 +92,14 @@ class CustomQuotationApprovalController extends Controller
             $customQuotation->reason = $validated['reason'];
             $customQuotation->save();
 
-            return back()->with(['title' => 'Berhasil', 'text' => 'Penawaran telah ditolak.']);
+            return back()->with(['title' => 'Berhasil', 'text' => 'Quotation telah ditolak.']);
         }
 
         return back()->withErrors('Action tidak valid.');
     }
 
     /**
-     * Bulk Approval for Supervisor on custom penawarans.
+     * Bulk Approval for Supervisor on custom quotations.
      */
     public function bulkApproval(Request $request)
     {
@@ -116,33 +116,33 @@ class CustomQuotationApprovalController extends Controller
 
         DB::beginTransaction();
         try {
-            $penawarans = CustomQuotation::whereIn('id', $ids)
+            $quotations = CustomQuotation::whereIn('id', $ids)
                 ->where('status', 'pending_approval')
                 ->get();
 
-            if ($penawarans->isEmpty()) {
+            if ($quotations->isEmpty()) {
                 return response()->json(['success' => false, 'message' => 'No valid items found for approval/rejection.']);
             }
 
-            foreach ($penawarans as $penawaran) {
+            foreach ($quotations as $quotation) {
                 // Determine if user is allowed
                 $userRole = trim(strtolower(Auth::user()->role ?? ''));
                 $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
-                if (! in_array($userRole, $allowed) && $penawaran->sales_id !== Auth::id()) {
+                if (! in_array($userRole, $allowed) && $quotation->sales_id !== Auth::id()) {
                     continue; // Skip unauthorized
                 }
 
                 if ($action === 'approve') {
-                    $penawaran->status = 'approved_supervisor';
-                    $penawaran->approved_by = Auth::id();
-                    $penawaran->approved_at = now();
-                    $penawaran->reason = null;
+                    $quotation->status = 'approved_supervisor';
+                    $quotation->approved_by = Auth::id();
+                    $quotation->approved_at = now();
+                    $quotation->reason = null;
                 } else {
                     $reason = $request->input('reason', 'Bulk rejected by supervisor');
-                    $penawaran->status = 'rejected_supervisor';
-                    $penawaran->reason = $reason;
+                    $quotation->status = 'rejected_supervisor';
+                    $quotation->reason = $reason;
                 }
-                $penawaran->save();
+                $quotation->save();
             }
 
             DB::commit();
@@ -153,7 +153,7 @@ class CustomQuotationApprovalController extends Controller
 
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Custom Penawaran Bulk Approval Error', ['message' => $e->getMessage()]);
+            Log::error('Custom Quotation Bulk Approval Error', ['message' => $e->getMessage()]);
 
             return response()->json(['success' => false, 'message' => 'Error: '.$e->getMessage()]);
         }

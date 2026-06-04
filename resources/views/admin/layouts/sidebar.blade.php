@@ -524,9 +524,9 @@
             @if (in_array(auth()->user()->role, ['Supervisor']))
 
                 @php
-                    $pendingSentPenawaran = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
+                    $pendingSentQuotation = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
                     $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
-                    $hasQuotationApprovalNotification = $pendingSentPenawaran > 0 || $pendingCustomQuotation > 0;
+                    $hasQuotationApprovalNotification = $pendingSentQuotation > 0 || $pendingCustomQuotation > 0;
                     $quotationApprovalItemActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('sales.quotation.show');
                     $customQuotationApprovalItemActive =
                         request()->routeIs('supervisor.custom-quotation-approval.*') ||
@@ -585,7 +585,7 @@
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
 
                         {{-- (Incoming Orders removed) --}}
-                        {{-- Sent Penawaran (needs approval) --}}
+                        {{-- Sent Quotation (needs approval) --}}
                         <li class="w-[88%]">
                             <a href="{{ route('admin.quotation_approval') }}"
                                 class="{{ $quotationApprovalItemHighlight ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
@@ -622,10 +622,10 @@
                                     <span
                                         class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                                 </div>
-                                @if ($pendingSentPenawaran > 0)
+                                @if ($pendingSentQuotation > 0)
                                     <span
                                         class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                                        {{ $pendingSentPenawaran }}
+                                        {{ $pendingSentQuotation }}
                                     </span>
                                 @endif
                             </a>

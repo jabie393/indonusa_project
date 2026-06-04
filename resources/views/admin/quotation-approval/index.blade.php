@@ -43,42 +43,42 @@
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
-                        @forelse($penawarans as $index => $penawaran)
+                        @forelse($quotations as $index => $quotation)
                             @php
-                                $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('sales.quotation.show', $penawaran->id);
+                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('sales.quotation.show', $quotation->id);
 
-                                $maxDiskon = $penawaran->offer_type === 'custom' ? ($penawaran->items->max('diskon') ?? 0) : ($penawaran->items->max('diskon_percent') ?? 0);
+                                $maxDiskon = $quotation->offer_type === 'custom' ? ($quotation->items->max('diskon') ?? 0) : ($quotation->items->max('diskon_percent') ?? 0);
 
                                 $keteranganText = null;
-                                $highDiscountItem = $penawaran->items->first(function ($item) use ($penawaran) {
-                                    $disc = $penawaran->offer_type === 'custom' ? ($item->diskon ?? 0) : ($item->diskon_percent ?? 0);
+                                $highDiscountItem = $quotation->items->first(function ($item) use ($quotation) {
+                                    $disc = $quotation->offer_type === 'custom' ? ($item->diskon ?? 0) : ($item->diskon_percent ?? 0);
                                     return $disc > 20 && !empty($item->keterangan);
                                 });
                                 if ($highDiscountItem) {
                                     $keteranganText = $highDiscountItem->keterangan;
                                 } else {
-                                    $anyKeteranganItem = $penawaran->items->first(function ($item) {
+                                    $anyKeteranganItem = $quotation->items->first(function ($item) {
                                         return !empty($item->keterangan);
                                     });
                                     if ($anyKeteranganItem) {
                                         $keteranganText = $anyKeteranganItem->keterangan;
                                     }
                                 }
-                                if (empty($keteranganText) && !empty($penawaran->reason)) {
-                                    $keteranganText = $penawaran->reason;
+                                if (empty($keteranganText) && !empty($quotation->reason)) {
+                                    $keteranganText = $quotation->reason;
                                 }
-                                if (empty($keteranganText) && !empty($penawaran->subject)) {
-                                    $keteranganText = $penawaran->subject;
+                                if (empty($keteranganText) && !empty($quotation->subject)) {
+                                    $keteranganText = $quotation->subject;
                                 }
 
                                 $tglKirim = null;
-                                if ($penawaran->offer_type === 'custom') {
-                                    $tglKirim = $penawaran->date ? $penawaran->date->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
+                                if ($quotation->offer_type === 'custom') {
+                                    $tglKirim = $quotation->date ? $quotation->date->format('Y-m-d') : ($quotation->created_at ? $quotation->created_at->format('Y-m-d') : '-');
                                 } else {
-                                    $tglKirim = $penawaran->required_date ? $penawaran->required_date->format('Y-m-d') : ($penawaran->created_at ? $penawaran->created_at->format('Y-m-d') : '-');
+                                    $tglKirim = $quotation->required_date ? $quotation->required_date->format('Y-m-d') : ($quotation->created_at ? $quotation->created_at->format('Y-m-d') : '-');
                                 }
 
-                                $status = $penawaran->order?->status ?? $penawaran->status;
+                                $status = $quotation->order?->status ?? $quotation->status;
 
                                 $statusMap = [
                                     'pending' => [
@@ -170,16 +170,16 @@
 
                                 $picName = null;
                                 $picPosition = null;
-                                if ($penawaran->offer_type === 'custom') {
-                                    $picName = $penawaran->up;
+                                if ($quotation->offer_type === 'custom') {
+                                    $picName = $quotation->up;
                                 } else {
-                                    $picName = $penawaran->pic->name ?? ($penawaran->customer?->pics?->first()?->name ?? null);
-                                    $picPosition = $penawaran->pic->position ?? ($penawaran->customer?->pics?->first()?->position ?? null);
+                                    $picName = $quotation->pic->name ?? ($quotation->customer?->pics?->first()?->name ?? null);
+                                    $picPosition = $quotation->pic->position ?? ($quotation->customer?->pics?->first()?->position ?? null);
                                 }
                             @endphp
                             <tr
                                 class="group border-b border-gray-50 transition-colors hover:bg-gray-50/80 dark:border-gray-700/50 dark:hover:bg-gray-700/30">
-                                {{-- Penawaran & Customer --}}
+                                {{-- Quotation & Customer --}}
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white align-middle">
                                     <div class="flex flex-col gap-2.5">
                                         <!-- Quotation & Customer Details -->
@@ -187,11 +187,11 @@
                                             <div>
                                                 <a href="{{ $detailRoute }}"
                                                     class="text-[#225A97] dark:text-blue-400 font-bold hover:underline">
-                                                    {{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}
+                                                    {{ $quotation->offer_type === 'custom' ? $quotation->quotation_number : $quotation->request_number }}
                                                 </a>
                                             </div>
                                             <span class="text-base font-bold text-slate-900 dark:text-white">
-                                                {{ $penawaran->offer_type === 'custom' ? $penawaran->to : ($penawaran->customer?->nama_customer ?? $penawaran->customer_name) }}
+                                                {{ $quotation->offer_type === 'custom' ? $quotation->to : ($quotation->customer?->nama_customer ?? $quotation->customer_name) }}
                                             </span>
                                             @if ($picName)
                                                 <span
@@ -218,11 +218,11 @@
                                         <!-- Total & Items Summary -->
                                         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                                             <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
-                                                Rp {{ number_format($penawaran->grand_total, 0, '.', ',') }}
+                                                Rp {{ number_format($quotation->grand_total, 0, '.', ',') }}
                                             </span>
                                             <span
                                                 class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-600 dark:bg-gray-800 dark:text-gray-400">
-                                                {{ $penawaran->items->count() }} item
+                                                {{ $quotation->items->count() }} item
                                             </span>
                                             @if ($maxDiskon > 20)
                                                 <span
@@ -252,7 +252,7 @@
 
                                 {{-- Sales --}}
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
-                                    {{ optional($penawaran->sales)->name ?? '-' }}
+                                    {{ optional($quotation->sales)->name ?? '-' }}
                                 </td>
 
                                 {{-- Tgl. Kirim --}}
@@ -267,7 +267,7 @@
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Detail --}}
                                             @php
-                                                $detailRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $penawaran->id) : route('sales.quotation.show', $penawaran->id);
+                                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('sales.quotation.show', $quotation->id);
                                             @endphp
                                             <a href="{{ $detailRoute }}"
                                                 class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -287,12 +287,12 @@
 
                                             {{-- Approve --}}
                                             @php
-                                                $approveRoute = $penawaran->offer_type === 'custom' ? route('admin.custom-quotation-approval.approval', $penawaran->id) : route('supervisor.quotation.approve', $penawaran->id);
+                                                $approveRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.approval', $quotation->id) : route('supervisor.quotation.approve', $quotation->id);
                                             @endphp
                                             <form action="{{ $approveRoute }}" method="POST" class="approve-form m-0 p-0"
                                                 data-confirm-text="Are you sure you want to approve this quotation?">
                                                 @csrf
-                                                @if ($penawaran->offer_type === 'custom')
+                                                @if ($quotation->offer_type === 'custom')
                                                     <input type="hidden" name="action" value="approve">
                                                 @endif
                                                 <button type="submit"
@@ -311,7 +311,7 @@
                                             {{-- Reject --}}
                                             <button type="button"
                                                 class="group/btn flex h-full cursor-pointer items-center justify-center bg-red-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                onclick="openTolakModal('{{ $penawaran->offer_type }}', '{{ $penawaran->id }}', '{{ $penawaran->offer_type === 'custom' ? $penawaran->penawaran_number : $penawaran->request_number }}')"
+                                                onclick="openTolakModal('{{ $quotation->offer_type }}', '{{ $quotation->id }}', '{{ $quotation->offer_type === 'custom' ? $quotation->quotation_number : $quotation->request_number }}')"
                                                 title="Reject">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -340,10 +340,10 @@
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                         Menampilkan
                         <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $penawarans->firstItem() ?? 0 }}-{{ $penawarans->lastItem() ?? 0 }}</span>
+                            class="font-semibold text-gray-900 dark:text-white">{{ $quotations->firstItem() ?? 0 }}-{{ $quotations->lastItem() ?? 0 }}</span>
                         dari
                         <span
-                            class="font-semibold text-gray-900 dark:text-white">{{ $penawarans->total() ?? $penawarans->count() }}</span>
+                            class="font-semibold text-gray-900 dark:text-white">{{ $quotations->total() ?? $quotations->count() }}</span>
                     </span>
                     <form method="GET" action="{{ route('admin.quotation_approval') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
@@ -359,7 +359,7 @@
                     <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
                 </div>
                 <div>
-                    {{ $penawarans->links() }}
+                    {{ $quotations->links() }}
                 </div>
             </nav>
         </div>

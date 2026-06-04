@@ -19,11 +19,11 @@ class QuotationApprovalController extends Controller
         $search = $request->get('search');
 
         // Query for custom quotation (status = 'sent')
-        $penawaransQuery = CustomQuotation::where('status', 'sent')
+        $quotationsQuery = CustomQuotation::where('status', 'sent')
             ->with(['items', 'sales']);
 
         if ($search) {
-            $penawaransQuery->where(function($q) use ($search) {
+            $quotationsQuery->where(function($q) use ($search) {
                 $q->where('quotation_number', 'like', "%{$search}%")
                   ->orWhere('to', 'like', "%{$search}%")
                   ->orWhere('up', 'like', "%{$search}%")
@@ -33,7 +33,7 @@ class QuotationApprovalController extends Controller
                   });
             });
         }
-        $penawarans = $penawaransQuery->get();
+        $quotations = $quotationsQuery->get();
 
         // Query for Quotations that require supervisor approval
         $requestOrdersQuery = Quotation::whereHas('order', function($query) {
@@ -64,11 +64,11 @@ class QuotationApprovalController extends Controller
         $requestOrders = $requestOrdersQuery->get();
 
         // Tag each item with a type so view can differentiate
-        $penawarans->each(function($p) { $p->offer_type = 'custom'; });
+        $quotations->each(function($p) { $p->offer_type = 'custom'; });
         $requestOrders->each(function($r) { $r->offer_type = 'request_order'; });
 
         // Merge and sort by created_at desc
-        $all = $penawarans->concat($requestOrders)->sortByDesc('created_at')->values();
+        $all = $quotations->concat($requestOrders)->sortByDesc('created_at')->values();
 
         // Manual pagination
         $perPage = (int) $request->input('perPage', 10);
@@ -84,7 +84,7 @@ class QuotationApprovalController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
-        return view('admin.quotation-approval.index', ['penawarans' => $paginator]);
+        return view('admin.quotation-approval.index', ['quotations' => $paginator]);
     }
 
     /**
@@ -212,9 +212,9 @@ class QuotationApprovalController extends Controller
             });
         }
 
-        $customPenawarans = $cpQuery->get()->map(function($cp) {
+        $customQuotations = $cpQuery->get()->map(function($cp) {
             return [
-                'type' => 'custom_penawaran',
+                'type' => 'custom_quotation',
                 'id' => $cp->id,
                 'number' => $cp->quotation_number,
                 'customer' => $cp->to,
@@ -229,7 +229,7 @@ class QuotationApprovalController extends Controller
         });
 
         // Gabungkan dan urutkan berdasarkan tanggal terbaru
-        $all = $requestOrders->concat($customPenawarans)->sortByDesc(function($item) {
+        $all = $requestOrders->concat($customQuotations)->sortByDesc(function($item) {
             return $item['raw_date'] ? (string) $item['raw_date'] : '';
         })->values();
 

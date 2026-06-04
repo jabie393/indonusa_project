@@ -67,7 +67,7 @@
                         'bg' => 'bg-rose-50/50 dark:bg-rose-950/20',
                         'icon_bg' => 'bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400',
                         'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>',
-                        'title' => 'Penawaran Ditolak Supervisor',
+                        'title' => 'Quotation Ditolak Supervisor',
                         'title_text' => 'text-rose-800 dark:text-rose-300',
                         'desc_text' => 'text-rose-700/80 dark:text-rose-400/80',
                     ],
@@ -120,7 +120,7 @@
                             </div>
                         @elseif ($bannerKey === 'sent_to_supervisor')
                             <p class="mt-1 text-xs {{ $activeConfig['desc_text'] }}">
-                                Penawaran mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
+                                Quotation mengandung diskon besar (&gt;20%). Dokumen PDF akan terkunci hingga mendapatkan persetujuan.
                             </p>
                         @elseif ($bannerKey === 'approved_supervisor')
                             <p class="mt-1 text-xs {{ $activeConfig['desc_text'] }}">
@@ -245,14 +245,14 @@
             ============================================================ --}}
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
-                <!-- Left Column: Informasi Penawaran -->
+                <!-- Left Column: Informasi Quotation -->
                 <div class="lg:col-span-2 space-y-6">
                     <div
                         class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 dark:bg-gray-800 dark:border-gray-700">
                         <div class="space-y-1">
                             <span
                                 class="text-[11px] font-extrabold uppercase tracking-wider text-[#225A97] dark:text-[#818CF8]">Informasi
-                                Penawaran</span>
+                                Quotation</span>
                             <div class="flex flex-wrap items-center gap-3">
                                 <h1 class="text-3xl font-black tracking-tight text-slate-800 dark:text-white">
                                     {{ $requestOrder->quotation_number ?? '-' }}</h1>
@@ -378,11 +378,11 @@
                                 </div>
                             </div>
 
-                            <!-- TGL PENAWARAN -->
+                            <!-- TGL QUOTATION -->
                             <div>
                                 <span
                                     class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Tgl
-                                    Penawaran</span>
+                                    Quotation</span>
                                 <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
                                     {{ $requestOrder->created_at->format('d M Y') }}</p>
                             </div>
@@ -596,7 +596,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                     </svg>
-                                    <span>Edit Penawaran</span>
+                                    <span>Edit Quotation</span>
                                 </a>
                             @endif
 
@@ -836,7 +836,7 @@
                     <form method="GET" action="{{ route($modalPdfRoute, $requestOrder->id) }}" target="_blank">
                         <div class="modal-body">
                             @php
-                                $defaultPdfNote = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan penawaran harga beserta spesifikasi produk sebagai berikut:\n\n";
+                                $defaultPdfNote = "Untuk memenuhi kebutuhan..., bersama ini kami sampaikan quotation harga beserta spesifikasi produk sebagai berikut:\n\n";
                             @endphp
                             <div class="mb-3">
                                 <label for="pdf_note" class="form-label">Catatan yang akan muncul di PDF</label>

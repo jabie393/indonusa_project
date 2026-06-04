@@ -81,7 +81,7 @@
                             @if ($salesOrder->customQuotation)
                                 <hr class="my-6 border-gray-200 dark:border-gray-700">
                                 <div>
-                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Asal Penawaran</label>
+                                    <label class="mb-2 text-sm text-gray-600 dark:text-gray-400">Asal Quotation</label>
                                     <p class="font-semibold text-gray-900 dark:text-white">{{ $salesOrder->customQuotation->quotation_number }}
                                     </p>
                                 </div>

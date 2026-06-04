@@ -174,12 +174,12 @@
                                 <label for="subject" class="form-label text-gray-700 dark:text-gray-300">Subject <span class="text-danger">*</span></label>
                                 <input type="text"
                                     class="@error('subject') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan subject untuk penawaran" required>
+                                    id="subject" name="subject" value="{{ old('subject') }}" placeholder="Masukkan subject untuk quotation" required>
                                 @error('subject')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <small class="text-muted dark:text-gray-400">Subject yang akan muncul di PDF
-                                    penawaran</small>
+                                    quotation</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -191,7 +191,7 @@
                                 @error('no_po')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="text-muted dark:text-gray-400">Nomor Purchase Order. Harus unik, tidak boleh sama dengan penawaran lain.</small>
+                                <small class="text-muted dark:text-gray-400">Nomor Purchase Order. Harus unik, tidak boleh sama dengan quotation lain.</small>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
@@ -220,7 +220,7 @@
                                 <label for="customer_notes" class="form-label text-gray-700 dark:text-gray-300">Catatan</label>
                                 <textarea
                                     class="@error('customer_notes') is-invalid @enderror block min-h-[80px] w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="customer_notes" name="customer_notes" rows="4">{{ old('customer_notes', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Penawaran berlaku 2 Minggu") }}</textarea>
+                                    id="customer_notes" name="customer_notes" rows="4">{{ old('customer_notes', "Syarat dan Ketentuan:\n1. Harga Franko On Site\n2. Harga Sudah Include PPN 11%\n3. Quotation berlaku 2 Minggu") }}</textarea>
                                 @error('customer_notes')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -248,7 +248,7 @@
 
                         <div class="overflow-x-auto">
                             <div id="discountWarning" class="alert alert-warning m-4" style="display:none;">
-                                Diskon lebih dari 20% pada salah satu item. Penawaran akan menunggu persetujuan
+                                Diskon lebih dari 20% pada salah satu item. Quotation akan menunggu persetujuan
                                 Supervisor.
                             </div>
                             <table class="h-full w-full border-collapse" id="itemsTable">
@@ -477,7 +477,7 @@
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <i class="fas fa-calculator"></i> Ringkasan Penawaran
+                                <i class="fas fa-calculator"></i> Ringkasan Quotation
                             </h3>
                         </div>
                         <div class="p-5">
@@ -709,7 +709,7 @@
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md" id="imagesSection" style="display: none;">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
                             <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <i class="fas fa-images"></i> Gambar Pendukung Penawaran
+                                <i class="fas fa-images"></i> Gambar Pendukung Quotation
                             </h3>
                         </div>
                         <div class="p-5">
@@ -750,7 +750,7 @@
                                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
                                 <polyline points="17 21 17 13 7 13 7 21"></polyline>
                                 <polyline points="7 3 7 8 15 8"></polyline>
-                            </svg> Buat Penawaran
+                            </svg> Buat Quotation
                         </button>
                     </div>
 

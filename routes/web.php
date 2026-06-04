@@ -34,8 +34,8 @@ Route::get('/', function () {
     return view('guest.welcome');
 });
 
-Route::get('/penawaran', function () {
-    return view('admin.pdf.penawaran');
+Route::get('/quotation-preview-static', function () {
+    return view('admin.pdf.quotation');
 });
 
 // Route user untuk lihat daftar barang
@@ -176,7 +176,7 @@ Route::middleware(['auth', 'role:Warehouse,Sales'])->group(function () {
 // Supervisor (use auth only; controllers perform case-insensitive role checks)
 Route::middleware(['auth'])->group(function () {
 
-    // Support old URLs/names: map approved-orders and diskon-approved to the sentPenawaran controller
+    // Support old URLs/names: map approved-orders and diskon-approved to the sentQuotation controller
     Route::get('/approved-orders', [QuotationApprovalController::class, 'index'])->name('admin.approved');
     Route::get('/diskon-approved', [QuotationApprovalController::class, 'index'])->name('admin.diskon_approved');
 
@@ -254,15 +254,15 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 
     // Sent to Quotation
     Route::post(
-        '/custom-quotation/{customQuotation}/sent-to-penawaran',
-        [CustomQuotationController::class, 'sentToPenawaran']
+        '/custom-quotation/{customQuotation}/sent-to-quotation',
+        [CustomQuotationController::class, 'sentToQuotation']
     )
-        ->name('sales.custom-quotation.sent-to-penawaran');
+        ->name('sales.custom-quotation.sent-to-quotation');
 
     // Sales Order Routes
     Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
     Route::get('/sales-order/search', [SalesOrderController::class, 'search'])->name('sales.sales-order.search');
-    Route::get('/sales-order/penawaran-detail', [SalesOrderController::class, 'getPenawaranDetail'])->name('sales.sales-order.penawaran-detail');
+    Route::get('/sales-order/quotation-detail', [SalesOrderController::class, 'getQuotationDetail'])->name('sales.sales-order.quotation-detail');
     Route::get('/sales-order/create', [SalesOrderController::class, 'create'])->name('sales.sales-order.create');
     Route::post('/sales-order', [SalesOrderController::class, 'store'])->name('sales.sales-order.store');
     Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');

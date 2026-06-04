@@ -175,23 +175,23 @@
 
                         <tr>
                             <td class="w-[75pt]">To</td>
-                            <td class="w-[170pt]">{{ $customPenawaran->to }}</td>
+                            <td class="w-[170pt]">{{ $customQuotation->to }}</td>
                             <td class="">Date</td>
-                            <td class="">{{ \Carbon\Carbon::parse($customPenawaran->date)->format('d/m/Y') }}</td>
+                            <td class="">{{ \Carbon\Carbon::parse($customQuotation->date)->format('d/m/Y') }}</td>
                         </tr>
 
                         <tr>
                             <td class="">Up</td>
-                            <td class="">{{ $customPenawaran->up ?? '-' }}</td>
+                            <td class="">{{ $customQuotation->up ?? '-' }}</td>
                             <td class="">Our Ref</td>
-                            <td class="">{{ $customPenawaran->our_ref }}</td>
+                            <td class="">{{ $customQuotation->our_ref }}</td>
                         </tr>
 
                         <tr>
                             <td class="">Subject</td>
-                            <td class="">{{ $customPenawaran->subject }}</td>
+                            <td class="">{{ $customQuotation->subject }}</td>
                             <td class="w-[75pt]">Email</td>
-                            <td class="w-[180pt]"><a href="mailto:{{ $customPenawaran->email }}">{{ $customPenawaran->email }}</a></td>
+                            <td class="w-[180pt]"><a href="mailto:{{ $customQuotation->email }}">{{ $customQuotation->email }}</a></td>
                         </tr>
 
                     </tbody>
@@ -200,8 +200,8 @@
 
             <!-- INTRO TEXT -->
             <div class="mt-8 text-[9pt]">
-                @if ($customPenawaran->intro_text)
-                    <p class="whitespace-pre-wrap">{{ $customPenawaran->intro_text }}</p>
+                @if ($customQuotation->intro_text)
+                    <p class="whitespace-pre-wrap">{{ $customQuotation->intro_text }}</p>
                 @endif
             </div>
 
@@ -221,7 +221,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($customPenawaran->items as $index => $item)
+                        @forelse($customQuotation->items as $index => $item)
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                 <td class="border px-2 py-1">{{ $item->nama_barang }}</td>
@@ -294,7 +294,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->subtotal, 0, '.', ',') }}</span>
+                                        <span>{{ number_format($customQuotation->subtotal, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -303,7 +303,7 @@
                                 <td class="border-b border-black px-2">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->tax, 0, '.', ',') }}</span>
+                                        <span>{{ number_format($customQuotation->tax, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -312,7 +312,7 @@
                                 <td class="border-black px-2 text-white">
                                     <div class="flex justify-between">
                                         <span>Rp</span>
-                                        <span>{{ number_format($customPenawaran->grand_total, 0, '.', ',') }}</span>
+                                        <span>{{ number_format($customQuotation->grand_total, 0, '.', ',') }}</span>
                                     </div>
                                 </td>
                             </tr>

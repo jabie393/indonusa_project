@@ -3,12 +3,12 @@
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Edit Custom Quotation</h1>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Ubah detail penawaran</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-300">Ubah detail quotation</p>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('sales.custom-quotation.update', $customPenawaran->id) }}"
+                <form action="{{ route('sales.custom-quotation.update', $customQuotation->id) }}"
                       method="POST"
                       enctype="multipart/form-data">
                     @csrf
@@ -40,7 +40,7 @@
                                 <input type="text"
                                        id="to"
                                        name="to"
-                                       value="{{ old('to', $customPenawaran->to) }}"
+                                       value="{{ old('to', $customQuotation->to) }}"
                                        required
                                        class="@error('to') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                        placeholder="Nama customer">
@@ -60,7 +60,7 @@
                                     <option value="">Pilih Sales</option>
                                     @foreach ($salesUsers as $name => $displayName)
                                         <option value="{{ $name }}"
-                                                {{ old('up', $customPenawaran->up ?: $currentUserName) == $name ? 'selected' : '' }}>
+                                                {{ old('up', $customQuotation->up ?: $currentUserName) == $name ? 'selected' : '' }}>
                                             {{ $displayName }}
                                         </option>
                                     @endforeach
@@ -77,10 +77,10 @@
                                 <input type="text"
                                        id="subject"
                                        name="subject"
-                                       value="{{ old('subject', $customPenawaran->subject) }}"
+                                       value="{{ old('subject', $customQuotation->subject) }}"
                                        required
                                        class="@error('subject') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                       placeholder="Judul penawaran">
+                                       placeholder="Judul quotation">
                                 @error('subject')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -93,7 +93,7 @@
                                 <input type="email"
                                        id="email"
                                        name="email"
-                                       value="{{ old('email', $customPenawaran->email) }}"
+                                       value="{{ old('email', $customQuotation->email) }}"
                                        required
                                        class="@error('email') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
                                        placeholder="email@example.com">
@@ -109,7 +109,7 @@
                                 <input type="text"
                                        id="our_ref"
                                        name="our_ref"
-                                       value="{{ old('our_ref', $customPenawaran->our_ref) }}"
+                                       value="{{ old('our_ref', $customQuotation->our_ref) }}"
                                        readonly
                                        class="@error('our_ref') border-red-500 @enderror w-full rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-black dark:bg-gray-600 dark:text-gray-300">
                                 @error('our_ref')
@@ -124,7 +124,7 @@
                                 <input type="date"
                                        id="date"
                                        name="date"
-                                       value="{{ old('date', $customPenawaran->date ? \Carbon\Carbon::parse($customPenawaran->date)->format('Y-m-d') : '') }}"
+                                       value="{{ old('date', $customQuotation->date ? \Carbon\Carbon::parse($customQuotation->date)->format('Y-m-d') : '') }}"
                                        required
                                        class="@error('date') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
                                 @error('date')
@@ -140,7 +140,7 @@
                                           name="intro_text"
                                           rows="4"
                                           class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                          placeholder="Masukkan teks pembuka penawaran...">{{ old('intro_text', $customPenawaran->intro_text) }}</textarea>
+                                          placeholder="Masukkan teks pembuka quotation...">{{ old('intro_text', $customQuotation->intro_text) }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
@@ -153,7 +153,7 @@
                         $oldItems = old('items');
                         $items = is_array($oldItems)
                             ? $oldItems
-                            : $customPenawaran->items->map(function ($item) {
+                            : $customQuotation->items->map(function ($item) {
                                 return [
                                     'nama_barang' => $item->product_name,
                                     'qty' => $item->qty,
@@ -440,7 +440,7 @@
                     <!-- Summary Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mt-4 rounded-2xl shadow-md">
                         <div class="flex items-center justify-between rounded-t-2xl bg-[#225A97] p-[1rem] text-white">
-                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Penawaran</h3>
+                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight"><i class="fas fa-calculator"></i> Ringkasan Quotation</h3>
                         </div>
                         <div class="p-5">
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -453,11 +453,11 @@
                                                    id="subtotal-display"
                                                    readonly
                                                    class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white"
-                                                   value="{{ 'Rp ' . number_format(old('subtotal', $customPenawaran->subtotal), 0, '.', ',') }}">
+                                                   value="{{ 'Rp ' . number_format(old('subtotal', $customQuotation->subtotal), 0, '.', ',') }}">
                                             <input type="hidden"
                                                    id="subtotal-value"
                                                    name="subtotal"
-                                                   value="{{ old('subtotal', $customPenawaran->subtotal) }}">
+                                                   value="{{ old('subtotal', $customQuotation->subtotal) }}">
                                         </div>
                                         <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
                                             <svg class="h-6 w-6 text-blue-600 dark:text-blue-300"
@@ -484,7 +484,7 @@
                                                     <input type="number"
                                                            id="tax_rate"
                                                            name="tax_rate"
-                                                           value="{{ old('tax_rate', $customPenawaran->tax_rate ?? 11) }}"
+                                                           value="{{ old('tax_rate', $customQuotation->tax_rate ?? 11) }}"
                                                            class="w-12 border-none bg-transparent p-0 text-right text-sm text-gray-900 focus:ring-0 dark:text-white"
                                                            min="0"
                                                            max="100">
@@ -494,12 +494,12 @@
                                             <input type="hidden"
                                                    id="tax"
                                                    name="tax"
-                                                   value="{{ old('tax', $customPenawaran->tax) }}">
+                                                   value="{{ old('tax', $customQuotation->tax) }}">
                                             <input type="text"
                                                    id="tax_display"
                                                    readonly
                                                    class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-gray-900 focus:ring-0 dark:text-white"
-                                                   value="{{ 'Rp ' . number_format(old('tax', $customPenawaran->tax), 0, '.', ',') }}">
+                                                   value="{{ 'Rp ' . number_format(old('tax', $customQuotation->tax), 0, '.', ',') }}">
                                         </div>
                                         <div class="rounded-full bg-green-100 p-3 dark:bg-green-900">
                                             <svg fill="currentColor" class="h-6 w-6 text-green-600 dark:text-green-300" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M427.023,0H84.977C71.126,0,59.858,11.268,59.858,25.119v461.762c0,13.851,11.268,25.119,25.119,25.119h265.086 c2.126,0,4.166-0.844,5.668-2.348l94.063-94.063c1.504-1.503,2.348-3.542,2.348-5.668V25.119C452.142,11.268,440.874,0,427.023,0z M358.079,484.63v-57.607c0-5.01,4.076-9.086,9.086-9.086h57.607L358.079,484.63z M436.109,401.904h-68.944 c-13.851,0-25.119,11.268-25.119,25.119v68.944H84.977c-5.01,0-9.086-4.076-9.086-9.086V25.119c0-5.01,4.076-9.086,9.086-9.086 h342.046c5.01,0,9.086,4.076,9.086,9.086V401.904z"></path> </g> </g> <g> <g> <path d="M204.693,68.409h-68.409c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h26.188v77.495 c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017V84.443h26.188c4.427,0,8.017-3.589,8.017-8.017 S209.12,68.409,204.693,68.409z"></path> </g> </g> <g> <g> <path d="M289.332,159.634l-23.826-79.418c-2.119-7.062-8.496-11.807-15.869-11.807h-4.378c-7.373,0-13.75,4.745-15.869,11.807 l-23.826,79.418c-1.272,4.241,1.134,8.71,5.375,9.982c4.241,1.275,8.71-1.134,9.982-5.374l3.416-11.39h46.219l3.417,11.389 c1.042,3.473,4.227,5.715,7.676,5.715c0.762,0,1.538-0.11,2.307-0.34C288.198,168.344,290.605,163.875,289.332,159.634z M229.149,136.818l15.598-51.995c0.067-0.224,0.278-0.381,0.512-0.381h4.378c0.234,0,0.445,0.156,0.512,0.381l15.598,51.995 H229.149z"></path> </g> </g> <g> <g> <path d="M373.732,157.34l-26.712-38.158l26.712-38.158c2.539-3.627,1.657-8.626-1.97-11.165c-3.627-2.539-8.626-1.658-11.165,1.97 l-23.362,33.374l-23.362-33.374c-2.539-3.628-7.539-4.51-11.165-1.97c-3.628,2.539-4.51,7.538-1.97,11.165l26.712,38.158 L300.74,157.34c-2.539,3.627-1.657,8.626,1.97,11.165c1.399,0.98,3.003,1.449,4.59,1.449c2.527,0,5.015-1.192,6.574-3.42 l23.362-33.374l23.362,33.374c1.56,2.228,4.047,3.42,6.574,3.42c1.587,0,3.192-0.47,4.59-1.449 C375.389,165.966,376.272,160.967,373.732,157.34z"></path> </g> </g> <g> <g> <path d="M136.284,213.779h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,213.779,136.284,213.779z"></path> </g> </g> <g> <g> <path d="M136.284,247.983h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,247.983,136.284,247.983z"></path> </g> </g> <g> <g> <path d="M136.284,282.188h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S140.711,282.188,136.284,282.188z"></path> </g> </g> <g> <g> <path d="M392.818,213.779h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,213.779,392.818,213.779z"></path> </g> </g> <g> <g> <path d="M392.818,247.983h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,247.983,392.818,247.983z"></path> </g> </g> <g> <g> <path d="M392.818,282.188h-17.102c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017S397.246,282.188,392.818,282.188z"></path> </g> </g> <g> <g> <path d="M273.102,213.779H170.489c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h102.614 c4.427,0,8.017-3.589,8.017-8.017S277.53,213.779,273.102,213.779z"></path> </g> </g> <g> <g> <path d="M238.898,247.983h-68.409c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h68.409 c4.427,0,8.017-3.589,8.017-8.017S243.325,247.983,238.898,247.983z"></path> </g> </g> <g> <g> <path d="M273.102,282.188H170.489c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h102.614 c4.427,0,8.017-3.589,8.017-8.017S277.53,282.188,273.102,282.188z"></path> </g> </g> <g> <g> <path d="M152.852,387.18v-27.859c5.907,1.936,9.62,5.833,9.62,9.447c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017 c0-12.784-10.768-23.198-25.653-25.984v-1.273c0-4.427-3.589-8.017-8.017-8.017s-8.017,3.589-8.017,8.017v1.273 c-14.885,2.786-25.653,13.2-25.653,25.984c0,17.862,14.265,25.369,25.653,29.69v27.859c-5.907-1.936-9.62-5.834-9.62-9.447 c0-4.427-3.589-8.017-8.017-8.017s-8.017,3.589-8.017,8.017c0,12.784,10.768,23.198,25.653,25.984v1.273 c0,4.427,3.589,8.017,8.017,8.017s8.017-3.589,8.017-8.017v-1.273c14.885-2.786,25.653-13.2,25.653-25.984 C178.505,399.007,164.24,391.5,152.852,387.18z M136.818,380.966c-7.992-3.916-9.62-7.337-9.62-12.198 c0-3.614,3.713-7.511,9.62-9.447V380.966z M152.852,426.315V404.67c7.992,3.916,9.62,7.337,9.62,12.198 C162.472,420.482,158.758,424.38,152.852,426.315z"></path> </g> </g> <g> <g> <path d="M264.551,350.597h-59.858c-4.427,0-8.017,3.589-8.017,8.017s3.589,8.017,8.017,8.017h59.858 c4.427,0,8.017-3.589,8.017-8.017S268.979,350.597,264.551,350.597z"></path> </g> </g> <g> <g> <path d="M238.898,419.006h-34.205c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h34.205 c4.427,0,8.017-3.589,8.017-8.017C246.914,422.596,243.325,419.006,238.898,419.006z"></path> </g> </g> <g> <g> <path d="M290.205,419.006h-17.102c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h17.102 c4.427,0,8.017-3.589,8.017-8.017C298.221,422.596,294.632,419.006,290.205,419.006z"></path> </g> </g> <g> <g> <path d="M315.858,384.802H204.693c-4.427,0-8.017,3.589-8.017,8.017c0,4.427,3.589,8.017,8.017,8.017h111.165 c4.427,0,8.017-3.589,8.017-8.017C323.875,388.391,320.285,384.802,315.858,384.802z"></path> </g> </g> <g> <g> <circle cx="273.102" cy="256" r="8.017"></circle> </g> </g> <g> <g> <circle cx="307.307" cy="256" r="8.017"></circle> </g> </g> <g> <g> <circle cx="341.511" cy="256" r="8.017"></circle> </g> </g> <g> <g> <circle cx="307.307" cy="221.795" r="8.017"></circle> </g> </g> <g> <g> <circle cx="341.511" cy="221.795" r="8.017"></circle> </g> </g> <g> <g> <circle cx="307.307" cy="290.205" r="8.017"></circle> </g> </g> <g> <g> <circle cx="341.511" cy="290.205" r="8.017"></circle> </g> </g> </g></svg>
@@ -516,11 +516,11 @@
                                                    id="grand-total-display"
                                                    readonly
                                                    class="mt-1 w-full border-none bg-transparent p-0 text-2xl font-bold text-green-600 focus:ring-0 dark:text-green-400"
-                                                   value="{{ 'Rp ' . number_format(old('grand_total', $customPenawaran->grand_total), 0, '.', ',') }}">
+                                                   value="{{ 'Rp ' . number_format(old('grand_total', $customQuotation->grand_total), 0, '.', ',') }}">
                                             <input type="hidden"
                                                    id="grand-total-value"
                                                    name="grand_total"
-                                                   value="{{ old('grand_total', $customPenawaran->grand_total) }}">
+                                                   value="{{ old('grand_total', $customQuotation->grand_total) }}">
                                         </div>
                                         <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900">
                                             <svg class="h-6 w-6 text-purple-600 dark:text-purple-300"
@@ -597,7 +597,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let itemCount = {{ count(old('items', $customPenawaran->items->toArray())) }};
+            let itemCount = {{ count(old('items', $customQuotation->items->toArray())) }};
 
             // Format currency
             function formatCurrency(value) {

@@ -128,7 +128,7 @@
                                         class="mt-1 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
                                         <span class="w-8 text-gray-400 dark:text-gray-500">PNW</span>
                                         <span class="mx-1.5 font-bold text-gray-300 dark:text-gray-600">·</span>
-                                        <span>{{ $row['no_penawaran'] ?? '-' }}</span>
+                                        <span>{{ $row['no_quotation'] ?? '-' }}</span>
                                     </div>
                                     <div
                                         class="mt-0.5 flex items-center text-xs font-normal text-gray-500 dark:text-gray-400">
@@ -439,7 +439,7 @@
             }
 
             searchResults.innerHTML = results.map(item => {
-                const typeClass = item.type === 'penawaran' ?
+                const typeClass = item.type === 'quotation' ?
                     'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' :
                     'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20';
 

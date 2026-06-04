@@ -26,7 +26,7 @@ $(document).ready(function() {
         
         Swal.fire({
             title: 'Bulk Delete',
-            text: `Are you sure you want to delete ${selectedIds.length} custom penawarans? This action cannot be undone.`,
+            text: `Are you sure you want to delete ${selectedIds.length} custom quotations? This action cannot be undone.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#b91c1c',
@@ -39,7 +39,7 @@ $(document).ready(function() {
                     ids: selectedIds
                 }, function(res) {
                     if (res.success) {
-                        Swal.fire('Deleted!', 'Penawarans have been deleted.', 'success').then(() => location.reload());
+                        Swal.fire('Deleted!', 'Quotations have been deleted.', 'success').then(() => location.reload());
                     } else {
                         Swal.fire('Error', res.message || 'Failed to delete items.', 'error');
                     }
@@ -53,7 +53,7 @@ $(document).ready(function() {
 
         Swal.fire({
             title: 'Bulk Send to Warehouse',
-            text: `Send ${selectedIds.length} custom penawarans to Warehouse? Only 'Open' or 'Approved' items will be processed.`,
+            text: `Send ${selectedIds.length} custom quotations to Warehouse? Only 'Open' or 'Approved' items will be processed.`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#1d4ed8',

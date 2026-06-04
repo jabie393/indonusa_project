@@ -47,7 +47,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Report Penawaran
+                    Report Quotation
                 </a>
             </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="grid auto-rows-max grid-cols-8 gap-6 p-6 pt-0">
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Penawaran</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Quotation</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
@@ -63,7 +63,7 @@
                             <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
                                 {{ $totalQuotation ?? 0 }}
                             </h1>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Penawarans</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400">Quotations</span>
                         </div>
                     </div>
                 </div>

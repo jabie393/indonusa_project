@@ -117,7 +117,7 @@ class QuotationController extends Controller
             'custom_product_name' => 'nullable|array',
             'custom_product_name.*' => 'nullable|string|max:255',
         ], [
-            'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
+            'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
 
         $items = [];
@@ -155,7 +155,7 @@ class QuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $nomorPenawaran = Quotation::generateQuotationNumber();
+            $nomorQuotation = Quotation::generateQuotationNumber();
             $tanggalBerlaku = now()->addDays(14);
 
             $supportingImages = [];
@@ -173,7 +173,7 @@ class QuotationController extends Controller
             $salesOrderNumber = Quotation::generateSalesOrderNumber();
             $requestOrder = Quotation::create([
                 'request_number' => 'REQ-'.strtoupper(Str::random(8)),
-                'quotation_number' => $nomorPenawaran,
+                'quotation_number' => $nomorQuotation,
                 'sales_order_number' => $salesOrderNumber,
                 'no_po' => $validated['no_po'] ?? null,
                 'sales_id' => Auth::id(),
@@ -430,7 +430,7 @@ class QuotationController extends Controller
             'existing_item_images.*' => 'nullable|array',
             'existing_item_images.*.*' => 'nullable|string',
         ], [
-            'no_po.unique' => 'No. PO sudah digunakan pada penawaran lain.',
+            'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
 
         foreach ($validated['product_id'] as $i => $productId) {

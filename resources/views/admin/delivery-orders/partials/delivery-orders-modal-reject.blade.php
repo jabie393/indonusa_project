@@ -288,7 +288,7 @@
      * Buka modal tolak.
      * @param {string} type  - 'request_order', 'custom', 'delivery_order', 'supply_order'
      * @param {string} id    - ID record
-     * @param {string} nomor - Nomor penawaran / request number (untuk label)
+     * @param {string} nomor - Nomor quotation / request number (untuk label)
      * @param {Array} items  - Order items (for delivery check)
      */
     function openTolakModal(type, id, nomor, items) {

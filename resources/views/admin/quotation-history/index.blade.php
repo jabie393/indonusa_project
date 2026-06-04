@@ -60,9 +60,9 @@
                                                 <path d="m22 2-7 20-4-9-9-4Z" />
                                                 <path d="M22 2 11 13" />
                                             </svg>
-                                            Sent Penawaran
+                                            Sent Quotation
                                         </span>
-                                    @elseif($item['type'] === 'custom_penawaran')
+                                    @elseif($item['type'] === 'custom_quotation')
                                         <span
                                             class="inline-flex w-full items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:border-indigo-800/50 dark:bg-indigo-950/30 dark:text-indigo-300">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -74,7 +74,7 @@
                                                 <path d="M16 13H8" />
                                                 <path d="M16 17H8" />
                                             </svg>
-                                            Custom Penawaran
+                                            Custom Quotation
                                         </span>
                                     @endif
                                 </td>

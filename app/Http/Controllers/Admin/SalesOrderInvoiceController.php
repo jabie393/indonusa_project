@@ -44,7 +44,7 @@ class SalesOrderInvoiceController extends Controller
             'id'             => $ro->id,
             'type'           => 'request_order',
             'no_request'     => $ro->request_number,
-            'no_penawaran'   => $ro->quotation_number,
+            'no_quotation'   => $ro->quotation_number,
             'no_po'          => $ro->no_po ?? '-',
             'no_sales_order' => $ro->sales_order_number,
             'tanggal'        => $ro->required_date ? $ro->required_date->format('d/m/Y') : '-',
@@ -221,7 +221,7 @@ class SalesOrderInvoiceController extends Controller
                 return [
                     'sales_order_number' => $ro->sales_order_number ?: ($ro->quotation_number ?: ($ro->request_number ?: 'Quotation')),
                     'customer_name'      => $ro->customer_name,
-                    'type'               => 'penawaran',
+                    'type'               => 'quotation',
                     'badge'              => 'Quotation',
                     'no_po'              => $ro->no_po,
                 ];

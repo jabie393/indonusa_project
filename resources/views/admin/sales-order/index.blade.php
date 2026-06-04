@@ -189,7 +189,7 @@
                                 </td>
                                 <td class="px-4 py-6 align-middle">
                                     <div class="flex flex-col gap-1">
-                                        <a href="{{ $row['aksi_url'] }}" class="text-base font-bold text-[#0067B1] hover:underline">{{ $row['no_penawaran'] ?? '-' }}</a>
+                                        <a href="{{ $row['aksi_url'] }}" class="text-base font-bold text-[#0067B1] hover:underline">{{ $row['no_quotation'] ?? '-' }}</a>
                                         <div class="grid grid-cols-[32px_1fr] gap-x-2 text-xs leading-relaxed">
                                             <span class="font-semibold uppercase text-slate-400">SO</span>
                                             <span class="text-slate-600 dark:text-slate-300">{{ $row['no_sales_order'] ?? '-' }}</span>
@@ -487,12 +487,12 @@
         </div>
     </div>
 
-    <!-- Modal Detail Penawaran -->
-    <div id="penawaranModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 p-4">
+    <!-- Modal Detail Quotation -->
+    <div id="quotationModal" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 p-4">
         <div class="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-800">
             <!-- Header -->
             <div class="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-                <h2 class="text-2xl font-bold">Detail Penawaran</h2>
+                <h2 class="text-2xl font-bold">Detail Quotation</h2>
                 <button id="closeModal" class="rounded-full p-2 text-white transition hover:bg-blue-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -570,7 +570,7 @@
             }
 
             searchResults.innerHTML = results.map(item => {
-                const typeClass = item.type === 'penawaran' ?
+                const typeClass = item.type === 'quotation' ?
                     'bg-green-50 text-green-700 ring-1 ring-inset ring-green-600/20' :
                     'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-600/20';
 
@@ -693,7 +693,7 @@
         });
 
         // Modal handling
-        const modal = document.getElementById('penawaranModal');
+        const modal = document.getElementById('quotationModal');
         const closeBtn = document.getElementById('closeModal');
         const modalContent = document.getElementById('modalContent');
 
@@ -707,9 +707,9 @@
             }
         });
 
-        // Function untuk display modal penawaran detail
-        function showPenawaranDetail(penawaranId) {
-            fetch(`{{ route('sales.sales-order.penawaran-detail') }}?id=${penawaranId}`)
+        // Function untuk display modal quotation detail
+        function showQuotationDetail(quotationId) {
+            fetch(`{{ route('sales.sales-order.quotation-detail') }}?id=${quotationId}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -737,8 +737,8 @@
                         modalContent.innerHTML = `
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div>
-                                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">No Penawaran</h3>
-                                    <p class="text-xl font-bold text-gray-900 dark:text-white">${data.penawaran_number}</p>
+                                    <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">No Quotation</h3>
+                                    <p class="text-xl font-bold text-gray-900 dark:text-white">${data.quotation_number}</p>
                                 </div>
                                 <div>
                                     <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Tanggal</h3>

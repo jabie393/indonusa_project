@@ -44,7 +44,7 @@ class SalesOrderController extends Controller
             'id'             => $ro->id,
             'type'           => 'request_order',
             'no_request'     => $ro->request_number,
-            'no_penawaran'   => $ro->quotation_number,
+            'no_quotation'   => $ro->quotation_number,
             'no_po'          => $ro->no_po ?? '-',
             'no_sales_order' => $ro->sales_order_number,
             'tanggal'        => $ro->required_date ? $ro->required_date->format('d/m/Y') : '-',
@@ -186,28 +186,28 @@ class SalesOrderController extends Controller
         ]);
     }
 
-    public function getPenawaranDetail(Request $request)
+    public function getQuotationDetail(Request $request)
     {
-        $penawaranId = $request->input('id');
-        $penawaran   = CustomQuotation::where('sales_id', Auth::id())->findOrFail($penawaranId);
+        $quotationId = $request->input('id');
+        $quotation   = CustomQuotation::where('sales_id', Auth::id())->findOrFail($quotationId);
 
         return response()->json([
             'success' => true,
             'data'    => [
-                'id'               => $penawaran->id,
-                'penawaran_number' => $penawaran->quotation_number,
-                'to'               => $penawaran->to,
-                'up'               => $penawaran->up,
-                'email'            => $penawaran->email,
-                'subject'          => $penawaran->subject,
-                'our_ref'          => $penawaran->our_ref,
-                'date'             => $penawaran->date ? \Carbon\Carbon::parse($penawaran->date)->format('d/m/Y') : '-',
-                'intro_text'       => $penawaran->intro_text,
-                'status'           => $penawaran->status,
-                'subtotal'         => $penawaran->subtotal,
-                'tax'              => $penawaran->tax,
-                'grand_total'      => $penawaran->grand_total,
-                'items'            => $penawaran->items->map(function ($item) {
+                'id'               => $quotation->id,
+                'quotation_number' => $quotation->quotation_number,
+                'to'               => $quotation->to,
+                'up'               => $quotation->up,
+                'email'            => $quotation->email,
+                'subject'          => $quotation->subject,
+                'our_ref'          => $quotation->our_ref,
+                'date'             => $quotation->date ? \Carbon\Carbon::parse($quotation->date)->format('d/m/Y') : '-',
+                'intro_text'       => $quotation->intro_text,
+                'status'           => $quotation->status,
+                'subtotal'         => $quotation->subtotal,
+                'tax'              => $quotation->tax,
+                'grand_total'      => $quotation->grand_total,
+                'items'            => $quotation->items->map(function ($item) {
                     return [
                         'nama_barang' => $item->product_name,
                         'qty'         => $item->qty,
@@ -225,7 +225,7 @@ class SalesOrderController extends Controller
 
     public function create()
     {
-        $customPenawarans = CustomQuotation::where('sales_id', Auth::id())
+        $customQuotations = CustomQuotation::where('sales_id', Auth::id())
             ->whereIn('status', ['open', 'approved'])
             ->with('items')
             ->latest()
@@ -234,7 +234,7 @@ class SalesOrderController extends Controller
         $salesUsers      = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales-order.create', compact('customPenawarans', 'salesUsers', 'currentUserName'));
+        return view('admin.sales-order.create', compact('customQuotations', 'salesUsers', 'currentUserName'));
     }
 
     public function store(Request $request)
@@ -443,7 +443,7 @@ class SalesOrderController extends Controller
                 return [
                     'sales_order_number' => $ro->sales_order_number ?: ($ro->quotation_number ?: ($ro->request_number ?: 'Quotation')),
                     'customer_name'      => $ro->customer_name,
-                    'type'               => 'penawaran',
+                    'type'               => 'quotation',
                     'badge'              => 'Quotation',
                     'url'                => route('sales.quotation.show', $ro->id),
                     'no_po'              => $ro->no_po,
