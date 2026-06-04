@@ -26,6 +26,8 @@ class QuotationApprovalController extends Controller
             $penawaransQuery->where(function($q) use ($search) {
                 $q->where('quotation_number', 'like', "%{$search}%")
                   ->orWhere('to', 'like', "%{$search}%")
+                  ->orWhere('up', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
                   ->orWhereHas('sales', function($q2) use ($search) {
                       $q2->where('name', 'like', "%{$search}%");
                   });
@@ -42,6 +44,18 @@ class QuotationApprovalController extends Controller
             $requestOrdersQuery->where(function($q) use ($search) {
                 $q->where('request_number', 'like', "%{$search}%")
                   ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhereHas('pic', function ($picQuery) use ($search) {
+                      $picQuery->where('name', 'like', "%{$search}%")
+                          ->orWhere('position', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
+                      $picQuery->where('name', 'like', "%{$search}%")
+                          ->orWhere('position', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('sales', function($q2) use ($search) {
                       $q2->where('name', 'like', "%{$search}%");
                   });
@@ -57,8 +71,8 @@ class QuotationApprovalController extends Controller
         $all = $penawarans->concat($requestOrders)->sortByDesc('created_at')->values();
 
         // Manual pagination
-        $perPage = 10;
-        $page = request()->get('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $page = (int) $request->input('page', 1);
         $offset = ($page - 1) * $perPage;
         $currentItems = $all->slice($offset, $perPage)->values();
 
@@ -136,9 +150,25 @@ class QuotationApprovalController extends Controller
         if ($search) {
             $roQuery->where(function($q) use ($search) {
                 $q->where('quotation_number', 'LIKE', "%{$search}%")
+                  ->orWhere('request_number', 'LIKE', "%{$search}%")
                   ->orWhere('customer_name', 'LIKE', "%{$search}%")
+                  ->orWhere('grand_total', 'LIKE', "%{$search}%")
+                  ->orWhere('reason', 'LIKE', "%{$search}%")
+                  ->orWhereHas('order', function ($orderQuery) use ($search) {
+                      $orderQuery->where('status', 'LIKE', "%{$search}%")
+                          ->orWhere('reason', 'LIKE', "%{$search}%")
+                          ->orWhereDate('approved_at', $search)
+                          ->orWhere('approved_at', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
+                      $picQuery->where('name', 'LIKE', "%{$search}%")
+                          ->orWhere('position', 'LIKE', "%{$search}%")
+                          ->orWhere('email', 'LIKE', "%{$search}%")
+                          ->orWhere('phone', 'LIKE', "%{$search}%");
+                  })
                   ->orWhereHas('sales', function($sq) use ($search) {
-                      $sq->where('name', 'LIKE', "%{$search}%");
+                      $sq->where('name', 'LIKE', "%{$search}%")
+                          ->orWhere('email', 'LIKE', "%{$search}%");
                   });
             });
         }
@@ -166,9 +196,18 @@ class QuotationApprovalController extends Controller
         if ($search) {
             $cpQuery->where(function($q) use ($search) {
                 $q->where('quotation_number', 'LIKE', "%{$search}%")
+                  ->orWhere('our_ref', 'LIKE', "%{$search}%")
                   ->orWhere('to', 'LIKE', "%{$search}%")
+                  ->orWhere('up', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('grand_total', 'LIKE', "%{$search}%")
+                  ->orWhere('status', 'LIKE', "%{$search}%")
+                  ->orWhere('reason', 'LIKE', "%{$search}%")
+                  ->orWhereDate('approved_at', $search)
+                  ->orWhere('approved_at', 'LIKE', "%{$search}%")
                   ->orWhereHas('sales', function($sq) use ($search) {
-                      $sq->where('name', 'LIKE', "%{$search}%");
+                      $sq->where('name', 'LIKE', "%{$search}%")
+                          ->orWhere('email', 'LIKE', "%{$search}%");
                   });
             });
         }

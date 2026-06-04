@@ -46,7 +46,8 @@
 
             <div class="p-3">
                 {{-- Search --}}
-                <div class="flex flex-col gap-2 md:flex-row">
+                <form action="{{ route('sales-order-invoice.index') }}" method="GET" class="flex flex-col gap-2 md:flex-row" data-realtime-table-search data-search-input="#searchInput"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <div class="relative flex-1">
                         <label for="topbar-search" class="sr-only">Search</label>
                         <div class="relative md:w-96">
@@ -58,7 +59,7 @@
                                     </path>
                                 </svg>
                             </div>
-                            <input type="text" id="searchInput"
+                            <input type="text" name="search" id="searchInput"
                                 placeholder="Cari berdasarkan No.SO, Customer, Subject, atau Email..."
                                 value="{{ $search }}" autocomplete="off"
                                 class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500">
@@ -76,7 +77,7 @@
                             </a>
                         @endif
                     </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -102,7 +103,7 @@
                             <th class="text-nowrap px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300"
                                 data-type="date">Tanggal</th>
                             <th
-                                class="no-sort text-nowrap px-4 py-3 text-center text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                class="no-sort text-nowrap px-6 py-3 text-right text-sm font-semibold text-gray-700 dark:text-gray-300">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -296,7 +297,7 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="px-4 py-3 text-center">
+                                <td class="px-4 py-3 text-right">
                                     <a href="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
                                         target="_self"
                                         class="js-invoice-history group inline-flex items-center rounded-lg bg-green-600 p-2 text-xs font-semibold text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -350,7 +351,7 @@
                 </table>
             </div>
             @if (!$isSearch && $salesOrders)
-                <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                <nav id="pagination-nav" class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
                     aria-label="Table navigation">
                     <div class="flex items-center space-x-2">
                         <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -385,7 +386,7 @@
     <script>
         const searchInput = document.getElementById('searchInput');
         const searchResults = document.getElementById('searchResults');
-        const searchBtn = document.getElementById('searchBtn');
+        const searchForm = searchInput?.closest('form');
         let searchTimeout;
 
         // Autocomplete search dengan AJAX
@@ -420,13 +421,7 @@
             searchInput.value = query;
             searchResults.classList.add('hidden');
 
-            // Trigger actual search
-            const form = document.createElement('form');
-            form.method = 'GET';
-            form.action = '{{ route('sales-order-invoice.index') }}';
-            form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
-            document.body.appendChild(form);
-            form.submit();
+            searchForm?.requestSubmit();
         }
 
         function displaySearchResults(results) {
@@ -478,24 +473,11 @@
             searchResults.classList.remove('hidden');
         }
 
-        // Tombol search untuk form submission
-        searchBtn.addEventListener('click', function () {
-            const query = searchInput.value.trim();
-            if (query) {
-                const form = document.createElement('form');
-                form.method = 'GET';
-                form.action = '{{ route('sales-order-invoice.index') }}';
-                form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-
         // Enter key untuk search
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                searchBtn.click();
+                searchForm?.requestSubmit();
             }
         });
 
@@ -618,5 +600,5 @@
             });
         });
     </script>
-    @vite(['resources/js/table-sort.js'])
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

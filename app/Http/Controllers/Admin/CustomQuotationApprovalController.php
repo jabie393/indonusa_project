@@ -24,15 +24,35 @@ class CustomQuotationApprovalController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'like', "%{$search}%")
+                    ->orWhere('our_ref', 'like', "%{$search}%")
                     ->orWhere('to', 'like', "%{$search}%")
+                    ->orWhere('up', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('subject', 'like', "%{$search}%")
+                    ->orWhere('reason', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhere('grand_total', 'like', "%{$search}%")
+                    ->orWhereDate('date', $search)
+                    ->orWhere('date', 'like', "%{$search}%")
+                    ->orWhereDate('created_at', $search)
+                    ->orWhere('created_at', 'like', "%{$search}%")
+                    ->orWhereHas('items', function ($itemQuery) use ($search) {
+                        $itemQuery->where('product_name', 'like', "%{$search}%")
+                            ->orWhere('description', 'like', "%{$search}%")
+                            ->orWhere('qty', 'like', "%{$search}%")
+                            ->orWhere('unit', 'like', "%{$search}%")
+                            ->orWhere('price', 'like', "%{$search}%")
+                            ->orWhere('subtotal', 'like', "%{$search}%")
+                            ->orWhere('discount', 'like', "%{$search}%");
+                    })
                     ->orWhereHas('sales', function ($subQ) use ($search) {
-                        $subQ->where('name', 'like', "%{$search}%");
+                        $subQ->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
                     });
             });
         }
 
-        $penawarans = $query->paginate(20);
+        $penawarans = $query->paginate((int) $request->input('perPage', 20))->withQueryString();
 
         $penawarans->getCollection()->transform(function ($item) {
             $item->offer_type = 'custom';

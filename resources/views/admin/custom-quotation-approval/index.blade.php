@@ -6,7 +6,8 @@
             <div class="p-4">
                 {{-- Search --}}
                 <form action="{{ route('supervisor.custom-quotation-approval.index') }}" method="GET"
-                    class="block pl-2">
+                    class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -39,7 +40,7 @@
                             <th class="text-nowrap px-4 py-3">Keterangan (Subject)</th>
                             <th class="text-nowrap px-4 py-3">Sales</th>
                             <th class="text-nowrap px-4 py-3">Tgl. Kirim</th>
-                            <th class="text-nowrap px-4 py-3 no-sort text-center">Action</th>
+                            <th class="text-nowrap px-6 py-3 no-sort text-end">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
@@ -262,7 +263,7 @@
 
                                 {{-- Action --}}
                                 <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Detail --}}
@@ -334,7 +335,7 @@
                 </table>
             </div>
 
-            <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            <nav id="pagination-nav" class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
                 aria-label="Table navigation">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -367,5 +368,5 @@
 
     @include('admin.custom-quotation-approval.partials.custom-quotation-approval-modal-reject')
 
-    @vite(['resources/js/table-sort.js'])
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

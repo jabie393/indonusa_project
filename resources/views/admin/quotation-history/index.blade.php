@@ -4,7 +4,8 @@
             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
             <div class="p-4">
                 {{-- Search --}}
-                <form action="{{ route('supervisor.history') }}" method="GET" class="block pl-2">
+                <form action="{{ route('supervisor.history') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -15,7 +16,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        <input type="search" name="search" id="topbar-search" aria-controls="warehouseTable"
                             value="{{ request('search') }}"
                             class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                             placeholder="Search" />
@@ -176,7 +177,7 @@
                     </tbody>
                 </table>
             </div>
-            <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            <nav id="pagination-nav" class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
                 aria-label="Table navigation">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -208,5 +209,5 @@
     </div>
 
     @include('admin.quotation-history.partials.quotation-history-modal-show-note')
-    @vite(['resources/js/table-sort.js'])
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

@@ -5,7 +5,8 @@
 
             <div class="px-4">
                 {{-- Search --}}
-                <form action="{{ route('history.index') }}" method="GET" class="block pl-2">
+                <form action="{{ route('history.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-64 md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -42,7 +43,7 @@
                             <th class="text-nowrap px-4 py-3">Stok</th>
                             <th class="flex justify-center text-nowrap px-4 py-3">Perubahan Status</th>
                             <th class="text-nowrap px-4 py-3">Diubah Oleh</th>
-                            <th class="flex justify-center text-nowrap px-4 py-3">Aksi</th>
+                            <th class="flex justify-end text-nowrap px-4 py-3">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
@@ -105,7 +106,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="group inline-flex overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out group-hover:w-auto dark:border-gray-600 dark:bg-gray-700">
                                             <button type="button" onclick="openHistoryModal(this.dataset)"
@@ -136,7 +137,7 @@
                     </tbody>
                 </table>
             </div>
-            <nav class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            <nav id="pagination-nav" class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
                 aria-label="Table navigation">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -167,6 +168,6 @@
         </div>
     </div>
 
-    @vite(['resources/js/table-sort.js'])
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
     @include('admin.history.partials.detail-modal')
 </x-app-layout>

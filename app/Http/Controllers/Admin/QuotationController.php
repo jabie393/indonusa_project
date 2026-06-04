@@ -31,7 +31,7 @@ class QuotationController extends Controller
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw('DATE_ADD(NOW(), INTERVAL 14 DAY)')]);
         }
 
-        $query = Quotation::with(['items.barang', 'sales', 'order.items.barang'])
+        $query = Quotation::with(['items.barang', 'sales', 'pic', 'order.items.barang'])
             ->where('sales_id', Auth::id());
 
         if ($search = request('search')) {
@@ -43,7 +43,13 @@ class QuotationController extends Controller
                     ->orWhere('subject', 'like', "%{$search}%")
                     ->orWhere('customer_notes', 'like', "%{$search}%")
                     ->orWhere('product_category', 'like', "%{$search}%")
-                    ->orWhere('grand_total', 'like', "%{$search}%");
+                    ->orWhere('grand_total', 'like', "%{$search}%")
+                    ->orWhereHas('pic', function ($picQuery) use ($search) {
+                        $picQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('position', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    });
             });
         }
 

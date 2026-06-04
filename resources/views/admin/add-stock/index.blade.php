@@ -4,7 +4,8 @@
             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
             <div class="p-4">
                 {{-- Search --}}
-                <form action="{{ route('add-stock.index') }}" method="GET" class="block pl-2">
+                <form action="{{ route('add-stock.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-64 md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -37,7 +38,7 @@
                             <th scope="col" class="px-4 py-3 text-nowrap">Deskripsi</th>
                             <th scope="col" class="px-4 py-3 text-nowrap">Stok</th>
                             <th scope="col" class="px-4 py-3 text-nowrap">Harga Jual</th>
-                            <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
+                            <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
@@ -70,7 +71,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-right align-middle">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
                                             {{-- Add Stock --}}
@@ -138,5 +139,5 @@
     @include('admin.add-stock.partials.add-stock-modal')
 
     <!-- Js -->
-    @vite(['resources/js/add-stock.js', 'resources/js/table-sort.js'])
+    @vite(['resources/js/add-stock.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

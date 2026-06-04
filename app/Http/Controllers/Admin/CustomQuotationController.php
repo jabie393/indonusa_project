@@ -46,7 +46,10 @@ class CustomQuotationController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'like', "%{$search}%")
+                    ->orWhere('our_ref', 'like', "%{$search}%")
                     ->orWhere('to', 'like', "%{$search}%")
+                    ->orWhere('up', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('subject', 'like', "%{$search}%");
             });
         }

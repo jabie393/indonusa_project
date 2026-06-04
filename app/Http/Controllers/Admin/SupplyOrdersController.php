@@ -22,7 +22,22 @@ class SupplyOrdersController extends Controller
                     ->orWhere('goods_code', 'like', "%{$query}%")
                     ->orWhere('location', 'like', "%{$query}%")
                     ->orWhere('goods_status', 'like', "%{$query}%")
-                    ->orWhere('category', 'like', "%{$query}%");
+                    ->orWhere('category', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhere('status_listing', 'like', "%{$query}%")
+                    ->orWhere('stock', 'like', "%{$query}%")
+                    ->orWhere('request_type', 'like', "%{$query}%");
+
+                $normalizedQuery = strtolower($query);
+                if (str_contains('new item', $normalizedQuery)) {
+                    $q->orWhere('request_type', 'primary');
+                }
+                if (str_contains('new stock', $normalizedQuery)) {
+                    $q->orWhere('request_type', 'new_stock');
+                }
+                if (str_contains('pending review', $normalizedQuery)) {
+                    $q->orWhere('goods_status', 'pending');
+                }
             });
         }
 

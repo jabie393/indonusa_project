@@ -12,7 +12,8 @@
         </a>
         <div>
             {{-- Search --}}
-            <form action="{{ route('warehouse.index') }}" method="GET" class="block pl-2">
+            <form id="warehouseSearchForm" action="{{ route('warehouse.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                 <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -21,9 +22,9 @@
                             </path>
                         </svg>
                     </div>
-                    <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable" value="{{ request('search') }}"
+                    <input type="search" name="search" id="topbar-search" aria-controls="warehouseTable" value="{{ request('search') }}"
                         class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                        placeholder="Search" />
+                        placeholder="Search by name, code, category, or description" />
                 </div>
             </form>
         </div>
@@ -78,7 +79,7 @@
                         @if (Auth::user() && in_array(Auth::user()->role, ['General Affair', 'Supervisor']))
                             <th scope="col" class="text-nowrap px-4 py-3">Harga Jual</th>
                         @endif
-                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right">Aksi</th>
+                        <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,7 +118,7 @@
                                 </td>
                             @endif
                                 <td class="px-4 py-3 text-right align-middle">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
 
@@ -280,7 +281,7 @@
             @include('admin.warehouse.partials.warehouse-modal-history')
             @include('admin.warehouse.partials.warehouse-modal-edit-price')
         @endif
-        @vite(['resources/js/warehouse.js', 'resources/js/table-sort.js'])
+        @vite(['resources/js/warehouse.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
     </div>
     </div>
 </x-app-layout>

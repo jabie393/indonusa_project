@@ -40,7 +40,13 @@ class CustomerController extends Controller
                   ->orWhere('billing_address', 'like', "%{$search}%")
                   ->orWhere('shipping_address', 'like', "%{$search}%")
                   ->orWhere('customer_type', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%");
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhereHas('pics', function ($picQuery) use ($search) {
+                      $picQuery->where('name', 'like', "%{$search}%")
+                          ->orWhere('position', 'like', "%{$search}%")
+                          ->orWhere('email', 'like', "%{$search}%")
+                          ->orWhere('phone', 'like', "%{$search}%");
+                  });
             });
         }
 

@@ -17,7 +17,8 @@
 
             <div class="px-4">
                 {{-- Search --}}
-                <form action="{{ route('customer.index') }}" method="GET" class="block pl-2">
+                <form action="{{ route('customer.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -28,7 +29,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        <input type="search" name="search" id="topbar-search" aria-controls="warehouseTable"
                             value="{{ request('search') }}"
                             class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                             placeholder="Search" />
@@ -51,7 +52,7 @@
                             <th class="text-nowrap px-4 py-3">Term & Kredit</th>
                             <th class="text-nowrap px-4 py-3">PIC & Kontak</th>
                             <th class="text-nowrap px-4 py-3">Status</th>
-                            <th class="flex justify-center text-nowrap px-4 py-3 text-right">Action</th>
+                            <th class="flex justify-end text-nowrap px-6 py-3 text-right">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -224,7 +225,7 @@
 
                                 {{-- Action Column --}}
                                 <td class="whitespace-nowrap px-4 py-3 text-right align-middle">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Edit --}}
@@ -367,5 +368,5 @@
             });
         }
     </script>
-    @vite(['resources/js/table-sort.js'])
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

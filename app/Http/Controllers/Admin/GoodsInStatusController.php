@@ -21,7 +21,21 @@ class GoodsInStatusController extends Controller
             $goods = $goods->where(function ($q) use ($query) {
                 $q->where('goods_name', 'like', "%{$query}%")
                     ->orWhere('goods_code', 'like', "%{$query}%")
-                    ->orWhere('category', 'like', "%{$query}%");
+                    ->orWhere('category', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhere('status_listing', 'like', "%{$query}%")
+                    ->orWhere('stock', 'like', "%{$query}%")
+                    ->orWhere('buy_price', 'like', "%{$query}%")
+                    ->orWhere('goods_status', 'like', "%{$query}%")
+                    ->orWhere('request_type', 'like', "%{$query}%");
+
+                $normalizedQuery = strtolower($query);
+                if (str_contains('barang baru', $normalizedQuery)) {
+                    $q->orWhere('request_type', 'primary');
+                }
+                if (str_contains('stok baru', $normalizedQuery)) {
+                    $q->orWhere('request_type', 'new_stock');
+                }
             });
         }
         $goods = $goods->paginate($perPage)->appends($request->except('page'));

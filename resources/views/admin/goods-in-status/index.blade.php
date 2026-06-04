@@ -7,7 +7,8 @@ use App\Models\Barang; ?>
             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
         <div class="px-4">
             {{-- Search --}}
-            <form action="{{ route('goods-in-status.index') }}" method="GET" class="block pl-2">
+            <form action="{{ route('goods-in-status.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                 <label for="topbar-search" class="sr-only">Search</label>
                 <div class="relative md:w-64 md:w-96">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -40,7 +41,7 @@ use App\Models\Barang; ?>
                         <th scope="col" class="px-4 py-3">Harga Beli</th>
                         <th scope="col" class="px-4 py-3">Status Barang</th>
                         <th scope="col" class="px-4 py-3">Tipe Request</th>
-                        <th scope="col" class="flex justify-center text-nowrap px-4 py-3 text-right no-sort">Action</th>
+                        <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
                     </tr>
                 </thead>
                 <tbody class="text-nowrap">
@@ -120,7 +121,7 @@ use App\Models\Barang; ?>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right align-middle">
-                                <div class="flex justify-center">
+                                <div class="flex justify-end">
                                     <div
                                         class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm dark:border-gray-600 dark:bg-gray-700 transition-all duration-300 ease-in-out">
                                         @if ($barang->goods_status == 'pending')
@@ -351,6 +352,6 @@ use App\Models\Barang; ?>
     ])
     @include('admin.goods-in-status.partials.goods-in-status-modal-edit-new-stock')
     @include('admin.goods-in-status.partials.goods-in-status-modal-show-note')
-    @vite(['resources/js/goods-in-status.js', 'resources/js/table-sort.js'])
+    @vite(['resources/js/goods-in-status.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 
 </x-app-layout>

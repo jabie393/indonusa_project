@@ -20,7 +20,35 @@ class HistoryController extends Controller
                     $sub->where('goods_code', 'like', "%{$query}%")
                         ->orWhere('goods_name', 'like', "%{$query}%")
                         ->orWhere('category', 'like', "%{$query}%")
-                        ->orWhere('note', 'like', "%{$query}%");
+                        ->orWhere('description', 'like', "%{$query}%")
+                        ->orWhere('stock', 'like', "%{$query}%")
+                        ->orWhere('old_status', 'like', "%{$query}%")
+                        ->orWhere('new_status', 'like', "%{$query}%")
+                        ->orWhere('action', 'like', "%{$query}%")
+                        ->orWhere('note', 'like', "%{$query}%")
+                        ->orWhereDate('changed_at', $query)
+                        ->orWhere('changed_at', 'like', "%{$query}%")
+                        ->orWhereDate('created_at', $query)
+                        ->orWhere('created_at', 'like', "%{$query}%");
+
+                    $normalizedQuery = strtolower($query);
+                    $statusLabels = [
+                        'pending' => ['pending'],
+                        'approved' => ['approved', 'approve'],
+                        'rejected' => ['rejected', 'reject'],
+                        'deleted' => ['deleted', 'delete', 'hapus', 'dihapus'],
+                        'out' => ['out', 'keluar'],
+                    ];
+
+                    foreach ($statusLabels as $status => $labels) {
+                        foreach ($labels as $label) {
+                            if (str_contains($label, $normalizedQuery)) {
+                                $sub->orWhere('old_status', $status)
+                                    ->orWhere('new_status', $status);
+                                break;
+                            }
+                        }
+                    }
                 })
                     ->orWhereHas('user', function ($u) use ($query) {
                         // 'display_name' is an accessor, not a DB column — search 'name' instead

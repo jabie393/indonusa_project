@@ -27,7 +27,8 @@ class WarehouseController extends Controller
             $goods = $goods->where(function ($q) use ($query) {
                 $q->where('goods_name', 'like', "%{$query}%")
                     ->orWhere('goods_code', 'like', "%{$query}%")
-                    ->orWhere('category', 'like', "%{$query}%");
+                    ->orWhere('category', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             });
         }
 

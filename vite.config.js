@@ -21,6 +21,7 @@ export default defineConfig({
                 "resources/js/requestorder-modal.js",
                 "resources/js/dataTable.js",
                 "resources/js/real-time.js",
+                "resources/js/realtime-table-search.js",
                 "resources/js/chart-dashboard-anonymous.js",
                 "resources/js/chart-dashboard-general-affair.js",
                 "resources/js/chart-dashboard-warehouse.js",

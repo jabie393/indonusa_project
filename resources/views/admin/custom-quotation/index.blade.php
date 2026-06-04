@@ -17,7 +17,8 @@
 
             <div class="p-3">
                 {{-- Search --}}
-                <form action="{{ route('sales.custom-quotation.index') }}" method="GET" class="block pl-2">
+                <form action="{{ route('sales.custom-quotation.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -28,7 +29,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <input type="search" name="search" id="topbar-search dt-search-0" aria-controls="warehouseTable"
+                        <input type="search" name="search" id="topbar-search" aria-controls="warehouseTable"
                             value="{{ request('search') }}"
                             class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                             placeholder="Search" />
@@ -52,7 +53,7 @@
                             <th scope="col" class="text-nowrap p-4">Kepada, Item & Total</th>
                             <th scope="col" class="text-nowrap p-4">Tanggal</th>
                             <th scope="col" class="text-nowrap p-4 text-center">Status</th>
-                            <th scope="col" class="flex justify-center text-nowrap p-4 text-right">Aksi</th>
+                            <th scope="col" class="flex justify-end text-nowrap px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="text-nowrap">
@@ -73,8 +74,7 @@
                                         </a>
                                         <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
                                             <span class="font-semibold uppercase text-slate-400">REF</span>
-                                            <span
-                                                class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
+                                            <span class="text-slate-600 dark:text-slate-300">{{ $penawaran->our_ref ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -209,7 +209,7 @@
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap p-4 text-right align-middle">
-                                    <div class="flex justify-center">
+                                    <div class="flex justify-end">
                                         <div
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Detail --}}
@@ -413,6 +413,6 @@
             </nav>
         </div>
     </div>
-    @vite(['resources/js/custom-quotation.js', 'resources/js/table-sort.js'])
+    @vite(['resources/js/custom-quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
     @include('admin.custom-quotation.partials.modal-show-note')
 </x-app-layout>
