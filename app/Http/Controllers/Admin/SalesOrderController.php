@@ -433,6 +433,7 @@ class SalesOrderController extends Controller
             ->where(function ($q) use ($search) {
                 $q->where('request_number',  'like', "%$search%")
                   ->orWhere('quotation_number','like', "%$search%")
+                  ->orWhere('sales_order_number','like', "%$search%")
                   ->orWhere('customer_name',  'like', "%$search%")
                   ->orWhere('no_po',          'like', "%$search%");
             })
@@ -440,7 +441,7 @@ class SalesOrderController extends Controller
             ->get()
             ->map(function ($ro) {
                 return [
-                    'sales_order_number' => $ro->quotation_number ?: ($ro->request_number ?: 'Quotation'),
+                    'sales_order_number' => $ro->sales_order_number ?: ($ro->quotation_number ?: ($ro->request_number ?: 'Quotation')),
                     'customer_name'      => $ro->customer_name,
                     'type'               => 'penawaran',
                     'badge'              => 'Quotation',
