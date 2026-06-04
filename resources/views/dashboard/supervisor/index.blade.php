@@ -11,7 +11,7 @@
                         <label class="py-1 text-sm text-gray-700 dark:text-gray-300">Stok Min (Threshold)</label>
                         <select name="threshold"
                                 class="rounded-xl border bg-white px-3 py-1">
-                            @foreach ([5, 10, 20, 50, 100] as $val)
+                            @foreach ([10, 25, 50, 100] as $val)
                                 <option value="{{ $val }}"
                                         {{ ($selectedThreshold ?? 20) == $val ? 'selected' : '' }}>{{ $val }}</option>
                             @endforeach

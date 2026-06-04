@@ -63,6 +63,7 @@ class QuotationController extends Controller
     public function create()
     {
         $goods = Barang::where('request_type', 'primary')
+            ->where('goods_status', 'approved')
             ->where('stock', '>', 0)
             ->orderBy('goods_name')
             ->get();
@@ -73,6 +74,7 @@ class QuotationController extends Controller
             ->get();
 
         $categories = Barang::distinct()
+            ->where('goods_status', 'approved')
             ->whereNotNull('category')
             ->where('category', '!=', '')
             ->pluck('category')
@@ -128,7 +130,7 @@ class QuotationController extends Controller
                 continue;
             }
 
-            $baseHarga = $productId ? (optional(Barang::find($productId))->selling_price ?? 0) : 0;
+            $baseHarga = $productId ? (optional(Barang::where('goods_status', 'approved')->find($productId))->selling_price ?? 0) : 0;
             $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
             $hargaSatuan = isset($validated['price'][$i]) && $validated['price'][$i] !== '' ? (float) $validated['price'][$i] : $computedHargaSatuan;
@@ -372,6 +374,7 @@ class QuotationController extends Controller
         $requestOrder->loadMissing('customQuotation', 'items.barang');
 
         $goods = Barang::where('request_type', 'primary')
+            ->where('goods_status', 'approved')
             ->where('stock', '>', 0)
             ->orderBy('goods_name')
             ->get();
@@ -381,7 +384,7 @@ class QuotationController extends Controller
             ->orderBy('customer_name')
             ->get();
 
-        $categories = Barang::distinct()->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
+        $categories = Barang::distinct()->where('goods_status', 'approved')->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
 
         return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diupdate!']);
@@ -484,7 +487,7 @@ class QuotationController extends Controller
                     ? (float) $validated['price'][$i]
                     : 0;
             } else {
-                $baseHarga = optional(Barang::find($productId))->selling_price ?? 0;
+                $baseHarga = optional(Barang::where('goods_status', 'approved')->find($productId))->selling_price ?? 0;
                 $computedHarga = round($baseHarga * 1.3, 2);
                 $harga = isset($validated['price'][$i]) && $validated['price'][$i] !== ''
                     ? (float) $validated['price'][$i]
