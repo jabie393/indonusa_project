@@ -5,11 +5,11 @@
         $roleGuideMap = [
             'sales' => [
                 'pdf' => asset('file/docs/manual-guide-sales.pdf'),
-                'video' => 'https://www.youtube.com/watch?v=uV9koQm__fI',
+                'video' => 'https://youtu.be/ZwLUoh1OuYo?si=vQKQzn65F7hSL_iR',
             ],
             'supervisor' => [
                 'pdf' => asset('docs/manual-guide-supervisor.pdf'),
-                'video' => 'https://www.youtube.com/watch?v=uV9koQm__fI',
+                'video' => 'https://youtu.be/ZwLUoh1OuYo?si=vQKQzn65F7hSL_iR',
             ],
             'warehouse' => [
                 'pdf' => asset('docs/manual-guide-warehouse.pdf'),
@@ -17,12 +17,12 @@
             ],
             'general affair' => [
                 'pdf' => asset('file/docs/PEDOMAN.pdf'),
-                'video' => 'https://www.youtube.com/watch?v=uV9koQm__fI',
+                'video' => 'https://youtu.be/ZwLUoh1OuYo?si=vQKQzn65F7hSL_iR',
             ],
             // Fallback when role is missing or not mapped
             'default' => [
                 'pdf' => asset('docs/manual-guide.pdf'),
-                'video' => 'https://www.youtube.com/watch?v=uV9koQm__fI',
+                'video' => 'https://youtu.be/ZwLUoh1OuYo?si=vQKQzn65F7hSL_iR',
             ],
         ];
     @endphp
@@ -30,8 +30,7 @@
     <div
         class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-4xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         {{-- Header --}}
-        <div
-            class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
+        <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">Panduan Manual</h3>
             <div class="modal-action m-0">
                 <form method="dialog">
@@ -49,8 +48,7 @@
         </div>
 
         {{-- Content --}}
-        <div id="guideContent"
-            class="bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7 flex-1 overflow-y-auto min-h-0">
+        <div id="guideContent" class="min-h-0 flex-1 overflow-y-auto bg-slate-50 px-6 py-6 dark:border-gray-700 dark:bg-gray-800 sm:px-7">
             {{-- Guide selector --}}
             <div id="guideSelector" class="grid gap-4 md:grid-cols-2">
                 <div class="col-span-2 mb-2">
@@ -61,12 +59,9 @@
                 <button type="button"
                     class="guide-option group rounded-2xl border border-slate-200 bg-white p-5 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#225A97] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#225A97] dark:border-gray-600 dark:bg-gray-700"
                     data-guide-type="pdf">
-                    <div
-                        class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6M7 3h7l5 5v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z" />
+                    <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6M7 3h7l5 5v13a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1z" />
                         </svg>
                     </div>
                     <h4 class="text-xl font-semibold text-slate-900 dark:text-white">File PDF</h4>
@@ -76,14 +71,10 @@
                 <button type="button"
                     class="guide-option group rounded-2xl border border-slate-200 bg-white p-5 text-left transition duration-200 hover:-translate-y-0.5 hover:border-[#225A97] hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#225A97] dark:border-gray-600 dark:bg-gray-700"
                     data-guide-type="video">
-                    <div
-                        class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14.752 11.168l-4.586-2.65A1 1 0 008.667 9.4v5.2a1 1 0 001.499.866l4.586-2.65a1 1 0 000-1.732z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-4.586-2.65A1 1 0 008.667 9.4v5.2a1 1 0 001.499.866l4.586-2.65a1 1 0 000-1.732z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                     <h4 class="text-xl font-semibold text-slate-900 dark:text-white">Panduan Video</h4>
@@ -97,13 +88,11 @@
                 <div class="mb-4 flex items-center justify-between">
                     <h4 id="guideViewerTitle" class="text-lg font-semibold text-slate-900 dark:text-white"></h4>
                 </div>
-                <div id="guideViewerContent"
-                    class="h-[50vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900">
+                <div id="guideViewerContent" class="h-[50vh] min-h-[300px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-gray-600 dark:bg-gray-900">
                 </div>
-                <footer
-                    class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 pt-5 dark:bg-gray-800 dark:border-gray-700">
+                <footer class="flex items-center justify-end gap-3 border-t border-slate-100 bg-slate-50 pt-5 dark:border-gray-700 dark:bg-gray-800">
                     <button id="backToGuideSelector"
-                        class="px-6 py-2 text-sm font-medium text-slate-600 transition ring-1 ring-slate-200 hover:bg-slate-200 active:scale-95 rounded-xl dark:text-gray-300 dark:hover:bg-gray-700"
+                        class="rounded-xl px-6 py-2 text-sm font-medium text-slate-600 ring-1 ring-slate-200 transition hover:bg-slate-200 active:scale-95 dark:text-gray-300 dark:hover:bg-gray-700"
                         type="submit">
                         Kembali
                     </button>
@@ -117,7 +106,7 @@
 </dialog>
 
 <script>
-    (function () {
+    (function() {
         const guideModal = document.getElementById('guide');
         const selector = document.getElementById('guideSelector');
         const viewer = document.getElementById('guideViewer');
@@ -207,19 +196,19 @@
         };
 
         selector.querySelectorAll('.guide-option').forEach((button) => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
                 renderViewer(this.dataset.guideType);
             });
         });
 
-        backButton.addEventListener('click', function () {
+        backButton.addEventListener('click', function() {
             viewer.classList.add('hidden');
             selector.classList.remove('hidden');
             viewerContent.innerHTML = '';
         });
 
         // Stop video only whenever modal is closed, without changing current view.
-        guideModal.addEventListener('close', function () {
+        guideModal.addEventListener('close', function() {
             stopYoutubePlayback();
         });
     })();
