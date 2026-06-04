@@ -99,6 +99,8 @@ class CustomQuotationController extends Controller
             'tax' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.nama_barang' => 'required|string|max:255',
+            'items.*.description' => 'required|string|max:255',
+            'items.*.category' => 'required|string|in:' . implode(',', \App\Models\Barang::KATEGORI),
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|string|max:50',
@@ -155,7 +157,8 @@ class CustomQuotationController extends Controller
                     'price' => $hargaFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
-                    'description' => $itemData['keterangan'] ?? null,
+                    'description' => $itemData['description'] . ($itemData['keterangan'] ? ' [Note: ' . $itemData['keterangan'] . ']' : ''),
+                    'category' => $itemData['category'],
                     // Pastikan images selalu array dan path tanpa awalan 'public/'
                     'images' => !empty($itemImages) ? array_map(function ($img) {
                         return str_replace('public/', '', $img);
@@ -237,6 +240,8 @@ class CustomQuotationController extends Controller
             'tax' => 'nullable|numeric|min:0',
             'items' => 'required|array|min:1',
             'items.*.nama_barang' => 'required|string|max:255',
+            'items.*.description' => 'required|string|max:255',
+            'items.*.category' => 'required|string|in:' . implode(',', \App\Models\Barang::KATEGORI),
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|string|max:50',
@@ -306,7 +311,8 @@ class CustomQuotationController extends Controller
                     'price' => $hargaFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
-                    'description' => $itemData['keterangan'] ?? null,
+                    'description' => $itemData['description'] . ($itemData['keterangan'] ? ' [Note: ' . $itemData['keterangan'] . ']' : ''),
+                    'category' => $itemData['category'],
                     'images' => !empty($itemImages) ? array_map(function ($img) {
                         return str_replace('public/', '', $img);
                     }, $itemImages) : null,
@@ -439,8 +445,8 @@ class CustomQuotationController extends Controller
             abort(403);
         }
 
-        if (!in_array($customQuotation->status, ['open', 'approved', 'approved_supervisor'])) {
-            return back()->withErrors('Hanya Custom Quotation yang open, approved, atau approved supervisor dapat dikirim ke Warehouse.');
+        if ($customQuotation->status !== 'ready_for_delivery') {
+            return back()->withErrors('Hanya Custom Quotation yang berstatus Ready for Delivery yang dapat dikirim ke Warehouse.');
         }
 
         if ($customQuotation->order) {
@@ -476,7 +482,7 @@ class CustomQuotationController extends Controller
                 Log::info('Creating OrderItem for item ID: ' . $item->id . ', qty: ' . $item->qty . ', price: ' . $item->price . ', subtotal: ' . $item->subtotal);
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'barang_id' => null,
+                    'barang_id' => $item->goods_id,
                     'quantity' => $item->qty,
                     'harga' => $item->price,
                     'subtotal' => $item->subtotal,
@@ -555,7 +561,7 @@ class CustomQuotationController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($quotation && in_array($quotation->status, ['open', 'approved', 'approved_supervisor']) && !$quotation->order) {
+                if ($quotation && $quotation->status === 'ready_for_delivery' && !$quotation->order) {
                     if ($quotation->items->isNotEmpty()) {
                         DB::transaction(function () use ($quotation) {
                             $order = Order::create([
@@ -573,7 +579,7 @@ class CustomQuotationController extends Controller
                             foreach ($quotation->items as $item) {
                                 OrderItem::create([
                                     'order_id' => $order->id,
-                                    'barang_id' => null,
+                                    'barang_id' => $item->goods_id,
                                     'quantity' => $item->qty,
                                     'harga' => $item->price,
                                     'subtotal' => $item->subtotal,
@@ -633,7 +639,7 @@ class CustomQuotationController extends Controller
                 'no_po' => null,
                 'sales_order_number' => Quotation::generateSalesOrderNumber(),
             ]);
-            Order::create([
+            $order = Order::create([
                 'order_number' => 'ORD-' . strtoupper(uniqid()),
                 'sales_id' => $customQuotation->sales_id,
                 'quotation_id' => $requestOrder->id,
@@ -643,16 +649,32 @@ class CustomQuotationController extends Controller
                 'customer_notes' => $customQuotation->intro_text,
             ]);
             foreach ($customQuotation->items as $cpItem) {
+                $category = $cpItem->category ?: 'OTHER CATEGORIES';
+
+                // Create QuotationItem (without creating a Barang record yet!)
                 QuotationItem::create([
                     'quotation_id' => $requestOrder->id,
-                    'product_id' => null,
+                    'goods_id' => null,
                     'custom_product_name' => $cpItem->product_name,
-                    'product_category' => $cpItem->description ?? 'Custom',
+                    'product_category' => $category,
                     'quantity' => $cpItem->qty,
                     'price' => $cpItem->price,
                     'subtotal' => $cpItem->subtotal,
                     'discount_percent' => $cpItem->discount ?? 0,
                     'images' => $cpItem->images,
+                ]);
+
+                // Create OrderItem (without creating a Barang record yet!)
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'goods_id' => null,
+                    'custom_product_name' => $cpItem->product_name,
+                    'category' => $category,
+                    'quantity' => $cpItem->qty,
+                    'delivered_quantity' => 0,
+                    'item_status' => 'pending',
+                    'price' => $cpItem->price,
+                    'subtotal' => $cpItem->subtotal,
                 ]);
             }
             $customQuotation->update(['status' => 'sent_to_quotation']);

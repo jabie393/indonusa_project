@@ -83,7 +83,7 @@ class OrderSeeder extends Seeder
 
         OrderItem::create([
             'order_id' => $order1->id,
-            'product_id' => 1, // Laptop Asus ExpertBook (from BarangSeeder)
+            'goods_id' => 1, // Laptop Asus ExpertBook (from BarangSeeder)
             'quantity' => 1,
             'delivered_quantity' => 1,
             'item_status' => 'delivered'
@@ -139,7 +139,7 @@ class OrderSeeder extends Seeder
 
         $orderItem2 = OrderItem::create([
             'order_id' => $order2->id,
-            'product_id' => 3, // Buble Wrap (from BarangSeeder)
+            'goods_id' => 3, // Buble Wrap (from BarangSeeder)
             'quantity' => 10,
             'delivered_quantity' => 5,
             'item_status' => 'partially_delivered'

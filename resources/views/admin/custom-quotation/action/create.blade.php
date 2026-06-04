@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex flex-col items-center justify-between space-y-3 p-4 md:flex-row md:space-x-4 md:space-y-0">
         </div>
@@ -171,6 +171,8 @@
                                     <tr class="">
                                         <th class="sticky top-0 z-20 min-w-[50px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">No</th>
                                         <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama Barang</th>
+                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Deskripsi</th>
+                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Kategori</th>
                                         <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty</th>
                                         <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Satuan</th>
                                         <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Harga (Rp)</th>
@@ -193,6 +195,30 @@
                                                    value="{{ old('items.0.nama_barang') }}"
                                                    required>
                                             @error('items.0.nama_barang')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <input type="text"
+                                                   name="items[0][description]"
+                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                   placeholder="Deskripsi barang"
+                                                   value="{{ old('items.0.description') }}"
+                                                   required>
+                                            @error('items.0.description')
+                                                <span class="text-xs text-red-500">{{ $message }}</span>
+                                            @enderror
+                                        </td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                            <select name="items[0][category]"
+                                                    required
+                                                    class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
+                                                <option value="" disabled selected>Pilih Kategori</option>
+                                                @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                                                    <option value="{{ $kategori }}" {{ old('items.0.category') == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('items.0.category')
                                                 <span class="text-xs text-red-500">{{ $message }}</span>
                                             @enderror
                                         </td>
@@ -646,6 +672,18 @@
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="text" name="items[${itemCount}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="Nama barang" required>
+            </td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <input type="text" name="items[${itemCount}][description]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    placeholder="Deskripsi barang" required>
+            </td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                <select name="items[${itemCount}][category]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                    <option value="" disabled selected>Pilih Kategori</option>
+                    @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                        <option value="{{ $kategori }}">{{ $kategori }}</option>
+                    @endforeach
+                </select>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                 <input type="number" name="items[${itemCount}][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"

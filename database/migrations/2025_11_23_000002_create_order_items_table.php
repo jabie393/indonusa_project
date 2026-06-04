@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('product_id')->nullable(); // refer ke tabel goods (jika ada)
+            $table->unsignedBigInteger('goods_id')->nullable(); // refer ke tabel goods (jika ada)
             $table->integer('quantity')->default(1);
             $table->integer('delivered_quantity')->default(0);
             $table->enum('item_status', ['pending', 'pending_stock', 'partial', 'partially_delivered', 'delivered', 'cancel'])->default('pending');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('goods')->onDelete('set null');
+            $table->foreign('goods_id')->references('id')->on('goods')->onDelete('set null');
         });
     }
 

@@ -142,7 +142,7 @@ class GeneralAffairDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
             ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
-            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.goods_id', '=', 'goods.id')
             ->select(
                 DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
                 DB::raw('SUM(quotation_items.quantity) as total_qty')
@@ -236,7 +236,7 @@ class GeneralAffairDashboardController extends Controller
             ->where('orders.status', 'completed')
             ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
             ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
-            ->leftJoin('goods', 'quotation_items.product_id', '=', 'goods.id')
+            ->leftJoin('goods', 'quotation_items.goods_id', '=', 'goods.id')
             ->select(
                 DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
                 DB::raw('SUM(quotation_items.quantity) as total_qty')

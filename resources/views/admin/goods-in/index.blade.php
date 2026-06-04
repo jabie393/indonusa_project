@@ -150,6 +150,38 @@
                         class="absolute -right-1 -top-1 h-8 w-8 rounded-full bg-[#225A97]/20 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100">
                     </div>
                 </button>
+
+                <!-- Procurement / Pengadaan (Link) -->
+                <a href="{{ route('general-affair.procurement.index') }}"
+                    class="group relative flex h-56 w-full max-w-[220px] flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                    <div
+                        class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    </div>
+                    <div class="relative z-10 flex flex-col items-center gap-4">
+                        <div
+                            class="flex h-20 w-20 items-center justify-center rounded-xl bg-gray-200 text-[#225A97] transition-all duration-300 group-hover:bg-white/20 group-hover:text-white dark:bg-gray-700 dark:text-blue-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-shopping-cart h-10 w-10">
+                                <circle cx="8" cy="21" r="1"></circle>
+                                <circle cx="19" cy="21" r="1"></circle>
+                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+                            </svg>
+                        </div>
+                        <div class="flex flex-col items-center gap-1 text-center">
+                            <span
+                                class="flex items-center gap-2 text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-white dark:text-white">
+                                Procurement / Pengadaan
+                            </span>
+                            <span
+                                class="text-xs text-gray-600 transition-colors duration-300 group-hover:text-white/70 dark:text-gray-400">Pengadaan barang kustom dari Custom Quotation</span>
+                        </div>
+                    </div>
+                    <!-- Decorative corner accent -->
+                    <div
+                        class="absolute -right-1 -top-1 h-8 w-8 rounded-full bg-[#225A97]/20 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100">
+                    </div>
+                </a>
             </div>
             <div class="mt-12 text-center">
                 <p class="text-gray-500 text-sm">Pilih salah satu metode untuk menambahkan barang ke inventori</p>

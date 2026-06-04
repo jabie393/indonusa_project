@@ -130,6 +130,14 @@ class DeliveryOrdersController extends Controller
         }
         $order->save();
 
+        if ($order->custom_quotation_id) {
+            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+            if ($customQuotation) {
+                $customQuotation->status = 'completed';
+                $customQuotation->save();
+            }
+        }
+
         // Create a delivery batch for full delivery
         $batch = DeliveryBatch::create([
             'order_id' => $order->id,
@@ -247,6 +255,18 @@ class DeliveryOrdersController extends Controller
             $message = 'Order berhasil direject.';
         }
 
+        if ($order->custom_quotation_id) {
+            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+            if ($customQuotation) {
+                if ($order->status === 'completed') {
+                    $customQuotation->status = 'completed';
+                } elseif ($order->status === 'rejected_warehouse') {
+                    $customQuotation->status = 'ready_for_delivery';
+                }
+                $customQuotation->save();
+            }
+        }
+
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => $message]);
     }
 
@@ -348,6 +368,16 @@ class DeliveryOrdersController extends Controller
         }
         $order->save();
 
+        if ($order->custom_quotation_id) {
+            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+            if ($customQuotation) {
+                if ($order->status === 'completed') {
+                    $customQuotation->status = 'completed';
+                    $customQuotation->save();
+                }
+            }
+        }
+
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Partial delivery berhasil diproses.']);
     }
 
@@ -399,13 +429,14 @@ class DeliveryOrdersController extends Controller
 
             foreach ($order->requestOrder->items as $reqItem) {
                 $existing = \App\Models\OrderItem::where('order_id', $order->id)
-                    ->where('product_id', $reqItem->product_id)
+                    ->where('goods_id', $reqItem->goods_id)
                     ->first();
 
                 if (!$existing) {
                     $existing = \App\Models\OrderItem::create([
                         'order_id'           => $order->id,
-                        'product_id'         => $reqItem->product_id,
+                        'goods_id'           => $reqItem->goods_id,
+                        'category'           => $reqItem->product_category,
                         'quantity'           => $reqItem->quantity,
                         'delivered_quantity' => 0,
                         'item_status'        => 'pending',

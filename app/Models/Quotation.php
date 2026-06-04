@@ -133,6 +133,18 @@ class Quotation extends Model
         if (!$status) {
             return 'Belum Diproses';
         }
+
+        if ($status === 'sent_to_warehouse' && $this->custom_quotation_id) {
+            $hasActiveProcurement = \App\Models\ProcurementOfGoods::where('custom_quotation_id', $this->custom_quotation_id)
+                ->where('status', '!=', 'completed')
+                ->exists();
+            $noProcurement = !\App\Models\ProcurementOfGoods::where('custom_quotation_id', $this->custom_quotation_id)->exists();
+
+            if ($hasActiveProcurement || $noProcurement) {
+                return 'Under Procurement';
+            }
+        }
+
         return $labels[$status] ?? $status;
     }
 

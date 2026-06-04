@@ -140,7 +140,7 @@ class Barang extends Model
 
     public function orderItems()
     {
-        return $this->hasMany(OrderItem::class, 'product_id');
+        return $this->hasMany(OrderItem::class, 'goods_id');
     }
 
     public function histories()
@@ -148,9 +148,58 @@ class Barang extends Model
         return $this->hasMany(BarangHistory::class);
     }
 
+    public function procurementOfGoodsItems()
+    {
+        return $this->hasMany(ProcurementOfGoodsItem::class, 'goods_id');
+    }
+
     // Accessor for selling price (harga jual = kolom selling_price di database)
     public function getHargaJualAttribute()
     {
         return (float) ($this->attributes['selling_price'] ?? 0);
+    }
+
+    public static function generateUniqueKodeBarang($kategori)
+    {
+        $kategoriSingkatan = [
+            'HANDTOOLS' => 'HT',
+            'ADHESIVE AND SEALANT' => 'AS',
+            'AUTOMOTIVE EQUIPMENT' => 'AE',
+            'CLEANING' => 'CLN',
+            'COMPRESSOR' => 'CMP',
+            'CONSTRUCTION' => 'CST',
+            'CUTTING TOOLS' => 'CT',
+            'LIGHTING' => 'LTG',
+            'FASTENING' => 'FST',
+            'GENERATOR' => 'GEN',
+            'HEALTH CARE EQUIPMENT' => 'HCE',
+            'HOSPITALITY' => 'HSP',
+            'HYDRAULIC TOOLS' => 'HYD',
+            'MARKING MACHINE' => 'MM',
+            'MATERIAL HANDLING EQUIPMENT' => 'MHE',
+            'MEASURING AND TESTING EQUIPMENT' => 'MTE',
+            'METAL CUTTING MACHINERY' => 'MCM',
+            'PACKAGING' => 'PKG',
+            'PAINTING AND COATING' => 'PC',
+            'PNEUMATIC TOOLS' => 'PN',
+            'POWER TOOLS' => 'PT',
+            'SAFETY AND PROTECTION EQUIPMENT' => 'SPE',
+            'SECURITY' => 'SEC',
+            'SHEET METAL MACHINERY' => 'SMM',
+            'STORAGE SYSTEM' => 'STS',
+            'WELDING EQUIPMENT' => 'WLD',
+            'WOODWORKING EQUIPMENT' => 'WWE',
+            'MISCELLANEOUS' => 'MSC',
+            'OTHER CATEGORIES' => 'OC',
+        ];
+
+        $singkatan = $kategoriSingkatan[$kategori] ?? 'UNK';
+        
+        do {
+            $randomNumber = str_pad(rand(0, 9999999), 7, '0', STR_PAD_LEFT);
+            $kodeBarang = "{$singkatan}-{$randomNumber}";
+        } while (static::where('goods_code', $kodeBarang)->exists());
+
+        return $kodeBarang;
     }
 }

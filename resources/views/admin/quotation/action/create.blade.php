@@ -320,7 +320,7 @@
                                                 </button>
 
                                                 <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                <select name="product_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
+                                                <select name="goods_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                     onchange="updateKategoriBarang(this)">
                                                     <option value="">Pilih Barang</option>
                                                     @foreach ($goods as $b)

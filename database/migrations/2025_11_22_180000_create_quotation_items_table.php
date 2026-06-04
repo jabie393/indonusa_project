@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('quotation_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('quotation_id');
-            $table->unsignedBigInteger('product_id')->nullable();
+            $table->unsignedBigInteger('goods_id')->nullable();
             $table->string('custom_product_name')->nullable();
             $table->integer('quantity');
             $table->decimal('price', 12, 2)->nullable();
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('quotation_id')->references('id')->on('quotations')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('goods')->onDelete('set null');
+            $table->foreign('goods_id')->references('id')->on('goods')->onDelete('set null');
         });
     }
 

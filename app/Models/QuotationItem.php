@@ -10,7 +10,7 @@ class QuotationItem extends Model
 
     protected $fillable = [
         'quotation_id',
-        'product_id',
+        'goods_id',
         'custom_product_name',
         'product_category',
         'quantity',
@@ -41,13 +41,13 @@ class QuotationItem extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 
     // Alias relationship to stay compatible with views checking ->product relation
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 
     // Compatibility accessors for old column names
@@ -63,12 +63,12 @@ class QuotationItem extends Model
 
     public function getBarangIdAttribute()
     {
-        return $this->product_id;
+        return $this->goods_id;
     }
 
     public function setBarangIdAttribute($value)
     {
-        $this->attributes['product_id'] = $value;
+        $this->attributes['goods_id'] = $value;
     }
 
     public function getHargaAttribute()

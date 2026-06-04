@@ -13,6 +13,10 @@ class CustomQuotation extends Model
         return $this->hasOne(\App\Models\Quotation::class, 'custom_quotation_id');
     }
 
+    public function procurementOfGoods() {
+        return $this->hasMany(\App\Models\ProcurementOfGoods::class, 'custom_quotation_id');
+    }
+
     protected $fillable = [
         'sales_id',
         'quotation_number',

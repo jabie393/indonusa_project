@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class SupplyOrdersController extends Controller
 {
@@ -14,42 +16,43 @@ class SupplyOrdersController extends Controller
     {
         $perPage = $request->input('perPage', 10); // Default to 10
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'pending');
+
+        // 1. Reguler Goods In (pending, not linked to procurement, excluding custom items)
+        $regulerQuery = Barang::where('goods_status', 'pending')
+            ->where('status_listing', '!=', 'non_listing')
+            ->whereDoesntHave('procurementOfGoodsItems');
 
         if ($query) {
-            $goods = $goods->where(function ($q) use ($query) {
+            $regulerQuery->where(function ($q) use ($query) {
                 $q->where('goods_name', 'like', "%{$query}%")
                     ->orWhere('goods_code', 'like', "%{$query}%")
                     ->orWhere('location', 'like', "%{$query}%")
-                    ->orWhere('goods_status', 'like', "%{$query}%")
                     ->orWhere('category', 'like', "%{$query}%")
-                    ->orWhere('description', 'like', "%{$query}%")
-                    ->orWhere('status_listing', 'like', "%{$query}%")
-                    ->orWhere('stock', 'like', "%{$query}%")
-                    ->orWhere('request_type', 'like', "%{$query}%");
-
-                $normalizedQuery = strtolower($query);
-                if (str_contains('new item', $normalizedQuery)) {
-                    $q->orWhere('request_type', 'primary');
-                }
-                if (str_contains('new stock', $normalizedQuery)) {
-                    $q->orWhere('request_type', 'new_stock');
-                }
-                if (str_contains('pending review', $normalizedQuery)) {
-                    $q->orWhere('goods_status', 'pending');
-                }
+                    ->orWhere('description', 'like', "%{$query}%");
             });
         }
+        $goods = $regulerQuery->paginate($perPage, ['*'], 'reguler_page')->appends($request->except('reguler_page'));
 
-        $goods = $goods->paginate($perPage)->appends($request->except('page'));
-        return view('admin.supply-orders.index', compact('goods'));
+        // 2. Custom Procurement receipts (pending approval)
+        $procurementQuery = \App\Models\GoodsReceipt::whereNull('approved_by')
+            ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation']);
+
+        if ($query) {
+            $procurementQuery->whereHas('good', function ($q) use ($query) {
+                $q->where('goods_name', 'like', "%{$query}%")
+                    ->orWhere('goods_code', 'like', "%{$query}%");
+            });
+        }
+        $procurementReceipts = $procurementQuery->paginate($perPage, ['*'], 'proc_page')->appends($request->except('proc_page'));
+
+        return view('admin.supply-orders.index', compact('goods', 'procurementReceipts'));
     }
 
-    // Approve barang
+    // Approve barang reguler
     public function approve($id)
     {
         $this->processApproval($id);
-        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil diapprove.']);
+        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang reguler berhasil diapprove.']);
     }
 
     // Store action as fallback to prevent method missing errors if form mis-submits
@@ -58,6 +61,7 @@ class SupplyOrdersController extends Controller
         return redirect()->back()->withErrors('Invalid action specified.');
     }
 
+    // Reject barang reguler
     public function reject(Request $request, $id)
     {
         $barang = Barang::findOrFail($id);
@@ -68,10 +72,10 @@ class SupplyOrdersController extends Controller
         if ($request->ajax()) {
             return response()->json(['success' => true]);
         }
-        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang berhasil ditolak.']);
+        return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang reguler berhasil ditolak.']);
     }
 
-    // Bulk Approve
+    // Bulk Approve reguler
     public function bulkApprove(Request $request)
     {
         $ids = $request->input('ids', []);
@@ -86,7 +90,7 @@ class SupplyOrdersController extends Controller
         return response()->json(['success' => true]);
     }
 
-    // Bulk Reject
+    // Bulk Reject reguler
     public function bulkReject(Request $request)
     {
         $ids = $request->input('ids', []);
@@ -166,6 +170,88 @@ class SupplyOrdersController extends Controller
                     'unit_cost' => $barang->buy_price,
                 ]);
             }
+        }
+    }
+
+    /**
+     * Approve penerimaan barang kustom procurement
+     */
+    public function approveProcurement(Request $request, $receiptId)
+    {
+        DB::beginTransaction();
+        try {
+            $receipt = \App\Models\GoodsReceipt::findOrFail($receiptId);
+            $procItem = $receipt->procurementOfGoodsItem;
+            if (!$procItem) {
+                throw new \Exception('Item pengadaan tidak ditemukan untuk kedatangan ini.');
+            }
+
+            $goods = $receipt->good;
+            if (!$goods) {
+                throw new \Exception('Master barang tidak ditemukan.');
+            }
+
+            // 1. Update master barang
+            $goods->stock += $receipt->quantity;
+            $goods->buy_price = $receipt->unit_cost;
+            if (empty($goods->selling_price) || (float)$goods->selling_price === 0.0) {
+                $goods->selling_price = round($receipt->unit_cost * 1.15, 2);
+            }
+            $goods->goods_status = 'approved';
+            $goods->save();
+
+            // 2. Approve the receipt
+            $receipt->approved_by = Auth::id();
+            $receipt->save();
+
+            // 3. Update procurement item
+            $procItem->qty_received += $receipt->quantity;
+            if ($procItem->qty_received >= $procItem->qty_ordered) {
+                $procItem->status = 'completed';
+            } else {
+                $procItem->status = 'partial_received';
+            }
+            $procItem->save();
+
+            // 4. Update procurement status
+            $procurement = $procItem->procurementOfGoods;
+            $allCompleted = true;
+            foreach ($procurement->items as $item) {
+                if ($item->status !== 'completed') {
+                    $allCompleted = false;
+                }
+            }
+            $procurement->status = $allCompleted ? 'completed' : 'partial_received';
+            $procurement->warehouse_id = Auth::id();
+            $procurement->save();
+
+            // Status Custom Quotation dipertahankan pada 'sent_to_quotation' sesuai dengan alur baru.
+
+            DB::commit();
+            return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil disetujui.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Approve Procurement Receipt Error: ' . $e->getMessage());
+            return back()->withErrors('Gagal menyetujui penerimaan barang kustom: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Tolak penerimaan barang kustom procurement
+     */
+    public function rejectProcurement(Request $request, $receiptId)
+    {
+        DB::beginTransaction();
+        try {
+            $receipt = \App\Models\GoodsReceipt::findOrFail($receiptId);
+            $receipt->delete();
+
+            DB::commit();
+            return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom ditolak dan dihapus.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Reject Procurement Receipt Error: ' . $e->getMessage());
+            return back()->withErrors('Gagal menolak penerimaan barang kustom: ' . $e->getMessage());
         }
     }
 }

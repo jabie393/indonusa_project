@@ -412,9 +412,9 @@
                                                 </select>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                @if ($item->product_id === null && $item->custom_product_name)
+                                                @if ($item->goods_id === null && $item->custom_product_name)
                                                     {{-- Item dari Custom Quotation: tidak ada di tabel goods --}}
-                                                    <input type="hidden" name="product_id[]" value="">
+                                                    <input type="hidden" name="goods_id[]" value="">
                                                     <span
                                                         class="block rounded-lg bg-indigo-50 px-2.5 py-2 text-xs text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
                                                         Custom Item
@@ -444,7 +444,7 @@
                                                         </button>
 
                                                         <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                        <select name="product_id[]"
+                                                        <select name="goods_id[]"
                                                             class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                             onchange="updateKategoriBarang(this)">
                                                             <option value="">Pilih Barang</option>
@@ -455,7 +455,7 @@
                                                                     data-satuan="{{ $b->unit ?? '' }}"
                                                                     data-harga="{{ $b->selling_price ?? 0 }}"
                                                                     data-diskon="{{ $b->discount_percent ?? 0 }}"
-                                                                    @selected($item->product_id === $b->id)>
+                                                                    @selected($item->goods_id === $b->id)>
                                                                     {{ $b->goods_code }}
                                                                 </option>
                                                             @endforeach
@@ -508,7 +508,7 @@
                                                                     <tbody
                                                                         class="divide-y divide-subtle/30 barang-options-body">
                                                                         @foreach ($goods as $b)
-                                                                            <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row {{ $item->product_id === $b->id ? 'bg-secondary-container/10 hover:bg-secondary-container/20' : '' }}"
+                                                                            <tr class="hover:bg-surface-container-high cursor-pointer barang-option-row {{ $item->goods_id === $b->id ? 'bg-secondary-container/10 hover:bg-secondary-container/20' : '' }}"
                                                                                 data-id="{{ $b->id }}"
                                                                                 data-kode="{{ $b->goods_code }}"
                                                                                 data-nama="{{ $b->goods_name }}"
@@ -528,7 +528,7 @@
                                                                                 <td
                                                                                     class="pr-4 text-primary text-right select-check-icon">
                                                                                     <span
-                                                                                        class="material-symbols-outlined text-[18px] checked-icon {{ $item->product_id === $b->id ? '' : 'hidden' }}"><svg
+                                                                                        class="material-symbols-outlined text-[18px] checked-icon {{ $item->goods_id === $b->id ? '' : 'hidden' }}"><svg
                                                                                             class="w-5 h-5" viewBox="0 0 24 24"
                                                                                             fill="none"
                                                                                             xmlns="http://www.w3.org/2000/svg">
@@ -559,7 +559,7 @@
                                                 @endif
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                @if ($item->product_id === null && $item->custom_product_name)
+                                                @if ($item->goods_id === null && $item->custom_product_name)
                                                     {{-- Custom item: nama bisa diedit manual --}}
                                                     <input type="text" name="custom_product_name[]"
                                                         class="barang-nama-display block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -706,7 +706,7 @@
                                                     </button>
 
                                                     <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
-                                                    <select name="product_id[]"
+                                                    <select name="goods_id[]"
                                                         class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
                                                         onchange="updateKategoriBarang(this)">
                                                         <option value="">Pilih Barang</option>
@@ -1617,7 +1617,7 @@
                                     <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="currentColor"></path> </g></svg>
                                 </span>
                             </button>
-                            <select name="product_id[]" class="form-control barang-select hidden" onchange="updateKategoriBarang(this)">
+                            <select name="goods_id[]" class="form-control barang-select hidden" onchange="updateKategoriBarang(this)">
                                 ${getBarangOptionsHTML()}
                             </select>
                             <div class="fixed w-[600px] bg-white border border-subtle rounded-xl shadow-2xl z-[9999] overflow-hidden hidden dropdown-menu-container">

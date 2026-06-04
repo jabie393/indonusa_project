@@ -81,6 +81,61 @@ class SalesOrderController extends Controller
         DB::beginTransaction();
         try {
             $quotation->load('items', 'sales');
+            $customQuotation = $quotation->customQuotation;
+
+            // 1. Check if there are any custom items in this quotation
+            $hasCustomItems = false;
+            foreach ($quotation->items as $item) {
+                if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
+                    $hasCustomItems = true;
+                    break;
+                }
+            }
+
+            // 3. Process goods creation for custom items
+            $goodsMap = []; // maps item ID to created goods model
+            foreach ($quotation->items as $item) {
+                if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
+                    // Generate unique goods code
+                    $category = $item->product_category ?: 'OTHER CATEGORIES';
+                    $generatedCode = \App\Models\Barang::generateUniqueKodeBarang($category);
+
+                    // Find description and unit from CustomQuotationItem
+                    $cqItem = null;
+                    if ($customQuotation) {
+                        $cqItem = $customQuotation->items()
+                            ->where('product_name', $item->custom_product_name)
+                            ->first();
+                    }
+                    $unit = $cqItem ? $cqItem->unit : 'pcs';
+                    $description = $cqItem ? $cqItem->description : '-';
+
+                    // Create the goods record
+                    $goods = \App\Models\Barang::create([
+                        'request_type' => 'primary',
+                        'goods_status' => 'pending',
+                        'status_listing' => 'non_listing',
+                        'goods_code' => $generatedCode,
+                        'goods_name' => $item->custom_product_name,
+                        'category' => $category,
+                        'stock' => 0,
+                        'unit' => $unit,
+                        'buy_price' => 0.00,
+                        'selling_price' => 0.00,
+                        'form' => $quotation->sales_id ?? Auth::id(),
+                        'description' => $description,
+                    ]);
+
+                    // Update QuotationItem and CustomQuotationItem
+                    $item->update(['goods_id' => $goods->id]);
+                    if ($cqItem) {
+                        $cqItem->update(['goods_id' => $goods->id]);
+                    }
+
+                    $goodsMap[$item->id] = $goods->id;
+                }
+            }
+
             $existingOrder = Order::where('quotation_id', $quotation->id)->first();
 
             if ($existingOrder) {
@@ -88,8 +143,25 @@ class SalesOrderController extends Controller
                     Order::whereDate('created_at', now()->toDateString())->count() + 1,
                     4, '0', STR_PAD_LEFT
                 ));
-                $existingOrder->update(['status' => 'sent_to_warehouse', 'do_number' => $doNumber]);
+                $existingOrder->update([
+                    'status' => 'sent_to_warehouse',
+                    'do_number' => $doNumber,
+                    'custom_quotation_id' => $quotation->custom_quotation_id ?? $existingOrder->custom_quotation_id,
+                ]);
                 $orderNumber = $existingOrder->order_number;
+
+                // Sync goods_id to existing order items if they were null
+                foreach ($existingOrder->items as $orderItem) {
+                    if (is_null($orderItem->goods_id) && !empty($orderItem->custom_product_name)) {
+                        // Find matching QuotationItem to get the goods_id
+                        $matchedQItem = $quotation->items()
+                            ->where('custom_product_name', $orderItem->custom_product_name)
+                            ->first();
+                        if ($matchedQItem && $matchedQItem->goods_id) {
+                            $orderItem->update(['goods_id' => $matchedQItem->goods_id]);
+                        }
+                    }
+                }
             } else {
                 $orderNumber = 'ORD-' . now()->format('Ymd') . '-' . str_pad(
                     Order::whereDate('created_at', now()->toDateString())->count() + 1,
@@ -114,14 +186,18 @@ class SalesOrderController extends Controller
                 ]);
 
                 foreach ($quotation->items as $item) {
+                    $goodsId = $item->goods_id ?? ($goodsMap[$item->id] ?? null);
+
                     OrderItem::create([
-                        'order_id'           => $order->id,
-                        'product_id'         => $item->product_id ?? null,
-                        'quantity'           => $item->quantity ?? 1,
-                        'delivered_quantity' => 0,
-                        'item_status'        => 'pending',
-                        'price'              => $item->price ?? 0,
-                        'subtotal'           => $item->subtotal ?? 0,
+                        'order_id'            => $order->id,
+                        'goods_id'            => $goodsId,
+                        'custom_product_name' => $item->custom_product_name,
+                        'category'            => $item->product_category ?? null,
+                        'quantity'            => $item->quantity ?? 1,
+                        'delivered_quantity'  => 0,
+                        'item_status'         => 'pending',
+                        'price'               => $item->price ?? 0,
+                        'subtotal'            => $item->subtotal ?? 0,
                     ]);
                 }
             }

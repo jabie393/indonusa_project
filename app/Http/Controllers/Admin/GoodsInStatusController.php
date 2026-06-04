@@ -14,6 +14,7 @@ class GoodsInStatusController extends Controller
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
         $goods = Barang::whereIn('goods_status', ['pending', 'rejected'])
+            ->where('status_listing', '!=', 'non_listing')
             ->orderByRaw("FIELD(goods_status, 'rejected', 'pending')")
             ->latest();
 

@@ -9,6 +9,7 @@ class GoodsReceipt extends Model
 {
     protected $fillable = [
         'good_id',
+        'procurement_of_goods_item_id',
         'supplier_id',
         'received_at',
         'approved_by',
@@ -43,5 +44,10 @@ class GoodsReceipt extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function procurementOfGoodsItem(): BelongsTo
+    {
+        return $this->belongsTo(ProcurementOfGoodsItem::class, 'procurement_of_goods_item_id');
     }
 }

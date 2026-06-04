@@ -144,6 +144,14 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/catalog/{id}/edit', [CatalogController::class, 'edit'])->name('catalog.edit');
     Route::put('/catalog/{id}', [CatalogController::class, 'update'])->name('catalog.update');
     Route::delete('/catalog/{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
+
+    // Procurement / Pengadaan (General Affair)
+    Route::get('/procurement', [\App\Http\Controllers\Admin\ProcurementController::class, 'index'])->name('general-affair.procurement.index');
+    Route::get('/procurement/create/{customQuotation}', [\App\Http\Controllers\Admin\ProcurementController::class, 'create'])->name('general-affair.procurement.create');
+    Route::post('/procurement', [\App\Http\Controllers\Admin\ProcurementController::class, 'store'])->name('general-affair.procurement.store');
+    Route::get('/procurement/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'show'])->name('general-affair.procurement.show');
+    Route::post('/procurement/arrival/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'recordArrival'])->name('general-affair.procurement.record-arrival');
+    Route::post('/procurement/{procurement}/force-complete', [\App\Http\Controllers\Admin\ProcurementController::class, 'forceComplete'])->name('general-affair.procurement.force-complete');
 });
 // End of General Affair
 
@@ -153,6 +161,8 @@ route::middleware(['auth', 'role:Warehouse'])->group(function () {
     Route::resource('/supply-orders', SupplyOrdersController::class);
     Route::post('/supply-orders/{id}/approve', [SupplyOrdersController::class, 'approve'])->name('supply-orders.approve');
     Route::post('/supply-orders/{id}/reject', [SupplyOrdersController::class, 'reject'])->name('supply-orders.reject');
+    Route::post('/supply-orders/procurement/{receipt}/approve', [SupplyOrdersController::class, 'approveProcurement'])->name('supply-orders.approve-procurement');
+    Route::post('/supply-orders/procurement/{receipt}/reject', [SupplyOrdersController::class, 'rejectProcurement'])->name('supply-orders.reject-procurement');
     Route::resource('/delivery-orders', DeliveryOrdersController::class)->except(['index']);
     Route::post('/delivery-orders/{id}/approve', [DeliveryOrdersController::class, 'approve'])->name('delivery-orders.approve');
     Route::post('/delivery-orders/{id}/reject', [DeliveryOrdersController::class, 'reject'])->name('delivery-orders.reject');

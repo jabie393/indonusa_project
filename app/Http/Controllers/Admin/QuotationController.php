@@ -100,8 +100,8 @@ class QuotationController extends Controller
             'no_po' => 'nullable|string|max:255|unique:quotations,no_po',
             'required_date' => 'nullable|date',
             'customer_notes' => 'nullable|string',
-            'product_id' => 'required|array|min:1',
-            'product_id.*' => 'nullable',
+            'goods_id' => 'required|array|min:1',
+            'goods_id.*' => 'nullable',
             'product_category' => 'required|array|min:1',
             'product_category.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',
@@ -124,7 +124,7 @@ class QuotationController extends Controller
 
         $items = [];
         $maxDiskon = 0;
-        foreach ($validated['product_id'] as $i => $productId) {
+        foreach ($validated['goods_id'] as $i => $productId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) {
                 continue;
@@ -138,7 +138,7 @@ class QuotationController extends Controller
 
             $items[] = [
                 'original_index' => $i,
-                'product_id' => $productId,
+                'goods_id' => $productId,
                 'custom_product_name' => empty($productId) ? ($validated['custom_product_name'][$i] ?? null) : null,
                 'product_category' => $validated['product_category'][$i] ?? null,
                 'quantity' => $qty,
@@ -151,48 +151,50 @@ class QuotationController extends Controller
             }
         }
 
-        if (empty($items)) {
-            return back()->withErrors('Tidak ada item valid.')->withInput();
-        }
-
         DB::beginTransaction();
         try {
+            // Pengecekan PPN dari tax_rate inputan sales
+            $ppnPercent = isset($validated['tax_rate']) ? (float) $validated['tax_rate'] : 11;
+            
+            // Hitung total dengan diskon
+            $subtotalSum = collect($items)->sum('subtotal');
+            $taxAmount = round($subtotalSum * ($ppnPercent / 100), 2);
+            $grandTotal = $subtotalSum + $taxAmount;
+
             $nomorQuotation = Quotation::generateQuotationNumber();
-            $tanggalBerlaku = now()->addDays(14);
+            $tanggalBerlaku = now()->addDays(14); // valid for 14 days
 
-            $supportingImages = [];
-            if ($request->hasFile('supporting_images')) {
-                foreach ($request->file('supporting_images') as $file) {
-                    $path = $file->store('request-order-images', 'public');
-                    $supportingImages[] = $path;
-                }
-            }
-
-            $headerSubtotal = array_reduce($items, fn ($carry, $item) => $carry + $item['subtotal'], 0);
-            $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
-            $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
-
-            $salesOrderNumber = Quotation::generateSalesOrderNumber();
             $requestOrder = Quotation::create([
-                'request_number' => 'REQ-'.strtoupper(Str::random(8)),
+                'request_number' => 'REQ-' . strtoupper(Str::random(8)),
                 'quotation_number' => $nomorQuotation,
-                'sales_order_number' => $salesOrderNumber,
-                'no_po' => $validated['no_po'] ?? null,
                 'sales_id' => Auth::id(),
-                'pic_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
+                'pic_id' => $validated['pic_id'],
                 'subject' => $validated['subject'],
-                'product_category' => $validated['product_category'][0] ?? null,
-                'required_date' => $validated['required_date'] ?? null,
+                'no_po' => $validated['no_po'] ?? null,
+                'required_date' => $validated['required_date'],
                 'valid_date' => $tanggalBerlaku,
                 'expired_at' => $tanggalBerlaku,
                 'customer_notes' => $validated['customer_notes'] ?? null,
-                'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
-                'subtotal' => $headerSubtotal,
-                'tax' => $headerTax,
-                'grand_total' => $headerGrandTotal,
+                'subtotal' => $subtotalSum,
+                'tax' => $taxAmount,
+                'grand_total' => $grandTotal,
+                'ppn_percent' => $ppnPercent,
+                'sales_order_number' => Quotation::generateSalesOrderNumber(),
             ]);
+
+            // Save supporting images
+            if ($request->hasFile('supporting_images')) {
+                $supportingImagePaths = [];
+                foreach ($request->file('supporting_images') as $file) {
+                    if ($file) {
+                        $supportingImagePaths[] = $file->store('request-order-supporting-images', 'public');
+                    }
+                }
+                $requestOrder->supporting_images = $supportingImagePaths;
+                $requestOrder->save();
+            }
 
             foreach ($items as $item) {
                 $origIdx = $item['original_index'];
@@ -207,7 +209,7 @@ class QuotationController extends Controller
 
                 $itemData = [
                     'quotation_id' => $requestOrder->id,
-                    'product_id' => $item['product_id'],
+                    'goods_id' => $item['goods_id'],
                     'custom_product_name' => $item['custom_product_name'],
                     'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
@@ -411,8 +413,8 @@ class QuotationController extends Controller
             'sales_order_number' => 'nullable|string|max:255',
             'required_date' => 'nullable|date',
             'customer_notes' => 'nullable|string',
-            'product_id' => 'required|array|min:1',
-            'product_id.*' => 'nullable|integer|exists:goods,id',
+            'goods_id' => 'required|array|min:1',
+            'goods_id.*' => 'nullable|integer|exists:goods,id',
             'product_category' => 'required|array|min:1',
             'product_category.*' => 'nullable|string|max:100',
             'quantity' => 'required|array|min:1',
@@ -436,11 +438,11 @@ class QuotationController extends Controller
             'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
 
-        foreach ($validated['product_id'] as $i => $productId) {
+        foreach ($validated['goods_id'] as $i => $productId) {
             $isCustom = empty($productId) && (! empty($validated['custom_product_name'][$i] ?? null));
             $isRegular = ! empty($productId);
             if (! $isCustom && ! $isRegular) {
-                return back()->withErrors(["product_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
+                return back()->withErrors(["goods_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
                     ->withInput();
             }
             if (($isCustom || $isRegular) && empty($validated['product_category'][$i])) {
@@ -474,7 +476,7 @@ class QuotationController extends Controller
         ]);
 
         $items = [];
-        foreach ($validated['product_id'] as $i => $productId) {
+        foreach ($validated['goods_id'] as $i => $productId) {
             $qty = (int) $validated['quantity'][$i];
             if ($qty <= 0) {
                 continue;
@@ -497,7 +499,7 @@ class QuotationController extends Controller
 
             $items[] = [
                 'original_index' => $i,
-                'product_id' => empty($productId) ? null : (int) $productId,
+                'goods_id' => empty($productId) ? null : (int) $productId,
                 'custom_product_name' => empty($productId)
                     ? ($validated['custom_product_name'][$i] ?? null)
                     : null,
@@ -570,7 +572,7 @@ class QuotationController extends Controller
 
                 $itemData = [
                     'quotation_id' => $requestOrder->id,
-                    'product_id' => $item['product_id'],
+                    'goods_id' => $item['goods_id'],
                     'custom_product_name' => $item['custom_product_name'] ?? null,
                     'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
@@ -848,6 +850,62 @@ class QuotationController extends Controller
     protected function processSentToWarehouse(Quotation $ro)
     {
         DB::transaction(function () use ($ro) {
+            $ro->load('items', 'sales');
+            $customQuotation = $ro->customQuotation;
+
+            // 1. Check if there are any custom items in this quotation
+            $hasCustomItems = false;
+            foreach ($ro->items as $item) {
+                if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
+                    $hasCustomItems = true;
+                    break;
+                }
+            }
+
+            // 3. Process goods creation for custom items
+            $goodsMap = []; // maps item ID to created goods model
+            foreach ($ro->items as $item) {
+                if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
+                    // Generate unique goods code
+                    $category = $item->product_category ?: 'OTHER CATEGORIES';
+                    $generatedCode = \App\Models\Barang::generateUniqueKodeBarang($category);
+
+                    // Find description and unit from CustomQuotationItem
+                    $cqItem = null;
+                    if ($customQuotation) {
+                        $cqItem = $customQuotation->items()
+                            ->where('product_name', $item->custom_product_name)
+                            ->first();
+                    }
+                    $unit = $cqItem ? $cqItem->unit : 'pcs';
+                    $description = $cqItem ? $cqItem->description : '-';
+
+                    // Create the goods record
+                    $goods = \App\Models\Barang::create([
+                        'request_type' => 'primary',
+                        'goods_status' => 'pending',
+                        'status_listing' => 'non_listing',
+                        'goods_code' => $generatedCode,
+                        'goods_name' => $item->custom_product_name,
+                        'category' => $category,
+                        'stock' => 0,
+                        'unit' => $unit,
+                        'buy_price' => 0.00,
+                        'selling_price' => 0.00,
+                        'form' => $ro->sales_id ?? Auth::id(),
+                        'description' => $description,
+                    ]);
+
+                    // Update QuotationItem and CustomQuotationItem
+                    $item->update(['goods_id' => $goods->id]);
+                    if ($cqItem) {
+                        $cqItem->update(['goods_id' => $goods->id]);
+                    }
+
+                    $goodsMap[$item->id] = $goods->id;
+                }
+            }
+
             $existingOrder = Order::where('quotation_id', $ro->id)->first();
 
             if ($existingOrder) {
@@ -855,13 +913,30 @@ class QuotationController extends Controller
                     'status' => 'sent_to_warehouse',
                     'do_number' => $existingOrder->do_number
                         ?? ('DO-'.strtoupper(Str::random(8))),
+                    'custom_quotation_id' => $ro->custom_quotation_id ?? $existingOrder->custom_quotation_id,
                 ]);
+
+                // Sync goods_id to existing order items if they were null
+                foreach ($existingOrder->items as $orderItem) {
+                    if (is_null($orderItem->goods_id) && !empty($orderItem->custom_product_name)) {
+                        // Find matching QuotationItem to get the goods_id
+                        $matchedQItem = $ro->items()
+                            ->where('custom_product_name', $orderItem->custom_product_name)
+                            ->first();
+                        if ($matchedQItem && $matchedQItem->goods_id) {
+                            $orderItem->update(['goods_id' => $matchedQItem->goods_id]);
+                        }
+                    }
+                }
 
                 if ($existingOrder->items()->count() === 0) {
                     foreach ($ro->items as $reqItem) {
+                        $goodsId = $reqItem->goods_id ?? ($goodsMap[$reqItem->id] ?? null);
                         OrderItem::create([
                             'order_id' => $existingOrder->id,
-                            'product_id' => $reqItem->product_id,
+                            'goods_id' => $goodsId,
+                            'custom_product_name' => $reqItem->custom_product_name,
+                            'category' => $reqItem->product_category,
                             'quantity' => $reqItem->quantity,
                             'delivered_quantity' => 0,
                             'item_status' => 'pending',
@@ -877,6 +952,7 @@ class QuotationController extends Controller
                     'sales_id' => Auth::id(),
                     'supervisor_id' => $ro->approved_by ?? null,
                     'quotation_id' => $ro->id,
+                    'custom_quotation_id' => $ro->custom_quotation_id ?? null,
                     'status' => 'sent_to_warehouse',
                     'customer_name' => $ro->customer_name,
                     'customer_id' => $ro->customer_id,
@@ -885,9 +961,12 @@ class QuotationController extends Controller
                 ]);
 
                 foreach ($ro->items as $reqItem) {
+                    $goodsId = $reqItem->goods_id ?? ($goodsMap[$reqItem->id] ?? null);
                     OrderItem::create([
                         'order_id' => $order->id,
-                        'product_id' => $reqItem->product_id,
+                        'goods_id' => $goodsId,
+                        'custom_product_name' => $reqItem->custom_product_name,
+                        'category' => $reqItem->product_category,
                         'quantity' => $reqItem->quantity,
                         'delivered_quantity' => 0,
                         'item_status' => 'pending',

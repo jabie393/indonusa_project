@@ -145,7 +145,7 @@ class SalesOrderInvoiceController extends Controller
         }
 
         return $ro->items->map(function ($item) {
-            $barangData = \App\Models\Barang::find($item->product_id);
+            $barangData = \App\Models\Barang::find($item->goods_id);
             return [
                 'nama_barang' => $item->custom_product_name
                     ?? optional($barangData)->goods_name

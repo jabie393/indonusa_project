@@ -167,6 +167,10 @@
                                                 'expired' => 'Expired',
                                                 'approved_supervisor' => 'Approved by Supervisor',
                                                 'rejected_supervisor' => 'Rejected by Supervisor',
+                                                'procurement_pending' => 'Procurement Pending',
+                                                'partially_available' => 'Partially Available',
+                                                'ready_for_delivery' => 'Ready for Delivery',
+                                                'completed' => 'Completed',
                                             ][$quotation->status] ?? $quotation->status;
 
                                         $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
@@ -194,6 +198,26 @@
                                             $badgeText = 'text-blue-700 dark:text-blue-300';
                                             $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        } elseif ($quotation->status === 'procurement_pending') {
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-800 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        } elseif ($quotation->status === 'partially_available') {
+                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                            $badgeText = 'text-blue-700 dark:text-blue-300';
+                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        } elseif ($quotation->status === 'ready_for_delivery') {
+                                            $badgeBg = 'bg-indigo-50 dark:bg-indigo-950/30';
+                                            $badgeText = 'text-indigo-700 dark:text-indigo-300';
+                                            $badgeBorder = 'border border-indigo-200 dark:border-indigo-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                        } elseif ($quotation->status === 'completed') {
+                                            $badgeBg = 'bg-emerald-50 dark:bg-emerald-950/30';
+                                            $badgeText = 'text-emerald-700 dark:text-emerald-300';
+                                            $badgeBorder = 'border border-emerald-200 dark:border-emerald-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
                                         } elseif ($quotation->status === 'expired') {
                                             $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                             $badgeText = 'text-gray-700 dark:text-gray-300';
@@ -353,7 +377,7 @@
                                                 {{-- Sent to Warehouse removed per request --}}
 
                                                 {{-- Send to Quotation --}}
-                                                @if (in_array($quotation->status, ['open', 'approved_supervisor']))
+                                                @if ($quotation->status === 'approved_supervisor')
                                                     <form
                                                         action="{{ route('sales.custom-quotation.sent-to-quotation', $quotation->id) }}"
                                                         method="POST" style="display:inline;">

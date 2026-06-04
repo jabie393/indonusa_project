@@ -10,6 +10,8 @@ class CustomQuotationItem extends Model
 
     protected $fillable = [
         'custom_quotation_id',
+        'goods_id',
+        'category',
         'product_name',
         'qty',
         'unit',
@@ -31,6 +33,11 @@ class CustomQuotationItem extends Model
     public function customQuotation()
     {
         return $this->belongsTo(CustomQuotation::class, 'custom_quotation_id');
+    }
+
+    public function goods()
+    {
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 }
 

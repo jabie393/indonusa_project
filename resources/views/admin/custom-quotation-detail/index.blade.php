@@ -127,10 +127,26 @@
                                 $statusClass = 'bg-rose-50/50 text-rose-600 border border-rose-200';
                                 $statusDot = 'bg-rose-500';
                                 $statusText = 'Rejected by Supervisor';
-                            } elseif (in_array($statusText, ['approved_supervisor', 'approved', 'open', 'sent'])) {
+                            } elseif (in_array($statusText, ['approved_supervisor', 'approved', 'open'])) {
                                 $statusClass = 'bg-emerald-50/50 text-emerald-600 border border-emerald-200';
                                 $statusDot = 'bg-emerald-500';
                                 $statusText = 'Approved';
+                            } elseif ($statusText === 'sent_to_quotation') {
+                                $statusClass = 'bg-indigo-50/50 text-indigo-600 border border-indigo-200';
+                                $statusDot = 'bg-indigo-500';
+                                $statusText = 'Sent to Quotation';
+                            } elseif ($statusText === 'sent_to_warehouse') {
+                                $statusClass = 'bg-purple-50/50 text-purple-600 border border-purple-200';
+                                $statusDot = 'bg-purple-500';
+                                $statusText = 'Sent to Warehouse';
+                            } elseif ($statusText === 'ready_for_delivery') {
+                                $statusClass = 'bg-teal-50/50 text-teal-600 border border-teal-200';
+                                $statusDot = 'bg-teal-500';
+                                $statusText = 'Ready for Delivery';
+                            } elseif ($statusText === 'completed') {
+                                $statusClass = 'bg-emerald-50/50 text-emerald-600 border border-emerald-200';
+                                $statusDot = 'bg-emerald-500';
+                                $statusText = 'Completed';
                             }
                         @endphp
                         <div class="mt-4">
@@ -376,7 +392,7 @@
                         @endif
 
                         {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
-                        @if (in_array($customQuotation->status, ['open', 'approved']) && Auth::user()->role === 'Sales')
+                        @if ($customQuotation->status === 'ready_for_delivery' && Auth::user()->role === 'Sales')
                             <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customQuotation->id) }}" method="POST" class="w-full">
                                 @csrf
                                 <button type="submit"

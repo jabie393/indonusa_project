@@ -9,7 +9,9 @@ class OrderItem extends Model
 {
     protected $fillable = [
         'order_id',
-        'product_id',
+        'goods_id',
+        'custom_product_name',
+        'category',
         'quantity',
         'price',
         'subtotal',
@@ -27,12 +29,12 @@ class OrderItem extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'product_id');
+        return $this->belongsTo(Barang::class, 'goods_id');
     }
 
     // Accessor untuk nama_barang — ambil dari relasi barang/product jika tersedia, kalau tidak fallback ke atribut nama_barang
@@ -45,19 +47,19 @@ class OrderItem extends Model
             return $this->barang->goods_name;
         }
 
-        // jika tidak ada relasi, cek apakah ada kolom nama_barang tersimpan di model (mis. legacy)
-        return $this->attributes['nama_barang'] ?? null;
+        // jika tidak ada relasi, cek apakah ada custom_product_name atau nama_barang tersimpan
+        return $this->custom_product_name ?? ($this->attributes['nama_barang'] ?? null);
     }
 
     // Compatibility accessors for old column names
     public function getBarangIdAttribute()
     {
-        return $this->product_id;
+        return $this->goods_id;
     }
 
     public function setBarangIdAttribute($value)
     {
-        $this->attributes['product_id'] = $value;
+        $this->attributes['goods_id'] = $value;
     }
 
     public function getHargaAttribute()

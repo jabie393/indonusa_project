@@ -28,7 +28,7 @@ class TestQuotationSeeder extends Seeder
             'our_ref' => 'REF/IDN/2026/03/001',
             'date' => now(),
             'intro_text' => 'Bersama ini kami sampaikan penawaran harga untuk kebutuhan alat kantor perusahaan Bapak/Ibu.',
-            'status' => 'approved',
+            'status' => 'approved_supervisor',
             'subtotal' => 5000000,
             'tax' => 550000,
             'grand_total' => 5550000,
@@ -47,6 +47,7 @@ class TestQuotationSeeder extends Seeder
             'subtotal' => 5000000,
             'discount' => 0,
             'description' => 'Warna Hitam',
+            'category' => 'MISCELLANEOUS',
         ]);
 
         echo "Test quotation created: " . $quotation->quotation_number . "\n";
