@@ -616,7 +616,10 @@ class CustomQuotationController extends Controller
         $existing = Quotation::where('custom_quotation_id', $customQuotation->id)->first();
         if ($existing) {
             return redirect()->route('sales.quotation.show', $existing->id)
-                ->with('info', 'Sudah pernah dikirim ke Quotation.');
+                ->with([
+                    'title' => 'Info',
+                    'text' => 'Sudah pernah dikirim ke Quotation.',
+                ]);
         }
         DB::beginTransaction();
         try {
@@ -682,7 +685,10 @@ class CustomQuotationController extends Controller
 
             // Redirect langsung ke halaman quotation sales
             return redirect()->route('sales.quotation.show', $requestOrder->id)
-                ->with('success', "Berhasil dikirim ke Quotation: {$requestOrder->request_number}");
+                ->with([
+                    'title' => 'Berhasil',
+                    'text' => "Berhasil dikirim ke Quotation: {$requestOrder->request_number}",
+                ]);
         } catch (\Throwable $e) {
             DB::rollBack();
 
