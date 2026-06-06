@@ -468,7 +468,7 @@
                                         @php $dk = $item->discount ?? 0; @endphp
                                         @if ($dk > 0)
                                             <div class="flex flex-col items-center">
-                                                <span class="text-xs font-bold text-red-500">
+                                                <span class="text-xs font-bold text-green-500">
                                                     {{ number_format($dk, 2, '.', ',') }}%
                                                 </span>
                                                 @if ($dk > 20)
