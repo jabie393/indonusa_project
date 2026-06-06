@@ -435,7 +435,8 @@
                     <table class="w-full text-left text-sm">
                         <thead class="dark:bg-gray-750 border-b border-slate-100 bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:border-gray-700 dark:text-gray-400">
                             <tr>
-                                <th class="px-6 py-4">Barang & Detail</th>
+                                <th class="px-6 py-4">Barang & Kategori</th>
+                                <th class="px-6 py-4">Deskripsi Barang</th>
                                 <th class="px-6 py-4 text-center">Diskon</th>
                                 <th class="px-6 py-4 text-center">Qty</th>
                                 <th class="px-6 py-4">Harga Satuan</th>
@@ -444,19 +445,24 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-gray-700">
+                            @php $total = 0; @endphp
                             @forelse($customQuotation->items as $index => $item)
+                                @php $total += $item->subtotal ?? 0; @endphp
                                 <tr class="group transition-colors hover:bg-slate-50/50 dark:hover:bg-gray-700/30">
                                     <td class="px-6 py-5">
                                         <div class="flex flex-col space-y-0.5">
                                             <span class="font-bold text-slate-800 dark:text-white">
                                                 {{ $item->product_name }}
                                             </span>
-                                            @if ($item->description)
+                                            @if ($item->category)
                                                 <span class="text-[10px] font-semibold uppercase text-gray-400 dark:text-gray-500">
-                                                    Note: {{ $item->description }}
+                                                    {{ $item->category }}
                                                 </span>
                                             @endif
                                         </div>
+                                    </td>
+                                    <td class="px-6 py-5">
+                                        {{ $item->description ?? '-' }}
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php $dk = $item->discount ?? 0; @endphp
@@ -534,6 +540,18 @@
                                 </tr>
                             @endforelse
                         </tbody>
+                        <tfoot class="bg-[#F8FAFC] dark:bg-gray-750">
+                            <tr class="border-t border-slate-100 dark:border-gray-700">
+                                <td colspan="5"
+                                    class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
+                                    Total Keseluruhan</td>
+                                <td
+                                    class="whitespace-nowrap px-6 py-4 font-black text-slate-800 dark:text-white text-base">
+                                    {{ number_format($total, 0, '.', ',') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

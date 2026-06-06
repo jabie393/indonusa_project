@@ -690,6 +690,7 @@
                             class="bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:bg-gray-750 dark:text-gray-400 border-b border-slate-100 dark:border-gray-700">
                             <tr>
                                 <th class="px-6 py-4">Barang & Kategori</th>
+                                <th class="px-6 py-4">Deskripsi Barang</th>
                                 <th class="px-6 py-4 text-center">Diskon</th>
                                 <th class="px-6 py-4 text-center">Qty</th>
                                 <th class="px-6 py-4">Harga Satuan</th>
@@ -722,6 +723,9 @@
                                                     {{ $item->barang->goods_code ?? '-' }}</span>
                                             </div>
                                         </div>
+                                    </td>
+                                    <td class="px-6 py-5">
+                                        {{ $item->barang->description ?? '-' }}
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php $dk = $item->discount_percent ?? ($item->barang->discount_percent ?? 0); @endphp
@@ -804,7 +808,7 @@
                         </tbody>
                         <tfoot class="bg-[#F8FAFC] dark:bg-gray-750">
                             <tr class="border-t border-slate-100 dark:border-gray-700">
-                                <td colspan="4"
+                                <td colspan="5"
                                     class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
                                     Total Keseluruhan</td>
                                 <td
