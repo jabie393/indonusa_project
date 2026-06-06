@@ -725,7 +725,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-5">
-                                        {{ $item->barang->description ?? '-' }}
+                                        {{ $item->barang->description ?? $item->custom_product_description ?? '-' }}
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php $dk = $item->discount_percent ?? ($item->barang->discount_percent ?? 0); @endphp

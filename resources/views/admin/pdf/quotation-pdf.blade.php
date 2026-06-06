@@ -253,7 +253,8 @@
                                     {{ optional($item->barang)->goods_name ?? ($item->custom_product_name ?? '-') }}
                                 </td>
                                 <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
-                                <td class="border px-2 py-1 text-center">{{ optional($item->barang)->unit ?? '-' }}
+                                <td class="border px-2 py-1 text-center">
+                                    {{ optional($item->barang)->unit ?? ($item->custom_product_unit ?? '-') }}
                                 </td>
                                 <td class="border px-2 py-1">
                                     <div class="flex justify-between">

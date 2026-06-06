@@ -659,6 +659,8 @@ class CustomQuotationController extends Controller
                     'quotation_id' => $requestOrder->id,
                     'goods_id' => null,
                     'custom_product_name' => $cpItem->product_name,
+                    'custom_product_description' => $cpItem->description,
+                    'custom_product_unit' => $cpItem->unit,
                     'product_category' => $category,
                     'quantity' => $cpItem->qty,
                     'price' => $cpItem->price,
