@@ -39,6 +39,8 @@ class SalesOrderController extends Controller
         }
 
         $firstPic = $ro->customer?->pics?->first();
+        $warehouseStatuses = ['sent_to_warehouse', 'completed', 'not_completed'];
+        $isSentToWarehouse = $ro->order && in_array($ro->order->status, $warehouseStatuses, true);
 
         return [
             'id'             => $ro->id,
@@ -61,6 +63,7 @@ class SalesOrderController extends Controller
             'customer_status'=> $ro->customer->status ?? 'active',
             'aksi_url'       => '#',
             'has_batches'    => $ro->order && $ro->order->batches->isNotEmpty(),
+            'is_sent_to_warehouse' => $isSentToWarehouse,
         ];
     }
 

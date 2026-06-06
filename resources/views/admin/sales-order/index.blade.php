@@ -351,79 +351,51 @@
                                                     @endif
                                                 </div>
                                             @endif
-                                            {{-- Action Dropdown --}}
-                                            @if (($row['customer_status'] ?? 'active') === 'active')
-                                                <button
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                    popovertarget="popover-{{ $row['id'] }}" style="anchor-name:--anchor-{{ $row['id'] }}">
-                                                    <svg width="24px" height="24px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                        class="bi bi-three-dots-vertical h-4 w-4">
-                                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                                        <g id="SVGRepo_iconCarrier">
-                                                            <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z">
-                                                            </path>
-                                                        </g>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
-                                                </button>
+                                            @php
+                                                $sudahDikirim = in_array($row['status'], [
+                                                    'sent_to_warehouse',
+                                                    'completed',
+                                                    'not_completed',
+                                                    'Dikirim ke Gudang',
+                                                    'Disetujui Gudang',
+                                                    'Selesai',
+                                                    'Tidak Selesai',
+                                                ]) || ($row['is_sent_to_warehouse'] ?? false);
+
+                                                $sendToWarehouseRoute = null;
+                                                $sendToWarehouseText = null;
+                                                $sendToWarehouseButtonText = null;
+
+                                                if ($row['type'] === 'sales_order') {
+                                                    $sendToWarehouseRoute = route('sales.sales-order.sent-to-warehouse', $row['id']);
+                                                    $sendToWarehouseText = 'Kirim Sales Order ini ke Warehouse?';
+                                                    $sendToWarehouseButtonText = 'Ya, Kirim';
+                                                } elseif ($row['type'] === 'request_order') {
+                                                    $sendToWarehouseRoute = route('sales.quotation.sent-to-warehouse-from-so', $row['id']);
+                                                    $sendToWarehouseText = 'Send this Quotation to Warehouse?';
+                                                    $sendToWarehouseButtonText = 'Yes, Send';
+                                                }
+                                            @endphp
+
+                                            @if (($row['customer_status'] ?? 'active') === 'active' && !$sudahDikirim && $sendToWarehouseRoute)
+                                                <form method="POST" action="{{ $sendToWarehouseRoute }}"
+                                                    data-confirm-text="{{ $sendToWarehouseText }}" data-confirm-button-text="{{ $sendToWarehouseButtonText }}"
+                                                    class="approve-form h-full">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path
+                                                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                                            <path d="m3.3 7 8.7 5 8.7-5" />
+                                                            <path d="M12 22V12" />
+                                                        </svg>
+                                                        <span
+                                                            class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Send to Warehouse</span>
+                                                    </button>
+                                                </form>
                                             @endif
-
-                                            <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm" popover id="popover-{{ $row['id'] }}"
-                                                style="position-anchor:--anchor-{{ $row['id'] }}">
-
-
-                                                @php
-                                                    $sudahDikirim = in_array($row['status'], [
-                                                        'sent_to_warehouse',
-                                                        'completed',
-                                                        'not_completed',
-                                                        'Dikirim ke Gudang',
-                                                        'Disetujui Gudang',
-                                                        'Selesai',
-                                                        'Tidak Selesai',
-                                                    ]);
-                                                @endphp
-
-                                                @if (!$sudahDikirim)
-                                                    @if ($row['type'] === 'sales_order')
-                                                        <form method="POST" action="{{ route('sales.sales-order.sent-to-warehouse', $row['id']) }}"
-                                                            data-confirm-text="Kirim Sales Order ini ke Warehouse?" data-confirm-button-text="Ya, Kirim" class="approve-form w-full">
-                                                            @csrf
-                                                            <li>
-                                                                <button type="submit" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path
-                                                                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                                        <path d="m3.3 7 8.7 5 8.7-5" />
-                                                                        <path d="M12 22V12" />
-                                                                    </svg>
-                                                                    Send to Warehouse
-                                                                </button>
-                                                            </li>
-                                                        </form>
-                                                    @elseif ($row['type'] === 'request_order')
-                                                        <form method="POST" action="{{ route('sales.quotation.sent-to-warehouse-from-so', $row['id']) }}"
-                                                            data-confirm-text="Send this Quotation to Warehouse?" data-confirm-button-text="Yes, Send" class="approve-form w-full">
-                                                            @csrf
-                                                            <li>
-                                                                <button type="submit" class="flex w-full items-center gap-2 text-green-600 hover:bg-green-50">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path
-                                                                            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                                        <path d="m3.3 7 8.7 5 8.7-5" />
-                                                                        <path d="M12 22V12" />
-                                                                    </svg>
-                                                                    Send to Warehouse
-                                                                </button>
-                                                            </li>
-                                                        </form>
-                                                    @endif
-                                                @endif
-                                            </ul>
                                         </div>
                                     </div>
                                 </td>
