@@ -211,6 +211,19 @@ class SupplyOrdersController extends Controller
                 throw new \Exception('Master barang tidak ditemukan.');
             }
 
+            // Batasi kuantitas yang diapprove agar tidak melebihi sisa kuantitas pesanan
+            $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received);
+            if ($maxAllowed <= 0) {
+                // Hapus receipt pending ini karena item sudah sepenuhnya terpenuhi
+                $receipt->delete();
+                DB::commit();
+                return redirect()->route('supply-orders.index')->with(['title' => 'Perhatian', 'text' => 'Item pengadaan ini sudah sepenuhnya terpenuhi. Kedatangan redundant dibersihkan.']);
+            }
+
+            if ($receipt->quantity > $maxAllowed) {
+                $receipt->quantity = $maxAllowed;
+            }
+
             // 1. Update master barang
             $goods->stock += $receipt->quantity;
             $goods->buy_price = $receipt->unit_cost;
@@ -229,6 +242,11 @@ class SupplyOrdersController extends Controller
             $procItem->qty_received += $receipt->quantity;
             if ($procItem->qty_received >= $procItem->qty_ordered) {
                 $procItem->status = 'completed';
+                
+                // Hapus record kedatangan pending lainnya untuk item ini karena sudah tercapai
+                \App\Models\GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                    ->where('status', 'pending')
+                    ->delete();
             } else {
                 $procItem->status = 'partial_received';
             }

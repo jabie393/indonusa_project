@@ -21,11 +21,11 @@ class ProcurementController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->input('perPage', 10);
+        $perPage = (int) $request->input('perPage', 10);
         $search = $request->input('search');
 
-        // Daftar Procurement yang sudah dibuat
-        $procurements = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair'])
+        // 1. Daftar Procurement yang sudah dibuat
+        $procurementQuery = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('procurement_number', 'like', "%{$search}%")
@@ -39,30 +39,50 @@ class ProcurementController extends Controller
                             $generalAffairQuery->where('name', 'like', "%{$search}%");
                         });
                 });
-            })
-            ->latest()
-            ->paginate($perPage, ['*'], 'proc_page')
-            ->appends($request->except(['proc_page', 'pending_page']));
+            });
+        $procurements = $procurementQuery->get();
 
-        $pendingQuotations = CustomQuotation::where('status', 'sent_to_quotation')
+        // 2. Daftar Custom Quotation pending (belum diproses)
+        $pendingQuery = CustomQuotation::where('status', 'sent_to_quotation')
             ->whereHas('order', function ($q) {
                 $q->where('status', 'sent_to_warehouse');
             })
             ->doesntHave('procurementOfGoods')
-            ->with('items')
+            ->with(['items', 'sales'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('quotation_number', 'like', "%{$search}%")
                         ->orWhere('to', 'like', "%{$search}%")
                         ->orWhere('subject', 'like', "%{$search}%")
-                        ->orWhere('date', 'like', "%{$search}%");
+                        ->orWhere('date', 'like', "%{$search}%")
+                        ->orWhereHas('sales', function ($salesQuery) use ($search) {
+                            $salesQuery->where('name', 'like', "%{$search}%");
+                        });
                 });
-            })
-            ->latest()
-            ->paginate($perPage, ['*'], 'pending_page')
-            ->appends($request->except(['pending_page', 'proc_page']));
+            });
+        $pendingQuotations = $pendingQuery->get();
 
-        return view('admin.procurement.index', compact('procurements', 'pendingQuotations'));
+        // Merge both collections
+        $merged = $procurements->concat($pendingQuotations);
+
+        // Sort by created_at desc
+        $merged = $merged->sortByDesc(function ($item) {
+            return $item->created_at;
+        });
+
+        // Paginate manually
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $merged->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        
+        $items = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $merged->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.procurement.index', compact('items'));
     }
 
     /**
@@ -86,9 +106,7 @@ class ProcurementController extends Controller
                 ->withErrors('Custom Quotation ini sudah diproses untuk pengadaan.');
         }
 
-        $customQuotation->load('items.goods');
-
-        return view('admin.procurement.create', compact('customQuotation'));
+        return redirect()->route('general-affair.procurement.index', ['open_create' => $customQuotation->id]);
     }
 
     /**
@@ -159,13 +177,117 @@ class ProcurementController extends Controller
     }
 
     /**
+     * Simpan procurement baru via modal.
+     */
+    public function storeModal(Request $request)
+    {
+        $validated = $request->validate([
+            'custom_quotation_id' => 'required|exists:custom_quotations,id',
+            'notes' => 'nullable|string',
+            'items' => 'required|array|min:1',
+            'items.*.goods_id' => 'required|exists:goods,id',
+            'items.*.qty_requested' => 'required|integer|min:1',
+            'items.*.qty_ordered' => 'required|integer|min:1',
+            'items.*.buy_price' => 'required|numeric|min:0',
+            'type' => 'required|in:full,partial',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $customQuotation = CustomQuotation::findOrFail($validated['custom_quotation_id']);
+
+            if ($customQuotation->status !== 'sent_to_quotation') {
+                return response()->json(['success' => false, 'message' => 'Custom Quotation ini tidak dalam status menunggu pengadaan.'], 400);
+            }
+
+            $order = $customQuotation->order;
+            if (!$order || $order->status !== 'sent_to_warehouse') {
+                return response()->json(['success' => false, 'message' => 'Order untuk Custom Quotation ini belum dikirim ke warehouse.'], 400);
+            }
+
+            if ($customQuotation->procurementOfGoods()->exists()) {
+                return response()->json(['success' => false, 'message' => 'Custom Quotation ini sudah diproses untuk pengadaan.'], 400);
+            }
+
+            $procurement = ProcurementOfGoods::create([
+                'procurement_number' => ProcurementOfGoods::generateProcurementNumber(),
+                'custom_quotation_id' => $customQuotation->id,
+                'general_affair_id' => Auth::id(),
+                'status' => 'pending',
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            foreach ($validated['items'] as $itemData) {
+                $barang = Barang::findOrFail($itemData['goods_id']);
+
+                $procItem = ProcurementOfGoodsItem::create([
+                    'procurement_of_goods_id' => $procurement->id,
+                    'goods_id' => $barang->id,
+                    'qty_requested' => $itemData['qty_requested'],
+                    'qty_ordered' => $itemData['qty_ordered'],
+                    'qty_received' => 0,
+                    'unit' => $barang->unit,
+                    'buy_price' => $itemData['buy_price'],
+                    'selling_price' => 0.00,
+                    'status' => 'pending',
+                ]);
+
+                if ($validated['type'] === 'full') {
+                    // Buat GoodsReceipt penuh otomatis
+                    GoodsReceipt::create([
+                        'good_id' => $barang->id,
+                        'procurement_of_goods_item_id' => $procItem->id,
+                        'supplier_id' => Auth::id(), // GA user who records
+                        'received_at' => now(),
+                        'approved_by' => null, // Waiting Warehouse approval
+                        'quantity' => $itemData['qty_ordered'],
+                        'unit_cost' => $itemData['buy_price'],
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            if ($validated['type'] === 'full') {
+                return response()->json([
+                    'success' => true,
+                    'type' => 'full',
+                    'message' => "Procurement {$procurement->procurement_number} berhasil dibuat secara full. Menunggu approval Warehouse.",
+                ]);
+            } else {
+                // Partial - load detail HTML to be rendered in modal
+                $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts.approver']);
+                $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
+                return response()->json([
+                    'success' => true,
+                    'type' => 'partial',
+                    'procurement_id' => $procurement->id,
+                    'html' => $html,
+                    'message' => "Procurement {$procurement->procurement_number} berhasil dibuat secara parsial.",
+                ]);
+            }
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Procurement Store Modal Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Gagal membuat procurement: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Ambil detail procurement dalam bentuk HTML partial.
+     */
+    public function detailHtml(ProcurementOfGoods $procurement)
+    {
+        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts.approver']);
+        return view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'));
+    }
+
+    /**
      * Detail procurement dan form pencatatan kedatangan.
      */
     public function show(ProcurementOfGoods $procurement)
     {
-        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts.approver']);
-
-        return view('admin.procurement.show', compact('procurement'));
+        return redirect()->route('general-affair.procurement.index', ['open_show' => $procurement->id]);
     }
 
     /**
@@ -185,7 +307,19 @@ class ProcurementController extends Controller
         foreach ($validated['items'] as $itemData) {
             if ($itemData['qty_arriving'] > 0) {
                 $anyArriving = true;
-                break;
+
+                $procItem = ProcurementOfGoodsItem::findOrFail($itemData['procurement_item_id']);
+                
+                // Hitung kuantitas pending yang sudah diajukan sebelumnya
+                $alreadyPending = GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                    ->where('status', 'pending')
+                    ->sum('quantity');
+                
+                $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $alreadyPending);
+
+                if ($itemData['qty_arriving'] > $maxAllowed) {
+                    return back()->withErrors("Kuantitas datang untuk '{$procItem->goods->goods_name}' ({$itemData['qty_arriving']}) melebihi sisa batas yang dapat dicatat. Maksimal yang dapat dicatat saat ini adalah {$maxAllowed} (memperhitungkan kedatangan lain yang masih pending approval).");
+                }
             }
         }
 

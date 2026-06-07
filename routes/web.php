@@ -149,7 +149,9 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/procurement', [\App\Http\Controllers\Admin\ProcurementController::class, 'index'])->name('general-affair.procurement.index');
     Route::get('/procurement/create/{customQuotation}', [\App\Http\Controllers\Admin\ProcurementController::class, 'create'])->name('general-affair.procurement.create');
     Route::post('/procurement', [\App\Http\Controllers\Admin\ProcurementController::class, 'store'])->name('general-affair.procurement.store');
+    Route::post('/procurement/store-modal', [\App\Http\Controllers\Admin\ProcurementController::class, 'storeModal'])->name('general-affair.procurement.store-modal');
     Route::get('/procurement/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'show'])->name('general-affair.procurement.show');
+    Route::get('/procurement/{procurement}/detail-html', [\App\Http\Controllers\Admin\ProcurementController::class, 'detailHtml'])->name('general-affair.procurement.detail-html');
     Route::post('/procurement/arrival/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'recordArrival'])->name('general-affair.procurement.record-arrival');
     Route::post('/procurement/{procurement}/force-complete', [\App\Http\Controllers\Admin\ProcurementController::class, 'forceComplete'])->name('general-affair.procurement.force-complete');
     Route::post('/procurement/receipt/{receipt}/update', [\App\Http\Controllers\Admin\ProcurementController::class, 'updateReceipt'])->name('general-affair.procurement.update-receipt');
