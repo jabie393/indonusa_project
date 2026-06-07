@@ -250,4 +250,58 @@ class ProcurementController extends Controller
             return back()->withErrors('Gagal memproses Force Complete: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Revisi kedatangan barang kustom yang ditolak oleh Warehouse.
+     */
+    public function updateReceipt(Request $request, GoodsReceipt $receipt)
+    {
+        if ($receipt->status !== 'rejected') {
+            return back()->withErrors('Hanya kedatangan barang yang ditolak yang dapat direvisi.');
+        }
+
+        $validated = $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'unit_cost' => 'required|numeric|min:0',
+        ]);
+
+        $procItem = $receipt->procurementOfGoodsItem;
+        if ($procItem) {
+            $otherPendingQty = GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                ->where('id', '!=', $receipt->id)
+                ->where('status', 'pending')
+                ->sum('quantity');
+            $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $otherPendingQty);
+
+            if ($validated['quantity'] > $maxAllowed) {
+                return back()->withErrors("Kuantitas revisi ({$validated['quantity']}) melebihi batas yang diperbolehkan. Maksimal kuantitas yang dapat diterima adalah {$maxAllowed}.");
+            }
+        }
+
+        DB::beginTransaction();
+        try {
+            $receipt->update([
+                'quantity' => $validated['quantity'],
+                'unit_cost' => $validated['unit_cost'],
+                'status' => 'pending',
+                'reject_reason' => null,
+            ]);
+
+            // Perbarui buy_price pada item pengadaan jika harga beli diubah
+            $procItem = $receipt->procurementOfGoodsItem;
+            if ($procItem) {
+                $procItem->update(['buy_price' => $validated['unit_cost']]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('general-affair.procurement.show', $procItem->procurement_of_goods_id)
+                ->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil direvisi dan dikirim kembali untuk review.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Update Receipt Error: ' . $e->getMessage());
+            return back()->withErrors('Gagal merevisi kedatangan: ' . $e->getMessage());
+        }
+    }
 }
+

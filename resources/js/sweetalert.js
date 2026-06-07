@@ -22,6 +22,27 @@ window.confirmDelete = function (callback) {
     });
 };
 
+// Force Complete alert
+window.confirmForceComplete = function (callback) {
+    Swal.fire({
+        title: "Paksa Selesai?",
+        text: "Sisa barang yang belum diterima akan dianggap batal, dan status Custom Quotation akan diubah ke Ready for Delivery.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#225A97",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Paksa Selesai!",
+        cancelButtonText: "Batal",
+        customClass: {
+            popup: "rounded-2xl!",
+        },
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback();
+        }
+    });
+};
+
 // Cancel alert for defect request
 window.confirmCancel = function (callback) {
     Swal.fire({

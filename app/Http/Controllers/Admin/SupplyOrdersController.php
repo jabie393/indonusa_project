@@ -14,7 +14,7 @@ class SupplyOrdersController extends Controller
     // Tampilkan daftar barang yang statusnya 'ditinjau' dengan search dan pagination
     public function index(Request $request)
     {
-        $perPage = $request->input('perPage', 10); // Default to 10
+        $perPage = (int) $request->input('perPage', 10); // Default to 10
         $query = $request->input('search');
 
         // 1. Reguler Goods In (pending, not linked to procurement, excluding custom items)
@@ -31,10 +31,10 @@ class SupplyOrdersController extends Controller
                     ->orWhere('description', 'like', "%{$query}%");
             });
         }
-        $goods = $regulerQuery->paginate($perPage, ['*'], 'reguler_page')->appends($request->except('reguler_page'));
+        $goodsItems = $regulerQuery->get();
 
         // 2. Custom Procurement receipts (pending approval)
-        $procurementQuery = \App\Models\GoodsReceipt::whereNull('approved_by')
+        $procurementQuery = \App\Models\GoodsReceipt::where('status', 'pending')
             ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation']);
 
         if ($query) {
@@ -43,9 +43,29 @@ class SupplyOrdersController extends Controller
                     ->orWhere('goods_code', 'like', "%{$query}%");
             });
         }
-        $procurementReceipts = $procurementQuery->paginate($perPage, ['*'], 'proc_page')->appends($request->except('proc_page'));
+        $procurements = $procurementQuery->get();
 
-        return view('admin.supply-orders.index', compact('goods', 'procurementReceipts'));
+        // Merge both collections
+        $merged = $goodsItems->concat($procurements);
+
+        // Sort by created_at desc
+        $merged = $merged->sortByDesc(function ($item) {
+            return $item->created_at;
+        });
+
+        // Paginate manually
+        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
+        $currentItems = $merged->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        
+        $goods = new \Illuminate\Pagination\LengthAwarePaginator(
+            $currentItems,
+            $merged->count(),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('admin.supply-orders.index', compact('goods'));
     }
 
     // Approve barang reguler
@@ -202,6 +222,7 @@ class SupplyOrdersController extends Controller
 
             // 2. Approve the receipt
             $receipt->approved_by = Auth::id();
+            $receipt->status = 'approved';
             $receipt->save();
 
             // 3. Update procurement item
@@ -241,13 +262,19 @@ class SupplyOrdersController extends Controller
      */
     public function rejectProcurement(Request $request, $receiptId)
     {
+        $request->validate([
+            'reason' => 'required|string|max:500',
+        ]);
+
         DB::beginTransaction();
         try {
             $receipt = \App\Models\GoodsReceipt::findOrFail($receiptId);
-            $receipt->delete();
+            $receipt->status = 'rejected';
+            $receipt->reject_reason = $request->input('reason');
+            $receipt->save();
 
             DB::commit();
-            return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom ditolak dan dihapus.']);
+            return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil ditolak.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Reject Procurement Receipt Error: ' . $e->getMessage());

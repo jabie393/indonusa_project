@@ -124,7 +124,7 @@
                                 </svg>
                                 <a href="{{ route('general-affair.procurement.index') }}"
                                     class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
-                                    <span class="">Procurement / Pengadaan</span>
+                                    <span class="">Procurement</span>
                                 </a>
                             </li>
                         </ul>

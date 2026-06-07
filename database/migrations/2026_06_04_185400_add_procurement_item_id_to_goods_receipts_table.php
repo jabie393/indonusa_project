@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('goods_receipts', function (Blueprint $table) {
             $table->unsignedBigInteger('procurement_of_goods_item_id')->nullable()->after('good_id');
+            $table->string('status')->default('pending')->after('unit_cost');
+            $table->text('reject_reason')->nullable()->after('status');
 
             $table->foreign('procurement_of_goods_item_id', 'gr_proc_item_foreign')->references('id')->on('procurement_of_goods_items')->onDelete('set null');
         });
@@ -25,7 +27,7 @@ return new class extends Migration
     {
         Schema::table('goods_receipts', function (Blueprint $table) {
             $table->dropForeign('gr_proc_item_foreign');
-            $table->dropColumn(['procurement_of_goods_item_id']);
+            $table->dropColumn(['procurement_of_goods_item_id', 'status', 'reject_reason']);
         });
     }
 };
