@@ -50,6 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 pagination.innerHTML = nextPagination.innerHTML;
             }
 
+            document.dispatchEvent(new CustomEvent("realtime-table-search:updated", {
+                detail: { target },
+            }));
+
             if (updateUrl) {
                 window.history.replaceState({}, "", url);
             }

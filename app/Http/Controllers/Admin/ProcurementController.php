@@ -19,12 +19,30 @@ class ProcurementController extends Controller
     /**
      * Tampilkan daftar procurement dan Custom Quotation pending.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('perPage', 10);
+        $search = $request->input('search');
+
         // Daftar Procurement yang sudah dibuat
         $procurements = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('procurement_number', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhereHas('customQuotation', function ($customQuotationQuery) use ($search) {
+                            $customQuotationQuery->where('quotation_number', 'like', "%{$search}%")
+                                ->orWhere('to', 'like', "%{$search}%")
+                                ->orWhere('subject', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('generalAffair', function ($generalAffairQuery) use ($search) {
+                            $generalAffairQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->latest()
-            ->get();
+            ->paginate($perPage, ['*'], 'proc_page')
+            ->appends($request->except(['proc_page', 'pending_page']));
 
         $pendingQuotations = CustomQuotation::where('status', 'sent_to_quotation')
             ->whereHas('order', function ($q) {
@@ -32,8 +50,17 @@ class ProcurementController extends Controller
             })
             ->doesntHave('procurementOfGoods')
             ->with('items')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('quotation_number', 'like', "%{$search}%")
+                        ->orWhere('to', 'like', "%{$search}%")
+                        ->orWhere('subject', 'like', "%{$search}%")
+                        ->orWhere('date', 'like', "%{$search}%");
+                });
+            })
             ->latest()
-            ->get();
+            ->paginate($perPage, ['*'], 'pending_page')
+            ->appends($request->except(['pending_page', 'proc_page']));
 
         return view('admin.procurement.index', compact('procurements', 'pendingQuotations'));
     }

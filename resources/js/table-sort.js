@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initializeSortableTables(root = document) {
     // Select all tables with the 'sortable' class
-    const tables = document.querySelectorAll('table.sortable');
+    const tables = root.querySelectorAll('table.sortable');
 
     tables.forEach(table => {
         const headers = table.querySelectorAll('thead th');
@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (header.classList.contains('no-sort') || header.classList.contains('selectCol') || !header.textContent.trim()) {
                 return;
             }
+
+            if (header.dataset.sortInitialized === 'true') {
+                return;
+            }
+
+            header.dataset.sortInitialized = 'true';
 
             // Set cursor pointer and add visual cue
             header.style.cursor = 'pointer';
@@ -124,4 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
         rows.forEach(row => fragment.appendChild(row));
         tbody.appendChild(fragment);
     }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSortableTables();
+});
+
+document.addEventListener('realtime-table-search:updated', (event) => {
+    initializeSortableTables(event.detail?.target || document);
 });
