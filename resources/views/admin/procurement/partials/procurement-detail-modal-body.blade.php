@@ -107,7 +107,7 @@
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase">
                                 <th class="px-4 py-3">Nama Barang</th>
-                                <th class="px-4 py-3 text-center">Satuan</th>
+                                <th class="px-4 py-3">Deskripsi</th>
                                 <th class="px-4 py-3 text-center">Qty Dipesan</th>
                                 <th class="px-4 py-3 text-center">Qty Diterima</th>
                                 <th class="px-4 py-3 text-center w-36">Qty Datang</th>
@@ -126,19 +126,21 @@
                                         <span class="block text-xs font-mono text-gray-400 mt-1">{{ $item->goods->goods_code }}</span>
                                     </td>
                                     
-                                    <!-- Satuan -->
-                                    <td class="px-4 py-3 text-center text-gray-600 dark:text-gray-300">
-                                        {{ $item->unit }}
+                                    <!-- Deskripsi -->
+                                    <td class="max-w-xs px-4 align-middle">
+                                        <div class="line-clamp-3 max-w-[250px] break-words text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $item->goods->description ?: '-' }}
+                                        </div>
                                     </td>
                                     
                                     <!-- Qty Ordered -->
-                                    <td class="px-4 py-3 text-center text-gray-900 dark:text-white font-semibold">
-                                        {{ $item->qty_ordered }}
+                                    <td class="px-4 py-3 text-center text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                                        {{ $item->qty_ordered }} {{ $item->unit }}
                                     </td>
                                     
                                     <!-- Qty Received -->
-                                    <td class="px-4 py-3 text-center text-green-600 dark:text-green-400 font-semibold">
-                                        {{ $item->qty_received }}
+                                    <td class="px-4 py-3 text-center text-green-600 dark:text-green-400 font-semibold whitespace-nowrap">
+                                        {{ $item->qty_received }} {{ $item->unit }}
                                     </td>
                                     
                                     <!-- Qty Arriving input -->
@@ -176,6 +178,9 @@
                                                     required placeholder="0"
                                                     class="buy-price-input w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-9 text-right text-sm font-semibold focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                             </div>
+                                            @if($alreadyPending > 0)
+                                                <span class="block text-[10px] mt-1 invisible">&nbsp;</span>
+                                            @endif
                                         @else
                                             <div class="text-right text-sm font-semibold text-gray-500 py-2">
                                                 Rp {{ number_format($item->buy_price, 0, '.', ',') }}
@@ -211,6 +216,8 @@
                     foreach($item->goodsReceipts as $receipt) {
                         $receipt->goods_name = $item->goods->goods_name;
                         $receipt->goods_code = $item->goods->goods_code;
+                        $receipt->goods_description = $item->goods->description;
+                        $receipt->goods_unit = $item->unit;
                         $allReceipts->push($receipt);
                     }
                 }
@@ -226,8 +233,8 @@
                     <table class="w-full border-collapse text-sm text-left">
                         <thead>
                             <tr class="bg-gray-50 dark:bg-gray-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase">
-                                <th class="px-4 py-3">Tanggal Pencatatan</th>
-                                <th class="px-4 py-3">Nama Barang</th>
+                                <th class="px-4 py-3">Tanggal &amp; Nama Barang</th>
+                                <th class="px-4 py-3">Deskripsi</th>
                                 <th class="px-4 py-3 text-center">Qty Datang</th>
                                 <th class="px-4 py-3 text-right">Harga Beli Final (Rp)</th>
                                 <th class="px-4 py-3 text-center">Status Approval</th>
@@ -236,14 +243,14 @@
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($allReceipts as $receipt)
                                 <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
-                                    <!-- Tanggal -->
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">
-                                        {{ $receipt->created_at->format('Y-m-d H:i') }}
-                                    </td>
-                                    
-                                    <!-- Barang -->
+                                    <!-- Barang & Tanggal -->
                                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                        {{ $receipt->goods_name }}
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                                            {{ $receipt->created_at->format('Y-m-d H:i') }}
+                                        </div>
+                                        <div class="font-bold text-slate-800 dark:text-white">
+                                            {{ $receipt->goods_name }}
+                                        </div>
                                         <span class="block text-xs font-mono text-gray-400 mt-0.5">{{ $receipt->goods_code }}</span>
                                         @if($receipt->status === 'rejected')
                                             <div class="mt-2 text-xs text-red-600 dark:text-red-400 font-normal">
@@ -252,9 +259,16 @@
                                         @endif
                                     </td>
                                     
+                                    <!-- Deskripsi -->
+                                    <td class="max-w-xs px-4 align-middle">
+                                        <div class="line-clamp-3 max-w-[250px] break-words text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $receipt->goods_description ?: '-' }}
+                                        </div>
+                                    </td>
+                                    
                                     <!-- Qty -->
-                                    <td class="px-4 py-3 text-center text-gray-900 dark:text-white font-semibold">
-                                        {{ $receipt->quantity }}
+                                    <td class="px-4 py-3 text-center text-gray-900 dark:text-white font-semibold whitespace-nowrap">
+                                        {{ $receipt->quantity }} {{ $receipt->goods_unit }}
                                     </td>
                                     
                                     <!-- Harga -->
@@ -283,20 +297,46 @@
                                             <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-800 dark:bg-red-950/30 dark:text-red-300">
                                                 Rejected
                                             </span>
-                                            <div class="mt-2">
+                                            <div class="mt-2 flex items-center justify-center gap-1.5">
                                                 <button type="button" 
                                                     onclick="openRevisionModal({{ $receipt->id }}, {{ $receipt->quantity }}, {{ (float)$receipt->unit_cost }}, '{{ addslashes($receipt->goods_name) }}', {{ $maxAllowed }})"
-                                                    class="inline-flex items-center gap-1 rounded bg-blue-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-blue-700 transition-all">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    class="group inline-flex items-center justify-center rounded bg-blue-700 p-1.5 text-xs font-semibold text-white hover:bg-blue-800 transition-all duration-300 ease-in-out dark:bg-blue-600 dark:hover:bg-blue-700">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
-                                                    Revisi
+                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Revise</span>
                                                 </button>
+                                                <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Delete</span>
+                                                    </button>
+                                                </form>
                                             </div>
                                         @else
                                             <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
                                                 Pending
                                             </span>
+                                            <div class="mt-2">
+                                                <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>

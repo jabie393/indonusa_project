@@ -22,11 +22,7 @@
 
         <!-- Main Card Container -->
         <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <!-- Header Title -->
-            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 text-white">
-                <h2 class="text-lg font-bold">Daftar Pengadaan &amp; Quotation Barang Kustom</h2>
-            </div>
-
+            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4"></div>
             <!-- Unified Table Content -->
             <div id="procurementTableContent" class="flex flex-1 min-h-0 flex-col">
                 <div class="grow overflow-x-auto overflow-y-auto">
@@ -34,9 +30,8 @@
                         <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="text-nowrap px-4 py-3">No. Pengadaan / Quotation</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Customer &amp; Subject</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Pembuat / Sales</th>
-                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Items</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Customer</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Subject</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
                                 <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
                             </tr>
@@ -72,28 +67,52 @@
                                         @endif
                                     </td>
 
-                                    <!-- Customer & Subject -->
-                                    <td class="px-4 py-3">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-white max-w-[240px] truncate">
-                                            {{ $isProcurement ? ($item->customQuotation->to ?? '-') : $item->to }}
+                                    <!-- Customer & Items -->
+                                    <td class="px-4 py-3 align-middle">
+                                        @php
+                                            $to = $isProcurement ? ($item->customQuotation->to ?? '-') : $item->to;
+                                            $up = $isProcurement ? ($item->customQuotation->up ?? null) : $item->up;
+                                            $email = $isProcurement ? ($item->customQuotation->email ?? null) : $item->email;
+                                            $itemCount = $item->items->count();
+                                        @endphp
+                                        <div class="flex flex-col gap-2">
+                                            <!-- Recipient Details -->
+                                            <div class="flex flex-col gap-0.5">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">
+                                                    {{ $to }}
+                                                </span>
+                                                @if($up || $email)
+                                                    <span class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                            <circle cx="12" cy="7" r="4"></circle>
+                                                        </svg>
+                                                        <span class="font-medium">{{ $up ?: '-' }}</span>
+                                                        @if($email)
+                                                            <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                            <span class="text-slate-400 dark:text-slate-500">{{ $email }}</span>
+                                                        @endif
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <!-- Divider -->
+                                            <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                            <!-- Items Summary -->
+                                            <div class="flex flex-wrap items-center">
+                                                <span class="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                                    {{ $itemCount }} item
+                                                </span>
+                                            </div>
                                         </div>
-                                        <div class="max-w-[320px] truncate text-xs text-gray-500 dark:text-gray-400">
+                                    </td>
+
+                                    <!-- Subject -->
+                                    <td class="px-4 py-3 align-middle">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white max-w-[240px] truncate" title="{{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}">
                                             {{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}
                                         </div>
-                                    </td>
-
-                                    <!-- Pembuat / Sales -->
-                                    <td class="px-4 py-3 text-xs">
-                                        @if($isProcurement)
-                                            <span class="font-semibold text-gray-700 dark:text-gray-300">GA:</span> {{ $item->generalAffair->name ?? '-' }}
-                                        @else
-                                            <span class="font-semibold text-gray-700 dark:text-gray-300">Sales:</span> {{ $item->sales->name ?? '-' }}
-                                        @endif
-                                    </td>
-
-                                    <!-- Items -->
-                                    <td class="px-4 py-3 text-center font-semibold text-gray-900 dark:text-white">
-                                        {{ $item->items->count() }}
                                     </td>
 
                                     <!-- Status Badge -->
@@ -126,7 +145,7 @@
                                                 @endif
                                             </div>
                                         @else
-                                            <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50 animate-pulse">
+                                            <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50">
                                                 Waiting for Procurement
                                             </span>
                                         @endif
@@ -166,7 +185,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                    <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                         Tidak ada data pengadaan atau quotation barang kustom.
                                     </td>
                                 </tr>
@@ -217,6 +236,8 @@
             const optionsView = document.getElementById('procurement-options-view');
             const detailView = document.getElementById('procurement-detail-view');
 
+            let shouldReloadOnClose = false;
+
             function closeModal() {
                 if (!modal) return;
                 try {
@@ -241,34 +262,30 @@
                 }
             });
 
+            // Close listener to reload page if a partial procurement was created
+            modal?.addEventListener('close', function() {
+                if (shouldReloadOnClose) {
+                    window.location.reload();
+                }
+            });
+
             // Helper functions for price formatting
             function formatNumberWithCommas(value) {
                 if (!value) return '';
-                let cleanValue = value.toString().replace(/[^0-9.]/g, '');
-                const dotIndex = cleanValue.indexOf('.');
-                if (dotIndex !== -1) {
-                    cleanValue = cleanValue.substring(0, dotIndex + 1) + cleanValue.substring(dotIndex + 1).replace(/\./g, '');
-                }
-                let parts = cleanValue.split('.');
-                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                return parts.join('.');
+                // Discard decimal places and keep digits only
+                let cleanValue = value.toString().split('.')[0].replace(/[^0-9]/g, '');
+                return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
 
             function formatInputPrice(input) {
                 let selectionStart = input.selectionStart;
                 let oldLength = input.value.length;
                 let value = input.value;
-                let cleanValue = value.replace(/[^0-9.]/g, '');
+                
+                // Discard decimal places and keep digits only
+                let cleanValue = value.split('.')[0].replace(/[^0-9]/g, '');
 
-                const dotIndex = cleanValue.indexOf('.');
-                if (dotIndex !== -1) {
-                    cleanValue = cleanValue.substring(0, dotIndex + 1) + cleanValue.substring(dotIndex + 1).replace(/\./g, '');
-                }
-
-                let parts = cleanValue.split('.');
-                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-                let formattedValue = parts.join('.');
+                let formattedValue = cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 input.value = formattedValue;
 
                 let newLength = formattedValue.length;
@@ -443,27 +460,14 @@
                             sessionStorage.setItem('sweetText', body.message);
                             window.location.reload();
                         } else {
-                            // Partial success -> show details modal body
-                            optionsView.classList.add('hidden');
-                            optionsView.classList.remove('flex');
-
-                            detailView.innerHTML = body.html;
-                            detailView.classList.remove('hidden');
-                            detailView.classList.add('flex');
-
-                            // Initialize price formatting in details
-                            initializeBuyPriceInputs(detailView);
-
-                            // Show success Swal toast/alert without reloading
-                            Swal.fire({
-                                title: 'Berhasil!',
-                                text: body.message,
-                                icon: 'success',
-                                timer: 3000,
-                                timerProgressBar: true,
-                                customClass: { popup: 'rounded-2xl!' },
-                                target: document.getElementById('procurement-modal')
-                            });
+                            // Partial success -> reload page with open_show parameter to re-open modal with updated background status
+                            sessionStorage.setItem('sweetTitle', 'Berhasil');
+                            sessionStorage.setItem('sweetText', body.message);
+                            
+                            const url = new URL(window.location.href);
+                            url.searchParams.delete('page');
+                            url.searchParams.set('open_show', body.procurement_id);
+                            window.location.href = url.toString();
                         }
                     } else {
                         // Validation error or backend error -> transition back to form and show error
@@ -593,6 +597,7 @@
                         icon: 'success',
                         timer: 3500,
                         timerProgressBar: true,
+                        showConfirmButton: false,
                         customClass: { popup: 'rounded-2xl!' },
                         target: document.querySelector('dialog[open]') || 'body'
                     });
@@ -673,6 +678,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const revisionForm = document.getElementById('formRevisiReceipt');
             if (revisionForm) {
+                // Initialize input formatting logic for the revision modal price input
+                initializeBuyPriceInputs(revisionForm);
                 revisionForm.addEventListener('submit', function(e) {
                     const costInput = document.getElementById('revisionUnitCost');
                     costInput.value = costInput.value.replace(/,/g, '');

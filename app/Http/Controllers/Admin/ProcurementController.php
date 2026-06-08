@@ -437,5 +437,31 @@ class ProcurementController extends Controller
             return back()->withErrors('Gagal merevisi kedatangan: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Hapus kedatangan barang (GoodsReceipt) yang belum approved.
+     */
+    public function destroyReceipt(GoodsReceipt $receipt)
+    {
+        if ($receipt->status === 'approved') {
+            return back()->withErrors('Kedatangan barang yang sudah disetujui (Approved) tidak dapat dihapus.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $procurementId = $receipt->procurementOfGoodsItem->procurement_of_goods_id;
+
+            $receipt->delete();
+
+            DB::commit();
+
+            return redirect()->route('general-affair.procurement.show', $procurementId)
+                ->with(['title' => 'Berhasil', 'text' => 'Catatan kedatangan barang kustom berhasil dihapus.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Destroy Receipt Error: ' . $e->getMessage());
+            return back()->withErrors('Gagal menghapus kedatangan barang: ' . $e->getMessage());
+        }
+    }
 }
 

@@ -16,8 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('quotation_id');
             $table->unsignedBigInteger('goods_id')->nullable();
             $table->string('custom_product_name')->nullable();
+            $table->text('custom_product_description')->nullable();
+            $table->string('custom_product_unit')->nullable();
             $table->integer('quantity');
-            $table->decimal('price', 12, 2)->nullable();
+            $table->decimal('price', 15, 2)->nullable();
             $table->decimal('subtotal', 14, 2)->nullable();
             $table->unsignedSmallInteger('discount_percent')->default(0);
             $table->string('product_category')->nullable();

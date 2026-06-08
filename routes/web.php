@@ -155,6 +155,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::post('/procurement/arrival/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'recordArrival'])->name('general-affair.procurement.record-arrival');
     Route::post('/procurement/{procurement}/force-complete', [\App\Http\Controllers\Admin\ProcurementController::class, 'forceComplete'])->name('general-affair.procurement.force-complete');
     Route::post('/procurement/receipt/{receipt}/update', [\App\Http\Controllers\Admin\ProcurementController::class, 'updateReceipt'])->name('general-affair.procurement.update-receipt');
+    Route::delete('/procurement/receipt/{receipt}', [\App\Http\Controllers\Admin\ProcurementController::class, 'destroyReceipt'])->name('general-affair.procurement.destroy-receipt');
 });
 // End of General Affair
 

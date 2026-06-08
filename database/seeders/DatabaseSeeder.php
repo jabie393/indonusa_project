@@ -52,11 +52,33 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'name' => 'Arvan',
+            'email' => 'arvanindonusa@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'Sales',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Anjar',
+            'email' => 'anjarsedayu.ijb@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'Sales',
+        ]);
+
+        User::factory()->create([
+            'name' => 'Rudi',
+            'email' => 'hakimindonusa@gmail.com',
+            'password' => Hash::make('password'),
+            'role' => 'Sales',
+        ]);
+
+        User::factory()->create([
             'name' => 'Usman',
             'email' => 'warehouse@example.com',
             'password' => Hash::make('password'),
             'role' => 'Warehouse',
         ]);
+
         User::factory()->create([
             'name' => 'Finance',
             'email' => 'finance@example.com',

@@ -21,7 +21,13 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
 
     public function collection()
     {
-        $query = Quotation::with(['items', 'customer']);
+        $query = Quotation::with(['items', 'customer'])
+            ->where(function ($q) {
+                $q->whereDoesntHave('order')
+                  ->orWhereHas('order', function ($o) {
+                      $o->where('status', '!=', 'open');
+                  });
+            });
 
         if (!empty($this->search)) {
             $search = $this->search;
