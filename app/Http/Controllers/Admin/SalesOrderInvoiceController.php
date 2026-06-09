@@ -74,8 +74,15 @@ class SalesOrderInvoiceController extends Controller
         $results  = collect();
         $perPage  = (int) $request->input('perPage', 20);
 
+        $baseQuery = \App\Models\Quotation::where(function ($q) {
+            $q->whereDoesntHave('order')
+              ->orWhereHas('order', function ($o) {
+                  $o->where('status', '!=', 'open');
+              });
+        });
+
         if ($isSearch) {
-            $results = \App\Models\Quotation::where(function ($q) use ($search) {
+            $results = $baseQuery->where(function ($q) use ($search) {
                     $q->where('request_number',     'like', "%$search%")
                       ->orWhere('quotation_number',   'like', "%$search%")
                       ->orWhere('sales_order_number','like', "%$search%")
@@ -92,7 +99,7 @@ class SalesOrderInvoiceController extends Controller
                 ->get()
                 ->map(fn($ro) => $this->mapRequestOrderRow($ro));
         } else {
-            $requestOrders = \App\Models\Quotation::with(['order.batches', 'items', 'customer.pics'])
+            $requestOrders = $baseQuery->with(['order.batches', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends($request->query());

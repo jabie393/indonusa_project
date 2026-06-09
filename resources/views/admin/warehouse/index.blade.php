@@ -35,7 +35,11 @@
             @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
                 @php
                     $currentStatus = session('warehouse_filter_status', 'approved');
-                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')->count();
+                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                        ->where('status_listing', '!=', 'non_listing')
+                        ->whereDoesntHave('procurementOfGoodsItems')
+                        ->count();
+                    $procOrderCount = \App\Models\GoodsReceipt::where('status', 'pending')->count();
                     $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
                 @endphp
                 <div class="flex items-center space-x-2">
@@ -46,8 +50,10 @@
                     @if (Auth::user() && Auth::user()->role === 'Warehouse')
                         <a href="{{ route('supply-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
                             Supply Orders
-                            @if ($supplyOrderCount > 0)
-                                <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $supplyOrderCount }}</span>
+                            @if (($supplyOrderCount + $procOrderCount) > 0)
+                                <span class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                                    {{ $supplyOrderCount + $procOrderCount }}
+                                </span>
                             @endif
                         </a>
                     @endif

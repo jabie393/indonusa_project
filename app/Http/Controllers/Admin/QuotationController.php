@@ -155,7 +155,7 @@ class QuotationController extends Controller
         try {
             // Pengecekan PPN dari tax_rate inputan sales
             $ppnPercent = isset($validated['tax_rate']) ? (float) $validated['tax_rate'] : 11;
-            
+
             // Hitung total dengan diskon
             $subtotalSum = collect($items)->sum('subtotal');
             $taxAmount = round($subtotalSum * ($ppnPercent / 100), 2);
@@ -216,7 +216,7 @@ class QuotationController extends Controller
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
-                    'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
+                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                 ];
 
                 QuotationItem::create($itemData);
@@ -229,9 +229,9 @@ class QuotationController extends Controller
             $orderStatus = $maxDiskon > 20 ? 'sent_to_supervisor' : 'open';
 
             $existingOrder = Order::where('quotation_id', $requestOrder->id)->first();
-            if (! $existingOrder) {
+            if (!$existingOrder) {
                 Order::create([
-                    'order_number' => 'ORD-'.strtoupper(Str::random(8)),
+                    'order_number' => 'ORD-' . strtoupper(Str::random(8)),
                     'sales_id' => $requestOrder->sales_id,
                     'customer_name' => $requestOrder->customer_name,
                     'customer_id' => $requestOrder->customer_id,
@@ -260,7 +260,7 @@ class QuotationController extends Controller
             DB::rollBack();
 
             return back()
-                ->withErrors('Gagal membuat Quotation: '.$e->getMessage())
+                ->withErrors('Gagal membuat Quotation: ' . $e->getMessage())
                 ->withInput()
                 ->with(['title' => 'Gagal', 'text' => 'Gagal membuat Quotation!']);
         }
@@ -271,7 +271,7 @@ class QuotationController extends Controller
         $requestOrder = $quotation;
         $userRole = trim(strtolower(Auth::user()->role ?? ''));
         $allowed = array_map('strtolower', ['Supervisor', 'Warehouse', 'Admin']);
-        if ($requestOrder->sales_id !== Auth::id() && ! in_array($userRole, $allowed)) {
+        if ($requestOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
         }
 
@@ -295,7 +295,7 @@ class QuotationController extends Controller
     {
         $requestOrder = $quotation;
         $requestOrder->loadMissing('items', 'order');
-        if (! $requestOrder->canDownloadPdf()) {
+        if (!$requestOrder->canDownloadPdf()) {
             $status = $requestOrder->order?->status;
             if ($requestOrder->hasDiscountOver20()) {
                 if ($status === 'pending') {
@@ -326,19 +326,19 @@ class QuotationController extends Controller
 
         $pdfNote = request()->query('pdf_note', $requestOrder->customer_notes ?? null);
 
-        $html = view('admin.pdf.quotation-pdf', compact('requestOrder', 'pdfNote'))->render();
+        $html = view('admin.pdf.quotation', compact('requestOrder', 'pdfNote'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
         if (file_exists($footerLogoPath)) {
             $mime = mime_content_type($footerLogoPath);
             $data = base64_encode(file_get_contents($footerLogoPath));
-            $footerLogoBase64 = 'data:'.$mime.';base64,'.$data;
+            $footerLogoBase64 = 'data:' . $mime . ';base64,' . $data;
         }
 
         $footerHtml = '
         <div style="width: 100%; text-align: center; margin-bottom: 5mm; -webkit-print-color-adjust: exact; font-size: 10px;">
-            <img src="'.$footerLogoBase64.'" style="height: 70px; object-fit: contain; margin: 0 auto;" />
+            <img src="' . $footerLogoBase64 . '" style="height: 70px; object-fit: contain; margin: 0 auto;" />
         </div>';
 
         $pdf = $this->getBrowsershot($html)
@@ -353,7 +353,7 @@ class QuotationController extends Controller
 
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Quotation-'.$requestOrder->request_number.'.pdf"');
+            ->header('Content-Disposition', 'inline; filename="Quotation-' . $requestOrder->request_number . '.pdf"');
     }
 
     public function edit(Quotation $quotation)
@@ -409,7 +409,7 @@ class QuotationController extends Controller
             'customer_id' => 'nullable|integer',
             'pic_id' => 'required|integer|exists:pics,id',
             'subject' => 'required|string|max:255',
-            'no_po' => 'nullable|string|max:255|unique:quotations,no_po,'.$requestOrder->id,
+            'no_po' => 'nullable|string|max:255|unique:quotations,no_po,' . $requestOrder->id,
             'sales_order_number' => 'nullable|string|max:255',
             'required_date' => 'nullable|date',
             'customer_notes' => 'nullable|string',
@@ -439,14 +439,14 @@ class QuotationController extends Controller
         ]);
 
         foreach ($validated['goods_id'] as $i => $productId) {
-            $isCustom = empty($productId) && (! empty($validated['custom_product_name'][$i] ?? null));
-            $isRegular = ! empty($productId);
-            if (! $isCustom && ! $isRegular) {
-                return back()->withErrors(["goods_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-'.($i + 1)])
+            $isCustom = empty($productId) && (!empty($validated['custom_product_name'][$i] ?? null));
+            $isRegular = !empty($productId);
+            if (!$isCustom && !$isRegular) {
+                return back()->withErrors(["goods_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-' . ($i + 1)])
                     ->withInput();
             }
             if (($isCustom || $isRegular) && empty($validated['product_category'][$i])) {
-                return back()->withErrors(["product_category.$i" => 'Kategori barang wajib diisi pada baris ke-'.($i + 1)])
+                return back()->withErrors(["product_category.$i" => 'Kategori barang wajib diisi pada baris ke-' . ($i + 1)])
                     ->withInput();
             }
         }
@@ -464,7 +464,7 @@ class QuotationController extends Controller
 
         // "Pernah diapprove" = supervisor_id sudah terisi di order
         // Ini lebih reliable daripada cek status, karena status bisa berubah-ubah
-        $pernahDiapprove = ! empty($existingOrder?->supervisor_id);
+        $pernahDiapprove = !empty($existingOrder?->supervisor_id);
 
         // Atau status saat ini memang sudah melewati tahap supervisor
         $sudahApprove = $pernahDiapprove || in_array($statusSekarang, [
@@ -545,7 +545,7 @@ class QuotationController extends Controller
                 'product_category' => isset($validated['product_category'][0]) ? $validated['product_category'][0] : null,
                 'required_date' => $validated['required_date'] ?? null,
                 'customer_notes' => $validated['customer_notes'] ?? null,
-                'supporting_images' => ! empty($supportingImages) ? $supportingImages : null,
+                'supporting_images' => !empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
@@ -565,7 +565,7 @@ class QuotationController extends Controller
                 }
                 if (empty($itemImagePaths)) {
                     $existingImgs = $request->input("existing_item_images.{$origIdx}", []);
-                    if (! empty($existingImgs)) {
+                    if (!empty($existingImgs)) {
                         $itemImagePaths = array_values(array_filter($existingImgs));
                     }
                 }
@@ -578,7 +578,7 @@ class QuotationController extends Controller
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
-                    'images' => ! empty($itemImagePaths) ? $itemImagePaths : null,
+                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                     'discount_percent' => $item['discount_percent'] ?? 0,
                 ];
 
@@ -592,7 +592,7 @@ class QuotationController extends Controller
 
             if ($maxDiskonBaru <= 20) {
                 $orderStatus = 'open';
-            } elseif ($sudahApprove && ! $diskonBaruMelampauiBatas) {
+            } elseif ($sudahApprove && !$diskonBaruMelampauiBatas) {
                 $orderStatus = $statusSekarang;
             } else {
                 $orderStatus = 'sent_to_supervisor';
@@ -608,7 +608,7 @@ class QuotationController extends Controller
                 $existingOrder->update($updateData);
             } else {
                 \App\Models\Order::create([
-                    'order_number' => 'ORD-'.strtoupper(\Illuminate\Support\Str::random(8)),
+                    'order_number' => 'ORD-' . strtoupper(\Illuminate\Support\Str::random(8)),
                     'sales_id' => $requestOrder->sales_id,
                     'customer_name' => $requestOrder->customer_name,
                     'customer_id' => $requestOrder->customer_id,
@@ -628,7 +628,7 @@ class QuotationController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
 
-            return back()->withErrors('Gagal mengubah Quotation: '.$e->getMessage())
+            return back()->withErrors('Gagal mengubah Quotation: ' . $e->getMessage())
                 ->withInput()
                 ->with(['title' => 'Gagal', 'text' => 'Gagal mengubah Quotation!']);
         }
@@ -652,7 +652,7 @@ class QuotationController extends Controller
                 ->with('success', 'Quotation berhasil dikirim ke Warehouse.')
                 ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil dikirim ke Warehouse!']);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal mengirim ke Warehouse: '.$e->getMessage())
+            return back()->withErrors('Gagal mengirim ke Warehouse: ' . $e->getMessage())
                 ->with(['title' => 'Gagal', 'text' => 'Gagal mengirim ke Warehouse!']);
         }
     }
@@ -680,7 +680,7 @@ class QuotationController extends Controller
                 'text' => 'Quotation dan data terkait telah berhasil dihapus dari sistem.',
             ]);
         } catch (\Throwable $e) {
-            return back()->withErrors('Gagal menghapus Quotation: '.$e->getMessage())->with([
+            return back()->withErrors('Gagal menghapus Quotation: ' . $e->getMessage())->with([
                 'title' => 'Gagal!',
                 'text' => 'Terjadi kesalahan saat mencoba menghapus data.',
             ]);
@@ -729,7 +729,7 @@ class QuotationController extends Controller
                     ->where('sales_id', Auth::id())
                     ->first();
 
-                if ($ro && (! $ro->order || ! in_array($ro->order->status, ['sent_to_warehouse', 'approved_warehouse', 'completed']))) {
+                if ($ro && (!$ro->order || !in_array($ro->order->status, ['sent_to_warehouse', 'approved_warehouse', 'completed']))) {
                     $this->processSentToWarehouse($ro);
                     $successCount++;
                 }
@@ -912,7 +912,7 @@ class QuotationController extends Controller
                 $existingOrder->update([
                     'status' => 'sent_to_warehouse',
                     'do_number' => $existingOrder->do_number
-                        ?? ('DO-'.strtoupper(Str::random(8))),
+                        ?? ('DO-' . strtoupper(Str::random(8))),
                     'custom_quotation_id' => $ro->custom_quotation_id ?? $existingOrder->custom_quotation_id,
                 ]);
 
@@ -947,8 +947,8 @@ class QuotationController extends Controller
                 }
             } else {
                 $order = Order::create([
-                    'order_number' => 'ORD-'.strtoupper(Str::random(8)),
-                    'do_number' => 'DO-'.strtoupper(Str::random(8)),
+                    'order_number' => 'ORD-' . strtoupper(Str::random(8)),
+                    'do_number' => 'DO-' . strtoupper(Str::random(8)),
                     'sales_id' => Auth::id(),
                     'supervisor_id' => $ro->approved_by ?? null,
                     'quotation_id' => $ro->id,

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('goods_id')->nullable(); // refer ke tabel goods (jika ada)
+            $table->string('custom_product_name')->nullable();
+            $table->string('category')->nullable();
             $table->integer('quantity')->default(1);
             $table->integer('delivered_quantity')->default(0);
             $table->enum('item_status', ['pending', 'pending_stock', 'partial', 'partially_delivered', 'delivered', 'cancel'])->default('pending');

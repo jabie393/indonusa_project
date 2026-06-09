@@ -15,6 +15,8 @@ class GoodsReceipt extends Model
         'approved_by',
         'quantity',
         'unit_cost',
+        'status',
+        'reject_reason',
     ];
 
     protected $casts = [

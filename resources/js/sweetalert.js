@@ -15,6 +15,29 @@ window.confirmDelete = function (callback) {
         customClass: {
             popup: "rounded-2xl!",
         },
+        target: document.querySelector('dialog[open]') || 'body',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            callback();
+        }
+    });
+};
+
+// Force Complete alert
+window.confirmForceComplete = function (callback) {
+    Swal.fire({
+        title: "Paksa Selesai?",
+        text: "Sisa barang yang belum diterima akan dianggap batal, dan status Custom Quotation akan diubah ke Ready for Delivery.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#225A97",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Paksa Selesai!",
+        cancelButtonText: "Batal",
+        customClass: {
+            popup: "rounded-2xl!",
+        },
+        target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
         if (result.isConfirmed) {
             callback();
@@ -36,6 +59,7 @@ window.confirmCancel = function (callback) {
         customClass: {
             popup: "rounded-2xl!",
         },
+        target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
         if (result.isConfirmed) {
             callback();
@@ -57,6 +81,7 @@ window.confirmApprove = function (callback, text = "Apakah Anda yakin ingin meny
         customClass: {
             popup: "rounded-2xl!",
         },
+        target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
         if (result.isConfirmed) {
             callback();
@@ -79,42 +104,53 @@ document.addEventListener("submit", function (e) {
 
 // Success alert
 document.addEventListener("DOMContentLoaded", function () {
-    if (window.sweetTitle || window.sweetText) {
-        const titleLower = (window.sweetTitle || "").toLowerCase();
-        const isError = titleLower.includes("gagal") || titleLower.includes("error") || titleLower.includes("failed");
+    setTimeout(() => {
+        if (window.sweetTitle || window.sweetText) {
+            const titleLower = (window.sweetTitle || "").toLowerCase();
+            const isError = titleLower.includes("gagal") || titleLower.includes("error") || titleLower.includes("failed");
 
-        Swal.fire({
-            title: window.sweetTitle || (isError ? "Gagal!" : "Berhasil!"),
-            text: window.sweetText || "",
-            icon: isError ? "error" : "success",
-            showConfirmButton: isError,
-            confirmButtonColor: isError ? "#d33" : undefined,
-            timer: isError ? undefined : 3500,
-            timerProgressBar: !isError,
-            customClass: {
-                popup: "rounded-2xl!",
-            },
-        }).then(() => {
-            if (window.sweetCallback && typeof window.sweetCallback === 'function') {
-                window.sweetCallback();
-                window.sweetCallback = null;
+            Swal.fire({
+                title: window.sweetTitle || (isError ? "Gagal!" : "Berhasil!"),
+                text: window.sweetText || "",
+                icon: isError ? "error" : "success",
+                showConfirmButton: isError,
+                confirmButtonColor: isError ? "#d33" : undefined,
+                timer: isError ? undefined : 3500,
+                timerProgressBar: !isError,
+                customClass: {
+                    popup: "rounded-2xl!",
+                },
+                target: document.querySelector('dialog[open]') || 'body',
+            }).then(() => {
+                if (window.sweetCallback && typeof window.sweetCallback === 'function') {
+                    window.sweetCallback();
+                    window.sweetCallback = null;
+                }
+            });
+            window.sweetTitle = null;
+            window.sweetText = null;
+        }
+
+        // Error alert
+        if (window.errorTitle || window.errorText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isModalAutoOpen = urlParams.has('open_show') || urlParams.has('open_create');
+
+            if (!isModalAutoOpen) {
+                Swal.fire({
+                    title: window.errorTitle || "Error",
+                    text: window.errorText || "Terjadi kesalahan.",
+                    icon: "error",
+                    showConfirmButton: true,
+                    confirmButtonColor: "#d33",
+                    customClass: {
+                        popup: "rounded-2xl!",
+                    },
+                    target: document.querySelector('dialog[open]') || 'body',
+                });
             }
-        });
-        window.sweetTitle = null;
-        window.sweetText = null;
-    }
-
-    // Error alert
-    if (window.errorTitle || window.errorText) {
-        Swal.fire({
-            title: window.errorTitle || "Error",
-            text: window.errorText || "Terjadi kesalahan.",
-            icon: "error",
-            showConfirmButton: true,
-            confirmButtonColor: "#d33",
-            customClass: {
-                popup: "rounded-2xl!",
-            },
-        });
-    }
+            window.errorTitle = null;
+            window.errorText = null;
+        }
+    }, 100);
 });

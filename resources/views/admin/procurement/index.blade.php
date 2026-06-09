@@ -1,5 +1,6 @@
 <x-app-layout>
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+        <!-- Top Search Bar -->
         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-end overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
             <form id="procurementSearchForm" action="{{ route('general-affair.procurement.index') }}" method="GET" class="block pl-2" data-realtime-table-search
                 data-search-input="#topbar-search" data-search-target="#procurementTableContent" data-extra-fields="#procurementTableContent select[name='perPage']">
@@ -19,278 +20,670 @@
             </form>
         </div>
 
+        <!-- Main Card Container -->
         <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
-                <div class="flex flex-wrap items-center gap-2">
-                    <button type="button" id="tab-pending-btn"
-                        class="flex items-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-[#225A97] transition-all">
-                        Menunggu Pengadaan
-                        @if ($pendingQuotations->total() > 0)
-                            <span class="ml-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] text-white">
-                                {{ $pendingQuotations->total() }}
-                            </span>
-                        @endif
-                    </button>
-                    <button type="button" id="tab-active-btn"
-                        class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
-                        Daftar Pengadaan Aktif
-                        @if ($procurements->total() > 0)
-                            <span class="ml-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] text-white">
-                                {{ $procurements->total() }}
-                            </span>
-                        @endif
-                    </button>
-                </div>
-            </div>
-
+            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4"></div>
+            <!-- Unified Table Content -->
             <div id="procurementTableContent" class="flex flex-1 min-h-0 flex-col">
-                <div id="tab-pending-panel" class="flex flex-1 min-h-0 flex-col">
-                    <div class="grow overflow-x-auto overflow-y-auto">
-                        <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                <div class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                         <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
-                                <th scope="col" class="text-nowrap px-4 py-3">Quotation</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">No. Pengadaan / Quotation</th>
                                 <th scope="col" class="text-nowrap px-4 py-3">Customer</th>
                                 <th scope="col" class="text-nowrap px-4 py-3">Subject</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Date</th>
-                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Items</th>
-                                <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($pendingQuotations as $pending)
-                                <tr class="border-b transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
-                                    <td class="px-4 py-3">
-                                        <div class="text-sm font-medium text-blue-600 dark:text-blue-400">
-                                            {{ $pending->quotation_number }}
-                                        </div>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                                            Custom Quotation
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="max-w-[240px] truncate font-medium text-gray-900 dark:text-white">
-                                            {{ $pending->to }}
-                                        </div>
-                                    </td>
-                                    <td class="max-w-xs px-4 align-middle">
-                                        <div class="line-clamp-3 max-w-[320px] break-words">
-                                            {{ $pending->subject }}
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 text-nowrap">
-                                        {{ \Carbon\Carbon::parse($pending->date)->format('d M Y') }}
-                                    </td>
-                                    <td class="px-4 py-3 text-center font-semibold text-gray-900 dark:text-white">
-                                        {{ $pending->items->count() }}
-                                    </td>
-                                    <td class="px-4 py-3 text-right align-middle">
-                                        <div class="flex justify-end">
-                                            <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
-                                                <a href="{{ route('general-affair.procurement.create', $pending->id) }}"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                                                     <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Proses</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                        Tidak ada barang kustom menunggu pengadaan.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                        </table>
-                    </div>
-                    <nav id="pending-pagination-nav"
-                        class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
-                        aria-label="Pending procurement table navigation">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Menampilkan
-                                <span class="font-semibold text-gray-900 dark:text-white">{{ $pendingQuotations->firstItem() ?? 0 }}-{{ $pendingQuotations->lastItem() ?? 0 }}</span>
-                                dari
-                                <span class="font-semibold text-gray-900 dark:text-white">{{ $pendingQuotations->total() }}</span>
-                            </span>
-                            <form method="GET" action="{{ route('general-affair.procurement.index') }}">
-                                <input type="hidden" name="search" value="{{ request('search') }}">
-                                <select name="perPage" onchange="this.form.submit()"
-                                    class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                    @foreach ([10, 25, 50, 100] as $size)
-                                        <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
-                                    @endforeach
-                                </select>
-                            </form>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
-                        </div>
-                        <div>
-                            {{ $pendingQuotations->links() }}
-                        </div>
-                    </nav>
-                </div>
-
-                <div id="tab-active-panel" class="hidden flex flex-1 min-h-0 flex-col">
-                    <div class="grow overflow-x-auto overflow-y-auto">
-                        <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
-                        <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                            <tr>
-                                <th scope="col" class="text-nowrap px-4 py-3">Procurement</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Custom Quotation</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Created By</th>
-                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Items</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
                                 <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($procurements as $procurement)
+                            @forelse($items as $item)
                                 @php
-                                    $statusLabel = [
-                                        'pending' => 'Pending',
-                                        'partial_received' => 'Parsial Diterima',
-                                        'completed' => 'Selesai',
-                                    ][$procurement->status] ?? $procurement->status;
-
-                                    $badgeClass = 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50';
-                                    if ($procurement->status === 'completed') {
-                                        $badgeClass = 'bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800/50';
-                                    } elseif ($procurement->status === 'partial_received') {
-                                        $badgeClass = 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50';
-                                    }
+                                    $isProcurement = $item instanceof \App\Models\ProcurementOfGoods;
                                 @endphp
                                 <tr class="border-b transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+                                    <!-- No. Pengadaan / Quotation -->
                                     <td class="px-4 py-3">
-                                        <a href="{{ route('general-affair.procurement.show', $procurement->id) }}" class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
-                                            {{ $procurement->procurement_number }}
-                                        </a>
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $procurement->created_at->format('Y-m-d H:i') }}
+                                        @if($isProcurement)
+                                            <button type="button" class="js-show-procurement text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400 text-left focus:outline-none" data-id="{{ $item->id }}">
+                                                {{ $item->procurement_number }}
+                                            </button>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                                Quotation: {{ $item->customQuotation->quotation_number ?? '-' }}
+                                            </div>
+                                            <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                                                {{ $item->created_at->format('Y-m-d H:i') }}
+                                            </div>
+                                        @else
+                                            <div class="text-sm font-semibold text-slate-800 dark:text-white">
+                                                Belum Diproses (Baru)
+                                            </div>
+                                            <div class="text-xs text-blue-600 dark:text-blue-400 mt-0.5">
+                                                Quotation: {{ $item->quotation_number }}
+                                            </div>
+                                            <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                                                {{ $item->created_at->format('Y-m-d H:i') }}
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <!-- Customer & Items -->
+                                    <td class="px-4 py-3 align-middle">
+                                        @php
+                                            $to = $isProcurement ? ($item->customQuotation->to ?? '-') : $item->to;
+                                            $up = $isProcurement ? ($item->customQuotation->up ?? null) : $item->up;
+                                            $email = $isProcurement ? ($item->customQuotation->email ?? null) : $item->email;
+                                            $itemCount = $item->items->count();
+                                        @endphp
+                                        <div class="flex flex-col gap-2">
+                                            <!-- Recipient Details -->
+                                            <div class="flex flex-col gap-0.5">
+                                                <span class="text-sm font-bold text-slate-900 dark:text-white">
+                                                    {{ $to }}
+                                                </span>
+                                                @if($up || $email)
+                                                    <span class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                                            <circle cx="12" cy="7" r="4"></circle>
+                                                        </svg>
+                                                        <span class="font-medium">{{ $up ?: '-' }}</span>
+                                                        @if($email)
+                                                            <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                            <span class="text-slate-400 dark:text-slate-500">{{ $email }}</span>
+                                                        @endif
+                                                    </span>
+                                                @endif
+                                            </div>
+
+                                            <!-- Divider -->
+                                            <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
+
+                                            <!-- Items Summary -->
+                                            <div class="flex flex-wrap items-center">
+                                                <span class="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600 dark:bg-gray-800 dark:text-gray-400">
+                                                    {{ $itemCount }} item
+                                                </span>
+                                            </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $procurement->customQuotation->quotation_number ?? '-' }}
-                                        </div>
-                                        <div class="max-w-[240px] truncate text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $procurement->customQuotation->to ?? '-' }}
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $procurement->generalAffair->name ?? '-' }}
+
+                                    <!-- Subject -->
+                                    <td class="px-4 py-3 align-middle">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white max-w-[240px] truncate" title="{{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}">
+                                            {{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-center font-semibold text-gray-900 dark:text-white">
-                                        {{ $procurement->items->count() }}
-                                    </td>
+
+                                    <!-- Status Badge -->
                                     <td class="px-4 py-3 text-center">
-                                        <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badgeClass }}">
-                                            {{ $statusLabel }}
-                                        </span>
+                                        @if($isProcurement)
+                                            @php
+                                                $hasRejected = $item->items->pluck('goodsReceipts')->flatten()->contains('status', 'rejected');
+
+                                                $statusLabel = [
+                                                    'pending' => 'Pending',
+                                                    'partial_received' => 'Partial Received',
+                                                    'completed' => 'Completed',
+                                                ][$item->status] ?? $item->status;
+
+                                                $badgeClass = 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50';
+                                                if ($item->status === 'completed') {
+                                                    $badgeClass = 'bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800/50';
+                                                } elseif ($item->status === 'partial_received') {
+                                                    $badgeClass = 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50';
+                                                }
+                                            @endphp
+                                            <div class="flex flex-wrap items-center justify-center gap-1">
+                                                <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badgeClass }}">
+                                                    {{ $statusLabel }}
+                                                </span>
+                                                @if($hasRejected)
+                                                    <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50 animate-pulse" title="Ada kedatangan barang yang ditolak oleh Warehouse">
+                                                        Revision Required
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50">
+                                                Waiting for Procurement
+                                            </span>
+                                        @endif
                                     </td>
+
+                                    <!-- Action Button -->
                                     <td class="px-4 py-3 text-right align-middle">
                                         <div class="flex justify-end">
                                             <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
-                                                <a href="{{ route('general-affair.procurement.show', $procurement->id) }}"
-                                                    class="group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
-                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-                                                        width="14" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                                    </svg>
-                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
-                                                </a>
+                                                @if($isProcurement)
+                                                    <button type="button"
+                                                        class="js-show-procurement group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                        data-id="{{ $item->id }}">
+                                                        <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                            width="14" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                            <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100 font-semibold">Detail</span>
+                                                    </button>
+                                                @else
+                                                    <button type="button"
+                                                        class="js-process-procurement group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                                                        data-id="{{ $item->id }}"
+                                                        data-number="{{ $item->quotation_number }}"
+                                                        data-customer="{{ $item->to }}"
+                                                        data-subject="{{ $item->subject }}"
+                                                        data-date="{{ \Carbon\Carbon::parse($item->date)->format('Y-m-d') }}"
+                                                        data-items="{{ json_encode($item->items) }}">
+                                                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M11 16L15 12M15 12L11 8M15 12H3M4.51555 17C6.13007 19.412 8.87958 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C8.87958 3 6.13007 4.58803 4.51555 7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                                         <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100 font-semibold">Proses</span>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                        Belum ada pengadaan barang yang terdaftar.
+                                    <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        Tidak ada data pengadaan atau quotation barang kustom.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
-                        </table>
-                    </div>
-                    <nav id="procurement-pagination-nav"
-                        class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
-                        aria-label="Active procurement table navigation">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                Menampilkan
-                                <span class="font-semibold text-gray-900 dark:text-white">{{ $procurements->firstItem() ?? 0 }}-{{ $procurements->lastItem() ?? 0 }}</span>
-                                dari
-                                <span class="font-semibold text-gray-900 dark:text-white">{{ $procurements->total() }}</span>
-                            </span>
-                            <form method="GET" action="{{ route('general-affair.procurement.index') }}">
-                                <input type="hidden" name="search" value="{{ request('search') }}">
-                                <input type="hidden" name="tab" value="active">
-                                <select name="perPage" onchange="this.form.submit()"
-                                    class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                    @foreach ([10, 25, 50, 100] as $size)
-                                        <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
-                                    @endforeach
-                                </select>
-                            </form>
-                            <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
-                        </div>
-                        <div>
-                            {{ $procurements->links() }}
-                        </div>
-                    </nav>
+                    </table>
                 </div>
+
+                <!-- Unified Pagination Footer -->
+                <nav id="procurement-pagination-nav"
+                    class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Procurement table navigation">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                            Menampilkan
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $items->firstItem() ?? 0 }}-{{ $items->lastItem() ?? 0 }}</span>
+                            dari
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $items->total() }}</span>
+                        </span>
+                        <form method="GET" action="{{ route('general-affair.procurement.index') }}">
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                            <select name="perPage" onchange="this.form.submit()"
+                                class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                @foreach ([10, 25, 50, 100] as $size)
+                                    <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                    </div>
+                    <div>
+                        {{ $items->links() }}
+                    </div>
+                </nav>
             </div>
         </div>
     </div>
 
+    <!-- Modals -->
+    @include('admin.procurement.partials.procurement-process-modal')
+    @include('admin.procurement.partials.procurement-revision-modal')
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const tabPendingBtn = document.getElementById('tab-pending-btn');
-            const tabActiveBtn = document.getElementById('tab-active-btn');
+            // Modal elements
+            const modal = document.getElementById('procurement-modal');
+            const createView = document.getElementById('procurement-create-view');
+            const optionsView = document.getElementById('procurement-options-view');
+            const detailView = document.getElementById('procurement-detail-view');
 
-            function activateTab(tab) {
-                const tabPendingPanel = document.getElementById('tab-pending-panel');
-                const tabActivePanel = document.getElementById('tab-active-panel');
-                const activeClasses = ['bg-white', 'text-[#225A97]'];
-                const inactiveClasses = ['text-white', 'hover:bg-white/10'];
+            let shouldReloadOnClose = false;
 
-                if (tab === 'active') {
-                    tabPendingBtn.classList.remove(...activeClasses);
-                    tabPendingBtn.classList.add(...inactiveClasses);
-                    tabActiveBtn.classList.add(...activeClasses);
-                    tabActiveBtn.classList.remove(...inactiveClasses);
-                    tabPendingPanel.classList.add('hidden');
-                    tabActivePanel.classList.remove('hidden');
-                    localStorage.setItem('procurement_active_tab', 'active');
+            function closeModal() {
+                if (!modal) return;
+                try {
+                    if (typeof modal.close === 'function') modal.close();
+                    else modal.style.display = 'none';
+                } catch (e) {
+                    modal.style.display = 'none';
+                }
+            }
+
+            // Close on click close button
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.closest('.js-procurement-modal-close')) {
+                    closeModal();
+                }
+            });
+
+            // Close on backdrop click
+            modal?.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // Close listener to reload page if a partial procurement was created
+            modal?.addEventListener('close', function() {
+                if (shouldReloadOnClose) {
+                    window.location.reload();
+                }
+            });
+
+            // Helper functions for price formatting
+            function formatNumberWithCommas(value) {
+                if (!value) return '';
+                // Discard decimal places and keep digits only
+                let cleanValue = value.toString().split('.')[0].replace(/[^0-9]/g, '');
+                return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+
+            function formatInputPrice(input) {
+                let selectionStart = input.selectionStart;
+                let oldLength = input.value.length;
+                let value = input.value;
+                
+                // Discard decimal places and keep digits only
+                let cleanValue = value.split('.')[0].replace(/[^0-9]/g, '');
+
+                let formattedValue = cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                input.value = formattedValue;
+
+                let newLength = formattedValue.length;
+                let newStart = selectionStart + (newLength - oldLength);
+                input.setSelectionRange(newStart, newStart);
+            }
+
+            // Initialize formatting on dynamically loaded container
+            function initializeBuyPriceInputs(container) {
+                container.querySelectorAll('.buy-price-input').forEach(input => {
+                    if (input.value) {
+                        input.value = formatNumberWithCommas(input.value);
+                    }
+                    input.addEventListener('input', function() {
+                        formatInputPrice(this);
+                    });
+                });
+            }
+
+            // --- 1. PROCESS PROCUREMENT FLOW (Creation) ---
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.js-process-procurement');
+                if (!btn) return;
+
+                e.preventDefault();
+
+                const id = btn.getAttribute('data-id');
+                const number = btn.getAttribute('data-number');
+                const customer = btn.getAttribute('data-customer');
+                const subject = btn.getAttribute('data-subject');
+                const date = btn.getAttribute('data-date');
+                const items = JSON.parse(btn.getAttribute('data-items') || '[]');
+
+                // Reset views
+                createView.classList.remove('hidden');
+                createView.classList.add('flex');
+                optionsView.classList.add('hidden');
+                optionsView.classList.remove('flex');
+                detailView.classList.add('hidden');
+                detailView.classList.remove('flex');
+
+                // Reset error alerts
+                const errorAlert = document.getElementById('modal-validation-errors');
+                if (errorAlert) {
+                    errorAlert.classList.add('hidden');
+                    errorAlert.querySelector('ul').innerHTML = '';
+                }
+
+                // Set inputs
+                document.getElementById('process-quotation-id').value = id;
+                document.getElementById('process-quotation-number').textContent = number;
+                document.getElementById('process-customer-to').textContent = customer;
+                document.getElementById('process-subject').textContent = subject;
+                document.getElementById('process-delivery-date').textContent = date;
+                document.getElementById('process-notes').value = '';
+
+                // Populate items
+                const tbody = document.getElementById('process-items-body');
+                tbody.innerHTML = '';
+
+                items.forEach((item, index) => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50/50 dark:hover:bg-gray-700/30';
+                    tr.innerHTML = `
+                        <input type="hidden" name="items[${index}][goods_id]" value="${item.goods_id}">
+                        <input type="hidden" name="items[${index}][qty_requested]" value="${item.qty}">
+                        
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-3 font-medium text-gray-900 dark:text-white">
+                            ${item.product_name}
+                            ${item.description ? `<span class="block text-xs text-gray-400 dark:text-gray-500 font-normal mt-1">${item.description}</span>` : ''}
+                        </td>
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-3 text-slate-500 dark:text-gray-400">
+                            ${item.category || 'OTHER CATEGORIES'}
+                        </td>
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-3 text-center text-slate-500 dark:text-gray-400">
+                            ${item.unit}
+                        </td>
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-3 text-center font-semibold text-gray-900 dark:text-white">
+                            ${item.qty}
+                        </td>
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-2" style="width: 150px;">
+                            <input type="number" name="items[${index}][qty_ordered]" 
+                                value="${item.qty}"
+                                min="${item.qty}" required
+                                class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-center text-sm font-semibold focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                title="GA bisa memesan stok lebih dari permintaan quotation">
+                        </td>
+                        <td class="border-b border-gray-200 dark:border-gray-700 px-4 py-2" style="width: 220px;">
+                            <div class="relative flex items-center">
+                                <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400 font-semibold">Rp</span>
+                                <input type="text" name="items[${index}][buy_price]" 
+                                    value=""
+                                    required placeholder="0"
+                                    class="buy-price-input w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-9 text-right text-sm font-semibold focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Initialize formatting on inputs
+                initializeBuyPriceInputs(tbody);
+
+                // Open modal
+                modal?.showModal();
+            });
+
+            // Handle "Simpan & Buat Pengadaan" Form Submit (Transitions to Options Selection)
+            const createForm = document.getElementById('modalProcurementCreateForm');
+            createForm?.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Standard HTML5 validation
+                if (!createForm.checkValidity()) {
+                    createForm.reportValidity();
                     return;
                 }
 
-                tabActiveBtn.classList.remove(...activeClasses);
-                tabActiveBtn.classList.add(...inactiveClasses);
-                tabPendingBtn.classList.add(...activeClasses);
-                tabPendingBtn.classList.remove(...inactiveClasses);
-                tabActivePanel.classList.add('hidden');
-                tabPendingPanel.classList.remove('hidden');
-                localStorage.setItem('procurement_active_tab', 'pending');
-            }
-
-            tabPendingBtn.addEventListener('click', () => activateTab('pending'));
-            tabActiveBtn.addEventListener('click', () => activateTab('active'));
-            document.addEventListener('realtime-table-search:updated', () => {
-                activateTab(localStorage.getItem('procurement_active_tab') === 'active' ? 'active' : 'pending');
+                // Transition to options view
+                createView.classList.add('hidden');
+                createView.classList.remove('flex');
+                optionsView.classList.remove('hidden');
+                optionsView.classList.add('flex');
             });
 
+            // Options Back button
+            document.getElementById('btn-back-to-form')?.addEventListener('click', function() {
+                optionsView.classList.add('hidden');
+                optionsView.classList.remove('flex');
+                createView.classList.remove('hidden');
+                createView.classList.add('flex');
+            });
+
+            // Options submits: Full or Partial
+            function submitProcurementModal(type) {
+                const formData = new FormData(createForm);
+                formData.append('type', type);
+
+                // Clean prices
+                const params = new URLSearchParams();
+                for (const [key, value] of formData.entries()) {
+                    if (key.includes('[buy_price]')) {
+                        params.append(key, value.replace(/,/g, ''));
+                    } else {
+                        params.append(key, value);
+                    }
+                }
+
+                // Disable buttons & show loading state
+                const btnFull = document.getElementById('btn-full-procurement');
+                const btnPartial = document.getElementById('btn-partial-procurement');
+                if (btnFull) btnFull.disabled = true;
+                if (btnPartial) btnPartial.disabled = true;
+
+                fetch('{{ route("general-affair.procurement.store-modal") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: params.toString()
+                })
+                .then(res => res.json().then(data => ({ status: res.status, body: data })))
+                .then(({ status, body }) => {
+                    if (btnFull) btnFull.disabled = false;
+                    if (btnPartial) btnPartial.disabled = false;
+
+                    if (status === 200 && body.success) {
+                        if (body.type === 'full') {
+                            // Full success -> reload page with Swal notification
+                            sessionStorage.setItem('sweetTitle', 'Berhasil');
+                            sessionStorage.setItem('sweetText', body.message);
+                            window.location.reload();
+                        } else {
+                            // Partial success -> reload page with open_show parameter to re-open modal with updated background status
+                            sessionStorage.setItem('sweetTitle', 'Berhasil');
+                            sessionStorage.setItem('sweetText', body.message);
+                            
+                            const url = new URL(window.location.href);
+                            url.searchParams.delete('page');
+                            url.searchParams.set('open_show', body.procurement_id);
+                            window.location.href = url.toString();
+                        }
+                    } else {
+                        // Validation error or backend error -> transition back to form and show error
+                        optionsView.classList.add('hidden');
+                        optionsView.classList.remove('flex');
+                        createView.classList.remove('hidden');
+                        createView.classList.add('flex');
+
+                        const errorsContainer = document.getElementById('modal-validation-errors');
+                        const errorsList = errorsContainer.querySelector('ul');
+                        errorsList.innerHTML = '';
+
+                        if (body.errors) {
+                            Object.values(body.errors).forEach(errArr => {
+                                errArr.forEach(err => {
+                                    const li = document.createElement('li');
+                                    li.textContent = err;
+                                    errorsList.appendChild(li);
+                                });
+                            });
+                        } else {
+                            const li = document.createElement('li');
+                            li.textContent = body.message || 'Terjadi kesalahan.';
+                            errorsList.appendChild(li);
+                        }
+                        errorsContainer.classList.remove('hidden');
+                        document.querySelector('#procurement-create-view .overflow-y-auto').scrollTop = 0;
+                    }
+                })
+                .catch(err => {
+                    if (btnFull) btnFull.disabled = false;
+                    if (btnPartial) btnPartial.disabled = false;
+                    console.error(err);
+
+                    optionsView.classList.add('hidden');
+                    optionsView.classList.remove('flex');
+                    createView.classList.remove('hidden');
+                    createView.classList.add('flex');
+
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat memproses data.',
+                        icon: 'error',
+                        customClass: { popup: 'rounded-2xl!' },
+                        target: document.getElementById('procurement-modal')
+                    });
+                });
+            }
+
+            document.getElementById('btn-full-procurement')?.addEventListener('click', () => submitProcurementModal('full'));
+            document.getElementById('btn-partial-procurement')?.addEventListener('click', () => submitProcurementModal('partial'));
+
+
+            // --- 2. SHOW PROCUREMENT FLOW (Details) ---
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.js-show-procurement');
+                if (!btn) return;
+
+                e.preventDefault();
+
+                const id = btn.getAttribute('data-id');
+
+                // Reset views
+                createView.classList.add('hidden');
+                createView.classList.remove('flex');
+                optionsView.classList.add('hidden');
+                optionsView.classList.remove('flex');
+
+                detailView.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center p-12 w-full h-full min-h-[350px]">
+                        <div class="text-center">
+                            <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <p class="text-gray-500 mt-2 text-sm">Memuat detail procurement...</p>
+                        </div>
+                    </div>
+                `;
+                detailView.classList.remove('hidden');
+                detailView.classList.add('flex');
+
+                modal?.showModal();
+
+                fetch(`/procurement/${id}/detail-html`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to fetch details');
+                        return res.text();
+                    })
+                    .then(html => {
+                        detailView.innerHTML = html;
+                        initializeBuyPriceInputs(detailView);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        closeModal();
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Gagal memuat detail procurement.',
+                            icon: 'error',
+                            customClass: { popup: 'rounded-2xl!' },
+                            target: document.querySelector('dialog[open]') || 'body'
+                        });
+                    });
+            });
+
+            // Intercept record arrival form submit to clean commas
+            document.addEventListener('submit', function(e) {
+                if (e.target && e.target.id === 'recordArrivalForm') {
+                    e.target.querySelectorAll('.buy-price-input').forEach(input => {
+                        input.value = input.value.replace(/,/g, '');
+                    });
+                }
+            });
+
+            // Check if there is a sessionStorage success notification from reload
+            setTimeout(() => {
+                const sweetTitle = sessionStorage.getItem('sweetTitle');
+                const sweetText = sessionStorage.getItem('sweetText');
+                if (sweetTitle || sweetText) {
+                    sessionStorage.removeItem('sweetTitle');
+                    sessionStorage.removeItem('sweetText');
+
+                    Swal.fire({
+                        title: sweetTitle || 'Berhasil',
+                        text: sweetText || '',
+                        icon: 'success',
+                        timer: 3500,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        customClass: { popup: 'rounded-2xl!' },
+                        target: document.querySelector('dialog[open]') || 'body'
+                    });
+                }
+            }, 100);
+
+            // Auto-open modal if parameters are passed in URL (open_create or open_show)
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('pending_page')) {
-                activateTab('pending');
-            } else if (urlParams.has('proc_page') || urlParams.get('tab') === 'active' || localStorage.getItem('procurement_active_tab') === 'active') {
-                activateTab('active');
+            let shouldCleanUrl = false;
+
+            const openCreateId = urlParams.get('open_create');
+            if (openCreateId) {
+                const btn = document.querySelector(`.js-process-procurement[data-id="${openCreateId}"]`);
+                if (btn) {
+                    btn.click();
+                    shouldCleanUrl = true;
+                }
+            }
+
+            const openShowId = urlParams.get('open_show');
+            if (openShowId) {
+                const btn = document.querySelector(`.js-show-procurement[data-id="${openShowId}"]`);
+                if (btn) {
+                    btn.click();
+                    shouldCleanUrl = true;
+                }
+            }
+
+            if (shouldCleanUrl) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('open_show');
+                url.searchParams.delete('open_create');
+                window.history.replaceState({}, '', url.toString());
+            }
+        });
+
+        // Standalone revision modal functions
+        function openRevisionModal(receiptId, qty, unitCost, goodsName, maxAllowed) {
+            const modal = document.getElementById('modalRevisiReceipt');
+            if (!modal) return;
+
+            document.getElementById('formRevisiReceipt').action = '/procurement/receipt/' + receiptId + '/update';
+            document.getElementById('revisionGoodsName').textContent = goodsName;
+            
+            const qtyInput = document.getElementById('revisionQuantity');
+            qtyInput.value = qty;
+            qtyInput.max = maxAllowed;
+            document.getElementById('revisionQuantityMaxLabel').textContent = maxAllowed;
+            
+            const costInput = document.getElementById('revisionUnitCost');
+            costInput.value = unitCost;
+            
+            // Format input using standard event
+            const event = new Event('input', { bubbles: true });
+            costInput.dispatchEvent(event);
+
+            if (typeof modal.showModal === "function") {
+                modal.showModal();
+            } else {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        function closeRevisionModal() {
+            const modal = document.getElementById('modalRevisiReceipt');
+            if (!modal) return;
+
+            if (typeof modal.close === "function") {
+                modal.close();
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Add pricing format formatting inside revision form
+        document.addEventListener('DOMContentLoaded', function() {
+            const revisionForm = document.getElementById('formRevisiReceipt');
+            if (revisionForm) {
+                // Initialize input formatting logic for the revision modal price input
+                initializeBuyPriceInputs(revisionForm);
+                revisionForm.addEventListener('submit', function(e) {
+                    const costInput = document.getElementById('revisionUnitCost');
+                    costInput.value = costInput.value.replace(/,/g, '');
+                });
             }
         });
     </script>

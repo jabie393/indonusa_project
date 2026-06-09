@@ -102,6 +102,8 @@
             actionUrl = '/delivery-orders/' + id + '/reject';
         } else if (type === 'supply_order') {
             actionUrl = '/supply-orders/' + id + '/reject';
+        } else if (type === 'procurement_order') {
+            actionUrl = '/supply-orders/procurement/' + id + '/reject';
         }
 
         document.getElementById('formTolakGlobal').action = actionUrl;
