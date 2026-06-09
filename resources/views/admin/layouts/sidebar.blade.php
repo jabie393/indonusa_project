@@ -24,18 +24,32 @@
             {{-- Menu untuk General Affair --}}
             @if (in_array(auth()->user()->role, ['General Affair']))
                 {{-- Goods In --}}
+                @php
+                    $goodsInProcurementPendingCount = \App\Models\CustomQuotation::where('status', 'sent_to_quotation')
+                        ->whereHas('order', function ($query) {
+                            $query->where('status', 'sent_to_warehouse');
+                        })
+                        ->doesntHave('procurementOfGoods')
+                        ->count();
+                @endphp
                 <li>
                     <a href="{{ route('goods-in.index') }}"
-                        class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none"
-                            class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
-                            <path fill-rule="evenodd" clip-rule="evenodd"
-                                d="M13.5 0.0795898L26.625 6.79129V20.2147L13.5 26.9264L0.375 20.2147V6.79129L13.5 0.0795898ZM9.12493 12.6078L9.125 21.7063L12.0417 23.1978V14.0993L9.12493 12.6078ZM3.29167 9.62501V18.7232L6.20831 20.2148V11.1164L3.29167 9.62501ZM19.2416 5.99859L10.6571 10.4086L13.5 11.8623L22.1042 7.46246L19.2416 5.99859ZM13.5 3.06257L4.89583 7.46246L7.7438 8.91877L16.3283 4.50884L13.5 3.06257Z"
-                                fill="currentColor" />
-                        </svg>
-                        <span
-                            class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
-                            In</span>
+                        class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none"
+                                class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M13.5 0.0795898L26.625 6.79129V20.2147L13.5 26.9264L0.375 20.2147V6.79129L13.5 0.0795898ZM9.12493 12.6078L9.125 21.7063L12.0417 23.1978V14.0993L9.12493 12.6078ZM3.29167 9.62501V18.7232L6.20831 20.2148V11.1164L3.29167 9.62501ZM19.2416 5.99859L10.6571 10.4086L13.5 11.8623L22.1042 7.46246L19.2416 5.99859ZM13.5 3.06257L4.89583 7.46246L7.7438 8.91877L16.3283 4.50884L13.5 3.06257Z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span
+                                class="{{ request()->routeIs('goods-in.*') || request()->routeIs('general-affair.procurement.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
+                                In</span>
+                        </div>
+                        @if ($goodsInProcurementPendingCount > 0)
+                            <span
+                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
+                        @endif
                     </a>
                     {{-- Add Stock --}}
                     @if (request()->routeIs('add-stock.*'))
