@@ -2,23 +2,20 @@
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
 
         <div
-            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
-            <div class="item-center flex p-3">
-                <div
-                    class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-
-                    <a href="{{ route('sales.custom-quotation.create') }}"
-                        class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
-                        + Custom Quotation
-                    </a>
-
-                </div>
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
+            <div
+                class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                <a href="{{ route('sales.custom-quotation.create') }}"
+                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
+                    + Custom Quotation
+                </a>
             </div>
 
-            <div class="p-3">
+            <div>
                 {{-- Search --}}
-                <form action="{{ route('sales.custom-quotation.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
-                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                <form action="{{ route('sales.custom-quotation.index') }}" method="GET" class="block pl-2"
+                    data-realtime-table-search data-search-input="#topbar-search" data-search-target="#tableContainer"
+                    data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -74,7 +71,8 @@
                                         </a>
                                         <div class="grid grid-cols-[44px_1fr] gap-x-2 text-xs leading-relaxed">
                                             <span class="font-semibold uppercase text-slate-400">REF</span>
-                                            <span class="text-slate-600 dark:text-slate-300">{{ $quotation->our_ref ?? '-' }}</span>
+                                            <span
+                                                class="text-slate-600 dark:text-slate-300">{{ $quotation->our_ref ?? '-' }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -343,21 +341,28 @@
                                                         $hasHighDiscount = $quotation->items->where('diskon', '>', 20)->isNotEmpty();
                                                         $isExpired = $quotation->isExpired();
                                                     @endphp
-                                                    @if ($quotation->status === 'approved_supervisor' && !$isExpired)
+                                                    @if (!in_array($quotation->status, ['pending_approval', 'rejected_supervisor']) && !$isExpired)
                                                         <a href="{{ route('sales.custom-quotation.pdf', $quotation->id) }}"
                                                             class="flex items-center gap-2 text-green-600 hover:bg-green-50"
                                                             target="_blank">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2" d="M12 4v16m8-8H4" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-file-text">
+                                                                <path
+                                                                    d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z">
+                                                                </path>
+                                                                <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+                                                                <path d="M10 9H8"></path>
+                                                                <path d="M16 13H8"></path>
+                                                                <path d="M16 17H8"></path>
                                                             </svg>
-                                                            Download PDF
+                                                            PDF
                                                         </a>
                                                     @else
                                                         <button type="button" disabled
                                                             class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
-                                                            title="{{ $isExpired ? 'Quotation sudah kadaluarsa' : 'Menunggu persetujuan Supervisor' }}">
+                                                            title="{{ $isExpired ? 'Quotation sudah kadaluarsa' : ($quotation->status === 'rejected_supervisor' ? 'Quotation ditolak oleh Supervisor' : 'Menunggu persetujuan Supervisor') }}">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -436,7 +441,9 @@
                 </div>
             </nav>
         </div>
+        <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
+            @vite(['resources/js/custom-quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
+            @include('admin.custom-quotation.partials.modal-show-note')
+        </div>
     </div>
-    @vite(['resources/js/custom-quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
-    @include('admin.custom-quotation.partials.modal-show-note')
 </x-app-layout>

@@ -398,10 +398,10 @@ class CustomQuotationController extends Controller
             abort(403);
         }
 
-        // PDF hanya bisa didownload jika status approved_supervisor, kecuali Supervisor/Admin
-        if ($customQuotation->status !== 'approved_supervisor') {
+        // PDF dikunci jika status pending_approval atau rejected_supervisor, kecuali Supervisor/Admin
+        if (in_array($customQuotation->status, ['pending_approval', 'rejected_supervisor'])) {
             if (!in_array($userRole, $allowed)) {
-                return back()->withErrors('PDF hanya dapat didownload setelah disetujui oleh Supervisor.');
+                return back()->withErrors('PDF tidak dapat diunduh karena status saat ini pending_approval atau rejected_supervisor.');
             }
         }
 

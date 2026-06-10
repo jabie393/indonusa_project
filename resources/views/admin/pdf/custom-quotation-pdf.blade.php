@@ -206,10 +206,9 @@
                         <thead class="border border-black bg-blue-900">
                             <tr>
                                 <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                                <th class="w-[160pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
-
-                                <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
-                                <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Unit</th>
+                                <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
+                                <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Description</th>
+                                <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                                 <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Price</th>
                                 <th class="w-[67.15pt] border border-black px-2 py-1 text-center text-white">Total</th>
                                 <th class="border border-black px-2 py-1 text-center text-white">Image</th>
@@ -220,8 +219,8 @@
                                 <tr>
                                     <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                     <td class="border px-2 py-1">{{ $item->product_name }}</td>
-                                    <td class="border px-2 py-1 text-center">{{ $item->qty }}</td>
-                                    <td class="border px-2 py-1 text-center">{{ $item->unit }}</td>
+                                    <td class="border px-2 py-1">{{ $item->description ?? '-' }}</td>
+                                    <td class="border px-2 py-1 text-center">{{ $item->qty }} {{ $item->unit }}</td>
                                     <td class="border px-2 py-1">
                                         <div class="flex justify-between">
                                             <span>Rp</span>

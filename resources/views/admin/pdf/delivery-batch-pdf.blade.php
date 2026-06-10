@@ -138,9 +138,9 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
-                            <th class="w-[173.05pt] border border-black px-2 py-1 text-center text-white">Deskripsi</th>
-                            <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
+                            <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                            <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Deskripsi</th>
+                            <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Note</th>
                         </tr>
                     </thead>
@@ -154,7 +154,7 @@
                                 <td class="border px-2 py-1">
                                     {{ $item->orderItem->barang?->description }}
                                 </td>
-                                <td class="border px-2 py-1 text-center">{{ $item->quantity_sent }}</td>
+                                <td class="border px-2 py-1 text-center">{{ $item->quantity_sent }} {{ $item->orderItem->barang?->unit }}</td>
                                 <td class="border px-2 py-1 text-center"></td>
                             </tr>
                         @endforeach

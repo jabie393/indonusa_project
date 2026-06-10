@@ -189,11 +189,6 @@ Route::middleware(['auth', 'role:Warehouse,Sales'])->group(function () {
 
 // Supervisor (use auth only; controllers perform case-insensitive role checks)
 Route::middleware(['auth'])->group(function () {
-
-    // Support old URLs/names: map approved-orders and diskon-approved to the sentQuotation controller
-    Route::get('/approved-orders', [QuotationApprovalController::class, 'index'])->name('admin.approved');
-    Route::get('/diskon-approved', [QuotationApprovalController::class, 'index'])->name('admin.diskon_approved');
-
     Route::get('/quotation-approval', [QuotationApprovalController::class, 'index'])->name('admin.quotation_approval');
     // Supervisor approval route for Custom Quotation (allow Supervisor to POST approve/reject)
     Route::post('/custom-quotation-approval/{customQuotation}/approval', [CustomQuotationApprovalController::class, 'approve'])->name('admin.custom-quotation-approval.approval');
@@ -279,7 +274,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/sales-order/quotation-detail', [SalesOrderController::class, 'getQuotationDetail'])->name('sales.sales-order.quotation-detail');
     Route::get('/sales-order/create', [SalesOrderController::class, 'create'])->name('sales.sales-order.create');
     Route::post('/sales-order', [SalesOrderController::class, 'store'])->name('sales.sales-order.store');
-    Route::get('/sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
+    Route::get('/detail-sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
     Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
     Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');

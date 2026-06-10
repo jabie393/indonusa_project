@@ -2,44 +2,39 @@
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
 
         <div
-            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-between overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
-            <div class="flex items-center p-3">
-                <div
-                    class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                    {{-- Tambah barang modal --}}
-                    <a href="{{ route('sales.quotation.create') }}"
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
+            <div
+                class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                {{-- Tambah barang modal --}}
+                <a href="{{ route('sales.quotation.create') }}"
+                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
+                    <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Quotation
+                </a>
+
+                <div class="flex gap-2">
+                    <a href="{{ route('dashboard.sales.export.quotations') }}"
                         class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
-                        <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewbox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path clip-rule="evenodd" fill-rule="evenodd"
-                                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Quotation
+                        Quotation Report
                     </a>
-
-                    <div class="flex gap-2">
-                        <a href="{{ route('dashboard.sales.export.quotations') }}"
-                            class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-1 h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            Quotation Report
-                        </a>
-                    </div>
                 </div>
-                {{-- Bulk Actions --}}
-
             </div>
 
-            <div class="p-3">
-
+            <div>
                 {{-- Search --}}
                 <form action="{{ route('sales.quotation.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
                     data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
-                    <div class="relative md:w-64 md:w-96">
+                    <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                             <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor"
                                 viewBox="0 0 20 20">
@@ -162,16 +157,24 @@
                                         foreach ($ro->items as $roItem) {
                                             $barang = $roItem->barang;
                                             if (!$barang) {
-                                                continue;
+                                                if (!empty($roItem->custom_product_name)) {
+                                                    $stokGudang = 0;
+                                                    $qtyDibutuhkan = (int) $roItem->quantity;
+                                                    $satuan = $roItem->custom_product_unit ?? 'pcs';
+                                                    $goodsName = $roItem->custom_product_name;
+                                                } else {
+                                                    continue;
+                                                }
+                                            } else {
+                                                $stokGudang = (int) $barang->stock;
+                                                $qtyDibutuhkan = (int) $roItem->quantity;
+                                                $satuan = $barang->unit ?? '';
+                                                $goodsName = $barang->goods_name;
                                             }
-
-                                            $stokGudang = (int) $barang->stock;
-                                            $qtyDibutuhkan = (int) $roItem->quantity;
-                                            $satuan = $barang->unit ?? '';
 
                                             if ($qtyDibutuhkan > $stokGudang) {
                                                 $stokKurangItems[] = [
-                                                    'nama' => $barang->goods_name,
+                                                    'nama' => $goodsName,
                                                     'stok' => $stokGudang,
                                                     'qty' => $qtyDibutuhkan,
                                                     'satuan' => $satuan,
@@ -262,12 +265,11 @@
                                                         <line x1="15" x2="9" y1="9" y2="15" />
                                                         <line x1="9" x2="15" y1="9" y2="15" />
                                                     </svg>
-                                                    Stok Kurang ({{ count($stokKurangItems) }})
+                                                    Insufficient Stock ({{ count($stokKurangItems) }})
                                                 </span>
                                                 <div
                                                     class="pointer-events-none absolute top-0 right-full z-50 mr-3 w-72 rounded-lg border border-red-200 bg-white p-3 text-left text-xs opacity-0 shadow-lg transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 dark:border-gray-600 dark:bg-gray-800">
-                                                    <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Item dengan
-                                                        stok kurang:</p>
+                                                    <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Items with insufficient stock:</p>
                                                     @foreach ($stokKurangItems as $sk)
                                                         <div
                                                             class="mb-1 border-b border-gray-100 pb-1 last:border-0 dark:border-gray-700">
@@ -275,22 +277,21 @@
                                                                 {{ Str::limit($sk['nama'], 35) }}
                                                             </p>
                                                             <p class="text-gray-500 dark:text-gray-400">
-                                                                Dibutuhkan: <span
+                                                                Required: <span
                                                                     class="font-semibold text-gray-700 dark:text-gray-300">{{ $sk['qty'] }}
                                                                     {{ $sk['satuan'] }}</span>
                                                             </p>
                                                             <p class="text-gray-500 dark:text-gray-400">
-                                                                Tersedia: <span class="font-semibold text-red-600">{{ $sk['stok'] }}
+                                                                Available: <span class="font-semibold text-red-600">{{ $sk['stok'] }}
                                                                     {{ $sk['satuan'] }}</span>
-                                                                &nbsp;|&nbsp; Kurang: <span
+                                                                &nbsp;|&nbsp; Shortage: <span
                                                                     class="font-bold text-red-600">{{ $sk['kurang'] }}
                                                                     {{ $sk['satuan'] }}</span>
                                                             </p>
                                                         </div>
                                                     @endforeach
                                                     @if ($stokCukupCount > 0)
-                                                        <p class="mt-1 text-green-600">{{ $stokCukupCount }} item lainnya stok
-                                                            cukup</p>
+                                                        <p class="mt-1 text-green-600">{{ $stokCukupCount }} other item(s) have sufficient stock</p>
                                                     @endif
                                                 </div>
                                             </div>
@@ -304,7 +305,7 @@
                                                     <circle cx="12" cy="12" r="10" />
                                                     <path d="m9 12 2 2 4-4" />
                                                 </svg>
-                                                Stok Cukup
+                                                Sufficient Stock
                                             </span>
                                         @endif
 
@@ -324,12 +325,12 @@
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                         </svg>
-                                                        {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} terkirim
+                                                        {{ $sudahDikirim->count() }}/{{ $orderItems->count() }} delivered
                                                     </span>
                                                     <div
                                                         class="pointer-events-none absolute top-0 right-full z-50 mr-3 w-80 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs opacity-0 shadow-xl transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100">
                                                         @if ($sudahDikirim->count() > 0)
-                                                            <p class="mb-1.5 font-bold text-green-600">✓ Sudah Dikirim:</p>
+                                                            <p class="mb-1.5 font-bold text-green-600">✓ Delivered:</p>
                                                             @foreach ($sudahDikirim as $item)
                                                                 <div
                                                                     class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
@@ -343,15 +344,14 @@
                                                             @endforeach
                                                         @endif
                                                         @if ($belumDikirim->count() > 0)
-                                                            <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Belum / Sisa
-                                                                Dikirim:</p>
+                                                            <p class="mb-1.5 mt-2 font-bold text-orange-500">⏳ Remaining:</p>
                                                             @foreach ($belumDikirim as $item)
                                                                 @php $sisa = $item->quantity - ($item->delivered_quantity ?? 0); @endphp
                                                                 <div
                                                                     class="mb-1 flex items-center justify-between border-b border-gray-100 pb-1 last:border-0">
                                                                     <span
                                                                         class="text-gray-700">{{ Str::limit($item->barang->goods_name ?? '-', 28) }}</span>
-                                                                    <span class="ml-2 shrink-0 font-bold text-orange-500">Sisa
+                                                                    <span class="ml-2 shrink-0 font-bold text-orange-500">Remaining:
                                                                         {{ $sisa }}
                                                                         {{ $item->barang->unit ?? '' }}</span>
                                                                 </div>
@@ -392,7 +392,7 @@
                                             {{-- Detail --}}
                                             <a href="{{ route('sales.quotation.show', $ro->id) }}"
                                                 class="group flex h-full items-center justify-center border-r border-blue-800 bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:border-blue-500 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
-                                                title="Lihat Detail">
+                                                title="View Detail">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -411,7 +411,7 @@
                                                 {{-- Note modal --}}
                                                 <button type="button"
                                                     class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                    data-catatan="{{ $ro->reason ?? '' }}" title="Lihat Alasan Penolakan">
+                                                    data-catatan="{{ $ro->reason ?? '' }}" title="View Rejection Reason">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round"
@@ -489,7 +489,7 @@
                                                     @else
                                                         <button type="button" disabled
                                                             class="flex w-full cursor-not-allowed items-center gap-2 text-gray-400"
-                                                            title="Menunggu Persetujuan Supervisor">
+                                                            title="Awaiting Supervisor Approval">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -565,7 +565,9 @@
                 </div>
             </nav>
         </div>
+        <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
+            @vite(['resources/js/quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
+            @include('admin.quotation.partials.modal-show-note')
+        </div>
     </div>
-    @vite(['resources/js/quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
-    @include('admin.quotation.partials.modal-show-note')
 </x-app-layout>

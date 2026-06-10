@@ -1,15 +1,15 @@
 <x-app-layout>
     <div class="flex flex-col overflow-hidden lg:h-[calc(100vh-112px)]">
-        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm overflow-show relative mb-5 flex shrink-0 justify-between rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-end overflow-show rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
             <div class="flex items-center p-3">
                 <div class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
                 </div>
             </div>
 
-            <div class="p-3">
+            <div>
                 {{-- Search --}}
                 <div class="">
-                    <div class="flex flex-col gap-2 md:flex-row">
+                    <div class="flex flex-col md:flex-row">
                         <div class="relative flex-1">
                             <label for="topbar-search" class="sr-only">Search</label>
                             <div class="relative md:w-96">

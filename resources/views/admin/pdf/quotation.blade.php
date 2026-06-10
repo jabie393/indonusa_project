@@ -226,9 +226,9 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[160pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
-                            <th class="w-[13.15pt] border border-black px-2 py-1 text-center text-white">Qty</th>
-                            <th class="w-[25pt] border border-black px-2 py-1 text-center text-white">Unit</th>
+                            <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
+                            <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Description</th>
+                            <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Price</th>
                             <th class="w-[67.15pt] border border-black px-2 py-1 text-center text-white">Total</th>
                             <th class="w-[92.05pt] border border-black px-2 py-1 text-center text-white">Image</th>
@@ -249,12 +249,14 @@
                             @endphp
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
-                                <td class="border px-2 py-1 text-center">
+                                <td class="border px-2 py-1">
                                     {{ optional($item->barang)->goods_name ?? ($item->custom_product_name ?? '-') }}
                                 </td>
-                                <td class="border px-2 py-1 text-center">{{ $item->quantity }}</td>
+                                <td class="border px-2 py-1">
+                                    {{ optional($item->barang)->description ?? ($item->custom_product_description ?? '-') }}
+                                </td>
                                 <td class="border px-2 py-1 text-center">
-                                    {{ optional($item->barang)->unit ?? ($item->custom_product_unit ?? '-') }}
+                                    {{ $item->quantity }} {{ optional($item->barang)->unit ?? ($item->custom_product_unit ?? '-') }}
                                 </td>
                                 <td class="border px-2 py-1">
                                     <div class="flex justify-between">
@@ -302,7 +304,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8"
+                                <td colspan="7"
                                     class="border px-2 py-1 text-center">No items</td>
                             </tr>
                         @endforelse

@@ -1,11 +1,12 @@
 <x-app-layout>
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
         <div
-            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
-            <div class="p-4">
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-end overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
+            <div>
                 {{-- Search --}}
-                <form action="{{ route('supervisor.history') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
-                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                <form action="{{ route('supervisor.history') }}" method="GET" class="block pl-2"
+                    data-realtime-table-search data-search-input="#topbar-search" data-search-target="#tableContainer"
+                    data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -177,7 +178,8 @@
                     </tbody>
                 </table>
             </div>
-            <nav id="pagination-nav" class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+            <nav id="pagination-nav"
+                class="sticky bottom-0 z-20 flex flex-col items-start justify-between space-y-3 bg-white p-4 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
                 aria-label="Table navigation">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
