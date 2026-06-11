@@ -85,7 +85,8 @@ class SalesDashboardController extends Controller
 
         // Approved by Supervisor Orders
         $supervisorOrderQuery = \App\Models\Order::where('sales_id', $user->id)
-            ->where('status', 'approved_supervisor');
+            ->where('status', 'open')
+            ->whereNotNull('supervisor_id');
         $supervisorCustomQuery = \App\Models\CustomQuotation::where('sales_id', $user->id)
             ->where('status', 'approved_supervisor');
         $totalApprovedSupervisor = $applyDateFilter(clone $supervisorOrderQuery)->count()

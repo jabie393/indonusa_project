@@ -251,26 +251,7 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                             </a>
 
-                                            {{-- If supervisor rejects --}}
-                                            @if ($quotation->status == 'rejected_supervisor')
-                                                {{-- Note modal --}}
-                                                <button type="button"
-                                                    class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                    data-catatan="{{ $quotation->reason ?? '' }}"
-                                                    title="Lihat Alasan Penolakan">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-sticky-note h-4 w-4">
-                                                        <path
-                                                            d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
-                                                        </path>
-                                                        <path d="M15 3v6h6"></path>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
-                                                </button>
-                                            @endif
+
 
                                             {{-- Action Dropdown --}}
                                             <button type="button"
@@ -443,7 +424,6 @@
         </div>
         <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
             @vite(['resources/js/custom-quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
-            @include('admin.custom-quotation.partials.modal-show-note')
         </div>
     </div>
 </x-app-layout>

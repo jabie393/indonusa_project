@@ -7,7 +7,7 @@
         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         @if ($errors->any())
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
+                document.addEventListener('DOMContentLoaded', function () {
                     Swal.fire({
                         icon: 'error',
                         title: 'Gagal',
@@ -20,27 +20,6 @@
                 });
             </script>
         @endif
-
-        <div id="discountWarning"
-            class="m-5 hidden items-start gap-4 rounded-2xl border border-amber-200 bg-[#FFFDF5] p-4 dark:border-amber-900/30 dark:bg-amber-950/20">
-            <div
-                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <div>
-                <h3 class="text-sm font-bold text-amber-800 dark:text-amber-300">
-                    Peringatan Diskon
-                </h3>
-                <p class="mt-1 text-xs text-amber-700/80 dark:text-amber-400/80">
-                    Diskon lebih dari 20% pada salah satu item. Quotation akan menunggu persetujuan
-                    Supervisor.
-                </p>
-            </div>
-        </div>
 
         <div class="card">
             <div class="card-body">
@@ -334,6 +313,33 @@
 
 
 
+                    <div id="discountWarning"
+                        class="transition-all duration-500 ease-out transform origin-top overflow-hidden opacity-0 max-h-0 mb-0 flex items-start gap-4 rounded-2xl border border-transparent bg-gradient-to-r from-amber-50/80 to-orange-50/80 p-0 shadow-sm backdrop-blur-sm dark:from-amber-950/20 dark:to-orange-950/20 dark:border-transparent -translate-y-2">
+                        <div
+                            class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400 m-4 mr-0">
+                            <span
+                                class="absolute inline-flex h-full w-full animate-ping rounded-xl bg-amber-400 opacity-20 dark:bg-amber-500"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative h-6 w-6" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 py-4 pr-4">
+                            <h3 class="text-sm font-bold text-amber-900 dark:text-amber-200">
+                                Peringatan Diskon Khusus
+                            </h3>
+                            <p class="mt-1 text-xs leading-relaxed text-amber-800/90 dark:text-amber-300/80">
+                                Terdeteksi diskon lebih dari <span
+                                    class="font-semibold text-amber-950 dark:text-amber-100">20%</span> pada salah satu
+                                item.
+                                Quotation ini memerlukan persetujuan khusus dari <span
+                                    class="font-semibold text-amber-950 dark:text-amber-100">Supervisor</span> sebelum
+                                dapat diproses lebih lanjut.
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Items Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 max-h-[80vh] rounded-2xl shadow-sm"
                         id="barangSection">
@@ -573,18 +579,22 @@
                                                         readonly value="{{ $item->barang->goods_name ?? '' }}">
                                                 @endif
                                             </td>
-                                            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                                @php
+                                                    $rawDiskon = old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0));
+                                                    $diskonVal = is_array($rawDiskon) ? ($rawDiskon[0] ?? 0) : $rawDiskon;
+                                                    $diskonVal = floatval($diskonVal);
+                                                @endphp
                                                 <input type="number" name="discount_percent[]"
                                                     class="diskon-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     min="0" max="100" step="0.01"
-                                                    value="{{ is_array(old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0))) ? old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0))[0] ?? '' : old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0)) }}">
+                                                    value="{{ $diskonVal }}">
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="text" name="keterangan[]" maxlength="255"
                                                     class="keterangan-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                     placeholder="Isi jika diskon > 20%"
-                                                    value="{{ old('keterangan.' . $loop->index, $item->notes) }}"
-                                                    {{ ($item->discount_percent ?? 0) > 20 ? '' : 'readonly' }}>
+                                                    value="{{ old('keterangan.' . $loop->index, $item->notes) }}" {{ ($item->discount_percent ?? 0) > 20 ? '' : 'readonly' }}>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <input type="number" name="quantity[]"
@@ -1200,15 +1210,17 @@
     <script>
         @php
             $customerPics = $customers->mapWithKeys(function ($customer) {
-                return [$customer->id => $customer->pics->map(function ($pic) {
-                    return [
-                        'id' => $pic->id,
-                        'name' => $pic->name,
-                        'position' => $pic->position,
-                        'email' => $pic->email,
-                        'phone' => $pic->phone,
-                    ];
-                })->toArray()];
+                return [
+                    $customer->id => $customer->pics->map(function ($pic) {
+                        return [
+                            'id' => $pic->id,
+                            'name' => $pic->name,
+                            'position' => $pic->position,
+                            'email' => $pic->email,
+                            'phone' => $pic->phone,
+                        ];
+                    })->toArray()
+                ];
             })->toArray();
         @endphp
         window.customerPics = {!! json_encode($customerPics) !!};
@@ -1291,7 +1303,7 @@
         // Handle Add Customer Form Submission
         document.addEventListener('DOMContentLoaded', function () {
             const addCustomerForm = document.getElementById('addCustomerForm');
-            const addCustomerModal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
+            const addCustomerModalEl = document.getElementById('addCustomerModal');
 
             // Populate customer data on page load
             const customerId = document.getElementById('customer_id').value;
@@ -1299,92 +1311,96 @@
                 populateCustomerData(customerId);
             }
 
-            addCustomerForm.addEventListener('submit', async function (e) {
-                e.preventDefault();
+            if (addCustomerForm && addCustomerModalEl) {
+                const addCustomerModal = new bootstrap.Modal(addCustomerModalEl);
 
-                // Clear previous errors
-                document.querySelectorAll('.invalid-feedback').forEach(el => {
-                    el.textContent = '';
-                    el.previousElementSibling.classList.remove('is-invalid');
-                });
+                addCustomerForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
 
-                const formData = new FormData(this);
-
-                try {
-                    const response = await fetch('{{ route('customer.store') }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                    // Clear previous errors
+                    document.querySelectorAll('.invalid-feedback').forEach(el => {
+                        el.textContent = '';
+                        el.previousElementSibling.classList.remove('is-invalid');
                     });
 
-                    const data = await response.json();
+                    const formData = new FormData(this);
 
-                    if (data.success) {
-                        // Add new customer to dropdown
-                        const customerSelect = document.getElementById('customer_id');
-                        const newOption = document.createElement('option');
-                        newOption.value = data.customer.id;
-                        newOption.textContent = data.customer.nama_customer + (data.customer.email ?
-                            ' (' + data.customer.email + ')' : '');
-                        newOption.dataset.email = data.customer.email || '';
-                        newOption.dataset.telepon = data.customer.telepon || '';
-                        newOption.dataset.kota = data.customer.kota || '';
-                        newOption.selected = true;
-                        customerSelect.appendChild(newOption);
-
-                        addCustomerDropdownRow(data.customer);
-
-                        // Populate fields with new customer data
-                        populateCustomerData(data.customer.id);
-
-                        // Reset form and close modal
-                        addCustomerForm.reset();
-                        addCustomerModal.hide();
-
-                        // Show success message
-                        showAlert('success', 'Customer berhasil ditambahkan!');
-                    } else {
-                        showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
-                    }
-                } catch (error) {
-                    if (error.response) {
-                        // Handle validation errors
-                        const errors = error.response.data.errors || {};
-                        Object.keys(errors).forEach(field => {
-                            const errorElement = document.getElementById('error-' + field);
-                            const inputElement = document.getElementById('modal' +
-                                capitalizeFirst(field));
-
-                            if (errorElement) {
-                                errorElement.textContent = errors[field][0];
-                                if (inputElement) {
-                                    inputElement.classList.add('is-invalid');
-                                }
+                    try {
+                        const response = await fetch('{{ route('customer.store') }}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         });
-                    } else {
-                        showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Add new customer to dropdown
+                            const customerSelect = document.getElementById('customer_id');
+                            const newOption = document.createElement('option');
+                            newOption.value = data.customer.id;
+                            newOption.textContent = data.customer.nama_customer + (data.customer.email ?
+                                ' (' + data.customer.email + ')' : '');
+                            newOption.dataset.email = data.customer.email || '';
+                            newOption.dataset.telepon = data.customer.telepon || '';
+                            newOption.dataset.kota = data.customer.kota || '';
+                            newOption.selected = true;
+                            customerSelect.appendChild(newOption);
+
+                            addCustomerDropdownRow(data.customer);
+
+                            // Populate fields with new customer data
+                            populateCustomerData(data.customer.id);
+
+                            // Reset form and close modal
+                            addCustomerForm.reset();
+                            addCustomerModal.hide();
+
+                            // Show success message
+                            showAlert('success', 'Customer berhasil ditambahkan!');
+                        } else {
+                            showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
+                        }
+                    } catch (error) {
+                        if (error.response) {
+                            // Handle validation errors
+                            const errors = error.response.data.errors || {};
+                            Object.keys(errors).forEach(field => {
+                                const errorElement = document.getElementById('error-' + field);
+                                const inputElement = document.getElementById('modal' +
+                                    capitalizeFirst(field));
+
+                                if (errorElement) {
+                                    errorElement.textContent = errors[field][0];
+                                    if (inputElement) {
+                                        inputElement.classList.add('is-invalid');
+                                    }
+                                }
+                            });
+                        } else {
+                            showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
+                        }
                     }
+                });
+
+                // Helper function to capitalize field names
+                function capitalizeFirst(str) {
+                    return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
+                        .toUpperCase());
                 }
-            });
 
-            // Helper function to capitalize field names
-            function capitalizeFirst(str) {
-                return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
-                    .toUpperCase());
-            }
-
-            // Helper function to show alert
-            function showAlert(type, message) {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-                alertDiv.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
+                // Helper function to show alert
+                function showAlert(type, message) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                    alertDiv.innerHTML = `
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
+                }
             }
         });
 
@@ -1415,49 +1431,6 @@
                     });
                 });
             };
-
-
-            function handleBarangChange(select) {
-                const option = select.options[select.selectedIndex];
-                const row = select.closest('.item-row');
-                const namaDisplay = row.querySelector('.barang-nama-display');
-                const diskonInput = row.querySelector('.diskon-input');
-                const hargaInput = row.querySelector('.harga-input');
-
-                if (option.value) {
-                    namaDisplay.value = option.dataset.nama || '';
-                    // Base price from barang
-                    const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
-                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
-
-                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
-                    let useDiskon = defaultDiskon;
-                    if (diskonInput) {
-                        const currentVal = parseFloat(diskonInput.value);
-                        if (!isNaN(currentVal) && currentVal !== 0) {
-                            useDiskon = currentVal;
-                        } else {
-                            diskonInput.value = defaultDiskon;
-                        }
-                    }
-
-                    // Compute jual price (base + 30%) then apply diskon if any
-                    const hargaJual = +(baseHarga * 1.3).toFixed(2);
-                    const finalHarga = +(hargaJual * (1 - (useDiskon / 100))).toFixed(2);
-                    if (hargaInput) {
-                        hargaInput.value = finalHarga.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
-                        initThousandSeparator(hargaInput);
-                    }
-                } else {
-                    namaDisplay.value = '';
-                    if (diskonInput) diskonInput.value = 0;
-                    if (hargaInput) hargaInput.value = '0.00';
-                }
-                calculateTotals();
-            }
 
             function getBarangOptionsHTML() {
                 const firstSelect = document.querySelector('.barang-select');
@@ -1492,7 +1465,6 @@
                 if (selectedOption.value) {
                     namaDisplay.value = selectedOption.dataset.nama || '';
                     const baseHarga = parseFloat(selectedOption.dataset.harga || 0) || 0;
-                    const defaultDiskon = parseFloat(selectedOption.dataset.diskon || 0) || 0;
 
                     // Apply markup 30%
                     const markupHarga = baseHarga * 1.3;
@@ -1501,7 +1473,7 @@
                         maximumFractionDigits: 2
                     });
                     initThousandSeparator(hargaInput);
-                    baseDiskonInput.value = defaultDiskon;
+                    baseDiskonInput.value = 0;
                 } else {
                     namaDisplay.value = '';
                     hargaInput.value = '0.00';
@@ -1715,10 +1687,10 @@
                     diskonInput.addEventListener('input', function () {
                         const val = parseFloat(this.value) || 0;
                         if (val > 20) {
-                            keteranganInput.disabled = false;
+                            keteranganInput.readOnly = false;
                             keteranganInput.setAttribute('required', 'required');
                         } else {
-                            keteranganInput.disabled = true;
+                            keteranganInput.readOnly = true;
                             keteranganInput.value = '';
                             keteranganInput.removeAttribute('required');
                         }
@@ -1985,9 +1957,11 @@
                     return v > 20;
                 });
                 if (anyHigh) {
-                    warning.style.display = 'flex';
+                    warning.classList.remove('opacity-0', 'max-h-0', 'mb-0', '-translate-y-2', 'border-transparent', 'p-0', 'dark:border-transparent');
+                    warning.classList.add('opacity-100', 'max-h-96', 'mb-4', 'translate-y-0', 'border-amber-200', 'p-2', 'dark:border-amber-900/40');
                 } else {
-                    warning.style.display = 'none';
+                    warning.classList.remove('opacity-100', 'max-h-96', 'mb-4', 'translate-y-0', 'border-amber-200', 'p-2', 'dark:border-amber-900/40');
+                    warning.classList.add('opacity-0', 'max-h-0', 'mb-0', '-translate-y-2', 'border-transparent', 'p-0', 'dark:border-transparent');
                 }
             }
 
@@ -2090,8 +2064,11 @@
                     if (diskonInput && keteranganInput) {
                         const val = parseFloat(diskonInput.value) || 0;
                         if (val > 20) {
-                            keteranganInput.disabled = false;
+                            keteranganInput.readOnly = false;
                             keteranganInput.setAttribute('required', 'required');
+                        } else {
+                            keteranganInput.readOnly = true;
+                            keteranganInput.removeAttribute('required');
                         }
                     }
                 }

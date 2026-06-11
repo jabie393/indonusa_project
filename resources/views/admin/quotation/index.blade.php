@@ -31,8 +31,9 @@
 
             <div>
                 {{-- Search --}}
-                <form action="{{ route('sales.quotation.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
-                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                <form action="{{ route('sales.quotation.index') }}" method="GET" class="block pl-2"
+                    data-realtime-table-search data-search-input="#topbar-search" data-search-target="#tableContainer"
+                    data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -269,7 +270,8 @@
                                                 </span>
                                                 <div
                                                     class="pointer-events-none absolute top-0 right-full z-50 mr-3 w-72 rounded-lg border border-red-200 bg-white p-3 text-left text-xs opacity-0 shadow-lg transition-opacity duration-200 group-hover:pointer-events-auto group-hover:opacity-100 dark:border-gray-600 dark:bg-gray-800">
-                                                    <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Items with insufficient stock:</p>
+                                                    <p class="mb-2 font-semibold text-red-600 dark:text-red-400">Items with
+                                                        insufficient stock:</p>
                                                     @foreach ($stokKurangItems as $sk)
                                                         <div
                                                             class="mb-1 border-b border-gray-100 pb-1 last:border-0 dark:border-gray-700">
@@ -282,7 +284,8 @@
                                                                     {{ $sk['satuan'] }}</span>
                                                             </p>
                                                             <p class="text-gray-500 dark:text-gray-400">
-                                                                Available: <span class="font-semibold text-red-600">{{ $sk['stok'] }}
+                                                                Available: <span
+                                                                    class="font-semibold text-red-600">{{ $sk['stok'] }}
                                                                     {{ $sk['satuan'] }}</span>
                                                                 &nbsp;|&nbsp; Shortage: <span
                                                                     class="font-bold text-red-600">{{ $sk['kurang'] }}
@@ -291,7 +294,8 @@
                                                         </div>
                                                     @endforeach
                                                     @if ($stokCukupCount > 0)
-                                                        <p class="mt-1 text-green-600">{{ $stokCukupCount }} other item(s) have sufficient stock</p>
+                                                        <p class="mt-1 text-green-600">{{ $stokCukupCount }} other item(s) have
+                                                            sufficient stock</p>
                                                     @endif
                                                 </div>
                                             </div>
@@ -405,27 +409,6 @@
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                             </a>
-
-                                            {{-- If supervisor rejects --}}
-                                            @if ($ro->status == 'Ditolak Supervisor')
-                                                {{-- Note modal --}}
-                                                <button type="button"
-                                                    class="note-btn group flex h-full cursor-pointer items-center justify-center border-r border-yellow-700 bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:border-yellow-500 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
-                                                    data-catatan="{{ $ro->reason ?? '' }}" title="View Rejection Reason">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-sticky-note h-4 w-4">
-                                                        <path
-                                                            d="M15.5 3H5a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2V8.5L15.5 3Z">
-                                                        </path>
-                                                        <path d="M15 3v6h6"></path>
-                                                    </svg>
-                                                    <span
-                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Note</span>
-                                                </button>
-                                            @endif
-
                                             {{-- Action Dropdown --}}
                                             <button
                                                 class="group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -567,7 +550,6 @@
         </div>
         <div style="position: absolute; width: 0; height: 0; overflow: hidden;">
             @vite(['resources/js/quotation.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
-            @include('admin.quotation.partials.modal-show-note')
         </div>
     </div>
 </x-app-layout>

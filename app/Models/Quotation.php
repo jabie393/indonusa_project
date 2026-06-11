@@ -122,7 +122,6 @@ class Quotation extends Model
             'pending' => 'Pending',
             'open' => 'Open',
             'sent_to_supervisor' => 'Waiting for Supervisor Approval',
-            'approved_supervisor' => 'Approved by Supervisor',
             'rejected_supervisor' => 'Rejected by Supervisor',
             'sent_to_warehouse' => 'Sent to Warehouse',
             'approved_warehouse' => 'Approved by Warehouse',

@@ -58,7 +58,7 @@ class GeneralAffairDashboardController extends Controller
 
         // Approved: Supervisor approved it, or moving through warehouse/completion
         $totalApproved = $applyDateFilter(Quotation::whereHas('order', function($q) {
-            $q->whereIn('status', ['approved_supervisor', 'sent_to_warehouse', 'approved_warehouse']);
+            $q->whereIn('status', ['open', 'sent_to_warehouse', 'approved_warehouse']);
         }))->count();
 
         // Total Orders (All Quotations/Requests)

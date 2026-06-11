@@ -157,7 +157,8 @@ class CustomQuotationController extends Controller
                     'price' => $hargaFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
-                    'description' => $itemData['description'] . ($itemData['keterangan'] ? ' [Note: ' . $itemData['keterangan'] . ']' : ''),
+                    'description' => $itemData['description'] ?? null,
+                    'notes' => $itemData['keterangan'] ?? null,
                     'category' => $itemData['category'],
                     // Pastikan images selalu array dan path tanpa awalan 'public/'
                     'images' => !empty($itemImages) ? array_map(function ($img) {
@@ -196,6 +197,14 @@ class CustomQuotationController extends Controller
         $allowed = array_map('strtolower', ['Supervisor', 'Admin']);
         if ($customQuotation->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
+        }
+
+        if ($userRole === 'supervisor' && request()->route()->getName() !== 'admin.custom-quotation-approval.show') {
+            return redirect()->route('admin.custom-quotation-approval.show', $customQuotation->id);
+        }
+
+        if ($userRole !== 'supervisor' && request()->route()->getName() === 'admin.custom-quotation-approval.show') {
+            return redirect()->route('sales.custom-quotation.show', $customQuotation->id);
         }
 
         $customQuotation->load('items', 'sales');
@@ -311,7 +320,8 @@ class CustomQuotationController extends Controller
                     'price' => $hargaFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
-                    'description' => $itemData['description'] . ($itemData['keterangan'] ? ' [Note: ' . $itemData['keterangan'] . ']' : ''),
+                    'description' => $itemData['description'] ?? null,
+                    'notes' => $itemData['keterangan'] ?? null,
                     'category' => $itemData['category'],
                     'images' => !empty($itemImages) ? array_map(function ($img) {
                         return str_replace('public/', '', $img);
@@ -667,6 +677,7 @@ class CustomQuotationController extends Controller
                     'subtotal' => $cpItem->subtotal,
                     'discount_percent' => $cpItem->discount ?? 0,
                     'images' => $cpItem->images,
+                    'notes' => $cpItem->notes,
                 ]);
 
                 // Create OrderItem (without creating a Barang record yet!)

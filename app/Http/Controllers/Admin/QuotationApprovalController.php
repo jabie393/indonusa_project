@@ -23,49 +23,51 @@ class QuotationApprovalController extends Controller
             ->with(['items', 'sales']);
 
         if ($search) {
-            $quotationsQuery->where(function($q) use ($search) {
+            $quotationsQuery->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'like', "%{$search}%")
-                  ->orWhere('to', 'like', "%{$search}%")
-                  ->orWhere('up', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhereHas('sales', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('to', 'like', "%{$search}%")
+                    ->orWhere('up', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhereHas('sales', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
             });
         }
         $quotations = $quotationsQuery->get();
 
         // Query for Quotations that require supervisor approval
-        $requestOrdersQuery = Quotation::whereHas('order', function($query) {
+        $requestOrdersQuery = Quotation::whereHas('order', function ($query) {
             $query->where('status', 'sent_to_supervisor');
         })->with(['items', 'sales', 'order', 'customer.pics']);
 
         if ($search) {
-            $requestOrdersQuery->where(function($q) use ($search) {
+            $requestOrdersQuery->where(function ($q) use ($search) {
                 $q->where('request_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhereHas('pic', function ($picQuery) use ($search) {
-                      $picQuery->where('name', 'like', "%{$search}%")
-                          ->orWhere('position', 'like', "%{$search}%")
-                          ->orWhere('email', 'like', "%{$search}%")
-                          ->orWhere('phone', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
-                      $picQuery->where('name', 'like', "%{$search}%")
-                          ->orWhere('position', 'like', "%{$search}%")
-                          ->orWhere('email', 'like', "%{$search}%")
-                          ->orWhere('phone', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('sales', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhereHas('pic', function ($picQuery) use ($search) {
+                        $picQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('position', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
+                        $picQuery->where('name', 'like', "%{$search}%")
+                            ->orWhere('position', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('sales', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
             });
         }
         $requestOrders = $requestOrdersQuery->get();
 
         // Tag each item with a type so view can differentiate
-        $quotations->each(function($p) { $p->offer_type = 'custom'; });
-        $requestOrders->each(function($r) { $r->offer_type = 'request_order'; });
+        $quotations->each(function ($p) {
+            $p->offer_type = 'custom'; });
+        $requestOrders->each(function ($r) {
+            $r->offer_type = 'request_order'; });
 
         // Merge and sort by created_at desc
         $all = $quotations->concat($requestOrders)->sortByDesc('created_at')->values();
@@ -93,11 +95,11 @@ class QuotationApprovalController extends Controller
     public function approve(Request $request, Quotation $quotation)
     {
         $order = Order::where('quotation_id', $quotation->id)->first();
-        if (! $order) {
+        if (!$order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
         $order->update([
-            'status' => 'approved_supervisor',
+            'status' => 'open',
             'supervisor_id' => Auth::id(),
             'approved_at' => now(),
         ]);
@@ -118,7 +120,7 @@ class QuotationApprovalController extends Controller
         ]);
 
         $order = Order::where('quotation_id', $quotation->id)->first();
-        if (! $order) {
+        if (!$order) {
             return back()->with(['title' => 'Gagal!', 'text' => 'Order tidak ditemukan.']);
         }
 
@@ -143,37 +145,41 @@ class QuotationApprovalController extends Controller
 
         // Quotations (sent quotation)
         $roQuery = Quotation::with(['order', 'sales', 'customer.pics'])
-            ->whereHas('order', function($q) {
-                $q->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
+            ->whereHas('order', function ($q) {
+                $q->where('status', 'rejected_supervisor')
+                    ->orWhere(function ($sub) {
+                        $sub->where('status', 'open')
+                            ->whereNotNull('supervisor_id');
+                    });
             });
 
         if ($search) {
-            $roQuery->where(function($q) use ($search) {
+            $roQuery->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'LIKE', "%{$search}%")
-                  ->orWhere('request_number', 'LIKE', "%{$search}%")
-                  ->orWhere('customer_name', 'LIKE', "%{$search}%")
-                  ->orWhere('grand_total', 'LIKE', "%{$search}%")
-                  ->orWhere('reason', 'LIKE', "%{$search}%")
-                  ->orWhereHas('order', function ($orderQuery) use ($search) {
-                      $orderQuery->where('status', 'LIKE', "%{$search}%")
-                          ->orWhere('reason', 'LIKE', "%{$search}%")
-                          ->orWhereDate('approved_at', $search)
-                          ->orWhere('approved_at', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
-                      $picQuery->where('name', 'LIKE', "%{$search}%")
-                          ->orWhere('position', 'LIKE', "%{$search}%")
-                          ->orWhere('email', 'LIKE', "%{$search}%")
-                          ->orWhere('phone', 'LIKE', "%{$search}%");
-                  })
-                  ->orWhereHas('sales', function($sq) use ($search) {
-                      $sq->where('name', 'LIKE', "%{$search}%")
-                          ->orWhere('email', 'LIKE', "%{$search}%");
-                  });
+                    ->orWhere('request_number', 'LIKE', "%{$search}%")
+                    ->orWhere('customer_name', 'LIKE', "%{$search}%")
+                    ->orWhere('grand_total', 'LIKE', "%{$search}%")
+                    ->orWhere('reason', 'LIKE', "%{$search}%")
+                    ->orWhereHas('order', function ($orderQuery) use ($search) {
+                        $orderQuery->where('status', 'LIKE', "%{$search}%")
+                            ->orWhere('reason', 'LIKE', "%{$search}%")
+                            ->orWhereDate('approved_at', $search)
+                            ->orWhere('approved_at', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
+                        $picQuery->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('position', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%")
+                            ->orWhere('phone', 'LIKE', "%{$search}%");
+                    })
+                    ->orWhereHas('sales', function ($sq) use ($search) {
+                        $sq->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
-        $requestOrders = $roQuery->get()->map(function($ro) {
+        $requestOrders = $roQuery->get()->map(function ($ro) {
             return [
                 'type' => 'request_order',
                 'id' => $ro->id,
@@ -194,25 +200,25 @@ class QuotationApprovalController extends Controller
             ->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
 
         if ($search) {
-            $cpQuery->where(function($q) use ($search) {
+            $cpQuery->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'LIKE', "%{$search}%")
-                  ->orWhere('our_ref', 'LIKE', "%{$search}%")
-                  ->orWhere('to', 'LIKE', "%{$search}%")
-                  ->orWhere('up', 'LIKE', "%{$search}%")
-                  ->orWhere('email', 'LIKE', "%{$search}%")
-                  ->orWhere('grand_total', 'LIKE', "%{$search}%")
-                  ->orWhere('status', 'LIKE', "%{$search}%")
-                  ->orWhere('reason', 'LIKE', "%{$search}%")
-                  ->orWhereDate('approved_at', $search)
-                  ->orWhere('approved_at', 'LIKE', "%{$search}%")
-                  ->orWhereHas('sales', function($sq) use ($search) {
-                      $sq->where('name', 'LIKE', "%{$search}%")
-                          ->orWhere('email', 'LIKE', "%{$search}%");
-                  });
+                    ->orWhere('our_ref', 'LIKE', "%{$search}%")
+                    ->orWhere('to', 'LIKE', "%{$search}%")
+                    ->orWhere('up', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('grand_total', 'LIKE', "%{$search}%")
+                    ->orWhere('status', 'LIKE', "%{$search}%")
+                    ->orWhere('reason', 'LIKE', "%{$search}%")
+                    ->orWhereDate('approved_at', $search)
+                    ->orWhere('approved_at', 'LIKE', "%{$search}%")
+                    ->orWhereHas('sales', function ($sq) use ($search) {
+                        $sq->where('name', 'LIKE', "%{$search}%")
+                            ->orWhere('email', 'LIKE', "%{$search}%");
+                    });
             });
         }
 
-        $customQuotations = $cpQuery->get()->map(function($cp) {
+        $customQuotations = $cpQuery->get()->map(function ($cp) {
             return [
                 'type' => 'custom_quotation',
                 'id' => $cp->id,
@@ -229,7 +235,7 @@ class QuotationApprovalController extends Controller
         });
 
         // Gabungkan dan urutkan berdasarkan tanggal terbaru
-        $all = $requestOrders->concat($customQuotations)->sortByDesc(function($item) {
+        $all = $requestOrders->concat($customQuotations)->sortByDesc(function ($item) {
             return $item['raw_date'] ? (string) $item['raw_date'] : '';
         })->values();
 
@@ -237,7 +243,7 @@ class QuotationApprovalController extends Controller
         $perPage = $request->input('perPage', 10);
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $perPage;
-        
+
         $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
             $all->slice($offset, $perPage),
             $all->count(),
@@ -283,11 +289,5 @@ class QuotationApprovalController extends Controller
         $order->save();
 
         return redirect()->route('orders.history')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
-    }
-
-    public function incomingHistory()
-    {
-        $orders = Order::where('status', '!=', 'pending')->with(['items.barang','sales','supervisor','warehouse'])->latest()->paginate(10);
-        return view('admin.incoming-orders.history', compact('orders'));
     }
 }

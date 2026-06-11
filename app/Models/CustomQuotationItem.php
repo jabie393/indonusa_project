@@ -19,6 +19,7 @@ class CustomQuotationItem extends Model
         'subtotal',
         'discount',
         'description',
+        'notes',
         'images',
     ];
 

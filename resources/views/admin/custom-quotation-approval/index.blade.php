@@ -46,7 +46,7 @@
                     <tbody class="text-nowrap">
                         @forelse($quotations as $index => $quotation)
                             @php
-                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('sales.quotation.show', $quotation->id);
+                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('admin.quotation-approval.show', $quotation->id);
 
                                 $maxDiskon = $quotation->offer_type === 'custom' ? ($quotation->items->max('diskon') ?? 0) : ($quotation->items->max('diskon_percent') ?? 0);
 
@@ -268,7 +268,7 @@
                                             class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out divide-x divide-gray-200 dark:divide-gray-600 dark:border-gray-600 dark:bg-gray-700">
                                             {{-- Detail --}}
                                             @php
-                                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('sales.quotation.show', $quotation->id);
+                                                $detailRoute = $quotation->offer_type === 'custom' ? route('admin.custom-quotation-approval.show', $quotation->id) : route('admin.quotation-approval.show', $quotation->id);
                                             @endphp
                                             <a href="{{ $detailRoute }}"
                                                 class="group/btn flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

@@ -22,7 +22,8 @@ return new class extends Migration
             $table->decimal('price', 15, 2);
             $table->decimal('subtotal', 15, 2);
             $table->unsignedTinyInteger('discount')->default(0); // diskon dalam persen
-            $table->string('description')->nullable(); // alasan diskon
+            $table->string('description')->nullable();
+            $table->string('notes')->nullable();
             $table->json('images')->nullable();
             $table->timestamps();
 

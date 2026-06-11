@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -24,7 +23,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('discount_percent')->default(0);
             $table->string('product_category')->nullable();
             $table->json('images')->nullable();
-            // $table->json('item_images')->nullable();
+            $table->string('notes')->nullable();
             $table->timestamps();
 
             $table->foreign('quotation_id')->references('id')->on('quotations')->onDelete('cascade');

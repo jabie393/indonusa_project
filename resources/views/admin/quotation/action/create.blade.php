@@ -229,6 +229,28 @@
                     </div>
 
 
+                    <div id="discountWarning"
+                        class="transition-all duration-500 ease-out transform origin-top overflow-hidden opacity-0 max-h-0 mb-0 flex items-start gap-4 rounded-2xl border border-transparent bg-gradient-to-r from-amber-50/80 to-orange-50/80 p-0 shadow-sm backdrop-blur-sm dark:from-amber-950/20 dark:to-orange-950/20 dark:border-transparent -translate-y-2">
+                        <div
+                            class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/40 dark:text-amber-400 m-4 mr-0">
+                            <span class="absolute inline-flex h-full w-full animate-ping rounded-xl bg-amber-400 opacity-20 dark:bg-amber-500"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 py-4 pr-4">
+                            <h3 class="text-sm font-bold text-amber-900 dark:text-amber-200">
+                                Peringatan Diskon Khusus
+                            </h3>
+                            <p class="mt-1 text-xs leading-relaxed text-amber-800/90 dark:text-amber-300/80">
+                                Terdeteksi diskon lebih dari <span class="font-semibold text-amber-950 dark:text-amber-100">20%</span> pada salah satu item. 
+                                Quotation ini memerlukan persetujuan khusus dari <span class="font-semibold text-amber-950 dark:text-amber-100">Supervisor</span> sebelum dapat diproses lebih lanjut.
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Items Section -->
                     <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 max-h-[80vh] rounded-2xl shadow-sm" id="barangSection"
                         style="display: flex;">
@@ -247,10 +269,6 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                            <div id="discountWarning" class="alert alert-warning m-4" style="display:none;">
-                                Diskon lebih dari 20% pada salah satu item. Quotation akan menunggu persetujuan
-                                Supervisor.
-                            </div>
                             <table class="h-full w-full border-collapse" id="itemsTable">
                                 <thead>
                                     <tr class="">
@@ -412,7 +430,7 @@
                                                 min="1" value="1" required>
                                             <div class="stok-info mt-1 hidden text-xs">
                                                 <span class="stok-ok hidden font-medium text-green-600"></span>
-                                                <span class="stok-warn hidden font-semibold text-red-500">âš  Stok kurang! Tersedia: <span class="stok-angka font-bold"></span></span>
+                                                <span class="stok-warn hidden font-semibold text-red-500">Stok kurang! Tersedia: <span class="stok-angka font-bold"></span></span>
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -868,9 +886,16 @@
     <script>
         // Update kategori barang otomatis saat barang dipilih
         function updateKategoriBarang(select) {
-            var kategoriInput = select.closest('tr').querySelector('.kategori-barang-display');
-            var selectedOption = select.options[select.selectedIndex];
-            kategoriInput.value = selectedOption.getAttribute('data-kategori') || '';
+            const row = select.closest('tr');
+            if (!row) return;
+            const kategoriSelect = row.querySelector('.kategori-barang-select');
+            const selectedOption = select.options[select.selectedIndex];
+            if (selectedOption && kategoriSelect) {
+                const kategori = selectedOption.getAttribute('data-kategori') || '';
+                if (kategori) {
+                    kategoriSelect.value = kategori;
+                }
+            }
         }
 
         @php
@@ -966,94 +991,97 @@
         // Handle Add Customer Form Submission
         document.addEventListener('DOMContentLoaded', function() {
             const addCustomerForm = document.getElementById('addCustomerForm');
-            const addCustomerModal = new bootstrap.Modal(document.getElementById('addCustomerModal'));
+            const addCustomerModalEl = document.getElementById('addCustomerModal');
+            if (addCustomerForm && addCustomerModalEl) {
+                const addCustomerModal = new bootstrap.Modal(addCustomerModalEl);
 
-            addCustomerForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
+                addCustomerForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
 
-                // Clear previous errors
-                document.querySelectorAll('.invalid-feedback').forEach(el => {
-                    el.textContent = '';
-                    el.previousElementSibling.classList.remove('is-invalid');
-                });
-
-                const formData = new FormData(this);
-
-                try {
-                    const response = await fetch('{{ route('customer.store') }}', {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
+                    // Clear previous errors
+                    document.querySelectorAll('.invalid-feedback').forEach(el => {
+                        el.textContent = '';
+                        el.previousElementSibling.classList.remove('is-invalid');
                     });
 
-                    const data = await response.json();
+                    const formData = new FormData(this);
 
-                    if (data.success) {
-                        // Add new customer to dropdown
-                        const customerSelect = document.getElementById('customer_id');
-                        const newOption = document.createElement('option');
-                        newOption.value = data.customer.id;
-                        newOption.textContent = data.customer.nama_customer + (data.customer.email ?
-                            ' (' + data.customer.email + ')' : '');
-                        newOption.dataset.email = data.customer.email || '';
-                        newOption.dataset.telepon = data.customer.telepon || '';
-                        newOption.dataset.kota = data.customer.kota || '';
-                        newOption.selected = true;
-                        customerSelect.appendChild(newOption);
-
-                        addCustomerDropdownRow(data.customer);
-
-                        // Populate fields with new customer data
-                        populateCustomerData(data.customer.id);
-
-                        // Reset form and close modal
-                        addCustomerForm.reset();
-                        addCustomerModal.hide();
-
-                        // Show success message
-                        showAlert('success', 'Customer berhasil ditambahkan!');
-                    } else {
-                        showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
-                    }
-                } catch (error) {
-                    if (error.response) {
-                        // Handle validation errors
-                        const errors = error.response.data.errors || {};
-                        Object.keys(errors).forEach(field => {
-                            const errorElement = document.getElementById('error-' + field);
-                            const inputElement = document.getElementById('modal' +
-                                capitalizeFirst(field));
-
-                            if (errorElement) {
-                                errorElement.textContent = errors[field][0];
-                                if (inputElement) {
-                                    inputElement.classList.add('is-invalid');
-                                }
+                    try {
+                        const response = await fetch('{{ route('customer.store') }}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         });
-                    } else {
-                        showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Add new customer to dropdown
+                            const customerSelect = document.getElementById('customer_id');
+                            const newOption = document.createElement('option');
+                            newOption.value = data.customer.id;
+                            newOption.textContent = data.customer.nama_customer + (data.customer.email ?
+                                ' (' + data.customer.email + ')' : '');
+                            newOption.dataset.email = data.customer.email || '';
+                            newOption.dataset.telepon = data.customer.telepon || '';
+                            newOption.dataset.kota = data.customer.kota || '';
+                            newOption.selected = true;
+                            customerSelect.appendChild(newOption);
+
+                            addCustomerDropdownRow(data.customer);
+
+                            // Populate fields with new customer data
+                            populateCustomerData(data.customer.id);
+
+                            // Reset form and close modal
+                            addCustomerForm.reset();
+                            addCustomerModal.hide();
+
+                            // Show success message
+                            showAlert('success', 'Customer berhasil ditambahkan!');
+                        } else {
+                            showAlert('danger', 'Terjadi kesalahan. Silakan coba lagi.');
+                        }
+                    } catch (error) {
+                        if (error.response) {
+                            // Handle validation errors
+                            const errors = error.response.data.errors || {};
+                            Object.keys(errors).forEach(field => {
+                                const errorElement = document.getElementById('error-' + field);
+                                const inputElement = document.getElementById('modal' +
+                                    capitalizeFirst(field));
+
+                                if (errorElement) {
+                                    errorElement.textContent = errors[field][0];
+                                    if (inputElement) {
+                                        inputElement.classList.add('is-invalid');
+                                    }
+                                }
+                            });
+                        } else {
+                            showAlert('danger', 'Terjadi kesalahan jaringan. Silakan coba lagi.');
+                        }
                     }
+                });
+
+                // Helper function to capitalize field names
+                function capitalizeFirst(str) {
+                    return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
+                        .toUpperCase());
                 }
-            });
 
-            // Helper function to capitalize field names
-            function capitalizeFirst(str) {
-                return str.charAt(0).toUpperCase() + str.slice(1).replace(/_(.)/g, (match, letter) => letter
-                    .toUpperCase());
-            }
-
-            // Helper function to show alert
-            function showAlert(type, message) {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-                alertDiv.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
+                // Helper function to show alert
+                function showAlert(type, message) {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+                    alertDiv.innerHTML = `
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.querySelector('.container-fluid').insertBefore(alertDiv, document.querySelector('.card'));
+                }
             }
         });
 
@@ -1199,18 +1227,11 @@
 
                     // Base price from barang
                     const baseHarga = parseFloat(option.dataset.harga || 0) || 0;
-                    const defaultDiskon = parseFloat(option.dataset.diskon || '0') || 0;
 
-                    // Determine which diskon to use: existing input value (if non-zero) or default from barang
-                    let useDiskon = defaultDiskon;
                     if (diskonInput) {
-                        const currentVal = parseFloat(diskonInput.value);
-                        if (!isNaN(currentVal) && currentVal !== 0) {
-                            useDiskon = currentVal;
-                        } else {
-                            diskonInput.value = defaultDiskon;
-                        }
+                        diskonInput.value = 0;
                     }
+                    let useDiskon = 0;
 
                     // Compute jual price (base + 30%)
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
@@ -1608,14 +1629,17 @@
 
             function updateDiscountWarning() {
                 const warning = document.getElementById('discountWarning');
+                if (!warning) return;
                 const anyHigh = Array.from(document.querySelectorAll('.diskon-input')).some(inp => {
                     const v = parseFloat(inp.value) || 0;
                     return v > 20;
                 });
                 if (anyHigh) {
-                    warning.style.display = 'block';
+                    warning.classList.remove('opacity-0', 'max-h-0', 'mb-0', '-translate-y-2', 'border-transparent', 'p-0', 'dark:border-transparent');
+                    warning.classList.add('opacity-100', 'max-h-96', 'mb-4', 'translate-y-0', 'border-amber-200', 'p-2', 'dark:border-amber-900/40');
                 } else {
-                    warning.style.display = 'none';
+                    warning.classList.remove('opacity-100', 'max-h-96', 'mb-4', 'translate-y-0', 'border-amber-200', 'p-2', 'dark:border-amber-900/40');
+                    warning.classList.add('opacity-0', 'max-h-0', 'mb-0', '-translate-y-2', 'border-transparent', 'p-0', 'dark:border-transparent');
                 }
             }
             // Enable/disable and require keterangan input depending on diskon value for a specific row

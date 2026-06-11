@@ -301,11 +301,15 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 // Shared Detail and PDF views for Quotation (registered below specific routes to avoid parameter clashes)
 Route::middleware(['auth'])->group(function () {
     Route::get('/detail-quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');
+    Route::get('/detail-quotation-approval/{quotation}', [QuotationController::class, 'show'])->name('admin.quotation-approval.show');
     Route::get('/quotation/{quotation}/pdf', [QuotationController::class, 'pdf'])->name('sales.quotation.pdf');
 
     // Fallback redirect routes for old URLs to prevent MethodNotAllowedHttpException on old bookmarks/refreshes
     Route::get('/quotation/{quotation}', function ($quotation) {
         return redirect()->route('sales.quotation.show', $quotation);
+    });
+    Route::get('/quotation-approval/{quotation}', function ($quotation) {
+        return redirect()->route('admin.quotation-approval.show', $quotation);
     });
     Route::get('/custom-quotation/{customQuotation}', function ($customQuotation) {
         return redirect()->route('sales.custom-quotation.show', $customQuotation);

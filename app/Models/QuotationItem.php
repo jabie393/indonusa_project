@@ -29,7 +29,7 @@ class QuotationItem extends Model
         'quantity' => 'integer',
         'price' => 'decimal:2',
         'subtotal' => 'decimal:2',
-        'discount_percent' => 'decimal:2',
+        'discount_percent' => 'float',
         'ppn_percent' => 'decimal:2',
         'images' => 'array',
         'item_images' => 'array',

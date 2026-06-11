@@ -219,7 +219,12 @@
                                 <tr>
                                     <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                     <td class="border px-2 py-1">{{ $item->product_name }}</td>
-                                    <td class="border px-2 py-1">{{ $item->description ?? '-' }}</td>
+                                    <td class="border px-2 py-1">
+                                        <div>{{ $item->description ?? '-' }}</div>
+                                        @if ($item->notes)
+                                            <div class="italic text-gray-500 mt-1 text-[8pt]">Note: {{ $item->notes }}</div>
+                                        @endif
+                                    </td>
                                     <td class="border px-2 py-1 text-center">{{ $item->qty }} {{ $item->unit }}</td>
                                     <td class="border px-2 py-1">
                                         <div class="flex justify-between">

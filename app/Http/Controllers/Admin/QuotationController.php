@@ -118,6 +118,8 @@ class QuotationController extends Controller
             'item_images.*.*' => 'nullable|image|max:5120',
             'custom_product_name' => 'nullable|array',
             'custom_product_name.*' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|array',
+            'keterangan.*' => 'nullable|string|max:255',
         ], [
             'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
@@ -145,6 +147,7 @@ class QuotationController extends Controller
                 'price' => $hargaSatuan,
                 'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
+                'notes' => $validated['keterangan'][$i] ?? null,
             ];
             if ($diskon > $maxDiskon) {
                 $maxDiskon = $diskon;
@@ -217,6 +220,7 @@ class QuotationController extends Controller
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
                     'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
+                    'notes' => $item['notes'] ?? null,
                 ];
 
                 QuotationItem::create($itemData);
@@ -273,6 +277,14 @@ class QuotationController extends Controller
         $allowed = array_map('strtolower', ['Supervisor', 'Warehouse', 'Admin']);
         if ($requestOrder->sales_id !== Auth::id() && !in_array($userRole, $allowed)) {
             abort(403);
+        }
+
+        if ($userRole === 'supervisor' && request()->route()->getName() !== 'admin.quotation-approval.show') {
+            return redirect()->route('admin.quotation-approval.show', $quotation->id);
+        }
+
+        if ($userRole !== 'supervisor' && request()->route()->getName() === 'admin.quotation-approval.show') {
+            return redirect()->route('sales.quotation.show', $quotation->id);
         }
 
         if ($requestOrder->expired_at && $requestOrder->created_at) {
@@ -434,6 +446,8 @@ class QuotationController extends Controller
             'existing_item_images' => 'nullable|array',
             'existing_item_images.*' => 'nullable|array',
             'existing_item_images.*.*' => 'nullable|string',
+            'keterangan' => 'nullable|array',
+            'keterangan.*' => 'nullable|string|max:255',
         ], [
             'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
@@ -508,6 +522,7 @@ class QuotationController extends Controller
                 'price' => $harga,
                 'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
+                'notes' => $validated['keterangan'][$i] ?? null,
             ];
         }
 
@@ -580,6 +595,7 @@ class QuotationController extends Controller
                     'subtotal' => $item['subtotal'],
                     'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                     'discount_percent' => $item['discount_percent'] ?? 0,
+                    'notes' => $item['notes'] ?? null,
                 ];
 
                 QuotationItem::create($itemData);

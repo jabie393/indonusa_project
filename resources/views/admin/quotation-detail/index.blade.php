@@ -59,6 +59,8 @@
                 $bannerKey = $orderStatus;
                 if (in_array($orderStatus, ['pending_approval', 'sent'])) {
                     $bannerKey = 'sent_to_supervisor';
+                } elseif ($orderStatus === 'open' && !empty($requestOrder->order?->supervisor_id)) {
+                    $bannerKey = 'approved_supervisor';
                 }
 
                 $bannerConfig = [
@@ -725,14 +727,21 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-5">
-                                        {{ $item->barang->description ?? $item->custom_product_description ?? '-' }}
+                                        <div class="flex flex-col space-y-0.5">
+                                            <span>{{ $item->barang->description ?? $item->custom_product_description ?? '-' }}</span>
+                                            @if ($item->notes)
+                                                <span class="text-xs italic text-gray-500 dark:text-gray-400">
+                                                    Note: {{ $item->notes }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php $dk = $item->discount_percent ?? ($item->barang->discount_percent ?? 0); @endphp
                                         @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="text-xs font-bold text-green-500">
-                                                    {{ number_format($dk, 2, '.', ',') }}%
+                                                    {{ floatval($dk) }}%
                                                 </span>
                                                 @if ($dk > 20)
                                                     <span

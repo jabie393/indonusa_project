@@ -59,6 +59,8 @@
                 $bannerKey = $orderStatus;
                 if (in_array($orderStatus, ['pending_approval', 'sent'])) {
                     $bannerKey = 'sent_to_supervisor';
+                } elseif ($orderStatus === 'open' && !empty($requestOrder->order?->supervisor_id)) {
+                    $bannerKey = 'approved_supervisor';
                 }
 
                 $bannerConfig = [
@@ -692,7 +694,7 @@
                                         @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="text-xs font-bold text-green-500">
-                                                    {{ number_format($dk, 2, '.', ',') }}%
+                                                    {{ floatval($dk) }}%
                                                 </span>
                                                 @if ($dk > 20)
                                                     <span

@@ -154,20 +154,14 @@
                         $items = is_array($oldItems)
                             ? $oldItems
                             : $customQuotation->items->map(function ($item) {
-                                $desc = $item->description;
-                                $ket = '';
-                                if (preg_match('/^(.*?)\s*\[Note:\s*(.*?)\]$/', $desc, $matches)) {
-                                    $desc = $matches[1];
-                                    $ket = $matches[2];
-                                }
                                 return [
                                     'nama_barang' => $item->product_name,
-                                    'description' => $desc,
+                                    'description' => $item->description,
                                     'qty' => $item->qty,
                                     'satuan' => $item->unit,
                                     'harga' => $item->price,
                                     'diskon' => $item->discount,
-                                    'keterangan' => $ket,
+                                    'keterangan' => $item->notes,
                                     'subtotal' => $item->subtotal,
                                     'category' => $item->category,
                                     'existing_images' => is_array($item->images) ? $item->images : ($item->images ? [$item->images] : []),

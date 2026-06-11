@@ -234,6 +234,12 @@ class SalesOrderController extends Controller
                       ->orWhere('no_po',             'like', "%$search%");
                 })
                 ->where('sales_id', Auth::id())
+                ->where(function($q) {
+                    $q->whereDoesntHave('order')
+                      ->orWhereHas('order', function($o) {
+                          $o->where('status', '!=', 'rejected_supervisor');
+                      });
+                })
                 ->with(['order.batches', 'items', 'customer.pics'])
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
@@ -243,6 +249,12 @@ class SalesOrderController extends Controller
                 ]));
         } else {
             $requestOrders = \App\Models\Quotation::where('sales_id', Auth::id())
+                ->where(function($q) {
+                    $q->whereDoesntHave('order')
+                      ->orWhereHas('order', function($o) {
+                          $o->where('status', '!=', 'rejected_supervisor');
+                      });
+                })
                 ->with(['order.batches', 'items', 'customer.pics'])
                 ->latest()
                 ->paginate($perPage)
@@ -509,6 +521,12 @@ class SalesOrderController extends Controller
         }
 
         $results = \App\Models\Quotation::where('sales_id', Auth::id())
+            ->where(function($q) {
+                $q->whereDoesntHave('order')
+                  ->orWhereHas('order', function($o) {
+                      $o->where('status', '!=', 'rejected_supervisor');
+                  });
+            })
             ->where(function ($q) use ($search) {
                 $q->where('request_number',  'like', "%$search%")
                   ->orWhere('quotation_number','like', "%$search%")

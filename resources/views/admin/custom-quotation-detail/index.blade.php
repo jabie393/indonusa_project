@@ -462,14 +462,21 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-5">
-                                        {{ $item->description ?? '-' }}
+                                        <div class="flex flex-col space-y-0.5">
+                                            <span>{{ $item->description ?? '-' }}</span>
+                                            @if ($item->notes)
+                                                <span class="text-xs italic text-gray-500 dark:text-gray-400">
+                                                    Note: {{ $item->notes }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php $dk = $item->discount ?? 0; @endphp
                                         @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="text-xs font-bold text-green-500">
-                                                    {{ number_format($dk, 2, '.', ',') }}%
+                                                    {{ floatval($dk) }}%
                                                 </span>
                                                 @if ($dk > 20)
                                                     <span class="mt-0.5 text-[9px] font-bold uppercase tracking-wider text-red-500">Approval Required</span>
