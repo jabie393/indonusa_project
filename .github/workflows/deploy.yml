@@ -23,11 +23,11 @@ jobs:
     steps:
       # 1️ Checkout kode dari GitHub
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # 2️ Setup Node.js (untuk Vite build)
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
@@ -98,7 +98,7 @@ jobs:
 
       # 9️ Backup versi sebelumnya sebelum upload
       - name: Backup existing deployment
-        uses: appleboy/ssh-action@v0.1.6
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ubuntu
@@ -111,7 +111,7 @@ jobs:
 
       # 10️ Upload file ke server via SCP (to temp folder)
       - name: Upload Files via SCP (to temp folder)
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -132,7 +132,7 @@ jobs:
 
       # 11️ Pindahkan dari temp ke folder sebenarnya
       - name: Move uploaded files to webroot
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -145,7 +145,7 @@ jobs:
 
       # 12️ Jalankan artisan commands di server
       - name: Run Laravel Commands
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -163,7 +163,7 @@ jobs:
 
       # 13️ Fix File Permissions
       - name: Fix File Permissions
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -203,7 +203,7 @@ jobs:
       # 15️ Rollback otomatis jika gagal
       - name: Rollback if failed
         if: failure()
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
