@@ -161,8 +161,14 @@
                             })
                             ->doesntHave('procurementOfGoods')
                             ->count();
+
+                        $goodsInProcurementRevisionCount = \App\Models\ProcurementOfGoods::whereHas('items.procurementArrivalRequests', function ($query) {
+                            $query->where('status', 'rejected');
+                        })->count();
+
+                        $totalProcurementCount = $goodsInProcurementPendingCount + $goodsInProcurementRevisionCount;
                     @endphp
-                    @if ($goodsInProcurementPendingCount > 0)
+                    @if ($totalProcurementCount > 0)
                         <span
                             class="absolute right-3 top-3 z-20 flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-gray-800"></span>
                     @endif

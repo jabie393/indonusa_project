@@ -31,6 +31,12 @@
                         })
                         ->doesntHave('procurementOfGoods')
                         ->count();
+
+                    $goodsInProcurementRevisionCount = \App\Models\ProcurementOfGoods::whereHas('items.procurementArrivalRequests', function ($query) {
+                        $query->where('status', 'rejected');
+                    })->count();
+
+                    $totalGoodsInProcurementCount = $goodsInProcurementPendingCount + $goodsInProcurementRevisionCount;
                 @endphp
                 <li>
                     <a href="{{ route('goods-in.index') }}"
@@ -46,7 +52,7 @@
                                 class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
                                 In</span>
                         </div>
-                        @if ($goodsInProcurementPendingCount > 0)
+                        @if ($totalGoodsInProcurementCount > 0)
                             <span
                                 class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                         @endif
@@ -137,8 +143,12 @@
                                     </g>
                                 </svg>
                                 <a href="{{ route('general-affair.procurement.index') }}"
-                                    class="group ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
+                                    class="group relative ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
                                     <span class="">Procurement</span>
+                                    @if ($totalGoodsInProcurementCount > 0)
+                                        <span
+                                            class="absolute right-3 z-20 flex h-3 w-3 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
+                                    @endif
                                 </a>
                             </li>
                         </ul>

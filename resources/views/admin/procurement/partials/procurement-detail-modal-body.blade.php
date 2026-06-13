@@ -146,7 +146,7 @@
                                     <!-- Qty Arriving input -->
                                     <td class="px-4 py-2">
                                         @php
-                                            $alreadyPending = \App\Models\GoodsReceipt::where('procurement_of_goods_item_id', $item->id)
+                                            $alreadyPending = \App\Models\ProcurementArrivalRequest::where('procurement_of_goods_item_id', $item->id)
                                                 ->where('status', 'pending')
                                                 ->sum('quantity');
                                             $remaining = max(0, $item->qty_ordered - $item->qty_received);
@@ -213,7 +213,7 @@
             @php
                 $allReceipts = collect();
                 foreach($procurement->items as $item) {
-                    foreach($item->goodsReceipts as $receipt) {
+                    foreach($item->procurementArrivalRequests as $receipt) {
                         $receipt->goods_name = $item->goods->goods_name;
                         $receipt->goods_code = $item->goods->goods_code;
                         $receipt->goods_description = $item->goods->description;
@@ -287,7 +287,7 @@
                                                 $procItem = $receipt->procurementOfGoodsItem;
                                                 $otherPending = 0;
                                                 if ($procItem) {
-                                                    $otherPending = \App\Models\GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                                                    $otherPending = \App\Models\ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                                                         ->where('id', '!=', $receipt->id)
                                                         ->where('status', 'pending')
                                                         ->sum('quantity');

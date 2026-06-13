@@ -10,20 +10,22 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('goods_receipts', function (Blueprint $table) {
+        Schema::create('procurement_arrival_requests', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('procurement_of_goods_item_id');
             $table->unsignedBigInteger('good_id');
-            $table->unsignedBigInteger('supplier_id'); // Relasi ke users (Role: General Affair)
+            $table->unsignedBigInteger('supplier_id'); // GA who recorded
             $table->timestamp('received_at');
-            $table->unsignedBigInteger('approved_by');
             $table->integer('quantity');
-            $table->decimal('unit_cost', 15, 2); // CATATAN harga beli
+            $table->decimal('unit_cost', 15, 2);
+            $table->string('status')->default('pending'); // pending, approved, rejected
+            $table->text('reject_reason')->nullable();
             $table->timestamps();
 
             // Foreign keys
+            $table->foreign('procurement_of_goods_item_id', 'par_pog_item_foreign')->references('id')->on('procurement_of_goods_items')->onDelete('cascade');
             $table->foreign('good_id')->references('id')->on('goods')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -32,6 +34,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('goods_receipts');
+        Schema::dropIfExists('procurement_arrival_requests');
     }
 };

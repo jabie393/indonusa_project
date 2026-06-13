@@ -38,8 +38,8 @@ class ProcurementOfGoodsItem extends Model
         return $this->belongsTo(Barang::class, 'goods_id');
     }
 
-    public function goodsReceipts()
+    public function procurementArrivalRequests()
     {
-        return $this->hasMany(GoodsReceipt::class, 'procurement_of_goods_item_id');
+        return $this->hasMany(ProcurementArrivalRequest::class, 'procurement_of_goods_item_id');
     }
 }

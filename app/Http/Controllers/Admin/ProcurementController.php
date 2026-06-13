@@ -9,6 +9,7 @@ use App\Models\CustomQuotationItem;
 use App\Models\ProcurementOfGoods;
 use App\Models\ProcurementOfGoodsItem;
 use App\Models\GoodsReceipt;
+use App\Models\ProcurementArrivalRequest;
 use App\Models\Barang;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,7 @@ class ProcurementController extends Controller
         $search = $request->input('search');
 
         // 1. Daftar Procurement yang sudah dibuat
-        $procurementQuery = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts'])
+        $procurementQuery = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('procurement_number', 'like', "%{$search}%")
@@ -233,15 +234,15 @@ class ProcurementController extends Controller
                 ]);
 
                 if ($validated['type'] === 'full') {
-                    // Buat GoodsReceipt penuh otomatis
-                    GoodsReceipt::create([
+                    // Buat ProcurementArrivalRequest penuh otomatis
+                    ProcurementArrivalRequest::create([
                         'good_id' => $barang->id,
                         'procurement_of_goods_item_id' => $procItem->id,
                         'supplier_id' => Auth::id(), // GA user who records
                         'received_at' => now(),
-                        'approved_by' => null, // Waiting Warehouse approval
                         'quantity' => $itemData['qty_ordered'],
                         'unit_cost' => $itemData['buy_price'],
+                        'status' => 'pending',
                     ]);
                 }
             }
@@ -256,7 +257,7 @@ class ProcurementController extends Controller
                 ]);
             } else {
                 // Partial - load detail HTML to be rendered in modal
-                $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts.approver']);
+                $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests.supplier']);
                 $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
                 return response()->json([
                     'success' => true,
@@ -278,7 +279,7 @@ class ProcurementController extends Controller
      */
     public function detailHtml(ProcurementOfGoods $procurement)
     {
-        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.goodsReceipts.approver']);
+        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests.supplier']);
         return view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'));
     }
 
@@ -311,7 +312,7 @@ class ProcurementController extends Controller
                 $procItem = ProcurementOfGoodsItem::findOrFail($itemData['procurement_item_id']);
                 
                 // Hitung kuantitas pending yang sudah diajukan sebelumnya
-                $alreadyPending = GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                $alreadyPending = ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                     ->where('status', 'pending')
                     ->sum('quantity');
                 
@@ -336,14 +337,14 @@ class ProcurementController extends Controller
                         $procItem->update(['buy_price' => $itemData['buy_price']]);
                     }
 
-                    GoodsReceipt::create([
+                    ProcurementArrivalRequest::create([
                         'good_id' => $itemData['goods_id'],
                         'procurement_of_goods_item_id' => $itemData['procurement_item_id'],
                         'supplier_id' => Auth::id(), // User GA yang mencatat
                         'received_at' => now(),
-                        'approved_by' => null, // Menunggu approval Warehouse
                         'quantity' => $itemData['qty_arriving'],
                         'unit_cost' => $itemData['buy_price'],
+                        'status' => 'pending',
                     ]);
                 }
             }
@@ -388,7 +389,7 @@ class ProcurementController extends Controller
     /**
      * Revisi kedatangan barang kustom yang ditolak oleh Warehouse.
      */
-    public function updateReceipt(Request $request, GoodsReceipt $receipt)
+    public function updateReceipt(Request $request, ProcurementArrivalRequest $receipt)
     {
         if ($receipt->status !== 'rejected') {
             return back()->withErrors('Hanya kedatangan barang yang ditolak yang dapat direvisi.');
@@ -401,7 +402,7 @@ class ProcurementController extends Controller
 
         $procItem = $receipt->procurementOfGoodsItem;
         if ($procItem) {
-            $otherPendingQty = GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+            $otherPendingQty = ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                 ->where('id', '!=', $receipt->id)
                 ->where('status', 'pending')
                 ->sum('quantity');
@@ -439,9 +440,9 @@ class ProcurementController extends Controller
     }
 
     /**
-     * Hapus kedatangan barang (GoodsReceipt) yang belum approved.
+     * Hapus kedatangan barang (ProcurementArrivalRequest) yang belum approved.
      */
-    public function destroyReceipt(GoodsReceipt $receipt)
+    public function destroyReceipt(ProcurementArrivalRequest $receipt)
     {
         if ($receipt->status === 'approved') {
             return back()->withErrors('Kedatangan barang yang sudah disetujui (Approved) tidak dapat dihapus.');

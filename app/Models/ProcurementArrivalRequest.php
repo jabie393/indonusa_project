@@ -5,15 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class GoodsReceipt extends Model
+class ProcurementArrivalRequest extends Model
 {
+    protected $table = 'procurement_arrival_requests';
+
     protected $fillable = [
+        'procurement_of_goods_item_id',
         'good_id',
         'supplier_id',
         'received_at',
-        'approved_by',
         'quantity',
         'unit_cost',
+        'status',
+        'reject_reason',
     ];
 
     protected $casts = [
@@ -22,7 +26,7 @@ class GoodsReceipt extends Model
     ];
 
     /**
-     * Get the good that was received.
+     * Get the good associated with the arrival request.
      */
     public function good(): BelongsTo
     {
@@ -30,7 +34,7 @@ class GoodsReceipt extends Model
     }
 
     /**
-     * Get the supplier (User with General Affair role) who provided the goods.
+     * Get the GA supplier who recorded the arrival.
      */
     public function supplier(): BelongsTo
     {
@@ -38,10 +42,10 @@ class GoodsReceipt extends Model
     }
 
     /**
-     * Get the user who approved the receipt.
+     * Get the associated procurement item.
      */
-    public function approver(): BelongsTo
+    public function procurementOfGoodsItem(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'approved_by');
+        return $this->belongsTo(ProcurementOfGoodsItem::class, 'procurement_of_goods_item_id');
     }
 }

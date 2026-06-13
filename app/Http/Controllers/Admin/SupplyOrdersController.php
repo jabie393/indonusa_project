@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use App\Models\GoodsReceipt;
+use App\Models\ProcurementArrivalRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -34,7 +36,7 @@ class SupplyOrdersController extends Controller
         $goodsItems = $regulerQuery->get();
 
         // 2. Custom Procurement receipts (pending approval)
-        $procurementQuery = \App\Models\GoodsReceipt::where('status', 'pending')
+        $procurementQuery = ProcurementArrivalRequest::where('status', 'pending')
             ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation']);
 
         if ($query) {
@@ -137,7 +139,7 @@ class SupplyOrdersController extends Controller
             $barang->save();
 
             // Buat record GoodsReceipt untuk barang baru
-            \App\Models\GoodsReceipt::create([
+            GoodsReceipt::create([
                 'good_id' => $barang->id,
                 'supplier_id' => $barang->form, // User yang input (GA)
                 'received_at' => now(),
@@ -157,7 +159,7 @@ class SupplyOrdersController extends Controller
                 $barangUtama->save();
 
                 // Buat record GoodsReceipt
-                \App\Models\GoodsReceipt::create([
+                GoodsReceipt::create([
                     'good_id' => $barangUtama->id,
                     'supplier_id' => $barang->form, // User yang input (GA)
                     'received_at' => now(),
@@ -181,7 +183,7 @@ class SupplyOrdersController extends Controller
                 $barang->save();
 
                 // Buat record GoodsReceipt
-                \App\Models\GoodsReceipt::create([
+                GoodsReceipt::create([
                     'good_id' => $barang->id,
                     'supplier_id' => $barang->form, // User yang input (GA)
                     'received_at' => now(),
@@ -196,17 +198,17 @@ class SupplyOrdersController extends Controller
     /**
      * Approve penerimaan barang kustom procurement
      */
-    public function approveProcurement(Request $request, $receiptId)
+    public function approveProcurement(Request $request, $requestId)
     {
         DB::beginTransaction();
         try {
-            $receipt = \App\Models\GoodsReceipt::findOrFail($receiptId);
-            $procItem = $receipt->procurementOfGoodsItem;
+            $arrivalRequest = ProcurementArrivalRequest::findOrFail($requestId);
+            $procItem = $arrivalRequest->procurementOfGoodsItem;
             if (!$procItem) {
                 throw new \Exception('Item pengadaan tidak ditemukan untuk kedatangan ini.');
             }
 
-            $goods = $receipt->good;
+            $goods = $arrivalRequest->good;
             if (!$goods) {
                 throw new \Exception('Master barang tidak ditemukan.');
             }
@@ -215,36 +217,45 @@ class SupplyOrdersController extends Controller
             $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received);
             if ($maxAllowed <= 0) {
                 // Hapus receipt pending ini karena item sudah sepenuhnya terpenuhi
-                $receipt->delete();
+                $arrivalRequest->delete();
                 DB::commit();
                 return redirect()->route('supply-orders.index')->with(['title' => 'Perhatian', 'text' => 'Item pengadaan ini sudah sepenuhnya terpenuhi. Kedatangan redundant dibersihkan.']);
             }
 
-            if ($receipt->quantity > $maxAllowed) {
-                $receipt->quantity = $maxAllowed;
+            if ($arrivalRequest->quantity > $maxAllowed) {
+                $arrivalRequest->quantity = $maxAllowed;
             }
 
             // 1. Update master barang
-            $goods->stock += $receipt->quantity;
-            $goods->buy_price = $receipt->unit_cost;
+            $goods->stock += $arrivalRequest->quantity;
+            $goods->buy_price = $arrivalRequest->unit_cost;
             if (empty($goods->selling_price) || (float)$goods->selling_price === 0.0) {
-                $goods->selling_price = round($receipt->unit_cost * 1.15, 2);
+                $goods->selling_price = round($arrivalRequest->unit_cost * 1.15, 2);
             }
             $goods->goods_status = 'approved';
             $goods->save();
 
-            // 2. Approve the receipt
-            $receipt->approved_by = Auth::id();
-            $receipt->status = 'approved';
-            $receipt->save();
+            // 2. Buat record di goods_receipts
+            GoodsReceipt::create([
+                'good_id' => $arrivalRequest->good_id,
+                'supplier_id' => $arrivalRequest->supplier_id,
+                'received_at' => $arrivalRequest->received_at ?? now(),
+                'approved_by' => Auth::id(),
+                'quantity' => $arrivalRequest->quantity,
+                'unit_cost' => $arrivalRequest->unit_cost,
+            ]);
 
-            // 3. Update procurement item
-            $procItem->qty_received += $receipt->quantity;
+            // 3. Update status arrivalRequest
+            $arrivalRequest->status = 'approved';
+            $arrivalRequest->save();
+
+            // 4. Update procurement item
+            $procItem->qty_received += $arrivalRequest->quantity;
             if ($procItem->qty_received >= $procItem->qty_ordered) {
                 $procItem->status = 'completed';
                 
                 // Hapus record kedatangan pending lainnya untuk item ini karena sudah tercapai
-                \App\Models\GoodsReceipt::where('procurement_of_goods_item_id', $procItem->id)
+                ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                     ->where('status', 'pending')
                     ->delete();
             } else {
@@ -252,7 +263,7 @@ class SupplyOrdersController extends Controller
             }
             $procItem->save();
 
-            // 4. Update procurement status
+            // 5. Update procurement status
             $procurement = $procItem->procurementOfGoods;
             $allCompleted = true;
             foreach ($procurement->items as $item) {
@@ -278,7 +289,7 @@ class SupplyOrdersController extends Controller
     /**
      * Tolak penerimaan barang kustom procurement
      */
-    public function rejectProcurement(Request $request, $receiptId)
+    public function rejectProcurement(Request $request, $requestId)
     {
         $request->validate([
             'reason' => 'required|string|max:500',
@@ -286,10 +297,10 @@ class SupplyOrdersController extends Controller
 
         DB::beginTransaction();
         try {
-            $receipt = \App\Models\GoodsReceipt::findOrFail($receiptId);
-            $receipt->status = 'rejected';
-            $receipt->reject_reason = $request->input('reason');
-            $receipt->save();
+            $arrivalRequest = ProcurementArrivalRequest::findOrFail($requestId);
+            $arrivalRequest->status = 'rejected';
+            $arrivalRequest->reject_reason = $request->input('reason');
+            $arrivalRequest->save();
 
             DB::commit();
             return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil ditolak.']);

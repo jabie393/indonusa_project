@@ -119,7 +119,7 @@
                                     <td class="px-4 py-3 text-center">
                                         @if($isProcurement)
                                             @php
-                                                $hasRejected = $item->items->pluck('goodsReceipts')->flatten()->contains('status', 'rejected');
+                                                $hasRejected = $item->items->pluck('procurementArrivalRequests')->flatten()->contains('status', 'rejected');
 
                                                 $statusLabel = [
                                                     'pending' => 'Pending',
@@ -139,7 +139,7 @@
                                                     {{ $statusLabel }}
                                                 </span>
                                                 @if($hasRejected)
-                                                    <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50 animate-pulse" title="Ada kedatangan barang yang ditolak oleh Warehouse">
+                                                    <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50" title="Ada kedatangan barang yang ditolak oleh Warehouse">
                                                         Revision Required
                                                     </span>
                                                 @endif
