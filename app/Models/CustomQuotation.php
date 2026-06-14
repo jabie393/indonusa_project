@@ -64,8 +64,26 @@ class CustomQuotation extends Model
     public static function generateQuotationNumber()
     {
         $date = now()->format('Ymd');
-        $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
-        return 'PN-' . $date . '-' . str_pad($count, 4, '0', STR_PAD_LEFT);
+        
+        // Find max number from custom_quotations table
+        $maxInTable = self::where('quotation_number', 'like', "PN-{$date}-%")
+            ->selectRaw("CAST(SUBSTRING_INDEX(quotation_number, '-', -1) AS UNSIGNED) as num")
+            ->orderBy('num', 'desc')
+            ->first();
+            
+        // Find max number from quotation_histories table
+        $maxInHistory = \App\Models\QuotationHistory::where('quotation_type', 'custom_quotation')
+            ->where('quotation_number', 'like', "PN-{$date}-%")
+            ->selectRaw("CAST(SUBSTRING_INDEX(quotation_number, '-', -1) AS UNSIGNED) as num")
+            ->orderBy('num', 'desc')
+            ->first();
+            
+        $tableNum = $maxInTable ? $maxInTable->num : 0;
+        $historyNum = $maxInHistory ? $maxInHistory->num : 0;
+        
+        $nextNum = max($tableNum, $historyNum) + 1;
+        
+        return 'PN-' . $date . '-' . str_pad($nextNum, 4, '0', STR_PAD_LEFT);
     }
 
     public static function generateUniqueRef()
@@ -105,4 +123,42 @@ class CustomQuotation extends Model
         }
     }
 
+    protected static function booted()
+    {
+        static::updated(function ($customQuotation) {
+            if ($customQuotation->isDirty('status') && in_array($customQuotation->status, ['approved_supervisor', 'rejected_supervisor'])) {
+                \App\Models\QuotationHistory::create([
+                    'custom_quotation_id' => $customQuotation->id,
+                    'quotation_type' => 'custom_quotation',
+                    'quotation_number' => $customQuotation->quotation_number,
+                    'customer_name' => $customQuotation->to,
+                    'pic_name' => $customQuotation->up ?? '-',
+                    'sales_id' => $customQuotation->sales_id,
+                    'sales_name' => $customQuotation->sales?->name ?? '-',
+                    'grand_total' => $customQuotation->grand_total,
+                    'status' => $customQuotation->status,
+                    'reason' => $customQuotation->reason ?? '-',
+                    'changed_by' => \Illuminate\Support\Facades\Auth::id() ?? $customQuotation->approved_by,
+                    'changed_at' => now(),
+                ]);
+            }
+        });
+
+        static::deleted(function ($customQuotation) {
+            \App\Models\QuotationHistory::create([
+                'custom_quotation_id' => null,
+                'quotation_type' => 'custom_quotation',
+                'quotation_number' => $customQuotation->quotation_number,
+                'customer_name' => $customQuotation->to,
+                'pic_name' => $customQuotation->up ?? '-',
+                'sales_id' => $customQuotation->sales_id,
+                'sales_name' => $customQuotation->sales?->name ?? '-',
+                'grand_total' => $customQuotation->grand_total,
+                'status' => 'deleted',
+                'reason' => 'Deleted from system',
+                'changed_by' => \Illuminate\Support\Facades\Auth::id(),
+                'changed_at' => now(),
+            ]);
+        });
+    }
 }

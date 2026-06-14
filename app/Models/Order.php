@@ -29,6 +29,33 @@ class Order extends Model
         parent::boot();
     }
 
+    protected static function booted()
+    {
+        static::updated(function ($order) {
+            if ($order->isDirty('status') && $order->quotation_id) {
+                if (in_array($order->status, ['open', 'rejected_supervisor'])) {
+                    $quotation = $order->quotation;
+                    if ($quotation) {
+                        \App\Models\QuotationHistory::create([
+                            'quotation_id' => $quotation->id,
+                            'quotation_type' => 'request_order',
+                            'quotation_number' => $quotation->quotation_number,
+                            'customer_name' => $quotation->customer_name,
+                            'pic_name' => $quotation->customer?->pics?->first()?->name ?? $quotation->pic?->name ?? '-',
+                            'sales_id' => $quotation->sales_id,
+                            'sales_name' => $quotation->sales?->name ?? '-',
+                            'grand_total' => $quotation->grand_total,
+                            'status' => $order->status,
+                            'reason' => $order->reason ?? '-',
+                            'changed_by' => \Illuminate\Support\Facades\Auth::id() ?? $order->supervisor_id,
+                            'changed_at' => now(),
+                        ]);
+                    }
+                }
+            }
+        });
+    }
+
     public function items()
     {
         return $this->hasMany(OrderItem::class);

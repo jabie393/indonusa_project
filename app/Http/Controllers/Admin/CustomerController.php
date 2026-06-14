@@ -352,4 +352,26 @@ class CustomerController extends Controller
             ], 500);
         }
     }
+
+    public function destroy($id)
+    {
+        $this->checkRole();
+
+        DB::beginTransaction();
+        try {
+            $customer = Customer::findOrFail($id);
+            
+            // Delete associated pics
+            $customer->pics()->delete();
+            
+            $customer->delete();
+
+            DB::commit();
+
+            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil dihapus.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Gagal menghapus customer: ' . $e->getMessage());
+        }
+    }
 }

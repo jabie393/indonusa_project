@@ -244,7 +244,7 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             {{-- Delete --}}
-                                            <form action="" method="POST" style="display:inline;">
+                                            <form action="{{ route('customer.destroy', $customer->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"

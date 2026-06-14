@@ -217,8 +217,26 @@ class Quotation extends Model
     public static function generateQuotationNumber()
     {
         $date = now()->format('Ymd');
-        $count = self::whereDate('created_at', now()->toDateString())->count() + 1;
-        return 'PNW-' . $date . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+        
+        // Find max number from quotations table
+        $maxInTable = self::where('quotation_number', 'like', "PNW-{$date}-%")
+            ->selectRaw("CAST(SUBSTRING_INDEX(quotation_number, '-', -1) AS UNSIGNED) as num")
+            ->orderBy('num', 'desc')
+            ->first();
+            
+        // Find max number from quotation_histories table
+        $maxInHistory = \App\Models\QuotationHistory::where('quotation_type', 'request_order')
+            ->where('quotation_number', 'like', "PNW-{$date}-%")
+            ->selectRaw("CAST(SUBSTRING_INDEX(quotation_number, '-', -1) AS UNSIGNED) as num")
+            ->orderBy('num', 'desc')
+            ->first();
+            
+        $tableNum = $maxInTable ? $maxInTable->num : 0;
+        $historyNum = $maxInHistory ? $maxInHistory->num : 0;
+        
+        $nextNum = max($tableNum, $historyNum) + 1;
+        
+        return 'PNW-' . $date . '-' . str_pad($nextNum, 3, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -229,4 +247,23 @@ class Quotation extends Model
         return $this->expired_at && now() > $this->expired_at;
     }
 
+    protected static function booted()
+    {
+        static::deleted(function ($quotation) {
+            \App\Models\QuotationHistory::create([
+                'quotation_id' => null,
+                'quotation_type' => 'request_order',
+                'quotation_number' => $quotation->quotation_number,
+                'customer_name' => $quotation->customer_name,
+                'pic_name' => $quotation->customer?->pics?->first()?->name ?? $quotation->pic?->name ?? '-',
+                'sales_id' => $quotation->sales_id,
+                'sales_name' => $quotation->sales?->name ?? '-',
+                'grand_total' => $quotation->grand_total,
+                'status' => 'deleted',
+                'reason' => 'Deleted from system',
+                'changed_by' => \Illuminate\Support\Facades\Auth::id(),
+                'changed_at' => now(),
+            ]);
+        });
+    }
 }

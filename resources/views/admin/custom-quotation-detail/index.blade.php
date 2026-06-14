@@ -79,19 +79,7 @@
                             </p>
                         @endif
                     </div>
-
-                    @if ($bannerKey === 'rejected_supervisor' && Auth::user()->role === 'Sales')
-                        <div class="mt-3 shrink-0 md:mt-0">
-                            <a href="{{ route('sales.custom-quotation.edit', $customQuotation->id) }}"
-                                class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-rose-200 transition-all hover:bg-rose-700 hover:shadow-none active:scale-[0.98] dark:shadow-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                                Perbaiki & Ajukan Ulang
-                            </a>
-                        </div>
-                    @endif
+                    </div>
                 </div>
             @endif
 
@@ -359,7 +347,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                 </svg>
-                                <span>Edit Custom Quotation</span>
+                                <span>{{ $customQuotation->status === 'rejected_supervisor' ? 'Revisi & Ajukan Ulang' : 'Edit Custom Quotation' }}</span>
                             </a>
                         @endif
 

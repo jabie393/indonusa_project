@@ -142,118 +142,70 @@ class QuotationApprovalController extends Controller
     public function history(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('perPage', 10);
 
-        // Quotations (sent quotation)
-        $roQuery = Quotation::with(['order', 'sales', 'customer.pics'])
-            ->whereHas('order', function ($q) {
-                $q->where('status', 'rejected_supervisor')
-                    ->orWhere(function ($sub) {
-                        $sub->where('status', 'open')
-                            ->whereNotNull('supervisor_id');
-                    });
-            });
+        $query = \App\Models\QuotationHistory::with(['sales', 'user']);
 
         if ($search) {
-            $roQuery->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('quotation_number', 'LIKE', "%{$search}%")
-                    ->orWhere('request_number', 'LIKE', "%{$search}%")
                     ->orWhere('customer_name', 'LIKE', "%{$search}%")
-                    ->orWhere('grand_total', 'LIKE', "%{$search}%")
-                    ->orWhere('reason', 'LIKE', "%{$search}%")
-                    ->orWhereHas('order', function ($orderQuery) use ($search) {
-                        $orderQuery->where('status', 'LIKE', "%{$search}%")
-                            ->orWhere('reason', 'LIKE', "%{$search}%")
-                            ->orWhereDate('approved_at', $search)
-                            ->orWhere('approved_at', 'LIKE', "%{$search}%");
-                    })
-                    ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
-                        $picQuery->where('name', 'LIKE', "%{$search}%")
-                            ->orWhere('position', 'LIKE', "%{$search}%")
-                            ->orWhere('email', 'LIKE', "%{$search}%")
-                            ->orWhere('phone', 'LIKE', "%{$search}%");
-                    })
-                    ->orWhereHas('sales', function ($sq) use ($search) {
-                        $sq->where('name', 'LIKE', "%{$search}%")
-                            ->orWhere('email', 'LIKE', "%{$search}%");
-                    });
-            });
-        }
-
-        $requestOrders = $roQuery->get()->map(function ($ro) {
-            return [
-                'type' => 'request_order',
-                'id' => $ro->id,
-                'number' => $ro->quotation_number,
-                'customer' => $ro->customer_name,
-                'pic' => $ro->customer->pics->first()->name ?? '-',
-                'sales' => $ro->sales->name ?? '-',
-                'grand_total' => 'Rp ' . number_format($ro->grand_total, 2, ',', '.'),
-                'status' => $ro->order->status ?? '-',
-                'reason' => $ro->order->reason ?? '-',
-                'approved_at' => $ro->order->approved_at ? $ro->order->approved_at->format('d-m-Y H:i') : '-',
-                'raw_date' => $ro->order->approved_at,
-            ];
-        });
-
-        // Custom Quotation
-        $cpQuery = CustomQuotation::with(['sales', 'order'])
-            ->whereIn('status', ['approved_supervisor', 'rejected_supervisor']);
-
-        if ($search) {
-            $cpQuery->where(function ($q) use ($search) {
-                $q->where('quotation_number', 'LIKE', "%{$search}%")
-                    ->orWhere('our_ref', 'LIKE', "%{$search}%")
-                    ->orWhere('to', 'LIKE', "%{$search}%")
-                    ->orWhere('up', 'LIKE', "%{$search}%")
-                    ->orWhere('email', 'LIKE', "%{$search}%")
+                    ->orWhere('pic_name', 'LIKE', "%{$search}%")
+                    ->orWhere('sales_name', 'LIKE', "%{$search}%")
                     ->orWhere('grand_total', 'LIKE', "%{$search}%")
                     ->orWhere('status', 'LIKE', "%{$search}%")
                     ->orWhere('reason', 'LIKE', "%{$search}%")
-                    ->orWhereDate('approved_at', $search)
-                    ->orWhere('approved_at', 'LIKE', "%{$search}%")
-                    ->orWhereHas('sales', function ($sq) use ($search) {
-                        $sq->where('name', 'LIKE', "%{$search}%")
-                            ->orWhere('email', 'LIKE', "%{$search}%");
-                    });
+                    ->orWhereDate('changed_at', $search)
+                    ->orWhere('changed_at', 'LIKE', "%{$search}%");
+
+                // Translate status labels
+                $normalizedQuery = strtolower($search);
+                $statusLabels = [
+                    'approved' => ['approved', 'approve', 'disetujui', 'open'],
+                    'rejected' => ['rejected', 'reject', 'ditolak'],
+                    'deleted' => ['deleted', 'delete', 'hapus', 'dihapus'],
+                ];
+
+                foreach ($statusLabels as $status => $labels) {
+                    foreach ($labels as $label) {
+                        if (str_contains($label, $normalizedQuery)) {
+                            if ($status === 'approved') {
+                                $q->orWhere('status', 'approved_supervisor')
+                                  ->orWhere('status', 'open');
+                            } elseif ($status === 'rejected') {
+                                $q->orWhere('status', 'rejected_supervisor');
+                            } else {
+                                $q->orWhere('status', $status);
+                            }
+                            break;
+                        }
+                    }
+                }
             });
         }
 
-        $customQuotations = $cpQuery->get()->map(function ($cp) {
+        $histories = $query->latest('changed_at')
+            ->paginate($perPage)
+            ->appends($request->except('page'));
+
+        $histories->getCollection()->transform(function ($item) {
             return [
-                'type' => 'custom_quotation',
-                'id' => $cp->id,
-                'number' => $cp->quotation_number,
-                'customer' => $cp->to,
-                'pic' => $cp->up ?? '-',
-                'sales' => $cp->sales->name ?? '-',
-                'grand_total' => 'Rp ' . number_format($cp->grand_total, 2, ',', '.'),
-                'status' => $cp->status,
-                'reason' => $cp->reason ?? '-',
-                'approved_at' => $cp->approved_at ? $cp->approved_at->format('d-m-Y H:i') : '-',
-                'raw_date' => $cp->approved_at,
+                'type' => $item->quotation_type,
+                'id' => $item->id,
+                'number' => $item->quotation_number,
+                'customer' => $item->customer_name,
+                'pic' => $item->pic_name ?? '-',
+                'sales' => $item->sales_name ?? ($item->sales->name ?? '-'),
+                'grand_total' => 'Rp ' . number_format($item->grand_total, 2, ',', '.'),
+                'status' => $item->status,
+                'reason' => $item->reason ?? '-',
+                'approved_at' => $item->changed_at ? $item->changed_at->format('d-m-Y H:i') : '-',
+                'raw_date' => $item->changed_at,
             ];
         });
 
-        // Gabungkan dan urutkan berdasarkan tanggal terbaru
-        $all = $requestOrders->concat($customQuotations)->sortByDesc(function ($item) {
-            return $item['raw_date'] ? (string) $item['raw_date'] : '';
-        })->values();
-
-        // Paginate manually
-        $perPage = $request->input('perPage', 10);
-        $page = $request->input('page', 1);
-        $offset = ($page - 1) * $perPage;
-
-        $paginated = new \Illuminate\Pagination\LengthAwarePaginator(
-            $all->slice($offset, $perPage),
-            $all->count(),
-            $perPage,
-            $page,
-            ['path' => $request->url(), 'query' => $request->query()]
-        );
-
         return view('admin.quotation-history.index', [
-            'histories' => $paginated,
+            'histories' => $histories,
         ]);
     }
 

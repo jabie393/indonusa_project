@@ -408,9 +408,19 @@
 
             {{-- Menu untuk Sales --}}
             @if (in_array(auth()->user()->role, ['Sales']))
+                @php
+                    $rejectedQuotationCount = \App\Models\Quotation::where('sales_id', auth()->id())
+                        ->whereHas('order', function ($query) {
+                            $query->where('status', 'rejected_supervisor');
+                        })->count();
+                    $rejectedCustomQuotationCount = \App\Models\CustomQuotation::where('sales_id', auth()->id())
+                        ->where('status', 'rejected_supervisor')->count();
+                    $totalRejectedQuotationCount = $rejectedQuotationCount + $rejectedCustomQuotationCount;
+                @endphp
                 <details {{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'open' : 'close' }} class="">
                     <summary
-                        class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <span class="flex items-center">
 
                         <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
                             class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
@@ -429,6 +439,11 @@
                         <span
                             class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                             Sales Module</span>
+                        </span>
+                        @if ($totalRejectedQuotationCount > 0)
+                            <span
+                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
+                        @endif
                     </summary>
 
                     <ul
@@ -436,7 +451,8 @@
                         {{-- Quotation --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.quotation.index') }}"
-                                class="{{ request()->routeIs('sales.quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ request()->routeIs('sales.quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <div class="flex items-center">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg"
                                     class="{{ request()->routeIs('sales.quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
@@ -454,6 +470,13 @@
 
                                 <span
                                     class="{{ request()->routeIs('sales.quotation.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
+                                </div>
+                                @if ($rejectedQuotationCount > 0)
+                                    <span
+                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                        {{ $rejectedQuotationCount }}
+                                    </span>
+                                @endif
                             </a>
                             @if (request()->routeIs('sales.quotation.show') || request()->routeIs('sales.quotation.create') || request()->routeIs('sales.quotation.store') || request()->routeIs('sales.quotation.edit') || request()->routeIs('sales.quotation.update'))
                                 <ul class="pt-2">
@@ -490,7 +513,8 @@
                         {{-- Custom Quotation --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.custom-quotation.index') }}"
-                                class="{{ request()->routeIs('sales.custom-quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                class="{{ request()->routeIs('sales.custom-quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <div class="flex items-center">
                                 <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
                                     class="{{ request()->routeIs('sales.custom-quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
@@ -504,6 +528,13 @@
                                 <span
                                     class="{{ request()->routeIs('sales.custom-quotation.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Custom
                                     Quotation</span>
+                                </div>
+                                @if ($rejectedCustomQuotationCount > 0)
+                                    <span
+                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                        {{ $rejectedCustomQuotationCount }}
+                                    </span>
+                                @endif
                             </a>
                             @if (request()->routeIs('sales.custom-quotation.show') || request()->routeIs('sales.custom-quotation.create') || request()->routeIs('sales.custom-quotation.store') || request()->routeIs('sales.custom-quotation.edit') || request()->routeIs('sales.custom-quotation.update'))
                                 <ul class="pt-2">

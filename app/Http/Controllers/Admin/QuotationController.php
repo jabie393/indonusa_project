@@ -606,7 +606,9 @@ class QuotationController extends Controller
             // =====================================================================
             $diskonBaruMelampauiBatas = ($maxDiskonLama <= 20 && $maxDiskonBaru > 20);
 
-            if ($maxDiskonBaru <= 20) {
+            if ($statusSekarang === 'rejected_supervisor') {
+                $orderStatus = 'sent_to_supervisor';
+            } elseif ($maxDiskonBaru <= 20) {
                 $orderStatus = 'open';
             } elseif ($sudahApprove && !$diskonBaruMelampauiBatas) {
                 $orderStatus = $statusSekarang;

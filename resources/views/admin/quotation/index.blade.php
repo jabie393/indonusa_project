@@ -445,7 +445,7 @@
                                                             </path>
                                                             <path d="m15 5 4 4"></path>
                                                         </svg>
-                                                        Edit
+                                                        {{ $ro->order?->status === 'rejected_supervisor' ? 'Revise' : 'Edit' }}
                                                     </a>
                                                 </li>
 

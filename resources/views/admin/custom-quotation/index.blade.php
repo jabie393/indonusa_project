@@ -289,7 +289,7 @@
                                                             </path>
                                                             <path d="m15 5 4 4"></path>
                                                         </svg>
-                                                        Edit
+                                                        {{ $quotation->status === 'rejected_supervisor' ? 'Revise' : 'Edit' }}
                                                     </a>
                                                 </li>
                                                 {{-- Tombol Delete --}}

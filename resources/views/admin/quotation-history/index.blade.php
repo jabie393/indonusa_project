@@ -61,7 +61,7 @@
                                                 <path d="m22 2-7 20-4-9-9-4Z" />
                                                 <path d="M22 2 11 13" />
                                             </svg>
-                                            Sent Quotation
+                                            Quotation
                                         </span>
                                     @elseif($item['type'] === 'custom_quotation')
                                         <span
@@ -126,24 +126,68 @@
                                 {{-- Status Column --}}
                                 <td class="px-4 py-3 text-center align-middle w-36">
                                     @php
+                                        $status = strtolower($item['status']);
                                         $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                         $badgeText = 'text-gray-700 dark:text-gray-300';
                                         $badgeBorder = 'border border-gray-200 dark:border-gray-700/50';
                                         $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/></svg>';
-                                        $statusLabel = $item['status'];
-
-                                        if (in_array($item['status'], ['approved_supervisor', 'approved', 'open'])) {
-                                            $statusLabel = 'Disetujui';
+                                        
+                                        if (in_array($status, ['approved_supervisor', 'approved_warehouse', 'approved', 'open'])) {
+                                            $statusLabel = 'Approved';
                                             $badgeBg = 'bg-green-50 dark:bg-green-950/30';
                                             $badgeText = 'text-green-700 dark:text-green-300';
                                             $badgeBorder = 'border border-green-200 dark:border-green-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
-                                        } elseif ($item['status'] === 'rejected_supervisor' || $item['status'] === 'rejected') {
-                                            $statusLabel = 'Ditolak';
+                                        } elseif (in_array($status, ['rejected_supervisor', 'rejected_warehouse', 'rejected'])) {
+                                            $statusLabel = 'Rejected';
                                             $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                             $badgeText = 'text-red-700 dark:text-red-300';
                                             $badgeBorder = 'border border-red-200 dark:border-red-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
+                                        } elseif ($status === 'deleted' || $status === 'dihapus') {
+                                            $statusLabel = 'Deleted';
+                                            $badgeBg = 'bg-slate-100 dark:bg-slate-900/40';
+                                            $badgeText = 'text-slate-700 dark:text-slate-300';
+                                            $badgeBorder = 'border border-slate-300 dark:border-slate-700/60';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2 mr-1.5 shrink-0"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>';
+                                        } elseif (in_array($status, ['sent_to_supervisor', 'sent'])) {
+                                            $statusLabel = 'Sent to Supervisor';
+                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                            $badgeText = 'text-blue-700 dark:text-blue-300';
+                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-1.5 shrink-0"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+                                        } elseif ($status === 'sent_to_warehouse') {
+                                            $statusLabel = 'Sent to Warehouse';
+                                            $badgeBg = 'bg-indigo-50 dark:bg-indigo-950/30';
+                                            $badgeText = 'text-indigo-700 dark:text-indigo-300';
+                                            $badgeBorder = 'border border-indigo-200 dark:border-indigo-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck mr-1.5 shrink-0"><rect width="16" height="10" x="2" y="4" rx="2"/><path d="M10 14H2M22 10v4h-6M14 18a2 2 0 1 1-4 0M20 18a2 2 0 1 1-4 0"/></svg>';
+                                        } elseif ($status === 'completed') {
+                                            $statusLabel = 'Completed';
+                                            $badgeBg = 'bg-emerald-50 dark:bg-emerald-950/30';
+                                            $badgeText = 'text-emerald-700 dark:text-emerald-300';
+                                            $badgeBorder = 'border border-emerald-200 dark:border-emerald-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
+                                        } elseif ($status === 'pending') {
+                                            $statusLabel = 'Pending';
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-700 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                        } elseif ($status === 'draft') {
+                                            $statusLabel = 'Draft';
+                                            $badgeBg = 'bg-gray-100 dark:bg-gray-800';
+                                            $badgeText = 'text-gray-700 dark:text-gray-300';
+                                            $badgeBorder = 'border border-gray-300 dark:border-gray-600';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text mr-1.5 shrink-0"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>';
+                                        } elseif ($status === 'not_completed') {
+                                            $statusLabel = 'Not Completed';
+                                            $badgeBg = 'bg-rose-50 dark:bg-rose-950/30';
+                                            $badgeText = 'text-rose-700 dark:text-rose-300';
+                                            $badgeBorder = 'border border-rose-200 dark:border-rose-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>';
+                                        } else {
+                                            $statusLabel = ucfirst(str_replace('_', ' ', $status));
                                         }
                                     @endphp
                                     <span
