@@ -31,7 +31,7 @@ class QuotationController extends Controller
                 ->update(['expired_at' => \Illuminate\Support\Facades\DB::raw('DATE_ADD(NOW(), INTERVAL 14 DAY)')]);
         }
 
-        $query = Quotation::with(['items.barang', 'sales', 'pic', 'order.items.barang'])
+        $query = Quotation::with(['items.barang', 'sales', 'pic', 'order.items.barang', 'customQuotation'])
             ->where('sales_id', Auth::id());
 
         if ($search = request('search')) {
@@ -298,7 +298,7 @@ class QuotationController extends Controller
         }
 
         $requestOrder->refresh();
-        $requestOrder->load('items.barang', 'sales', 'approvedBy');
+        $requestOrder->load('items.barang', 'sales', 'approvedBy', 'customQuotation');
 
         return view('admin.quotation-detail.index', compact('requestOrder'));
     }
@@ -334,7 +334,7 @@ class QuotationController extends Controller
         }
 
         $requestOrder->refresh();
-        $requestOrder->load('items.barang', 'sales');
+        $requestOrder->load('items.barang', 'sales', 'customQuotation');
 
         $pdfNote = request()->query('pdf_note', $requestOrder->customer_notes ?? null);
 

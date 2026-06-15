@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->unsignedBigInteger('pic_id')->nullable();
+            $table->string('pic_name')->nullable();
             $table->string('subject')->nullable();
             $table->text('reason')->nullable()->comment('Alasan penolakan dari supervisor');
             $table->date('required_date')->nullable();

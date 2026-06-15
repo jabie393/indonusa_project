@@ -79,6 +79,7 @@ class Quotation extends Model
         'supporting_images',
         'custom_quotation_id',
         'pic_id',
+        'pic_name',
     ];
 
     public function customQuotation() {

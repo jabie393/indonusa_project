@@ -67,10 +67,7 @@ class CustomQuotationController extends Controller
      */
     public function create()
     {
-        $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
-        $currentUserName = Auth::user()->name;
-
-        return view('admin.custom-quotation.action.create', compact('salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.action.create');
     }
 
     /**
@@ -86,11 +83,9 @@ class CustomQuotationController extends Controller
             'items_count' => count($request->input('items', [])),
         ]);
 
-        $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
-
         $validated = $request->validate([
             'to' => 'required|string|max:255',
-            'up' => ['required', 'string', 'max:255', Rule::in($salesNames)],
+            'up' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
             'our_ref' => 'nullable|string|max:255',
@@ -222,10 +217,8 @@ class CustomQuotationController extends Controller
         }
 
         $customQuotation->load('items');
-        $salesUsers = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
-        $currentUserName = Auth::user()->name;
 
-        return view('admin.custom-quotation.action.edit', compact('customQuotation', 'salesUsers', 'currentUserName'));
+        return view('admin.custom-quotation.action.edit', compact('customQuotation'));
     }
 
     /**
@@ -237,11 +230,9 @@ class CustomQuotationController extends Controller
             abort(403);
         }
 
-        $salesNames = User::where('role', 'Sales')->pluck('name')->toArray();
-
         $validated = $request->validate([
             'to' => 'required|string|max:255',
-            'up' => ['required', 'string', 'max:255', Rule::in($salesNames)],
+            'up' => 'required|string|max:255',
             'subject' => 'required|string|max:255',
             'email' => 'required|email',
             'date' => 'required|date',
@@ -641,6 +632,7 @@ class CustomQuotationController extends Controller
                 'quotation_number' => $nomorQuotation,
                 'sales_id' => $customQuotation->sales_id,
                 'customer_name' => $customQuotation->to,
+                'pic_name' => $customQuotation->up,
                 'subject' => $customQuotation->subject,
                 'required_date' => $customQuotation->date,
                 'valid_date' => $tanggalBerlaku,

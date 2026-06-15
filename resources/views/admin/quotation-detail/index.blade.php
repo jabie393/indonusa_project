@@ -303,7 +303,7 @@
                                         </svg>
                                     </div>
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                        {{ $requestOrder->pic->name ?? $requestOrder->sales->name ?? '-' }}</p>
+                                        {{ $requestOrder->pic->name ?? $requestOrder->pic_name ?? ($requestOrder->customQuotation ? $requestOrder->customQuotation->up : ($requestOrder->sales->name ?? '-')) }}</p>
                                 </div>
                             </div>
 

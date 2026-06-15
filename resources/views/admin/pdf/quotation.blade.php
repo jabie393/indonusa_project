@@ -179,7 +179,7 @@
                         </tr>
                         <tr>
                             <td class="">Up</td>
-                            <td class="">{{ $requestOrder->sales->name ?? '-' }}</td>
+                            <td class="">{{ $requestOrder->pic->name ?? $requestOrder->pic_name ?? ($requestOrder->customQuotation ? $requestOrder->customQuotation->up : ($requestOrder->sales->name ?? '-')) }}</td>
                             <td class="">Our Ref</td>
                             <td class="">{{ $requestOrder->request_number }}</td>
                         </tr>

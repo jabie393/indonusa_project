@@ -111,7 +111,7 @@
                                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                                                     <circle cx="12" cy="7" r="4"></circle>
                                                 </svg>
-                                                <span class="font-medium">{{ $ro->pic->name ?? '-' }}</span>
+                                                <span class="font-medium">{{ $ro->pic->name ?? $ro->pic_name ?? ($ro->customQuotation ? $ro->customQuotation->up : '-') }}</span>
                                                 <span class="text-slate-300 dark:text-slate-600">•</span>
                                                 <span
                                                     class="text-slate-400 dark:text-slate-500">{{ $ro->pic->position ?? 'PIC' }}</span>

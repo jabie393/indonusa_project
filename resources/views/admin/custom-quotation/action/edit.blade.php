@@ -53,18 +53,13 @@
                             <div>
                                 <label for="up"
                                        class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Attn (Up)</label>
-                                <select id="up"
-                                        name="up"
-                                        required
-                                        class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white">
-                                    <option value="">Pilih Sales</option>
-                                    @foreach ($salesUsers as $name => $displayName)
-                                        <option value="{{ $name }}"
-                                                {{ old('up', $customQuotation->up ?: $currentUserName) == $name ? 'selected' : '' }}>
-                                            {{ $displayName }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <input type="text"
+                                       id="up"
+                                       name="up"
+                                       value="{{ old('up', $customQuotation->up) }}"
+                                       required
+                                       class="@error('up') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
+                                       placeholder="Nama PIC Customer">
                                 @error('up')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror
