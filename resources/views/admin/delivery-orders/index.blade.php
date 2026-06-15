@@ -46,21 +46,17 @@
                         <a href="{{ route('supply-orders.index') }}"
                             class="text-white hover:bg-white/10 flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                             Supply Orders
-                            @if (($supplyOrderCount + $procOrderCount) > 0)
-                                <span
-                                    class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-                                    {{ $supplyOrderCount + $procOrderCount }}
-                                </span>
-                            @endif
+                            <span id="supply-orders-nav-badge"
+                                class="{{ ($supplyOrderCount + $procOrderCount) > 0 ? '' : 'hidden' }} ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+                                {{ $supplyOrderCount + $procOrderCount }}
+                            </span>
                         </a>
                     @endif
                     <a href="{{ route('delivery-orders.index') }}"
                         class="bg-white text-[#225A97] flex items-center rounded-lg px-4 py-2 text-sm font-medium transition-all">
                         Delivery Orders
-                        @if ($deliveryOrderCount > 0)
-                            <span
-                                class="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
-                        @endif
+                        <span id="delivery-orders-nav-badge"
+                            class="{{ $deliveryOrderCount > 0 ? '' : 'hidden' }} ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">{{ $deliveryOrderCount }}</span>
                     </a>
                 </div>
             </div>

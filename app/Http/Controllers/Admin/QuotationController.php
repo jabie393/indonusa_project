@@ -250,6 +250,16 @@ class QuotationController extends Controller
 
             DB::commit();
 
+            if ($orderStatus === 'sent_to_supervisor') {
+                event(new \App\Events\RealTimeNotification(
+                    'Supervisor',
+                    $requestOrder->sales_id,
+                    'quotation_submitted',
+                    'Quotation Baru!',
+                    "Ada quotation baru yang perlu ditinjau: {$requestOrder->quotation_number}"
+                ));
+            }
+
             if ($requestOrder->sales_id == Auth::id()) {
                 return redirect()->route('sales.quotation.show', $requestOrder->id)
                     ->with('success', "Quotation {$requestOrder->quotation_number} berhasil dibuat.")
@@ -638,6 +648,16 @@ class QuotationController extends Controller
             }
 
             DB::commit();
+
+            if ($orderStatus === 'sent_to_supervisor') {
+                event(new \App\Events\RealTimeNotification(
+                    'Supervisor',
+                    $requestOrder->sales_id,
+                    'quotation_submitted',
+                    'Quotation Baru!',
+                    "Ada quotation baru yang perlu ditinjau: {$requestOrder->quotation_number}"
+                ));
+            }
 
             return redirect()->route('sales.quotation.show', $requestOrder->id)
                 ->with('success', 'Quotation berhasil diubah.')

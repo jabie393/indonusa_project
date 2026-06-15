@@ -172,6 +172,14 @@ class CustomQuotationController extends Controller
             // Log commit confirmation
             Log::info('Custom Quotation Commit Successful', ['id' => $quotation->id]);
 
+            event(new \App\Events\RealTimeNotification(
+                'Supervisor',
+                $quotation->sales_id,
+                'custom_quotation_submitted',
+                'Custom Quotation Baru!',
+                "Ada custom quotation baru yang perlu ditinjau: {$quotation->quotation_number}"
+            ));
+
             return redirect()->route('sales.custom-quotation.show', $quotation->id)
                 ->with(['title' => 'Berhasil', 'text' => "Quotation {$quotation->quotation_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
@@ -337,6 +345,14 @@ class CustomQuotationController extends Controller
             $customQuotation->update($updateData);
 
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification(
+                'Supervisor',
+                $customQuotation->sales_id,
+                'custom_quotation_submitted',
+                'Custom Quotation Baru!',
+                "Ada custom quotation baru yang perlu ditinjau: {$customQuotation->quotation_number}"
+            ));
 
             return redirect()->route('sales.custom-quotation.show', $customQuotation->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diubah.']);
@@ -687,6 +703,14 @@ class CustomQuotationController extends Controller
             }
             $customQuotation->update(['status' => 'sent_to_quotation']);
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification(
+                'General Affair',
+                null,
+                'custom_quotation_sent_to_ga',
+                'Pengadaan Baru!',
+                "Ada Custom Quotation baru yang membutuhkan pengadaan: {$customQuotation->quotation_number}"
+            ));
 
             // Redirect langsung ke halaman quotation sales
             return redirect()->route('sales.quotation.show', $requestOrder->id)

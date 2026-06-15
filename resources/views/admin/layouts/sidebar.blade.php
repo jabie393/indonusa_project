@@ -52,10 +52,8 @@
                                 class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Goods
                                 In</span>
                         </div>
-                        @if ($totalGoodsInProcurementCount > 0)
-                            <span
-                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
-                        @endif
+                        <span id="goods-in-notif-badge"
+                            class="{{ $totalGoodsInProcurementCount > 0 ? '' : 'hidden' }} flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                     </a>
                     {{-- Add Stock --}}
                     @if (request()->routeIs('add-stock.*'))
@@ -145,10 +143,8 @@
                                 <a href="{{ route('general-affair.procurement.index') }}"
                                     class="group relative ml-2 flex w-[82%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] p-2 text-base font-medium text-white transition-all duration-200 hover:shadow-lg">
                                     <span class="">Procurement</span>
-                                    @if ($totalGoodsInProcurementCount > 0)
-                                        <span
-                                            class="absolute right-3 z-20 flex h-3 w-3 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
-                                    @endif
+                                    <span id="sidebar-procurement-notif-badge"
+                                        class="{{ $totalGoodsInProcurementCount > 0 ? '' : 'hidden' }} absolute right-3 z-20 flex h-3 w-3 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                                 </a>
                             </li>
                         </ul>
@@ -285,7 +281,11 @@
 
             {{-- Warehouse --}}
             @php
-                $sidebarSupplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')->count();
+                $sidebarSupplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                    ->where('status_listing', '!=', 'non_listing')
+                    ->whereDoesntHave('procurementOfGoodsItems')
+                    ->count()
+                    + \App\Models\ProcurementArrivalRequest::where('status', 'pending')->count();
                 $sidebarDeliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
                 $hasWarehouseNotification = $sidebarSupplyOrderCount > 0 || $sidebarDeliveryOrderCount > 0;
             @endphp
@@ -304,10 +304,8 @@
                                 class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">Warehouse</span>
                         </span>
                     </div>
-                    @if ($hasWarehouseNotification && auth()->user()->role === 'Warehouse')
-                        <span
-                            class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
-                    @endif
+                    <span id="warehouse-sidebar-notif-badge"
+                        class="{{ ($hasWarehouseNotification && auth()->user()->role === 'Warehouse') ? '' : 'hidden' }} flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                 </a>
             </li>
 
@@ -440,10 +438,8 @@
                             class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                             Sales Module</span>
                         </span>
-                        @if ($totalRejectedQuotationCount > 0)
-                            <span
-                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
-                        @endif
+                        <span id="sales-module-notif-badge"
+                            class="{{ $totalRejectedQuotationCount > 0 ? '' : 'hidden' }} flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                     </summary>
 
                     <ul
@@ -471,12 +467,10 @@
                                 <span
                                     class="{{ request()->routeIs('sales.quotation.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                                 </div>
-                                @if ($rejectedQuotationCount > 0)
-                                    <span
-                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                                        {{ $rejectedQuotationCount }}
-                                    </span>
-                                @endif
+                                <span id="quotation-notif-badge"
+                                    class="{{ $rejectedQuotationCount > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                    {{ $rejectedQuotationCount }}
+                                </span>
                             </a>
                             @if (request()->routeIs('sales.quotation.show') || request()->routeIs('sales.quotation.create') || request()->routeIs('sales.quotation.store') || request()->routeIs('sales.quotation.edit') || request()->routeIs('sales.quotation.update'))
                                 <ul class="pt-2">
@@ -529,12 +523,10 @@
                                     class="{{ request()->routeIs('sales.custom-quotation.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Custom
                                     Quotation</span>
                                 </div>
-                                @if ($rejectedCustomQuotationCount > 0)
-                                    <span
-                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                                        {{ $rejectedCustomQuotationCount }}
-                                    </span>
-                                @endif
+                                <span id="custom-quotation-notif-badge"
+                                    class="{{ $rejectedCustomQuotationCount > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                    {{ $rejectedCustomQuotationCount }}
+                                </span>
                             </a>
                             @if (request()->routeIs('sales.custom-quotation.show') || request()->routeIs('sales.custom-quotation.create') || request()->routeIs('sales.custom-quotation.store') || request()->routeIs('sales.custom-quotation.edit') || request()->routeIs('sales.custom-quotation.update'))
                                 <ul class="pt-2">
@@ -676,10 +668,8 @@
                                 class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation
                                 Approval</span>
                         </span>
-                        @if ($hasQuotationApprovalNotification)
-                            <span
-                                class="flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
-                        @endif
+                        <span id="quotation-approval-notif-badge"
+                            class="{{ $hasQuotationApprovalNotification ? '' : 'hidden' }} flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-[#0D223A]"></span>
                     </summary>
 
                     <ul
@@ -723,12 +713,10 @@
                                     <span
                                         class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation</span>
                                 </div>
-                                @if ($pendingSentQuotation > 0)
-                                    <span
-                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                                        {{ $pendingSentQuotation }}
-                                    </span>
-                                @endif
+                                <span id="pending-quotation-notif-badge"
+                                    class="{{ $pendingSentQuotation > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                    {{ $pendingSentQuotation }}
+                                </span>
                             </a>
                             @if (request()->routeIs('sales.quotation.show') || request()->routeIs('admin.quotation-approval.show'))
                                 <ul class="pt-2">
@@ -881,12 +869,10 @@
                                         class="{{ $customQuotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                                         Custom Quotation</span>
                                 </div>
-                                @if ($pendingCustomQuotation > 0)
-                                    <span
-                                        class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                                        {{ $pendingCustomQuotation }}
-                                    </span>
-                                @endif
+                                <span id="pending-custom-quotation-notif-badge"
+                                    class="{{ $pendingCustomQuotation > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                                    {{ $pendingCustomQuotation }}
+                                </span>
                             </a>
                             @if (request()->routeIs('admin.custom-quotation-approval.show') || request()->routeIs('sales.custom-quotation.show'))
                                 <ul class="pt-2">

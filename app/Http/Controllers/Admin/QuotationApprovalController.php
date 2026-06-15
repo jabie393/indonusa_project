@@ -104,6 +104,8 @@ class QuotationApprovalController extends Controller
             'approved_at' => now(),
         ]);
 
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
         return redirect()->back()->with(['title' => 'Berhasil!', 'text' => 'Request order berhasil di-approve oleh supervisor.']);
     }
 
@@ -132,6 +134,14 @@ class QuotationApprovalController extends Controller
         ]);
 
         $quotation->update(['reason' => $request->reason]);
+
+        event(new \App\Events\RealTimeNotification(
+            'Sales',
+            $quotation->sales_id,
+            'quotation_rejected',
+            'Quotation Ditolak!',
+            "Quotation {$quotation->quotation_number} ditolak oleh supervisor."
+        ));
 
         return redirect()->back()->with(['title' => 'Berhasil!', 'text' => 'Request order berhasil ditolak.']);
     }
@@ -225,6 +235,8 @@ class QuotationApprovalController extends Controller
         $order->supervisor_id = Auth::id();
         $order->save();
 
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
         return redirect()->route('admin.quotation_approval')->with('success', 'Order disetujui dan diteruskan ke Admin Warehouse.');
     }
 
@@ -239,6 +251,15 @@ class QuotationApprovalController extends Controller
         $order->supervisor_id = Auth::id();
         $order->reason = $request->reason;
         $order->save();
+
+        $order->loadMissing('quotation');
+        event(new \App\Events\RealTimeNotification(
+            'Sales',
+            $order->sales_id,
+            'quotation_rejected',
+            'Quotation Ditolak!',
+            "Quotation " . ($order->quotation?->quotation_number ?? $order->order_number) . " ditolak oleh supervisor."
+        ));
 
         return redirect()->route('orders.history')->with('success', 'Order ditolak dan dikembalikan ke Admin Sales.');
     }

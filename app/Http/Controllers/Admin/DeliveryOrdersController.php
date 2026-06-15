@@ -157,6 +157,7 @@ class DeliveryOrdersController extends Controller
     public function approve(Request $request, $id)
     {
         $this->processApproval($id);
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
     }
 
@@ -266,6 +267,8 @@ class DeliveryOrdersController extends Controller
                 $customQuotation->save();
             }
         }
+
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => $message]);
     }
@@ -377,6 +380,8 @@ class DeliveryOrdersController extends Controller
                 }
             }
         }
+
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
         return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Partial delivery berhasil diproses.']);
     }

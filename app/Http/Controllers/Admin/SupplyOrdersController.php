@@ -74,6 +74,7 @@ class SupplyOrdersController extends Controller
     public function approve($id)
     {
         $this->processApproval($id);
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
         return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Barang reguler berhasil diapprove.']);
     }
 
@@ -90,6 +91,8 @@ class SupplyOrdersController extends Controller
         $barang->note = $request->input('reason') ?? $request->input('catatan');
         $barang->goods_status = 'rejected';
         $barang->save();
+
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
         if ($request->ajax()) {
             return response()->json(['success' => true]);
@@ -109,6 +112,8 @@ class SupplyOrdersController extends Controller
             $this->processApproval($id);
         }
 
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
         return response()->json(['success' => true]);
     }
 
@@ -126,6 +131,8 @@ class SupplyOrdersController extends Controller
             'goods_status' => 'rejected',
             'note' => $catatan
         ]);
+
+        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
         return response()->json(['success' => true]);
     }
@@ -278,6 +285,9 @@ class SupplyOrdersController extends Controller
             // Status Custom Quotation dipertahankan pada 'sent_to_quotation' sesuai dengan alur baru.
 
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
             return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil disetujui.']);
         } catch (\Throwable $e) {
             DB::rollBack();
@@ -303,6 +313,15 @@ class SupplyOrdersController extends Controller
             $arrivalRequest->save();
 
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification(
+                'General Affair',
+                null,
+                'procurement_arrival_rejected',
+                'Penerimaan Ditolak!',
+                'Penerimaan barang kustom untuk pengadaan ditolak oleh warehouse.'
+            ));
+
             return redirect()->route('supply-orders.index')->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil ditolak.']);
         } catch (\Throwable $e) {
             DB::rollBack();

@@ -83,6 +83,8 @@ class CustomQuotationApprovalController extends Controller
             $customQuotation->reason = null;
             $customQuotation->save();
 
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
             return back()->with(['title' => 'Berhasil', 'text' => 'Quotation telah disetujui.']);
         } elseif ($action === 'reject') {
             $validated = $request->validate([
@@ -91,6 +93,14 @@ class CustomQuotationApprovalController extends Controller
             $customQuotation->status = 'rejected_supervisor';
             $customQuotation->reason = $validated['reason'];
             $customQuotation->save();
+
+            event(new \App\Events\RealTimeNotification(
+                'Sales',
+                $customQuotation->sales_id,
+                'custom_quotation_rejected',
+                'Quotation Kustom Ditolak!',
+                "Quotation Kustom {$customQuotation->quotation_number} ditolak oleh supervisor."
+            ));
 
             return back()->with(['title' => 'Berhasil', 'text' => 'Quotation telah ditolak.']);
         }
@@ -143,9 +153,23 @@ class CustomQuotationApprovalController extends Controller
                     $quotation->reason = $reason;
                 }
                 $quotation->save();
+
+                if ($action === 'reject') {
+                    event(new \App\Events\RealTimeNotification(
+                        'Sales',
+                        $quotation->sales_id,
+                        'custom_quotation_rejected',
+                        'Quotation Kustom Ditolak!',
+                        "Quotation Kustom {$quotation->quotation_number} ditolak oleh supervisor."
+                    ));
+                }
             }
 
             DB::commit();
+
+            if ($action === 'approve') {
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            }
 
             $message = $action === 'approve' ? 'Items approved successfully.' : 'Items rejected successfully.';
 

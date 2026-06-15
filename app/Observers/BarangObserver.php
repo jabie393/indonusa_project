@@ -14,6 +14,15 @@ class BarangObserver
     {
         if ($barang->goods_status === 'pending') {
             event(new BarangStatusUpdated($barang));
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'barang_pending',
+                $barang->request_type === 'new_stock' ? 'Permintaan Stok!' : 'Barang Baru!',
+                $barang->request_type === 'new_stock' 
+                    ? "Ada permintaan stok baru yang perlu ditinjau." 
+                    : "Ada barang baru yang perlu ditinjau."
+            ));
         }
     }
 
@@ -24,6 +33,15 @@ class BarangObserver
     {
         if ($barang->isDirty('goods_status') && $barang->goods_status === 'pending') {
             event(new BarangStatusUpdated($barang));
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'barang_pending',
+                $barang->request_type === 'new_stock' ? 'Permintaan Stok!' : 'Barang Baru!',
+                $barang->request_type === 'new_stock' 
+                    ? "Ada permintaan stok baru yang perlu ditinjau." 
+                    : "Ada barang baru yang perlu ditinjau."
+            ));
         }
     }
 

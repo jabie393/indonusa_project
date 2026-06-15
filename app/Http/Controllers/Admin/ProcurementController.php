@@ -168,6 +168,14 @@ class ProcurementController extends Controller
 
             DB::commit();
 
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'procurement_arrival_submitted',
+                'Barang Masuk Baru!',
+                'Ada barang masuk dari procurement yang perlu ditinjau.'
+            ));
+
             return redirect()->route('general-affair.procurement.show', $procurement->id)
                 ->with(['title' => 'Berhasil', 'text' => "Procurement {$procurement->procurement_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
@@ -248,6 +256,14 @@ class ProcurementController extends Controller
             }
 
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'procurement_arrival_submitted',
+                'Barang Masuk Baru!',
+                'Ada barang masuk dari procurement yang perlu ditinjau.'
+            ));
 
             if ($validated['type'] === 'full') {
                 return response()->json([
@@ -351,6 +367,14 @@ class ProcurementController extends Controller
 
             DB::commit();
 
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'procurement_arrival_submitted',
+                'Barang Masuk Baru!',
+                'Ada barang masuk dari procurement yang perlu ditinjau.'
+            ));
+
             return redirect()->route('general-affair.procurement.show', $procurement->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Kedatangan barang berhasil dicatat. Menunggu approval Warehouse.']);
         } catch (\Throwable $e) {
@@ -430,6 +454,14 @@ class ProcurementController extends Controller
 
             DB::commit();
 
+            event(new \App\Events\RealTimeNotification(
+                'Warehouse',
+                null,
+                'procurement_arrival_submitted',
+                'Barang Masuk Baru!',
+                'Ada barang masuk dari procurement yang perlu ditinjau.'
+            ));
+
             return redirect()->route('general-affair.procurement.show', $procItem->procurement_of_goods_id)
                 ->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil direvisi dan dikirim kembali untuk review.']);
         } catch (\Throwable $e) {
@@ -455,6 +487,8 @@ class ProcurementController extends Controller
             $receipt->delete();
 
             DB::commit();
+
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
             return redirect()->route('general-affair.procurement.show', $procurementId)
                 ->with(['title' => 'Berhasil', 'text' => 'Catatan kedatangan barang kustom berhasil dihapus.']);

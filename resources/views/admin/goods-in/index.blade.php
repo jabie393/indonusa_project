@@ -168,10 +168,8 @@
 
                         $totalProcurementCount = $goodsInProcurementPendingCount + $goodsInProcurementRevisionCount;
                     @endphp
-                    @if ($totalProcurementCount > 0)
-                        <span
-                            class="absolute right-3 top-3 z-20 flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-gray-800"></span>
-                    @endif
+                    <span id="goods-in-procurement-box-badge"
+                        class="{{ $totalProcurementCount > 0 ? '' : 'hidden' }} absolute right-3 top-3 z-20 flex h-4.5 w-4.5 rounded-full bg-red-500 shadow-sm ring-2 ring-white dark:ring-gray-800"></span>
                     <div
                         class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     </div>
