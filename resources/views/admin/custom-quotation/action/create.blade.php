@@ -164,147 +164,155 @@
                                    class="h-full w-full border-collapse">
                                 <thead>
                                     <tr class="">
-                                        <th class="sticky top-0 z-20 min-w-[50px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">No</th>
-                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama Barang</th>
-                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Deskripsi</th>
-                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Kategori</th>
-                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty</th>
-                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Satuan</th>
-                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Harga (Rp)</th>
-                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon (%)</th>
-                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Keterangan</th>
-                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total Setelah Diskon (Rp)</th>
-                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
-                                        <th class="sticky top-0 z-20 min-w-[80px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Action</th>
+                                        <th class="sticky top-0 z-20 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama, Kategori, & Deskripsi</th>
+                                        <th class="sticky top-0 z-20 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty, Satuan, & Harga</th>
+                                        <th class="sticky top-0 z-20 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon & Ket.</th>
+                                        <th class="sticky top-0 z-20 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
+                                        <th class="sticky top-0 z-20 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total</th>
+                                        <th class="sticky top-0 z-20 min-w-[60px] border border-gray-300 bg-gray-200 px-4 py-2 text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="items-container">
                                     <tr class="item-row"
                                         data-index="0">
-                                        <td class="item-no border border-gray-300 px-4 py-2 text-center text-black dark:border-gray-600 dark:text-gray-100">1</td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text"
-                                                   name="items[0][nama_barang]"
-                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="Nama barang"
-                                                   value="{{ old('items.0.nama_barang') }}"
-                                                   required>
-                                            @error('items.0.nama_barang')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
-                                        </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text"
-                                                   name="items[0][description]"
-                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="Deskripsi barang"
-                                                   value="{{ old('items.0.description') }}"
-                                                   required>
-                                            @error('items.0.description')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
-                                        </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <select name="items[0][category]"
-                                                    required
-                                                    class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
-                                                <option value="" disabled selected>Pilih Kategori</option>
-                                                @foreach(\App\Models\Barang::KATEGORI as $kategori)
-                                                    <option value="{{ $kategori }}" {{ old('items.0.category') == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('items.0.category')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
-                                        </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number"
-                                                   name="items[0][qty]"
-                                                   class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="0"
-                                                   value="{{ old('items.0.qty', 1) }}"
-                                                   min="1"
-                                                   required>
-                                            @error('items.0.qty')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
-                                        </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text"
-                                                   name="items[0][satuan]"
-                                                   class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="Unit"
-                                                   value="{{ old('items.0.satuan') }}"
-                                                   required>
-                                            @error('items.0.satuan')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
-                                        </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <div class="relative flex items-center">
-                                                <span class="absolute left-3 text-sm text-gray-500 dark:text-gray-400">Rp</span>
+                                            <div class="flex flex-col gap-2">
                                                 <input type="text"
-                                                       name="items[0][harga]"
-                                                       class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                       placeholder="0"
-                                                       value="{{ old('items.0.harga') }}"
+                                                       name="items[0][nama_barang]"
+                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       placeholder="Nama barang"
+                                                       value="{{ old('items.0.nama_barang') }}"
                                                        required>
+                                                @error('items.0.nama_barang')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+
+                                                <select name="items[0][category]"
+                                                        required
+                                                        class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
+                                                    <option value="" disabled selected>Pilih Kategori</option>
+                                                    @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                                                        <option value="{{ $kategori }}" {{ old('items.0.category') == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
+                                                    @endforeach
+                                                </select>
+                                                @error('items.0.category')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+
+                                                <input type="text"
+                                                       name="items[0][description]"
+                                                       class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       placeholder="Deskripsi barang"
+                                                       value="{{ old('items.0.description') }}"
+                                                       required>
+                                                @error('items.0.description')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
                                             </div>
-                                            @error('items.0.harga')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="number"
-                                                   name="items[0][diskon]"
-                                                   class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="0"
-                                                   value="{{ old('items.0.diskon', 0) }}"
-                                                   min="0"
-                                                   max="100"
-                                                   required>
-                                            @error('items.0.diskon')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
+                                            <div class="flex flex-col gap-2">
+                                                <!-- Qty Field -->
+                                                <div class="flex items-center gap-2 w-full">
+                                                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Qty</span>
+                                                    <input type="number"
+                                                           name="items[0][qty]"
+                                                           class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           placeholder="0"
+                                                           value="{{ old('items.0.qty', 1) }}"
+                                                           min="1"
+                                                           required>
+                                                </div>
+                                                @error('items.0.qty')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+
+                                                <!-- Satuan Field -->
+                                                <div class="flex items-center gap-2 w-full">
+                                                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Sat</span>
+                                                    <input type="text"
+                                                           name="items[0][satuan]"
+                                                           class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           placeholder="Unit"
+                                                           value="{{ old('items.0.satuan') }}"
+                                                           required>
+                                                </div>
+                                                @error('items.0.satuan')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+
+                                                <!-- Harga Field -->
+                                                <div class="flex items-center gap-2 w-full">
+                                                    <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Rp</span>
+                                                    <input type="text"
+                                                           name="items[0][harga]"
+                                                           class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           placeholder="0"
+                                                           value="{{ old('items.0.harga') }}"
+                                                           required>
+                                                </div>
+                                                @error('items.0.harga')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                            <input type="text"
-                                                   name="items[0][keterangan]"
-                                                   class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                   placeholder="Keterangan jika diskon > 20%"
-                                                   value="{{ old('items.0.keterangan') }}">
-                                            @error('items.0.keterangan')
-                                                <span class="text-xs text-red-500">{{ $message }}</span>
-                                            @enderror
+                                            <div class="flex flex-col gap-2">
+                                                <div class="relative flex items-center w-full">
+                                                    <input type="number"
+                                                           name="items[0][diskon]"
+                                                           class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-8 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                           placeholder="0"
+                                                           value="{{ old('items.0.diskon', 0) }}"
+                                                           min="0"
+                                                           max="100"
+                                                           required>
+                                                    <span class="absolute right-3 text-sm text-gray-500 dark:text-gray-400">%</span>
+                                                </div>
+                                                @error('items.0.diskon')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+
+                                                <input type="text"
+                                                       name="items[0][keterangan]"
+                                                       class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                       placeholder="Jika diskon > 20%"
+                                                       value="{{ old('items.0.keterangan') }}">
+                                                @error('items.0.keterangan')
+                                                    <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </td>
-                                        <td class="item-subtotal border border-gray-300 px-4 py-2 text-right font-semibold text-gray-900 dark:border-gray-600 dark:text-gray-100">0</td>
-                                        <td class="border border-gray-300 px-4 py-2 text-center">
-                                            <div class="upload-btn-container relative">
+                                        <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
+                                            <div class="upload-btn-container relative flex justify-center">
                                                 <input type="file"
                                                        name="items[0][images][]"
-                                                       class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                                                       class="item-images-input absolute inset-0 h-11 w-11 cursor-pointer opacity-0 z-10"
                                                        multiple
                                                        accept="image/*">
                                                 <button type="button"
-                                                        class="rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1c4d81]">
-                                                    Upload
+                                                        class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    </svg>
                                                 </button>
                                             </div>
-                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2"></div>
+                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2 mt-2"></div>
                                         </td>
-                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
+                                        <td class="item-subtotal border border-gray-300 px-4 py-2 text-center font-bold text-blue-600 dark:text-blue-400 dark:border-gray-600 text-nowrap" style="font-size: 0.875rem;">Rp 0</td>
+                                        <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
                                             <button type="button"
-                                                    class="btn btn-remove-item rounded-lg border-none bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
+                                                    class="btn btn-remove-item p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/30 transition-colors">
                                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                                     width="24"
-                                                     height="24"
+                                                     width="20"
+                                                     height="20"
                                                      viewBox="0 0 24 24"
                                                      fill="none"
                                                      stroke="currentColor"
                                                      stroke-width="2"
                                                      stroke-linecap="round"
                                                      stroke-linejoin="round"
-                                                     class="lucide lucide-trash2 h-4 w-4">
+                                                     class="lucide lucide-trash2">
                                                     <path d="M3 6h18"></path>
                                                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
                                                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
@@ -322,6 +330,11 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Total Amount Summary Bar (Non-scrolling/Fixed-width) -->
+                        <div class="flex items-center justify-between border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/40 px-6 py-4">
+                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Total</span>
+                            <span id="totalAmount" class="text-xl font-extrabold text-blue-600 dark:text-blue-400">Rp 0</span>
                         </div>
                         <button type="button"
                                 id="btn-add-item"
@@ -595,6 +608,12 @@
 
                 const grandTotal = subtotal + tax;
 
+                // Update non-scrolling total banner
+                const totalAmountEl = document.getElementById('totalAmount');
+                if (totalAmountEl) {
+                    totalAmountEl.textContent = formatCurrency(subtotal);
+                }
+
                 document.getElementById('subtotal-display').value = formatCurrency(subtotal);
                 document.getElementById('subtotal-value').value = subtotal;
                 document.getElementById('grand-total-display').value = formatCurrency(grandTotal);
@@ -622,11 +641,13 @@
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             const imgContainer = document.createElement('div');
-                            imgContainer.className = 'relative inline-block';
+                            imgContainer.className = 'group relative inline-block';
                             imgContainer.innerHTML = `
-                                <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border" title="${file.name}">
-                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
-                                    âœ•
+                                <a href="${e.target.result}" target="_blank">
+                                    <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border transition-transform hover:scale-105" title="${file.name}">
+                                </a>
+                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-index="${index}">
+                                    \u2715
                                 </button>
                             `;
                             preview.appendChild(imgContainer);
@@ -663,61 +684,67 @@
                 newRow.className = 'item-row';
                 newRow.dataset.index = itemCount;
                 newRow.innerHTML = `
-            <td class="border border-gray-300 px-4 py-2 text-center item-no dark:border-gray-600 text-black dark:text-gray-100">${itemCount + 1}</td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="text" name="items[${itemCount}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="Nama barang" required>
-            </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="text" name="items[${itemCount}][description]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="Deskripsi barang" required>
-            </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <select name="items[${itemCount}][category]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
-                    <option value="" disabled selected>Pilih Kategori</option>
-                    @foreach(\App\Models\Barang::KATEGORI as $kategori)
-                        <option value="{{ $kategori }}">{{ $kategori }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="number" name="items[${itemCount}][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="0" value="1" min="1" required>
-            </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="text" name="items[${itemCount}][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="Unit" required>
-            </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <div class="relative flex items-center">
-                    <span class="absolute left-3 text-gray-500 dark:text-gray-400 text-sm">Rp</span>
-                    <input type="text" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-9 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                        placeholder="0" required>
+                <div class="flex flex-col gap-2">
+                    <input type="text" name="items[${itemCount}][nama_barang]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                        placeholder="Nama barang" required>
+                    <select name="items[${itemCount}][category]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
+                        <option value="" disabled selected>Pilih Kategori</option>
+                        @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                            <option value="{{ $kategori }}">{{ $kategori }}</option>
+                        @endforeach
+                    </select>
+                    <input type="text" name="items[${itemCount}][description]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                        placeholder="Deskripsi barang" required>
                 </div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="number" name="items[${itemCount}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="0" min="0" max="100" value="0" required>
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-2 w-full">
+                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Qty</span>
+                        <input type="number" name="items[${itemCount}][qty]" class="item-qty form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            placeholder="0" value="1" min="1" required>
+                    </div>
+                    <div class="flex items-center gap-2 w-full">
+                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Sat</span>
+                        <input type="text" name="items[${itemCount}][satuan]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            placeholder="Unit" required>
+                    </div>
+                    <div class="flex items-center gap-2 w-full">
+                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Rp</span>
+                        <input type="text" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            placeholder="0" required>
+                    </div>
+                </div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <input type="text" name="items[${itemCount}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    placeholder="Keterangan jika diskon > 20%">
+                <div class="flex flex-col gap-2">
+                    <div class="relative flex items-center w-full">
+                        <input type="number" name="items[${itemCount}][diskon]" class="item-diskon form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-8 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            placeholder="0" min="0" max="100" value="0" required>
+                        <span class="absolute right-3 text-sm text-gray-500 dark:text-gray-400">%</span>
+                    </div>
+                    <input type="text" name="items[${itemCount}][keterangan]" class="item-keterangan form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                        placeholder="Jika diskon > 20%">
+                </div>
             </td>
-            <td class="border border-gray-300 px-4 py-2 text-black text-right item-subtotal font-semibold dark:border-gray-600 dark:text-gray-100">0</td>
             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                <div class="relative upload-btn-container">
-                    <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
+                <div class="relative upload-btn-container flex justify-center">
+                    <input type="file" name="items[${itemCount}][images][]" class="item-images-input absolute inset-0 w-11 h-11 opacity-0 cursor-pointer z-10" 
                         multiple accept="image/*">
-                    <button type="button" class="upload-button rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81] px-4 py-2 text-sm font-semibold">
-                        Upload
+                    <button type="button" class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
                     </button>
                 </div>
-                <div class="item-images-preview flex flex-wrap gap-2 justify-center"></div>
+                <div class="item-images-preview flex flex-wrap gap-2 justify-center mt-2"></div>
             </td>
-            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                <button type="button" class="btn btn-remove-item rounded-lg bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2 h-4 w-4">
+            <td class="item-subtotal border border-gray-300 px-4 py-2 text-center font-bold text-blue-600 dark:text-blue-400 dark:border-gray-600 text-nowrap" style="font-size: 0.875rem;">Rp 0</td>
+            <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
+                <button type="button" class="btn btn-remove-item p-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-950/20 dark:text-red-400 dark:hover:bg-red-950/30 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2">
                         <path d="M3 6h18"></path>
                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
                         <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
@@ -783,10 +810,13 @@
             function reindexItems() {
                 document.querySelectorAll('.item-row').forEach((row, index) => {
                     row.dataset.index = index;
-                    row.querySelector('.item-no').textContent = index + 1;
+                    const itemNoEl = row.querySelector('.item-no');
+                    if (itemNoEl) {
+                        itemNoEl.textContent = index + 1;
+                    }
 
                     // Update all input names
-                    row.querySelectorAll('input, textarea').forEach(input => {
+                    row.querySelectorAll('input, select, textarea').forEach(input => {
                         const name = input.getAttribute('name');
                         if (name) {
                             const newName = name.replace(/\[\d+\]/, `[${index}]`);

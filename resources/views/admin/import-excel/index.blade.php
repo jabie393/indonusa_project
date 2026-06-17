@@ -766,18 +766,20 @@
                 if (this.files.length > 0) {
                     uploadBtn.style.display = 'none';
                 } else {
-                    uploadBtn.style.display = 'block';
+                    uploadBtn.style.display = '';
                 }
 
                 Array.from(this.files).forEach((file, index) => {
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const imgContainer = document.createElement('div');
-                        imgContainer.className = 'relative inline-block';
+                        imgContainer.className = 'group relative inline-block';
                         imgContainer.innerHTML = `
-                        <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border dark:border-gray-600" title="${file.name}">
-                        <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn" data-index="${index}">
-                            ✕
+                        <a href="${e.target.result}" target="_blank">
+                            <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border dark:border-gray-600 transition-transform hover:scale-105" title="${file.name}">
+                        </a>
+                        <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-index="${index}">
+                            \u2715
                         </button>
                     `;
                         preview.appendChild(imgContainer);
