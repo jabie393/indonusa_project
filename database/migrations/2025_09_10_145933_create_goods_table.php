@@ -59,7 +59,6 @@ return new class extends Migration {
             $table->text('note')->nullable();
             $table->text('submission_reason')->nullable();
             $table->string('form')->nullable();
-            $table->foreignId('parent_id')->nullable()->constrained('goods')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -77,7 +77,8 @@ class SalesOrderInvoiceController extends Controller
         $baseQuery = \App\Models\Quotation::where(function ($q) {
             $q->whereDoesntHave('order')
               ->orWhereHas('order', function ($o) {
-                  $o->where('status', '!=', 'open');
+                  $o->where('status', '!=', 'open')
+                    ->where('status', '!=', 'sent_to_supervisor');
               });
         });
 
@@ -220,6 +221,13 @@ class SalesOrderInvoiceController extends Controller
                           ->orWhere('position', 'like', "%$search%")
                           ->orWhere('email', 'like', "%$search%")
                           ->orWhere('phone', 'like', "%$search%");
+                  });
+            })
+            ->where(function ($q) {
+                $q->whereDoesntHave('order')
+                  ->orWhereHas('order', function ($o) {
+                      $o->where('status', '!=', 'open')
+                        ->where('status', '!=', 'sent_to_supervisor');
                   });
             })
             ->limit(10)

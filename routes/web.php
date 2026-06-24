@@ -298,6 +298,19 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 });
 // End of Sales
 
+// System Settings (GA & Supervisor)
+Route::middleware(['auth', 'role:General Affair,Supervisor'])->group(function () {
+    Route::get('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'update'])->name('settings.update');
+});
+
+// Sales Report (Sales, GA, Supervisor)
+Route::middleware(['auth', 'role:Sales,General Affair,Supervisor'])->group(function () {
+    Route::get('/sales-report', [App\Http\Controllers\Admin\SalesReportController::class, 'index'])->name('sales-report.index');
+    Route::get('/sales-report/excel', [App\Http\Controllers\Admin\SalesReportController::class, 'exportExcel'])->name('sales-report.excel');
+    Route::get('/sales-report/pdf', [App\Http\Controllers\Admin\SalesReportController::class, 'exportPdf'])->name('sales-report.pdf');
+});
+
 // Shared Detail and PDF views for Quotation (registered below specific routes to avoid parameter clashes)
 Route::middleware(['auth'])->group(function () {
     Route::get('/detail-quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');

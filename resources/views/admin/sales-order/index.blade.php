@@ -240,7 +240,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-6 align-middle">
-                                    <div class="mx-auto flex w-44 flex-col items-center justify-center gap-1.5">
+                                    <div class="mx-auto flex w-52 flex-col items-center justify-center gap-1.5">
                                         @php
                                             $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
                                             $badgeText = 'text-gray-700 dark:text-gray-300';

@@ -25,7 +25,8 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
             ->where(function ($q) {
                 $q->whereDoesntHave('order')
                   ->orWhereHas('order', function ($o) {
-                      $o->where('status', '!=', 'open');
+                      $o->where('status', '!=', 'open')
+                        ->where('status', '!=', 'sent_to_supervisor');
                   });
             });
 

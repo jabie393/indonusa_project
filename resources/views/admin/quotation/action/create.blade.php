@@ -1191,9 +1191,30 @@
                     } else if (barang && !barang.value) {
                         dropdownButton?.focus();
                     }
+                    return false;
                 }
 
-                return !invalidRow;
+                // Check for price below PT selling price (dataset.harga of selected option) and set custom validity
+                let isPriceValid = true;
+                rows.forEach(row => {
+                    const barangSelect = row.querySelector('.barang-select');
+                    const hargaInput = row.querySelector('.harga-input');
+                    if (barangSelect && barangSelect.value && hargaInput) {
+                        const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+                        const minPrice = parseFloat(selectedOption.dataset.harga || 0) || 0;
+                        const enteredPrice = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
+                        if (enteredPrice < minPrice) {
+                            hargaInput.setCustomValidity(`Harga tidak boleh di bawah harga jual PT (Rp ${minPrice.toLocaleString('id-ID')})`);
+                            isPriceValid = false;
+                        } else {
+                            hargaInput.setCustomValidity('');
+                        }
+                    } else if (hargaInput) {
+                        hargaInput.setCustomValidity('');
+                    }
+                });
+
+                return !invalidRow && isPriceValid;
             }
 
             // Update submit button state depending on complete item rows
@@ -1229,7 +1250,11 @@
                     const hargaJual = +(baseHarga * 1.3).toFixed(2);
                     // Harga satuan tetap tanpa diskon
                     if (hargaInput) {
-                        hargaInput.value = hargaJual.toLocaleString('en-US');
+                        hargaInput.value = hargaJual.toLocaleString('en-US', {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2
+                        });
+                        hargaInput.removeAttribute('readonly');
                         // Trigger input event to format if needed
                         hargaInput.dispatchEvent(new Event('input'));
                     }
@@ -1240,7 +1265,7 @@
                     if (hargaSetelahDiskonDisplay) {
                         hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                             'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
+                                minimumFractionDigits: (Math.floor(hargaSetelahDiskon) == hargaSetelahDiskon) ? 0 : 2,
                                 maximumFractionDigits: 2
                             }) :
                             '0';
@@ -1249,7 +1274,10 @@
                     namaDisplay.value = '';
                     if (quantityInput) quantityInput.value = 1;
                     if (diskonInput) diskonInput.value = 0;
-                    if (hargaInput) hargaInput.value = 0;
+                    if (hargaInput) {
+                        hargaInput.value = '0';
+                        hargaInput.setAttribute('readonly', 'true');
+                    }
                     if (hargaSetelahDiskonDisplay) hargaSetelahDiskonDisplay.value = '0';
                 }
                 updateKeteranganState(select.closest('tr'));
@@ -1281,7 +1309,7 @@
                     if (hargaSetelahDiskonDisplay) {
                         hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                             'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
+                                minimumFractionDigits: (Math.floor(hargaSetelahDiskon) == hargaSetelahDiskon) ? 0 : 2,
                                 maximumFractionDigits: 2
                             }) :
                             '0';
@@ -1298,24 +1326,24 @@
 
                 // Update table total (harga setelah diskon total)
                 document.getElementById('totalAmount').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(subTotal) == subTotal) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
 
                 // Update summary section
                 document.getElementById('summarySubtotal').textContent = 'Rp ' + subTotal.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(subTotal) == subTotal) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
 
                 document.getElementById('summaryPPN').textContent = 'Rp ' + totalPPN.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(totalPPN) == totalPPN) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
 
                 document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString(
                     'en-US', {
-                        minimumFractionDigits: 2,
+                        minimumFractionDigits: (Math.floor(grandTotal) == grandTotal) ? 0 : 2,
                         maximumFractionDigits: 2
                     });
 
@@ -1559,7 +1587,7 @@
                             const hargaSetelahDiskon = qty * hargaSatuan * (1 - (diskon / 100));
                             hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                                 'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
+                                    minimumFractionDigits: (Math.floor(hargaSetelahDiskon) == hargaSetelahDiskon) ? 0 : 2,
                                     maximumFractionDigits: 2
                                 }) :
                                 '0';
@@ -1578,8 +1606,35 @@
                     ppnInput.addEventListener('change', calculateTotals);
                 }
 
-                row.querySelector('.harga-input').addEventListener('change', calculateTotals);
-                initThousandSeparator(row.querySelector('.harga-input'));
+                const hargaInputEl = row.querySelector('.harga-input');
+                if (hargaInputEl) {
+                    const checkPriceCustomValidity = function() {
+                        const barangSelect = row.querySelector('.barang-select');
+                        if (barangSelect && barangSelect.value) {
+                            const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+                            const minPrice = parseFloat(selectedOption.dataset.harga || 0) || 0;
+                            const enteredPrice = parseFloat(hargaInputEl.value.replace(/,/g, '')) || 0;
+                            if (enteredPrice < minPrice) {
+                                hargaInputEl.setCustomValidity(`Harga tidak boleh di bawah harga jual PT (Rp ${minPrice.toLocaleString('id-ID')})`);
+                            } else {
+                                hargaInputEl.setCustomValidity('');
+                            }
+                        } else {
+                            hargaInputEl.setCustomValidity('');
+                        }
+                    };
+                    hargaInputEl.addEventListener('change', function() {
+                        checkPriceCustomValidity();
+                        calculateTotals();
+                    });
+                    hargaInputEl.addEventListener('input', checkPriceCustomValidity);
+                    
+                    const barangSelectEl = row.querySelector('.barang-select');
+                    if (barangSelectEl) {
+                        barangSelectEl.addEventListener('change', checkPriceCustomValidity);
+                    }
+                }
+                initThousandSeparator(hargaInputEl);
                 row.querySelector('.quantity-input').addEventListener('change', calculateTotals);
                 const diskonInput = row.querySelector('.diskon-input');
                 if (diskonInput) {
@@ -1596,7 +1651,7 @@
                             const hargaSetelahDiskon = qty * hargaSatuan * (1 - (d / 100));
                             hargaSetelahDiskonDisplay.value = hargaSetelahDiskon > 0 ?
                                 'Rp ' + hargaSetelahDiskon.toLocaleString('en-US', {
-                                    minimumFractionDigits: 2,
+                                    minimumFractionDigits: (Math.floor(hargaSetelahDiskon) == hargaSetelahDiskon) ? 0 : 2,
                                     maximumFractionDigits: 2
                                 }) :
                                 '0';
@@ -1951,9 +2006,13 @@
             document.addEventListener('submit', function(e) {
                 const form = e.target;
                 if (form) {
-                    if (form.id === 'requestOrderForm' && !validateRequiredItemRows(true)) {
-                        e.preventDefault();
-                        return;
+                    if (form.id === 'requestOrderForm') {
+                        const isValid = validateRequiredItemRows(true);
+                        if (!isValid) {
+                            form.reportValidity();
+                            e.preventDefault();
+                            return;
+                        }
                     }
 
                     form.querySelectorAll('.harga-input').forEach(input => {

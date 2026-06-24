@@ -109,6 +109,9 @@
                     </thead>
                     <tbody class="text-nowrap">
                         @forelse ($results as $row)
+                            @if (($row['status'] ?? '') === 'Waiting for Supervisor Approval')
+                                @continue
+                            @endif
                             <tr
                                 class="border-b border-gray-200 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">

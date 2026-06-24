@@ -136,6 +136,14 @@ class QuotationController extends Controller
             $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
             $hargaSatuan = isset($validated['price'][$i]) && $validated['price'][$i] !== '' ? (float) $validated['price'][$i] : $computedHargaSatuan;
+
+            if ($productId && $hargaSatuan < $baseHarga) {
+                return back()
+                    ->withErrors('Harga barang pada baris ke-' . ($i + 1) . ' tidak boleh di bawah harga jual PT (Rp ' . number_format($baseHarga, 2, ',', '.') . ').')
+                    ->withInput()
+                    ->with(['title' => 'Gagal', 'text' => 'Harga barang tidak boleh di bawah harga jual PT!']);
+            }
+
             $subtotal = round($qty * $hargaSatuan * (1 - ($diskon / 100)), 2);
 
             $items[] = [
@@ -518,6 +526,13 @@ class QuotationController extends Controller
                 $harga = isset($validated['price'][$i]) && $validated['price'][$i] !== ''
                     ? (float) $validated['price'][$i]
                     : $computedHarga;
+
+                if ($harga < $baseHarga) {
+                    return back()
+                        ->withErrors('Harga barang pada baris ke-' . ($i + 1) . ' tidak boleh di bawah harga jual PT (Rp ' . number_format($baseHarga, 2, ',', '.') . ').')
+                        ->withInput()
+                        ->with(['title' => 'Gagal', 'text' => 'Harga barang tidak boleh di bawah harga jual PT!']);
+                }
             }
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 

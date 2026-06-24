@@ -603,10 +603,14 @@
                                                     </div>
                                                     <div class="flex items-center gap-2 w-full">
                                                         <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Rp</span>
+                                                        @php
+                                                            $rawHarga = is_array(old('price', $item->harga)) ? old('price', $item->harga)[0] ?? 0 : old('price', $item->harga);
+                                                            $rawHarga = (float) str_replace(',', '', $rawHarga);
+                                                            $formattedHarga = number_format($rawHarga, (floor($rawHarga) == $rawHarga) ? 0 : 2, '.', ',');
+                                                        @endphp
                                                         <input type="text" name="price[]"
                                                             class="form-control harga-input @error('harga.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                            value="{{ number_format(is_array(old('harga', $item->harga)) ? old('harga', $item->harga)[0] ?? 0 : old('harga', $item->harga), 2, '.', ',') }}"
-                                                            readonly>
+                                                            value="{{ $formattedHarga }}">
                                                     </div>
                                                 </div>
                                             </td>
@@ -662,10 +666,14 @@
                                                 </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
+                                                @php
+                                                    $rowSubtotal = $item->quantity * $item->harga * (1 - ($item->diskon_percent ?? 0) / 100);
+                                                    $rowDecimals = (floor($rowSubtotal) == $rowSubtotal) ? 0 : 2;
+                                                @endphp
                                                 <input type="text"
                                                     class="form-control harga-setelah-diskon-display @error('harga.*') is-invalid @enderror block w-full border-none bg-transparent p-0 text-center font-bold text-blue-600 focus:ring-0 dark:text-blue-400 pointer-events-none"
                                                     style="font-size: 0.875rem;"
-                                                    value="{{ 'Rp ' . number_format($item->quantity * $item->harga * (1 - ($item->diskon_percent ?? 0) / 100), 2, '.', ',') }}"
+                                                    value="{{ 'Rp ' . number_format($rowSubtotal, $rowDecimals, '.', ',') }}"
                                                     readonly>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
@@ -861,7 +869,7 @@
                                                         <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Rp</span>
                                                         <input type="text" name="price[]"
                                                             class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                                            value="0.00" readonly>
+                                                            value="0" readonly>
                                                     </div>
                                                 </div>
                                             </td>
@@ -1474,14 +1482,16 @@
                     // Apply markup 30%
                     const markupHarga = baseHarga * 1.3;
                     hargaInput.value = markupHarga.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
+                        minimumFractionDigits: 0,
                         maximumFractionDigits: 2
                     });
                     initThousandSeparator(hargaInput);
+                    hargaInput.removeAttribute('readonly');
                     baseDiskonInput.value = 0;
                 } else {
                     namaDisplay.value = '';
-                    hargaInput.value = '0.00';
+                    hargaInput.value = '0';
+                    hargaInput.setAttribute('readonly', 'true');
                     baseDiskonInput.value = 0;
                 }
                 calculateTotals();
@@ -1501,36 +1511,34 @@
                     const hargaSetelahDiskon = +(markupHarga * (1 - (diskonPercent / 100))).toFixed(2);
                     const itemSubtotal = +(qty * hargaSetelahDiskon).toFixed(2);
 
-                    row.querySelector('.harga-setelah-diskon-display').value = 'Rp ' + itemSubtotal
-                        .toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2
-                        });
+                    row.querySelector('.harga-setelah-diskon-display').value = 'Rp ' + itemSubtotal.toLocaleString('en-US', {
+                        minimumFractionDigits: (Math.floor(itemSubtotal) == itemSubtotal) ? 0 : 2,
+                        maximumFractionDigits: 2
+                    });
 
                     subtotal += itemSubtotal;
                 });
 
                 const taxRate = parseFloat(document.getElementById('tax_rate').value) || 0;
                 totalPPN = +(subtotal * (taxRate / 100)).toFixed(2);
-                grandTotal = subtotal + totalPPN;
+                grandTotal = +(subtotal + totalPPN).toFixed(2);
 
                 document.getElementById('totalAmount').textContent = 'Rp ' + grandTotal.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(grandTotal) == grandTotal) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
 
                 // Update summary section
                 document.getElementById('summarySubtotal').textContent = 'Rp ' + subtotal.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(subtotal) == subtotal) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
                 document.getElementById('summaryPPN').textContent = 'Rp ' + totalPPN.toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
+                    minimumFractionDigits: (Math.floor(totalPPN) == totalPPN) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
-                document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString(
-                    'en-US', {
-                    minimumFractionDigits: 2,
+                document.getElementById('summaryGrandTotal').textContent = 'Rp ' + grandTotal.toLocaleString('en-US', {
+                    minimumFractionDigits: (Math.floor(grandTotal) == grandTotal) ? 0 : 2,
                     maximumFractionDigits: 2
                 });
 
@@ -1569,9 +1577,30 @@
                     } else if (barang && !barang.value) {
                         dropdownButton?.focus();
                     }
+                    return false;
                 }
 
-                return !invalidRow;
+                // Check for price below PT selling price (dataset.harga of selected option) and set custom validity
+                let isPriceValid = true;
+                rows.forEach(row => {
+                    const barangSelect = row.querySelector('.barang-select');
+                    const hargaInput = row.querySelector('.harga-input');
+                    if (barangSelect && barangSelect.value && hargaInput) {
+                        const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+                        const minPrice = parseFloat(selectedOption.dataset.harga || 0) || 0;
+                        const enteredPrice = parseFloat(hargaInput.value.replace(/,/g, '')) || 0;
+                        if (enteredPrice < minPrice) {
+                            hargaInput.setCustomValidity(`Harga tidak boleh di bawah harga jual PT (Rp ${minPrice.toLocaleString('id-ID')})`);
+                            isPriceValid = false;
+                        } else {
+                            hargaInput.setCustomValidity('');
+                        }
+                    } else if (hargaInput) {
+                        hargaInput.setCustomValidity('');
+                    }
+                });
+
+                return !invalidRow && isPriceValid;
             }
 
             addRowBtn.addEventListener('click', function () {
@@ -1640,7 +1669,7 @@
                             </div>
                             <div class="flex items-center gap-2 w-full">
                                 <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">Rp</span>
-                                <input type="text" name="price[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="0.00" readonly>
+                                <input type="text" name="price[]" class="form-control harga-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" value="0" readonly>
                             </div>
                         </div>
                     </td>
@@ -1685,14 +1714,41 @@
 
             function attachRowEvents(row) {
                 const barangSelect = row.querySelector('.barang-select');
+                const hargaInputEl = row.querySelector('.harga-input');
+
+                const checkPriceCustomValidity = function() {
+                    if (barangSelect && barangSelect.value && hargaInputEl) {
+                        const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+                        const minPrice = parseFloat(selectedOption.dataset.harga || 0) || 0;
+                        const enteredPrice = parseFloat(hargaInputEl.value.replace(/,/g, '')) || 0;
+                        if (enteredPrice < minPrice) {
+                            hargaInputEl.setCustomValidity(`Harga tidak boleh di bawah harga jual PT (Rp ${minPrice.toLocaleString('id-ID')})`);
+                        } else {
+                            hargaInputEl.setCustomValidity('');
+                        }
+                    } else if (hargaInputEl) {
+                        hargaInputEl.setCustomValidity('');
+                    }
+                };
+
                 if (barangSelect) {
                     barangSelect.addEventListener('change', function () {
                         updateKategoriBarang(this);
+                        checkPriceCustomValidity();
                     });
                 }
 
                 row.querySelector('.quantity-input').addEventListener('input', calculateTotals);
-                row.querySelector('.harga-input').addEventListener('input', calculateTotals);
+                if (hargaInputEl) {
+                    hargaInputEl.addEventListener('input', function() {
+                        checkPriceCustomValidity();
+                        calculateTotals();
+                    });
+                    hargaInputEl.addEventListener('change', function() {
+                        checkPriceCustomValidity();
+                        calculateTotals();
+                    });
+                }
 
                 const diskonInput = row.querySelector('.diskon-input');
                 const keteranganInput = row.querySelector('.keterangan-input');
@@ -1719,7 +1775,7 @@
                     reindexItemImageInputs();
                 });
 
-                initThousandSeparator(row.querySelector('.harga-input'));
+                initThousandSeparator(hargaInputEl);
                 handleItemImagePreview(row);
             }
 
@@ -2135,9 +2191,13 @@
             document.addEventListener('submit', function (e) {
                 const form = e.target;
                 if (form) {
-                    if (form.id === 'requestOrderForm' && !validateRequiredItemRows(true)) {
-                        e.preventDefault();
-                        return;
+                    if (form.id === 'requestOrderForm') {
+                        const isValid = validateRequiredItemRows(true);
+                        if (!isValid) {
+                            form.reportValidity();
+                            e.preventDefault();
+                            return;
+                        }
                     }
 
                     form.querySelectorAll('.harga-input').forEach(input => {

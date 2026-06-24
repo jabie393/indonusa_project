@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <title>Laporan Kinerja Sales</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+        body {
+            font-family: "Tinos", serif;
+        }
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 1.27cm;
+            }
+            * {
+                box-shadow: none !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            body {
+                background: #ffffff;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-black text-sm p-4">
+    @php
+        $getPublicImageBase64 = function ($filename) {
+            try {
+                $path = public_path('images/' . $filename);
+                if (file_exists($path) && is_readable($path)) {
+                    $mime = mime_content_type($path);
+                    $data = base64_encode(file_get_contents($path));
+                    return 'data:' . $mime . ';base64,' . $data;
+                }
+            } catch (\Exception $e) {}
+            return '';
+        };
+    @endphp
+
+    <!-- Container -->
+    <div class="relative w-full">
+        <!-- Watermark -->
+        @if ($getPublicImageBase64('LogoText_transparent.png'))
+            <img src="{{ $getPublicImageBase64('LogoText_transparent.png') }}" alt=""
+                 class="pointer-events-none absolute left-1/2 top-[400px] z-0 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 opacity-[0.05]" />
+        @endif
+
+        <!-- Kop Surat -->
+        <div class="flex items-center gap-4 border-b-4 border-[#2f5496] pb-3 mb-6">
+            @if ($getPublicImageBase64('Logo_transparent.png'))
+                <img src="{{ $getPublicImageBase64('Logo_transparent.png') }}" alt="Logo" class="w-[80px] h-auto object-contain" />
+            @endif
+            <div class="flex-1">
+                <h1 class="text-2xl font-bold text-[#1f3864] leading-tight">{{ strtoupper($company_name) }}</h1>
+                <p class="text-xs text-slate-700 font-bold mt-1">{{ $company_address }}</p>
+                <p class="text-xs text-slate-600 font-bold">Telp: {{ $company_phone }} | Email: {{ $company_email }}</p>
+            </div>
+        </div>
+
+        <!-- Judul Laporan -->
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-bold text-slate-900 tracking-wide">LAPORAN KINERJA SALES</h2>
+            <p class="text-xs text-slate-600 mt-1 italic">{{ $filter_description }}</p>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="w-full overflow-x-auto z-10 relative">
+            <table class="w-full border-collapse border border-slate-400 text-xs">
+                <thead>
+                    <tr class="bg-slate-100 text-slate-800">
+                        <th class="border border-slate-400 p-2 text-center w-[4%] font-bold">No</th>
+                        <th class="border border-slate-400 p-2 text-center w-[11%] font-bold">Tanggal</th>
+                        <th class="border border-slate-400 p-2 text-left w-[18%] font-bold">No. Dokumen</th>
+                        <th class="border border-slate-400 p-2 text-left w-[15%] font-bold">Sales</th>
+                        <th class="border border-slate-400 p-2 text-left w-[18%] font-bold">Customer</th>
+                        <th class="border border-slate-400 p-2 text-left w-[20%] font-bold">Perihal</th>
+                        <th class="border border-slate-400 p-2 text-right w-[14%] font-bold">Total (Rp)</th>
+                        <th class="border border-slate-400 p-2 text-center w-[15%] font-bold">Status</th>
+                        <th class="border border-slate-400 p-2 text-center w-[12%] font-bold">Tipe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $grandTotal = 0; @endphp
+                    @forelse($results as $index => $row)
+                        @php
+                            $statusData = \App\Http\Controllers\Admin\SalesReportController::getStatusDetails($row->type, $row->order_status, $row->direct_status, $row->custom_quotation_id);
+                            $grandTotal += $row->grand_total;
+                        @endphp
+                        <tr class="hover:bg-slate-50">
+                            <td class="border border-slate-400 p-2 text-center">{{ $index + 1 }}</td>
+                            <td class="border border-slate-400 p-2 text-center">{{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>
+                            <td class="border border-slate-400 p-2 font-bold">{{ $row->quotation_number ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->sales_name ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->customer_name ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2 whitespace-normal break-words">{{ $row->subject ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2 text-right font-medium">{{ number_format($row->grand_total, 0, ',', '.') }}</td>
+                            <td class="border border-slate-400 p-2 text-center font-medium">{{ $statusData['label'] }}</td>
+                            <td class="border border-slate-400 p-2 text-center text-slate-600">{{ $row->type === 'Standard Quotation' ? 'Standard' : 'Custom' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="9" class="border border-slate-400 p-8 text-center text-slate-500 font-bold">Tidak ada data transaksi ditemukan</td>
+                        </tr>
+                    @endforelse
+
+                    <!-- Grand Total Row -->
+                    @if($results->isNotEmpty())
+                        <tr class="bg-slate-100 font-bold">
+                            <td colspan="6" class="border border-slate-400 p-2 text-right font-bold">GRAND TOTAL</td>
+                            <td class="border border-slate-400 p-2 text-right font-bold text-[#1f3864]">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                            <td colspan="2" class="border border-slate-400 p-2"></td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tanda Tangan -->
+        <div class="mt-12 flex justify-end text-xs" style="page-break-inside: avoid; break-inside: avoid;">
+            <div class="text-center w-[200px]">
+                <p class="font-bold">Surabaya, {{ now()->format('d F Y') }}</p>
+                <p class="font-bold mb-16">{{ $leader_position }}</p>
+                
+                @if ($getPublicImageBase64('ttd.png'))
+                    <img src="{{ $getPublicImageBase64('ttd.png') }}" alt="Signature" class="mx-auto h-[60px] object-contain -mt-12 mb-4 relative z-0" />
+                @endif
+                
+                <p class="font-bold underline text-slate-900">{{ $leader_name }}</p>
+                <p class="text-[9px] text-slate-500 mt-1 italic">Dicetak secara sistem pada: {{ $print_date }}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
