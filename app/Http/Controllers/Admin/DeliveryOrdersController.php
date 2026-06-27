@@ -94,6 +94,24 @@ class DeliveryOrdersController extends Controller
     {
         $order = Order::with('items')->findOrFail($id);
         
+        // Fallback/Safety: Populate items if they are empty
+        if ($order->items->count() === 0 && $order->requestOrder && $order->requestOrder->items->count() > 0) {
+            foreach ($order->requestOrder->items as $reqItem) {
+                \App\Models\OrderItem::create([
+                    'order_id'           => $order->id,
+                    'goods_id'           => $reqItem->goods_id,
+                    'category'           => $reqItem->product_category,
+                    'quantity'           => $reqItem->quantity,
+                    'delivered_quantity' => 0,
+                    'item_status'        => 'pending',
+                    'price'              => $reqItem->price,
+                    'subtotal'           => $reqItem->subtotal,
+                ]);
+            }
+            // Reload relation
+            $order->load('items');
+        }
+        
         foreach ($order->items as $item) {
             $item->delivered_quantity = $item->quantity;
             $item->item_status = 'delivered';
@@ -282,6 +300,24 @@ class DeliveryOrdersController extends Controller
     public function partialApprove(Request $request, $id)
     {
         $order = Order::with('items')->findOrFail($id);
+        
+        // Fallback/Safety: Populate items if they are empty
+        if ($order->items->count() === 0 && $order->requestOrder && $order->requestOrder->items->count() > 0) {
+            foreach ($order->requestOrder->items as $reqItem) {
+                \App\Models\OrderItem::create([
+                    'order_id'           => $order->id,
+                    'goods_id'           => $reqItem->goods_id,
+                    'category'           => $reqItem->product_category,
+                    'quantity'           => $reqItem->quantity,
+                    'delivered_quantity' => 0,
+                    'item_status'        => 'pending',
+                    'price'              => $reqItem->price,
+                    'subtotal'           => $reqItem->subtotal,
+                ]);
+            }
+            // Reload relation
+            $order->load('items');
+        }
         
         $itemsData = $request->input('items', []);
 

@@ -150,12 +150,12 @@
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $loop->iteration }}</td>
                                 <td class="border px-2 py-1">
-                                    {{ $item->orderItem->barang->goods_name ?? ($item->orderItem->nama_barang ?? '-') }}
+                                    {{ $item->orderItem->nama_barang }}
                                 </td>
                                 <td class="border px-2 py-1">
-                                    {{ $item->orderItem->barang?->description }}
+                                    {{ $item->orderItem->barang?->description ?? '-' }}
                                 </td>
-                                <td class="border px-2 py-1 text-center">{{ $item->quantity_sent }} {{ $item->orderItem->barang?->unit }}</td>
+                                <td class="border px-2 py-1 text-center">{{ $item->quantity_sent }} {{ $item->orderItem->barang?->unit ?? 'pcs' }}</td>
                                 <td class="border px-2 py-1 text-center"></td>
                             </tr>
                         @endforeach

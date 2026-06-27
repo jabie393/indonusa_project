@@ -166,14 +166,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @php $iteration = 1; @endphp
+                            @php 
+                                $iteration = 1; 
+                                $hasDeliveredItems = $orders->items->contains(fn($item) => $item->delivered_quantity > 0);
+                            @endphp
                             @foreach ($orders->items as $item)
-                                @if ($item->delivered_quantity > 0)
+                                @if ($item->delivered_quantity > 0 || (!$hasDeliveredItems && $item->quantity > 0))
                                     <tr>
                                         <td class="border border-black px-2 py-1 text-center">{{ $iteration++ }}</td>
                                         <td class="border border-black px-2 py-1">{{ $item->nama_barang }}</td>
                                         <td class="border border-black px-2 py-1">{{ $item->barang?->description }}</td>
-                                        <td class="border border-black px-2 py-1 text-center">{{ $item->delivered_quantity }} {{ $item->barang?->unit }}</td>
+                                        <td class="border border-black px-2 py-1 text-center">
+                                            {{ $item->delivered_quantity > 0 ? $item->delivered_quantity : $item->quantity }} 
+                                            {{ $item->barang?->unit }}
+                                        </td>
                                         <td class="border border-black px-2 py-1 text-center"></td>
                                     </tr>
                                 @endif

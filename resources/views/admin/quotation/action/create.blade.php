@@ -1191,6 +1191,7 @@
                 const quantityInput = row.querySelector('.quantity-input');
                 const diskonInput = row.querySelector('.diskon-input');
                 const hargaInput = row.querySelector('.harga-input');
+                const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
                 const imageContainer = row.querySelector('.item-image-preview-container');
 
                 if (option.value) {

@@ -189,10 +189,6 @@
                     </table>
                 </div>
 
-            <!-- INTRO TEXT: show only the editable note -->
-            <div class="mt-8 text-[9pt]">
-                <p class="whitespace-pre-wrap">{{ $requestOrder->customer_notes }}</p>
-            </div>
 
                 <!-- ITEMS TABLE -->
                 <div class="mt-8 text-[9pt]">
