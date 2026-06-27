@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Surat Jalan Parsial - Indonusa Jaya Bersama</title>
+    <title>Delivery Order Partial - Indonusa Jaya Bersama</title>
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
@@ -139,7 +139,7 @@
                     <thead class="border border-black bg-blue-900">
                         <tr>
                             <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                            <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                            <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Kode Barang</th>
                             <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Deskripsi</th>
                             <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                             <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Note</th>
@@ -150,7 +150,7 @@
                             <tr>
                                 <td class="border px-2 py-1 text-center">{{ $loop->iteration }}</td>
                                 <td class="border px-2 py-1">
-                                    {{ $item->orderItem->nama_barang }}
+                                    {{ $item->orderItem->barang?->goods_code ?? '-' }}
                                 </td>
                                 <td class="border px-2 py-1">
                                     {{ $item->orderItem->barang?->description ?? '-' }}

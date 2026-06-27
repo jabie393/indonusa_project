@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Quotation - Indonusa Jaya Bersama</title>
+        <title>Delivery Order - Indonusa Jaya Bersama</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Tailwind CDN -->
@@ -159,7 +159,7 @@
                         <thead class="border border-black bg-blue-900">
                             <tr>
                                 <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                                <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                                <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Kode Barang</th>
                                 <th class="w-[157.05pt] border border-black px-2 py-1 text-center text-white">Deskripsi</th>
                                 <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
                                 <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Note</th>
@@ -174,7 +174,7 @@
                                 @if ($item->delivered_quantity > 0 || (!$hasDeliveredItems && $item->quantity > 0))
                                     <tr>
                                         <td class="border border-black px-2 py-1 text-center">{{ $iteration++ }}</td>
-                                        <td class="border border-black px-2 py-1">{{ $item->nama_barang }}</td>
+                                        <td class="border border-black px-2 py-1">{{ $item->barang?->goods_code ?? '-' }}</td>
                                         <td class="border border-black px-2 py-1">{{ $item->barang?->description }}</td>
                                         <td class="border border-black px-2 py-1 text-center">
                                             {{ $item->delivered_quantity > 0 ? $item->delivered_quantity : $item->quantity }} 

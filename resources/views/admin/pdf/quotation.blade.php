@@ -161,32 +161,47 @@
                 </p>
 
                 <!-- INFO TABLE -->
-                <div class="mt-5 text-[9pt]">
-                    <table class="w-full border-collapse">
-                        <tbody>
-                            <tr>
-                                <td class="w-[60pt] px-3 py-1 align-top text-black">To</td>
-                                <td class="w-[200pt] px-3 py-1 align-top text-black">: {{ $requestOrder->customer_name }}</td>
-                                <td class="px-3 py-1 align-top text-black">Email</td>
-                                <td class="px-3 py-1 align-top text-black">: <a href="mailto:{{ optional($requestOrder->sales)->email ?? '-' }}"
-                                        class="text-black hover:underline">{{ optional($requestOrder->sales)->email ?? '-' }}</a></td>
-                            </tr>
-                            <tr>
-                                <td class="px-3 py-1 align-top text-black">Up</td>
-                                <td class="px-3 py-1 align-top text-black">:
-                                    {{ $requestOrder->pic->name ?? ($requestOrder->pic_name ?? ($requestOrder->customQuotation ? $requestOrder->customQuotation->up : $requestOrder->sales->name ?? '-')) }}
-                                </td>
-                                <td class="px-3 py-1 align-top text-black">Our Ref</td>
-                                <td class="px-3 py-1 align-top text-black">: {{ $requestOrder->request_number }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-3 py-1 align-top text-black">Subject</td>
-                                <td class="px-3 py-1 align-top text-black">: {{ $requestOrder->subject ?? 'Quotation - ' . $requestOrder->request_number }}</td>
-                                <td class="w-[60pt] px-3 py-1 align-top text-black">Date</td>
-                                <td class="w-[180pt] px-3 py-1 align-top text-black">: {{ $requestOrder->created_at->format('d/m/Y') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="mt-5 grid grid-cols-2 gap-8 text-[9pt]">
+                    <div>
+                        <table class="w-full border-collapse">
+                            <tbody>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">To</td>
+                                    <td class="py-1 align-top text-black">: {{ $requestOrder->customer_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Up</td>
+                                    <td class="py-1 align-top text-black">:
+                                        {{ $requestOrder->pic->name ?? ($requestOrder->pic_name ?? ($requestOrder->customQuotation ? $requestOrder->customQuotation->up : $requestOrder->sales->name ?? '-')) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Subject</td>
+                                    <td class="py-1 align-top text-black">: {{ $requestOrder->subject ?? 'Quotation - ' . $requestOrder->request_number }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pl-25">
+                        <table class="w-full border-collapse">
+                            <tbody>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Email</td>
+                                    <td class="py-1 align-top text-black">: <a href="mailto:{{ optional($requestOrder->sales)->email ?? '-' }}"
+                                            class="text-black hover:underline">{{ optional($requestOrder->sales)->email ?? '-' }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">{{ request('from') === 'sales_order' ? 'No. SO' : 'Our Ref' }}</td>
+                                    <td class="py-1 align-top text-black">: {{ request('from') === 'sales_order' ? ($requestOrder->sales_order_number ?? $requestOrder->request_number) : $requestOrder->request_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Date</td>
+                                    <td class="py-1 align-top text-black">: {{ $requestOrder->created_at->format('d/m/Y') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
 
@@ -270,9 +285,7 @@
                                         @endphp
                                         @if ($imgSrc)
                                             <div class="flex flex-wrap justify-center gap-2">
-                                                <img src="{{ $imgSrc }}"
-                                                     alt="Image"
-                                                     class="h-20 w-20 border border-gray-300 object-contain">
+                                                <img src="{{ $imgSrc }}" alt="Image" class="h-20 w-20 border border-gray-300 object-contain">
                                             </div>
                                         @else
                                             -
