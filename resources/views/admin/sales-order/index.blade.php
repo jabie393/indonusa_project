@@ -315,42 +315,7 @@
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
                                             </a>
-
-                                            @if ($row['type'] === 'sales_order')
-                                                <div id="image-preview-aksi-{{ $row['id'] }}-sales_order"
-                                                    class="flex items-center justify-center border-r border-gray-300 bg-white px-1 dark:border-gray-600 dark:bg-gray-700">
-                                                    @if ($row['image_url'])
-                                                        <div class="group relative inline-block">
-                                                            <a href="{{ $row['image_url'] }}" target="_blank">
-                                                                <img src="{{ $row['image_url'] }}" alt="SO Image" class="h-7 w-7 rounded border border-gray-300 object-cover shadow-sm" />
-                                                            </a>
-                                                            @if (($row['customer_status'] ?? 'active') === 'active')
-                                                                <button
-                                                                    class="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
-                                                                    onclick="handleDeleteImage('sales_order', {{ $row['id'] }}, 'main')" title="Ganti">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                        stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                                                        <path d="M18 6 6 18" />
-                                                                        <path d="m6 6 12 12" />
-                                                                    </svg>
-                                                                </button>
-                                                            @endif
-                                                        </div>
-                                                    @elseif (($row['customer_status'] ?? 'active') === 'active')
-                                                        <label
-                                                            class="shadow-xs inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 bg-white px-1.5 py-1 text-[9px] font-semibold text-gray-700 transition-colors hover:bg-gray-50">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                                <polyline points="17 8 12 3 7 8" />
-                                                                <line x1="12" x2="12" y1="3" y2="15" />
-                                                            </svg>
-                                                            <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg"
-                                                                onchange="handleUploadImage(this, 'sales_order', {{ $row['id'] }}, 'main')">
-                                                        </label>
-                                                    @endif
-                                                </div>
-                                            @endif
+                                            
                                             @php
                                                 $sudahDikirim = in_array($row['status'], [
                                                     'sent_to_warehouse',
@@ -868,8 +833,7 @@
                 endpoint = `/quotation/${id}/upload-pdf-po`;
                 fieldName = 'pdf_po';
             } else {
-                endpoint = `/sales-order/${id}/upload-image`;
-                fieldName = 'image';
+                return;
             }
 
             formData.append(fieldName, file);
@@ -1064,7 +1028,6 @@
                             let containerId = '';
                             if (imageType === 'po') containerId = `image-po-preview-${id}-${type}`;
                             else if (imageType === 'pdf_po') containerId = `pdf-po-preview-${id}-${type}`;
-                            else if (imageType === 'so') containerId = `image-so-preview-${id}-${type}`;
                             else containerId = `image-preview-aksi-${id}-${type}`;
 
                             const container = document.getElementById(containerId);
@@ -1077,13 +1040,6 @@
                                 container.innerHTML = '';
                                 const pdfUploadButton = document.getElementById(`upload-pdf-po-button-${id}-${type}`);
                                 if (pdfUploadButton) pdfUploadButton.style.display = '';
-                            } else if (imageType === 'so') {
-                                container.innerHTML = `
-                                <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-blue-500 text-blue-600 rounded-md text-[10px] font-semibold hover:bg-blue-50 transition-colors shadow-sm">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                                    Upload SO
-                                    <input type="file" class="hidden" accept="image/jpeg,image/png,image/jpg" onchange="handleUploadImage(this, '${type}', ${id}, 'so')">
-                                </label>`;
                             } else {
                                 container.innerHTML = `
                                 <label class="cursor-pointer inline-flex items-center gap-1 px-2 py-1 bg-white border border-gray-300 text-gray-700 rounded-md text-[9px] font-semibold hover:bg-gray-50 transition-colors shadow-xs">

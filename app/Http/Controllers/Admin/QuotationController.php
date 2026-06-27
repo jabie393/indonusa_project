@@ -111,11 +111,6 @@ class QuotationController extends Controller
             'discount_percent' => 'nullable|array',
             'discount_percent.*' => 'nullable|numeric|min:0|max:100',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
-            'supporting_images' => 'nullable|array',
-            'supporting_images.*' => 'nullable|image|max:5120',
-            'item_images' => 'nullable|array',
-            'item_images.*' => 'nullable|array',
-            'item_images.*.*' => 'nullable|image|max:5120',
             'custom_product_name' => 'nullable|array',
             'custom_product_name.*' => 'nullable|string|max:255',
             'keterangan' => 'nullable|array',
@@ -195,29 +190,9 @@ class QuotationController extends Controller
                 'sales_order_number' => Quotation::generateSalesOrderNumber(),
             ]);
 
-            // Save supporting images
-            if ($request->hasFile('supporting_images')) {
-                $supportingImagePaths = [];
-                foreach ($request->file('supporting_images') as $file) {
-                    if ($file) {
-                        $supportingImagePaths[] = $file->store('request-order-supporting-images', 'public');
-                    }
-                }
-                $requestOrder->supporting_images = $supportingImagePaths;
-                $requestOrder->save();
-            }
+
 
             foreach ($items as $item) {
-                $origIdx = $item['original_index'];
-                $itemImagePaths = [];
-                if ($request->hasFile("item_images.{$origIdx}")) {
-                    foreach ($request->file("item_images.{$origIdx}") as $f) {
-                        if ($f) {
-                            $itemImagePaths[] = $f->store('request-order-item-images', 'public');
-                        }
-                    }
-                }
-
                 $itemData = [
                     'quotation_id' => $requestOrder->id,
                     'goods_id' => $item['goods_id'],
@@ -227,7 +202,6 @@ class QuotationController extends Controller
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
-                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                     'notes' => $item['notes'] ?? null,
                 ];
 
@@ -454,16 +428,8 @@ class QuotationController extends Controller
             'discount_percent' => 'nullable|array',
             'discount_percent.*' => 'nullable|numeric|min:0|max:100',
             'tax_rate' => 'nullable|numeric|min:0|max:100',
-            'supporting_images' => 'nullable|array',
-            'supporting_images.*' => 'nullable|image|max:5120',
-            'item_images' => 'nullable|array',
-            'item_images.*' => 'nullable|array',
-            'item_images.*.*' => 'nullable|image|max:5120',
             'custom_product_name' => 'nullable|array',
             'custom_product_name.*' => 'nullable|string|max:255',
-            'existing_item_images' => 'nullable|array',
-            'existing_item_images.*' => 'nullable|array',
-            'existing_item_images.*.*' => 'nullable|string',
             'keterangan' => 'nullable|array',
             'keterangan.*' => 'nullable|string|max:255',
         ], [
@@ -560,14 +526,6 @@ class QuotationController extends Controller
 
         DB::beginTransaction();
         try {
-            $supportingImages = $requestOrder->supporting_images ?? [];
-            if ($request->hasFile('supporting_images')) {
-                foreach ($request->file('supporting_images') as $file) {
-                    $path = $file->store('request-order-images', 'public');
-                    $supportingImages[] = $path;
-                }
-            }
-
             $headerSubtotal = array_reduce($items, function ($carry, $item) {
                 return $carry + $item['subtotal'];
             }, 0);
@@ -585,7 +543,6 @@ class QuotationController extends Controller
                 'product_category' => isset($validated['product_category'][0]) ? $validated['product_category'][0] : null,
                 'required_date' => $validated['required_date'] ?? null,
                 'customer_notes' => $validated['customer_notes'] ?? null,
-                'supporting_images' => !empty($supportingImages) ? $supportingImages : null,
                 'subtotal' => $headerSubtotal,
                 'tax' => $headerTax,
                 'grand_total' => $headerGrandTotal,
@@ -594,22 +551,6 @@ class QuotationController extends Controller
             $requestOrder->items()->delete();
 
             foreach ($items as $item) {
-                $origIdx = $item['original_index'];
-                $itemImagePaths = [];
-                if ($request->hasFile("item_images.{$origIdx}")) {
-                    foreach ($request->file("item_images.{$origIdx}") as $f) {
-                        if ($f) {
-                            $itemImagePaths[] = $f->store('request-order-item-images', 'public');
-                        }
-                    }
-                }
-                if (empty($itemImagePaths)) {
-                    $existingImgs = $request->input("existing_item_images.{$origIdx}", []);
-                    if (!empty($existingImgs)) {
-                        $itemImagePaths = array_values(array_filter($existingImgs));
-                    }
-                }
-
                 $itemData = [
                     'quotation_id' => $requestOrder->id,
                     'goods_id' => $item['goods_id'],
@@ -618,7 +559,6 @@ class QuotationController extends Controller
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
-                    'images' => !empty($itemImagePaths) ? $itemImagePaths : null,
                     'discount_percent' => $item['discount_percent'] ?? 0,
                     'notes' => $item['notes'] ?? null,
                 ];
@@ -794,35 +734,6 @@ class QuotationController extends Controller
             'success' => $successCount > 0,
             'count' => $successCount,
         ]);
-    }
-
-    public function uploadImageSO(Request $request, Quotation $quotation)
-    {
-        $requestOrder = $quotation;
-        if ($request->hasFile('image_so')) {
-            $path = $request->file('image_so')->store('request-order-so-images', 'public');
-            if ($requestOrder->image_so) {
-                Storage::disk('public')->delete($requestOrder->image_so);
-            }
-            $requestOrder->image_so = $path;
-            $requestOrder->save();
-
-            return response()->json(['status' => 'success', 'image_url' => Storage::url($path)]);
-        }
-
-        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
-    }
-
-    public function deleteImageSO(Quotation $quotation)
-    {
-        $requestOrder = $quotation;
-        if ($requestOrder->image_so) {
-            Storage::disk('public')->delete($requestOrder->image_so);
-            $requestOrder->image_so = null;
-            $requestOrder->save();
-        }
-
-        return response()->json(['status' => 'success']);
     }
 
     public function uploadImagePO(Request $request, Quotation $quotation)

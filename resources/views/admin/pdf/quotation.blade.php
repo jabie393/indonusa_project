@@ -199,27 +199,6 @@
                 <p class="whitespace-pre-wrap">{{ $requestOrder->customer_notes }}</p>
             </div>
 
-            <!-- SUPPORTING IMAGES -->
-            @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
-                <div class="mt-3 text-[9pt]">
-                    <h4 class="font-bold">Supporting Images</h4>
-                    <div class="mt-2 flex flex-wrap justify-start gap-2">
-                        @foreach ($requestOrder->supporting_images as $image)
-                            @php
-                                $imgSrc = $getStorageImageBase64($image);
-                            @endphp
-                            @if ($imgSrc)
-                                <div class="h-[90px] w-[90px] overflow-hidden border border-gray-300">
-                                    <img src="{{ $imgSrc }}"
-                                         alt="Supporting Image"
-                                         class="h-full w-full object-cover" />
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-            @endif
-
             <!-- ITEMS TABLE -->
             <div class="mt-8 text-[9pt]">
                 <table class="w-full border-collapse border border-black">
@@ -283,22 +262,14 @@
                                 </td>
                                 <td class="border px-2 py-1 text-center">
                                     @php
-                                        $itemImgs = $item->images ?? ($item->item_images ?? []);
+                                        $goodsImage = $item->barang?->image;
+                                        $imgSrc = $goodsImage ? $getStorageImageBase64($goodsImage) : null;
                                     @endphp
-                                    @if (!empty($itemImgs))
+                                    @if ($imgSrc)
                                         <div class="flex flex-wrap justify-center gap-2">
-                                            @foreach ($itemImgs as $image)
-                                                @php
-                                                    $imgSrc = $getStorageImageBase64($image);
-                                                @endphp
-                                                @if ($imgSrc)
-                                                    <img src="{{ $imgSrc }}"
-                                                         alt="Image"
-                                                         class="h-20 w-20 border border-gray-300 object-contain">
-                                                @else
-                                                    <span>-</span>
-                                                @endif
-                                            @endforeach
+                                            <img src="{{ $imgSrc }}"
+                                                 alt="Image"
+                                                 class="h-20 w-20 border border-gray-300 object-contain">
                                         </div>
                                     @else
                                         -

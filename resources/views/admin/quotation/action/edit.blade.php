@@ -453,6 +453,7 @@
                                                                         data-satuan="{{ $b->unit ?? '' }}"
                                                                         data-harga="{{ $b->selling_price ?? 0 }}"
                                                                         data-diskon="{{ $b->discount_percent ?? 0 }}"
+                                                                        data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}"
                                                                         @selected($item->goods_id === $b->id)>
                                                                         {{ $b->goods_code }}
                                                                     </option>
@@ -511,7 +512,8 @@
                                                                                     data-kode="{{ $b->goods_code }}"
                                                                                     data-nama="{{ $b->goods_name }}"
                                                                                     data-kategori="{{ $b->category }}"
-                                                                                    data-deskripsi="{{ $b->description ?? '' }}">
+                                                                                    data-deskripsi="{{ $b->description ?? '' }}"
+                                                                                    data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                                     <td
                                                                                         class="px-4 py-3 text-body-sm font-semibold text-nowrap">
                                                                                         {{ $b->goods_code }}
@@ -615,53 +617,25 @@
                                                 </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                                <div class="upload-btn-container relative flex justify-center" style="{{ !empty($existingImgs) ? 'display: none;' : '' }}">
-                                                    <input type="file" name="item_images[{{ $loop->index }}][]"
-                                                        class="item-images-input absolute inset-0 h-11 w-11 cursor-pointer opacity-0 z-10"
-                                                        multiple accept="image/*">
-                                                    <button type="button"
-                                                        class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div
-                                                    class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2 mt-2">
-                                                    @if (!empty($existingImgs))
-                                                        @foreach ($existingImgs as $img)
-                                                            @php
-                                                                if (str_starts_with($img, 'public/')) {
-                                                                    $imgUrl = asset('storage/' . ltrim(substr($img, 7), '/'));
-                                                                } else {
-                                                                    $imgUrl = asset('storage/' . ltrim($img, '/'));
-                                                                }
-                                                            @endphp
-                                                            <div class="group relative inline-block">
-                                                                <a href="{{ $imgUrl }}" target="_blank">
-                                                                    <img src="{{ $imgUrl }}"
-                                                                        class="h-20 w-20 rounded border border-gray-300 object-cover transition-transform hover:scale-105"
-                                                                        alt="Gambar item">
-                                                                </a>
-                                                                @if ($dariCustomQuotation)
-                                                                    <span
-                                                                        class="absolute -right-1 -top-1 rounded-full bg-indigo-500 px-1 py-0.5 text-[9px] text-white animate-pulse"
-                                                                        title="Gambar dari Custom Quotation">CP</span>
-                                                                @endif
-                                                                <button type="button"
-                                                                    class="remove-existing-image absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                                                                    data-image="{{ $img }}">
-                                                                    ✕
-                                                                </button>
-                                                            </div>
-                                                        @endforeach
-                                                        @if ($dariCustomQuotation)
-                                                            <small
-                                                                class="mt-1 block w-full text-xs text-indigo-600 dark:text-indigo-400">
-                                                                Gambar sudah terisi dari Custom Quotation. Upload baru untuk
-                                                                mengganti.
-                                                            </small>
-                                                        @endif
+                                                <div class="item-image-preview-container flex justify-center items-center">
+                                                    @php
+                                                        $goodsImage = $item->barang?->image;
+                                                        if ($goodsImage) {
+                                                            if (str_starts_with($goodsImage, 'http')) {
+                                                                $imgUrl = $goodsImage;
+                                                            } else {
+                                                                $imgUrl = asset('storage/' . ltrim($goodsImage, '/'));
+                                                            }
+                                                        } else {
+                                                            $imgUrl = null;
+                                                        }
+                                                    @endphp
+                                                    @if ($imgUrl)
+                                                        <a href="{{ $imgUrl }}" target="_blank">
+                                                            <img src="{{ $imgUrl }}" class="h-11 w-11 object-cover rounded-lg border border-gray-300 shadow-sm transition-transform hover:scale-105" alt="Preview" />
+                                                        </a>
+                                                    @else
+                                                        <span class="text-gray-400 text-xs no-image-placeholder">-</span>
                                                     @endif
                                                 </div>
                                             </td>
@@ -797,7 +771,8 @@
                                                                                 data-kode="{{ $b->goods_code }}"
                                                                                 data-nama="{{ $b->goods_name }}"
                                                                                 data-kategori="{{ $b->category }}"
-                                                                                data-deskripsi="{{ $b->description ?? '' }}">
+                                                                                data-deskripsi="{{ $b->description ?? '' }}"
+                                                                                data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                                 <td class="px-4 py-3 text-body-sm font-semibold">
                                                                                     {{ $b->goods_code }}
                                                                                 </td>
@@ -1422,8 +1397,6 @@
             const barangSection = document.getElementById('barangSection');
             const addRowBtn = document.getElementById('addRow');
             const itemRows = document.getElementById('itemRows');
-            const supportingImagesInput = document.getElementById('supporting_images');
-            const imagePreview = document.getElementById('imagePreview');
 
             // Filter barang by selected kategori
             window.filterBarangByCategory = function (kategoriValue) {
@@ -1474,6 +1447,7 @@
                 const namaDisplay = row.querySelector('.barang-nama-display');
                 const hargaInput = row.querySelector('.harga-input');
                 const baseDiskonInput = row.querySelector('.diskon-input');
+                const imageContainer = row.querySelector('.item-image-preview-container');
 
                 if (selectedOption.value) {
                     namaDisplay.value = selectedOption.dataset.nama || '';
@@ -1488,11 +1462,23 @@
                     initThousandSeparator(hargaInput);
                     hargaInput.removeAttribute('readonly');
                     baseDiskonInput.value = 0;
+
+                    const imageUrl = selectedOption.dataset.image;
+                    if (imageContainer) {
+                        if (imageUrl) {
+                            imageContainer.innerHTML = `<a href="${imageUrl}" target="_blank"><img src="${imageUrl}" class="h-11 w-11 object-cover rounded-lg border border-gray-300 shadow-sm transition-transform hover:scale-105" alt="Preview" /></a>`;
+                        } else {
+                            imageContainer.innerHTML = `<span class="text-gray-400 text-xs no-image-placeholder">-</span>`;
+                        }
+                    }
                 } else {
                     namaDisplay.value = '';
                     hargaInput.value = '0';
                     hargaInput.setAttribute('readonly', 'true');
                     baseDiskonInput.value = 0;
+                    if (imageContainer) {
+                        imageContainer.innerHTML = `<span class="text-gray-400 text-xs no-image-placeholder">-</span>`;
+                    }
                 }
                 calculateTotals();
             }
@@ -1674,15 +1660,9 @@
                         </div>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                        <div class="upload-btn-container relative flex justify-center">
-                            <input type="file" name="item_images[\${document.querySelectorAll('.item-row').length - 1}][]" class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10" multiple accept="image/*">
-                            <button type="button" class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </button>
+                        <div class="item-image-preview-container flex justify-center items-center">
+                            <span class="text-gray-400 text-xs no-image-placeholder">-</span>
                         </div>
-                        <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2 mt-2"></div>
                     </td>
                     <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
                         <input type="text" class="form-control harga-setelah-diskon-display block w-full border-none bg-transparent p-0 text-center font-bold text-blue-600 focus:ring-0 dark:text-blue-400 pointer-events-none" style="font-size: 0.875rem;" value="Rp 0" readonly>
@@ -1704,7 +1684,6 @@
                 attachCustomDropdownEvents(newRow);
                 updateRemoveButtons();
                 calculateTotals();
-                reindexItemImageInputs();
 
                 const selectedKategori = kategoriSelect ? kategoriSelect.value : '';
                 if (selectedKategori) {
@@ -1772,11 +1751,8 @@
                     row.remove();
                     updateRemoveButtons();
                     calculateTotals();
-                    reindexItemImageInputs();
                 });
-
                 initThousandSeparator(hargaInputEl);
-                handleItemImagePreview(row);
             }
 
             function selectCustomerFromRow(optRow) {
@@ -2033,110 +2009,6 @@
                     warning.classList.remove('opacity-100', 'max-h-96', 'mb-4', 'translate-y-0', 'border-amber-200', 'p-2', 'dark:border-amber-900/40');
                     warning.classList.add('opacity-0', 'max-h-0', 'mb-0', '-translate-y-2', 'border-transparent', 'p-0', 'dark:border-transparent');
                 }
-            }
-
-            // Preview handler for per-item images
-            function handleItemImagePreview(row) {
-                const fileInput = row.querySelector('.item-images-input');
-                const preview = row.querySelector('.item-images-preview');
-                if (!fileInput || !preview) return;
-
-                // Handle removing existing images
-                const removeExistingBtns = row.querySelectorAll('.remove-existing-image');
-                removeExistingBtns.forEach(btn => {
-                    btn.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const imagePath = this.dataset.image;
-
-                        // Remove the image div
-                        this.closest('div.relative').remove();
-
-                        // Remove the corresponding hidden input
-                        const hiddenInputs = row.querySelectorAll('input[type="hidden"][name*="existing_item_images"]');
-                        hiddenInputs.forEach(input => {
-                            if (input.value === imagePath) {
-                                input.remove();
-                            }
-                        });
-
-                        // Show upload button if no more images
-                        const uploadBtn = row.querySelector('.upload-btn-container');
-                        if (preview.querySelectorAll('img').length === 0 && fileInput.files.length === 0) {
-                            uploadBtn.style.display = '';
-                        }
-                    });
-                });
-
-                fileInput.addEventListener('change', function () {
-                    // Clear existing previews
-                    preview.innerHTML = '';
-                    
-                    // Remove existing hidden inputs if new files are selected
-                    if (this.files.length > 0) {
-                        const hiddenInputs = row.querySelectorAll('input[type="hidden"][name*="existing_item_images"]');
-                        hiddenInputs.forEach(input => input.remove());
-                    }
-
-                    const uploadBtn = row.querySelector('.upload-btn-container');
-                    if (this.files.length > 0) {
-                        uploadBtn.style.display = 'none';
-                    } else {
-                        uploadBtn.style.display = '';
-                    }
-
-                    const files = Array.from(this.files || []);
-                    if (files.length === 0) return;
-
-                    files.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function (e) {
-                            const imgContainer = document.createElement('div');
-                            imgContainer.className = 'group relative inline-block';
-                            imgContainer.innerHTML = `
-                                <a href="${e.target.result}" target="_blank">
-                                    <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border transition-transform hover:scale-105" title="${file.name}">
-                                </a>
-                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-index="${index}">
-                                    \u2715
-                                </button>
-                            `;
-                            preview.appendChild(imgContainer);
-
-                            // Add click handler to remove button
-                            const removeBtn = imgContainer.querySelector('.remove-image-btn');
-                            removeBtn.addEventListener('click', function (e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const removeIndex = parseInt(this.dataset.index);
-                                const dataTransfer = new DataTransfer();
-
-                                Array.from(fileInput.files).forEach((file, i) => {
-                                    if (i !== removeIndex) {
-                                        dataTransfer.items.add(file);
-                                    }
-                                });
-
-                                fileInput.files = dataTransfer.files;
-                                fileInput.dispatchEvent(new Event('change', {
-                                    bubbles: true
-                                }));
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                });
-            }
-
-            function reindexItemImageInputs() {
-                document.querySelectorAll('.item-row').forEach((row, i) => {
-                    const fileInput = row.querySelector('.item-images-input');
-                    if (fileInput) fileInput.name = `item_images[${i}][]`;
-                    const existingInputs = row.querySelectorAll('input[type="hidden"][name*="existing_item_images"]');
-                    existingInputs.forEach(input => {
-                        input.name = `existing_item_images[${i}][]`;
-                    });
-                });
             }
 
             function updateRemoveButtons() {

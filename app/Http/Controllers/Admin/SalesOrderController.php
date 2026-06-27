@@ -482,37 +482,6 @@ class SalesOrderController extends Controller
         }
     }
 
-    public function uploadImage(Request $request, $id)
-    {
-        $requestOrder = Quotation::findOrFail($id);
-        if ($requestOrder->sales_id !== Auth::id()) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
-        }
-
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('request-order-so-images', 'public');
-            $requestOrder->image_so = $path;
-            $requestOrder->save();
-            return response()->json(['status' => 'success', 'image_url' => \Illuminate\Support\Facades\Storage::url($path)]);
-        }
-        return response()->json(['status' => 'error', 'message' => 'No file uploaded']);
-    }
-
-    public function deleteImage($id)
-    {
-        $requestOrder = Quotation::findOrFail($id);
-        if ($requestOrder->sales_id !== Auth::id()) {
-            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
-        }
-
-        if ($requestOrder->image_so) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($requestOrder->image_so);
-            $requestOrder->image_so = null;
-            $requestOrder->save();
-        }
-        return response()->json(['status' => 'success']);
-    }
-
     public function search(Request $request)
     {
         $search = $request->input('q', '');

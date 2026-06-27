@@ -30,11 +30,9 @@ return new class extends Migration {
             $table->decimal('tax', 14, 2)->default(0);
             $table->decimal('grand_total', 14, 2)->default(0);
             $table->string('product_category')->nullable();
-            $table->json('supporting_images')->nullable();
             $table->string('no_po')->nullable();
             $table->string('image_po')->nullable();
             $table->string('sales_order_number')->nullable();
-            $table->string('image_so')->nullable();
             $table->string('pdf_po')->nullable();
             $table->unsignedBigInteger('approved_by')->nullable();
             $table->timestamp('approved_at')->nullable();

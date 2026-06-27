@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->decimal('subtotal', 14, 2)->nullable();
             $table->unsignedSmallInteger('discount_percent')->default(0);
             $table->string('product_category')->nullable();
-            $table->json('images')->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();
 

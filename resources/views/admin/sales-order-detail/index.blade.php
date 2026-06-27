@@ -425,40 +425,6 @@
                             </div>
                         @endif
                     </div>
-
-                    <!-- Supporting Images -->
-                    @if ($requestOrder->supporting_images && count($requestOrder->supporting_images) > 0)
-                        <div
-                            class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 dark:bg-gray-800 dark:border-gray-700">
-                            <h2
-                                class="flex items-center text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-white">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5 text-gray-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                Gambar Pendukung
-                            </h2>
-                            <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-                                @foreach ($requestOrder->supporting_images as $image)
-                                    <div
-                                        class="group relative aspect-square overflow-hidden rounded-xl border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-900/50">
-                                        <button type="button" class="custom-quotation-thumb block h-full w-full"
-                                            data-full="{{ asset('storage/' . $image) }}">
-                                            <img src="{{ asset('storage/' . $image) }}"
-                                                class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                                                alt="Supporting image">
-                                            <div
-                                                class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                                                <span
-                                                    class="truncate text-[10px] font-medium text-white">{{ basename($image) }}</span>
-                                            </div>
-                                        </button>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
                 </div>
 
                 <!-- Right Column: Sidebar (Ringkasan Order & Action Buttons) -->
@@ -722,41 +688,27 @@
                                     </td>
                                     <td class="px-6 py-5 text-center">
                                         @php
-                                            $rawImgs = $item->images ?? ($item->item_images ?? []);
-                                            if (is_string($rawImgs)) {
-                                                $itemImgs = json_decode($rawImgs, true) ?? [];
+                                            $goodsImage = $item->barang?->image;
+                                            if ($goodsImage) {
+                                                if (str_starts_with($goodsImage, 'http')) {
+                                                    $imgUrl = $goodsImage;
+                                                } else {
+                                                    $imgUrl = asset('storage/' . ltrim($goodsImage, '/'));
+                                                }
                                             } else {
-                                                $itemImgs = is_array($rawImgs) ? $rawImgs : [];
+                                                $imgUrl = null;
                                             }
-                                            $itemImgs = array_filter($itemImgs, fn($img) => !empty($img));
                                         @endphp
-                                        @if (!empty($itemImgs) && count($itemImgs) > 0)
-                                            <div class="flex items-center justify-center -space-x-2 overflow-hidden">
-                                                @foreach (array_slice($itemImgs, 0, 3) as $image)
-                                                    @php
-                                                        if (is_null($image) || $image === '') {
-                                                            $imgUrl = null;
-                                                        } elseif (str_starts_with($image, 'http')) {
-                                                            $imgUrl = $image;
-                                                        } else {
-                                                            $imgUrl = asset('storage/' . ltrim($image, '/'));
-                                                        }
-                                                    @endphp
-                                                    @if ($imgUrl)
-                                                        <button type="button" class="custom-quotation-thumb inline-block"
-                                                            data-full="{{ $imgUrl }}">
-                                                            <img class="inline-block h-8 w-8 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800"
-                                                                src="{{ $imgUrl }}" alt="Item image">
-                                                        </button>
-                                                    @endif
-                                                @endforeach
-                                                @if (count($itemImgs) > 3)
-                                                    <span
-                                                        class="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-[10px] font-bold text-gray-500 ring-2 ring-white dark:bg-gray-700 dark:text-gray-400 dark:ring-gray-800">+{{ count($itemImgs) - 3 }}</span>
-                                                @endif
+                                        @if ($imgUrl)
+                                            <div class="flex items-center justify-center">
+                                                <button type="button" class="custom-quotation-thumb inline-block"
+                                                    data-full="{{ $imgUrl }}">
+                                                    <img class="inline-block h-10 w-10 cursor-zoom-in rounded-lg object-cover ring-2 ring-white transition-transform hover:scale-110 dark:ring-gray-800"
+                                                        src="{{ $imgUrl }}" alt="Item image">
+                                                </button>
                                             </div>
                                         @else
-                                            <span class="text-gray-300 dark:text-gray-600">-</span>
+                                            <span class="text-slate-400 text-xs">-</span>
                                         @endif
                                     </td>
                                 </tr>

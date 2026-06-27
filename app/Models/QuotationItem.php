@@ -20,8 +20,6 @@ class QuotationItem extends Model
         'subtotal',
         'discount_percent',
         'ppn_percent',
-        'images',
-        'item_images',
         'notes',
     ];
 
@@ -31,8 +29,6 @@ class QuotationItem extends Model
         'subtotal' => 'decimal:2',
         'discount_percent' => 'float',
         'ppn_percent' => 'decimal:2',
-        'images' => 'array',
-        'item_images' => 'array',
         'product_category' => 'string',
     ];
 

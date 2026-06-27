@@ -332,7 +332,8 @@
                                                         @foreach ($goods as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}" data-nama="{{ $b->goods_name }}"
                                                                 data-kategori="{{ $b->category }}" data-stok="{{ $b->stock }}" data-satuan="{{ $b->unit ?? '' }}"
-                                                                data-harga="{{ $b->selling_price ?? 0 }}" data-diskon="{{ $b->discount_percent ?? 0 }}">
+                                                                data-harga="{{ $b->selling_price ?? 0 }}" data-diskon="{{ $b->discount_percent ?? 0 }}"
+                                                                data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                 {{ $b->goods_code }}
                                                             </option>
                                                         @endforeach
@@ -373,7 +374,8 @@
                                                                     @foreach ($goods as $b)
                                                                         <tr class="hover:bg-surface-container-high barang-option-row cursor-pointer" data-id="{{ $b->id }}"
                                                                             data-kode="{{ $b->goods_code }}" data-nama="{{ $b->goods_name }}" data-kategori="{{ $b->category }}"
-                                                                            data-deskripsi="{{ $b->description ?? '' }}">
+                                                                            data-deskripsi="{{ $b->description ?? '' }}"
+                                                                            data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                             <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">{{ $b->goods_code }}</td>
                                                                             <td class="text-body-sm text-nowrap px-4 py-3">{{ $b->goods_name }}</td>
                                                                             <td class="text-on-surface-variant px-4 py-3 text-[12px]">{{ $b->description ?? '-' }}</td>
@@ -436,16 +438,9 @@
                                             </div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                            <div class="upload-btn-container relative flex justify-center">
-                                                <input type="file" name="item_images[0][]" class="item-images-input absolute inset-0 h-11 w-11 cursor-pointer opacity-0 z-10" multiple
-                                                    accept="image/*">
-                                                <button type="button" class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                    </svg>
-                                                </button>
+                                            <div class="item-image-preview-container flex justify-center items-center">
+                                                <span class="text-gray-400 text-xs no-image-placeholder">-</span>
                                             </div>
-                                            <div class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2 mt-2"></div>
                                         </td>
                                         <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">
                                             <input type="text"
@@ -715,36 +710,7 @@
                         </div>
                     </div>
 
-                    <!-- Supporting Images Section -->
-                    <div class="card bg-light bg-card inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm mb-4 rounded-2xl shadow-md" id="imagesSection" style="display: none;">
-                        <div class="flex items-center justify-between rounded-t-2xl bg-[#1E9722] p-[1rem] text-white">
-                            <h3 class="flex items-center gap-2 text-xl font-semibold leading-none tracking-tight">
-                                <i class="fas fa-images"></i> Gambar Pendukung Quotation
-                            </h3>
-                        </div>
-                        <div class="p-5">
-                            <div class="mb-3">
-                                <label for="supporting_images" class="form-label text-gray-700 dark:text-gray-300">Unggah Gambar
-                                    <span class="text-muted dark:text-gray-400">(Foto barang, contoh produk,
-                                        desain,
-                                        dll)</span></label>
-                                <div class="input-group">
-                                    <input type="file"
-                                        class="form-control barang-nama-display @error('supporting_images.*') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        id="supporting_images" name="supporting_images[]" multiple accept="image/*">
-                                    <small class="text-muted d-block mt-2 dark:text-gray-400">Format: JPG, PNG, GIF
-                                        | Ukuran maksimal: 5MB per gambar</small>
-                                </div>
-                                @error('supporting_images.*')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
 
-                            <div id="imagePreview" class="row g-2">
-                                <!-- Preview images will be displayed here -->
-                            </div>
-                        </div>
-                    </div>
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4">
                         <a href="{{ route('sales.quotation.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
@@ -1113,12 +1079,9 @@
 
             const kategoriSelect = document.getElementById('kategori_barang');
             const barangSection = document.getElementById('barangSection');
-            const imagesSection = document.getElementById('imagesSection');
             const addRowBtn = document.getElementById('addRow');
             const submitBtn = document.getElementById('submitBtn');
             const itemRows = document.getElementById('itemRows');
-            const supportingImagesInput = document.getElementById('supporting_images');
-            const imagePreview = document.getElementById('imagePreview');
 
             // Filter barang by selected kategori
             window.filterBarangByCategory = function(kategoriValue) {
@@ -1151,12 +1114,10 @@
 
                 if (kategoriValue) {
                     barangSection.style.display = 'block';
-                    imagesSection.style.display = 'block';
                 } else {
                     // if there are any visible barang options (e.g., no kategori list), keep sections visible
                     const visible = anyBarangOptionVisible();
                     barangSection.style.display = visible ? 'block' : 'none';
-                    imagesSection.style.display = visible ? 'block' : 'none';
                 }
 
                 addRowBtn.style.display = anyBarangOptionVisible() ? 'inline-block' : 'none';
@@ -1230,7 +1191,7 @@
                 const quantityInput = row.querySelector('.quantity-input');
                 const diskonInput = row.querySelector('.diskon-input');
                 const hargaInput = row.querySelector('.harga-input');
-                const hargaSetelahDiskonDisplay = row.querySelector('.harga-setelah-diskon-display');
+                const imageContainer = row.querySelector('.item-image-preview-container');
 
                 if (option.value) {
                     namaDisplay.value = option.dataset.nama || '';
@@ -1259,6 +1220,15 @@
                         hargaInput.dispatchEvent(new Event('input'));
                     }
 
+                    const imageUrl = option.dataset.image;
+                    if (imageContainer) {
+                        if (imageUrl) {
+                            imageContainer.innerHTML = `<a href="${imageUrl}" target="_blank"><img src="${imageUrl}" class="h-11 w-11 object-cover rounded-lg border border-gray-300 shadow-sm transition-transform hover:scale-105" alt="Preview" /></a>`;
+                        } else {
+                            imageContainer.innerHTML = `<span class="text-gray-400 text-xs no-image-placeholder">-</span>`;
+                        }
+                    }
+
                     // Hitung harga setelah diskon otomatis (qty * harga satuan * (1 - diskon/100))
                     const qty = parseInt(quantityInput.value) || 1;
                     const hargaSetelahDiskon = qty * hargaJual * (1 - (useDiskon / 100));
@@ -1279,6 +1249,9 @@
                         hargaInput.setAttribute('readonly', 'true');
                     }
                     if (hargaSetelahDiskonDisplay) hargaSetelahDiskonDisplay.value = '0';
+                    if (imageContainer) {
+                        imageContainer.innerHTML = `<span class="text-gray-400 text-xs no-image-placeholder">-</span>`;
+                    }
                 }
                 updateKeteranganState(select.closest('tr'));
                 calculateTotals();
@@ -1406,65 +1379,7 @@
                 }
             }
 
-            // Helper: preview for item images
-            function handleItemImagePreview(row) {
-                const fileInput = row.querySelector('.item-images-input');
-                const preview = row.querySelector('.item-images-preview');
-                const uploadBtn = row.querySelector('.upload-btn-container');
-                if (!fileInput || !preview) return;
 
-
-                fileInput.addEventListener('change', function() {
-                    // Clear existing previews
-                    preview.innerHTML = '';
-                    if (this.files.length > 0) {
-                        uploadBtn.style.display = 'none';
-                    } else {
-                        uploadBtn.style.display = '';
-                    }
-
-                    const files = Array.from(this.files || []);
-                    if (files.length === 0) return;
-
-                    files.forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const imgContainer = document.createElement('div');
-                            imgContainer.className = 'group relative inline-block';
-                            imgContainer.innerHTML = `
-                                <a href="${e.target.result}" target="_blank">
-                                    <img src="${e.target.result}" class="w-20 h-20 object-cover rounded border transition-transform hover:scale-105" title="${file.name}">
-                                </a>
-                                <button type="button" class="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs remove-image-btn opacity-0 group-hover:opacity-100 transition-opacity shadow-lg" data-index="${index}">
-                                    \u2715
-                                </button>
-                            `;
-                            preview.appendChild(imgContainer);
-
-                            // Add click handler to remove button
-                            const removeBtn = imgContainer.querySelector('.remove-image-btn');
-                            removeBtn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                const removeIndex = parseInt(this.dataset.index);
-                                const dataTransfer = new DataTransfer();
-
-                                Array.from(fileInput.files).forEach((file, i) => {
-                                    if (i !== removeIndex) {
-                                        dataTransfer.items.add(file);
-                                    }
-                                });
-
-                                fileInput.files = dataTransfer.files;
-                                fileInput.dispatchEvent(new Event('change', {
-                                    bubbles: true
-                                }));
-                            });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                });
-            }
 
             // Add row
             addRowBtn.addEventListener('click', function(e) {
@@ -1526,32 +1441,17 @@
                     icon.classList.add('hidden');
                 });
 
-                // Hapus preview gambar
-                const preview = newRow.querySelector('.item-images-preview');
-                if (preview) preview.innerHTML = '';
-
-                // Reset file input
-                const fileInput = newRow.querySelector('.item-images-input');
-                if (fileInput) fileInput.value = '';
-
-                // Reset upload button visibility di baris baru
-                const uploadBtnContainer = newRow.querySelector('.upload-btn-container');
-                if (uploadBtnContainer) uploadBtnContainer.style.display = '';
-
-                // Hapus preview gambar yang ter-clone
-                const clonedPreview = newRow.querySelector('.item-images-preview');
-                if (clonedPreview) clonedPreview.innerHTML = '';
-
-                // Update index file input name
-                const idx = document.querySelectorAll('.item-row').length;
-                if (fileInput) fileInput.name = `item_images[${idx}][]`;
+                // Reset image preview container to placeholder '-'
+                const imgContainer = newRow.querySelector('.item-image-preview-container');
+                if (imgContainer) {
+                    imgContainer.innerHTML = '<span class="text-gray-400 text-xs no-image-placeholder">-</span>';
+                }
 
                 tbody.appendChild(newRow);
 
                 // Attach events ke baris baru
                 attachRowEvents(newRow);
                 attachCustomDropdownEvents(newRow);
-                handleItemImagePreview(newRow);
                 updateRemoveButtons();
                 calculateTotals();
                 updateSubmitState();
@@ -1720,36 +1620,7 @@
                 });
             }
 
-            // Handle supporting images upload and preview
-            supportingImagesInput.addEventListener('change', function() {
-                imagePreview.innerHTML = ''; // Clear previous previews
-                const files = this.files;
 
-                if (files.length === 0) {
-                    return;
-                }
-
-                Array.from(files).forEach((file, index) => {
-                    const reader = new FileReader();
-
-                    reader.onload = function(e) {
-                        const col = document.createElement('div');
-                        col.className = 'col-md-3 col-sm-4 col-6';
-                        col.innerHTML = `
-                            <div class="card">
-                                <img src="${e.target.result}" class="card-img-top" alt="Preview ${index + 1}" style="height: 150px; object-fit: cover;">
-                                <div class="card-body p-2">
-                                    <small class="text-truncate d-block">${file.name}</small>
-                                    <small class="text-muted">${(file.size / 1024).toFixed(2)} KB</small>
-                                </div>
-                            </div>
-                        `;
-                        imagePreview.appendChild(col);
-                    };
-
-                    reader.readAsDataURL(file);
-                });
-            });
 
             function selectCustomerFromRow(optRow) {
                 const customerSelect = document.getElementById('customer_id');
@@ -2021,8 +1892,6 @@
                 }
             });
 
-            // Initialize item image previews for existing rows
-            document.querySelectorAll('.item-row').forEach(row => handleItemImagePreview(row));
             // If any rows already have a selected barang, set harga to barang.harga * 1.3
             document.querySelectorAll('.item-row').forEach(row => {
                 const select = row.querySelector('.barang-select');

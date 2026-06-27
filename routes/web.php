@@ -240,8 +240,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/quotation/bulk/delete', [QuotationController::class, 'bulkDelete'])->name('sales.quotation.bulk-delete');
     Route::post('/quotation/bulk/send-to-warehouse', [QuotationController::class, 'bulkSendToWarehouse'])->name('sales.quotation.bulk-send-to-warehouse');
     Route::post('/quotation/{quotation}/sent-to-warehouse', [QuotationController::class, 'sentToWarehouse'])->name('sales.quotation.sent-to-warehouse');
-    Route::post('/quotation/{quotation}/upload-image-so', [QuotationController::class, 'uploadImageSO'])->name('request-order.upload-image-so');
-    Route::delete('/quotation/{quotation}/upload-image-so', [QuotationController::class, 'deleteImageSO'])->name('request-order.delete-image-so');
     Route::post('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
     Route::delete('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
     Route::post('/quotation/{quotation}/upload-pdf-po', [QuotationController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
@@ -278,8 +276,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
     Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
     Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
-    Route::post('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'uploadImage'])->name('sales-order.upload-image');
-    Route::delete('/sales-order/{salesOrder}/upload-image', [SalesOrderController::class, 'deleteImage'])->name('sales-order.delete-image');
 
     // Sent to Warehouse dari Sales Order
     Route::post('/sales-order/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])
