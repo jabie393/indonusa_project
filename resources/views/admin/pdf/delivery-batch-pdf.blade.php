@@ -106,28 +106,29 @@
             <p class="mt-2 border-t-[4.5pt] border-[#2f5496] pt-1 text-[9pt]">
             </p>
 
-            <div class="mt-2 text-[9pt]">
-                <table class="w-full">
-                    <tbody class="grid grid-cols-8">
-                        <tr class="col-span-4 row-span-3 flex flex-col">
-                            <td class="px-2">Delivery To :</td>
-                            <td class="px-2">
-                                <strong>{{ $order->customer?->nama_customer ?? $order->customer_name }}</strong>
-                            </td>
-                            <td class="px-2"><span class="text-2xs">{{ $order->customer?->alamat_pengiriman ?? '-' }}</span></td>
+            <!-- INFO TABLE -->
+            <div class="mt-5 text-[9pt]">
+                <table class="w-full border-collapse">
+                    <tbody>
+                        <tr>
+                            <td class="w-[320pt] py-1.5 px-2 align-top text-black">Delivery To :</td>
+                            <td class="w-[60pt] py-1.5 px-2 align-top text-black">Date</td>
+                            <td class="w-[140pt] py-1.5 px-2 align-top text-black">: {{ $batch->created_at->format('d F Y') }}</td>
                         </tr>
-                        <tr class="col-span-1 row-span-4 flex flex-col">
-                            <td class="flex justify-between px-2">Date <span>:</span></td>
-                            <td class="flex justify-between px-2">DO No <span>:</span></td>
-                            <td class="flex justify-between px-2">PO No <span>:</span></td>
-                            <td class="flex justify-between px-2">Batch <span>:</span></td>
+                        <tr>
+                            <td class="py-1.5 px-2 align-top text-black">{{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
+                            <td class="py-1.5 px-2 align-top text-black">DO No</td>
+                            <td class="py-1.5 px-2 align-top text-black">: {{ $order->do_number ?? $order->order_number }}</td>
                         </tr>
-                        <tr class="col-span-3 row-span-4 flex flex-col">
-                            <td><strong>{{ $batch->created_at->format('d F Y') }}</strong></td>
-                            <td><strong>{{ $order->do_number ?? $order->order_number }}</strong>
-                            </td>
-                            <td><strong>{{ $order->requestOrder?->no_po ?? '-' }}</strong></td>
-                            <td><strong>#{{ $batch->batch_number }}</strong></td>
+                        <tr>
+                            <td class="py-1.5 px-2 align-top text-black">{{ $order->customer?->alamat_pengiriman ?? '-' }}</td>
+                            <td class="py-1.5 px-2 align-top text-black">PO No</td>
+                            <td class="py-1.5 px-2 align-top text-black">: {{ $order->requestOrder?->no_po ?? '-' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-1.5 px-2 align-top text-black"></td>
+                            <td class="py-1.5 px-2 align-top text-black">Batch</td>
+                            <td class="py-1.5 px-2 align-top text-black">: #{{ $batch->batch_number }}</td>
                         </tr>
                     </tbody>
                 </table>

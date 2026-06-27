@@ -164,41 +164,35 @@
                 </p>
 
                 <!-- INFO TABLE -->
-                <div class="mt-8 text-[9pt]">
+                <div class="mt-5 text-[9pt]">
                     <table class="w-full border-collapse">
                         <tbody>
-
                             <tr>
-                                <td class="w-[75pt]">To</td>
-                                <td class="w-[170pt]">{{ $customQuotation->to }}</td>
-                                <td class="">Date</td>
-                                <td class="">{{ \Carbon\Carbon::parse($customQuotation->date)->format('d/m/Y') }}</td>
+                                <td class="w-[60pt] px-3 py-1 align-top text-black">To</td>
+                                <td class="w-[200pt] px-3 py-1 align-top text-black">: {{ $customQuotation->to }}</td>
+                                <td class="px-3 py-1 align-top text-black">Email</td>
+                                <td class="px-3 py-1 align-top text-black">: <a href="mailto:{{ $customQuotation->email }}"
+                                        class="text-black hover:underline">{{ $customQuotation->email }}</a></td>
                             </tr>
-
                             <tr>
-                                <td class="">Up</td>
-                                <td class="">{{ $customQuotation->up ?? '-' }}</td>
-                                <td class="">Our Ref</td>
-                                <td class="">{{ $customQuotation->our_ref }}</td>
+                                <td class="px-3 py-1 align-top text-black">Up</td>
+                                <td class="px-3 py-1 align-top text-black">:
+                                    {{ $customQuotation->up ?? '-' }}
+                                </td>
+                                <td class="px-3 py-1 align-top text-black">Our Ref</td>
+                                <td class="px-3 py-1 align-top text-black">: {{ $customQuotation->our_ref }}</td>
                             </tr>
-
                             <tr>
-                                <td class="">Subject</td>
-                                <td class="">{{ $customQuotation->subject }}</td>
-                                <td class="w-[75pt]">Email</td>
-                                <td class="w-[180pt]"><a href="mailto:{{ $customQuotation->email }}">{{ $customQuotation->email }}</a></td>
+                                <td class="px-3 py-1 align-top text-black">Subject</td>
+                                <td class="px-3 py-1 align-top text-black">: {{ $customQuotation->subject }}</td>
+                                <td class="w-[60pt] px-3 py-1 align-top text-black">Date</td>
+                                <td class="w-[180pt] px-3 py-1 align-top text-black">: {{ \Carbon\Carbon::parse($customQuotation->date)->format('d/m/Y') }}</td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
 
-                <!-- INTRO TEXT -->
-                <div class="mt-8 text-[9pt]">
-                    @if ($customQuotation->intro_text)
-                        <p class="whitespace-pre-wrap">{{ $customQuotation->intro_text }}</p>
-                    @endif
-                </div>
+                
 
                 <!-- ITEMS TABLE -->
                 <div class="mt-8 text-[9pt]">
@@ -206,36 +200,46 @@
                         <thead class="border border-black bg-blue-900">
                             <tr>
                                 <th class="w-[25.05pt] border border-black px-2 py-1 text-center text-white">No</th>
-                                <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Product Name</th>
-                                <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Description</th>
+                                <th class="whitespace-nowrap border border-black px-2 py-1 text-center text-white">Nama Barang</th>
+                                <th class="w-[120pt] border border-black px-2 py-1 text-center text-white">Deskripsi</th>
                                 <th class="w-[45pt] border border-black px-2 py-1 text-center text-white">Qty</th>
-                                <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Price</th>
+                                <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Price List</th>
+                                <th class="w-[81.3pt] border border-black px-2 py-1 text-center text-white">Discount</th>
                                 <th class="w-[67.15pt] border border-black px-2 py-1 text-center text-white">Total</th>
-                                <th class="border border-black px-2 py-1 text-center text-white">Image</th>
+                                <th class="w-[92.05pt] border border-black px-2 py-1 text-center text-white">Gambar</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($customQuotation->items as $index => $item)
+                                @php
+                                    $unitDiscount = $item->price * (($item->discount ?? 0) / 100);
+                                @endphp
                                 <tr>
                                     <td class="border px-2 py-1 text-center">{{ $index + 1 }}</td>
                                     <td class="border px-2 py-1">{{ $item->product_name }}</td>
                                     <td class="border px-2 py-1">
                                         <div>{{ $item->description ?? '-' }}</div>
                                         @if ($item->notes)
-                                            <div class="italic text-gray-500 mt-1 text-[8pt]">Note: {{ $item->notes }}</div>
+                                            <div class="mt-1 text-[8pt] italic text-gray-500">Note: {{ $item->notes }}</div>
                                         @endif
                                     </td>
                                     <td class="border px-2 py-1 text-center">{{ $item->qty }} {{ $item->unit }}</td>
                                     <td class="border px-2 py-1">
                                         <div class="flex justify-between">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->price, 0, '.', ',') }}</span>
+                                            <span>{{ number_format($item->price, 2, '.', ',') }}</span>
                                         </div>
                                     </td>
                                     <td class="border px-2 py-1">
                                         <div class="flex justify-between">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->subtotal, 0, '.', ',') }}</span>
+                                            <span>{{ number_format($unitDiscount, 2, '.', ',') }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="border px-2 py-1">
+                                        <div class="flex justify-between">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->subtotal, 2, '.', ',') }}</span>
                                         </div>
                                     </td>
                                     <td class="border px-2 py-1 text-center">
@@ -269,17 +273,7 @@
 
                 <div class="break-inside-avoid">
 
-
-
-                    <!-- TERMS -->
-                    <div class="mt-8 break-inside-avoid text-[9pt]">
-                        <p>Terms and conditions :</p>
-                        <ol class="ml-[26.08pt] mt-1 list-decimal space-y-0.5">
-                            <li>Price Franko On Site</li>
-                            <li>Price includes 11% VAT</li>
-                            <li>Quotation valid for 2 weeks</li>
-                        </ol>
-                    </div>
+                    
 
                     <!-- SUMMARY -->
                     <div class="ml-auto mt-8 w-[177.9pt] break-inside-avoid text-[9pt]">
@@ -316,9 +310,16 @@
                         </table>
                     </div>
 
+                    <!-- INTRO TEXT -->
+                    <div class="mt-8 text-[9pt]">
+                        @if ($customQuotation->intro_text)
+                            <p class="whitespace-pre-wrap" style="line-height: 1.6;">{{ $customQuotation->intro_text }}</p>
+                        @endif
+                    </div>
+
                     <!-- SIGNATURE (Ensures block stays together and moves to next page if space is insufficient) -->
                     <div class="ml-auto mt-8 w-fit text-center text-[9pt]" style="page-break-inside: avoid; break-inside: avoid;">
-                        <p>Best Regards</p>
+                        <p>Hormat kami,</p>
                         <p>PT. INDONUSA JAYA BERSAMA</p>
 
                         <div class="mt-2">
