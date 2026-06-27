@@ -269,20 +269,14 @@
                                     </td>
                                     <td class="border px-2 py-1 text-center">
                                         @php
-                                            $itemImgs = $item->images ?? ($item->item_images ?? []);
+                                            $goodsImage = $item->barang?->image;
+                                            $imgSrc = $goodsImage ? $getStorageImageBase64($goodsImage) : null;
                                         @endphp
-                                        @if (!empty($itemImgs))
+                                        @if ($imgSrc)
                                             <div class="flex flex-wrap justify-center gap-2">
-                                                @foreach ($itemImgs as $image)
-                                                    @php
-                                                        $imgSrc = $getStorageImageBase64($image);
-                                                    @endphp
-                                                    @if ($imgSrc)
-                                                        <img src="{{ $imgSrc }}" alt="Image" class="h-20 w-20 border border-gray-300 object-contain">
-                                                    @else
-                                                        <span>-</span>
-                                                    @endif
-                                                @endforeach
+                                                <img src="{{ $imgSrc }}"
+                                                     alt="Image"
+                                                     class="h-20 w-20 border border-gray-300 object-contain">
                                             </div>
                                         @else
                                             -

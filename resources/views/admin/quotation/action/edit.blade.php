@@ -386,14 +386,7 @@
                                     @forelse($requestOrder->items as $item)
                                         <tr class="item-row">
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
-                                                @php
-                                                    $existingImgs = $item->images ?? ($item->item_images ?? []);
-                                                @endphp
-                                                @foreach ($existingImgs as $existingImg)
-                                                    <input type="hidden"
-                                                        name="existing_item_images[{{ $loop->parent->index }}][]"
-                                                        value="{{ $existingImg }}">
-                                                @endforeach
+
                                                 @if ($item->goods_id === null && $item->custom_product_name)
                                                     <input type="hidden" name="goods_id[]" value="">
                                                 @else
@@ -849,19 +842,8 @@
                                                 </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 text-center dark:border-gray-600">
-                                                <div class="upload-btn-container relative flex justify-center">
-                                                    <input type="file" name="item_images[0][]"
-                                                        class="item-images-input absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10"
-                                                        multiple accept="image/*">
-                                                    <button type="button"
-                                                        class="flex h-11 w-11 items-center justify-center rounded-xl border-2 border-dashed border-blue-300 bg-blue-50/50 text-blue-600 transition-all hover:border-blue-400 hover:bg-blue-50 dark:border-blue-900/40 dark:bg-blue-950/20 dark:text-blue-400">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <div
-                                                    class="item-images-preview flex flex-wrap justify-center gap-2 space-y-2 mt-2">
+                                                <div class="item-image-preview-container flex justify-center items-center">
+                                                    <span class="text-gray-400 text-xs no-image-placeholder">-</span>
                                                 </div>
                                             </td>
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600 text-center">

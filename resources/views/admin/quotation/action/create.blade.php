@@ -1567,11 +1567,6 @@
                     row.remove();
                     updateRemoveButtons();
                     calculateTotals();
-                    // reindex file input names after removal
-                    document.querySelectorAll('.item-row').forEach((r, i) => {
-                        const fi = r.querySelector('.item-images-input');
-                        if (fi) fi.name = `item_images[${i}][]`;
-                    });
                     updateSubmitState();
                 });
             }
