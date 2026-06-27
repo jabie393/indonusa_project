@@ -355,9 +355,11 @@ class QuotationController extends Controller
             ->writeOptionsToFile()
             ->pdf();
 
+        $filenamePrefix = request('from') === 'sales_order' ? 'SalesOrder' : 'Quotation';
+
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Quotation-' . $requestOrder->request_number . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="' . $filenamePrefix . '-' . $requestOrder->request_number . '.pdf"');
     }
 
     public function edit(Quotation $quotation)

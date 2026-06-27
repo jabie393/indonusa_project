@@ -552,7 +552,7 @@
                             @endphp
 
                             @if ($canDownloadPdf && Auth::user()->role !== 'Supervisor')
-                                <a href="{{ route($pdfRoute, $requestOrder->id) }}" target="_blank"
+                                <a href="{{ route($pdfRoute, [$requestOrder->id, 'from' => 'sales_order']) }}" target="_blank"
                                     class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#102A47] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 hover:bg-[#0d223a] transition-all active:scale-[0.98] dark:shadow-none">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
