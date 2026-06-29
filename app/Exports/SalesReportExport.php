@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-class SalesReportExport implements FromView, ShouldAutoSize, WithEvents
+class SalesReportExport implements FromView, WithEvents
 {
     protected $data;
 
@@ -32,11 +32,31 @@ class SalesReportExport implements FromView, ShouldAutoSize, WithEvents
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
-                // Ensure alignment and formatting are applied properly if needed
                 $sheet = $event->sheet->getDelegate();
                 
-                // You can perform advanced formatting on the sheet here if needed
-                // E.g. gridlines, print setup
+                // Set explicit column widths to prevent squished cells from colspan headers
+                $widths = [
+                    'A' => 6,
+                    'B' => 15,
+                    'C' => 22,
+                    'D' => 22,
+                    'E' => 22,
+                    'F' => 22,
+                    'G' => 18,
+                    'H' => 28,
+                    'I' => 32,
+                    'J' => 18,
+                    'K' => 8,
+                    'L' => 12,
+                    'M' => 20,
+                    'N' => 20,
+                    'O' => 15,
+                ];
+
+                foreach ($widths as $col => $width) {
+                    $sheet->getColumnDimension($col)->setWidth($width);
+                }
+
                 $sheet->setShowGridlines(true);
             },
         ];

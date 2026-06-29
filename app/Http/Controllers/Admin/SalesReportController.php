@@ -105,12 +105,19 @@ class SalesReportController extends Controller
                 DB::raw("'Standard Quotation' as type"),
                 'orders.status as order_status',
                 DB::raw("NULL as direct_status"),
-                'quotations.custom_quotation_id'
+                'quotations.custom_quotation_id',
+                'quotations.sales_order_number as sales_order_number',
+                'orders.order_number as order_number',
+                'quotations.no_po as no_po',
+                'quotations.subtotal as subtotal',
+                'quotations.tax as tax'
             );
 
         // 2. Custom Quotation Query
         $cqQuery = DB::table('custom_quotations')
             ->leftJoin('users', 'custom_quotations.sales_id', '=', 'users.id')
+            ->leftJoin('quotations', 'custom_quotations.id', '=', 'quotations.custom_quotation_id')
+            ->leftJoin('orders', 'custom_quotations.id', '=', 'orders.custom_quotation_id')
             ->select(
                 'custom_quotations.id',
                 'custom_quotations.created_at',
@@ -123,7 +130,12 @@ class SalesReportController extends Controller
                 DB::raw("'Custom Quotation' as type"),
                 DB::raw("NULL as order_status"),
                 'custom_quotations.status as direct_status',
-                'custom_quotations.id as custom_quotation_id'
+                'custom_quotations.id as custom_quotation_id',
+                'quotations.sales_order_number as sales_order_number',
+                'orders.order_number as order_number',
+                'quotations.no_po as no_po',
+                'custom_quotations.subtotal as subtotal',
+                'custom_quotations.tax as tax'
             );
 
         // Apply date filter
@@ -292,6 +304,7 @@ class SalesReportController extends Controller
 
         $perPage = $request->input('perPage', 10);
         $results = $finalQuery->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
+        $results = $this->attachItemsToResults($results);
 
         return view('admin.sales-report.index', compact('results', 'salesUsers', 'totalCount', 'totalAmount'));
     }
@@ -314,6 +327,7 @@ class SalesReportController extends Controller
         }
 
         $results = $finalQuery->orderBy('created_at', 'desc')->get();
+        $results = $this->attachItemsToResults($results);
 
         // Get active filters descriptive string for header
         $filterDescription = $this->getFilterDescription($request);
@@ -350,6 +364,7 @@ class SalesReportController extends Controller
         }
 
         $results = $finalQuery->orderBy('created_at', 'desc')->get();
+        $results = $this->attachItemsToResults($results);
         $filterDescription = $this->getFilterDescription($request);
 
         $data = [
@@ -367,6 +382,7 @@ class SalesReportController extends Controller
         $html = view('admin.pdf.sales-report-pdf', $data)->render();
 
         $pdf = $this->getBrowsershot($html)
+            ->landscape()
             ->format('A4')
             ->margins(12.7, 12.7, 12.7, 12.7) // 1.27 cm margins
             ->showBackground()
@@ -439,5 +455,49 @@ class SalesReportController extends Controller
         }
 
         return "Periode: {$dateDesc} | Tipe: {$typeLabel} | {$salesLabel} | {$statusLabel}";
+    }
+
+    /**
+     * Helper to attach items details to results (quantity and unit price)
+     */
+    private function attachItemsToResults($results)
+    {
+        $standardIds = [];
+        $customIds = [];
+        foreach ($results as $row) {
+            if ($row->type === 'Standard Quotation') {
+                $standardIds[] = $row->id;
+            } else {
+                $customIds[] = $row->id;
+            }
+        }
+
+        $standardItems = collect();
+        if (!empty($standardIds)) {
+            $standardItems = DB::table('quotation_items')
+                ->whereIn('quotation_id', $standardIds)
+                ->select('id', 'quotation_id', 'quantity as qty', 'price', 'discount_percent as discount')
+                ->get()
+                ->groupBy('quotation_id');
+        }
+
+        $customItems = collect();
+        if (!empty($customIds)) {
+            $customItems = DB::table('custom_quotation_items')
+                ->whereIn('custom_quotation_id', $customIds)
+                ->select('id', 'custom_quotation_id', 'qty', 'price', 'discount')
+                ->get()
+                ->groupBy('custom_quotation_id');
+        }
+
+        foreach ($results as $row) {
+            if ($row->type === 'Standard Quotation') {
+                $row->items = $standardItems->get($row->id, collect());
+            } else {
+                $row->items = $customItems->get($row->id, collect());
+            }
+        }
+
+        return $results;
     }
 }

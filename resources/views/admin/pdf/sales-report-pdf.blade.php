@@ -12,7 +12,7 @@
         }
         @media print {
             @page {
-                size: A4 portrait;
+                size: A4 landscape;
                 margin: 1.27cm;
             }
             * {
@@ -73,15 +73,21 @@
             <table class="w-full border-collapse border border-slate-400 text-xs">
                 <thead>
                     <tr class="bg-slate-100 text-slate-800">
-                        <th class="border border-slate-400 p-2 text-center w-[4%] font-bold">No</th>
-                        <th class="border border-slate-400 p-2 text-center w-[11%] font-bold">Tanggal</th>
-                        <th class="border border-slate-400 p-2 text-left w-[18%] font-bold">No. Dokumen</th>
-                        <th class="border border-slate-400 p-2 text-left w-[15%] font-bold">Sales</th>
-                        <th class="border border-slate-400 p-2 text-left w-[18%] font-bold">Customer</th>
-                        <th class="border border-slate-400 p-2 text-left w-[20%] font-bold">Perihal</th>
-                        <th class="border border-slate-400 p-2 text-right w-[14%] font-bold">Total (Rp)</th>
-                        <th class="border border-slate-400 p-2 text-center w-[15%] font-bold">Status</th>
-                        <th class="border border-slate-400 p-2 text-center w-[12%] font-bold">Tipe</th>
+                        <th class="border border-slate-400 p-2 text-center w-[2%] font-bold">No</th>
+                        <th class="border border-slate-400 p-2 text-center w-[6%] font-bold">Tanggal</th>
+                        <th class="border border-slate-400 p-2 text-left w-[9%] font-bold">No. Dokumen</th>
+                        <th class="border border-slate-400 p-2 text-left w-[9%] font-bold">No. SO</th>
+                        <th class="border border-slate-400 p-2 text-left w-[9%] font-bold">No. DO</th>
+                        <th class="border border-slate-400 p-2 text-left w-[9%] font-bold">No. PO</th>
+                        <th class="border border-slate-400 p-2 text-left w-[7%] font-bold">Sales</th>
+                        <th class="border border-slate-400 p-2 text-left w-[8%] font-bold">Customer</th>
+                        <th class="border border-slate-400 p-2 text-left w-[8%] font-bold">Perihal</th>
+                        <th class="border border-slate-400 p-2 text-right w-[9%] font-bold">Harga</th>
+                        <th class="border border-slate-400 p-2 text-center w-[3%] font-bold">Qty</th>
+                        <th class="border border-slate-400 p-2 text-center w-[4%] font-bold">Disc</th>
+                        <th class="border border-slate-400 p-2 text-right w-[9%] font-bold">Total (Rp)</th>
+                        <th class="border border-slate-400 p-2 text-center w-[7%] font-bold">Status</th>
+                        <th class="border border-slate-400 p-2 text-center w-[5%] font-bold">Tipe</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -95,23 +101,49 @@
                             <td class="border border-slate-400 p-2 text-center">{{ $index + 1 }}</td>
                             <td class="border border-slate-400 p-2 text-center">{{ \Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>
                             <td class="border border-slate-400 p-2 font-bold">{{ $row->quotation_number ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->sales_order_number ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->order_number ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->no_po ?? '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->sales_name ?? '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->customer_name ?? '-' }}</td>
                             <td class="border border-slate-400 p-2 whitespace-normal break-words">{{ $row->subject ?? '-' }}</td>
-                            <td class="border border-slate-400 p-2 text-right font-medium">{{ number_format($row->grand_total, 0, ',', '.') }}</td>
+                            <td class="border border-slate-400 p-2 text-right">
+                                @foreach($row->items as $item)
+                                    @php
+                                        $taxRate = ($row->subtotal > 0) ? ($row->tax / $row->subtotal) : 0.11;
+                                        $priceWithTax = $item->price * (1 + $taxRate);
+                                    @endphp
+                                    <span style="font-weight: bold; color: #0067B1; display: block; font-size: 10px;">
+                                        Rp {{ number_format($priceWithTax, 0, ',', '.') }}
+                                    </span>
+                                @endforeach
+                            </td>
+                            <td class="border border-slate-400 p-2 text-center">
+                                @foreach($row->items as $item)
+                                    <span style="display: block; font-size: 10px;">{{ $item->qty }}</span>
+                                @endforeach
+                            </td>
+                            <td class="border border-slate-400 p-2 text-center">
+                                @foreach($row->items as $item)
+                                    <span style="display: block; font-size: 10px;">{{ $item->discount > 0 ? $item->discount . '%' : '-' }}</span>
+                                @endforeach
+                            </td>
+                            <td class="border border-slate-400 p-2 text-right font-bold">
+                                Rp {{ number_format($row->grand_total, 0, ',', '.') }}
+                            </td>
                             <td class="border border-slate-400 p-2 text-center font-medium">{{ $statusData['label'] }}</td>
                             <td class="border border-slate-400 p-2 text-center text-slate-600">{{ $row->type === 'Standard Quotation' ? 'Standard' : 'Custom' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="border border-slate-400 p-8 text-center text-slate-500 font-bold">Tidak ada data transaksi ditemukan</td>
+                            <td colspan="15" class="border border-slate-400 p-8 text-center text-slate-500 font-bold">Tidak ada data transaksi ditemukan</td>
                         </tr>
                     @endforelse
 
                     <!-- Grand Total Row -->
                     @if($results->isNotEmpty())
                         <tr class="bg-slate-100 font-bold">
-                            <td colspan="6" class="border border-slate-400 p-2 text-right font-bold">GRAND TOTAL</td>
+                            <td colspan="12" class="border border-slate-400 p-2 text-right font-bold">GRAND TOTAL</td>
                             <td class="border border-slate-400 p-2 text-right font-bold text-[#1f3864]">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
                             <td colspan="2" class="border border-slate-400 p-2"></td>
                         </tr>

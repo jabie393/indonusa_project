@@ -1,229 +1,299 @@
 <x-app-layout>
-    <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
+    <div class="flex flex-col overflow-hidden lg:h-[calc(100vh-112px)]">
 
         <!-- Topbar Page Header -->
-        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
-            <div class="flex items-center gap-3">
-                <span class="text-lg font-bold text-slate-800 dark:text-white">Laporan Kinerja Sales</span>
-            </div>
-            
+        <div
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 shrink-0 items-center justify-end overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800">
+
+
             <div class="flex gap-2">
-                <button type="button" id="btn-export-excel" class="cursor-pointer flex flex-row items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition duration-200 shadow">
+                <button type="button" id="btn-filter"
+                    class="flex cursor-pointer flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white shadow transition duration-200 hover:bg-[#19426d]">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Export Excel
-                </button>
-                <button type="button" id="btn-export-pdf" class="cursor-pointer flex flex-row items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 transition duration-200 shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    Export PDF
+                    Filter & Export
                 </button>
             </div>
         </div>
 
         <!-- Filter Panel -->
-        <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-md mb-5 shrink-0 border border-gray-100 dark:border-gray-700/50">
-            <form id="filter-form" action="{{ route('sales-report.index') }}" method="GET">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    
-                    <!-- Report Type Filter -->
-                    <div class="flex flex-col gap-1.5">
-                        <label for="report_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tipe Laporan</label>
-                        <select name="report_type" id="report_type" class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                            <option value="all" {{ request('report_type') === 'all' ? 'selected' : '' }}>Semua Tipe</option>
-                            <option value="quotation" {{ request('report_type') === 'quotation' ? 'selected' : '' }}>Standard Quotation</option>
-                            <option value="custom_quotation" {{ request('report_type') === 'custom_quotation' ? 'selected' : '' }}>Custom Quotation</option>
-                        </select>
-                    </div>
+        <div id="filter-panel"
+            class="collapse mb-0 shrink-0 rounded-2xl border-0 bg-white shadow-none transition-all duration-300 dark:bg-gray-800 [&.collapse-open]:mb-5 [&.collapse-open]:border [&.collapse-open]:border-gray-100 [&.collapse-open]:shadow-md [&.collapse-open]:dark:border-gray-700/50">
+            <script>
+                if (localStorage.getItem('filter_panel_open') === 'true') {
+                    document.getElementById('filter-panel').classList.add('collapse-open');
+                }
+            </script>
+            <div class="collapse-content !p-0">
+                <div class="p-5">
+                    <form id="filter-form" action="{{ route('sales-report.index') }}" method="GET">
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 
-                    <!-- Periode Type Filter -->
-                    <div class="flex flex-col gap-1.5">
-                        <label for="periode_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Jenis Periode</label>
-                        <select name="periode_type" id="periode_type" class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                            <option value="daily" {{ request('periode_type') === 'daily' ? 'selected' : '' }}>Harian (Daily)</option>
-                            <option value="weekly" {{ request('periode_type') === 'weekly' ? 'selected' : '' }}>Mingguan (Weekly)</option>
-                            <option value="monthly" {{ request('periode_type', 'monthly') === 'monthly' ? 'selected' : '' }}>Bulanan (Monthly)</option>
-                            <option value="yearly" {{ request('periode_type') === 'yearly' ? 'selected' : '' }}>Tahunan (Yearly)</option>
-                            <option value="custom" {{ request('periode_type') === 'custom' ? 'selected' : '' }}>Custom Range</option>
-                        </select>
-                    </div>
+                            <!-- Report Type Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="report_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tipe Laporan</label>
+                                <select name="report_type" id="report_type"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('report_type') === 'all' ? 'selected' : '' }}>Semua Tipe</option>
+                                    <option value="quotation" {{ request('report_type') === 'quotation' ? 'selected' : '' }}>Standard Quotation</option>
+                                    <option value="custom_quotation" {{ request('report_type') === 'custom_quotation' ? 'selected' : '' }}>Custom Quotation</option>
+                                </select>
+                            </div>
 
-                    <!-- Status Filter -->
-                    <div class="flex flex-col gap-1.5">
-                        <label for="status" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Transaksi</label>
-                        <select name="status" id="status" class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                            <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Semua Status</option>
-                            <option value="belum_diproses" {{ request('status') === 'belum_diproses' ? 'selected' : '' }}>Belum Diproses</option>
-                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending / Waiting Approval</option>
-                            <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved / Open</option>
-                            <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                            <option value="sent_to_warehouse" {{ request('status') === 'sent_to_warehouse' ? 'selected' : '' }}>Sent to Warehouse</option>
-                            <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="partial" {{ request('status') === 'partial' ? 'selected' : '' }}>Partial Delivery</option>
-                            <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired (Custom Only)</option>
-                        </select>
-                    </div>
+                            <!-- Periode Type Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="periode_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Jenis Periode</label>
+                                <select name="periode_type" id="periode_type"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="daily" {{ request('periode_type') === 'daily' ? 'selected' : '' }}>Harian (Daily)</option>
+                                    <option value="weekly" {{ request('periode_type') === 'weekly' ? 'selected' : '' }}>Mingguan (Weekly)</option>
+                                    <option value="monthly" {{ request('periode_type', 'monthly') === 'monthly' ? 'selected' : '' }}>Bulanan (Monthly)</option>
+                                    <option value="yearly" {{ request('periode_type') === 'yearly' ? 'selected' : '' }}>Tahunan (Yearly)</option>
+                                    <option value="custom" {{ request('periode_type') === 'custom' ? 'selected' : '' }}>Custom Range</option>
+                                </select>
+                            </div>
 
-                    <!-- Sales Filter (Disabled for role Sales) -->
-                    <div class="flex flex-col gap-1.5">
-                        <label for="sales_id" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Sales Agent</label>
-                        @php
-                            $user = Auth::user();
-                            $isSales = trim(strtolower($user->role ?? '')) === 'sales';
-                        @endphp
-                        @if($isSales)
-                            <select name="sales_id" id="sales_id" disabled class="rounded-xl border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                                <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
-                            </select>
-                            <input type="hidden" name="sales_id" value="{{ $user->id }}" />
-                        @else
-                            <select name="sales_id" id="sales_id" class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                <option value="">Semua Sales Agent</option>
-                                @foreach($salesUsers as $salesUser)
-                                    <option value="{{ $salesUser->id }}" {{ request('sales_id') == $salesUser->id ? 'selected' : '' }}>{{ $salesUser->name }}</option>
-                                @endforeach
-                            </select>
-                        @endif
-                    </div>
+                            <!-- Status Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="status" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Transaksi</label>
+                                <select name="status" id="status"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Semua Status</option>
+                                    <option value="belum_diproses" {{ request('status') === 'belum_diproses' ? 'selected' : '' }}>Belum Diproses</option>
+                                    <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending / Waiting Approval</option>
+                                    <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved / Open</option>
+                                    <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                                    <option value="sent_to_warehouse" {{ request('status') === 'sent_to_warehouse' ? 'selected' : '' }}>Sent to Warehouse</option>
+                                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="partial" {{ request('status') === 'partial' ? 'selected' : '' }}>Partial Delivery</option>
+                                    <option value="expired" {{ request('status') === 'expired' ? 'selected' : '' }}>Expired (Custom Only)</option>
+                                </select>
+                            </div>
 
+                            <!-- Sales Filter (Disabled for role Sales) -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="sales_id" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Sales Agent</label>
+                                @php
+                                    $user = Auth::user();
+                                    $isSales = trim(strtolower($user->role ?? '')) === 'sales';
+                                @endphp
+                                @if ($isSales)
+                                    <select name="sales_id" id="sales_id" disabled
+                                        class="rounded-xl border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                        <option value="{{ $user->id }}" selected>{{ $user->name }}</option>
+                                    </select>
+                                    <input type="hidden" name="sales_id" value="{{ $user->id }}" />
+                                @else
+                                    <select name="sales_id" id="sales_id"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        <option value="">Semua Sales Agent</option>
+                                        @foreach ($salesUsers as $salesUser)
+                                            <option value="{{ $salesUser->id }}" {{ request('sales_id') == $salesUser->id ? 'selected' : '' }}>{{ $salesUser->name }}</option>
+                                        @endforeach
+                                    </select>
+                                @endif
+                            </div>
+
+                        </div>
+
+                        <!-- Dynamic Period Fields Container -->
+                        <div class="mt-4 grid grid-cols-1 gap-4 border-t border-dashed border-slate-100 pt-4 dark:border-slate-700 md:grid-cols-4">
+
+                            <!-- Daily Fields -->
+                            <div id="period-fields-daily" class="period-field-group col-span-2 flex hidden flex-col gap-1.5">
+                                <label for="date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Tanggal</label>
+                                <input type="date" name="date" id="date" value="{{ request('date', date('Y-m-d')) }}"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                            </div>
+
+                            <!-- Weekly Fields -->
+                            <div id="period-fields-weekly" class="period-field-group col-span-3 grid hidden grid-cols-3 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="week" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Minggu Ke-</label>
+                                    <select name="week" id="week"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1, 2, 3, 4, 5] as $w)
+                                            <option value="{{ $w }}" {{ request('week', 1) == $w ? 'selected' : '' }}>Minggu Ke-{{ $w }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="weekly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
+                                    <select name="month" id="weekly_month"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
+                                            <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="weekly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                    <select name="year" id="weekly_year"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @for ($y = date('Y'); $y >= 2020; $y--)
+                                            <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Monthly Fields (uses same month/year parameters, only shows dropdowns) -->
+                            <div id="period-fields-monthly" class="period-field-group col-span-2 grid hidden grid-cols-2 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="monthly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
+                                    <select id="monthly_month"
+                                        class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
+                                            <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="monthly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                    <select id="monthly_year"
+                                        class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @for ($y = date('Y'); $y >= 2020; $y--)
+                                            <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Yearly Fields -->
+                            <div id="period-fields-yearly" class="period-field-group col-span-2 flex hidden flex-col gap-1.5">
+                                <label for="yearly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                <select id="yearly_year"
+                                    class="yearly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    @for ($y = date('Y'); $y >= 2020; $y--)
+                                        <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <!-- Custom Fields -->
+                            <div id="period-fields-custom" class="period-field-group col-span-2 grid hidden grid-cols-2 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="start_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Mulai Tanggal</label>
+                                    <input type="date" name="start_date" id="start_date" value="{{ request('start_date', date('Y-m-01')) }}"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="end_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Sampai Tanggal</label>
+                                    <input type="date" name="end_date" id="end_date" value="{{ request('end_date', date('Y-m-d')) }}"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                                </div>
+                            </div>
+
+                            <!-- Hidden Fields to store synchronized values -->
+                            <input type="hidden" name="month_val" id="month_val" value="{{ request('month', date('n')) }}" />
+                            <input type="hidden" name="year_val" id="year_val" value="{{ request('year', date('Y')) }}" />
+
+
+
+                            <!-- Submit & Reset Actions -->
+                            <div class="col-span-2 flex items-end justify-between gap-2 md:col-start-3">
+                                <div class="flex gap-3">
+                                    <a href="{{ route('sales-report.index') }}"
+                                        class="flex w-fit flex-row items-center rounded-xl bg-gray-100 px-4 py-2.5 text-center text-sm font-semibold text-slate-700 transition duration-150 hover:bg-gray-200">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                            <path d="M3 3v5h5"></path>
+                                        </svg>
+                                        Reset</a>
+                                    <button type="submit"
+                                        class="w-fit flex flex-row items-center rounded-xl bg-[#225A97] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-[#19426d]">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                        </svg>
+                                        Filter
+                                    </button>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <button type="button" id="btn-export-excel"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-emerald-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        Export Excel
+                                    </button>
+                                    <button type="button" id="btn-export-pdf"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
                 </div>
-
-                <!-- Dynamic Period Fields Container -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-dashed border-slate-100 dark:border-slate-700">
-                    
-                    <!-- Daily Fields -->
-                    <div id="period-fields-daily" class="period-field-group hidden flex flex-col gap-1.5 col-span-2">
-                        <label for="date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Tanggal</label>
-                        <input type="date" name="date" id="date" value="{{ request('date', date('Y-m-d')) }}" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
-                    </div>
-
-                    <!-- Weekly Fields -->
-                    <div id="period-fields-weekly" class="period-field-group hidden col-span-3 grid grid-cols-3 gap-3">
-                        <div class="flex flex-col gap-1.5">
-                            <label for="week" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Minggu Ke-</label>
-                            <select name="week" id="week" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                @foreach([1, 2, 3, 4, 5] as $w)
-                                    <option value="{{ $w }}" {{ request('week', 1) == $w ? 'selected' : '' }}>Minggu Ke-{{ $w }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex flex-col gap-1.5">
-                            <label for="weekly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
-                            <select name="month" id="weekly_month" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                @foreach([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
-                                    <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex flex-col gap-1.5">
-                            <label for="weekly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
-                            <select name="year" id="weekly_year" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                @for($y = date('Y'); $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Monthly Fields (uses same month/year parameters, only shows dropdowns) -->
-                    <div id="period-fields-monthly" class="period-field-group hidden col-span-2 grid grid-cols-2 gap-3">
-                        <div class="flex flex-col gap-1.5">
-                            <label for="monthly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
-                            <select id="monthly_month" class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                @foreach([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
-                                    <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex flex-col gap-1.5">
-                            <label for="monthly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
-                            <select id="monthly_year" class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                @for($y = date('Y'); $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Yearly Fields -->
-                    <div id="period-fields-yearly" class="period-field-group hidden flex flex-col gap-1.5 col-span-2">
-                        <label for="yearly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
-                        <select id="yearly_year" class="yearly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                            @for($y = date('Y'); $y >= 2020; $y--)
-                                <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <!-- Custom Fields -->
-                    <div id="period-fields-custom" class="period-field-group hidden col-span-2 grid grid-cols-2 gap-3">
-                        <div class="flex flex-col gap-1.5">
-                            <label for="start_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Mulai Tanggal</label>
-                            <input type="date" name="start_date" id="start_date" value="{{ request('start_date', date('Y-m-01')) }}" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
-                        </div>
-                        <div class="flex flex-col gap-1.5">
-                            <label for="end_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Sampai Tanggal</label>
-                            <input type="date" name="end_date" id="end_date" value="{{ request('end_date', date('Y-m-d')) }}" class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
-                        </div>
-                    </div>
-
-                    <!-- Hidden Fields to store synchronized values -->
-                    <input type="hidden" name="month_val" id="month_val" value="{{ request('month', date('n')) }}" />
-                    <input type="hidden" name="year_val" id="year_val" value="{{ request('year', date('Y')) }}" />
-
-                    <!-- Submit & Reset Actions -->
-                    <div class="col-span-1 md:col-start-4 flex items-end gap-2 justify-end">
-                        <a href="{{ route('sales-report.index') }}" class="w-full text-center rounded-xl bg-gray-100 hover:bg-gray-200 text-slate-700 px-4 py-2.5 text-sm font-semibold transition duration-150">Reset</a>
-                        <button type="submit" class="w-full rounded-xl bg-[#225A97] hover:bg-[#19426d] text-white px-4 py-2.5 text-sm font-semibold transition duration-150 shadow-sm">Filter</button>
-                    </div>
-
-                </div>
-            </form>
+            </div>
         </div>
 
         <!-- Summary Cards Section -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 shrink-0 mb-5">
+        <div class="mb-5 grid shrink-0 grid-cols-1 gap-5 sm:grid-cols-2">
             <!-- Total Documents Card -->
-            <div class="bg-gradient-to-r from-blue-700 to-indigo-800 rounded-2xl p-5 shadow-lg flex items-center justify-between text-white">
+            <div class="flex items-center justify-between rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-800 p-5 text-white shadow-lg">
                 <div>
-                    <p class="text-xs uppercase font-bold text-blue-100 tracking-wider">Jumlah Transaksi</p>
-                    <h3 class="text-3xl font-extrabold mt-1">{{ number_format($totalCount) }}</h3>
+                    <p class="text-xs font-bold uppercase tracking-wider text-blue-100">Jumlah Transaksi</p>
+                    <h3 class="mt-1 text-3xl font-extrabold">{{ number_format($totalCount) }}</h3>
                 </div>
-                <div class="bg-white/10 p-3.5 rounded-xl">
+                <div class="rounded-xl bg-white/10 p-3.5">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
             </div>
 
             <!-- Total Sales Amount Card -->
-            <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-5 shadow-lg flex items-center justify-between text-white">
+            <div class="flex items-center justify-between rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-5 text-white shadow-lg">
                 <div>
-                    <p class="text-xs uppercase font-bold text-emerald-100 tracking-wider">Total Kinerja Sales</p>
-                    <h3 class="text-3xl font-extrabold mt-1">Rp {{ number_format($totalAmount, 0, ',', '.') }}</h3>
+                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Total Kinerja Sales</p>
+                    <h3 class="mt-1 text-3xl font-extrabold">Rp {{ number_format($totalAmount, 0, ',', '.') }}</h3>
                 </div>
-                <div class="bg-white/10 p-3.5 rounded-xl">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-emerald-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-20c5.303 0 9.603 4.3 9.603 9.603s-4.3 9.603-9.603 9.603S2.397 18.906 2.397 13.603 6.697 4 12 4z" />
+                <div class="rounded-xl bg-white/10 p-3.5">
+                    <svg class="h-8 w-8 text-emerald-100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path
+                                d="M9.5 13.75C9.5 14.72 10.25 15.5 11.17 15.5H13.05C13.85 15.5 14.5 14.82 14.5 13.97C14.5 13.06 14.1 12.73 13.51 12.52L10.5 11.47C9.91 11.26 9.51001 10.94 9.51001 10.02C9.51001 9.17999 10.16 8.48999 10.96 8.48999H12.84C13.76 8.48999 14.51 9.26999 14.51 10.24"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M12 7.5V16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                            </path>
+                            <path d="M17 3V7H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M22 2L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
                     </svg>
                 </div>
             </div>
         </div>
 
         <!-- Table Container Card -->
-        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="shrink-0 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 flex justify-between items-center">
-                <span class="text-sm font-bold text-white uppercase tracking-wider">Daftar Dokumen Penawaran</span>
+        <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+                <span class="text-sm font-bold uppercase tracking-wider text-white">Daftar Dokumen Penawaran</span>
                 <div>
                     <!-- Search Input -->
                     <form action="{{ route('sales-report.index') }}" method="GET" class="relative">
                         <!-- Forward current filters -->
-                        @foreach(request()->except(['search', 'page']) as $k => $v)
+                        @foreach (request()->except(['search', 'page']) as $k => $v)
                             <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
                         @endforeach
-                        <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari..." class="rounded-xl border border-transparent bg-white/20 px-3 py-1.5 text-xs text-white placeholder-white/70 focus:bg-white focus:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64 transition duration-200" />
+                        <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari..."
+                            class="w-64 rounded-xl border border-transparent bg-white/20 px-3 py-1.5 text-xs text-white placeholder-white/70 transition duration-200 focus:bg-white focus:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </form>
                 </div>
             </div>
@@ -233,7 +303,7 @@
                 <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                     <thead class="sticky top-0 z-10 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="text-nowrap p-4 w-[5%]">No</th>
+                            <th scope="col" class="w-[5%] text-nowrap p-4">No</th>
                             <th scope="col" class="text-nowrap p-4">No. Dokumen</th>
                             <th scope="col" class="text-nowrap p-4">Sales Agent</th>
                             <th scope="col" class="text-nowrap p-4">Customer</th>
@@ -251,41 +321,75 @@
                                 $rowNumber = $results->firstItem() + $index;
                             @endphp
                             <tr class="border-b border-gray-100 align-top hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/30">
-                                <td class="p-4 text-slate-400 text-center align-middle font-bold">{{ $rowNumber }}</td>
+                                <td class="p-4 text-center align-middle font-bold text-slate-400">{{ $rowNumber }}</td>
                                 <td class="p-4 align-middle">
-                                    @if($row->type === 'Standard Quotation')
-                                        <a href="{{ route('sales.quotation.show', $row->id) }}" class="text-sm font-bold text-[#225A97] hover:underline dark:text-blue-400">
-                                            {{ $row->quotation_number ?? '-' }}
-                                        </a>
-                                    @else
-                                        <a href="{{ route('sales.custom-quotation.show', $row->id) }}" class="text-sm font-bold text-[#225A97] hover:underline dark:text-blue-400">
-                                            {{ $row->quotation_number ?? '-' }}
-                                        </a>
-                                    @endif
+                                    <div class="flex flex-col gap-1">
+                                        @if ($row->type === 'Standard Quotation')
+                                            <a href="{{ route('sales.quotation.show', $row->id) }}" class="text-sm font-bold text-[#225A97] hover:underline dark:text-blue-400">
+                                                {{ $row->quotation_number ?? '-' }}
+                                            </a>
+                                        @else
+                                            <a href="{{ route('sales.custom-quotation.show', $row->id) }}" class="text-sm font-bold text-[#225A97] hover:underline dark:text-blue-400">
+                                                {{ $row->quotation_number ?? '-' }}
+                                            </a>
+                                        @endif
+                                        <div class="grid grid-cols-[32px_1fr] gap-x-2 text-xs leading-relaxed mt-1">
+                                            <span class="font-semibold uppercase text-slate-400">SO</span>
+                                            <span class="text-slate-600 dark:text-slate-300">{{ $row->sales_order_number ?? '-' }}</span>
+                                            <span class="font-semibold uppercase text-slate-400">DO</span>
+                                            <span class="text-slate-600 dark:text-slate-300">{{ $row->order_number ?? '-' }}</span>
+                                            <span class="font-semibold uppercase text-slate-400">PO</span>
+                                            <span class="text-slate-600 dark:text-slate-300">{{ $row->no_po ?? '-' }}</span>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="p-4 align-middle text-slate-800 dark:text-slate-200 font-semibold">{{ $row->sales_name ?? '-' }}</td>
-                                <td class="p-4 align-middle text-slate-800 dark:text-slate-200 font-bold whitespace-normal max-w-xs">{{ $row->customer_name ?? '-' }}</td>
-                                <td class="p-4 align-middle text-slate-600 dark:text-slate-400 whitespace-normal max-w-sm">{{ $row->subject ?? '-' }}</td>
-                                <td class="p-4 align-middle text-slate-500 dark:text-slate-400 text-xs">{{ \Carbon\Carbon::parse($row->created_at)->format('Y-m-d H:i') }}</td>
-                                <td class="p-4 align-middle text-right text-slate-900 dark:text-white font-bold text-sm">
-                                    Rp {{ number_format($row->grand_total, 0, ',', '.') }}
+                                <td class="p-4 align-middle font-semibold text-slate-800 dark:text-slate-200">{{ $row->sales_name ?? '-' }}</td>
+                                <td class="max-w-xs whitespace-normal p-4 align-middle font-bold text-slate-800 dark:text-slate-200">{{ $row->customer_name ?? '-' }}</td>
+                                <td class="max-w-sm whitespace-normal p-4 align-middle text-slate-600 dark:text-slate-400">{{ $row->subject ?? '-' }}</td>
+                                <td class="p-4 align-middle text-xs text-slate-500 dark:text-slate-400">{{ \Carbon\Carbon::parse($row->created_at)->format('Y-m-d H:i') }}</td>
+                                <td class="p-4 text-right align-middle text-slate-900 dark:text-white">
+                                    <div class="flex flex-col items-end gap-1">
+                                        @foreach($row->items as $item)
+                                            @php
+                                                $taxRate = ($row->subtotal > 0) ? ($row->tax / $row->subtotal) : 0.11;
+                                                $priceWithTax = $item->price * (1 + $taxRate);
+                                            @endphp
+                                            <div class="flex items-center gap-1.5 justify-end">
+                                                <span class="text-sm font-bold text-[#0067B1] dark:text-blue-400">
+                                                    Rp {{ number_format($priceWithTax, 0, ',', '.') }}
+                                                </span>
+                                                <span class="inline-flex items-center rounded-lg bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                                                    {{ $item->qty }} {{ $item->qty > 1 ? 'items' : 'item' }}
+                                                </span>
+                                                @if($item->discount > 0)
+                                                    <span class="inline-flex items-center rounded-lg border border-emerald-500 bg-emerald-50/50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400">
+                                                        {{ $item->discount }}%
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        <div class="text-xs text-slate-400 dark:text-slate-500 mt-1 border-t border-dashed border-slate-100 pt-1 dark:border-slate-700 w-full text-right">
+                                            Total: <span class="font-extrabold text-slate-800 dark:text-slate-200 text-sm">Rp {{ number_format($row->grand_total, 0, ',', '.') }}</span>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="p-4 align-middle text-center">
-                                    @if($row->type === 'Standard Quotation')
+                                <td class="p-4 text-center align-middle">
+                                    @if ($row->type === 'Standard Quotation')
                                         <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">Standard</span>
                                     @else
-                                        <span class="inline-flex rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">Custom</span>
+                                        <span
+                                            class="inline-flex rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">Custom</span>
                                     @endif
                                 </td>
-                                <td class="p-4 align-middle text-center">
-                                    <span class="inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ $statusData['class'] }}">
+                                <td class="p-4 text-center align-middle">
+                                    <span class="{{ $statusData['class'] }} inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-xs font-semibold">
                                         {{ $statusData['label'] }}
                                     </span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="9" class="p-8 text-center text-slate-400 font-bold dark:text-slate-500">Tidak ada data penawaran sales yang ditemukan untuk filter aktif.</td>
+                                <td colspan="9" class="p-8 text-center font-bold text-slate-400 dark:text-slate-500">Tidak ada data penawaran sales yang ditemukan untuk filter aktif.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -293,7 +397,9 @@
             </div>
 
             <!-- Table Pagination and Navigation -->
-            <nav id="pagination-nav" class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0" aria-label="Table navigation">
+            <nav id="pagination-nav"
+                class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                aria-label="Table navigation">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                         Menampilkan
@@ -302,10 +408,11 @@
                         <span class="font-semibold text-gray-900 dark:text-white">{{ $results->total() }}</span>
                     </span>
                     <form method="GET" action="{{ route('sales-report.index') }}">
-                        @foreach(request()->except(['perPage', 'page']) as $k => $v)
+                        @foreach (request()->except(['perPage', 'page']) as $k => $v)
                             <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
                         @endforeach
-                        <select name="perPage" onchange="this.form.submit()" class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        <select name="perPage" onchange="this.form.submit()"
+                            class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                             @foreach ([10, 25, 50, 100] as $size)
                                 <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
                             @endforeach
@@ -326,7 +433,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const periodeSelect = document.getElementById('periode_type');
-            
+
             // Monthly Select Sync
             const monthlyMonth = document.getElementById('monthly_month');
             const monthlyYear = document.getElementById('monthly_year');
@@ -359,7 +466,7 @@
 
             function togglePeriodFields() {
                 const value = periodeSelect.value;
-                
+
                 // Hide all first
                 document.querySelectorAll('.period-field-group').forEach(group => {
                     group.classList.add('hidden');
@@ -376,6 +483,17 @@
 
             periodeSelect.addEventListener('change', togglePeriodFields);
             togglePeriodFields(); // Run once initially
+
+            // Filter Panel Toggle
+            const btnFilter = document.getElementById('btn-filter');
+            const filterPanel = document.getElementById('filter-panel');
+            if (btnFilter && filterPanel) {
+                btnFilter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const isOpen = filterPanel.classList.toggle('collapse-open');
+                    localStorage.setItem('filter_panel_open', isOpen ? 'true' : 'false');
+                });
+            }
 
             // Export Actions Interceptor
             document.getElementById('btn-export-excel').addEventListener('click', function(e) {
