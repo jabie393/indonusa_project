@@ -192,7 +192,7 @@
                                         <a href="{{ $row['aksi_url'] }}" class="text-base font-bold text-[#0067B1] hover:underline">{{ $row['no_quotation'] ?? '-' }}</a>
                                         <div class="grid grid-cols-[32px_1fr] gap-x-2 text-xs leading-relaxed">
                                             <span class="font-semibold uppercase text-slate-400">SO</span>
-                                            <span class="text-slate-600 dark:text-slate-300">{{ $row['no_sales_order'] ?? '-' }}</span>
+                                            <span id="sales-order-number-{{ $row['id'] }}" class="text-slate-600 dark:text-slate-300">{{ $row['no_sales_order'] ?? '-' }}</span>
                                             <span class="font-semibold uppercase text-slate-400">REQ</span>
                                             <span class="text-slate-600 dark:text-slate-300">{{ $row['no_request'] ?? '-' }}</span>
                                         </div>
@@ -938,7 +938,7 @@
         }
 
         function saveNoPO(id, value) {
-            const trimmedValue = value.trim();
+            const trimmedValue = (value || '').trim();
             const inputEl = document.getElementById(`no-po-input-${id}`);
 
             if (!inputEl) return;
@@ -957,10 +957,15 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
+                        const salesOrderEl = document.getElementById(`sales-order-number-${id}`);
+                        if (salesOrderEl && data.sales_order_number) {
+                            salesOrderEl.textContent = data.sales_order_number;
+                        }
+
                         Swal.fire({
                             icon: 'success',
                             title: 'Tersimpan!',
-                            text: 'No.PO berhasil diperbarui.',
+                            text: data.sales_order_number ? `No.PO berhasil disimpan dan No. SO ${data.sales_order_number} dibuat.` : 'No.PO berhasil diperbarui.',
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,

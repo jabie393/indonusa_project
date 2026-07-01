@@ -36,10 +36,10 @@ return [
     ],
 
     'browsershot' => [
-        'chrome_path' => env('CHROME_PATH'),
+        'chrome_path' => env('CHROME_PATH', PHP_OS_FAMILY === 'Windows' ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' : null),
         'no_sandbox' => env('BROWSERSHOT_NO_SANDBOX', true),
-        'node_binary' => env('NODE_BINARY'),
-        'npm_binary' => env('NPM_BINARY'),
+        'node_binary' => env('NODE_BINARY', PHP_OS_FAMILY === 'Windows' ? 'C:\\Program Files\\nodejs\\node.exe' : null),
+        'npm_binary' => env('NPM_BINARY', PHP_OS_FAMILY === 'Windows' ? 'C:\\Program Files\\nodejs\\npm.cmd' : null),
         'puppeteer_cache_dir' => env('PUPPETEER_CACHE_DIR'),
     ],
 

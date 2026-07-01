@@ -8,7 +8,7 @@ abstract class Controller
     {
         $browsershot = \Spatie\Browsershot\Browsershot::html($html);
 
-        $chromePath = config('services.browsershot.chrome_path');
+        $chromePath = $this->resolveChromePath();
         if (!empty($chromePath)) {
             $browsershot->setChromePath($chromePath);
         }
@@ -55,5 +55,39 @@ abstract class Controller
         }
 
         return $browsershot;
+    }
+
+    protected function resolveChromePath(): ?string
+    {
+        $configuredPath = config('services.browsershot.chrome_path');
+        if (!empty($configuredPath) && file_exists($configuredPath)) {
+            return $configuredPath;
+        }
+
+        $candidates = [];
+
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            $candidates = [
+                'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+                'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+                'C:\\Program Files\\Chromium\\Application\\chrome.exe',
+                'C:\\Program Files (x86)\\Chromium\\Application\\chrome.exe',
+            ];
+        } else {
+            $candidates = [
+                '/usr/bin/google-chrome',
+                '/usr/bin/google-chrome-stable',
+                '/usr/bin/chromium',
+                '/usr/bin/chromium-browser',
+            ];
+        }
+
+        foreach ($candidates as $candidate) {
+            if (file_exists($candidate) && (PHP_OS_FAMILY === 'Windows' || is_executable($candidate))) {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 }
