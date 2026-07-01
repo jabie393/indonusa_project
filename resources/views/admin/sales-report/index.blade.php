@@ -3,8 +3,7 @@
 
         <!-- Topbar Page Header -->
         <div
-            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 shrink-0 items-center justify-end overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800">
-
+            class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 shrink-0 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800">
 
             <div class="flex gap-2">
                 <button type="button" id="btn-filter"
@@ -15,6 +14,31 @@
                     </svg>
                     Filter & Export
                 </button>
+            </div>
+
+            <div>
+                {{-- Search --}}
+                <form action="{{ route('sales-report.index') }}" method="GET" class="block pl-2">
+                    <!-- Forward current filters -->
+                    @foreach (request()->except(['search', 'page']) as $k => $v)
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
+                    @endforeach
+                    <label for="topbar-search" class="sr-only">Search</label>
+                    <div class="relative md:w-96">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
+                                </path>
+                            </svg>
+                        </div>
+                        <input type="search" name="search" id="topbar-search"
+                            value="{{ request('search') }}"
+                            class="dt-input block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-[#225A97] focus:ring-[#225A97] dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                            placeholder="Cari..." />
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -239,62 +263,19 @@
             </div>
         </div>
 
-        <!-- Summary Cards Section -->
-        <div class="mb-5 grid shrink-0 grid-cols-1 gap-5 sm:grid-cols-2">
-            <!-- Total Documents Card -->
-            <div class="flex items-center justify-between rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-800 p-5 text-white shadow-lg">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-blue-100">Jumlah Transaksi</p>
-                    <h3 class="mt-1 text-3xl font-extrabold">{{ number_format($totalCount) }}</h3>
-                </div>
-                <div class="rounded-xl bg-white/10 p-3.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                </div>
-            </div>
-
-            <!-- Total Sales Amount Card -->
-            <div class="flex items-center justify-between rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 p-5 text-white shadow-lg">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-100">Total Kinerja Sales</p>
-                    <h3 class="mt-1 text-3xl font-extrabold">Rp {{ number_format($totalAmount, 0, ',', '.') }}</h3>
-                </div>
-                <div class="rounded-xl bg-white/10 p-3.5">
-                    <svg class="h-8 w-8 text-emerald-100" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path
-                                d="M9.5 13.75C9.5 14.72 10.25 15.5 11.17 15.5H13.05C13.85 15.5 14.5 14.82 14.5 13.97C14.5 13.06 14.1 12.73 13.51 12.52L10.5 11.47C9.91 11.26 9.51001 10.94 9.51001 10.02C9.51001 9.17999 10.16 8.48999 10.96 8.48999H12.84C13.76 8.48999 14.51 9.26999 14.51 10.24"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M12 7.5V16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round">
-                            </path>
-                            <path d="M17 3V7H21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M22 2L17 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </g>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
         <!-- Table Container Card -->
         <div class="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
+            <div class="flex shrink-0 flex-wrap gap-y-2 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-3 px-4">
                 <span class="text-sm font-bold uppercase tracking-wider text-white">Daftar Dokumen Penawaran</span>
-                <div>
-                    <!-- Search Input -->
-                    <form action="{{ route('sales-report.index') }}" method="GET" class="relative">
-                        <!-- Forward current filters -->
-                        @foreach (request()->except(['search', 'page']) as $k => $v)
-                            <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
-                        @endforeach
-                        <input type="search" name="search" value="{{ request('search') }}" placeholder="Cari..."
-                            class="w-64 rounded-xl border border-transparent bg-white/20 px-3 py-1.5 text-xs text-white placeholder-white/70 transition duration-200 focus:bg-white focus:text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </form>
+                <div class="flex items-center gap-3 text-white text-xs">
+                    <div class="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                        <span class="text-blue-100">Jumlah Transaksi:</span>
+                        <span class="font-extrabold text-sm text-amber-300">{{ number_format($totalCount) }}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10">
+                        <span class="text-emerald-100">Total Kinerja Sales:</span>
+                        <span class="font-extrabold text-sm text-emerald-300">Rp {{ number_format($totalAmount, 0, ',', '.') }}</span>
+                    </div>
                 </div>
             </div>
 
