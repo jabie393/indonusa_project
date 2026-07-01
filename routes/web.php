@@ -295,8 +295,8 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 });
 // End of Sales
 
-// System Settings (GA & Supervisor)
-Route::middleware(['auth', 'role:General Affair,Supervisor'])->group(function () {
+// System Settings (Supervisor Only)
+Route::middleware(['auth', 'role:Supervisor'])->group(function () {
     Route::get('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'update'])->name('settings.update');
 });
