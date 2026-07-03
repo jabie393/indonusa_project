@@ -295,7 +295,28 @@ class SalesOrderInvoiceController extends Controller
             $customerAddress = implode(', ', $parts);
         }
 
+        // Generate and persist unique invoice number for General Affair role
         $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+        if ($isGa && $ro->order) {
+            // If order already has no_invoice, use it. Otherwise generate unique and save.
+            if (empty($ro->order->no_invoice)) {
+                do {
+                    $candidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                } while (\App\Models\Order::where('no_invoice', $candidate)->exists());
+
+                $ro->order->no_invoice = $candidate;
+                try {
+                    $ro->order->save();
+                    $invoiceNumber = $candidate;
+                } catch (\Exception $e) {
+                    // If save fails, fallback to generated number (non-persisted)
+                    Log::warning('Failed to save no_invoice for order id ' . $ro->order->id . ': ' . $e->getMessage());
+                    $invoiceNumber = $candidate;
+                }
+            } else {
+                $invoiceNumber = $ro->order->no_invoice;
+            }
+        }
 
         $isGa = strtolower(Auth::user()->role ?? '') === 'general affair';
         $invoiceExcelRoute = $isGa
@@ -445,8 +466,28 @@ class SalesOrderInvoiceController extends Controller
             $customerAddress = implode(', ', $parts);
         }
 
-        $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
         $isGa = strtolower(Auth::user()->role ?? '') === 'general affair';
+
+        // Generate and persist unique invoice number for General Affair role (batch)
+        $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+        if ($isGa && $order) {
+            if (empty($order->no_invoice)) {
+                do {
+                    $candidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                } while (\App\Models\Order::where('no_invoice', $candidate)->exists());
+
+                $order->no_invoice = $candidate;
+                try {
+                    $order->save();
+                    $invoiceNumber = $candidate;
+                } catch (\Exception $e) {
+                    Log::warning('Failed to save batch no_invoice for order id ' . ($order->id ?? 'unknown') . ': ' . $e->getMessage());
+                    $invoiceNumber = $candidate;
+                }
+            } else {
+                $invoiceNumber = $order->no_invoice;
+            }
+        }
         $invoiceExcelRoute = $isGa
             ? route('invoice.batch.excel', $batch->id)
             : route('delivery-orders.batch.invoice-excel', $batch->id);
@@ -463,6 +504,91 @@ class SalesOrderInvoiceController extends Controller
             'batch',
             'batches',
         ) + ['rowId' => $batch->id, 'rowType' => 'batch_invoice'] + $totals);
+    }
+
+    /**
+     * Print Kwitansi (persist no_kwitansi on orders and render receipt)
+     */
+    public function printKwitansi(Request $request, $id)
+    {
+        if (strtolower(Auth::user()->role ?? '') !== 'general affair') {
+            abort(403);
+        }
+
+        $ro = \App\Models\Quotation::with(['order', 'order.items.barang'])->findOrFail($id);
+        $order = $ro->order;
+
+        if (!$order) {
+            abort(404, 'Order not found for this quotation');
+        }
+
+        // Ensure invoice number exists for this order.
+        if (empty($order->no_invoice)) {
+            do {
+                $invoiceCandidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+            } while (\App\Models\Order::where('no_invoice', $invoiceCandidate)->exists());
+
+            $order->no_invoice = $invoiceCandidate;
+            try {
+                $order->save();
+            } catch (\Exception $e) {
+                Log::warning('Failed to save no_invoice for order id ' . $order->id . ': ' . $e->getMessage());
+            }
+        }
+
+        // Derive kwitansi number from invoice number.
+        $kwitansiCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $order->no_invoice);
+        if ($kwitansiCandidate === $order->no_invoice) {
+            $kwitansiCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+        }
+
+        if (empty($order->no_kwitansi) || $order->no_kwitansi !== $kwitansiCandidate) {
+            if (\App\Models\Order::where('no_kwitansi', $kwitansiCandidate)->where('id', '!=', $order->id)->exists()) {
+                do {
+                    $kwitansiCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                } while (\App\Models\Order::where('no_kwitansi', $kwitansiCandidate)->exists());
+            }
+
+            $order->no_kwitansi = $kwitansiCandidate;
+            try {
+                $order->save();
+            } catch (\Exception $e) {
+                Log::warning('Failed to save no_kwitansi for order id ' . $order->id . ': ' . $e->getMessage());
+            }
+        }
+
+        // Prepare totals
+        $isGa = true;
+        $items = $this->getInvoiceItems($ro, $isGa);
+        $totals = $this->calculateInvoiceTotals($items, $ro);
+
+        // Terbilang helper (simple)
+        $terbilang = function ($number) use (&$terbilang) {
+            $units = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+            $n = (int) $number;
+            if ($n < 12) return $units[$n];
+            if ($n < 20) return $units[$n - 10] . ' Belas';
+            if ($n < 100) return $units[intval($n/10)] . ' Puluh' . ($n%10 ? ' ' . $units[$n%10] : '');
+            if ($n < 200) return 'Seratus' . ($n-100 ? ' ' . $terbilang($n-100) : '');
+            if ($n < 1000) return $units[intval($n/100)] . ' Ratus' . ($n%100 ? ' ' . $terbilang($n%100) : '');
+            if ($n < 2000) return 'Seribu' . ($n-1000 ? ' ' . $terbilang($n-1000) : '');
+            if ($n < 1000000) return $terbilang(intval($n/1000)) . ' Ribu' . ($n%1000 ? ' ' . $terbilang($n%1000) : '');
+            if ($n < 1000000000) return $terbilang(intval($n/1000000)) . ' Juta' . ($n%1000000 ? ' ' . $terbilang($n%1000000) : '');
+            return (string)$number;
+        };
+
+        $amountNumber = $totals['grandTotal'] ?? 0;
+
+        return view('admin.invoice.kwitansi', [
+            'order' => $order,
+            'quotation' => $ro,
+            'customerName' => $ro->customer_name ?? $order->customer_name ?? '-',
+            'no_kwitansi' => $order->no_kwitansi,
+            'amount' => $amountNumber,
+            'amount_words' => trim($terbilang($amountNumber)) . ' Rupiah',
+            'no_po' => $ro->no_po ?? '-',
+            'date' => now()->format('d F Y'),
+        ]);
     }
 
     public function downloadBatchInvoiceExcel(Request $request, $batchId)

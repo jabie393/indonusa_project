@@ -402,6 +402,15 @@
                                                 </svg>
                                                 Download Excel
                                             </button>
+                                            @if($isGa)
+                                            <button type="button" id="btn-print-kwitansi"
+                                                class="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-yellow-600 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:bg-yellow-700 hover:shadow-none transition-all active:scale-[0.98]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M21 8V7l-3 2-2-2-3 3-4-4-3 3V8l3-3 4 4 3-3 2 2 3-2v1z" />
+                                                </svg>
+                                                Cetak Kwitansi
+                                            </button>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -653,6 +662,15 @@
             document.getElementById('excel-form').submit();
         }
         document.getElementById('btn-excel').addEventListener('click', downloadExcel);
+        // Cetak Kwitansi (GA only) - open server-rendered kwitansi which persists no_kwitansi
+        const btnKwitansi = document.getElementById('btn-print-kwitansi');
+        if (btnKwitansi) {
+            btnKwitansi.addEventListener('click', function () {
+                updatePreview();
+                const kwUrl = "{{ route('invoice.kwitansi', ['id' => $rowId ?? '']) }}";
+                window.open(kwUrl, '_blank');
+            });
+        }
         window.addEventListener('DOMContentLoaded', updatePreview);
     </script>
 </x-app-layout>
