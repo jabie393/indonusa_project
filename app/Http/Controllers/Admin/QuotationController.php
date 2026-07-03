@@ -85,45 +85,7 @@ class QuotationController extends Controller
             ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil dibuat!']);
     }
 
-    public function createSalesOrderNumber(Request $request)
-    {
-        if ($request->filled('no_po')) {
-            $request->merge(['no_po' => trim($request->input('no_po'))]);
-        }
 
-        $validated = $request->validate([
-            'no_po' => 'required|string|max:255',
-        ]);
-
-        $existingQuotation = Quotation::where('sales_id', Auth::id())
-            ->where('no_po', $validated['no_po'])
-            ->first();
-
-        if ($existingQuotation) {
-            $salesOrderNumber = $existingQuotation->sales_order_number ?: Quotation::generateSalesOrderNumber();
-            $existingQuotation->update(['sales_order_number' => $salesOrderNumber]);
-
-            return response()->json([
-                'success' => true,
-                'sales_order_number' => $salesOrderNumber,
-                'quotation_id' => $existingQuotation->id,
-            ]);
-        }
-
-        $quotation = Quotation::create([
-            'request_number' => 'REQ-' . strtoupper(Str::random(8)),
-            'quotation_number' => null,
-            'sales_id' => Auth::id(),
-            'no_po' => $validated['no_po'],
-            'sales_order_number' => Quotation::generateSalesOrderNumber(),
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'sales_order_number' => $quotation->sales_order_number,
-            'quotation_id' => $quotation->id,
-        ]);
-    }
 
     public function store(Request $request)
     {
@@ -138,7 +100,6 @@ class QuotationController extends Controller
             'pic_id' => 'required|integer|exists:pics,id',
             'subject' => 'required|string|max:255',
             'no_po' => 'nullable|string|max:255|unique:quotations,no_po',
-            'sales_order_number' => 'nullable|string|max:255',
             'required_date' => 'nullable|date',
             'customer_notes' => 'nullable|string',
             'goods_id' => 'required|array|min:1',
@@ -210,17 +171,7 @@ class QuotationController extends Controller
 
             $nomorQuotation = Quotation::generateQuotationNumber();
             $tanggalBerlaku = now()->addDays(14); // valid for 14 days
-            $salesOrderNumber = !empty($validated['sales_order_number'])
-                ? $validated['sales_order_number']
-                : (!empty($validated['no_po']) ? Quotation::generateSalesOrderNumber() : null);
-
-            $draftQuotationId = $request->input('draft_quotation_id');
-            $requestOrder = null;
-            if (!empty($draftQuotationId)) {
-                $requestOrder = Quotation::where('id', $draftQuotationId)
-                    ->where('sales_id', Auth::id())
-                    ->first();
-            }
+            $salesOrderNumber = !empty($validated['no_po']) ? Quotation::generateSalesOrderNumber() : null;
 
             $quotationData = [
                 'quotation_number' => $nomorQuotation,
@@ -241,15 +192,9 @@ class QuotationController extends Controller
                 'sales_order_number' => $salesOrderNumber,
             ];
 
-            if ($requestOrder) {
-                $quotationData['request_number'] = $requestOrder->request_number;
-                $requestOrder->fill($quotationData);
-                $requestOrder->save();
-            } else {
-                $requestOrder = Quotation::create(array_merge([
-                    'request_number' => 'REQ-' . strtoupper(Str::random(8)),
-                ], $quotationData));
-            }
+            $requestOrder = Quotation::create(array_merge([
+                'request_number' => 'REQ-' . strtoupper(Str::random(8)),
+            ], $quotationData));
 
             $requestOrder->items()->delete();
 
@@ -596,9 +541,9 @@ class QuotationController extends Controller
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
 
-            $salesOrderNumber = !empty($validated['sales_order_number'])
-                ? $validated['sales_order_number']
-                : (!empty($validated['no_po']) ? ($requestOrder->sales_order_number ?: Quotation::generateSalesOrderNumber()) : null);
+            $salesOrderNumber = !empty($validated['no_po'])
+                ? ($requestOrder->sales_order_number ?: Quotation::generateSalesOrderNumber())
+                : null;
 
             $requestOrder->update([
                 'pic_id' => $validated['pic_id'],

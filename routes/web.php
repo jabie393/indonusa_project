@@ -232,7 +232,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::get('/quotation', [QuotationController::class, 'index'])->name('sales.quotation.index');
     Route::get('/quotation/create', [QuotationController::class, 'create'])->name('sales.quotation.create');
     Route::post('/quotation', [QuotationController::class, 'store'])->name('sales.quotation.store');
-    Route::post('/quotation/create-so', [QuotationController::class, 'createSalesOrderNumber'])->name('sales.quotation.create-so');
 
     Route::get('/quotation/{quotation}/edit', [QuotationController::class, 'edit'])->name('sales.quotation.edit');
     Route::put('/quotation/{quotation}', [QuotationController::class, 'update'])->name('sales.quotation.update');

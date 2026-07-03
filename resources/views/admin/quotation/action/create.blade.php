@@ -195,23 +195,6 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="sales_order_number" class="form-label text-gray-700 dark:text-gray-300">No. SO</label>
-                                <div class="flex gap-2">
-                                    <input type="text"
-                                        class="@error('sales_order_number') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                        id="sales_order_number" name="sales_order_number" value="{{ old('sales_order_number') }}"
-                                        placeholder="-" readonly>
-                                    <button type="button" id="createSoBtn" class="btn hidden rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium text-white hover:bg-emerald-700">
-                                        Buat SO
-                                    </button>
-                                </div>
-                                @error('sales_order_number')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted dark:text-gray-400">Klik tombol untuk membuat No. SO setelah No. PO diisi</small>
-                            </div>
-
-                            <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="required_date" class="form-label text-gray-700 dark:text-gray-300">Tanggal
                                     Kebutuhan</label>
                                 <input type="date"
@@ -736,7 +719,6 @@
                     </div>
 
             </div>
-            <input type="hidden" name="draft_quotation_id" id="draftQuotationId" value="{{ old('draft_quotation_id') }}">
             <!-- Hidden Financial Totals -->
             <input type="hidden" name="subtotal" id="hiddenSubtotal" value="0">
             <input type="hidden" name="tax" id="hiddenTax" value="0">
@@ -748,107 +730,6 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('requestOrderForm');
-            const noPoInput = document.getElementById('no_po');
-            const salesOrderInput = document.getElementById('sales_order_number');
-            const createSoBtn = document.getElementById('createSoBtn');
-            const draftQuotationIdInput = document.getElementById('draftQuotationId');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
-
-            if (noPoInput && salesOrderInput && createSoBtn) {
-                const generateSalesOrderNumber = () => {
-                    const today = new Date();
-                    const datePart = today.toISOString().slice(0, 10).replace(/-/g, '');
-                    const suffix = String(Date.now()).slice(-4);
-                    return `SO-${datePart}-${suffix}`;
-                };
-
-                const toggleCreateSoButton = () => {
-                    const hasNoPo = (noPoInput.value || '').trim().length > 0;
-                    createSoBtn.classList.toggle('hidden', !hasNoPo);
-                };
-
-                const setSalesOrderValue = (value) => {
-                    salesOrderInput.value = value;
-                    salesOrderInput.dataset.source = 'manual';
-                };
-
-                noPoInput.addEventListener('input', toggleCreateSoButton);
-                noPoInput.addEventListener('change', toggleCreateSoButton);
-                toggleCreateSoButton();
-
-                createSoBtn.addEventListener('click', async function() {
-                    const noPoValue = (noPoInput.value || '').trim();
-                    if (!noPoValue) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'No. PO belum diisi',
-                            text: 'Isi No. PO terlebih dahulu sebelum membuat SO.',
-                            confirmButtonText: 'OK'
-                        });
-                        return;
-                    }
-
-                    createSoBtn.disabled = true;
-                    createSoBtn.textContent = 'Menyimpan...';
-
-                    try {
-                        const response = await fetch('{{ route('sales.quotation.create-so') }}', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken,
-                            },
-                            body: JSON.stringify({ no_po: noPoValue }),
-                        });
-
-                        const result = await response.json();
-                        if (!response.ok || !result.success) {
-                            throw new Error(result.message || 'Gagal membuat No. SO');
-                        }
-
-                        setSalesOrderValue(result.sales_order_number);
-                        if (draftQuotationIdInput) {
-                            draftQuotationIdInput.value = result.quotation_id || '';
-                        }
-                        createSoBtn.textContent = 'SO Dibuat';
-                        createSoBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
-                        createSoBtn.classList.add('bg-gray-500', 'cursor-not-allowed');
-                        createSoBtn.disabled = true;
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: `No. SO ${result.sales_order_number} berhasil dibuat dan disimpan.`,
-                            confirmButtonText: 'OK'
-                        });
-                    } catch (error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal',
-                            text: error.message || 'Terjadi kesalahan saat membuat No. SO.',
-                            confirmButtonText: 'OK'
-                        });
-                    } finally {
-                        createSoBtn.disabled = false;
-                        createSoBtn.textContent = 'Buat SO';
-                        createSoBtn.classList.remove('bg-gray-500', 'cursor-not-allowed');
-                        createSoBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
-                    }
-                });
-
-                if (form) {
-                    form.addEventListener('submit', function() {
-                        const noPoValue = (noPoInput.value || '').trim();
-                        if (noPoValue && salesOrderInput.value) {
-                            salesOrderInput.dataset.source = 'manual';
-                        }
-                    });
-                }
-            }
-        });
 
         // Filter barang berdasarkan kategori yang dipilih
         function filterBarangByKategori(selectKategori) {

@@ -40,7 +40,7 @@
                         </label>
     
                         <div class="relative">
-                            <input type="text" id="brand_name" name="brand_name" x-model="search" @click="open = true" @click.away="open = false" @keydown.escape="open = false" placeholder="Pilih atau ketik brand baru..." class="input input-bordered focus:input-primary w-full pr-10 transition-all" autocomplete="off" required>
+                            <input type="text" id="brand_name" name="brand_name" x-model="search" @click="open = true" @click.away="open = false" @keydown.escape="open = false" @keydown.enter.prevent="open = false" placeholder="Pilih atau ketik brand baru..." class="input input-bordered focus:input-primary w-full pr-10 transition-all" autocomplete="off" required>
     
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 opacity-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

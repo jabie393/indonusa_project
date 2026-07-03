@@ -64,6 +64,7 @@ class SalesOrderController extends Controller
             'aksi_url'       => '#',
             'has_batches'    => $ro->order && $ro->order->batches->isNotEmpty(),
             'is_sent_to_warehouse' => $isSentToWarehouse,
+            'can_download_pdf' => $ro->canDownloadPdf(),
         ];
     }
 

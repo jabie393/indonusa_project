@@ -99,7 +99,7 @@
                                         @if ($row['type'] === 'request_order')
                                             <input type="text" id="no-po-input-{{ $row['id'] }}"
                                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-700 dark:text-white"
-                                                value="{{ $row['no_po'] ?? '' }}" placeholder="Masukkan No.PO" onblur="saveNoPO({{ $row['id'] }}, this.value)"
+                                                value="{{ $row['no_po'] === '-' ? '' : ($row['no_po'] ?? '') }}" placeholder="-" onblur="saveNoPO({{ $row['id'] }}, this.value)"
                                                 onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }" />
                                             <span class="text-[11px] leading-snug text-gray-500 dark:text-gray-400">No.PO dapat
                                                 di edit langsung di sini.</span>
@@ -314,7 +314,24 @@
                                                 </svg>
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Detail</span>
-                                            </a>
+                                            </a>                                            {{-- PDF --}}
+                                            @if ($row['can_download_pdf'])
+                                                <a href="{{ route('sales.quotation.pdf', ['quotation' => $row['id'], 'from' => 'sales_order']) }}"
+                                                    target="_blank"
+                                                    class="group flex h-full items-center justify-center border-r border-emerald-800 bg-emerald-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-300 dark:border-emerald-500 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-900"
+                                                    title="Download PDF">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                                        <path d="M10 9H8" />
+                                                        <path d="M16 13H8" />
+                                                        <path d="M16 17H8" />
+                                                    </svg>
+                                                    <span
+                                                        class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">PDF</span>
+                                                </a>
+                                            @endif
                                             
                                             @php
                                                 $sudahDikirim = in_array($row['status'], [
@@ -326,6 +343,14 @@
                                                     'Selesai',
                                                     'Tidak Selesai',
                                                 ]) || ($row['is_sent_to_warehouse'] ?? false);
+
+                                                $canSendToWarehouse = !in_array(strtolower($row['status'] ?? ''), [
+                                                    'sent_to_supervisor',
+                                                    'waiting_for_supervisor_approval',
+                                                    'rejected_by_supervisor',
+                                                    'waiting for supervisor approval',
+                                                    'rejected by supervisor',
+                                                ], true);
 
                                                 $sendToWarehouseRoute = null;
                                                 $sendToWarehouseText = null;
@@ -342,13 +367,13 @@
                                                 }
                                             @endphp
 
-                                            @if (($row['customer_status'] ?? 'active') === 'active' && !$sudahDikirim && $sendToWarehouseRoute)
+                                            @if (($row['customer_status'] ?? 'active') === 'active' && !$sudahDikirim && $canSendToWarehouse && $sendToWarehouseRoute)
                                                 <form method="POST" action="{{ $sendToWarehouseRoute }}"
                                                     data-confirm-text="{{ $sendToWarehouseText }}" data-confirm-button-text="{{ $sendToWarehouseButtonText }}"
                                                     class="approve-form h-full">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                                        class="group flex h-full cursor-pointer items-center justify-center bg-indigo-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                             <path
