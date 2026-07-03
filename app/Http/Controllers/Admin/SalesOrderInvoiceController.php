@@ -142,6 +142,7 @@ class SalesOrderInvoiceController extends Controller
                     $harga = $item->harga ?? 0;
 
                     return [
+                        'goods_code' => optional($item->barang)->goods_code ?? '',
                         'nama_barang' => optional($item->barang)->goods_name ?? '-',
                         'deskripsi' => optional($item->barang)->description ?? '-',
                         'qty' => $quantity,
@@ -155,6 +156,7 @@ class SalesOrderInvoiceController extends Controller
         return $ro->items->map(function ($item) {
             $barangData = \App\Models\Barang::find($item->goods_id);
             return [
+                'goods_code' => optional($barangData)->goods_code ?? '',
                 'nama_barang' => $item->custom_product_name
                     ?? optional($barangData)->goods_name
                     ?? '-',
@@ -175,6 +177,7 @@ class SalesOrderInvoiceController extends Controller
             $harga = $orderItem?->harga ?? 0;
 
             return [
+                'goods_code' => optional($barang)->goods_code ?? '',
                 'nama_barang' => $orderItem?->nama_barang_custom
                     ?? optional($barang)->goods_name
                     ?? '-',
