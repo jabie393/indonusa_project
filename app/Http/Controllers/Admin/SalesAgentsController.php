@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class AkunSalesController extends Controller
+class SalesAgentsController extends Controller
 {
     public function index()
     {
@@ -24,7 +24,7 @@ class AkunSalesController extends Controller
         }
 
         $salesUsers = $query->latest()->paginate($perPage)->appends(request()->except('page'));
-        return view('admin.akun-sales.index', compact('salesUsers'));
+        return view('admin.sales-agents.index', compact('salesUsers'));
     }
 
     public function store(Request $request)
@@ -43,10 +43,10 @@ class AkunSalesController extends Controller
         ]);
 
         if ($request->ajax()) {
-            return response()->json(['success' => 'Akun sales telah berhasil dibuat.']);
+            return response()->json(['success' => 'Sales agent telah berhasil dibuat.']);
         }
 
-        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil dibuat.']);
+        return redirect()->route('sales-agents.index')->with(['title' => 'Berhasil', 'text' => 'Sales agent telah berhasil dibuat.']);
     }
 
     public function update(Request $request, $id)
@@ -54,7 +54,7 @@ class AkunSalesController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('akun-sales.index')->withErrors('Akun sales tidak ditemukan.');
+            return redirect()->route('sales-agents.index')->withErrors('Sales agent tidak ditemukan.');
         }
 
         $request->validate([
@@ -72,7 +72,7 @@ class AkunSalesController extends Controller
 
         $user->save();
 
-        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil diperbarui.']);
+        return redirect()->route('sales-agents.index')->with(['title' => 'Berhasil', 'text' => 'Sales agent telah berhasil diperbarui.']);
     }
 
     public function destroy($id)
@@ -80,11 +80,11 @@ class AkunSalesController extends Controller
         $user = User::find($id);
 
         if (!$user) {
-            return redirect()->route('akun-sales.index')->withErrors('Akun sales tidak ditemukan.');
+            return redirect()->route('sales-agents.index')->withErrors('Sales agent tidak ditemukan.');
         }
 
         $user->delete();
 
-        return redirect()->route('akun-sales.index')->with(['title' => 'Berhasil', 'text' => 'Akun sales telah berhasil dihapus.']);
+        return redirect()->route('sales-agents.index')->with(['title' => 'Berhasil', 'text' => 'Sales agent telah berhasil dihapus.']);
     }
 }

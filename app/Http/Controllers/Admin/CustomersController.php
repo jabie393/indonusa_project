@@ -10,12 +10,12 @@ use App\Models\Pic;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CustomerController extends Controller
+class CustomersController extends Controller
 {
     private function checkRole()
     {
         if (auth()->check() && auth()->user()->role === 'Sales') {
-            abort(403, 'Akses ditolak. Peran Sales tidak diizinkan mengakses halaman Customer.');
+            abort(403, 'Akses ditolak. Peran Sales tidak diizinkan mengakses halaman Customers.');
         }
     }
 
@@ -43,9 +43,9 @@ class CustomerController extends Controller
                   ->orWhere('city', 'like', "%{$search}%")
                   ->orWhereHas('pics', function ($picQuery) use ($search) {
                       $picQuery->where('name', 'like', "%{$search}%")
-                          ->orWhere('position', 'like', "%{$search}%")
-                          ->orWhere('email', 'like', "%{$search}%")
-                          ->orWhere('phone', 'like', "%{$search}%");
+                           ->orWhere('position', 'like', "%{$search}%")
+                           ->orWhere('email', 'like', "%{$search}%")
+                           ->orWhere('phone', 'like', "%{$search}%");
                   });
             });
         }
@@ -58,13 +58,9 @@ class CustomerController extends Controller
 
         $salesUsers = User::where('role', 'Sales')->get(); // Mengambil data user dengan role Sales
         
-        // Pics sekarang spesifik per customer, jadi mungkin tidak butuh list semua pics global untuk dropdown 'attach' existing, 
-        // kecuali UI-nya masih butuh. Tapi karena 1 PIC = 1 Customer, listing all pics untuk attach ke customer lain jadi tidak valid (steal ownership).
-        // Kita biarkan kosong atau hanya pic yang belum punya customer (jika ada).
-        // Untuk sekarang kita tidak kirim $pics global untuk menghindari kebingungan, atau kirim kosong.
         $pics = []; 
 
-        return view('admin.customer.index', compact('customers', 'salesUsers', 'pics'));
+        return view('admin.customers.index', compact('customers', 'salesUsers', 'pics'));
     }
 
     public function store(Request $request)
@@ -123,18 +119,14 @@ class CustomerController extends Controller
 
             // Proses setiap PIC yang dikirim
             foreach ($validatedData['pics'] as $picData) {
-                // $picData sudah divalidasi sebagai array dengan keys name, phone, email, position
-                // (atau string jika fallback legacy masih ada, tapi kita utamakan array struktur baru)
-
                 $name = $picData['name'] ?? null;
                 
-                // Fallback untuk legacy/select2 jika data dikirim sebagai string/json (opsional, jaga-jaga)
                 if (empty($name) && is_string($picData)) {
                      $decoded = json_decode($picData, true);
                      if (json_last_error() === JSON_ERROR_NONE) {
-                         $name = $decoded['name'] ?? ($decoded['text'] ?? null);
+                          $name = $decoded['name'] ?? ($decoded['text'] ?? null);
                      } else {
-                         $name = $picData;
+                          $name = $picData;
                      }
                 }
 
@@ -169,7 +161,7 @@ class CustomerController extends Controller
                 ]);
             }
             
-            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil ditambahkan.']);
+            return redirect()->route('customers.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil ditambahkan.']);
             
         } catch (\Exception $e) {
             DB::rollBack();
@@ -202,7 +194,7 @@ class CustomerController extends Controller
             'provinsi' => 'nullable|string|max:100',
             'kode_pos' => 'nullable|string|max:20',
             'pics' => 'nullable|array',
-            'pics.*.id' => 'nullable|exists:pics,id', // Validasi ID jika ada
+            'pics.*.id' => 'nullable|exists:pics,id',
             'pics.*.name' => 'required|string',
             'pics.*.phone' => 'required|string',
             'pics.*.email' => 'nullable|email',
@@ -216,7 +208,6 @@ class CustomerController extends Controller
             $customer = Customer::findOrFail($validatedData['id']);
 
             // Map 1/0 from checkbox to active/inactive for database enum
-            // Only update status if the user is a Supervisor
             if (auth()->user()->role === 'Supervisor') {
                 $status = $request->input('status') == '1' ? 'active' : 'inactive';
             } else {
@@ -247,7 +238,6 @@ class CustomerController extends Controller
             ]);
 
             // Logic Sinkronisasi PIC One-to-Many
-            // 1. Ambil semua ID PIC yang ada di request (yang merupakan PIC lama yang dipertahankan/diedit)
             $submittedPicIds = [];
             
             if (!empty($validatedData['pics'])) {
@@ -257,7 +247,6 @@ class CustomerController extends Controller
                         if (json_last_error() === JSON_ERROR_NONE) {
                             $picData = $decoded;
                         } else {
-                            // String biasa -> create new PIC
                             $newPic = Pic::create([
                                 'customer_id' => $customer->id,
                                 'name' => $picData
@@ -267,14 +256,10 @@ class CustomerController extends Controller
                         }
                     }
 
-                    // Handle Array data
                     if (isset($picData['id']) && $picData['id']) {
-                        // Ini kemungkinan existing PIC atau PIC yang dikirim dengan ID
-                        // Pastikan PIC ini milik customer ini (security check)
                         $existingPic = Pic::where('id', $picData['id'])->where('customer_id', $customer->id)->first();
                         
                         if ($existingPic) {
-                            // Update existing
                             $existingPic->update([
                                 'name' => $picData['name'] ?? $existingPic->name,
                                 'phone' => $picData['phone'] ?? $existingPic->phone,
@@ -283,11 +268,6 @@ class CustomerController extends Controller
                             ]);
                             $submittedPicIds[] = $existingPic->id;
                         } else {
-                            // Jika ID dikirim tapi bukan milik customer ini (atau tidak ketemu), 
-                            // bisa jadi logika 'assign' pic existing ke customer ini (steal) 
-                            // atau abaikan ID dan create baru.
-                            // Sesuai requirement "1 pics cuma terhubung dengan 1 customer", kita asumsikan create baru jika id invalid context,
-                            // tapi lebih aman create baru untuk menghindari konflik
                              $newPic = Pic::create([
                                 'customer_id' => $customer->id,
                                 'name' => $picData['name'] ?? 'Unknown',
@@ -298,10 +278,9 @@ class CustomerController extends Controller
                             $submittedPicIds[] = $newPic->id;
                         }
                     } else {
-                        // Tidak ada ID -> Create New
                         $newPic = Pic::create([
                             'customer_id' => $customer->id,
-                            'name' => $picData['name'] ?? ($picData['text'] ?? ($picData['id'] ?? 'Unknown')), // Fallback parsing
+                            'name' => $picData['name'] ?? ($picData['text'] ?? ($picData['id'] ?? 'Unknown')),
                             'phone' => $picData['phone'] ?? null,
                             'email' => $picData['email'] ?? null,
                             'position' => $picData['position'] ?? null,
@@ -315,7 +294,7 @@ class CustomerController extends Controller
             $customer->pics()->whereNotIn('id', $submittedPicIds)->delete();
 
             DB::commit();
-            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil diperbarui.']);
+            return redirect()->route('customers.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil diperbarui.']);
             
         } catch (\Exception $e) {
             DB::rollBack();
@@ -368,7 +347,7 @@ class CustomerController extends Controller
 
             DB::commit();
 
-            return redirect()->route('customer.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil dihapus.']);
+            return redirect()->route('customers.index')->with(['title' => 'Berhasil', 'text' => 'Customer berhasil dihapus.']);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withErrors('Gagal menghapus customer: ' . $e->getMessage());

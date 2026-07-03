@@ -4,8 +4,8 @@ use App\Http\Controllers\Admin\GeneralController;
 use App\Http\Controllers\Admin\GoodsInController;
 use App\Http\Controllers\Admin\AddStockController;
 use App\Http\Controllers\Admin\GoodsInStatusController;
-use App\Http\Controllers\Admin\AkunSalesController;
-use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\SalesAgentsController;
+use App\Http\Controllers\Admin\CustomersController;
 use App\Http\Controllers\Admin\PicsController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
@@ -99,9 +99,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
     Route::resource('/warehouse', WarehouseController::class);
     Route::get('/warehouse/{id}/logs', [WarehouseController::class, 'getLogs'])->name('warehouse.logs');
-    Route::resource('/customer', CustomerController::class);
-    Route::patch('/customer/{id}/status', [CustomerController::class, 'updateStatus'])->name('customer.status.update');
-    Route::get('/admin/customer/{id}/pics', [CustomerController::class, 'getPics'])->name('customer.pics');
+    Route::resource('/customers', CustomersController::class);
+    Route::patch('/customers/{id}/status', [CustomersController::class, 'updateStatus'])->name('customers.status.update');
+    Route::get('/admin/customers/{id}/pics', [CustomersController::class, 'getPics'])->name('customers.pics');
 });
 // End of General
 
@@ -129,7 +129,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/import-stock-excel/export', [ImportStockExcelController::class, 'export'])->name('import-stock-excel.export');
     // End Excel Stock Import
     Route::resource('/goods-in-status', GoodsInStatusController::class);
-    Route::resource('/akun-sales', AkunSalesController::class);
+    Route::resource('/sales-agents', SalesAgentsController::class);
     Route::resource('/pics', PicsController::class);
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 

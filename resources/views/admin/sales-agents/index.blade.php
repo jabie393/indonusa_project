@@ -10,12 +10,12 @@
                         <path clip-rule="evenodd" fill-rule="evenodd"
                             d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                     </svg>
-                    Tambah Akun Sales
+                    Tambah Sales Agent
                 </button>
             </div>
             <div class="mr-5 flex items-center space-x-3 md:w-auto">
                 {{-- Search --}}
-                <form action="{{ route('akun-sales.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                <form action="{{ route('sales-agents.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
                     data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-64 md:w-96">
@@ -28,7 +28,7 @@
                             </svg>
                         </div>
                         <input type="search" name="search" id="topbar-search" aria-controls="warehouseTable"
-                            value="{{ request('search') }}"
+                             value="{{ request('search') }}"
                             class="dt-input block w-full rounded-lg bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                             placeholder="Search" />
                     </div>
@@ -86,7 +86,7 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             {{-- Delete Button --}}
-                                            <form action="{{ route('akun-sales.destroy', $user) }}" method="POST"
+                                            <form action="{{ route('sales-agents.destroy', $user) }}" method="POST"
                                                 class="inline">
                                                 @csrf
                                                 @method('DELETE')
@@ -126,7 +126,7 @@
                         <span
                             class="font-semibold text-gray-900 dark:text-white">{{ $salesUsers->total() ?? $salesUsers->count() }}</span>
                     </span>
-                    <form method="GET" action="{{ route('akun-sales.index') }}">
+                    <form method="GET" action="{{ route('sales-agents.index') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
                         <select name="perPage" onchange="this.form.submit()"
                             class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -148,6 +148,6 @@
     </div>
 
     <!-- Modals -->
-    @include('admin.akun-sales.partials.akun-sales-modal')
-    @vite(['resources/js/akun-sales.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
+    @include('admin.sales-agents.partials.sales-agents-modal')
+    @vite(['resources/js/sales-agents.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>

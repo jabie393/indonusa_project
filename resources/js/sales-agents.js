@@ -16,7 +16,7 @@ document.querySelectorAll('.editUserButton').forEach(button => {
         if (inputEmail) inputEmail.value = email;
 
         const form = document.getElementById('editUserForm');
-        if (form) form.action = `/akun-sales/${id}`;
+        if (form) form.action = `/sales-agents/${id}`;
     });
 
     // In case a button doesn't use inline showModal(), open the dialog on click after populating

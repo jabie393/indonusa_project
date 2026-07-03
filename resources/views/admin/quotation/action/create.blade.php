@@ -954,7 +954,7 @@
                     const formData = new FormData(this);
 
                     try {
-                        const response = await fetch('{{ route('customer.store') }}', {
+                        const response = await fetch('{{ route('customers.store') }}', {
                             method: 'POST',
                             body: formData,
                             headers: {

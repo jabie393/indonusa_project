@@ -47,19 +47,19 @@
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods In Status</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Status Barang Masuk</p>
                 </div>
-            @elseif (request()->routeIs('akun-sales.*'))
+            @elseif (request()->routeIs('sales-agents.*'))
                 <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Manajemen Akun Sales</h1>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Agents Management</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Pengguna Sales</p>
                 </div>
             @elseif (request()->routeIs('pics.*'))
                 <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Manajemen PIC</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Person In Charge</p>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">PICs Management</h1>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Penanggung Jawab Pelanggan</p>
                 </div>
-            @elseif (request()->routeIs('customer.*'))
+            @elseif (request()->routeIs('customers.*'))
                 <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Manajemen Customer</h1>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Customers Management</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Data Pelanggan</p>
                 </div>
             @elseif (request()->routeIs('history.*'))

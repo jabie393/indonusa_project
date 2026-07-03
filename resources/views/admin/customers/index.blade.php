@@ -11,13 +11,13 @@
                         <path clip-rule="evenodd" fill-rule="evenodd"
                             d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                     </svg>
-                    Tambah Customer
+                    Tambah Customers
                 </button>
             </div>
 
-            <div class="px-4">
+            <div class="mr-5 flex items-center space-x-3 md:w-auto">
                 {{-- Search --}}
-                <form action="{{ route('customer.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
+                <form action="{{ route('customers.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
                     data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
@@ -48,7 +48,7 @@
                     <thead
                         class="sticky top-0 z-30 bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th class="text-nowrap px-4 py-3">Customer</th>
+                            <th class="text-nowrap px-4 py-3">Customers</th>
                             <th class="text-nowrap px-4 py-3">Term & Kredit</th>
                             <th class="text-nowrap px-4 py-3">PIC & Kontak</th>
                             <th class="text-nowrap px-4 py-3">Status</th>
@@ -244,7 +244,7 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             {{-- Delete --}}
-                                            <form action="{{ route('customer.destroy', $customer->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"
@@ -284,7 +284,7 @@
                         <span
                             class="font-semibold text-gray-900 dark:text-white">{{ $customers->total() ?? $customers->count() }}</span>
                     </span>
-                    <form method="GET" action="{{ route('customer.index') }}">
+                    <form method="GET" action="{{ route('customers.index') }}">
                         <input type="hidden" name="search" value="{{ request('search') }}">
                         <select name="perPage" onchange="this.form.submit()"
                             class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -306,8 +306,8 @@
     </div>
 
     <!-- Modals -->
-    @include('admin.customer.partials.customer-modal-tambah')
-    @include('admin.customer.partials.customer-modal-edit')
+    @include('admin.customers.partials.customers-modal-tambah')
+    @include('admin.customers.partials.customers-modal-edit')
 
     <script>
         function updateCustomerStatus(id, newStatus) {
@@ -323,7 +323,7 @@
             });
 
             $.ajax({
-                url: "{{ route('customer.status.update', ['id' => ':id']) }}".replace(':id', id),
+                url: "{{ route('customers.status.update', ['id' => ':id']) }}".replace(':id', id),
                 type: 'PATCH',
                 data: {
                     status: newStatus,

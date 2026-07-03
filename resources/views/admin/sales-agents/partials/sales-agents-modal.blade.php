@@ -3,7 +3,7 @@
     <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Tambah Akun Sales </h3>
+                Tambah Sales Agent </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -19,7 +19,7 @@
                 </form>
             </div>
         </div>
-        <form id="createUserForm" action="{{ route('akun-sales.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
+        <form id="createUserForm" action="{{ route('sales-agents.store') }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4">
             <div class="h-full overflow-auto">
                 <div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 
@@ -51,7 +51,7 @@
                     </button>
                 </form>
                 <button class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A]" form="createUserForm" style="background-image: var(--gradient-brand)" type="submit">
-                    Tambahkan Sales
+                    Tambahkan Sales Agent
                 </button>
             </div>
         </footer>
@@ -65,7 +65,7 @@
 <dialog id="editUserModal" class="modal">
     <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
-            <h3 class="text-lg font-semibold text-white">Edit Akun Sales</h3>
+            <h3 class="text-lg font-semibold text-white">Edit Sales Agent</h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->

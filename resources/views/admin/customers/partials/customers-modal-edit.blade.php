@@ -3,7 +3,7 @@
     <div class="modal-box relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Edit Customer </h3>
+                Edit Customers </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <button class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -15,7 +15,7 @@
                 </form>
             </div>
         </div>
-        <form id="editCustomerForm" action="{{ route('customer.update', ['customer' => ':id']) }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4 pb-0">
+        <form id="editCustomerForm" action="{{ route('customers.update', ['customer' => ':id']) }}" method="POST" class="flex h-full flex-col space-y-4 overflow-auto p-4 pb-0">
             @csrf
             @method('PUT')
             <input type="hidden" id="editCustomerId" name="id">
@@ -265,7 +265,7 @@
     function openEditModal(customer) {
         // Set form action
         const form = document.getElementById('editCustomerForm');
-        form.action = "{{ route('customer.update', ['customer' => ':id']) }}".replace(':id', customer
+        form.action = "{{ route('customers.update', ['customer' => ':id']) }}".replace(':id', customer
             .id); // Reset base route then replace
 
         // Isi data form

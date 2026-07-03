@@ -3,7 +3,7 @@
     <div class="modal-box inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative flex max-w-3xl flex-col overflow-hidden rounded-2xl bg-white p-0 shadow dark:bg-gray-700 sm:max-h-[90vh]">
         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm flex items-center justify-between rounded-t border-b bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 dark:border-gray-600">
             <h3 class="text-lg font-semibold text-white">
-                Tambah Customer </h3>
+                Tambah Customers </h3>
             <div class="modal-action m-0">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
@@ -16,7 +16,7 @@
                 </form>
             </div>
         </div>
-        <form action="{{ route('customer.store') }}" method="POST" id="createCustomerForm" class="relative flex h-full flex-col space-y-4 overflow-hidden p-4 pb-0">
+        <form action="{{ route('customers.store') }}" method="POST" id="createCustomerForm" class="relative flex h-full flex-col space-y-4 overflow-hidden p-4 pb-0">
             <div class="relative h-full overflow-auto">
                 <div class="px-4 mb-6 grid grid-cols-1 gap-2 md:grid-cols-2">
 
@@ -208,7 +208,7 @@
         });
 
         // Form Submission Validation
-        const createForm = document.querySelector('form[action="{{ route('customer.store') }}"]');
+        const createForm = document.querySelector('form[action="{{ route('customers.store') }}"]');
         createForm.addEventListener('submit', function(e) {
             // Strip formatting from kredit_limit before sending
             kreditLimitInput.value = kreditLimitInput.value.replace(/\D/g, '');
