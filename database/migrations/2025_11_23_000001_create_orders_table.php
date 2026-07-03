@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('order_number')->unique();
             $table->string('do_number')->nullable();
+            // Nomor invoice dan nomor kwitansi (ditambahkan sesuai permintaan)
+            $table->string('no_invoice')->nullable();
+            $table->string('no_kwitansi')->nullable();
             $table->unsignedBigInteger('sales_id');      // id user yang membuat order (Sales)
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();

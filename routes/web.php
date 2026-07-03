@@ -112,6 +112,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/sales-order-invoice/export', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrders'])->name('sales-order-invoice.export');
     Route::get('/sales-order-invoice/search', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'search'])->name('sales-order-invoice.search');
     Route::get('/invoice/{id}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showInvoice'])->name('invoice.index');
+    Route::get('/invoice/{id}/kwitansi', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'printKwitansi'])->name('invoice.kwitansi');
     Route::get('/sales-order-invoice/{id}/invoice-history', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'getInvoiceHistory'])->name('sales-order-invoice.invoice-history');
     Route::post('/invoice/{id}/excel', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'downloadInvoiceExcel'])->name('invoice.excel');
     Route::get('/invoice/batch/{batchId}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showBatchInvoice'])->name('invoice.batch.invoice');

@@ -76,6 +76,18 @@
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                             <!-- Panel : Preview Invoice (id="invoice-preview", class="print-area") -->
                             <div class="lg:col-span-2">
+                                @php $isGa = strtolower(auth()->user()->role ?? '') === 'general affair'; @endphp
+
+                                @if($isGa)
+                                    <style>
+                                        #invoice-preview, #invoice-preview * {
+                                            font-family: 'Times New Roman', serif !important;
+                                            font-size: 12pt !important;
+                                            line-height: 1.5 !important;
+                                        }
+                                    </style>
+                                @endif
+
                                 <div id="invoice-preview" class="print-area"
                                     style="position: relative; font-family: 'Times New Roman', serif; padding: 32px; background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
 
@@ -239,6 +251,9 @@
                                                         style="padding:12px; border:2px solid #000000; text-align: center; width: 5%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">
                                                         No</th>
                                                     <th
+                                                        style="padding:12px; border:2px solid #000000; text-align: left; width: 12%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">
+                                                        Kode Barang</th>
+                                                    <th
                                                         style="padding:12px; border:2px solid #000000; text-align: left; width: 20%; font-size: 16px; font-weight: 900; color: #ffffff; text-shadow: 0 0 1px rgba(0,0,0,0.3);">
                                                         Nama Barang</th>
                                                     <th
@@ -262,6 +277,10 @@
                                                         <td
                                                             style="padding:12px; border:1px solid #000000; text-align: center; color: #000000;">
                                                             {{ $i + 1 }}
+                                                        </td>
+                                                        <td
+                                                            style="padding:12px; border:1px solid #000000; text-align: left; color: #000000;">
+                                                            {{ $item['goods_code'] ?? '-' }}
                                                         </td>
                                                         <td
                                                             style="padding:12px; border:1px solid #000000; text-align: left; color: #000000;">
@@ -383,6 +402,15 @@
                                                 </svg>
                                                 Download Excel
                                             </button>
+                                            @if($isGa)
+                                            <button type="button" id="btn-print-kwitansi"
+                                                class="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-yellow-600 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:bg-yellow-700 hover:shadow-none transition-all active:scale-[0.98]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M21 8V7l-3 2-2-2-3 3-4-4-3 3V8l3-3 4 4 3-3 2 2 3-2v1z" />
+                                                </svg>
+                                                Cetak Kwitansi
+                                            </button>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -634,6 +662,15 @@
             document.getElementById('excel-form').submit();
         }
         document.getElementById('btn-excel').addEventListener('click', downloadExcel);
+        // Cetak Kwitansi (GA only) - open server-rendered kwitansi which persists no_kwitansi
+        const btnKwitansi = document.getElementById('btn-print-kwitansi');
+        if (btnKwitansi) {
+            btnKwitansi.addEventListener('click', function () {
+                updatePreview();
+                const kwUrl = "{{ route('invoice.kwitansi', ['id' => $rowId ?? '']) }}";
+                window.open(kwUrl, '_blank');
+            });
+        }
         window.addEventListener('DOMContentLoaded', updatePreview);
     </script>
 </x-app-layout>
