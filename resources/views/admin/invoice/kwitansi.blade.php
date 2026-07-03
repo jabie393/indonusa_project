@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Kwitansi - {{ $no_kwitansi }}</title>
+    <title>KUITANSI - {{ $no_kwitansi }}</title>
     <style>
         :root{
             --navy:#0b2b4a;      /* border & judul */
