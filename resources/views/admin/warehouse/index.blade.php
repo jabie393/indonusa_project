@@ -8,7 +8,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            Report Semua Barang
+            Inventory Report
         </a>
         <div>
             {{-- Search --}}
@@ -45,7 +45,7 @@
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('warehouse.index', ['status' => 'approved', 'search' => request('search')]) }}"
                         class="{{ $currentStatus === 'approved' ? 'bg-white text-[#225A97]' : 'text-white hover:bg-white/10' }} rounded-lg px-4 py-2 text-sm font-medium transition-all">
-                        Semua Barang
+                        Inventory
                     </a>
                     @if (Auth::user() && Auth::user()->role === 'Warehouse')
                         <a href="{{ route('supply-orders.index') }}" class="flex items-center rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">

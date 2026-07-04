@@ -4,8 +4,10 @@
             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex items-center h-16 justify-end overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800 shrink-0">
             <div class="p-4">
                 {{-- Search --}}
-                <form action="{{ route('delivery-orders.index') }}" method="GET" class="block pl-2" id="deliveryOrderSearchForm" data-realtime-table-search data-search-input="#topbar-search"
-                data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                <form action="{{ route('delivery-orders.index') }}" method="GET" class="block pl-2"
+                    id="deliveryOrderSearchForm" data-realtime-table-search data-search-input="#topbar-search"
+                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav"
+                    data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-64 md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -40,7 +42,7 @@
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('warehouse.index', ['status' => 'approved']) }}"
                         class="text-white hover:bg-white/10 rounded-lg px-4 py-2 text-sm font-medium transition-all">
-                        Semua Barang
+                        Inventory
                     </a>
                     @if (Auth::user() && Auth::user()->role === 'Warehouse')
                         <a href="{{ route('supply-orders.index') }}"
@@ -108,9 +110,9 @@
                                     <span
                                         class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-normal">
                                         <svg xmlns="http://www.w3.org/2000/svg"
-                                            class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
+                                            class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
                                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>
                                         </svg>

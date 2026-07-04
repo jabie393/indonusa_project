@@ -387,9 +387,9 @@
                                             <button type="button" id="btn-print"
                                                 class="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#102A47] py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100/30 hover:bg-[#0d223a] hover:shadow-none transition-all active:scale-[0.98] dark:shadow-none">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
-                                                    viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                                 </svg>
                                                 Cetak PDF
                                             </button>
@@ -403,12 +403,14 @@
                                                 Download Excel
                                             </button>
                                             @if($isGa)
-                                            <button type="button" id="btn-print-kwitansi"
+                                            <button type="button" id="btn-print-receipt"
                                                 class="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-yellow-600 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg hover:bg-yellow-700 hover:shadow-none transition-all active:scale-[0.98]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M21 8V7l-3 2-2-2-3 3-4-4-3 3V8l3-3 4 4 3-3 2 2 3-2v1z" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                                 </svg>
-                                                Cetak Kwitansi
+                                                Cetak Kuitansi
                                             </button>
                                             @endif
                                         </div>
@@ -662,13 +664,13 @@
             document.getElementById('excel-form').submit();
         }
         document.getElementById('btn-excel').addEventListener('click', downloadExcel);
-        // Cetak Kwitansi (GA only) - open server-rendered kwitansi which persists no_kwitansi
-        const btnKwitansi = document.getElementById('btn-print-kwitansi');
-        if (btnKwitansi) {
-            btnKwitansi.addEventListener('click', function () {
+        // Cetak Kuitansi (GA only) - open server-rendered kuitansi/receipt which persists no_receipt
+        const btnReceipt = document.getElementById('btn-print-receipt');
+        if (btnReceipt) {
+            btnReceipt.addEventListener('click', function () {
                 updatePreview();
-                const kwUrl = "{{ route('invoice.kwitansi', ['id' => $rowId ?? '']) }}";
-                window.open(kwUrl, '_blank');
+                const kwUrl = "{{ route('invoice.receipt', ['id' => $rowId ?? '']) }}";
+                window.open(kwUrl, '_blank', 'width=900,height=700');
             });
         }
         window.addEventListener('DOMContentLoaded', updatePreview);

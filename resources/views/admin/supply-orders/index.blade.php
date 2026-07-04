@@ -57,7 +57,7 @@
                 <div class="flex flex-wrap items-center gap-2">
                     <a href="{{ route('warehouse.index', ['status' => 'approved']) }}"
                         class="rounded-lg px-4 py-2 text-sm font-medium text-white transition-all hover:bg-white/10">
-                        Semua Barang
+                        Inventory
                     </a>
                     <a href="{{ route('supply-orders.index') }}"
                         class="flex items-center rounded-lg bg-white px-4 py-2 text-sm font-medium text-[#225A97] transition-all">

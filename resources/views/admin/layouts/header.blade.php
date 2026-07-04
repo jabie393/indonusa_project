@@ -17,13 +17,13 @@
                     </p>
                 </div>
             @elseif (request()->routeIs('goods-in.*'))
-                <div class="text-gray-10 md:block0 hidden">
+                <div class="hidden text-gray-100 md:block">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods In</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Manajemen Penerimaan Barang</p>
                 </div>
             @elseif (request()->routeIs('general-affair.procurement.*'))
                 <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Procurement / Pengadaan Barang</h1>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Procurement</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola pengadaan barang kustom dari Custom Quotation
                         yang disetujui.</p>
                 </div>

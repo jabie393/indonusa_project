@@ -507,9 +507,9 @@ class SalesOrderInvoiceController extends Controller
     }
 
     /**
-     * Print Kwitansi (persist no_kwitansi on orders and render receipt)
+     * Print Receipt (persist no_receipt on orders and render receipt)
      */
-    public function printKwitansi(Request $request, $id)
+    public function printReceipt(Request $request, $id)
     {
         if (strtolower(Auth::user()->role ?? '') !== 'general affair') {
             abort(403);
@@ -536,24 +536,24 @@ class SalesOrderInvoiceController extends Controller
             }
         }
 
-        // Derive kwitansi number from invoice number.
-        $kwitansiCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $order->no_invoice);
-        if ($kwitansiCandidate === $order->no_invoice) {
-            $kwitansiCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+        // Derive receipt number from invoice number.
+        $receiptCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $order->no_invoice);
+        if ($receiptCandidate === $order->no_invoice) {
+            $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
         }
 
-        if (empty($order->no_kwitansi) || $order->no_kwitansi !== $kwitansiCandidate) {
-            if (\App\Models\Order::where('no_kwitansi', $kwitansiCandidate)->where('id', '!=', $order->id)->exists()) {
+        if (empty($order->no_receipt) || $order->no_receipt !== $receiptCandidate) {
+            if (\App\Models\Order::where('no_receipt', $receiptCandidate)->where('id', '!=', $order->id)->exists()) {
                 do {
-                    $kwitansiCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-                } while (\App\Models\Order::where('no_kwitansi', $kwitansiCandidate)->exists());
+                    $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                } while (\App\Models\Order::where('no_receipt', $receiptCandidate)->exists());
             }
 
-            $order->no_kwitansi = $kwitansiCandidate;
+            $order->no_receipt = $receiptCandidate;
             try {
                 $order->save();
             } catch (\Exception $e) {
-                Log::warning('Failed to save no_kwitansi for order id ' . $order->id . ': ' . $e->getMessage());
+                Log::warning('Failed to save no_receipt for order id ' . $order->id . ': ' . $e->getMessage());
             }
         }
 
@@ -579,11 +579,11 @@ class SalesOrderInvoiceController extends Controller
 
         $amountNumber = $totals['grandTotal'] ?? 0;
 
-        return view('admin.invoice.kwitansi', [
+        return view('admin.receipts.index', [
             'order' => $order,
             'quotation' => $ro,
             'customerName' => $ro->customer_name ?? $order->customer_name ?? '-',
-            'no_kwitansi' => $order->no_kwitansi,
+            'no_receipt' => $order->no_receipt,
             'amount' => $amountNumber,
             'amount_words' => trim($terbilang($amountNumber)) . ' Rupiah',
             'no_po' => $ro->no_po ?? '-',
