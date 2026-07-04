@@ -245,7 +245,7 @@ class SalesOrderController extends Controller
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                     'catatan_customer' => $ro->customer_notes,
-                    'aksi_url'         => route('sales.sales-order.show', $ro),
+                    'aksi_url'         => route('sales.sales-orders.show', $ro),
                     'image_po'         => $ro->image_po,
                 ]));
         } else {
@@ -263,14 +263,14 @@ class SalesOrderController extends Controller
 
             $results = $requestOrders->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                 'catatan_customer' => $ro->customer_notes,
-                'aksi_url'         => route('sales.sales-order.show', $ro),
+                'aksi_url'         => route('sales.sales-orders.show', $ro),
                 'image_po'         => $ro->image_po,
             ]));
 
             $salesOrders = $requestOrders;
         }
 
-        return view('admin.sales-order.index', [
+        return view('admin.sales-orders.index', [
             'results'     => $results,
             'search'      => $search,
             'isSearch'    => $isSearch,
@@ -326,7 +326,7 @@ class SalesOrderController extends Controller
         $salesUsers      = User::where('role', 'Sales')->pluck('name', 'name')->toArray();
         $currentUserName = Auth::user()->name;
 
-        return view('admin.sales-order.action.create', compact('customQuotations', 'salesUsers', 'currentUserName'));
+        return view('admin.sales-orders.action.create', compact('customQuotations', 'salesUsers', 'currentUserName'));
     }
 
     public function store(Request $request)
@@ -394,7 +394,7 @@ class SalesOrderController extends Controller
             abort(403);
         }
 
-        return view('admin.sales-order-detail.index', compact('requestOrder'));
+        return view('admin.sales-order-details.index', compact('requestOrder'));
     }
 
     public function edit($id)

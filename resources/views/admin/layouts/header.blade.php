@@ -35,12 +35,12 @@
             @elseif (request()->routeIs('import-excel.*'))
                 <div class="hidden text-gray-100 md:block">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Import Excel</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Data Barang via Excel</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Data Barang Via Excel</p>
                 </div>
             @elseif (request()->routeIs('import-stock-excel.*'))
                 <div class="hidden text-gray-100 md:block">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Import Stock Excel</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Stok Barang via Excel</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Stok Barang Via Excel</p>
                 </div>
             @elseif (request()->routeIs('goods-in-status.*'))
                 <div class="hidden text-gray-100 md:block">
@@ -70,7 +70,7 @@
             @elseif (request()->routeIs('supply-orders.*'))
                 <div class="hidden text-gray-100 md:block">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Supply Orders</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Pesanan Masuk dari Sales</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Pesanan Masuk Dari Sales</p>
                 </div>
             @elseif (request()->routeIs('delivery-orders.*'))
                 <div class="hidden text-gray-100 md:block">
@@ -106,16 +106,16 @@
                         <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
                     @elseif (request()->routeIs('sales.quotation.create'))
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Quotation Harga</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran</p>
                     @else
                         <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat dan Mengelola Quotation Harga</p>
+                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat Penawaran (Listing)</p>
                     @endif
                 </div>
             @elseif (request()->routeIs('sales.custom-quotation.*'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Permintaan Quotation Harga Khusus (Non-Stock)</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat Penawaran Khusus (Non-Listing)</p>
                 </div>
             @elseif (request()->routeIs('admin.quotation_approval'))
                 <div class="text-gray-100">
@@ -127,15 +127,15 @@
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">History Orders</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Pesanan Selesai</p>
                 </div>
-            @elseif (request()->routeIs('sales.sales-order.*'))
+            @elseif (request()->routeIs('sales.sales-orders.*'))
                 <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola semua sales order Anda</p>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Orders</h1>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Semua Sales Order Anda</p>
                 </div>
-            @elseif (request()->routeIs('sales-order-invoice.*') || request()->routeIs('invoice.*'))
+            @elseif (request()->routeIs('sales-order-invoices.*') || request()->routeIs('invoice.*'))
                 <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order Invoice</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Invoice sales order</p>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order Invoices</h1>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Invoice Sales Order</p>
                 </div>
             @elseif (request()->routeIs('supervisor.defect-report.*'))
                 <div class="text-gray-100">
@@ -144,18 +144,24 @@
                 </div>
             @elseif (request()->routeIs('supervisor.history'))
                 <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">History Approval Supervisor</h1>
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Supervisor Approval History</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Approval Supervisor</p>
                 </div>
             @elseif (request()->routeIs('catalog.*'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Catalog</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Daftar Catalog</p>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Daftar Katalog</p>
                 </div>
             @elseif (request()->routeIs('sales-report.*'))
                 <div class="text-gray-100">
                     <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Report</h1>
                     <p class="md:text-md text-xs text-gray-300 md:mt-1">Laporan Kinerja Sales</p>
+                </div>
+            @elseif (request()->routeIs('wms-settings.*'))
+                <div class="text-gray-100">
+                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">WMS Settings</h1>
+                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Konfigurasi Nama Pimpinan, Jabatan, Dan Informasi
+                        Perusahaan Untuk Dokumen Resmi (Laporan, PDF, & Excel).</p>
                 </div>
             @endif
         @endif

@@ -22,7 +22,7 @@ class SystemSettingsController extends Controller
             'leader_position' => SystemSetting::get('leader_position', 'Direktur'),
         ];
 
-        return view('admin.settings.index', compact('settings'));
+        return view('admin.wms-settings.index', compact('settings'));
     }
 
     /**
@@ -43,7 +43,7 @@ class SystemSettingsController extends Controller
             SystemSetting::set($key, $value);
         }
 
-        return redirect()->route('settings.index')->with([
+        return redirect()->route('wms-settings.index')->with([
             'title' => 'Berhasil',
             'text' => 'Pengaturan sistem berhasil diperbarui.'
         ]);

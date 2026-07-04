@@ -57,7 +57,6 @@
                     <thead
                         class="sticky top-0 z-30 bg-gray-50 text-nowrap text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th class="w-[50px] px-4 py-2 text-nowrap">ID</th>
                             <th class="px-4 py-2 text-nowrap">Nama Brand</th>
                             <th class="w-[100px] px-4 py-2 text-nowrap">Nama Katalog</th>
                             <th class="px-4 py-2 text-nowrap">Nama File</th>
@@ -68,7 +67,6 @@
                     <tbody class="text-nowrap">
                         @foreach ($catalogs as $catalog)
                             <tr class="dark:border-gray-700">
-                                <td class="px-4 py-2">{{ $catalog->id }}</td>
                                 <td class="text-nowrap px-4 py-2">{{ $catalog->brand_name }}</td>
                                 <td class="px-4 py-2"><span
                                         class="inline-block max-w-[300px] truncate">{{ $catalog->catalog_name }}</span></td>

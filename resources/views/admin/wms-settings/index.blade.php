@@ -1,10 +1,5 @@
 <x-app-layout>
     <div class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
-        <!-- Title Header Card -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A] p-6 shadow-md text-white">
-            <h2 class="text-xl font-bold tracking-wide">Pengaturan Sistem</h2>
-            <p class="text-xs text-white/80 mt-1">Konfigurasi nama pimpinan, jabatan, dan informasi perusahaan untuk dokumen resmi (Laporan, PDF, & Excel).</p>
-        </div>
 
         @if ($errors->any())
             <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-semibold shadow-sm animate-fade-in">
@@ -32,7 +27,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Informasi perusahaan yang akan muncul di header laporan Excel dan PDF.</p>
                 </div>
                 
-                <form method="POST" action="{{ route('settings.update') }}" class="space-y-4">
+                <form method="POST" action="{{ route('wms-settings.update') }}" class="space-y-4">
                     @csrf
                     
                     <div>

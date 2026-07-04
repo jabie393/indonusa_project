@@ -30,7 +30,7 @@
                 <div
                     class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                    <a href="{{ route('sales-order-invoice.export', ['search' => $search]) }}"
+                    <a href="{{ route('sales-order-invoices.export', ['search' => $search]) }}"
                         class="flex flex-row items-center justify-center gap-2 rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -46,7 +46,7 @@
 
             <div class="p-3">
                 {{-- Search --}}
-                <form action="{{ route('sales-order-invoice.index') }}" method="GET" class="flex flex-col gap-2 md:flex-row" data-realtime-table-search data-search-input="#searchInput"
+                <form action="{{ route('sales-order-invoices.index') }}" method="GET" class="flex flex-col gap-2 md:flex-row" data-realtime-table-search data-search-input="#searchInput"
                     data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <div class="relative flex-1">
                         <label for="topbar-search" class="sr-only">Search</label>
@@ -71,7 +71,7 @@
                     </div>
                     <div class="flex gap-2">
                         @if ($search)
-                            <a href="{{ route('sales-order-invoice.index') }}"
+                            <a href="{{ route('sales-order-invoices.index') }}"
                                 class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
                                 Reset
                             </a>
@@ -123,7 +123,7 @@
                                             data-order-number="{{ $row['no_sales_order'] ?? '-' }}"
                                             data-has-batches="{{ $row['has_batches'] ? 'true' : 'false' }}"
                                             data-invoice-url="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
-                                            data-history-url="{{ route('sales-order-invoice.invoice-history', $row['id']) }}">
+                                            data-history-url="{{ route('sales-order-invoices.invoice-history', $row['id']) }}">
                                             {{ $row['no_sales_order'] ?? '-' }}
                                         </a>
                                     </div>
@@ -307,7 +307,7 @@
                                         data-id="{{ $row['id'] }}" data-order-number="{{ $row['no_sales_order'] ?? '-' }}"
                                         data-has-batches="{{ $row['has_batches'] ? 'true' : 'false' }}"
                                         data-invoice-url="{{ route('invoice.index', $row['id']) }}?type={{ $row['type'] }}"
-                                        data-history-url="{{ route('sales-order-invoice.invoice-history', $row['id']) }}">
+                                        data-history-url="{{ route('sales-order-invoices.invoice-history', $row['id']) }}">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                             stroke-linejoin="round">
@@ -341,7 +341,7 @@
                                     <p class="mt-1 text-sm">
                                         @if ($search)
                                             Coba ubah kata kunci pencarian atau <a
-                                                href="{{ route('sales-order-invoice.index') }}"
+                                                href="{{ route('sales-order-invoices.index') }}"
                                                 class="text-blue-600 hover:underline">reset pencarian</a>
                                         @else
                                             Data sales order belum tersedia
@@ -365,7 +365,7 @@
                                 <span
                                     class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
                             </span>
-                            <form method="GET" action="{{ route('sales-order-invoice.index') }}">
+                            <form method="GET" action="{{ route('sales-order-invoices.index') }}">
                                 <input type="hidden" name="search" value="{{ request('search') }}">
                                 <select name="perPage" onchange="this.form.submit()"
                                     class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -403,7 +403,7 @@
             }
 
             searchTimeout = setTimeout(() => {
-                fetch(`{{ route('sales-order-invoice.search') }}?q=${encodeURIComponent(query)}`)
+                fetch(`{{ route('sales-order-invoices.search') }}?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.data.length > 0) {
@@ -491,7 +491,7 @@
             }
         });
     </script>
-    @include('admin.sales-order-invoice.partials.invoice-history-modal')
+    @include('admin.sales-order-invoices.partials.invoice-history-modal')
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

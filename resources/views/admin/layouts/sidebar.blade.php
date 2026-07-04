@@ -11,7 +11,7 @@
                 <a href="{{ route('dashboard') }}"
                     class="{{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <svg aria-hidden="true"
-                        class="{{ request()->routeIs('dashboard') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
+                        class="{{ request()->routeIs('dashboard') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white"
                         fill="currentColor" viewBox="0 0 20 20">
                         <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
                         <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
@@ -42,8 +42,8 @@
                     <a href="{{ route('goods-in.index') }}"
                         class="{{ request()->routeIs('goods-in.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <div class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none"
-                                class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 27" fill="none"
+                                class="{{ request()->routeIs('goods-in.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                                 <path fill-rule="evenodd" clip-rule="evenodd"
                                     d="M13.5 0.0795898L26.625 6.79129V20.2147L13.5 26.9264L0.375 20.2147V6.79129L13.5 0.0795898ZM9.12493 12.6078L9.125 21.7063L12.0417 23.1978V14.0993L9.12493 12.6078ZM3.29167 9.62501V18.7232L6.20831 20.2148V11.1164L3.29167 9.62501ZM19.2416 5.99859L10.6571 10.4086L13.5 11.8623L22.1042 7.46246L19.2416 5.99859ZM13.5 3.06257L4.89583 7.46246L7.7438 8.91877L16.3283 4.50884L13.5 3.06257Z"
                                     fill="currentColor" />
@@ -157,9 +157,8 @@
                 <li>
                     <a href="{{ route('goods-in-status.index') }}"
                         class="{{ request()->routeIs('goods-in-status.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="29" viewBox="0 0 28 29"
-                            fill="currentColor"
-                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 29" fill="currentColor"
+                            class="{{ request()->routeIs('goods-in-status.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <path
                                 d="M8.20312 13.0952H19.8187V14.4546H8.20312V13.0952ZM8.20312 19.0765H15.3125V20.4358H8.20312V19.0765Z"
                                 fill="currentColor" />
@@ -180,8 +179,9 @@
                     <summary
                         class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
-                        <svg width="28px" height="28px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <rect x="16" y="16" width="6" height="6" rx="1.5" />
                             <rect x="2" y="16" width="6" height="6" rx="1.5" />
                             <rect x="9" y="2" width="6" height="6" rx="1.5" />
@@ -201,9 +201,8 @@
                         <li class="w-[88%]">
                             <a href="{{ route('sales-agents.index') }}"
                                 class="{{ request()->routeIs('sales-agents.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales-agents.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('sales-agents.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                                     <path
                                         d="M19.6436 13.8193C19.4355 13.7285 19.2275 13.6465 19.0166 13.5703C20.4756 12.3896 21.4072 10.5879 21.4072 8.57227C21.4072 5.02734 18.5244 2.14453 14.9795 2.14453C11.4346 2.14453 8.55176 5.02734 8.55176 8.57227C8.55176 10.5908 9.48633 12.3955 10.9453 13.5732C6.42773 15.2227 3.19336 19.5645 3.19336 24.6475H5.33496C5.33496 19.3301 9.66211 15.0059 14.9766 15.0059C16.3037 15.0059 17.5869 15.2695 18.791 15.7881L19.6436 13.8193ZM14.9795 4.28613C17.3438 4.28613 19.2656 6.20801 19.2656 8.57227C19.2656 10.9365 17.3438 12.8584 14.9795 12.8584C12.6152 12.8584 10.6934 10.9336 10.6934 8.57227C10.6934 6.21094 12.6152 4.28613 14.9795 4.28613ZM17.9443 18.6475C17.9443 18.9463 18.1084 19.2188 18.3721 19.3564L22.1221 21.3369C22.2393 21.3984 22.3682 21.4307 22.4971 21.4307C22.626 21.4307 22.7549 21.3984 22.8721 21.3369L26.6221 19.3564C26.8857 19.2158 27.0498 18.9434 27.0498 18.6475C27.0498 18.3516 26.8857 18.0762 26.6221 17.9385L22.8721 15.9551C22.6377 15.832 22.3564 15.832 22.1221 15.9551L18.3721 17.9385C18.1084 18.0762 17.9443 18.3486 17.9443 18.6475ZM22.4971 17.5752L24.5273 18.6475L22.4971 19.7197L20.4668 18.6475L22.4971 17.5752Z"
                                         fill="currentColor" />
@@ -226,9 +225,8 @@
                         <li class="w-[88%]">
                             <a href="{{ route('customers.index') }}"
                                 class="{{ request()->routeIs('customers.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('customers.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('customers.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                                     <path
                                         d="M23.3027 21.9639C23.8066 21.3252 24.1084 20.5195 24.1084 19.6406C24.1084 17.5693 22.4297 15.8906 20.3584 15.8906C18.2871 15.8906 16.6084 17.5693 16.6084 19.6406C16.6084 20.5166 16.9102 21.3252 17.4141 21.9639C15.3457 23.0332 13.9307 25.1924 13.9307 27.6768H16.0723C16.0723 25.3125 17.9941 23.3906 20.3584 23.3906C22.7227 23.3906 24.6445 25.3125 24.6445 27.6768H26.7861C26.7861 25.1953 25.3682 23.0361 23.3027 21.9639ZM20.3584 18.0352C21.2432 18.0352 21.9668 18.7559 21.9668 19.6436C21.9668 20.5283 21.2461 21.252 20.3584 21.252C19.4736 21.252 18.75 20.5312 18.75 19.6436C18.75 18.7559 19.4707 18.0352 20.3584 18.0352Z"
                                         fill="currentColor" />
@@ -249,9 +247,8 @@
                         <li class="w-[88%]">
                             <a href="{{ route('pics.index') }}"
                                 class="{{ request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                                     <path
                                         d="M12 12C14.7614 12 17 9.76142 17 7C17 4.23858 14.7614 2 12 2C9.23858 2 7 4.23858 7 7C7 9.76142 9.23858 12 12 12Z"
                                         fill="currentColor" />
@@ -291,8 +288,8 @@
                 <a href="{{ route('warehouse.index') }}"
                     class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                     <div class="flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="31" viewBox="0 0 26 31" fill="none"
-                            class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 31" fill="none"
+                            class="{{ request()->routeIs('warehouse.*') || request()->routeIs('supply-orders.*') || request()->routeIs('delivery-orders.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <path
                                 d="M6.21582 14.4103H10.0143V18.1884H6.21582V14.4103ZM6.21582 23.2138H10.0143V19.4356H6.21582V23.2138ZM6.21582 28.227H10.0143V24.4489H6.21582V28.227ZM11.1416 23.2138H14.9299V19.4356H11.1314V23.2138H11.1416ZM11.1416 28.227H14.9299V24.4489H11.1314V28.227H11.1416ZM16.0674 24.4489V28.227H19.8658V24.4489H16.0674ZM25.8986 9.71182L13.0307 2.49463L0.172852 9.73603L0.975195 11.7341L2.61035 10.8017V28.2392H4.45879V10.729H21.6229V28.2634H23.4713V10.8259L25.1064 11.7341L25.8986 9.71182Z"
                                 fill="currentColor" />
@@ -308,12 +305,11 @@
             </li>
 
             @if (auth()->user()->role === 'General Affair')
-                {{-- Sales Order Invoice (GA) --}}
+                {{-- Sales Order Invoices (GA) --}}
                 <li>
-                    <a href="{{ route('sales-order-invoice.index') }}"
-                        class="{{ request()->routeIs('sales-order-invoice.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg width="28px" height="28px"
-                            class="{{ request()->routeIs('sales-order-invoice.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                    <a href="{{ route('sales-order-invoices.index') }}"
+                        class="{{ request()->routeIs('sales-order-invoices.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <svg class="{{ request()->routeIs('sales-order-invoices.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                             viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M3 6C3 4.89543 3.89543 4 5 4H19C20.1046 4 21 4.89543 21 6V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V6Z"
@@ -326,8 +322,8 @@
                                 stroke-linejoin="round" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('sales-order-invoice.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
-                            Order Invoice</span>
+                            class="{{ request()->routeIs('sales-order-invoices.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
+                            Order Invoices</span>
                     </a>
                     @if (request()->routeIs('invoice.*'))
                         <ul class="pt-2">
@@ -356,8 +352,7 @@
                 <li>
                     <a href="{{ route('catalog.index') }}"
                         class="{{ request()->routeIs('catalog.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg width="28px" height="28px"
-                            class="{{ request()->routeIs('catalog.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                        <svg class="{{ request()->routeIs('catalog.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                             viewBox="0 0 512.00 512.00" version="1.1" xmlns="http://www.w3.org/2000/svg"
                             xmlns:xlink="http://www.w3.org/1999/xlink" fill="" transform="rotate(0)">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -382,8 +377,8 @@
                 <li>
                     <a href="{{ route('sales-report.index') }}"
                         class="{{ request()->routeIs('sales-report.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px"
-                            class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -398,8 +393,8 @@
                 <li>
                     <a href="{{ route('history.index') }}"
                         class="{{ request()->routeIs('history.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg width="28px" height="28px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            class="{{ request()->routeIs('history.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="{{ request()->routeIs('history.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
@@ -428,13 +423,14 @@
                         ->where('status', 'rejected_supervisor')->count();
                     $totalRejectedQuotationCount = $rejectedQuotationCount + $rejectedCustomQuotationCount;
                 @endphp
-                <details {{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales-report.*') ? 'open' : 'close' }} class="">
+                <details {{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-orders.*') || request()->routeIs('sales-report.*') ? 'open' : 'close' }}
+                    class="">
                     <summary
-                        class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales-report.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-orders.*') || request()->routeIs('sales-report.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <span class="flex items-center">
 
-                            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                                class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                            <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-orders.*') || request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white">
                                 <g clip-path="url(#clip0_919_580)">
                                     <path
                                         d="M26.25 0.937592H18.75C18.0041 0.937592 17.2887 1.23391 16.7613 1.76135C16.2338 2.2888 15.9375 3.00417 15.9375 3.75009V11.2501C15.9375 11.996 16.2338 12.7114 16.7613 13.2388C17.2887 13.7663 18.0041 14.0626 18.75 14.0626H26.25C26.996 14.0626 27.7113 13.7663 28.2388 13.2388C28.7662 12.7114 29.0625 11.996 29.0625 11.2501V3.75009C29.0625 3.00417 28.7662 2.2888 28.2388 1.76135C27.7113 1.23391 26.996 0.937592 26.25 0.937592ZM27.1875 11.2501C27.1875 11.4987 27.0888 11.7372 26.9129 11.913C26.7371 12.0888 26.4987 12.1876 26.25 12.1876H18.75C18.5014 12.1876 18.2629 12.0888 18.0871 11.913C17.9113 11.7372 17.8125 11.4987 17.8125 11.2501V3.75009C17.8125 3.50145 17.9113 3.26299 18.0871 3.08718C18.2629 2.91136 18.5014 2.81259 18.75 2.81259H26.25C26.4987 2.81259 26.7371 2.91136 26.9129 3.08718C27.0888 3.26299 27.1875 3.50145 27.1875 3.75009V11.2501ZM1.87503 6.56259C1.99754 6.56111 2.11857 6.53563 2.23128 6.48759C2.34481 6.43995 2.44942 6.37338 2.54066 6.29072C2.67074 6.15888 2.75886 5.99147 2.7939 5.8096C2.82894 5.62774 2.80932 5.43957 2.73753 5.26884C2.69291 5.15376 2.62601 5.04863 2.54066 4.95947C2.43241 4.84659 2.29765 4.76258 2.14865 4.7151C1.99964 4.66761 1.84112 4.65816 1.68753 4.68759C1.62883 4.69799 1.57198 4.71694 1.51878 4.74384C1.45895 4.76415 1.40218 4.79254 1.35003 4.82822L1.20941 4.94072C1.12405 5.02988 1.05715 5.13501 1.01253 5.25009C0.96203 5.36861 0.936499 5.49627 0.93753 5.62509C0.93753 5.87373 1.0363 6.11219 1.21212 6.288C1.38793 6.46382 1.62639 6.56259 1.87503 6.56259ZM4.38753 3.75009C4.57131 3.74866 4.75062 3.69323 4.90316 3.59072C5.8967 2.93288 7.10349 2.67811 8.27815 2.87822C8.5268 2.91924 8.78155 2.85982 8.98637 2.71301C9.1912 2.5662 9.32932 2.34404 9.37034 2.0954C9.41137 1.84676 9.35194 1.59201 9.20514 1.38718C9.05833 1.18236 8.83617 1.04424 8.58753 1.00322C6.95458 0.740149 5.2823 1.09802 3.90003 2.00634C3.72268 2.11155 3.58496 2.2723 3.50821 2.4637C3.43146 2.6551 3.41995 2.86646 3.47548 3.06505C3.531 3.26365 3.65045 3.4384 3.81533 3.56224C3.98021 3.68609 4.18133 3.75211 4.38753 3.75009ZM11.0719 3.04697C10.887 3.2125 10.7752 3.44461 10.7612 3.6924C10.7471 3.9402 10.8319 4.18346 10.9969 4.36884C11.7659 5.2303 12.1899 6.34532 12.1875 7.50009V11.2501C12.1875 11.4987 12.0888 11.7372 11.9129 11.913C11.7371 12.0888 11.4987 12.1876 11.25 12.1876H7.50003C6.53171 12.187 5.58732 11.8866 4.79664 11.3276C4.00597 10.7686 3.40783 9.97843 3.0844 9.06572C2.99013 8.84702 2.81615 8.67239 2.5978 8.57731C2.37946 8.48222 2.1331 8.4738 1.90877 8.55374C1.68444 8.63369 1.49894 8.79602 1.38994 9.00777C1.28094 9.21952 1.25662 9.46481 1.32191 9.69384C1.77479 10.9707 2.61176 12.0761 3.71793 12.8583C4.82409 13.6405 6.14524 14.0612 7.50003 14.0626H11.25C11.996 14.0626 12.7113 13.7663 13.2388 13.2388C13.7662 12.7114 14.0625 11.996 14.0625 11.2501V7.50009C14.0639 5.8851 13.4698 4.32629 12.3938 3.12197C12.2282 2.93703 11.9961 2.82529 11.7483 2.81123C11.5006 2.79717 11.2573 2.88195 11.0719 3.04697ZM26.25 15.9376H18.75C18.0041 15.9376 17.2887 16.2339 16.7613 16.7614C16.2338 17.2888 15.9375 18.0042 15.9375 18.7501V26.2501C15.9375 26.996 16.2338 27.7114 16.7613 28.2388C17.2887 28.7663 18.0041 29.0626 18.75 29.0626H26.25C26.996 29.0626 27.7113 28.7663 28.2388 28.2388C28.7662 27.7114 29.0625 26.996 29.0625 26.2501V18.7501C29.0625 18.0042 28.7662 17.2888 28.2388 16.7614C27.7113 16.2339 26.996 15.9376 26.25 15.9376ZM27.1875 26.2501C27.1875 26.4987 27.0888 26.7372 26.9129 26.913C26.7371 27.0888 26.4987 27.1876 26.25 27.1876H18.75C18.5014 27.1876 18.2629 27.0888 18.0871 26.913C17.9113 26.7372 17.8125 26.4987 17.8125 26.2501V18.7501C17.8125 18.5015 17.9113 18.263 18.0871 18.0872C18.2629 17.9114 18.5014 17.8126 18.75 17.8126H26.25C26.4987 17.8126 26.7371 17.9114 26.9129 18.0872C27.0888 18.263 27.1875 18.5015 27.1875 18.7501V26.2501ZM11.25 15.9376H3.75003C3.00411 15.9376 2.28874 16.2339 1.76129 16.7614C1.23385 17.2888 0.93753 18.0042 0.93753 18.7501V26.2501C0.93753 26.996 1.23385 27.7114 1.76129 28.2388C2.28874 28.7663 3.00411 29.0626 3.75003 29.0626H11.25C11.996 29.0626 12.7113 28.7663 13.2388 28.2388C13.7662 27.7114 14.0625 26.996 14.0625 26.2501V18.7501C14.0625 18.0042 13.7662 17.2888 13.2388 16.7614C12.7113 16.2339 11.996 15.9376 11.25 15.9376ZM12.1875 26.2501C12.1875 26.4987 12.0888 26.7372 11.9129 26.913C11.7371 27.0888 11.4987 27.1876 11.25 27.1876H3.75003C3.50139 27.1876 3.26293 27.0888 3.08712 26.913C2.9113 26.7372 2.81253 26.4987 2.81253 26.2501V18.7501C2.81253 18.5015 2.9113 18.263 3.08712 18.0872C3.26293 17.9114 3.50139 17.8126 3.75003 17.8126H11.25C11.4987 17.8126 11.7371 17.9114 11.9129 18.0872C12.0888 18.263 12.1875 18.5015 12.1875 18.7501V26.2501Z"
@@ -448,7 +444,7 @@
                             </svg>
 
                             <span
-                                class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.sales-order.*') || request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
+                                class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') || request()->routeIs('sales.sales-orders.*') || request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">
                                 Sales Module</span>
                         </span>
                         <span id="sales-module-notif-badge"
@@ -462,9 +458,8 @@
                             <a href="{{ route('sales.quotation.index') }}"
                                 class="{{ request()->routeIs('sales.quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="{{ request()->routeIs('sales.quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    <svg viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                        class="{{ request()->routeIs('sales.quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white">
                                         <g clip-path="url(#clip0_931_10)">
                                             <path
                                                 d="M9.375 20.625C10.3696 20.625 11.3234 20.2299 12.0266 19.5266C12.7299 18.8234 13.125 17.8696 13.125 16.875C13.125 15.8804 12.7299 14.9266 12.0266 14.2233C11.3234 13.5201 10.3696 13.125 9.375 13.125C8.38044 13.125 7.42661 13.5201 6.72335 14.2233C6.02009 14.9266 5.625 15.8804 5.625 16.875C5.625 17.8696 6.02009 18.8234 6.72335 19.5266C7.42661 20.2299 8.38044 20.625 9.375 20.625ZM9.375 15C9.87228 15 10.3492 15.1975 10.7008 15.5492C11.0525 15.9008 11.25 16.3777 11.25 16.875C11.25 17.3723 11.0525 17.8492 10.7008 18.2008C10.3492 18.5525 9.87228 18.75 9.375 18.75C8.87772 18.75 8.4008 18.5525 8.04917 18.2008C7.69754 17.8492 7.5 17.3723 7.5 16.875C7.5 16.3777 7.69754 15.9008 8.04917 15.5492C8.4008 15.1975 8.87772 15 9.375 15ZM14.0625 22.5H4.6875C3.4443 22.5 2.25201 22.9939 1.37294 23.8729C0.49386 24.752 0 25.9443 0 27.1875C0 27.9334 0.296318 28.6488 0.823764 29.1762C1.35121 29.7037 2.06658 30 2.8125 30H15.9375C16.6834 30 17.3988 29.7037 17.9262 29.1762C18.4537 28.6488 18.75 27.9334 18.75 27.1875C18.75 25.9443 18.2561 24.752 17.3771 23.8729C16.498 22.9939 15.3057 22.5 14.0625 22.5ZM15.9375 28.125H2.8125C2.56386 28.125 2.3254 28.0262 2.14959 27.8504C1.97377 27.6746 1.875 27.4361 1.875 27.1875C1.875 26.4416 2.17132 25.7262 2.69876 25.1988C3.22621 24.6713 3.94158 24.375 4.6875 24.375H14.0625C14.8084 24.375 15.5238 24.6713 16.0512 25.1988C16.5787 25.7262 16.875 26.4416 16.875 27.1875C16.875 27.4361 16.7762 27.6746 16.6004 27.8504C16.4246 28.0262 16.1861 28.125 15.9375 28.125ZM30 4.6875V14.0625C30 15.3057 29.5061 16.498 28.6271 17.3771C27.748 18.2561 26.5557 18.75 25.3125 18.75H20.0756L16.6013 22.2263C16.514 22.3133 16.4105 22.3822 16.2966 22.4292C16.1827 22.4762 16.0607 22.5002 15.9375 22.5C15.8146 22.5003 15.6928 22.4761 15.5794 22.4287C15.4079 22.3579 15.2614 22.2377 15.1582 22.0835C15.0551 21.9293 15 21.748 15 21.5625V17.8125C15 17.5639 15.0988 17.3254 15.2746 17.1496C15.4504 16.9738 15.6889 16.875 15.9375 16.875C16.1861 16.875 16.4246 16.9738 16.6004 17.1496C16.7762 17.3254 16.875 17.5639 16.875 17.8125V19.2994L19.0237 17.1487C19.111 17.0617 19.2145 16.9928 19.3284 16.9458C19.4423 16.8988 19.5643 16.8748 19.6875 16.875H25.3125C26.0584 16.875 26.7738 16.5787 27.3012 16.0512C27.8287 15.5238 28.125 14.8084 28.125 14.0625V4.6875C28.125 3.94158 27.8287 3.22621 27.3012 2.69876C26.7738 2.17132 26.0584 1.875 25.3125 1.875H12.1875C11.4416 1.875 10.7262 2.17132 10.1988 2.69876C9.67132 3.22621 9.375 3.94158 9.375 4.6875V10.3125C9.375 10.5611 9.27623 10.7996 9.10041 10.9754C8.9246 11.1512 8.68614 11.25 8.4375 11.25C8.18886 11.25 7.9504 11.1512 7.77459 10.9754C7.59877 10.7996 7.5 10.5611 7.5 10.3125V4.6875C7.5 3.4443 7.99386 2.25201 8.87294 1.37294C9.75201 0.49386 10.9443 0 12.1875 0L25.3125 0C26.5557 0 27.748 0.49386 28.6271 1.37294C29.5061 2.25201 30 3.4443 30 4.6875ZM15.2737 11.5237L19.2994 7.5H15.9375C15.6889 7.5 15.4504 7.40123 15.2746 7.22541C15.0988 7.0496 15 6.81114 15 6.5625C15 6.31386 15.0988 6.0754 15.2746 5.89959C15.4504 5.72377 15.6889 5.625 15.9375 5.625H21.5625C21.6854 5.62505 21.8071 5.64926 21.9206 5.69625C22.1501 5.79245 22.3326 5.97493 22.4287 6.20438C22.4757 6.31793 22.5 6.43961 22.5 6.5625V12.1875C22.5 12.4361 22.4012 12.6746 22.2254 12.8504C22.0496 13.0262 21.8111 13.125 21.5625 13.125C21.3139 13.125 21.0754 13.0262 20.8996 12.8504C20.7238 12.6746 20.625 12.4361 20.625 12.1875V8.82562L16.6013 12.8513C16.514 12.9383 16.4105 13.0072 16.2966 13.0542C16.1827 13.1012 16.0607 13.125 15.9375 13.125C15.8143 13.1252 15.6923 13.1012 15.5784 13.0542C15.4645 13.0072 15.361 12.9383 15.2737 12.8513C15.1864 12.7642 15.1172 12.6607 15.0699 12.5468C15.0227 12.4329 14.9983 12.3108 14.9983 12.1875C14.9983 12.0642 15.0227 11.9421 15.0699 11.8282C15.1172 11.7143 15.1864 11.6108 15.2737 11.5237Z"
@@ -522,9 +517,8 @@
                             <a href="{{ route('sales.custom-quotation.index') }}"
                                 class="{{ request()->routeIs('sales.custom-quotation.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="{{ request()->routeIs('sales.custom-quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                                    <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                        class="{{ request()->routeIs('sales.custom-quotation.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white">
                                         <path fill-rule="evenodd" clip-rule="evenodd"
                                             d="M20.6943 0.900204C20.5117 1.05585 20.4203 1.13369 20.3228 1.19906C20.0992 1.34891 19.8481 1.45291 19.5841 1.50504C19.4689 1.52779 19.3493 1.53733 19.1101 1.55642C18.509 1.60439 18.2085 1.62836 17.9578 1.71692C17.3779 1.92175 16.9217 2.37788 16.7169 2.95778C16.6284 3.2085 16.6044 3.50903 16.5564 4.11006C16.5373 4.34927 16.5278 4.46888 16.505 4.58408C16.4529 4.84813 16.3489 5.09922 16.1991 5.3228C16.1337 5.42033 16.0559 5.51165 15.9002 5.6943C15.5091 6.15323 15.3136 6.38265 15.1989 6.62258C14.9337 7.1775 14.9337 7.8225 15.1989 8.37743C15.3166 8.61735 15.5091 8.84678 15.9002 9.3057C16.0558 9.48833 16.1337 9.57968 16.1991 9.67718C16.3489 9.90075 16.4529 10.1519 16.505 10.4159C16.5278 10.5311 16.5373 10.6508 16.5564 10.8899C16.6044 11.491 16.6284 11.7915 16.7169 12.0422C16.9217 12.6221 17.3779 13.0783 17.9578 13.2831C18.2085 13.3716 18.509 13.3956 19.1101 13.4436C19.3493 13.4627 19.4689 13.4723 19.5841 13.495C19.8481 13.5471 20.0992 13.6511 20.3228 13.801C20.4203 13.8663 20.5117 13.9442 20.6943 14.0998C21.1532 14.4909 21.3827 14.6864 21.6226 14.8011C22.1775 15.0663 22.8225 15.0663 23.3774 14.8011C23.6174 14.6864 23.8468 14.4909 24.3057 14.0998C24.4883 13.9442 24.5797 13.8663 24.6772 13.801C24.9008 13.6511 25.1519 13.5471 25.4159 13.495C25.5311 13.4723 25.6508 13.4627 25.8899 13.4436C26.491 13.3956 26.7915 13.3716 27.0422 13.2831C27.6221 13.0783 28.0783 12.6221 28.2831 12.0422C28.3716 11.7915 28.3956 11.491 28.4436 10.8899C28.4627 10.6508 28.4723 10.5311 28.495 10.4159C28.5471 10.1519 28.6511 9.90075 28.801 9.67718C28.8663 9.57968 28.9442 9.48833 29.0998 9.3057C29.4909 8.84678 29.6864 8.61735 29.8011 8.37743C30.0663 7.8225 30.0663 7.1775 29.8011 6.62258C29.6864 6.38265 29.4909 6.15323 29.0998 5.6943C28.9442 5.51165 28.8663 5.42033 28.801 5.3228C28.6511 5.09922 28.5471 4.84813 28.495 4.58408C28.4723 4.46888 28.4627 4.34927 28.4436 4.11006C28.3956 3.50903 28.3716 3.2085 28.2831 2.95778C28.0783 2.37788 27.6221 1.92175 27.0422 1.71692C26.7915 1.62836 26.491 1.60439 25.8899 1.55642C25.6508 1.53733 25.5311 1.52779 25.4159 1.50504C25.1519 1.45291 24.9008 1.34891 24.6772 1.19906C24.5797 1.13369 24.4883 1.05586 24.3057 0.900204C23.8468 0.509124 23.6174 0.313584 23.3774 0.198917C22.8225 -0.0663056 22.1775 -0.0663056 21.6226 0.198917C21.3827 0.313577 21.1532 0.509124 20.6943 0.900204ZM25.3732 4.62719C25.6115 4.86557 25.6115 5.25205 25.3732 5.49042L20.49 10.3736C20.2517 10.612 19.8652 10.612 19.6268 10.3736C19.3884 10.1352 19.3884 9.74873 19.6268 9.51038L24.5099 4.62719C24.7484 4.38882 25.1348 4.38882 25.3732 4.62719ZM25.3485 9.53505C25.3485 9.98453 24.9842 10.3489 24.5347 10.3489C24.0851 10.3489 23.7208 9.98453 23.7208 9.53505C23.7208 9.08558 24.0851 8.72115 24.5347 8.72115C24.9842 8.72115 25.3485 9.08558 25.3485 9.53505ZM20.4653 6.2796C20.9148 6.2796 21.2792 5.91522 21.2792 5.46574C21.2792 5.01626 20.9148 4.65188 20.4653 4.65188C20.0159 4.65188 19.6515 5.01626 19.6515 5.46574C19.6515 5.91522 20.0159 6.2796 20.4653 6.2796Z"
                                             fill="currentColor" />
@@ -573,13 +567,12 @@
                             @endif
                         </li>
 
-                        {{-- Sales Order --}}
+                        {{-- Sales Orders --}}
                         <li class="w-[88%]">
-                            <a href="{{ route('sales.sales-order.index') }}"
-                                class="{{ request()->routeIs('sales.sales-order.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="{{ request()->routeIs('sales.sales-order.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white">
+                            <a href="{{ route('sales.sales-orders.index') }}"
+                                class="{{ request()->routeIs('sales.sales-orders.index') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('sales.sales-orders.index') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white">
                                     <path
                                         d="M15 2C8.37256 2 3 7.37256 3 14C3 20.6274 8.37256 26 15 26C21.6274 26 27 20.6274 27 14C27 7.37256 21.6274 2 15 2ZM15 4C20.5228 4 25 8.47715 25 14C25 19.5228 20.5228 24 15 24C9.47715 24 5 19.5228 5 14C5 8.47715 9.47715 4 15 4Z"
                                         fill="currentColor" />
@@ -588,10 +581,10 @@
                                         fill="currentColor" />
                                 </svg>
                                 <span
-                                    class="{{ request()->routeIs('sales.sales-order.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
-                                    Order</span>
+                                    class="{{ request()->routeIs('sales.sales-orders.index') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Sales
+                                    Orders</span>
                             </a>
-                            @if (request()->routeIs('sales.sales-order.show') || request()->routeIs('sales.sales-order.create') || request()->routeIs('sales.sales-order.store') || request()->routeIs('sales.sales-order.edit') || request()->routeIs('sales.sales-order.update'))
+                            @if (request()->routeIs('sales.sales-orders.show') || request()->routeIs('sales.sales-orders.create') || request()->routeIs('sales.sales-orders.store') || request()->routeIs('sales.sales-orders.edit') || request()->routeIs('sales.sales-orders.update'))
                                 <ul class="pt-2">
                                     <li class="flex items-center justify-end">
                                         <svg width="64px"
@@ -609,11 +602,11 @@
                                         <a href="{{ request()->fullUrl() }}"
                                             class="group ml-2 flex w-[80%] items-center rounded-lg bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm p-2 text-base font-medium transition-all duration-200 hover:shadow-lg">
                                             <span class="">
-                                                @if (request()->routeIs('sales.sales-order.show'))
+                                                @if (request()->routeIs('sales.sales-orders.show'))
                                                     Detail Sales Order
-                                                @elseif (request()->routeIs('sales.sales-order.create') || request()->routeIs('sales.sales-order.store'))
+                                                @elseif (request()->routeIs('sales.sales-orders.create') || request()->routeIs('sales.sales-orders.store'))
                                                     Create Sales Order
-                                                @elseif (request()->routeIs('sales.sales-order.edit') || request()->routeIs('sales.sales-order.update'))
+                                                @elseif (request()->routeIs('sales.sales-orders.edit') || request()->routeIs('sales.sales-orders.update'))
                                                     Edit Sales Order
                                                 @endif
                                             </span>
@@ -627,8 +620,8 @@
                         <li class="w-[88%]">
                             <a href="{{ route('sales-report.index') }}"
                                 class="{{ request()->routeIs('sales-report.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px"
-                                    class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -663,8 +656,8 @@
                 <li>
                     <a href="{{ route('customers.index') }}"
                         class="{{ request()->routeIs('customers.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg width="24" height="24" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            class="{{ request()->routeIs('customers.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                        <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="{{ request()->routeIs('customers.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <path
                                 d="M23.3027 21.9639C23.8066 21.3252 24.1084 20.5195 24.1084 19.6406C24.1084 17.5693 22.4297 15.8906 20.3584 15.8906C18.2871 15.8906 16.6084 17.5693 16.6084 19.6406C16.6084 20.5166 16.9102 21.3252 17.4141 21.9639C15.3457 23.0332 13.9307 25.1924 13.9307 27.6768H16.0723C16.0723 25.3125 17.9941 23.3906 20.3584 23.3906C22.7227 23.3906 24.6445 25.3125 24.6445 27.6768H26.7861C26.7861 25.1953 25.3682 23.0361 23.3027 21.9639ZM20.3584 18.0352C21.2432 18.0352 21.9668 18.7559 21.9668 19.6436C21.9668 20.5283 21.2461 21.252 20.3584 21.252C19.4736 21.252 18.75 20.5312 18.75 19.6436C18.75 18.7559 19.4707 18.0352 20.3584 18.0352Z"
                                 fill="currentColor" />
@@ -686,12 +679,12 @@
                     <summary
                         class="{{ $quotationApprovalMenuActive ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                         <span class="flex items-center">
-                            <svg width="28px" height="28px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
-                                <path fill="currentColor"
-                                    d="M13.098 8H6.902c-.751 0-1.172.754-.708 1.268L9.292 12.7c.36.399 1.055.399 1.416 0l3.098-3.433C14.27 8.754 13.849 8 13.098 8Z">
-                                </path>
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <polyline points="9 15 11 17 15 13"></polyline>
                             </svg>
                             <span
                                 class="{{ $quotationApprovalMenuActive ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Quotation
@@ -710,10 +703,10 @@
                             <a href="{{ route('admin.quotation_approval') }}"
                                 class="{{ $quotationApprovalItemHighlight ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg fill="currentColor" height="30px" width="30px" version="1.1" id="Capa_1"
-                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        viewBox="0 0 491.695 491.695" xml:space="preserve"
-                                        class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 group-hover:text-white">
+                                    <svg fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 491.695 491.695"
+                                        xml:space="preserve"
+                                        class="{{ $quotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                         <g id="SVGRepo_iconCarrier">
@@ -776,11 +769,10 @@
                             <a href="{{ route('supervisor.custom-quotation-approval.index') }}"
                                 class="{{ $customQuotationApprovalItemHighlight ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
                                 <div class="flex items-center">
-                                    <svg class="{{ $customQuotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 transition duration-75 group-hover:text-white"
-                                        width="30px" height="30" viewBox="0 0 32 32" enable-background="new 0 0 32 32"
-                                        id="_x3C_Layer_x3E_" version="1.1" xml:space="preserve"
-                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        fill="currentColor">
+                                    <svg class="{{ $customQuotationApprovalItemHighlight ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 transition duration-75 group-hover:text-white"
+                                        viewBox="0 0 32 32" enable-background="new 0 0 32 32" id="_x3C_Layer_x3E_"
+                                        version="1.1" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink" fill="currentColor">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                                         <g id="SVGRepo_iconCarrier">
@@ -934,8 +926,8 @@
                 <li>
                     <a href="{{ route('sales-report.index') }}"
                         class="{{ request()->routeIs('sales-report.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px"
-                            class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="{{ request()->routeIs('sales-report.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -949,7 +941,7 @@
                 <li>
                     <a href="{{ route('supervisor.history') }}"
                         class="{{ request()->routeIs('supervisor.history') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" class=" h-[24px] w-[24px]" fill="none" viewBox="0 0 24 24"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -958,27 +950,27 @@
                     </a>
                 </li>
 
-                {{-- Pengaturan Sistem --}}
+                {{-- WMS Settings --}}
                 <li>
-                    <a href="{{ route('settings.index') }}"
-                        class="{{ request()->routeIs('settings.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28px" height="28px"
-                            class="{{ request()->routeIs('settings.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white"
+                    <a href="{{ route('wms-settings.index') }}"
+                        class="{{ request()->routeIs('wms-settings.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="{{ request()->routeIs('wms-settings.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white"
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('settings.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Pengaturan
-                            Sistem</span>
+                            class="{{ request()->routeIs('wms-settings.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">WMS
+                            Settings</span>
                     </a>
                 </li>
             @endif
         </ul>
         <button onclick="guide.showModal()"
             class="bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A] group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
-            <svg class=" h-[34px] w-[34px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                 <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                 <g id="SVGRepo_iconCarrier">

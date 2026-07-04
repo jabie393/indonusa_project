@@ -109,7 +109,7 @@ class SalesOrderInvoiceController extends Controller
             $salesOrders = $requestOrders;
         }
 
-        return view('admin.sales-order-invoice.index', [
+        return view('admin.sales-order-invoices.index', [
             'results'     => $results,
             'search'      => $search,
             'isSearch'    => $isSearch,

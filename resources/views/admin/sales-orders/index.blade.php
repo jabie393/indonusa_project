@@ -30,7 +30,7 @@
                         </div>
                         <div class="flex gap-2">
                             @if ($search)
-                                <a href="{{ route('sales.sales-order.index') }}"
+                                <a href="{{ route('sales.sales-orders.index') }}"
                                     class="whitespace-nowrap rounded-lg border border-gray-300 px-6 py-2 font-semibold text-gray-700 hover:bg-gray-100 dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-600">
                                     Reset
                                 </a>
@@ -357,7 +357,7 @@
                                                 $sendToWarehouseButtonText = null;
 
                                                 if ($row['type'] === 'sales_order') {
-                                                    $sendToWarehouseRoute = route('sales.sales-order.sent-to-warehouse', $row['id']);
+                                                    $sendToWarehouseRoute = route('sales.sales-orders.sent-to-warehouse', $row['id']);
                                                     $sendToWarehouseText = 'Kirim Sales Order ini ke Warehouse?';
                                                     $sendToWarehouseButtonText = 'Ya, Kirim';
                                                 } elseif ($row['type'] === 'request_order') {
@@ -407,7 +407,7 @@
                                     </p>
                                     <p class="mt-1 text-sm">
                                         @if ($search)
-                                            Coba ubah kata kunci pencarian atau <a href="{{ route('sales.sales-order.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
+                                            Coba ubah kata kunci pencarian atau <a href="{{ route('sales.sales-orders.index') }}" class="text-blue-600 hover:underline">reset pencarian</a>
                                         @else
                                             Mulai buat sales order baru dengan klik tombol di atas
                                         @endif
@@ -429,7 +429,7 @@
                             dari
                             <span class="font-semibold text-gray-900 dark:text-white">{{ $salesOrders->total() ?? $salesOrders->count() }}</span>
                         </span>
-                        <form method="GET" action="{{ route('sales.sales-order.index') }}">
+                        <form method="GET" action="{{ route('sales.sales-orders.index') }}">
                             <input type="hidden" name="search" value="{{ request('search') }}">
                             <select name="perPage" onchange="this.form.submit()"
                                 class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
@@ -487,7 +487,7 @@
             }
 
             searchTimeout = setTimeout(() => {
-                fetch(`{{ route('sales.sales-order.search') }}?q=${encodeURIComponent(query)}`)
+                fetch(`{{ route('sales.sales-orders.search') }}?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.data.length > 0) {
@@ -511,7 +511,7 @@
             // Trigger actual search
             const form = document.createElement('form');
             form.method = 'GET';
-            form.action = '{{ route('sales.sales-order.index') }}';
+            form.action = '{{ route('sales.sales-orders.index') }}';
             form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
             document.body.appendChild(form);
             form.submit();
@@ -632,7 +632,7 @@
             if (query) {
                 const form = document.createElement('form');
                 form.method = 'GET';
-                form.action = '{{ route('sales.sales-order.index') }}';
+                form.action = '{{ route('sales.sales-orders.index') }}';
                 form.innerHTML = `<input type="hidden" name="search" value="${query}">`;
                 document.body.appendChild(form);
                 form.submit();
@@ -671,7 +671,7 @@
 
         // Function untuk display modal quotation detail
         function showQuotationDetail(quotationId) {
-            fetch(`{{ route('sales.sales-order.quotation-detail') }}?id=${quotationId}`)
+            fetch(`{{ route('sales.sales-orders.quotation-detail') }}?id=${quotationId}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
@@ -1028,7 +1028,7 @@
                 let endpoint = '';
                 if (imageType === 'po') endpoint = `/quotation/${id}/upload-image-po`;
                 else if (imageType === 'pdf_po') endpoint = `/quotation/${id}/upload-pdf-po`;
-                else endpoint = `/sales-order/${id}/upload-image`;
+                else endpoint = `/sales-orders/${id}/upload-image`;
 
                 const formData = new FormData();
                 formData.append('_token', '{{ csrf_token() }}');

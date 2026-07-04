@@ -108,12 +108,12 @@ Route::middleware(['auth'])->group(function () {
 // General Affair
 Route::middleware(['auth', 'role:General Affair'])->group(function () {
     // Sales Order (read-only untuk GA)
-    Route::get('/sales-order-invoice', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'index'])->name('sales-order-invoice.index');
-    Route::get('/sales-order-invoice/export', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrders'])->name('sales-order-invoice.export');
-    Route::get('/sales-order-invoice/search', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'search'])->name('sales-order-invoice.search');
+    Route::get('/sales-order-invoices', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'index'])->name('sales-order-invoices.index');
+    Route::get('/sales-order-invoices/export', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrders'])->name('sales-order-invoices.export');
+    Route::get('/sales-order-invoices/search', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'search'])->name('sales-order-invoices.search');
     Route::get('/invoice/{id}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showInvoice'])->name('invoice.index');
     Route::get('/invoice/{id}/receipt', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'printReceipt'])->name('invoice.receipt');
-    Route::get('/sales-order-invoice/{id}/invoice-history', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'getInvoiceHistory'])->name('sales-order-invoice.invoice-history');
+    Route::get('/sales-order-invoices/{id}/invoice-history', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'getInvoiceHistory'])->name('sales-order-invoices.invoice-history');
     Route::post('/invoice/{id}/excel', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'downloadInvoiceExcel'])->name('invoice.excel');
     Route::get('/invoice/batch/{batchId}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showBatchInvoice'])->name('invoice.batch.invoice');
     Route::post('/invoice/batch/{batchId}/excel', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'downloadBatchInvoiceExcel'])->name('invoice.batch.excel');
@@ -268,19 +268,19 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
         ->name('sales.custom-quotation.sent-to-quotation');
 
     // Sales Order Routes
-    Route::get('/sales-order', [SalesOrderController::class, 'index'])->name('sales.sales-order.index');
-    Route::get('/sales-order/search', [SalesOrderController::class, 'search'])->name('sales.sales-order.search');
-    Route::get('/sales-order/quotation-detail', [SalesOrderController::class, 'getQuotationDetail'])->name('sales.sales-order.quotation-detail');
-    Route::get('/sales-order/create', [SalesOrderController::class, 'create'])->name('sales.sales-order.create');
-    Route::post('/sales-order', [SalesOrderController::class, 'store'])->name('sales.sales-order.store');
-    Route::get('/detail-sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-order.show');
-    Route::get('/sales-order/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-order.edit');
-    Route::put('/sales-order/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-order.update');
-    Route::delete('/sales-order/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-order.destroy');
+    Route::get('/sales-orders', [SalesOrderController::class, 'index'])->name('sales.sales-orders.index');
+    Route::get('/sales-orders/search', [SalesOrderController::class, 'search'])->name('sales.sales-orders.search');
+    Route::get('/sales-orders/quotation-detail', [SalesOrderController::class, 'getQuotationDetail'])->name('sales.sales-orders.quotation-detail');
+    Route::get('/sales-orders/create', [SalesOrderController::class, 'create'])->name('sales.sales-orders.create');
+    Route::post('/sales-orders', [SalesOrderController::class, 'store'])->name('sales.sales-orders.store');
+    Route::get('/detail-sales-order/{salesOrder}', [SalesOrderController::class, 'show'])->name('sales.sales-orders.show');
+    Route::get('/sales-orders/{salesOrder}/edit', [SalesOrderController::class, 'edit'])->name('sales.sales-orders.edit');
+    Route::put('/sales-orders/{salesOrder}', [SalesOrderController::class, 'update'])->name('sales.sales-orders.update');
+    Route::delete('/sales-orders/{salesOrder}', [SalesOrderController::class, 'destroy'])->name('sales.sales-orders.destroy');
 
     // Sent to Warehouse dari Sales Order
-    Route::post('/sales-order/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])
-        ->name('sales.sales-order.sent-to-warehouse');
+    Route::post('/sales-orders/{salesOrder}/sent-to-warehouse', [SalesOrderController::class, 'sentToWarehouse'])
+        ->name('sales.sales-orders.sent-to-warehouse');
 
     // Sent to Warehouse dari Quotation (yang muncul di halaman SO)
     Route::post('/quotation-so/{quotation}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
@@ -297,8 +297,8 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 
 // System Settings (Supervisor Only)
 Route::middleware(['auth', 'role:Supervisor'])->group(function () {
-    Route::get('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'update'])->name('settings.update');
+    Route::get('/wms-settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'index'])->name('wms-settings.index');
+    Route::post('/wms-settings', [App\Http\Controllers\Admin\SystemSettingsController::class, 'update'])->name('wms-settings.update');
 });
 
 // Sales Report (Sales, GA, Supervisor)
