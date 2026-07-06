@@ -218,9 +218,10 @@ class SalesOrderController extends Controller
                 }
             }
 
-            if ($customQuotation) {
-                $customQuotation->update(['status' => $targetStatus]);
-            }
+            // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
+            // if ($customQuotation) {
+            //     $customQuotation->update(['status' => $targetStatus]);
+            // }
 
             DB::commit();
             $successText = $quotation->custom_quotation_id

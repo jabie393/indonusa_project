@@ -45,7 +45,7 @@ class RealTimeNotification implements ShouldBroadcastNow, ShouldDispatchAfterCom
             
             'goodsInProcurementPendingCount' => CustomQuotation::where('status', 'sent_to_quotation')
                 ->whereHas('order', function ($query) {
-                    $query->where('status', 'sent_to_warehouse');
+                    $query->where('status', 'under_procurement');
                 })
                 ->doesntHave('procurementOfGoods')
                 ->count(),

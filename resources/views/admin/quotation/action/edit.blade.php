@@ -73,11 +73,9 @@
                                         @foreach ($customers as $c)
                                             <option value="{{ $c->id }}" data-email="{{ $c->email }}"
                                                 data-telepon="{{ $c->telepon }}" data-kota="{{ $c->kota }}"
+                                                {{ $c->status !== 'active' ? 'disabled' : '' }}
                                                 @selected(old('customer_id', $requestOrder->customer_id) == $c->id)>
-                                                {{ $c->nama_customer }}
-                                                @if ($c->email)
-                                                    ({{ $c->email }})
-                                                @endif
+                                                {{ $c->nama_customer }} {{ $c->status !== 'active' ? '(Nonaktif)' : '' }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -123,12 +121,18 @@
                                                 </thead>
                                                 <tbody class="divide-subtle/30 customer-options-body divide-y">
                                                     @foreach ($customers as $c)
-                                                        <tr class="hover:bg-surface-container-high customer-option-row cursor-pointer"
+                                                        @php
+                                                            $isInactive = $c->status !== 'active';
+                                                        @endphp
+                                                        <tr class="{{ $isInactive ? 'opacity-50 cursor-not-allowed customer-option-row' : 'hover:bg-surface-container-high customer-option-row cursor-pointer' }}"
                                                             data-id="{{ $c->id }}" data-nama="{{ $c->nama_customer }}"
                                                             data-email="{{ $c->email }}" data-telepon="{{ $c->telepon }}"
-                                                            data-kota="{{ $c->kota }}">
+                                                            data-kota="{{ $c->kota }}" data-status="{{ $c->status }}">
                                                             <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">
                                                                 {{ $c->nama_customer }}
+                                                                @if ($isInactive)
+                                                                    <span class="text-xs font-semibold text-red-500 ml-1">(Nonaktif)</span>
+                                                                @endif
                                                             </td>
                                                             <td class="text-body-sm text-nowrap px-4 py-3">
                                                                 {{ $c->email ?? '-' }}
@@ -1754,6 +1758,9 @@
             }
 
             function bindCustomerOptionRow(optRow) {
+                if (optRow.classList.contains('cursor-not-allowed')) {
+                    return;
+                }
                 optRow.addEventListener('click', function (e) {
                     e.stopPropagation();
                     selectCustomerFromRow(this);
@@ -1776,15 +1783,23 @@
                 const body = document.querySelector('.customer-options-body');
                 if (!body) return;
 
+                const isInactive = customer.status && customer.status !== 'active';
                 const row = document.createElement('tr');
-                row.className = 'hover:bg-surface-container-high customer-option-row cursor-pointer';
+                row.className = isInactive ? 'opacity-50 cursor-not-allowed customer-option-row' : 'hover:bg-surface-container-high customer-option-row cursor-pointer';
                 row.dataset.id = customer.id;
                 row.dataset.nama = customer.nama_customer || '';
                 row.dataset.email = customer.email || '';
                 row.dataset.telepon = customer.telepon || '';
                 row.dataset.kota = customer.kota || '';
+                row.dataset.status = customer.status || 'active';
+
+                let nameHtml = escapeHtml(customer.nama_customer || '-');
+                if (isInactive) {
+                    nameHtml += ' <span class="text-xs font-semibold text-red-500 ml-1">(Nonaktif)</span>';
+                }
+
                 row.innerHTML = `
-                    <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">${escapeHtml(customer.nama_customer || '-')}</td>
+                    <td class="text-body-sm text-nowrap px-4 py-3 font-semibold">${nameHtml}</td>
                     <td class="text-body-sm text-nowrap px-4 py-3">${escapeHtml(customer.email || '-')}</td>
                     <td class="text-body-sm text-nowrap px-4 py-3">${escapeHtml(customer.telepon || '-')}</td>
                     <td class="text-on-surface-variant px-4 py-3 text-[12px]">${escapeHtml(customer.kota || '-')}</td>

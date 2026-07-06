@@ -44,7 +44,7 @@ class ProcurementController extends Controller
         $procurements = $procurementQuery->get();
 
         // 2. Daftar Custom Quotation pending (belum diproses)
-        $pendingQuery = CustomQuotation::where('status', 'under_procurement')
+        $pendingQuery = CustomQuotation::where('status', 'sent_to_quotation')
             ->whereHas('order', function ($q) {
                 $q->where('status', 'under_procurement');
             })
@@ -91,9 +91,9 @@ class ProcurementController extends Controller
      */
     public function create(CustomQuotation $customQuotation)
     {
-        if ($customQuotation->status !== 'under_procurement') {
+        if ($customQuotation->status !== 'sent_to_quotation') {
             return redirect()->route('general-affair.procurement.index')
-                ->withErrors('Custom Quotation ini tidak dalam status menunggu pengadaan.');
+                ->withErrors('Custom Quotation ini tidak dalam status dikirim ke Quotation.');
         }
 
         $order = $customQuotation->order;
@@ -129,8 +129,8 @@ class ProcurementController extends Controller
         try {
             $customQuotation = CustomQuotation::findOrFail($validated['custom_quotation_id']);
 
-            if ($customQuotation->status !== 'under_procurement') {
-                return back()->withErrors('Custom Quotation ini tidak dalam status menunggu pengadaan.')->withInput();
+            if ($customQuotation->status !== 'sent_to_quotation') {
+                return back()->withErrors('Custom Quotation ini tidak dalam status dikirim ke Quotation.')->withInput();
             }
 
             $order = $customQuotation->order;
@@ -205,8 +205,8 @@ class ProcurementController extends Controller
         try {
             $customQuotation = CustomQuotation::findOrFail($validated['custom_quotation_id']);
 
-            if ($customQuotation->status !== 'under_procurement') {
-                return response()->json(['success' => false, 'message' => 'Custom Quotation ini tidak dalam status menunggu pengadaan.'], 400);
+            if ($customQuotation->status !== 'sent_to_quotation') {
+                return response()->json(['success' => false, 'message' => 'Custom Quotation ini tidak dalam status dikirim ke Quotation.'], 400);
             }
 
             $order = $customQuotation->order;
@@ -402,7 +402,7 @@ class ProcurementController extends Controller
             DB::commit();
 
             return redirect()->route('general-affair.procurement.show', $procurement->id)
-                ->with(['title' => 'Berhasil', 'text' => 'Procurement berhasil dipaksa selesai (Force Completed). Status Custom Quotation diubah menjadi Ready for Delivery.']);
+                ->with(['title' => 'Berhasil', 'text' => 'Procurement berhasil dipaksa selesai (Force Completed).']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Force Complete Procurement Error: ' . $e->getMessage());

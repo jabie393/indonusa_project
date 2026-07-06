@@ -5,12 +5,14 @@
             style="background-image: var(--gradient-header)">
             <div class="flex items-center gap-3">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
                 </div>
                 <div>
-                    <h3 id="modalTolakTitle" class="text-lg font-semibold leading-tight">Pembatalan Order</h3>
+                    <h3 id="modalTolakTitle" class="text-lg font-semibold leading-tight">Penolakan Order</h3>
                     <p class="text-xs text-white/80">No. DO: <span id="modalTolakNomor"></span></p>
                 </div>
             </div>
@@ -137,7 +139,7 @@
                         </div>
 
                         <div>
-                            <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
+                            <label id="modalTolakReasonLabel" class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
                                 Alasan Pembatalan <span class="text-rose-500">*</span>
                             </label>
                             <textarea id="modalTolakReason" name="reason" rows="6" required minlength="5"
@@ -324,6 +326,18 @@
         const hasDeliveries = (items && Array.isArray(items)) ? items.some(
             (item) => item.delivered_quantity > 0,
         ) : false;
+
+        const modalTitle = hasDeliveries ? 'Pembatalan Order' : 'Penolakan Order';
+        const titleEl = document.getElementById('modalTolakTitle');
+        if (titleEl) {
+            titleEl.textContent = modalTitle;
+        }
+
+        const labelEl = document.getElementById('modalTolakReasonLabel');
+        if (labelEl) {
+            const labelText = hasDeliveries ? 'Alasan Pembatalan' : 'Alasan Penolakan';
+            labelEl.innerHTML = labelText + ' <span class="text-rose-500">*</span>';
+        }
 
         const returnStockContainer = document.getElementById('returnStockContainer');
         const returnItemsWrapper = document.getElementById('returnItemsWrapper');

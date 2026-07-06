@@ -658,7 +658,7 @@ class CustomQuotationController extends Controller
                 'tax' => $customQuotation->tax ?? 0,
                 'grand_total' => $customQuotation->grand_total,
                 'no_po' => null,
-                'sales_order_number' => Quotation::generateSalesOrderNumber(),
+                'sales_order_number' => null,
             ]);
             $order = Order::create([
                 'order_number' => 'ORD-' . strtoupper(uniqid()),

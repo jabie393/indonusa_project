@@ -52,7 +52,7 @@ class DeliveryOrdersController extends Controller
 
         // Baseline query: eager-load relations and filter by status
         $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales', 'requestOrder.pic', 'customQuotation', 'requestOrder.customQuotation'])
-            ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse'])
+            ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse', 'canceled', 'partial_canceled'])
             ->orderBy('created_at', 'desc');
 
         if ($query) {
@@ -168,13 +168,14 @@ class DeliveryOrdersController extends Controller
         }
         $order->save();
 
-        if ($order->custom_quotation_id) {
-            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
-            if ($customQuotation) {
-                $customQuotation->status = 'completed';
-                $customQuotation->save();
-            }
-        }
+        // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
+        // if ($order->custom_quotation_id) {
+        //     $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+        //     if ($customQuotation) {
+        //         $customQuotation->status = 'completed';
+        //         $customQuotation->save();
+        //     }
+        // }
 
         // Create a delivery batch for full delivery
         $batch = DeliveryBatch::create([
@@ -266,11 +267,16 @@ class DeliveryOrdersController extends Controller
                     $item->save();
                 }
 
-                $order->status = 'completed';
+                $totalDelivered = $order->items->sum('delivered_quantity');
+                if ($totalDelivered === 0) {
+                    $order->status = 'canceled';
+                    $message = 'Order telah dibatalkan sepenuhnya dan seluruh stok dikembalikan.';
+                } else {
+                    $order->status = 'partial_canceled';
+                    $message = 'Order telah dibatalkan sisanya, dan sebagian stok dikembalikan.';
+                }
                 $order->reason = $request->input('reason');
                 $order->save();
-
-                $message = 'Order telah dibatalkan sisanya, stok terkirim telah dikembalikan, dan DO ditandai Selesai.';
             } else {
                 // Case: cancel_rest (default)
                 foreach ($order->items as $item) {
@@ -286,11 +292,16 @@ class DeliveryOrdersController extends Controller
                     $item->save();
                 }
 
-                $order->status = 'completed';
+                $totalDelivered = $order->items->sum('delivered_quantity');
+                if ($totalDelivered === 0) {
+                    $order->status = 'canceled';
+                    $message = 'Order telah dibatalkan sepenuhnya.';
+                } else {
+                    $order->status = 'partial_canceled';
+                    $message = 'Order (sebagian) telah dibatalkan sisanya.';
+                }
                 $order->reason = $request->input('reason');
                 $order->save();
-
-                $message = 'Order (sebagian) telah dibatalkan sisanya dan ditandai Selesai.';
             }
         } else {
             // Case: No deliveries yet, full rejection
@@ -301,17 +312,18 @@ class DeliveryOrdersController extends Controller
             $message = 'Order berhasil direject.';
         }
 
-        if ($order->custom_quotation_id) {
-            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
-            if ($customQuotation) {
-                if ($order->status === 'completed') {
-                    $customQuotation->status = 'completed';
-                } elseif ($order->status === 'rejected_warehouse') {
-                    $customQuotation->status = 'ready_for_delivery';
-                }
-                $customQuotation->save();
-            }
-        }
+        // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
+        // if ($order->custom_quotation_id) {
+        //     $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+        //     if ($customQuotation) {
+        //         if ($order->status === 'completed') {
+        //             $customQuotation->status = 'completed';
+        //         } elseif ($order->status === 'rejected_warehouse') {
+        //             $customQuotation->status = 'ready_for_delivery';
+        //         }
+        //         $customQuotation->save();
+        //     }
+        // }
 
         event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
@@ -443,15 +455,16 @@ class DeliveryOrdersController extends Controller
         }
         $order->save();
 
-        if ($order->custom_quotation_id) {
-            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
-            if ($customQuotation) {
-                if ($order->status === 'completed') {
-                    $customQuotation->status = 'completed';
-                    $customQuotation->save();
-                }
-            }
-        }
+        // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
+        // if ($order->custom_quotation_id) {
+        //     $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+        //     if ($customQuotation) {
+        //         if ($order->status === 'completed') {
+        //             $customQuotation->status = 'completed';
+        //             $customQuotation->save();
+        //         }
+        //     }
+        // }
 
         event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 

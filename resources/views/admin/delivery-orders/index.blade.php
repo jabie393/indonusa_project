@@ -180,7 +180,12 @@
                                             $badgeText = 'text-red-700 dark:text-red-300';
                                             $badgeBorder = 'border border-red-200 dark:border-red-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>';
-                                            $badgeLabel = $status === 'rejected_warehouse' ? 'Rejected by Warehouse' : ($status === 'rejected_supervisor' ? 'Rejected by Supervisor' : $status);
+                                            $badgeLabel = [
+                                                'rejected_warehouse' => 'Rejected by Warehouse',
+                                                'rejected_supervisor' => 'Rejected by Supervisor',
+                                                'canceled' => 'Canceled',
+                                                'partial_canceled' => 'Partially Canceled',
+                                            ][$status] ?? $status;
                                         }
                                     @endphp
                                     <span

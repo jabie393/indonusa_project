@@ -198,6 +198,9 @@
                                             'not_completed' => 'Partial Delivery',
                                             'completed' => 'Completed',
                                             'pending' => 'Pending',
+                                            'under_procurement' => 'Under Procurement',
+                                            'canceled' => 'Canceled',
+                                            'partial_canceled' => 'Partially Canceled',
                                         ];
 
                                         $displayStatus = $orderStatus ? $statusLabelMap[$orderStatus] ?? $orderStatus : $ro->status;
@@ -233,7 +236,7 @@
                                             $badgeText = 'text-blue-700 dark:text-blue-300';
                                             $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                        } elseif (in_array($displayStatus, ['Rejected by Supervisor', 'Rejected by Warehouse'])) {
+                                        } elseif (in_array($displayStatus, ['Rejected by Supervisor', 'Rejected by Warehouse', 'Canceled', 'Partially Canceled'])) {
                                             $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                             $badgeText = 'text-red-700 dark:text-red-300';
                                             $badgeBorder = 'border border-red-200 dark:border-red-800/50';

@@ -68,8 +68,7 @@ class QuotationController extends Controller
             ->orderBy('goods_name')
             ->get();
 
-        $customers = Customer::where('status', 'active')
-            ->with('pics')
+        $customers = Customer::with('pics')
             ->orderBy('customer_name')
             ->get();
 
@@ -393,8 +392,7 @@ class QuotationController extends Controller
             ->orderBy('goods_name')
             ->get();
 
-        $customers = Customer::where('status', 'active')
-            ->with('pics')
+        $customers = Customer::with('pics')
             ->orderBy('customer_name')
             ->get();
 

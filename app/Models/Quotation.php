@@ -47,7 +47,7 @@ class Quotation extends Model
             return false; // Tidak ada item
         }
 
-        if (in_array($status, ['open', 'approved_supervisor', 'sent_to_warehouse', 'approved_warehouse', 'not_completed', 'completed'], true)) {
+        if (in_array($status, ['open', 'approved_supervisor', 'sent_to_warehouse', 'approved_warehouse', 'not_completed', 'completed', 'under_procurement'], true)) {
             return true;
         }
 
@@ -128,6 +128,8 @@ class Quotation extends Model
             'rejected_warehouse' => 'Rejected by Warehouse',
             'completed' => 'Completed',
             'not_completed' => 'Partial Delivery',
+            'canceled' => 'Canceled',
+            'partial_canceled' => 'Partially Canceled',
         ];
         if (!$status) {
             return 'Belum Diproses';

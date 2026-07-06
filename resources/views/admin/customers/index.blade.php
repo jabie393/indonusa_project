@@ -17,8 +17,9 @@
 
             <div class="mr-5 flex items-center space-x-3 md:w-auto">
                 {{-- Search --}}
-                <form action="{{ route('customers.index') }}" method="GET" class="block pl-2" data-realtime-table-search data-search-input="#topbar-search"
-                    data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                <form action="{{ route('customers.index') }}" method="GET" class="block pl-2" data-realtime-table-search
+                    data-search-input="#topbar-search" data-search-target="#tableContainer"
+                    data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
                     <label for="topbar-search" class="sr-only">Search</label>
                     <div class="relative md:w-96">
                         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -164,19 +165,19 @@
                                                         <div class="relative inline-block w-32">
                                                             <select onchange="updateCustomerStatus({{ $customer->id }}, this.value)"
                                                                 class="w-full appearance-none rounded-full px-3 py-1.5 pr-8 text-xs font-semibold tracking-wide border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 cursor-pointer
-                                                                                                                    {{ strtolower($customer->status) == 'active'
+                                                                                                                                            {{ strtolower($customer->status) == 'active'
                                     ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100 focus:ring-green-500 focus:border-green-500 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800/50'
                                     : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 focus:ring-red-500 focus:border-red-500 dark:bg-red-950/30 dark:text-red-400 dark:border-red-800/50' }}">
                                                                 <option value="active" {{ strtolower($customer->status) == 'active' ? 'selected' : '' }} class="bg-white text-green-700 dark:bg-gray-800">
                                                                     🟢 Aktif
                                                                 </option>
                                                                 <option value="inactive" {{ strtolower($customer->status) != 'active' ? 'selected' : '' }} class="bg-white text-red-700 dark:bg-gray-800">
-                                                                    🔴 Non-Aktif
+                                                                    🔴 Nonaktif
                                                                 </option>
                                                             </select>
                                                             <div
                                                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 
-                                                                                                                    {{ strtolower($customer->status) == 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                                                                                                                            {{ strtolower($customer->status) == 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                                                                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                                                     stroke-width="2.5">
                                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -189,7 +190,7 @@
                                         @php
                                             $statusLabel = [
                                                 'active' => 'Aktif',
-                                                'inactive' => 'Non-Aktif',
+                                                'inactive' => 'Nonaktif',
                                             ][$customer->status] ?? $customer->status;
 
                                             $badgeBg = 'bg-gray-50 dark:bg-gray-900/30';
@@ -218,7 +219,7 @@
                                     <td class="px-4 py-3 align-middle">
                                         <span
                                             class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ strtolower($customer->status) == 'active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200' }}">
-                                            {{ strtolower($customer->status) == 'active' ? 'Aktif' : 'Non-Aktif' }}
+                                            {{ strtolower($customer->status) == 'active' ? 'Aktif' : 'Nonaktif' }}
                                         </span>
                                     </td>
                                 @endif
@@ -244,7 +245,8 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Edit</span>
                                             </button>
                                             {{-- Delete --}}
-                                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST" style="display:inline;">
+                                            <form action="{{ route('customers.destroy', $customer->id) }}" method="POST"
+                                                style="display:inline;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"

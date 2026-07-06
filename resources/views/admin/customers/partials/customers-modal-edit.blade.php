@@ -38,7 +38,7 @@
                         </div>
                         <div class="flex items-center space-x-4">
                             <div class="relative inline-flex items-center gap-3">
-                                <span class="text-xs font-bold text-red-500">Non-Aktif</span>
+                                <span class="text-xs font-bold text-red-500">Nonaktif</span>
                                 <label class="toggle text-base-content">
                                     <input type="checkbox" id="editStatus" name="status" value="1" />
                                     <svg aria-label="disabled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
@@ -297,7 +297,7 @@
         }
 
         if (statusBadgeContainer) {
-            const label = isActive ? 'Aktif' : 'Non-aktif';
+            const label = isActive ? 'Aktif' : 'Nonaktif';
             const colorClass = isActive ?
                 'bg-green-100 text-green-800 border-green-200' :
                 'bg-red-100 text-red-800 border-red-200';
@@ -310,7 +310,7 @@
         editPicIndex = 0;
 
         // Ambil PICs langsung dari tabel via AJAX
-        const picsUrl = "{{ url('admin/customer') }}" + "/" + customer.id + "/pics";
+        const picsUrl = "{{ route('customers.pics', ['id' => ':id']) }}".replace(':id', customer.id);
 
         fetch(picsUrl, {
                 headers: {
