@@ -38,21 +38,35 @@ class SalesOrderController extends Controller
             $berlakuSampai = \Carbon\Carbon::parse($ro->expired_at)->translatedFormat('d F Y');
         }
 
-        $firstPic = $ro->customer?->pics?->first();
-        $warehouseStatuses = ['sent_to_warehouse', 'completed', 'not_completed'];
+        if ($ro->custom_quotation_id) {
+            $picName = $ro->customQuotation?->up;
+            $picPosition = 'PIC';
+            if ($ro->customer && $picName) {
+                $matchedPic = $ro->customer->pics->where('name', $picName)->first();
+                if ($matchedPic) {
+                    $picPosition = $matchedPic->position;
+                }
+            }
+        } else {
+            $picName = $ro->pic_name ?? $ro->pic?->name ?? $ro->customer?->pics?->first()?->name;
+            $picPosition = $ro->pic?->position ?? $ro->customer?->pics?->first()?->position ?? 'PIC';
+        }
+
+        $warehouseStatuses = ['sent_to_warehouse', 'under_procurement', 'completed', 'not_completed'];
         $isSentToWarehouse = $ro->order && in_array($ro->order->status, $warehouseStatuses, true);
 
         return [
             'id'             => $ro->id,
             'type'           => 'request_order',
+            'custom_quotation_id' => $ro->custom_quotation_id,
             'no_request'     => $ro->request_number,
             'no_quotation'   => $ro->quotation_number,
             'no_po'          => $ro->no_po ?? '-',
             'no_sales_order' => $ro->sales_order_number,
             'tanggal'        => $ro->required_date ? $ro->required_date->format('d/m/Y') : '-',
             'customer_name'  => $ro->customer_name,
-            'first_pic_name' => $firstPic?->name,
-            'first_pic_position' => $firstPic?->position,
+            'first_pic_name' => $picName,
+            'first_pic_position' => $picPosition,
             'jumlah_item'    => $ro->items->count(),
             'total'          => $ro->grand_total ?? 0,
             'diskon'         => $diskonPersen,
@@ -68,24 +82,22 @@ class SalesOrderController extends Controller
         ];
     }
 
-    /**
-     * Kirim Quotation ke Warehouse dari halaman SO
-     */
     public function sentRequestOrderToWarehouse(Request $request, \App\Models\Quotation $quotation)
     {
         $alreadySent = Order::where('quotation_id', $quotation->id)
-            ->whereIn('status', ['sent_to_warehouse', 'completed', 'not_completed'])
+            ->whereIn('status', ['sent_to_warehouse', 'under_procurement', 'completed', 'not_completed'])
             ->exists();
 
         if ($alreadySent) {
             return redirect()->back()
-                ->with(['title' => 'Gagal', 'text' => 'Quotation ini sudah pernah dikirim ke warehouse.']);
+                ->with(['title' => 'Gagal', 'text' => 'Quotation ini sudah pernah dikirim ke warehouse atau procurement.']);
         }
 
         DB::beginTransaction();
         try {
             $quotation->load('items', 'sales');
             $customQuotation = $quotation->customQuotation;
+            $targetStatus = $quotation->custom_quotation_id ? 'under_procurement' : 'sent_to_warehouse';
 
             // 1. Check if there are any custom items in this quotation
             $hasCustomItems = false;
@@ -148,7 +160,7 @@ class SalesOrderController extends Controller
                     4, '0', STR_PAD_LEFT
                 ));
                 $existingOrder->update([
-                    'status' => 'sent_to_warehouse',
+                    'status' => $targetStatus,
                     'do_number' => $doNumber,
                     'custom_quotation_id' => $quotation->custom_quotation_id ?? $existingOrder->custom_quotation_id,
                 ]);
@@ -184,7 +196,7 @@ class SalesOrderController extends Controller
                     'customer_id'         => $quotation->customer_id ?? null,
                     'quotation_id'        => $quotation->id,
                     'custom_quotation_id' => $quotation->custom_quotation_id ?? null,
-                    'status'              => 'sent_to_warehouse',
+                    'status'              => $targetStatus,
                     'required_date'       => $quotation->required_date ?? now()->toDateString(),
                     'customer_notes'      => $quotation->customer_notes ?? null,
                 ]);
@@ -206,13 +218,21 @@ class SalesOrderController extends Controller
                 }
             }
 
+            if ($customQuotation) {
+                $customQuotation->update(['status' => $targetStatus]);
+            }
+
             DB::commit();
+            $successText = $quotation->custom_quotation_id
+                ? "Quotation berhasil diajukan untuk pengadaan (procurement) dengan No. {$orderNumber}."
+                : "Quotation berhasil dikirim ke Warehouse dengan No. {$orderNumber}.";
+
             return redirect()->back()
-                ->with(['title' => 'Berhasil', 'text' => "Quotation berhasil dikirim ke Warehouse dengan No. {$orderNumber}."]);
+                ->with(['title' => 'Berhasil', 'text' => $successText]);
         } catch (\Throwable $e) {
             DB::rollBack();
             return redirect()->back()
-                ->withErrors('Gagal mengirim ke warehouse: ' . $e->getMessage());
+                ->withErrors('Gagal memproses request order: ' . $e->getMessage());
         }
     }
 
@@ -241,7 +261,7 @@ class SalesOrderController extends Controller
                           $o->where('status', '!=', 'rejected_supervisor');
                       });
                 })
-                ->with(['order.batches', 'items', 'customer.pics'])
+                ->with(['order.batches', 'items', 'customer.pics', 'customQuotation'])
                 ->get()
                 ->map(fn($ro) => array_merge($this->mapRequestOrderRow($ro), [
                     'catatan_customer' => $ro->customer_notes,
@@ -256,7 +276,7 @@ class SalesOrderController extends Controller
                           $o->where('status', '!=', 'rejected_supervisor');
                       });
                 })
-                ->with(['order.batches', 'items', 'customer.pics'])
+                ->with(['order.batches', 'items', 'customer.pics', 'customQuotation'])
                 ->latest()
                 ->paginate($perPage)
                 ->appends(request()->query());

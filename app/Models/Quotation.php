@@ -122,6 +122,7 @@ class Quotation extends Model
             'open' => 'Open',
             'sent_to_supervisor' => 'Waiting for Supervisor Approval',
             'rejected_supervisor' => 'Rejected by Supervisor',
+            'under_procurement' => 'Under Procurement',
             'sent_to_warehouse' => 'Sent to Warehouse',
             'approved_warehouse' => 'Approved by Warehouse',
             'rejected_warehouse' => 'Rejected by Warehouse',
@@ -132,7 +133,7 @@ class Quotation extends Model
             return 'Belum Diproses';
         }
 
-        if ($status === 'sent_to_warehouse' && $this->custom_quotation_id) {
+        if (in_array($status, ['sent_to_warehouse', 'under_procurement'], true) && $this->custom_quotation_id) {
             $hasActiveProcurement = \App\Models\ProcurementOfGoods::where('custom_quotation_id', $this->custom_quotation_id)
                 ->where('status', '!=', 'completed')
                 ->exists();

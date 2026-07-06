@@ -165,8 +165,8 @@ class SalesReportController extends Controller
                 $qQuery->whereIn('orders.status', ['rejected_supervisor', 'rejected_warehouse']);
                 $cqQuery->whereIn('custom_quotations.status', ['rejected', 'rejected_supervisor']);
             } elseif ($status === 'sent_to_warehouse') {
-                $qQuery->where('orders.status', 'sent_to_warehouse');
-                $cqQuery->where('custom_quotations.status', 'sent_to_warehouse');
+                $qQuery->whereIn('orders.status', ['sent_to_warehouse', 'under_procurement']);
+                $cqQuery->whereIn('custom_quotations.status', ['sent_to_warehouse', 'under_procurement']);
             } elseif ($status === 'completed') {
                 $qQuery->where('orders.status', 'completed');
                 $cqQuery->where('custom_quotations.status', 'completed');
@@ -208,7 +208,7 @@ class SalesReportController extends Controller
             $status = $orderStatus ?: 'belum_diproses';
             
             // Check for Under Procurement status
-            if ($orderStatus === 'sent_to_warehouse' && $customQuotationId) {
+            if (in_array($orderStatus, ['sent_to_warehouse', 'under_procurement']) && $customQuotationId) {
                 $hasActiveProcurement = DB::table('procurement_of_goods')
                     ->where('custom_quotation_id', $customQuotationId)
                     ->where('status', '!=', 'completed')

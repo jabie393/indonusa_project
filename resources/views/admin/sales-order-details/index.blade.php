@@ -305,7 +305,7 @@
                                         </svg>
                                     </div>
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                        {{ $requestOrder->pic->name ?? $requestOrder->sales->name ?? '-' }}</p>
+                                        {{ $requestOrder->custom_quotation_id ? ($requestOrder->customQuotation->up ?? '-') : ($requestOrder->pic_name ?? $requestOrder->pic->name ?? $requestOrder->customer?->pics?->first()?->name ?? $requestOrder->sales->name ?? '-') }}</p>
                                 </div>
                             </div>
 

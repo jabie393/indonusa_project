@@ -100,7 +100,7 @@
                                             <input type="text" id="no-po-input-{{ $row['id'] }}"
                                                 class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none dark:border-gray-500 dark:bg-gray-700 dark:text-white"
                                                 value="{{ $row['no_po'] === '-' ? '' : ($row['no_po'] ?? '') }}" placeholder="-" onblur="saveNoPO({{ $row['id'] }}, this.value)"
-                                                onkeypress="if (event.key === 'Enter') { event.preventDefault(); saveNoPO({{ $row['id'] }}, this.value); this.blur(); }" />
+                                                onkeypress="if (event.key === 'Enter') { event.preventDefault(); this.blur(); }" />
                                             <span class="text-[11px] leading-snug text-gray-500 dark:text-gray-400">No.PO dapat
                                                 di edit langsung di sini.</span>
                                         @else
@@ -355,6 +355,8 @@
                                                 $sendToWarehouseRoute = null;
                                                 $sendToWarehouseText = null;
                                                 $sendToWarehouseButtonText = null;
+                                                $sendToWarehouseBtnLabel = 'Send to Warehouse';
+                                                $sendToWarehouseBtnClass = 'bg-indigo-700 hover:bg-indigo-800 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800';
 
                                                 if ($row['type'] === 'sales_order') {
                                                     $sendToWarehouseRoute = route('sales.sales-orders.sent-to-warehouse', $row['id']);
@@ -362,8 +364,15 @@
                                                     $sendToWarehouseButtonText = 'Ya, Kirim';
                                                 } elseif ($row['type'] === 'request_order') {
                                                     $sendToWarehouseRoute = route('sales.quotation.sent-to-warehouse-from-so', $row['id']);
-                                                    $sendToWarehouseText = 'Send this Quotation to Warehouse?';
-                                                    $sendToWarehouseButtonText = 'Yes, Send';
+                                                    if (!empty($row['custom_quotation_id'])) {
+                                                        $sendToWarehouseText = 'Send this Quotation for Procurement?';
+                                                        $sendToWarehouseButtonText = 'Yes, Request';
+                                                        $sendToWarehouseBtnLabel = 'Request Procurement';
+                                                        $sendToWarehouseBtnClass = 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800';
+                                                    } else {
+                                                        $sendToWarehouseText = 'Send this Quotation to Warehouse?';
+                                                        $sendToWarehouseButtonText = 'Yes, Send';
+                                                    }
                                                 }
                                             @endphp
 
@@ -373,16 +382,27 @@
                                                     class="approve-form h-full">
                                                     @csrf
                                                     <button type="submit"
-                                                        class="group flex h-full cursor-pointer items-center justify-center bg-indigo-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                                            <path
-                                                                d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                            <path d="m3.3 7 8.7 5 8.7-5" />
-                                                            <path d="M12 22V12" />
-                                                        </svg>
+                                                        class="group flex h-full cursor-pointer items-center justify-center p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 {{ $sendToWarehouseBtnClass }}">
+                                                        @if (!empty($row['custom_quotation_id']))
+                                                            <!-- Shopping Cart Icon for Procurement -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <circle cx="8" cy="21" r="1"/>
+                                                                <circle cx="19" cy="21" r="1"/>
+                                                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+                                                            </svg>
+                                                        @else
+                                                            <!-- Box Icon for Warehouse -->
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path
+                                                                    d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                                                <path d="m3.3 7 8.7 5 8.7-5" />
+                                                                <path d="M12 22V12" />
+                                                            </svg>
+                                                        @endif
                                                         <span
-                                                            class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Send to Warehouse</span>
+                                                            class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">{{ $sendToWarehouseBtnLabel }}</span>
                                                     </button>
                                                 </form>
                                             @endif
@@ -983,8 +1003,8 @@
                 .then(data => {
                     if (data.status === 'success') {
                         const salesOrderEl = document.getElementById(`sales-order-number-${id}`);
-                        if (salesOrderEl && data.sales_order_number) {
-                            salesOrderEl.textContent = data.sales_order_number;
+                        if (salesOrderEl) {
+                            salesOrderEl.textContent = data.sales_order_number || '-';
                         }
 
                         Swal.fire({

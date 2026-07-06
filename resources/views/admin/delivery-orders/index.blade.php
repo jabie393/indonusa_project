@@ -116,10 +116,33 @@
                                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
                                             <circle cx="12" cy="7" r="4"></circle>
                                         </svg>
-                                        <span class="font-medium">{{ $order->requestOrder?->pic->name ?? '-' }}</span>
+                                        @php
+                                            $picName = '-';
+                                            $picPosition = 'PIC';
+                                            if ($order->custom_quotation_id) {
+                                                $picName = $order->customQuotation?->up ?? '-';
+                                                if ($order->customer && $picName !== '-') {
+                                                    $matchedPic = $order->customer->pics->where('name', $picName)->first();
+                                                    if ($matchedPic) {
+                                                        $picPosition = $matchedPic->position;
+                                                    }
+                                                }
+                                            } elseif ($order->requestOrder?->custom_quotation_id) {
+                                                $picName = $order->requestOrder->customQuotation?->up ?? '-';
+                                                if ($order->customer && $picName !== '-') {
+                                                    $matchedPic = $order->customer->pics->where('name', $picName)->first();
+                                                    if ($matchedPic) {
+                                                        $picPosition = $matchedPic->position;
+                                                    }
+                                                }
+                                            } else {
+                                                $picName = $order->requestOrder?->pic_name ?? $order->requestOrder?->pic?->name ?? $order->customer?->pics?->first()?->name ?? '-';
+                                                $picPosition = $order->requestOrder?->pic?->position ?? $order->customer?->pics?->first()?->position ?? 'PIC';
+                                            }
+                                        @endphp
+                                        <span class="font-medium">{{ $picName }}</span>
                                         <span class="text-slate-300 dark:text-slate-600">•</span>
-                                        <span
-                                            class="text-slate-400 dark:text-slate-500">{{ $order->requestOrder?->pic->position ?? 'PIC' }}</span>
+                                        <span class="text-slate-400 dark:text-slate-500">{{ $picPosition }}</span>
                                     </span>
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white font-semibold">
@@ -196,13 +219,24 @@
                                             </button>
                                             @if (Auth::user() && Auth::user()->role === 'Warehouse')
                                                 @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
+                                                    @php
+                                                        $hasEnoughStockForFull = true;
+                                                        foreach ($order->items as $item) {
+                                                            $remainingQty = $item->quantity - $item->delivered_quantity;
+                                                            if ($item->barang && $item->barang->stock < $remainingQty) {
+                                                                $hasEnoughStockForFull = false;
+                                                                break;
+                                                            }
+                                                        }
+                                                    @endphp
                                                     {{-- Approve --}}
                                                     <button type="button"
                                                         class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                         data-id="{{ $order->id }}"
                                                         data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                         data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
-                                                        data-delivery-options="{{ $order->delivery_options }}">
+                                                        data-delivery-options="{{ $order->delivery_options }}"
+                                                        data-has-enough-stock="{{ $hasEnoughStockForFull ? 'true' : 'false' }}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                             <path stroke-linecap="round" stroke-linejoin="round"

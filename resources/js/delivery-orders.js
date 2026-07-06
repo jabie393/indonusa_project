@@ -286,6 +286,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const orderNumber = btn.getAttribute("data-order-number");
             const approveUrl = btn.getAttribute("data-approve-url");
             const deliveryOptions = btn.getAttribute("data-delivery-options");
+            const hasEnoughStock = btn.getAttribute("data-has-enough-stock") !== 'false';
 
             currentOrderId = orderId;
             if (approveOrderNumberEl)
@@ -298,8 +299,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (fullDeliveryForm) {
                 fullDeliveryForm.setAttribute("action", approveUrl);
-                // Hide Full Delivery option if order is already partial
-                if (deliveryOptions === "partial") {
+                // Hide Full Delivery option if order is already partial or stock is insufficient
+                if (deliveryOptions === "partial" || !hasEnoughStock) {
                     fullDeliveryForm.classList.add("hidden");
                 } else {
                     fullDeliveryForm.classList.remove("hidden");

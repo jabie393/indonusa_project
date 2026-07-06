@@ -37,7 +37,7 @@ class SupplyOrdersController extends Controller
 
         // 2. Custom Procurement receipts (pending approval)
         $procurementQuery = ProcurementArrivalRequest::where('status', 'pending')
-            ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation']);
+            ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation.order']);
 
         if ($query) {
             $procurementQuery->whereHas('good', function ($q) use ($query) {
@@ -281,6 +281,14 @@ class SupplyOrdersController extends Controller
             $procurement->status = $allCompleted ? 'completed' : 'partial_received';
             $procurement->warehouse_id = Auth::id();
             $procurement->save();
+
+            // Transition associated order to sent_to_warehouse if it is under_procurement
+            if ($procurement->customQuotation && $procurement->customQuotation->order) {
+                $order = $procurement->customQuotation->order;
+                if ($order->status === 'under_procurement') {
+                    $order->update(['status' => 'sent_to_warehouse']);
+                }
+            }
 
             // Status Custom Quotation dipertahankan pada 'sent_to_quotation' sesuai dengan alur baru.
 

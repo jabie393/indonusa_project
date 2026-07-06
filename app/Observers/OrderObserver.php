@@ -12,7 +12,7 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        if ($order->status === 'sent_to_warehouse') {
+        if (in_array($order->status, ['sent_to_warehouse', 'under_procurement'], true)) {
             event(new OrderStatusUpdated($order->id));
             $this->dispatchOrderNotification($order);
         }
@@ -23,7 +23,7 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        if ($order->isDirty('status') && $order->status === 'sent_to_warehouse') {
+        if ($order->isDirty('status') && in_array($order->status, ['sent_to_warehouse', 'under_procurement'], true)) {
             event(new OrderStatusUpdated($order->id));
             $this->dispatchOrderNotification($order);
         }
@@ -34,25 +34,27 @@ class OrderObserver
      */
     private function dispatchOrderNotification(Order $order): void
     {
-        $customQuotation = null;
-        if ($order->custom_quotation_id) {
-            $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
-        } elseif ($order->quotation_id) {
-            $quotation = \App\Models\Quotation::find($order->quotation_id);
-            if ($quotation && $quotation->custom_quotation_id) {
-                $customQuotation = \App\Models\CustomQuotation::find($quotation->custom_quotation_id);
+        if ($order->status === 'under_procurement') {
+            $customQuotation = null;
+            if ($order->custom_quotation_id) {
+                $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
+            } elseif ($order->quotation_id) {
+                $quotation = \App\Models\Quotation::find($order->quotation_id);
+                if ($quotation && $quotation->custom_quotation_id) {
+                    $customQuotation = \App\Models\CustomQuotation::find($quotation->custom_quotation_id);
+                }
             }
-        }
 
-        if ($customQuotation && $customQuotation->status === 'sent_to_quotation') {
-            event(new \App\Events\RealTimeNotification(
-                'General Affair',
-                null,
-                'procurement_submitted',
-                'Pengadaan Baru!',
-                "Ada Custom Quotation baru yang membutuhkan pengadaan: {$customQuotation->quotation_number}"
-            ));
-        } else {
+            if ($customQuotation) {
+                event(new \App\Events\RealTimeNotification(
+                    'General Affair',
+                    null,
+                    'procurement_submitted',
+                    'Pengadaan Baru!',
+                    "Ada Custom Quotation baru yang membutuhkan pengadaan: {$customQuotation->quotation_number}"
+                ));
+            }
+        } elseif ($order->status === 'sent_to_warehouse') {
             event(new \App\Events\RealTimeNotification(
                 'Warehouse',
                 null,

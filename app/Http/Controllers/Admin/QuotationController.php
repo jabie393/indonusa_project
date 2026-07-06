@@ -804,8 +804,12 @@ class QuotationController extends Controller
         $trimmedNoPo = trim((string) ($validated['no_po'] ?? ''));
         $requestOrder->no_po = $trimmedNoPo !== '' ? $trimmedNoPo : null;
 
-        if (empty($requestOrder->sales_order_number) && !empty($requestOrder->no_po)) {
-            $requestOrder->sales_order_number = Quotation::generateSalesOrderNumber();
+        if (empty($requestOrder->no_po)) {
+            $requestOrder->sales_order_number = null;
+        } else {
+            if (empty($requestOrder->sales_order_number)) {
+                $requestOrder->sales_order_number = Quotation::generateSalesOrderNumber();
+            }
         }
 
         $requestOrder->save();

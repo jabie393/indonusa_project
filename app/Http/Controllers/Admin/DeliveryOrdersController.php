@@ -51,7 +51,7 @@ class DeliveryOrdersController extends Controller
         $query = $request->input('search');
 
         // Baseline query: eager-load relations and filter by status
-        $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales', 'requestOrder.pic'])
+        $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales', 'requestOrder.pic', 'customQuotation', 'requestOrder.customQuotation'])
             ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse'])
             ->orderBy('created_at', 'desc');
 
@@ -111,34 +111,54 @@ class DeliveryOrdersController extends Controller
             // Reload relation
             $order->load('items');
         }
+
+        $sentQuantities = [];
+
+        // Validate stock before processing approval
+        foreach ($order->items as $item) {
+            $remainingQty = $item->quantity - $item->delivered_quantity;
+            $sentQuantities[$item->id] = $remainingQty;
+
+            if ($remainingQty > 0) {
+                if ($item->barang && $item->barang->stock < $remainingQty) {
+                    throw new \Exception("Stok tidak mencukupi untuk item '{$item->barang->goods_name}'. Stok saat ini: {$item->barang->stock}, sedangkan kuantitas yang dipesan: {$remainingQty}. Silakan gunakan opsi pengiriman parsial.");
+                }
+            }
+        }
         
         foreach ($order->items as $item) {
-            $item->delivered_quantity = $item->quantity;
-            $item->item_status = 'delivered';
-            $item->save();
+            $remainingQty = $sentQuantities[$item->id] ?? 0;
+            if ($remainingQty > 0) {
+                $item->delivered_quantity = $item->quantity;
+                $item->item_status = 'delivered';
+                $item->save();
 
-            // Deduct stock from goods table
-            if ($item->barang) {
-                $barang = $item->barang;
-                $barang->stock -= $item->quantity;
-                $barang->save();
+                // Deduct stock from goods table
+                if ($item->barang) {
+                    $barang = $item->barang;
+                    $barang->stock -= $remainingQty;
+                    $barang->save();
 
-                // Manual history logging for stock deduction
-                \App\Models\BarangHistory::create([
-                    'goods_id'    => $barang->id,
-                    'goods_code'  => $barang->goods_code,
-                    'goods_name'  => $barang->goods_name,
-                    'category'    => $barang->category,
-                    'stock'       => $barang->stock,
-                    'unit'        => $barang->unit,
-                    'location'    => $barang->location,
-                    'selling_price' => $barang->selling_price,
-                    'description' => $barang->description,
-                    'old_status'  => $barang->goods_status,
-                    'new_status'  => $barang->goods_status, // status remains 'masuk' or same
-                    'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
-                    'note'        => 'Stock berkurang (' . $item->quantity . ') karena pengiriman penuh DO: ' . ($order->do_number ?? $order->order_number),
-                ]);
+                    // Manual history logging for stock deduction
+                    \App\Models\BarangHistory::create([
+                        'goods_id'    => $barang->id,
+                        'goods_code'  => $barang->goods_code,
+                        'goods_name'  => $barang->goods_name,
+                        'category'    => $barang->category,
+                        'stock'       => $barang->stock,
+                        'unit'        => $barang->unit,
+                        'location'    => $barang->location,
+                        'selling_price' => $barang->selling_price,
+                        'description' => $barang->description,
+                        'old_status'  => $barang->goods_status,
+                        'new_status'  => $barang->goods_status, // status remains 'masuk' or same
+                        'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
+                        'note'        => 'Stock berkurang (' . $remainingQty . ') karena pengiriman penuh DO: ' . ($order->do_number ?? $order->order_number),
+                    ]);
+                }
+            } else {
+                $item->item_status = 'delivered';
+                $item->save();
             }
         }
 
@@ -163,20 +183,27 @@ class DeliveryOrdersController extends Controller
         ]);
 
         foreach ($order->items as $item) {
-            DeliveryBatchItem::create([
-                'delivery_batch_id' => $batch->id,
-                'order_item_id' => $item->id,
-                'quantity_sent' => $item->quantity,
-            ]);
+            $qtySent = $sentQuantities[$item->id] ?? 0;
+            if ($qtySent > 0) {
+                DeliveryBatchItem::create([
+                    'delivery_batch_id' => $batch->id,
+                    'order_item_id' => $item->id,
+                    'quantity_sent' => $qtySent,
+                ]);
+            }
         }
     }
 
     // Approve order
     public function approve(Request $request, $id)
     {
-        $this->processApproval($id);
-        event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
-        return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
+        try {
+            $this->processApproval($id);
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            return redirect()->route('delivery-orders.index')->with(['title' => 'Berhasil', 'text' => 'Order berhasil diapprove.']);
+        } catch (\Throwable $e) {
+            return redirect()->back()->withErrors($e->getMessage());
+        }
     }
 
     // Reject order
@@ -333,6 +360,15 @@ class DeliveryOrdersController extends Controller
                 $sentQuantity = (int) $itemsData[$item->id];
                 
                 if ($sentQuantity > 0) {
+                    $remainingQty = $item->quantity - $item->delivered_quantity;
+                    if ($sentQuantity > $remainingQty) {
+                        return redirect()->back()->withInput()->withErrors("Kuantitas yang ingin dikirim ({$sentQuantity}) melebihi kuantitas sisa yang belum dikirim ({$remainingQty}) untuk item '" . ($item->barang?->goods_name ?? $item->custom_product_name ?? '-') . "'.");
+                    }
+
+                    if ($item->barang && $item->barang->stock < $sentQuantity) {
+                        return redirect()->back()->withInput()->withErrors("Stok tidak mencukupi untuk item '{$item->barang->goods_name}'. Stok saat ini: {$item->barang->stock}, sedangkan kuantitas yang ingin dikirim: {$sentQuantity}.");
+                    }
+
                     $newDeliveredQuantity = $item->delivered_quantity + $sentQuantity;
                     $item->delivered_quantity = $newDeliveredQuantity;
 
