@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\BarangHistory;
+use App\Models\GoodsHistory;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
 
-class Barang extends Model
+class Goods extends Model
 {
     use HasFactory;
 
@@ -86,7 +86,7 @@ class Barang extends Model
                     $action = 'Barang ditolak oleh admin warehouse sesuai catatan penolakan';
                 }
 
-                BarangHistory::create([
+                GoodsHistory::create([
                     'goods_id'     => $barang->id,
                     'goods_code'   => $barang->goods_code,
                     'goods_name'   => $barang->goods_name,
@@ -108,7 +108,7 @@ class Barang extends Model
         });
 
         static::deleted(function ($barang) {
-            BarangHistory::create([
+            GoodsHistory::create([
                 'goods_id'     => $barang->id,
                 'goods_code'   => $barang->goods_code,
                 'goods_name'   => $barang->goods_name,
@@ -134,7 +134,7 @@ class Barang extends Model
 
     public function histories()
     {
-        return $this->hasMany(BarangHistory::class);
+        return $this->hasMany(GoodsHistory::class, 'goods_id');
     }
 
     public function procurementOfGoodsItems()

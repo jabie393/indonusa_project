@@ -219,7 +219,7 @@
                                                             required
                                                             class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
                                                         <option value="" disabled>Pilih Kategori</option>
-                                                        @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                                                        @foreach(\App\Models\Goods::KATEGORI as $kategori)
                                                             <option value="{{ $kategori }}" {{ old('items.'.$index.'.category', $isOldItem ? ($item['category'] ?? '') : ($item->category ?? '')) == $kategori ? 'selected' : '' }}>{{ $kategori }}</option>
                                                         @endforeach
                                                     </select>
@@ -395,7 +395,7 @@
                                                             required
                                                             class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white">
                                                         <option value="" disabled selected>Pilih Kategori</option>
-                                                        @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                                                        @foreach(\App\Models\Goods::KATEGORI as $kategori)
                                                             <option value="{{ $kategori }}">{{ $kategori }}</option>
                                                         @endforeach
                                                     </select>
@@ -869,7 +869,7 @@
                     placeholder="Nama barang" required>
                 <select name="items[${itemCount}][category]" class="form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white" required>
                     <option value="" disabled selected>Pilih Kategori</option>
-                    @foreach(\App\Models\Barang::KATEGORI as $kategori)
+                    @foreach(\App\Models\Goods::KATEGORI as $kategori)
                         <option value="{{ $kategori }}">{{ $kategori }}</option>
                     @endforeach
                 </select>

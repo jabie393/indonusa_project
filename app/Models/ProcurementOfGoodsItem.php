@@ -35,7 +35,7 @@ class ProcurementOfGoodsItem extends Model
 
     public function goods()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     public function procurementArrivalRequests()

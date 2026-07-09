@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Barang;
+use App\Models\Goods;
 
-class BarangSeeder extends Seeder
+class GoodsSeeder extends Seeder
 {
     public function run(): void
     {
@@ -75,7 +75,7 @@ class BarangSeeder extends Seeder
         ];
 
         foreach ($goods as $barangData) {
-            $barang = Barang::create($barangData);
+            $barang = Goods::create($barangData);
 
             // Seed GoodsReceipt for 'masuk' items
             if ($barangData['goods_status'] === 'approved') {

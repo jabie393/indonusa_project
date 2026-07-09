@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\CustomQuotation;
 use App\Models\Order;
 use App\Models\ProcurementArrivalRequest;
@@ -54,7 +54,7 @@ class RealTimeNotification implements ShouldBroadcastNow, ShouldDispatchAfterCom
                 $query->where('status', 'rejected');
             })->count(),
 
-            'supplyOrderCount' => Barang::where('goods_status', 'pending')
+            'supplyOrderCount' => Goods::where('goods_status', 'pending')
                 ->where('status_listing', '!=', 'non_listing')
                 ->whereDoesntHave('procurementOfGoodsItems')
                 ->count(),

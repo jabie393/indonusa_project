@@ -615,7 +615,6 @@
                             background: #ffffff !important;
                             text-shadow: none !important;
                             fill: #000000 !important;
-                            
                         }
                         #print-container { background: #ffffff !important; }
                         #print-container thead tr, #print-container thead th {
@@ -637,20 +636,18 @@
                     <div id="print-container">
                         ${invoiceContent}
                     </div>
+                    <script>
+                        // Wait for window rendering, print, then close
+                        setTimeout(function() {
+                            window.print();
+                            window.close();
+                        }, 250);
+                    <\/script>
                 </body>
                 </html>
             `);
             printWindow.document.close();
             printWindow.focus();
-            printWindow.onload = function () {
-                printWindow.print();
-                printWindow.close();
-            };
-            setTimeout(function () {
-                try {
-                    printWindow.print();
-                } catch (e) { }
-            }, 500);
         }
         document.getElementById('btn-print').addEventListener('click', printInvoicePDF);
 

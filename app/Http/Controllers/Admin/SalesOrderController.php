@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\DeliveryBatch;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InvoiceExport;
@@ -114,7 +114,7 @@ class SalesOrderController extends Controller
                 if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
                     // Generate unique goods code
                     $category = $item->product_category ?: 'OTHER CATEGORIES';
-                    $generatedCode = \App\Models\Barang::generateUniqueKodeBarang($category);
+                    $generatedCode = \App\Models\Goods::generateUniqueKodeBarang($category);
 
                     // Find description and unit from CustomQuotationItem
                     $cqItem = null;
@@ -127,7 +127,7 @@ class SalesOrderController extends Controller
                     $description = $cqItem ? $cqItem->description : '-';
 
                     // Create the goods record
-                    $goods = \App\Models\Barang::create([
+                    $goods = \App\Models\Goods::create([
                         'request_type' => 'primary',
                         'goods_status' => 'pending',
                         'status_listing' => 'non_listing',

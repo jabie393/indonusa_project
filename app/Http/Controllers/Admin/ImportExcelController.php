@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -16,10 +16,10 @@ class ImportExcelController extends Controller
     // Tampilkan daftar barang (purchase request)
     public function index()
     {
-        $goods = Barang::all();
-        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
+        $goods = Goods::all();
+        $kategoriList = Goods::KATEGORI; // Ambil daftar kategori dari model Barang
 
-        $existingCodes = Barang::pluck('goods_code')->toArray();
+        $existingCodes = Goods::pluck('goods_code')->toArray();
 
         return view('admin.import-excel.index', compact('goods', 'kategoriList', 'existingCodes'));
     }
@@ -122,7 +122,7 @@ class ImportExcelController extends Controller
                 $lastBarang = null;
 
                 // Gunakan withoutEvents agar tidak nyepam notifikasi per barang
-                Barang::withoutEvents(function () use ($formRows, $request, &$created, &$lastBarang) {
+                Goods::withoutEvents(function () use ($formRows, $request, &$created, &$lastBarang) {
                     foreach ($formRows as $i => $r) {
                         $kode = $r['goods_code'] ?? null;
                         if (empty($kode)) {
@@ -174,7 +174,7 @@ class ImportExcelController extends Controller
                             'form' => Auth::id(),
                         ];
 
-                        $barang = Barang::create($payload);
+                        $barang = Goods::create($payload);
 
                         try {
                             $savedPaths = [];
@@ -203,7 +203,7 @@ class ImportExcelController extends Controller
 
                 // Trigger notifikasi hanya SEKALI di akhir proses
                 if ($lastBarang) {
-                    event(new \App\Events\BarangStatusUpdated($lastBarang));
+                    event(new \App\Events\GoodsStatusUpdated($lastBarang));
                 }
 
                 DB::commit();
@@ -252,7 +252,7 @@ class ImportExcelController extends Controller
         $errors = [];
 
         $lastBarang = null;
-        Barang::withoutEvents(function () use ($sheet, $mapping, $request, &$created, &$errors, &$lastBarang) {
+        Goods::withoutEvents(function () use ($sheet, $mapping, $request, &$created, &$errors, &$lastBarang) {
             for ($i = 1; $i < count($sheet); $i++) {
                 $row = $sheet[$i];
 
@@ -319,7 +319,7 @@ class ImportExcelController extends Controller
                 ];
 
                 try {
-                    $barang = Barang::create($payload);
+                    $barang = Goods::create($payload);
                     // try store uploaded files for this row if any (name rows[{$i}][images][])
                     try {
                         $savedPaths = [];
@@ -350,7 +350,7 @@ class ImportExcelController extends Controller
 
         // Trigger notifikasi hanya SEKALI di akhir proses legacy import
         if ($lastBarang) {
-            event(new \App\Events\BarangStatusUpdated($lastBarang));
+            event(new \App\Events\GoodsStatusUpdated($lastBarang));
         }
 
         $msg = "Import selesai. Berhasil: $created. Error: " . count($errors);

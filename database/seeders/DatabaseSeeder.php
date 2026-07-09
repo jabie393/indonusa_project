@@ -86,9 +86,9 @@ class DatabaseSeeder extends Seeder
             'role' => 'Finance',
         ]);
 
-        $this->call(BarangSeeder::class);
+        $this->call(GoodsSeeder::class);
         // $this->call(OrderSeeder::class);
-        // $this->call(BarangHistoriesSeeder::class);
+        // $this->call(GoodsHistoriesSeeder::class);
         // $this->call(TodayMovementsSeeder::class);
         $this->call(CatalogSeeder::class);
         $this->call(SystemSettingSeeder::class);

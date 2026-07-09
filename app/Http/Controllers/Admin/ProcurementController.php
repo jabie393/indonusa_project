@@ -10,7 +10,7 @@ use App\Models\ProcurementOfGoods;
 use App\Models\ProcurementOfGoodsItem;
 use App\Models\GoodsReceipt;
 use App\Models\ProcurementArrivalRequest;
-use App\Models\Barang;
+use App\Models\Goods;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -151,7 +151,7 @@ class ProcurementController extends Controller
             ]);
 
             foreach ($validated['items'] as $itemData) {
-                $barang = Barang::findOrFail($itemData['goods_id']);
+                $barang = Goods::findOrFail($itemData['goods_id']);
 
                 ProcurementOfGoodsItem::create([
                     'procurement_of_goods_id' => $procurement->id,
@@ -227,7 +227,7 @@ class ProcurementController extends Controller
             ]);
 
             foreach ($validated['items'] as $itemData) {
-                $barang = Barang::findOrFail($itemData['goods_id']);
+                $barang = Goods::findOrFail($itemData['goods_id']);
 
                 $procItem = ProcurementOfGoodsItem::create([
                     'procurement_of_goods_id' => $procurement->id,

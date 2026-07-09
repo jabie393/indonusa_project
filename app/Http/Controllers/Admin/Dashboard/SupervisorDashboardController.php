@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Admin\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\Quotation;
 use App\Models\CustomQuotation;
 use App\Models\Order;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesPerformanceExport;
 use App\Exports\QuotationsReportExport;
-use App\Exports\SemuaBarangExport;
+use App\Exports\SemuaGoodsExport;
 use Illuminate\Support\Facades\DB;
 
 class SupervisorDashboardController extends Controller
@@ -287,6 +287,6 @@ class SupervisorDashboardController extends Controller
     }
     public function exportSemuaBarang()
     {
-        return Excel::download(new SemuaBarangExport(), "All_Barang_Report_" . now()->format('Ymd') . ".xlsx");
+        return Excel::download(new SemuaGoodsExport(), "All_Barang_Report_" . now()->format('Ymd') . ".xlsx");
     }
 }

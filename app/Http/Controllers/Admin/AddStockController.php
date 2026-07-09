@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use Illuminate\Support\Facades\Auth;
 
 class AddStockController extends Controller
@@ -13,7 +13,7 @@ class AddStockController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'approved');
+        $goods = Goods::where('goods_status', 'approved');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
@@ -36,7 +36,7 @@ class AddStockController extends Controller
             'unit_cost' => 'required|numeric|min:0',
         ]);
 
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
 
         // Copy data baru dengan stok baru dan status_barang 'ditinjau'
         $copyData = $barang->replicate();
@@ -52,7 +52,7 @@ class AddStockController extends Controller
         $originalKode = $barang->goods_code;
         $newKode = $originalKode;
         $i = 1;
-        while (\App\Models\Barang::where('goods_code', $newKode)->exists()) {
+        while (\App\Models\Goods::where('goods_code', $newKode)->exists()) {
             $newKode = $originalKode . '#' . $i;
             $i++;
         }
@@ -65,7 +65,7 @@ class AddStockController extends Controller
 
     public function destroy($id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
 
         // Hapus folder gambar barang beserta isinya jika ada
         $folder = 'barang/' . $barang->id;

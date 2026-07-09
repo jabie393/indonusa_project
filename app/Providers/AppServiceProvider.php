@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\Order;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Observers\OrderObserver;
-use App\Observers\BarangObserver;
+use App\Observers\GoodsObserver;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
 
         if (app()->environment('production', 'local', 'staging')) {
             Order::observe(OrderObserver::class);
-            Barang::observe(BarangObserver::class);
+            \App\Models\Goods::observe(\App\Observers\GoodsObserver::class);
         }
     }
 }

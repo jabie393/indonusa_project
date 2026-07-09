@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Barang;
+use App\Models\Goods;
 
 class OrderItem extends Model
 {
@@ -29,12 +29,12 @@ class OrderItem extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     // Accessor untuk nama_barang — ambil dari relasi barang/product jika tersedia, kalau tidak fallback ke atribut nama_barang

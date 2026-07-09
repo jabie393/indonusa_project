@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Barang; ?>
+use App\Models\Goods; ?>
 <x-app-layout>
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
         <div
@@ -348,7 +348,7 @@ use App\Models\Barang; ?>
 
     <!-- Modals -->
     @include('admin.goods-in-status.partials.goods-in-status-modal-edit-primary', [
-        'kategoriList' => Barang::KATEGORI,
+        'kategoriList' => Goods::KATEGORI,
     ])
     @include('admin.goods-in-status.partials.goods-in-status-modal-edit-new-stock')
     @include('admin.goods-in-status.partials.goods-in-status-modal-show-note')

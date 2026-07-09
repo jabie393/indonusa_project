@@ -2,18 +2,18 @@
 
 namespace App\Observers;
 
-use App\Models\Barang;
-use App\Events\BarangStatusUpdated;
+use App\Models\Goods;
+use App\Events\GoodsStatusUpdated;
 
-class BarangObserver
+class GoodsObserver
 {
     /**
-     * Handle the Barang "created" event.
+     * Handle the Goods "created" event.
      */
-    public function created(Barang $barang): void
+    public function created(Goods $barang): void
     {
         if ($barang->goods_status === 'pending') {
-            event(new BarangStatusUpdated($barang));
+            event(new GoodsStatusUpdated($barang));
             event(new \App\Events\RealTimeNotification(
                 'Warehouse',
                 null,
@@ -27,12 +27,12 @@ class BarangObserver
     }
 
     /**
-     * Handle the Barang "updated" event.
+     * Handle the Goods "updated" event.
      */
-    public function updated(Barang $barang): void
+    public function updated(Goods $barang): void
     {
         if ($barang->isDirty('goods_status') && $barang->goods_status === 'pending') {
-            event(new BarangStatusUpdated($barang));
+            event(new GoodsStatusUpdated($barang));
             event(new \App\Events\RealTimeNotification(
                 'Warehouse',
                 null,
@@ -46,25 +46,25 @@ class BarangObserver
     }
 
     /**
-     * Handle the Barang "deleted" event.
+     * Handle the Goods "deleted" event.
      */
-    public function deleted(Barang $barang): void
+    public function deleted(Goods $barang): void
     {
         //
     }
 
     /**
-     * Handle the Barang "restored" event.
+     * Handle the Goods "restored" event.
      */
-    public function restored(Barang $barang): void
+    public function restored(Goods $barang): void
     {
         //
     }
 
     /**
-     * Handle the Barang "force deleted" event.
+     * Handle the Goods "force deleted" event.
      */
-    public function forceDeleted(Barang $barang): void
+    public function forceDeleted(Goods $barang): void
     {
         //
     }

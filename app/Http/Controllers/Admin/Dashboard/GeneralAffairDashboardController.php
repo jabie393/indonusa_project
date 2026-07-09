@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
@@ -155,14 +155,14 @@ class GeneralAffairDashboardController extends Controller
         $svcData = $topItems->pluck('total_qty')->toArray();
 
         // 6. Recent History Logs
-        $recentHistory = $applyDateFilter(\App\Models\BarangHistory::with('user'), 'changed_at')
+        $recentHistory = $applyDateFilter(\App\Models\GoodsHistory::with('user'), 'changed_at')
             ->latest('changed_at')
             ->take(10)
             ->get();
 
 
         // 8. Low Stock
-        $lowStockItems = Barang::where('stock', '<=', $threshold)
+        $lowStockItems = Goods::where('stock', '<=', $threshold)
             ->orderBy('stock')
             ->take(5)
             ->get();

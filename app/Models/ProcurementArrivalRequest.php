@@ -30,7 +30,7 @@ class ProcurementArrivalRequest extends Model
      */
     public function good(): BelongsTo
     {
-        return $this->belongsTo(Barang::class, 'good_id');
+        return $this->belongsTo(Goods::class, 'good_id');
     }
 
     /**

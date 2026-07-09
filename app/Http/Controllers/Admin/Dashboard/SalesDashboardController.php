@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\Quotation;
 use App\Models\QuotationItem;
 use App\Models\CustomQuotation;
@@ -173,7 +173,7 @@ class SalesDashboardController extends Controller
             ->get();
 
         // 6. Low Stock (for the filter if needed, although not explicitly shown in cards)
-        $lowStockItems = \App\Models\Barang::where('stock', '<=', $threshold)
+        $lowStockItems = \App\Models\Goods::where('stock', '<=', $threshold)
             ->orderBy('stock')
             ->take(5)
             ->get();

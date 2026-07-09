@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Faker\Factory as Faker;
 use Carbon\Carbon;
 
-class BarangHistoriesSeeder extends Seeder
+class GoodsHistoriesSeeder extends Seeder
 {
     /**
      * Run the database seeds.

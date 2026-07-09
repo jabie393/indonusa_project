@@ -47,7 +47,7 @@
             <div
                 class="shrink-0 flex flex-col items-stretch justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:items-center gap-4">
                 @php
-                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                    $supplyOrderCount = \App\Models\Goods::where('goods_status', 'pending')
                         ->where('status_listing', '!=', 'non_listing')
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();
@@ -95,7 +95,7 @@
                         </thead>
                         <tbody class="text-nowrap">
                             @forelse ($goods as $item)
-                                @if ($item instanceof \App\Models\Barang)
+                                @if ($item instanceof \App\Models\Goods)
                                     <!-- Reguler Goods In Row -->
                                     <tr
                                         class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">

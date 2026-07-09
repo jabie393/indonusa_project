@@ -640,7 +640,7 @@
                                         required
                                         onchange="this.classList.remove('text-slate-400'); this.classList.add('text-slate-500', 'dark:text-white')">
                                         <option value="" disabled selected>Pilih Kategori</option>
-                                        @foreach (\App\Models\Barang::KATEGORI as $cat)
+                                        @foreach (\App\Models\Goods::KATEGORI as $cat)
                                             <option value="{{ $cat }}">{{ $cat }}</option>
                                         @endforeach
                                     </select>

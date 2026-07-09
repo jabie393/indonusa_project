@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\User;
 
 class GeneralController extends Controller
@@ -52,7 +52,7 @@ class GeneralController extends Controller
     // Cek stok barang berdasarkan kode barang
     public function getStock($kode)
     {
-        $barang = Barang::where('goods_code', $kode)->first();
+        $barang = Goods::where('goods_code', $kode)->first();
 
         return response()->json([
             'stock' => $barang ? $barang->stock : 0
@@ -65,7 +65,7 @@ class GeneralController extends Controller
         ]);
 
         $kodeBarang = $request->input('goods_code');
-        $exists = Barang::where('goods_code', $kodeBarang)->exists();
+        $exists = Goods::where('goods_code', $kodeBarang)->exists();
 
         return response()->json([
             'valid' => !$exists,

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\GoodsReceipt;
 use App\Models\ProcurementArrivalRequest;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +20,7 @@ class SupplyOrdersController extends Controller
         $query = $request->input('search');
 
         // 1. Reguler Goods In (pending, not linked to procurement, excluding custom items)
-        $regulerQuery = Barang::where('goods_status', 'pending')
+        $regulerQuery = Goods::where('goods_status', 'pending')
             ->where('status_listing', '!=', 'non_listing')
             ->whereDoesntHave('procurementOfGoodsItems');
 
@@ -87,7 +87,7 @@ class SupplyOrdersController extends Controller
     // Reject barang reguler
     public function reject(Request $request, $id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
         $barang->note = $request->input('reason') ?? $request->input('catatan');
         $barang->goods_status = 'rejected';
         $barang->save();
@@ -127,7 +127,7 @@ class SupplyOrdersController extends Controller
             return response()->json(['success' => false, 'message' => 'No items selected.']);
         }
 
-        Barang::whereIn('id', $ids)->update([
+        Goods::whereIn('id', $ids)->update([
             'goods_status' => 'rejected',
             'note' => $catatan
         ]);
@@ -139,7 +139,7 @@ class SupplyOrdersController extends Controller
 
     protected function processApproval($id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
 
         if ($barang->request_type == 'primary') {
             $barang->goods_status = 'approved';
@@ -156,7 +156,7 @@ class SupplyOrdersController extends Controller
             ]);
         } elseif ($barang->request_type == 'new_stock') {
             $kodeUtama = explode('#', $barang->goods_code)[0];
-            $barangUtama = Barang::where('goods_code', $kodeUtama)
+            $barangUtama = Goods::where('goods_code', $kodeUtama)
                 ->where('request_type', 'primary')
                 ->first();
 
@@ -179,7 +179,7 @@ class SupplyOrdersController extends Controller
                 $barang->save();
 
                 // Hapus record new_stock tanpa memicu event model
-                Barang::withoutEvents(function () use ($barang) {
+                Goods::withoutEvents(function () use ($barang) {
                     $barang->delete();
                 });
             } else {

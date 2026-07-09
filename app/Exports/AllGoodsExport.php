@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Barang;
+use App\Models\Goods;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class SemuaBarangExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithColumnFormatting
+class SemuaGoodsExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithColumnFormatting
 {
     /**
      * @return array
@@ -44,7 +44,7 @@ class SemuaBarangExport implements FromCollection, WithHeadings, ShouldAutoSize,
     */
     public function collection()
     {
-        return Barang::where('goods_status', 'approved')
+        return Goods::where('goods_status', 'approved')
             ->select('goods_code', 'goods_name', 'category', 'stock', 'selling_price')
             ->get()
             ->map(function ($barang) {

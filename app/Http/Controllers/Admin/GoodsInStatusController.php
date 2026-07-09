@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 
 class GoodsInStatusController extends Controller
 {
@@ -13,7 +13,7 @@ class GoodsInStatusController extends Controller
     {
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::whereIn('goods_status', ['pending', 'rejected'])
+        $goods = Goods::whereIn('goods_status', ['pending', 'rejected'])
             ->where('status_listing', '!=', 'non_listing')
             ->orderByRaw("FIELD(goods_status, 'rejected', 'pending')")
             ->latest();
@@ -46,14 +46,14 @@ class GoodsInStatusController extends Controller
     // Tampilkan detail barang
     public function show($id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
         return view('admin.goods-in-status.show', compact('barang'));
     }
 
     // Update barang
     public function update(Request $request, $id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
 
         if ($request->has('stock') && !$request->has('goods_name')) {
             // update stok & harga (untuk request baru/penambahan stok)
@@ -72,7 +72,7 @@ class GoodsInStatusController extends Controller
                 'status_listing' => 'required|string',
                 'goods_code' => 'required|string|max:255',
                 'goods_name' => 'required|string|max:255',
-                'category' => 'required|in:' . implode(',', Barang::KATEGORI),
+                'category' => 'required|in:' . implode(',', Goods::KATEGORI),
                 'stock' => 'required|integer',
                 'unit' => 'required|string|max:255',
                 'location' => 'nullable|string|max:255',
@@ -121,7 +121,7 @@ class GoodsInStatusController extends Controller
     // Hapus barang
     public function destroy($id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
 
         // Hapus folder gambar barang beserta isinya jika ada
         $folder = 'barang/' . $barang->id;

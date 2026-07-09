@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\BarangHistory;
+use App\Models\GoodsHistory;
 
 class HistoryController extends Controller
 {
@@ -14,7 +14,7 @@ class HistoryController extends Controller
         $perPage = request()->input('perPage', 10);
         $query = request()->input('search');
 
-        $histories = BarangHistory::with('user')
+        $histories = GoodsHistory::with('user')
             ->when($query, function ($q) use ($query) {
                 $q->where(function ($sub) use ($query) {
                     $sub->where('goods_code', 'like', "%{$query}%")

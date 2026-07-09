@@ -140,7 +140,7 @@ class DeliveryOrdersController extends Controller
                     $barang->save();
 
                     // Manual history logging for stock deduction
-                    \App\Models\BarangHistory::create([
+                    \App\Models\GoodsHistory::create([
                         'goods_id'    => $barang->id,
                         'goods_code'  => $barang->goods_code,
                         'goods_name'  => $barang->goods_name,
@@ -236,7 +236,7 @@ class DeliveryOrdersController extends Controller
                                 $barang->stock += $returnQty;
                                 $barang->save();
 
-                                \App\Models\BarangHistory::create([
+                                \App\Models\GoodsHistory::create([
                                     'goods_id'    => $barang->id,
                                     'goods_code'  => $barang->goods_code,
                                     'goods_name'  => $barang->goods_name,
@@ -400,7 +400,7 @@ class DeliveryOrdersController extends Controller
                         $barang->save();
 
                         // Manual history logging for partial stock deduction
-                        \App\Models\BarangHistory::create([
+                        \App\Models\GoodsHistory::create([
                             'goods_id'    => $barang->id,
                             'goods_code'  => $barang->goods_code,
                             'goods_name'  => $barang->goods_name,

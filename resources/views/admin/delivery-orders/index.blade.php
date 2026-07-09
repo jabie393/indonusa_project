@@ -32,7 +32,7 @@
             <div
                 class="shrink-0 flex flex-col items-center justify-between space-y-3 bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4 md:flex-row md:space-x-4 md:space-y-0">
                 @php
-                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                    $supplyOrderCount = \App\Models\Goods::where('goods_status', 'pending')
                         ->where('status_listing', '!=', 'non_listing')
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();

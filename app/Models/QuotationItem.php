@@ -39,13 +39,13 @@ class QuotationItem extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     // Alias relationship to stay compatible with views checking ->product relation
     public function product()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     // Compatibility accessors for old column names

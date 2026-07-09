@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\DeliveryBatch;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InvoiceExport;
@@ -154,7 +154,7 @@ class SalesOrderInvoiceController extends Controller
         }
 
         return $ro->items->map(function ($item) {
-            $barangData = \App\Models\Barang::find($item->goods_id);
+            $barangData = \App\Models\Goods::find($item->goods_id);
             return [
                 'goods_code' => optional($barangData)->goods_code ?? '',
                 'nama_barang' => $item->custom_product_name

@@ -3,22 +3,22 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
+use App\Models\Goods;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $goods = Barang::all();
+        $goods = Goods::all();
         return view('guest.order.product', compact('goods'));
     }
     public function barang($id)
     {
-        $barang = Barang::find($id);
+        $barang = Goods::find($id);
 
         $relatedGoods = collect();
         if ($barang && $barang->category) {
-            $relatedGoods = Barang::where('category', $barang->category)
+            $relatedGoods = Goods::where('category', $barang->category)
                 ->where('id', '!=', $barang->id)
                 ->take(6)
                 ->get();

@@ -37,7 +37,7 @@
             @if (Auth::user() && in_array(Auth::user()->role, ['Warehouse', 'Sales']))
                 @php
                     $currentStatus = session('warehouse_filter_status', 'approved');
-                    $supplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                    $supplyOrderCount = \App\Models\Goods::where('goods_status', 'pending')
                         ->where('status_listing', '!=', 'non_listing')
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();

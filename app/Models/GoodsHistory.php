@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Models\User;
+use App\Models\Goods;
 
-class BarangHistory extends Model
+class GoodsHistory extends Model
 {
     protected $table = 'goods_histories';
 
@@ -40,7 +41,7 @@ class BarangHistory extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'goods_id');
+        return $this->belongsTo(Goods::class, 'goods_id');
     }
 
     // Relasi ke user yang mengubah

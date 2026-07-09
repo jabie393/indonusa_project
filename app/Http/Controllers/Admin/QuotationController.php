@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -62,7 +62,7 @@ class QuotationController extends Controller
 
     public function create()
     {
-        $goods = Barang::where('request_type', 'primary')
+        $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
             ->where('stock', '>', 0)
             ->orderBy('goods_name')
@@ -72,7 +72,7 @@ class QuotationController extends Controller
             ->orderBy('customer_name')
             ->get();
 
-        $categories = Barang::distinct()
+        $categories = Goods::distinct()
             ->where('goods_status', 'approved')
             ->whereNotNull('category')
             ->where('category', '!=', '')
@@ -128,7 +128,7 @@ class QuotationController extends Controller
                 continue;
             }
 
-            $baseHarga = $productId ? (optional(Barang::where('goods_status', 'approved')->find($productId))->selling_price ?? 0) : 0;
+            $baseHarga = $productId ? (optional(Goods::where('goods_status', 'approved')->find($productId))->selling_price ?? 0) : 0;
             $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
             $hargaSatuan = isset($validated['price'][$i]) && $validated['price'][$i] !== '' ? (float) $validated['price'][$i] : $computedHargaSatuan;
@@ -386,7 +386,7 @@ class QuotationController extends Controller
 
         $requestOrder->loadMissing('customQuotation', 'items.barang');
 
-        $goods = Barang::where('request_type', 'primary')
+        $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
             ->where('stock', '>', 0)
             ->orderBy('goods_name')
@@ -396,7 +396,7 @@ class QuotationController extends Controller
             ->orderBy('customer_name')
             ->get();
 
-        $categories = Barang::distinct()->where('goods_status', 'approved')->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
+        $categories = Goods::distinct()->where('goods_status', 'approved')->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
 
         return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diupdate!']);
@@ -493,7 +493,7 @@ class QuotationController extends Controller
                     ? (float) $validated['price'][$i]
                     : 0;
             } else {
-                $baseHarga = optional(Barang::where('goods_status', 'approved')->find($productId))->selling_price ?? 0;
+                $baseHarga = optional(Goods::where('goods_status', 'approved')->find($productId))->selling_price ?? 0;
                 $computedHarga = round($baseHarga * 1.3, 2);
                 $harga = isset($validated['price'][$i]) && $validated['price'][$i] !== ''
                     ? (float) $validated['price'][$i]
@@ -853,7 +853,7 @@ class QuotationController extends Controller
                 if (is_null($item->goods_id) && !empty($item->custom_product_name)) {
                     // Generate unique goods code
                     $category = $item->product_category ?: 'OTHER CATEGORIES';
-                    $generatedCode = \App\Models\Barang::generateUniqueKodeBarang($category);
+                    $generatedCode = \App\Models\Goods::generateUniqueKodeBarang($category);
 
                     // Find description and unit from CustomQuotationItem
                     $cqItem = null;
@@ -866,7 +866,7 @@ class QuotationController extends Controller
                     $description = $cqItem ? $cqItem->description : '-';
 
                     // Create the goods record
-                    $goods = \App\Models\Barang::create([
+                    $goods = \App\Models\Goods::create([
                         'request_type' => 'primary',
                         'goods_status' => 'pending',
                         'status_listing' => 'non_listing',

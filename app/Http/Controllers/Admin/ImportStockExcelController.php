@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -16,8 +16,8 @@ class ImportStockExcelController extends Controller
     // Tampilkan daftar barang (purchase request)
     public function index()
     {
-        $goods = Barang::all();
-        $kategoriList = Barang::KATEGORI; // Ambil daftar kategori dari model Barang
+        $goods = Goods::all();
+        $kategoriList = Goods::KATEGORI; // Ambil daftar kategori dari model Barang
 
         return view('admin.import-stock-excel.index', compact('goods', 'kategoriList'));
     }
@@ -25,7 +25,7 @@ class ImportStockExcelController extends Controller
     // Export data barang dengan status masuk
     public function export()
     {
-        return Excel::download(new \App\Exports\BarangExport, 'stock_barang.xlsx');
+        return Excel::download(new \App\Exports\GoodsExport, 'stock_barang.xlsx');
     }
 
     // saat file diupload via AJAX -> simpan file & kembalikan preview
@@ -93,7 +93,7 @@ class ImportStockExcelController extends Controller
                     $isKnown = false;
                     
                     if (!empty($kode)) {
-                        $isKnown = Barang::where('goods_code', $kode)->exists();
+                        $isKnown = Goods::where('goods_code', $kode)->exists();
                     }
                     
                     // Append flag to row data (as extra column or property if object)
@@ -147,7 +147,7 @@ class ImportStockExcelController extends Controller
             DB::beginTransaction();
             try {
                 $lastBarang = null;
-                Barang::withoutEvents(function () use ($formRows, &$created, &$lastBarang) {
+                Goods::withoutEvents(function () use ($formRows, &$created, &$lastBarang) {
                     foreach ($formRows as $i => $r) {
                         // Skip if stock is empty, null, or not a valid number
                         $stokRaw = $r['stock'] ?? null;
@@ -167,7 +167,7 @@ class ImportStockExcelController extends Controller
                             $kode = 'IMP' . substr(uniqid(), -6);
                         }
 
-                        $existingBarang = Barang::where('goods_code', $kode)->first();
+                        $existingBarang = Goods::where('goods_code', $kode)->first();
 
                         if ($existingBarang) {
                             if (!isset($r['selling_price']) || $r['selling_price'] === '' || $r['selling_price'] === null) {
@@ -193,7 +193,7 @@ class ImportStockExcelController extends Controller
                             $originalKode = $existingBarang->goods_code;
                             $newKode = $originalKode;
                             $idx = 1;
-                            while (\App\Models\Barang::where('goods_code', $newKode)->exists()) {
+                            while (\App\Models\Goods::where('goods_code', $newKode)->exists()) {
                                 $newKode = $originalKode . '#' . $idx;
                                 $idx++;
                             }
@@ -208,7 +208,7 @@ class ImportStockExcelController extends Controller
 
                 // Trigger notifikasi hanya SEKALI di akhir proses
                 if ($lastBarang) {
-                    event(new \App\Events\BarangStatusUpdated($lastBarang));
+                    event(new \App\Events\GoodsStatusUpdated($lastBarang));
                 }
 
                 DB::commit();

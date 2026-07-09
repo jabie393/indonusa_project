@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Barang;
+use App\Models\Goods;
 use App\Models\GoodsReceipt;
-use App\Models\BarangHistory;
+use App\Models\GoodsHistory;
 use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
@@ -21,7 +21,7 @@ class WarehouseController extends Controller
 
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
-        $goods = Barang::where('goods_status', 'approved');
+        $goods = Goods::where('goods_status', 'approved');
 
         if ($query) {
             $goods = $goods->where(function ($q) use ($query) {
@@ -33,7 +33,7 @@ class WarehouseController extends Controller
         }
 
         $goods = $goods->paginate($perPage)->appends($request->except('page'));
-        $kategoriList = Barang::KATEGORI;
+        $kategoriList = Goods::KATEGORI;
 
         $barang = $goods->first();
 
@@ -62,7 +62,7 @@ class WarehouseController extends Controller
         $validated['goods_status'] = 'approved';
         $validated['request_type'] = 'primary';
 
-        $barang = Barang::create($validated);
+        $barang = Goods::create($validated);
 
         if ($request->hasFile('image')) {
             $folder = 'barang/' . $barang->id;
@@ -76,7 +76,7 @@ class WarehouseController extends Controller
 
     public function update(Request $request, $id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
         // If selling_price is present, handle price update (General Affair)
         if ($request->has('selling_price')) {
             $validated = $request->validate([
@@ -88,7 +88,7 @@ class WarehouseController extends Controller
             $barang->selling_price = $validated['selling_price'];
             $barang->save();
 
-            BarangHistory::create([
+            GoodsHistory::create([
                 'goods_id' => $barang->id,
                 'goods_code' => $barang->goods_code,
                 'goods_name' => $barang->goods_name,
@@ -136,7 +136,7 @@ class WarehouseController extends Controller
 
     public function destroy($id)
     {
-        $barang = Barang::findOrFail($id);
+        $barang = Goods::findOrFail($id);
         $folder = 'barang/' . $barang->id;
         if (\Storage::disk('public')->exists($folder)) {
             \Storage::disk('public')->deleteDirectory($folder);
@@ -149,7 +149,7 @@ class WarehouseController extends Controller
 
     private function generateUniqueKodeBarang($kategori)
     {
-        return Barang::generateUniqueKodeBarang($kategori);
+        return Goods::generateUniqueKodeBarang($kategori);
     }
 
     public function getLogs($id)

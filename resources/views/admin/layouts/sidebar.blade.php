@@ -276,7 +276,7 @@
 
             {{-- Warehouse --}}
             @php
-                $sidebarSupplyOrderCount = \App\Models\Barang::where('goods_status', 'pending')
+                $sidebarSupplyOrderCount = \App\Models\Goods::where('goods_status', 'pending')
                     ->where('status_listing', '!=', 'non_listing')
                     ->whereDoesntHave('procurementOfGoodsItems')
                     ->count()
