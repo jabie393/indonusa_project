@@ -89,13 +89,16 @@ class SalesOrderInvoiceController extends Controller
 
         $baseQuery = \App\Models\Quotation::with(['order.batches', 'items', 'customer.pics']);
 
-        // Base filter for GA sales order invoices
-        $baseQuery->where(function ($q) {
-            $q->whereDoesntHave('order')
-              ->orWhereHas('order', function ($o) {
-                  $o->where('status', '!=', 'open')
-                    ->where('status', '!=', 'sent_to_supervisor');
-              });
+        // Base filter for GA sales order invoices - only completed, partial delivery, cancel, and reject statuses
+        $baseQuery->whereHas('order', function ($o) {
+            $o->whereIn('status', [
+                'completed',
+                'not_completed',
+                'canceled',
+                'partial_canceled',
+                'rejected_supervisor',
+                'rejected_warehouse'
+            ]);
         });
 
         // Apply search filter
@@ -136,13 +139,9 @@ class SalesOrderInvoiceController extends Controller
 
         // Apply status filter
         if ($status && $status !== 'all') {
-            if ($status === 'belum_diproses') {
-                $baseQuery->whereDoesntHave('order');
-            } else {
-                $baseQuery->whereHas('order', function ($o) use ($status) {
-                    $o->where('status', $status);
-                });
-            }
+            $baseQuery->whereHas('order', function ($o) use ($status) {
+                $o->where('status', $status);
+            });
         }
 
         $requestOrders = $baseQuery->latest()
@@ -214,13 +213,16 @@ class SalesOrderInvoiceController extends Controller
 
         $query = Quotation::with(['items', 'customer', 'order']);
 
-        // Base filter for GA sales order invoices
-        $query->where(function ($q) {
-            $q->whereDoesntHave('order')
-              ->orWhereHas('order', function ($o) {
-                  $o->where('status', '!=', 'open')
-                    ->where('status', '!=', 'sent_to_supervisor');
-              });
+        // Base filter for GA sales order invoices - only completed, partial delivery, cancel, and reject statuses
+        $query->whereHas('order', function ($o) {
+            $o->whereIn('status', [
+                'completed',
+                'not_completed',
+                'canceled',
+                'partial_canceled',
+                'rejected_supervisor',
+                'rejected_warehouse'
+            ]);
         });
 
         // Search filter
@@ -255,13 +257,9 @@ class SalesOrderInvoiceController extends Controller
 
         // Status filter
         if (!empty($status) && $status !== 'all') {
-            if ($status === 'belum_diproses') {
-                $query->whereDoesntHave('order');
-            } else {
-                $query->whereHas('order', function ($o) use ($status) {
-                    $o->where('status', $status);
-                });
-            }
+            $query->whereHas('order', function ($o) use ($status) {
+                $o->where('status', $status);
+            });
         }
 
         $rawResults = $query->latest()->get();

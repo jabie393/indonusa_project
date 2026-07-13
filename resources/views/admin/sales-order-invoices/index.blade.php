@@ -125,15 +125,10 @@
                                 <select name="status" id="status"
                                     class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                     <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Semua Status</option>
-                                    <option value="belum_diproses" {{ request('status') === 'belum_diproses' ? 'selected' : '' }}>Belum Diproses</option>
-                                    <option value="approved_supervisor" {{ request('status') === 'approved_supervisor' ? 'selected' : '' }}>Approved by Supervisor</option>
-                                    <option value="approved_warehouse" {{ request('status') === 'approved_warehouse' ? 'selected' : '' }}>Approved by Warehouse</option>
-                                    <option value="rejected_supervisor" {{ request('status') === 'rejected_supervisor' ? 'selected' : '' }}>Rejected by Supervisor</option>
-                                    <option value="rejected_warehouse" {{ request('status') === 'rejected_warehouse' ? 'selected' : '' }}>Rejected by Warehouse</option>
-                                    <option value="sent_to_warehouse" {{ request('status') === 'sent_to_warehouse' ? 'selected' : '' }}>Sent to Warehouse</option>
-                                    <option value="under_procurement" {{ request('status') === 'under_procurement' ? 'selected' : '' }}>Under Procurement</option>
                                     <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                                     <option value="not_completed" {{ request('status') === 'not_completed' ? 'selected' : '' }}>Partial Delivery</option>
+                                    <option value="rejected_supervisor" {{ request('status') === 'rejected_supervisor' ? 'selected' : '' }}>Rejected by Supervisor</option>
+                                    <option value="rejected_warehouse" {{ request('status') === 'rejected_warehouse' ? 'selected' : '' }}>Rejected by Warehouse</option>
                                     <option value="canceled" {{ request('status') === 'canceled' ? 'selected' : '' }}>Canceled</option>
                                     <option value="partial_canceled" {{ request('status') === 'partial_canceled' ? 'selected' : '' }}>Partially Canceled</option>
                                 </select>
@@ -308,9 +303,6 @@
                     </thead>
                     <tbody class="text-nowrap">
                         @forelse ($results as $row)
-                            @if (($row['status'] ?? '') === 'Waiting for Supervisor Approval')
-                                @continue
-                            @endif
                             <tr
                                 class="border-b border-gray-200 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
                                 <td class="whitespace-nowrap px-4 py-3.5 text-gray-900 dark:text-white">

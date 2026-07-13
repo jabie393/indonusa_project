@@ -39,13 +39,16 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
     {
         $query = Quotation::with(['items', 'customer', 'order']);
 
-        // Base filter for GA sales order invoices
-        $query->where(function ($q) {
-            $q->whereDoesntHave('order')
-              ->orWhereHas('order', function ($o) {
-                  $o->where('status', '!=', 'open')
-                    ->where('status', '!=', 'sent_to_supervisor');
-              });
+        // Base filter for GA sales order invoices - only completed, partial delivery, cancel, and reject statuses
+        $query->whereHas('order', function ($o) {
+            $o->whereIn('status', [
+                'completed',
+                'not_completed',
+                'canceled',
+                'partial_canceled',
+                'rejected_supervisor',
+                'rejected_warehouse'
+            ]);
         });
 
         // Search filter
@@ -81,14 +84,10 @@ class GaSalesOrderExport implements FromCollection, WithHeadings, WithMapping, W
 
         // Status filter
         if (!empty($this->status) && $this->status !== 'all') {
-            if ($this->status === 'belum_diproses') {
-                $query->whereDoesntHave('order');
-            } else {
-                $statusVal = $this->status;
-                $query->whereHas('order', function ($o) use ($statusVal) {
-                    $o->where('status', $statusVal);
-                });
-            }
+            $statusVal = $this->status;
+            $query->whereHas('order', function ($o) use ($statusVal) {
+                $o->where('status', $statusVal);
+            });
         }
 
         return $query->latest()->get();
