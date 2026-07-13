@@ -22,9 +22,7 @@ class GoodsSeeder extends Seeder
                 'location' => 'Rak A1',
                 'status_listing' => 'listing',
                 'description' => 'Laptop Asus ExpertBook for office work.',
-                'discount_percent' => 5,
-                'form' => '3',
-                'submission_reason' => 'Kebutuhan operasional kantor'
+                'form' => '3'
             ],
             [
                 'request_type' => 'primary',
@@ -38,9 +36,7 @@ class GoodsSeeder extends Seeder
                 'location' => 'Rak B2',
                 'status_listing' => 'non listing',
                 'description' => 'Printer inkjet for document printing.',
-                'discount_percent' => 0,
-                'form' => '3',
-                'submission_reason' => 'Kebutuhan percetakan invoice'
+                'form' => '3'
             ],
             [
                 'request_type' => 'primary',
@@ -54,7 +50,6 @@ class GoodsSeeder extends Seeder
                 'location' => 'Rak C3',
                 'status_listing' => 'listing',
                 'description' => 'High quality protection bubble wrap.',
-                'discount_percent' => 2,
                 'form' => '3'
             ],
             [

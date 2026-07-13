@@ -53,11 +53,9 @@ return new class extends Migration {
             $table->string('location')->nullable();
             $table->decimal('buy_price', 15, 2)->default(0);
             $table->decimal('selling_price', 15, 2)->default(0);
-            $table->unsignedSmallInteger('discount_percent')->default(0);
             $table->text('description');
             $table->string('image')->nullable();
             $table->text('note')->nullable();
-            $table->text('submission_reason')->nullable();
             $table->string('form')->nullable();
             $table->timestamps();
         });

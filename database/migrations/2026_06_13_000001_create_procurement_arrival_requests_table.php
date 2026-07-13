@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('procurement_of_goods_item_id');
             $table->unsignedBigInteger('good_id');
-            $table->unsignedBigInteger('supplier_id'); // GA who recorded
             $table->timestamp('received_at');
             $table->integer('quantity');
             $table->decimal('unit_cost', 15, 2);
@@ -25,7 +24,6 @@ return new class extends Migration {
             // Foreign keys
             $table->foreign('procurement_of_goods_item_id', 'par_pog_item_foreign')->references('id')->on('procurement_of_goods_items')->onDelete('cascade');
             $table->foreign('good_id')->references('id')->on('goods')->onDelete('cascade');
-            $table->foreign('supplier_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

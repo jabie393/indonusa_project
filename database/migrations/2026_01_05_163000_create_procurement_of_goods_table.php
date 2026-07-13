@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('procurement_number')->unique();
             $table->unsignedBigInteger('custom_quotation_id')->nullable();
-            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->unsignedBigInteger('general_affair_id');
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->string('status')->default('pending');
