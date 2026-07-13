@@ -274,9 +274,4 @@ class SalesDashboardController extends Controller
             'selectedYear' => $selectedYear,
         ]);
     }
-
-    public function exportQuotations()
-    {
-        return Excel::download(new QuotationsReportExportSales(), "My_Quotations_Report_" . now()->format('Ymd') . ".xlsx");
-    }
 }

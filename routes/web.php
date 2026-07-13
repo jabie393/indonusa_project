@@ -97,6 +97,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-stock/{kode}', [GeneralController::class, 'getStock']);
     Route::post('/check-email', [GeneralController::class, 'checkEmail'])->name('check.email');
     Route::post('/check-kode-barang', [GeneralController::class, 'checkKodeBarang'])->name('check.kode.barang');
+    Route::get('/warehouse/export', [WarehouseController::class, 'exportExcel'])->name('warehouse.export');
+    Route::get('/warehouse/pdf', [WarehouseController::class, 'exportPdf'])->name('warehouse.pdf');
     Route::resource('/warehouse', WarehouseController::class);
     Route::get('/warehouse/{id}/logs', [WarehouseController::class, 'getLogs'])->name('warehouse.logs');
     Route::resource('/customers', CustomersController::class);
@@ -110,6 +112,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     // Sales Order (read-only untuk GA)
     Route::get('/sales-order-invoices', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'index'])->name('sales-order-invoices.index');
     Route::get('/sales-order-invoices/export', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrders'])->name('sales-order-invoices.export');
+    Route::get('/sales-order-invoices/pdf', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'exportGaSalesOrdersPdf'])->name('sales-order-invoices.pdf');
     Route::get('/sales-order-invoices/search', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'search'])->name('sales-order-invoices.search');
     Route::get('/invoice/{id}', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'showInvoice'])->name('invoice.index');
     Route::get('/invoice/{id}/receipt', [App\Http\Controllers\Admin\SalesOrderInvoiceController::class, 'printReceipt'])->name('invoice.receipt');
@@ -212,12 +215,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('dashboard.supervisor');
     Route::get('/admin/dashboard/supervisor/data', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'chartData'])
         ->name('dashboard.supervisor.chart.data');
-    Route::get('/admin/dashboard/supervisor/export-performance', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportPerformance'])
-        ->name('dashboard.supervisor.export.performance');
-    Route::get('/admin/dashboard/supervisor/export-quotations', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportQuotations'])
-        ->name('dashboard.supervisor.export.quotations');
-    Route::get('/admin/dashboard/supervisor/export-semua-barang', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'exportSemuaBarang'])
-        ->name('dashboard.supervisor.export.semua-barang');
 
 
     // Supervisor History (all approval processes)
@@ -289,9 +286,6 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Dashboard Chart Data for Sales
     Route::get('/admin/dashboard/sales/data', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'chartData'])
         ->name('dashboard.sales.chart.data');
-
-    Route::get('/admin/dashboard/sales/export-quotations', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'exportQuotations'])
-        ->name('dashboard.sales.export.quotations');
 });
 // End of Sales
 

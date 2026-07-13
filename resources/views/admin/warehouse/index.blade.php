@@ -3,14 +3,14 @@
         <div
             class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
             <div class="flex items-center gap-2 md:gap-3">
-                <a href="{{ route('dashboard.supervisor.export.semua-barang') }}"
-                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white shadow transition-all duration-200 hover:bg-[#19426d] focus:outline-none focus:ring-2 focus:ring-[#225A97]/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <button type="button" id="btn-filter"
+                    class="flex cursor-pointer flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white shadow transition-all duration-200 hover:bg-[#19426d] focus:outline-none focus:ring-2 focus:ring-[#225A97]/50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Inventory Report
-                </a>
+                    Filter & Export
+                </button>
             </div>
         <div>
             {{-- Search --}}
@@ -31,6 +31,83 @@
             </form>
         </div>
     </div>
+
+        <!-- Filter Panel -->
+        <div id="filter-panel"
+            class="collapse mb-0 shrink-0 rounded-2xl border-0 bg-white shadow-none transition-all duration-300 dark:bg-gray-800 [&.collapse-open]:mb-5 [&.collapse-open]:border [&.collapse-open]:border-gray-100 [&.collapse-open]:shadow-md [&.collapse-open]:dark:border-gray-700/50">
+            <div class="collapse-content !p-0">
+                <div class="p-5">
+                    <form id="filter-form" action="{{ route('warehouse.index') }}" method="GET">
+                        <!-- Forward current search parameter -->
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+
+                            <!-- Category Filter -->
+                            <div class="flex flex-col gap-1.5 col-span-1">
+                                <label for="category" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Kategori</label>
+                                <select name="category" id="category"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('category') === 'all' ? 'selected' : '' }}>Semua Kategori</option>
+                                    @foreach ($kategoriList as $kat)
+                                        <option value="{{ $kat }}" {{ request('category') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <!-- Stock Status Filter -->
+                            <div class="flex flex-col gap-1.5 col-span-1">
+                                <label for="stock_status" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Stok</label>
+                                <select name="stock_status" id="stock_status"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('stock_status') === 'all' ? 'selected' : '' }}>Semua Status</option>
+                                    <option value="ready" {{ request('stock_status') === 'ready' ? 'selected' : '' }}>Ready Stock (>20)</option>
+                                    <option value="low" {{ request('stock_status') === 'low' ? 'selected' : '' }}>Stok Rendah (1-20)</option>
+                                    <option value="out" {{ request('stock_status') === 'out' ? 'selected' : '' }}>Stok Habis (0)</option>
+                                </select>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="col-span-1 md:col-span-2 flex items-end justify-between gap-2">
+                                <div class="flex gap-3">
+                                    <a href="{{ route('warehouse.index') }}"
+                                        class="flex w-fit flex-row items-center rounded-xl bg-gray-100 px-4 py-2.5 text-center text-sm font-semibold text-slate-700 transition duration-150 hover:bg-gray-200 whitespace-nowrap">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                            <path d="M3 3v5h5"></path>
+                                        </svg>
+                                        Reset</a>
+                                    <button type="submit"
+                                        class="w-fit flex flex-row items-center rounded-xl bg-[#225A97] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-[#19426d] whitespace-nowrap">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                        </svg>
+                                        Filter
+                                    </button>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="button" id="btn-export-excel"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-emerald-700 whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        Export Excel
+                                    </button>
+                                    <button type="button" id="btn-export-pdf"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-red-700 whitespace-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">
@@ -290,4 +367,58 @@
         @vite(['resources/js/warehouse.js', 'resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
     </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btnFilter = document.getElementById('btn-filter');
+            const filterPanel = document.getElementById('filter-panel');
+            if (btnFilter && filterPanel) {
+                btnFilter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterPanel.classList.toggle('collapse-open');
+                });
+            }
+
+            function syncValueInputs() {
+                const searchInput = document.getElementById('topbar-search');
+                if (searchInput) {
+                    const forms = document.querySelectorAll('#filter-form');
+                    forms.forEach(form => {
+                        let searchHidden = form.querySelector('input[name="search"]');
+                        if (!searchHidden) {
+                            searchHidden = document.createElement('input');
+                            searchHidden.type = 'hidden';
+                            searchHidden.name = 'search';
+                            form.appendChild(searchHidden);
+                        }
+                        searchHidden.value = searchInput.value;
+                    });
+                }
+            }
+
+            const btnExportExcel = document.getElementById('btn-export-excel');
+            if (btnExportExcel) {
+                btnExportExcel.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    syncValueInputs();
+                    const form = document.getElementById('filter-form');
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData).toString();
+                    window.location.href = "{{ route('warehouse.export') }}?" + params;
+                });
+            }
+
+            const btnExportPdf = document.getElementById('btn-export-pdf');
+            if (btnExportPdf) {
+                btnExportPdf.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    syncValueInputs();
+                    const form = document.getElementById('filter-form');
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData).toString();
+                    window.open("{{ route('warehouse.pdf') }}?" + params, '_blank');
+                });
+            }
+        });
+    </script>
 </x-app-layout>

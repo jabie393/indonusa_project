@@ -69,12 +69,28 @@ class SalesOrderInvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $search   = $request->input('search', '');
+        $search = $request->input('search', '');
         $isSearch = $request->filled('search');
-        $results  = collect();
-        $perPage  = (int) $request->input('perPage', 20);
+        $perPage = (int) $request->input('perPage', 20);
 
-        $baseQuery = \App\Models\Quotation::where(function ($q) {
+        $periodeType = $request->input('periode_type', 'all');
+        $year = $request->input('year', date('Y'));
+        $month = $request->input('month', date('n'));
+        $week = $request->input('week', 1);
+        $date = $request->input('date', date('Y-m-d'));
+        $startDateInput = $request->input('start_date');
+        $endDateInput = $request->input('end_date');
+
+        list($startDate, $endDate) = $this->resolveDateRange($periodeType, $year, $month, $week, $date, $startDateInput, $endDateInput);
+
+        $salesId = $request->input('sales_id');
+        $reportType = $request->input('report_type', 'all');
+        $status = $request->input('status', 'all');
+
+        $baseQuery = \App\Models\Quotation::with(['order.batches', 'items', 'customer.pics']);
+
+        // Base filter for GA sales order invoices
+        $baseQuery->where(function ($q) {
             $q->whereDoesntHave('order')
               ->orWhereHas('order', function ($o) {
                   $o->where('status', '!=', 'open')
@@ -82,38 +98,69 @@ class SalesOrderInvoiceController extends Controller
               });
         });
 
+        // Apply search filter
         if ($isSearch) {
-            $results = $baseQuery->where(function ($q) use ($search) {
-                    $q->where('request_number',     'like', "%$search%")
-                      ->orWhere('quotation_number',   'like', "%$search%")
-                      ->orWhere('sales_order_number','like', "%$search%")
-                      ->orWhere('customer_name',     'like', "%$search%")
-                      ->orWhere('no_po',             'like', "%$search%")
-                      ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
-                          $picQuery->where('name', 'like', "%$search%")
-                              ->orWhere('position', 'like', "%$search%")
-                              ->orWhere('email', 'like', "%$search%")
-                              ->orWhere('phone', 'like', "%$search%");
-                      });
-                })
-                ->with(['order.batches', 'items', 'customer.pics'])
-                ->get()
-                ->map(fn($ro) => $this->mapRequestOrderRow($ro));
-        } else {
-            $requestOrders = $baseQuery->with(['order.batches', 'items', 'customer.pics'])
-                ->latest()
-                ->paginate($perPage)
-                ->appends($request->query());
-
-            $results     = $requestOrders->map(fn($ro) => $this->mapRequestOrderRow($ro));
-            $salesOrders = $requestOrders;
+            $baseQuery->where(function ($q) use ($search) {
+                $q->where('request_number', 'like', "%$search%")
+                  ->orWhere('quotation_number', 'like', "%$search%")
+                  ->orWhere('sales_order_number', 'like', "%$search%")
+                  ->orWhere('customer_name', 'like', "%$search%")
+                  ->orWhere('no_po', 'like', "%$search%")
+                  ->orWhereHas('customer.pics', function ($picQuery) use ($search) {
+                      $picQuery->where('name', 'like', "%$search%")
+                          ->orWhere('position', 'like', "%$search%")
+                          ->orWhere('email', 'like', "%$search%")
+                          ->orWhere('phone', 'like', "%$search%");
+                  });
+            });
         }
+
+        // Apply date filter
+        if ($startDate && $endDate) {
+            $baseQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        // Apply sales agent filter
+        if ($salesId) {
+            $baseQuery->where('sales_id', $salesId);
+        }
+
+        // Apply report type filter
+        if ($reportType && $reportType !== 'all') {
+            if ($reportType === 'quotation') {
+                $baseQuery->whereNull('custom_quotation_id');
+            } elseif ($reportType === 'custom_quotation') {
+                $baseQuery->whereNotNull('custom_quotation_id');
+            }
+        }
+
+        // Apply status filter
+        if ($status && $status !== 'all') {
+            if ($status === 'belum_diproses') {
+                $baseQuery->whereDoesntHave('order');
+            } else {
+                $baseQuery->whereHas('order', function ($o) use ($status) {
+                    $o->where('status', $status);
+                });
+            }
+        }
+
+        $requestOrders = $baseQuery->latest()
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        $results = $requestOrders->map(fn($ro) => $this->mapRequestOrderRow($ro));
+        $salesOrders = $requestOrders;
+
+        // Retrieve sales users for the filter dropdown
+        $salesUsers = User::where('role', 'Sales')->orderBy('name')->get();
 
         return view('admin.sales-order-invoices.index', [
             'results'     => $results,
             'search'      => $search,
             'isSearch'    => $isSearch,
-            'salesOrders' => $salesOrders ?? null,
+            'salesOrders' => $salesOrders,
+            'salesUsers'  => $salesUsers,
         ]);
     }
 
@@ -123,9 +170,191 @@ class SalesOrderInvoiceController extends Controller
     public function exportGaSalesOrders(Request $request)
     {
         $search = $request->input('search', null);
+        $periodeType = $request->input('periode_type', 'all');
+        $year = $request->input('year', date('Y'));
+        $month = $request->input('month', date('n'));
+        $week = $request->input('week', 1);
+        $date = $request->input('date', date('Y-m-d'));
+        $startDateInput = $request->input('start_date');
+        $endDateInput = $request->input('end_date');
+
+        list($startDate, $endDate) = $this->resolveDateRange($periodeType, $year, $month, $week, $date, $startDateInput, $endDateInput);
+
+        $salesId = $request->input('sales_id');
+        $reportType = $request->input('report_type', 'all');
+        $status = $request->input('status', 'all');
+
         $filename = 'ga_sales_orders_' . now()->format('Ymd_His') . '.xlsx';
 
-        return Excel::download(new GaSalesOrderExport($search), $filename);
+        return Excel::download(
+            new GaSalesOrderExport($search, $startDate, $endDate, $salesId, $status, $reportType),
+            $filename
+        );
+    }
+
+    /**
+     * Export General Affair sales order data to PDF.
+     */
+    public function exportGaSalesOrdersPdf(Request $request)
+    {
+        $search = $request->input('search', null);
+        $periodeType = $request->input('periode_type', 'all');
+        $year = $request->input('year', date('Y'));
+        $month = $request->input('month', date('n'));
+        $week = $request->input('week', 1);
+        $date = $request->input('date', date('Y-m-d'));
+        $startDateInput = $request->input('start_date');
+        $endDateInput = $request->input('end_date');
+
+        list($startDate, $endDate) = $this->resolveDateRange($periodeType, $year, $month, $week, $date, $startDateInput, $endDateInput);
+
+        $salesId = $request->input('sales_id');
+        $reportType = $request->input('report_type', 'all');
+        $status = $request->input('status', 'all');
+
+        $query = Quotation::with(['items', 'customer', 'order']);
+
+        // Base filter for GA sales order invoices
+        $query->where(function ($q) {
+            $q->whereDoesntHave('order')
+              ->orWhereHas('order', function ($o) {
+                  $o->where('status', '!=', 'open')
+                    ->where('status', '!=', 'sent_to_supervisor');
+              });
+        });
+
+        // Search filter
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('request_number', 'like', "%{$search}%")
+                  ->orWhere('quotation_number', 'like', "%{$search}%")
+                  ->orWhere('sales_order_number', 'like', "%{$search}%")
+                  ->orWhere('customer_name', 'like', "%{$search}%")
+                  ->orWhere('no_po', 'like', "%{$search}%");
+            });
+        }
+
+        // Date range filter
+        if ($startDate && $endDate) {
+            $query->whereBetween('created_at', [$startDate, $endDate]);
+        }
+
+        // Sales agent filter
+        if (!empty($salesId)) {
+            $query->where('sales_id', $salesId);
+        }
+
+        // Report type filter
+        if (!empty($reportType) && $reportType !== 'all') {
+            if ($reportType === 'quotation') {
+                $query->whereNull('custom_quotation_id');
+            } elseif ($reportType === 'custom_quotation') {
+                $query->whereNotNull('custom_quotation_id');
+            }
+        }
+
+        // Status filter
+        if (!empty($status) && $status !== 'all') {
+            if ($status === 'belum_diproses') {
+                $query->whereDoesntHave('order');
+            } else {
+                $query->whereHas('order', function ($o) use ($status) {
+                    $o->where('status', $status);
+                });
+            }
+        }
+
+        $rawResults = $query->latest()->get();
+        $results = $rawResults->map(function($ro) {
+            $mapped = $this->mapRequestOrderRow($ro);
+            $ro->status = $mapped['status']; // Use mapped user-friendly status label
+            return $ro;
+        });
+
+        // Filter description
+        $filterDescription = 'Semua Periode';
+        if ($periodeType !== 'all') {
+            if ($startDate && $endDate) {
+                $filterDescription = 'Periode: ' . $startDate->format('d M Y') . ' s/d ' . $endDate->format('d M Y');
+            }
+        }
+
+        $data = [
+            'results' => $results,
+            'filter_description' => $filterDescription,
+            'company_name' => \App\Models\SystemSetting::get('company_name', 'PT. INDONUSA JAYA BERSAMA'),
+            'company_address' => \App\Models\SystemSetting::get('company_address', 'Wonorejo Selatan VB No. 50 Rungkut, Surabaya - 60296'),
+            'company_phone' => \App\Models\SystemSetting::get('company_phone', '08121634173'),
+            'company_email' => \App\Models\SystemSetting::get('company_email', 'info@indonusa.com'),
+            'leader_name' => \App\Models\SystemSetting::get('leader_name', 'Alimul Imam S.AP'),
+            'leader_position' => \App\Models\SystemSetting::get('leader_position', 'Direktur'),
+            'print_date' => now()->format('d M Y H:i:s'),
+        ];
+
+        $html = view('admin.pdf.ga-sales-order-pdf', $data)->render();
+
+        $pdf = $this->getBrowsershot($html)
+            ->landscape()
+            ->format('A4')
+            ->margins(12.7, 12.7, 12.7, 12.7)
+            ->showBackground()
+            ->writeOptionsToFile()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Laporan-GA-Sales-' . now()->format('YmdHis') . '.pdf"');
+    }
+
+    /**
+     * Helper to resolve start and end dates based on period selections.
+     */
+    private function resolveDateRange($periodeType, $year, $month, $week, $date, $startDateInput, $endDateInput)
+    {
+        if ($periodeType === 'all') {
+            return [null, null];
+        }
+
+        $startDate = null;
+        $endDate = null;
+
+        if ($periodeType === 'daily') {
+            $d = Carbon::parse($date);
+            $startDate = $d->copy()->startOfDay();
+            $endDate = $d->copy()->endOfDay();
+        } elseif ($periodeType === 'weekly') {
+            $firstDay = Carbon::create($year, $month, 1)->startOfDay();
+            if ($week == 1) {
+                $startDate = $firstDay->copy();
+                $endDate = $firstDay->copy()->addDays(6)->endOfDay();
+            } elseif ($week == 2) {
+                $startDate = $firstDay->copy()->addDays(7);
+                $endDate = $firstDay->copy()->addDays(13)->endOfDay();
+            } elseif ($week == 3) {
+                $startDate = $firstDay->copy()->addDays(14);
+                $endDate = $firstDay->copy()->addDays(20)->endOfDay();
+            } elseif ($week == 4) {
+                $startDate = $firstDay->copy()->addDays(21);
+                $endDate = $firstDay->copy()->addDays(27)->endOfDay();
+            } else {
+                $startDate = $firstDay->copy()->addDays(28);
+                $endDate = $firstDay->copy()->endOfMonth()->endOfDay();
+            }
+        } elseif ($periodeType === 'monthly') {
+            $startDate = Carbon::create($year, $month, 1)->startOfDay();
+            $endDate = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
+        } elseif ($periodeType === 'yearly') {
+            $startDate = Carbon::create($year, 1, 1)->startOfDay();
+            $endDate = Carbon::create($year, 12, 31)->endOfDay();
+        } elseif ($periodeType === 'custom' && $startDateInput && $endDateInput) {
+            $startDate = Carbon::parse($startDateInput)->startOfDay();
+            $endDate = Carbon::parse($endDateInput)->endOfDay();
+        } else {
+            $startDate = Carbon::create($year, $month, 1)->startOfDay();
+            $endDate = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
+        }
+
+        return [$startDate, $endDate];
     }
 
     /**

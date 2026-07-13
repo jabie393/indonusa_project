@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SalesPerformanceExport;
 use App\Exports\QuotationsReportExport;
-use App\Exports\SemuaGoodsExport;
 use Illuminate\Support\Facades\DB;
 
 class SupervisorDashboardController extends Controller
@@ -273,20 +272,5 @@ class SupervisorDashboardController extends Controller
             'imc_years'  => $imcYears,
             'selectedYear' => $selectedYear,
         ]);
-    }
-
-    public function exportPerformance(Request $request)
-    {
-        $type = $request->query('type', 'monthly');
-        return Excel::download(new SalesPerformanceExport($type), "Sales_Performance_{$type}_" . now()->format('Ymd') . ".xlsx");
-    }
-
-    public function exportQuotations()
-    {
-        return Excel::download(new QuotationsReportExport(), "All_Quotations_Report_" . now()->format('Ymd') . ".xlsx");
-    }
-    public function exportSemuaBarang()
-    {
-        return Excel::download(new SemuaGoodsExport(), "All_Barang_Report_" . now()->format('Ymd') . ".xlsx");
     }
 }

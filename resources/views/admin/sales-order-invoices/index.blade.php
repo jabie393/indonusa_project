@@ -30,16 +30,14 @@
                 <div
                     class="flex w-full shrink-0 flex-col items-stretch justify-end space-y-2 md:w-auto md:flex-row md:items-center md:space-x-3 md:space-y-0">
 
-                    <a href="{{ route('sales-order-invoices.export', ['search' => $search]) }}"
-                        class="flex flex-row items-center justify-center gap-2 rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white hover:bg-[#19426d]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                    <button type="button" id="btn-filter"
+                        class="flex cursor-pointer flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white shadow transition-all duration-200 hover:bg-[#19426d] focus:outline-none focus:ring-2 focus:ring-[#225A97]/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        Export Excel
-                    </a>
+                        Filter & Export
+                    </button>
 
                 </div>
             </div>
@@ -48,6 +46,10 @@
                 {{-- Search --}}
                 <form action="{{ route('sales-order-invoices.index') }}" method="GET" class="flex flex-col gap-2 md:flex-row" data-realtime-table-search data-search-input="#searchInput"
                     data-search-target="#tableContainer" data-pagination-target="#pagination-nav" data-extra-fields="#pagination-nav select[name='perPage']">
+                    <!-- Forward current filters -->
+                    @foreach (request()->except(['search', 'page']) as $k => $v)
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}" />
+                    @endforeach
                     <div class="relative flex-1">
                         <label for="topbar-search" class="sr-only">Search</label>
                         <div class="relative md:w-96">
@@ -78,6 +80,203 @@
                         @endif
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Filter Panel -->
+        <div id="filter-panel"
+            class="collapse mb-0 shrink-0 rounded-2xl border-0 bg-white shadow-none transition-all duration-300 dark:bg-gray-800 [&.collapse-open]:mb-5 [&.collapse-open]:border [&.collapse-open]:border-gray-100 [&.collapse-open]:shadow-md [&.collapse-open]:dark:border-gray-700/50">
+            <div class="collapse-content !p-0">
+                <div class="p-5">
+                    <form id="filter-form" action="{{ route('sales-order-invoices.index') }}" method="GET">
+                        <!-- Forward current search parameter -->
+                        <input type="hidden" name="search" value="{{ request('search') }}" />
+
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+
+                            <!-- Report Type Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="report_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tipe Laporan</label>
+                                <select name="report_type" id="report_type"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('report_type') === 'all' ? 'selected' : '' }}>Semua Tipe</option>
+                                    <option value="quotation" {{ request('report_type') === 'quotation' ? 'selected' : '' }}>Standard Quotation</option>
+                                    <option value="custom_quotation" {{ request('report_type') === 'custom_quotation' ? 'selected' : '' }}>Custom Quotation</option>
+                                </select>
+                            </div>
+
+                            <!-- Periode Type Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="periode_type" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Jenis Periode</label>
+                                <select name="periode_type" id="periode_type"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('periode_type', 'all') === 'all' ? 'selected' : '' }}>Semua Periode</option>
+                                    <option value="daily" {{ request('periode_type') === 'daily' ? 'selected' : '' }}>Harian (Daily)</option>
+                                    <option value="weekly" {{ request('periode_type') === 'weekly' ? 'selected' : '' }}>Mingguan (Weekly)</option>
+                                    <option value="monthly" {{ request('periode_type') === 'monthly' ? 'selected' : '' }}>Bulanan (Monthly)</option>
+                                    <option value="yearly" {{ request('periode_type') === 'yearly' ? 'selected' : '' }}>Tahunan (Yearly)</option>
+                                    <option value="custom" {{ request('periode_type') === 'custom' ? 'selected' : '' }}>Custom Range</option>
+                                </select>
+                            </div>
+
+                            <!-- Status Filter -->
+                            <div class="flex flex-col gap-1.5">
+                                <label for="status" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Transaksi</label>
+                                <select name="status" id="status"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    <option value="all" {{ request('status') === 'all' ? 'selected' : '' }}>Semua Status</option>
+                                    <option value="belum_diproses" {{ request('status') === 'belum_diproses' ? 'selected' : '' }}>Belum Diproses</option>
+                                    <option value="approved_supervisor" {{ request('status') === 'approved_supervisor' ? 'selected' : '' }}>Approved by Supervisor</option>
+                                    <option value="approved_warehouse" {{ request('status') === 'approved_warehouse' ? 'selected' : '' }}>Approved by Warehouse</option>
+                                    <option value="rejected_supervisor" {{ request('status') === 'rejected_supervisor' ? 'selected' : '' }}>Rejected by Supervisor</option>
+                                    <option value="rejected_warehouse" {{ request('status') === 'rejected_warehouse' ? 'selected' : '' }}>Rejected by Warehouse</option>
+                                    <option value="sent_to_warehouse" {{ request('status') === 'sent_to_warehouse' ? 'selected' : '' }}>Sent to Warehouse</option>
+                                    <option value="under_procurement" {{ request('status') === 'under_procurement' ? 'selected' : '' }}>Under Procurement</option>
+                                    <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="not_completed" {{ request('status') === 'not_completed' ? 'selected' : '' }}>Partial Delivery</option>
+                                    <option value="canceled" {{ request('status') === 'canceled' ? 'selected' : '' }}>Canceled</option>
+                                    <option value="partial_canceled" {{ request('status') === 'partial_canceled' ? 'selected' : '' }}>Partially Canceled</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Dynamic Period Fields Container -->
+                        <div class="mt-4 grid grid-cols-1 gap-4 border-t border-dashed border-slate-100 pt-4 dark:border-slate-700 md:grid-cols-4">
+
+                            <!-- Daily Fields -->
+                            <div id="period-fields-daily" class="period-field-group col-span-2 flex hidden flex-col gap-1.5">
+                                <label for="date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Pilih Tanggal</label>
+                                <input type="date" name="date" id="date" value="{{ request('date', date('Y-m-d')) }}"
+                                    class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                            </div>
+
+                            <!-- Weekly Fields -->
+                            <div id="period-fields-weekly" class="period-field-group col-span-3 grid hidden grid-cols-3 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="week" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Minggu Ke-</label>
+                                    <select name="week" id="week"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1, 2, 3, 4, 5] as $w)
+                                            <option value="{{ $w }}" {{ request('week', 1) == $w ? 'selected' : '' }}>Minggu Ke-{{ $w }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="weekly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
+                                    <select name="month" id="weekly_month"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
+                                            <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="weekly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                    <select name="year" id="weekly_year"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @for ($y = date('Y'); $y >= 2020; $y--)
+                                            <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Monthly Fields -->
+                            <div id="period-fields-monthly" class="period-field-group col-span-2 grid hidden grid-cols-2 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="monthly_month" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Bulan</label>
+                                    <select id="monthly_month"
+                                        class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @foreach ([1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'] as $num => $name)
+                                            <option value="{{ $num }}" {{ request('month', date('n')) == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="monthly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                    <select id="monthly_year"
+                                        class="monthly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                        @for ($y = date('Y'); $y >= 2020; $y--)
+                                            <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Yearly Fields -->
+                            <div id="period-fields-yearly" class="period-field-group col-span-2 flex hidden flex-col gap-1.5">
+                                <label for="yearly_year" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tahun</label>
+                                <select id="yearly_year"
+                                    class="yearly-sync rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                    @for ($y = date('Y'); $y >= 2020; $y--)
+                                        <option value="{{ $y }}" {{ request('year', date('Y')) == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <!-- Custom Fields -->
+                            <div id="period-fields-custom" class="period-field-group col-span-2 grid hidden grid-cols-2 gap-3">
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="start_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Mulai Tanggal</label>
+                                    <input type="date" name="start_date" id="start_date" value="{{ request('start_date', date('Y-m-01')) }}"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label for="end_date" class="text-xs font-semibold text-slate-500 dark:text-slate-400">Sampai Tanggal</label>
+                                    <input type="date" name="end_date" id="end_date" value="{{ request('end_date', date('Y-m-d')) }}"
+                                        class="rounded-xl border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                                </div>
+                            </div>
+
+                            <!-- Hidden Fields to store synchronized values -->
+                            <input type="hidden" name="month" id="month_val" value="{{ request('month', date('n')) }}" />
+                            <input type="hidden" name="year" id="year_val" value="{{ request('year', date('Y')) }}" />
+
+                            <!-- Submit, Reset & Export Actions -->
+                            <div class="col-span-2 flex items-end justify-between gap-2 md:col-start-3">
+                                <div class="flex gap-3">
+                                    <a href="{{ route('sales-order-invoices.index') }}"
+                                        class="flex w-fit flex-row items-center rounded-xl bg-gray-100 px-4 py-2.5 text-center text-sm font-semibold text-slate-700 transition duration-150 hover:bg-gray-200">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                            <path d="M3 3v5h5"></path>
+                                        </svg>
+                                        Reset</a>
+                                    <button type="submit"
+                                        class="w-fit flex flex-row items-center rounded-xl bg-[#225A97] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-[#19426d]">
+                                        <svg class="mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                                        </svg>
+                                        Filter
+                                    </button>
+                                </div>
+
+                                <div class="flex gap-3">
+                                    <button type="button" id="btn-export-excel"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-emerald-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        Export Excel
+                                    </button>
+                                    <button type="button" id="btn-export-pdf"
+                                        class="flex w-fit cursor-pointer flex-row items-center justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow transition duration-200 hover:bg-red-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                        </svg>
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -601,6 +800,91 @@
             document.addEventListener("click", function (e) {
                 if (historyModal && e.target === historyModal) closeHistoryModal();
             });
+
+            // Filter Panel & Export Scripts
+            const periodeSelect = document.getElementById('periode_type');
+            const monthlyMonth = document.getElementById('monthly_month');
+            const monthlyYear = document.getElementById('monthly_year');
+            const weeklyMonth = document.getElementById('weekly_month');
+            const weeklyYear = document.getElementById('weekly_year');
+            const yearlyYear = document.getElementById('yearly_year');
+
+            const monthVal = document.getElementById('month_val');
+            const yearVal = document.getElementById('year_val');
+
+            function syncValueInputs() {
+                if (!periodeSelect || !monthVal || !yearVal) return;
+                const currentPeriod = periodeSelect.value;
+                if (currentPeriod === 'weekly') {
+                    if (weeklyMonth) monthVal.value = weeklyMonth.value;
+                    if (weeklyYear) yearVal.value = weeklyYear.value;
+                } else if (currentPeriod === 'monthly') {
+                    if (monthlyMonth) monthVal.value = monthlyMonth.value;
+                    if (monthlyYear) yearVal.value = monthlyYear.value;
+                } else if (currentPeriod === 'yearly') {
+                    if (yearlyYear) yearVal.value = yearlyYear.value;
+                }
+            }
+
+            if (weeklyMonth) weeklyMonth.addEventListener('change', syncValueInputs);
+            if (weeklyYear) weeklyYear.addEventListener('change', syncValueInputs);
+            if (monthlyMonth) monthlyMonth.addEventListener('change', syncValueInputs);
+            if (monthlyYear) monthlyYear.addEventListener('change', syncValueInputs);
+            if (yearlyYear) yearlyYear.addEventListener('change', syncValueInputs);
+
+            function togglePeriodFields() {
+                if (!periodeSelect) return;
+                const value = periodeSelect.value;
+
+                document.querySelectorAll('.period-field-group').forEach(group => {
+                    group.classList.add('hidden');
+                });
+
+                const targetGroup = document.getElementById('period-fields-' + value);
+                if (targetGroup) {
+                    targetGroup.classList.remove('hidden');
+                }
+
+                syncValueInputs();
+            }
+
+            if (periodeSelect) {
+                periodeSelect.addEventListener('change', togglePeriodFields);
+                togglePeriodFields();
+            }
+
+            const btnFilter = document.getElementById('btn-filter');
+            const filterPanel = document.getElementById('filter-panel');
+            if (btnFilter && filterPanel) {
+                btnFilter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterPanel.classList.toggle('collapse-open');
+                });
+            }
+
+            const btnExportExcel = document.getElementById('btn-export-excel');
+            if (btnExportExcel) {
+                btnExportExcel.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    syncValueInputs();
+                    const form = document.getElementById('filter-form');
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData).toString();
+                    window.location.href = "{{ route('sales-order-invoices.export') }}?" + params;
+                });
+            }
+
+            const btnExportPdf = document.getElementById('btn-export-pdf');
+            if (btnExportPdf) {
+                btnExportPdf.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    syncValueInputs();
+                    const form = document.getElementById('filter-form');
+                    const formData = new FormData(form);
+                    const params = new URLSearchParams(formData).toString();
+                    window.open("{{ route('sales-order-invoices.pdf') }}?" + params, '_blank');
+                });
+            }
         });
     </script>
     @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])

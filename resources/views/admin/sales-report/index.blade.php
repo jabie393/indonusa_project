@@ -45,11 +45,6 @@
         <!-- Filter Panel -->
         <div id="filter-panel"
             class="collapse mb-0 shrink-0 rounded-2xl border-0 bg-white shadow-none transition-all duration-300 dark:bg-gray-800 [&.collapse-open]:mb-5 [&.collapse-open]:border [&.collapse-open]:border-gray-100 [&.collapse-open]:shadow-md [&.collapse-open]:dark:border-gray-700/50">
-            <script>
-                if (localStorage.getItem('filter_panel_open') === 'true') {
-                    document.getElementById('filter-panel').classList.add('collapse-open');
-                }
-            </script>
             <div class="collapse-content !p-0">
                 <div class="p-5">
                     <form id="filter-form" action="{{ route('sales-report.index') }}" method="GET">
@@ -469,8 +464,7 @@
             if (btnFilter && filterPanel) {
                 btnFilter.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const isOpen = filterPanel.classList.toggle('collapse-open');
-                    localStorage.setItem('filter_panel_open', isOpen ? 'true' : 'false');
+                    filterPanel.classList.toggle('collapse-open');
                 });
             }
 

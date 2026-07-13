@@ -21,6 +21,9 @@ class WarehouseController extends Controller
 
         $perPage = $request->input('perPage', 10);
         $query = $request->input('search');
+        $category = $request->input('category');
+        $stockStatus = $request->input('stock_status');
+
         $goods = Goods::where('goods_status', 'approved');
 
         if ($query) {
@@ -32,12 +35,113 @@ class WarehouseController extends Controller
             });
         }
 
+        if (!empty($category) && $category !== 'all') {
+            $goods->where('category', $category);
+        }
+
+        if (!empty($stockStatus) && $stockStatus !== 'all') {
+            if ($stockStatus === 'low') {
+                $goods->where('stock', '>', 0)->where('stock', '<=', 20);
+            } elseif ($stockStatus === 'ready') {
+                $goods->where('stock', '>', 20);
+            } elseif ($stockStatus === 'out') {
+                $goods->where('stock', '<=', 0);
+            }
+        }
+
         $goods = $goods->paginate($perPage)->appends($request->except('page'));
         $kategoriList = Goods::KATEGORI;
 
         $barang = $goods->first();
 
         return view('admin.warehouse.index', compact('goods', 'kategoriList', 'barang'));
+    }
+
+    /**
+     * Export WMS Goods inventory data to Excel.
+     */
+    public function exportExcel(Request $request)
+    {
+        $search = $request->input('search');
+        $category = $request->input('category');
+        $stockStatus = $request->input('stock_status');
+
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\AllGoodsExport($search, $category, $stockStatus),
+            'Inventory_Report_' . now()->format('Ymd_His') . '.xlsx'
+        );
+    }
+
+    /**
+     * Export WMS Goods inventory data to PDF.
+     */
+    public function exportPdf(Request $request)
+    {
+        $search = $request->input('search');
+        $category = $request->input('category');
+        $stockStatus = $request->input('stock_status');
+
+        $query = Goods::where('goods_status', 'approved');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('goods_name', 'like', "%{$search}%")
+                  ->orWhere('goods_code', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($category && $category !== 'all') {
+            $query->where('category', $category);
+        }
+
+        if ($stockStatus && $stockStatus !== 'all') {
+            if ($stockStatus === 'low') {
+                $query->where('stock', '>', 0)->where('stock', '<=', 20);
+            } elseif ($stockStatus === 'ready') {
+                $query->where('stock', '>', 20);
+            } elseif ($stockStatus === 'out') {
+                $query->where('stock', '<=', 0);
+            }
+        }
+
+        $results = $query->orderBy('goods_name', 'asc')->get();
+
+        $filters = [];
+        if ($category && $category !== 'all') {
+            $filters[] = 'Kategori: ' . $category;
+        }
+        if ($stockStatus && $stockStatus !== 'all') {
+            $filters[] = 'Stok: ' . ucfirst($stockStatus);
+        }
+        $filterDescription = count($filters) > 0 ? implode(', ', $filters) : 'Semua Barang';
+
+        $data = [
+            'results' => $results,
+            'filter_description' => $filterDescription,
+            'company_name' => \App\Models\SystemSetting::get('company_name', 'PT. INDONUSA JAYA BERSAMA'),
+            'company_address' => \App\Models\SystemSetting::get('company_address', 'Wonorejo Selatan VB No. 50 Rungkut, Surabaya - 60296'),
+            'company_phone' => \App\Models\SystemSetting::get('company_phone', '08121634173'),
+            'company_email' => \App\Models\SystemSetting::get('company_email', 'info@indonusa.com'),
+            'leader_name' => \App\Models\SystemSetting::get('leader_name', 'Alimul Imam S.AP'),
+            'leader_position' => \App\Models\SystemSetting::get('leader_position', 'Direktur'),
+            'print_date' => now()->format('d M Y H:i:s'),
+        ];
+
+        $html = view('admin.pdf.inventory-report-pdf', $data)->render();
+
+        $pdf = $this->getBrowsershot($html)
+            ->landscape()
+            ->format('A4')
+            ->margins(12.7, 12.7, 12.7, 12.7)
+            ->showBackground()
+            ->writeOptionsToFile()
+            ->pdf();
+
+        return response($pdf)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="Laporan-Inventory-' . now()->format('YmdHis') . '.pdf"');
     }
 
     public function store(Request $request)
