@@ -12,7 +12,6 @@ class ProcurementArrivalRequest extends Model
     protected $fillable = [
         'procurement_of_goods_item_id',
         'good_id',
-        'supplier_id',
         'received_at',
         'quantity',
         'unit_cost',
@@ -31,14 +30,6 @@ class ProcurementArrivalRequest extends Model
     public function good(): BelongsTo
     {
         return $this->belongsTo(Goods::class, 'good_id');
-    }
-
-    /**
-     * Get the GA supplier who recorded the arrival.
-     */
-    public function supplier(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'supplier_id');
     }
 
     /**

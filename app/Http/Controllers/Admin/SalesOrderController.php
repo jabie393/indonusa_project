@@ -76,7 +76,7 @@ class SalesOrderController extends Controller
             'pdf_po'         => $ro->pdf_po,
             'customer_status'=> $ro->customer->status ?? 'active',
             'aksi_url'       => '#',
-            'has_batches'    => $ro->order && $ro->order->batches->isNotEmpty(),
+            'has_batches'    => $ro->order && $ro->order->batches->count() > 1,
             'is_sent_to_warehouse' => $isSentToWarehouse,
             'can_download_pdf' => $ro->canDownloadPdf(),
         ];

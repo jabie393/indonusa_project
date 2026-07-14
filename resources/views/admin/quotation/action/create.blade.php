@@ -326,7 +326,7 @@
                                                         @foreach ($goods as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}" data-nama="{{ $b->goods_name }}"
                                                                 data-kategori="{{ $b->category }}" data-stok="{{ $b->stock }}" data-satuan="{{ $b->unit ?? '' }}"
-                                                                data-harga="{{ $b->selling_price ?? 0 }}" data-diskon="{{ $b->discount_percent ?? 0 }}"
+                                                                data-harga="{{ $b->selling_price ?? 0 }}" data-diskon="0"
                                                                 data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                 {{ $b->goods_code }}
                                                             </option>

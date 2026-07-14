@@ -449,7 +449,7 @@
                                                                         data-kategori="{{ $b->category }}" data-stok="{{ $b->stock }}"
                                                                         data-satuan="{{ $b->unit ?? '' }}"
                                                                         data-harga="{{ $b->selling_price ?? 0 }}"
-                                                                        data-diskon="{{ $b->discount_percent ?? 0 }}"
+                                                                        data-diskon="0"
                                                                         data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}"
                                                                         @selected($item->goods_id === $b->id)>
                                                                         {{ $b->goods_code }}
@@ -573,7 +573,7 @@
                                             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
                                                 <div class="flex flex-col gap-2">
                                                     @php
-                                                        $rawDiskon = old('discount_percent', $item->discount_percent ?? ($item->barang->discount_percent ?? 0));
+                                                        $rawDiskon = old('discount_percent', $item->discount_percent ?? 0);
                                                         $diskonVal = is_array($rawDiskon) ? ($rawDiskon[0] ?? 0) : $rawDiskon;
                                                         $diskonVal = floatval($diskonVal);
                                                     @endphp
@@ -710,7 +710,7 @@
                                                                     data-kategori="{{ $b->category }}" data-stok="{{ $b->stock }}"
                                                                     data-satuan="{{ $b->unit ?? '' }}"
                                                                     data-harga="{{ $b->selling_price ?? 0 }}"
-                                                                    data-diskon="{{ $b->discount_percent ?? 0 }}">
+                                                                    data-diskon="0">
                                                                     {{ $b->goods_code }}
                                                                 </option>
                                                             @endforeach

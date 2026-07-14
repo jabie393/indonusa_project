@@ -19,7 +19,7 @@
         class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative rounded-2xl bg-white shadow-md dark:bg-gray-800">
         <div class="p-6">
 
-            @if (empty($batch) && !empty($batches) && $batches->isNotEmpty())
+            @if (empty($batch) && !empty($batches) && $batches->isNotEmpty() && !empty($order) && $order->delivery_options === 'partial')
                 <div
                     class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Partial Invoice Batch</h2>
@@ -137,11 +137,11 @@
                                     <div style="position: relative; z-index: 10; margin-bottom: 24px;">
                                         <span
                                             style="font-size:32px; font-weight:bold; color:#000000; text-decoration:underline;">INVOICE</span>
-                                        @if (!empty($batch))
+                                        @if (!empty($batch) && !empty($order) && $order->delivery_options === 'partial')
                                             <div style="margin-top: 8px; font-size: 14px; font-weight: 700; color: #0D223A;">
                                                 Partial shipment invoice for Batch #{{ $batch->batch_number }}
                                             </div>
-                                        @elseif(!empty($batches) && $batches->isNotEmpty())
+                                        @elseif(!empty($batches) && $batches->isNotEmpty() && !empty($order) && $order->delivery_options === 'partial')
                                             <div style="margin-top: 8px; font-size: 14px; font-weight: 700; color: #0D223A;">
                                                 This request order was shipped in multiple partial batches. Please print each batch
                                                 invoice separately below.
@@ -507,7 +507,7 @@
 
                                 </div>
 
-                                @if (!empty($batches) && $batches->isNotEmpty())
+                                @if (!empty($batches) && $batches->isNotEmpty() && !empty($order) && $order->delivery_options === 'partial')
                                     <div
                                         class="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800">
                                         <div class="flex items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4">

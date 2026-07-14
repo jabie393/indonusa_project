@@ -226,11 +226,23 @@
                                                 @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
                                                     @php
                                                         $hasEnoughStockForFull = true;
-                                                        foreach ($order->items as $item) {
-                                                            $remainingQty = $item->quantity - $item->delivered_quantity;
-                                                            if ($item->barang && $item->barang->stock < $remainingQty) {
+                                                        $totalRemainingQty = 0;
+                                                        $remainingItemsCount = 0;
+                                                        $itemsToLoop = $order->items->count() > 0 ? $order->items : ($order->requestOrder?->items ?? collect());
+                                                        foreach ($itemsToLoop as $item) {
+                                                            $qty = $item->quantity ?? 0;
+                                                            $delivered = $item->delivered_quantity ?? 0;
+                                                            $remainingQty = $qty - $delivered;
+                                                            if ($remainingQty > 0) {
+                                                                $remainingItemsCount++;
+                                                                $totalRemainingQty += $remainingQty;
+                                                            }
+                                                            $goodsItem = $item->barang ?? null;
+                                                            if (!$goodsItem && isset($item->goods_id)) {
+                                                                $goodsItem = \App\Models\Goods::find($item->goods_id);
+                                                            }
+                                                            if ($goodsItem && $goodsItem->stock < $remainingQty) {
                                                                 $hasEnoughStockForFull = false;
-                                                                break;
                                                             }
                                                         }
                                                     @endphp
@@ -241,7 +253,9 @@
                                                         data-order-number="{{ $order->do_number ?? $order->order_number }}"
                                                         data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
                                                         data-delivery-options="{{ $order->delivery_options }}"
-                                                        data-has-enough-stock="{{ $hasEnoughStockForFull ? 'true' : 'false' }}">
+                                                        data-has-enough-stock="{{ $hasEnoughStockForFull ? 'true' : 'false' }}"
+                                                        data-total-remaining-qty="{{ $totalRemainingQty }}"
+                                                        data-remaining-items-count="{{ $remainingItemsCount }}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                             <path stroke-linecap="round" stroke-linejoin="round"

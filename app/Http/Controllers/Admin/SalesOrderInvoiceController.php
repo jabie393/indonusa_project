@@ -60,7 +60,7 @@ class SalesOrderInvoiceController extends Controller
             'pdf_po'         => $ro->pdf_po,
             'customer_status'=> $ro->customer->status ?? 'active',
             'aksi_url'       => '#',
-            'has_batches'    => $ro->order && $ro->order->batches->isNotEmpty(),
+            'has_batches'    => $ro->order && $ro->order->batches->count() > 1,
         ];
     }
 
@@ -546,11 +546,21 @@ class SalesOrderInvoiceController extends Controller
         }
 
         $isGa = strtolower(Auth::user()->role ?? '') === 'general affair';
+        $batches = $ro->order?->batches ?? collect();
+
+        if ($batches->count() === 1) {
+            $batch = $batches->first();
+            $route = $isGa
+                ? route('invoice.batch.invoice', $batch->id)
+                : route('delivery-orders.batch.invoice', $batch->id);
+            return redirect($route);
+        }
+
         $invoiceExcelRoute = $isGa
             ? route('invoice.excel', $id)
             : route('sales.sales-order.invoice-excel', $id);
 
-        $batches = $ro->order?->batches ?? collect();
+        $order = $ro->order;
 
         return view('admin.invoice.index', compact(
             'customerName',
@@ -564,6 +574,7 @@ class SalesOrderInvoiceController extends Controller
             'invoiceNumber',
             'invoiceExcelRoute',
             'batches',
+            'order',
         ) + ['rowId' => $id, 'rowType' => $type]);
     }
 
@@ -719,6 +730,7 @@ class SalesOrderInvoiceController extends Controller
             ? route('invoice.batch.excel', $batch->id)
             : route('delivery-orders.batch.invoice-excel', $batch->id);
         $batches = collect();
+        $order = $batch->order;
 
         return view('admin.invoice.index', compact(
             'customerName',
@@ -730,6 +742,7 @@ class SalesOrderInvoiceController extends Controller
             'invoiceExcelRoute',
             'batch',
             'batches',
+            'order',
         ) + ['rowId' => $batch->id, 'rowType' => 'batch_invoice'] + $totals);
     }
 

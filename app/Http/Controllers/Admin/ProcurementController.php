@@ -246,7 +246,6 @@ class ProcurementController extends Controller
                     ProcurementArrivalRequest::create([
                         'good_id' => $barang->id,
                         'procurement_of_goods_item_id' => $procItem->id,
-                        'supplier_id' => Auth::id(), // GA user who records
                         'received_at' => now(),
                         'quantity' => $itemData['qty_ordered'],
                         'unit_cost' => $itemData['buy_price'],
@@ -273,7 +272,7 @@ class ProcurementController extends Controller
                 ]);
             } else {
                 // Partial - load detail HTML to be rendered in modal
-                $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests.supplier']);
+                $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests']);
                 $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
                 return response()->json([
                     'success' => true,
@@ -295,7 +294,7 @@ class ProcurementController extends Controller
      */
     public function detailHtml(ProcurementOfGoods $procurement)
     {
-        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests.supplier']);
+        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests']);
         return view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'));
     }
 
@@ -356,7 +355,6 @@ class ProcurementController extends Controller
                     ProcurementArrivalRequest::create([
                         'good_id' => $itemData['goods_id'],
                         'procurement_of_goods_item_id' => $itemData['procurement_item_id'],
-                        'supplier_id' => Auth::id(), // User GA yang mencatat
                         'received_at' => now(),
                         'quantity' => $itemData['qty_arriving'],
                         'unit_cost' => $itemData['buy_price'],

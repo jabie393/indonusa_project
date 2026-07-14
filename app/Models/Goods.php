@@ -62,7 +62,6 @@ class Goods extends Model
         'description',
         'image',
         'note',
-        'submission_reason',
         'form',
     ];
 

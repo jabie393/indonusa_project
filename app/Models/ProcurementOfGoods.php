@@ -11,7 +11,6 @@ class ProcurementOfGoods extends Model
     protected $fillable = [
         'procurement_number',
         'custom_quotation_id',
-        'supplier_id',
         'general_affair_id',
         'warehouse_id',
         'status',

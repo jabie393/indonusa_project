@@ -287,6 +287,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const approveUrl = btn.getAttribute("data-approve-url");
             const deliveryOptions = btn.getAttribute("data-delivery-options");
             const hasEnoughStock = btn.getAttribute("data-has-enough-stock") !== 'false';
+            const totalRemainingQty = parseInt(btn.getAttribute("data-total-remaining-qty") || "0");
+            const remainingItemsCount = parseInt(btn.getAttribute("data-remaining-items-count") || "0");
 
             currentOrderId = orderId;
             if (approveOrderNumberEl)
@@ -313,6 +315,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     "/partial-approve",
                 );
                 partialDeliveryForm.setAttribute("action", partialUrl);
+            }
+
+            // Hide Partial Delivery option if total remaining quantity is 1 or less (can't be split)
+            if (btnPartialDelivery) {
+                if (totalRemainingQty <= 1) {
+                    btnPartialDelivery.classList.add("hidden");
+                } else {
+                    btnPartialDelivery.classList.remove("hidden");
+                }
             }
 
             // Initial view

@@ -444,14 +444,17 @@ class DeliveryOrdersController extends Controller
 
         if ($allDelivered) {
             $order->status = 'completed';
-            if ($order->delivery_options === null) {
+            // Jika semua barang dikirim pada pengiriman pertama (hanya ada 1 batch), ubah status menjadi full delivery
+            if ($order->batches()->count() <= 1) {
                 $order->delivery_options = 'full';
+            } else {
+                if ($order->delivery_options === null) {
+                    $order->delivery_options = 'partial';
+                }
             }
         } else {
             $order->status = 'not_completed';
-            if ($order->delivery_options === null) {
-                $order->delivery_options = 'partial';
-            }
+            $order->delivery_options = 'partial';
         }
         $order->save();
 

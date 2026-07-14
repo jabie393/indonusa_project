@@ -37,7 +37,7 @@ class SupplyOrdersController extends Controller
 
         // 2. Custom Procurement receipts (pending approval)
         $procurementQuery = ProcurementArrivalRequest::where('status', 'pending')
-            ->with(['good', 'supplier', 'procurementOfGoodsItem.procurementOfGoods.customQuotation.order']);
+            ->with(['good', 'procurementOfGoodsItem.procurementOfGoods.customQuotation.order']);
 
         if ($query) {
             $procurementQuery->whereHas('good', function ($q) use ($query) {
@@ -245,7 +245,7 @@ class SupplyOrdersController extends Controller
             // 2. Buat record di goods_receipts
             GoodsReceipt::create([
                 'good_id' => $arrivalRequest->good_id,
-                'supplier_id' => $arrivalRequest->supplier_id,
+                'supplier_id' => $arrivalRequest->procurementOfGoodsItem?->procurementOfGoods?->general_affair_id ?? Auth::id(),
                 'received_at' => $arrivalRequest->received_at ?? now(),
                 'approved_by' => Auth::id(),
                 'quantity' => $arrivalRequest->quantity,

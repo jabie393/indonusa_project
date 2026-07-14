@@ -689,7 +689,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-5 text-center">
-                                        @php $dk = $item->discount_percent ?? ($item->barang->discount_percent ?? 0); @endphp
+                                        @php $dk = $item->discount_percent ?? 0; @endphp
                                         @if ($dk > 0)
                                             <div class="flex flex-col items-center">
                                                 <span class="text-xs font-bold text-green-500">
