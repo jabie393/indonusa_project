@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeliveryBatch extends Model
 {
-    protected $fillable = ['order_id', 'batch_number'];
+    protected $fillable = ['order_id', 'batch_number', 'do_number', 'no_invoice', 'no_receipt'];
 
     public function order()
     {

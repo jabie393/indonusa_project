@@ -102,9 +102,9 @@
                             <td class="border border-slate-400 p-2 font-bold">{{ $row->customer_name ?? '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->request_number ?? '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->quotation_number ?? '-' }}</td>
-                            <td class="border border-slate-400 p-2">{{ $row->order->no_invoice ?? '-' }}</td>
-                            <td class="border border-slate-400 p-2">{{ $row->order->no_receipt ?? '-' }}</td>
-                            <td class="border border-slate-400 p-2">{{ $row->order->do_number ?? '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->order?->batches->pluck('no_invoice')->filter()->implode(', ') ?: '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->order?->batches->pluck('no_receipt')->filter()->implode(', ') ?: '-' }}</td>
+                            <td class="border border-slate-400 p-2">{{ $row->order?->batches->pluck('do_number')->filter()->implode(', ') ?: '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->no_po ?? '-' }}</td>
                             <td class="border border-slate-400 p-2">{{ $row->sales_order_number ?? '-' }}</td>
                             <td class="border border-slate-400 p-2 text-center">{{ $row->items->count() }}</td>

@@ -27,7 +27,9 @@ class DeliveryOrdersController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('order_number',  'like', "%$search%")
-                  ->orWhere('do_number',    'like', "%$search%")
+                  ->orWhereHas('batches', function ($bq) use ($search) {
+                      $bq->where('do_number', 'like', "%$search%");
+                  })
                   ->orWhere('customer_name','like', "%$search%")
                   ->orWhereHas('requestOrder', function ($q2) use ($search) {
                       $q2->where('no_po',               'like', "%$search%")
@@ -64,7 +66,9 @@ class DeliveryOrdersController extends Controller
 
                 // Search by order number or DO number (allow partial matches)
                 $q->orWhere('order_number', 'like', "%{$query}%")
-                  ->orWhere('do_number', 'like', "%{$query}%");
+                  ->orWhereHas('batches', function ($bq) use ($query) {
+                      $bq->where('do_number', 'like', "%{$query}%");
+                  });
 
                 // Search supervisor name (common column 'name'). If a 'username' column exists, include it.
                 $q->orWhereHas('supervisor', function ($sq) use ($query) {
@@ -94,6 +98,11 @@ class DeliveryOrdersController extends Controller
     {
         $order = Order::with('items')->findOrFail($id);
         
+        $doNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
+            \App\Models\DeliveryBatch::whereDate('created_at', now()->toDateString())->count() + 1,
+            4, '0', STR_PAD_LEFT
+        );
+
         // Fallback/Safety: Populate items if they are empty
         if ($order->items->count() === 0 && $order->requestOrder && $order->requestOrder->items->count() > 0) {
             foreach ($order->requestOrder->items as $reqItem) {
@@ -153,7 +162,7 @@ class DeliveryOrdersController extends Controller
                         'old_status'  => $barang->goods_status,
                         'new_status'  => $barang->goods_status, // status remains 'masuk' or same
                         'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
-                        'note'        => 'Stock berkurang (' . $remainingQty . ') karena pengiriman penuh DO: ' . ($order->do_number ?? $order->order_number),
+                        'note'        => 'Stock berkurang (' . $remainingQty . ') karena pengiriman penuh DO: ' . $doNumber,
                     ]);
                 }
             } else {
@@ -181,6 +190,7 @@ class DeliveryOrdersController extends Controller
         $batch = DeliveryBatch::create([
             'order_id' => $order->id,
             'batch_number' => $order->batches()->count() + 1,
+            'do_number' => $doNumber,
         ]);
 
         foreach ($order->items as $item) {
@@ -340,6 +350,11 @@ class DeliveryOrdersController extends Controller
     {
         $order = Order::with('items')->findOrFail($id);
         
+        $doNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
+            \App\Models\DeliveryBatch::whereDate('created_at', now()->toDateString())->count() + 1,
+            4, '0', STR_PAD_LEFT
+        );
+
         // Fallback/Safety: Populate items if they are empty
         if ($order->items->count() === 0 && $order->requestOrder && $order->requestOrder->items->count() > 0) {
             foreach ($order->requestOrder->items as $reqItem) {
@@ -413,7 +428,7 @@ class DeliveryOrdersController extends Controller
                             'old_status'  => $barang->goods_status,
                             'new_status'  => $barang->goods_status,
                             'changed_by'  => \Illuminate\Support\Facades\Auth::id(),
-                            'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . ($order->do_number ?? $order->order_number),
+                            'note'        => 'Stock berkurang (' . $sentQuantity . ') karena pengiriman parsial DO: ' . $doNumber,
                         ]);
                     }
                 }
@@ -426,6 +441,7 @@ class DeliveryOrdersController extends Controller
             $batch = DeliveryBatch::create([
                 'order_id' => $order->id,
                 'batch_number' => $order->batches()->count() + 1,
+                'do_number' => $doNumber,
             ]);
 
             foreach ($sentItems as $itemId => $qty) {

@@ -22,7 +22,6 @@ class Order extends Model
         'required_date',
         'customer_notes',
         'delivery_options',
-        'do_number',
     ];
     protected static function boot()
     {

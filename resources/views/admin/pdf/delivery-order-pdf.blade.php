@@ -142,7 +142,7 @@
                             <tr>
                                 <td class="px-2 py-1.5 align-top text-black">{{ $orders->customer?->nama_customer ?? $orders->customer_name }}</td>
                                 <td class="px-2 py-1.5 align-top text-black">DO No</td>
-                                <td class="px-2 py-1.5 align-top text-black">: {{ $orders->do_number ?? $orders->order_number }}</td>
+                                <td class="px-2 py-1.5 align-top text-black">: {{ $orders->batches->first()?->do_number ?? $orders->order_number }}</td>
                             </tr>
                             <tr>
                                 <td class="px-2 py-1.5 align-top text-black">{{ $orders->customer?->alamat_pengiriman ?? '-' }}</td>

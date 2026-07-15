@@ -155,13 +155,8 @@ class SalesOrderController extends Controller
             $existingOrder = Order::where('quotation_id', $quotation->id)->first();
 
             if ($existingOrder) {
-                $doNumber = $existingOrder->do_number ?? ('DO-' . now()->format('Ymd') . '-' . str_pad(
-                    Order::whereDate('created_at', now()->toDateString())->count() + 1,
-                    4, '0', STR_PAD_LEFT
-                ));
                 $existingOrder->update([
                     'status' => $targetStatus,
-                    'do_number' => $doNumber,
                     'custom_quotation_id' => $quotation->custom_quotation_id ?? $existingOrder->custom_quotation_id,
                 ]);
                 $orderNumber = $existingOrder->order_number;
@@ -183,14 +178,9 @@ class SalesOrderController extends Controller
                     Order::whereDate('created_at', now()->toDateString())->count() + 1,
                     4, '0', STR_PAD_LEFT
                 );
-                $doNumber = 'DO-' . now()->format('Ymd') . '-' . str_pad(
-                    Order::whereDate('created_at', now()->toDateString())->count() + 1,
-                    4, '0', STR_PAD_LEFT
-                );
 
                 $order = Order::create([
                     'order_number'        => $orderNumber,
-                    'do_number'           => $doNumber,
                     'sales_id'            => $quotation->sales_id ?? Auth::id(),
                     'customer_name'       => $quotation->customer_name,
                     'customer_id'         => $quotation->customer_id ?? null,

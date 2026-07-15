@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->integer('batch_number');
+            $table->string('do_number')->nullable();
+            $table->string('no_invoice')->nullable();
+            $table->string('no_receipt')->nullable();
             $table->timestamps();
         });
     }

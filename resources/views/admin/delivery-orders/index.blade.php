@@ -85,9 +85,9 @@
                                         <a href="javascript:void(0)"
                                             class="js-show-order text-[#225A97] dark:text-blue-400 font-bold hover:underline"
                                             data-order-id="{{ $order->id }}"
-                                            data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                            data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
                                             data-reason="{{ $order->reason }}" data-items='@json($order->items)'>
-                                            {{ $order->do_number ?? $order->order_number }}
+                                            {{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}
                                         </a>
                                     </div>
                                     <div
@@ -208,7 +208,7 @@
                                             <button type="button"
                                                 class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 data-order-id="{{ $order->id }}"
-                                                data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
                                                 data-reason="{{ $order->reason }}" data-items='@json($order->items)'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -246,11 +246,10 @@
                                                             }
                                                         }
                                                     @endphp
-                                                    {{-- Approve --}}
                                                     <button type="button"
                                                         class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
                                                         data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
                                                         data-delivery-options="{{ $order->delivery_options }}"
                                                         data-has-enough-stock="{{ $hasEnoughStockForFull ? 'true' : 'false' }}"
@@ -264,14 +263,13 @@
                                                         <span
                                                             class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Approve</span>
                                                     </button>
-                                                    {{-- Reject barang --}}
                                                     @php
                                                         $hasDeliveries = $order->items->sum('delivered_quantity') > 0;
                                                         $btnLabel = $hasDeliveries ? 'Cancel' : 'Reject';
                                                     @endphp
                                                     <button type="button"
                                                         class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                        onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->do_number ?? $order->order_number }}", @json($order->items))'>
+                                                        onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}", @json($order->items))'>
                                                         @if ($hasDeliveries)
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -293,7 +291,7 @@
                                                     <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
                                                         class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
                                                         data-items='@json($order->items)'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -314,7 +312,7 @@
                                                     <button type="button"
                                                         class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->do_number ?? $order->order_number }}"
+                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
                                                         data-history-url="{{ route('delivery-orders.history', $order->id) }}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

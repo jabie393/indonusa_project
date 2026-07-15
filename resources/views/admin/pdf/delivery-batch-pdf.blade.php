@@ -118,7 +118,7 @@
                         <tr>
                             <td class="py-1.5 px-2 align-top text-black">{{ $order->customer?->nama_customer ?? $order->customer_name }}</td>
                             <td class="py-1.5 px-2 align-top text-black">DO No</td>
-                            <td class="py-1.5 px-2 align-top text-black">: {{ $order->do_number ?? $order->order_number }}</td>
+                            <td class="py-1.5 px-2 align-top text-black">: {{ $batch->do_number ?? $order->order_number }}</td>
                         </tr>
                         <tr>
                             <td class="py-1.5 px-2 align-top text-black">{{ $order->customer?->alamat_pengiriman ?? '-' }}</td>

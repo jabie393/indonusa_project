@@ -669,7 +669,7 @@
         if (btnReceipt) {
             btnReceipt.addEventListener('click', function () {
                 updatePreview();
-                const kwUrl = "{{ route('invoice.receipt', ['id' => $rowId ?? '']) }}";
+                const kwUrl = "{{ route('invoice.receipt', ['id' => $rowId ?? '', 'type' => $rowType ?? '']) }}";
                 window.open(kwUrl, '_blank', 'width=900,height=700');
             });
         }

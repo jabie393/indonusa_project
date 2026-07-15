@@ -896,8 +896,6 @@ class QuotationController extends Controller
             if ($existingOrder) {
                 $existingOrder->update([
                     'status' => 'sent_to_warehouse',
-                    'do_number' => $existingOrder->do_number
-                        ?? ('DO-' . strtoupper(Str::random(8))),
                     'custom_quotation_id' => $ro->custom_quotation_id ?? $existingOrder->custom_quotation_id,
                 ]);
 
@@ -933,7 +931,6 @@ class QuotationController extends Controller
             } else {
                 $order = Order::create([
                     'order_number' => 'ORD-' . strtoupper(Str::random(8)),
-                    'do_number' => 'DO-' . strtoupper(Str::random(8)),
                     'sales_id' => Auth::id(),
                     'supervisor_id' => $ro->approved_by ?? null,
                     'quotation_id' => $ro->id,

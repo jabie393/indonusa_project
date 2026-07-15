@@ -522,28 +522,8 @@ class SalesOrderInvoiceController extends Controller
             $customerAddress = implode(', ', $parts);
         }
 
-        // Generate and persist unique invoice number for General Affair role
-        $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-        if ($isGa && $ro->order) {
-            // If order already has no_invoice, use it. Otherwise generate unique and save.
-            if (empty($ro->order->no_invoice)) {
-                do {
-                    $candidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-                } while (\App\Models\Order::where('no_invoice', $candidate)->exists());
-
-                $ro->order->no_invoice = $candidate;
-                try {
-                    $ro->order->save();
-                    $invoiceNumber = $candidate;
-                } catch (\Exception $e) {
-                    // If save fails, fallback to generated number (non-persisted)
-                    Log::warning('Failed to save no_invoice for order id ' . $ro->order->id . ': ' . $e->getMessage());
-                    $invoiceNumber = $candidate;
-                }
-            } else {
-                $invoiceNumber = $ro->order->no_invoice;
-            }
-        }
+        // Generate temporary invoice number candidate for index view
+        $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/XXXX';
 
         $isGa = strtolower(Auth::user()->role ?? '') === 'general affair';
         $batches = $ro->order?->batches ?? collect();
@@ -708,22 +688,22 @@ class SalesOrderInvoiceController extends Controller
 
         // Generate and persist unique invoice number for General Affair role (batch)
         $invoiceNumber = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-        if ($isGa && $order) {
-            if (empty($order->no_invoice)) {
+        if ($isGa && $batch) {
+            if (empty($batch->no_invoice)) {
                 do {
                     $candidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-                } while (\App\Models\Order::where('no_invoice', $candidate)->exists());
+                } while (\App\Models\DeliveryBatch::where('no_invoice', $candidate)->exists());
 
-                $order->no_invoice = $candidate;
+                $batch->no_invoice = $candidate;
                 try {
-                    $order->save();
+                    $batch->save();
                     $invoiceNumber = $candidate;
                 } catch (\Exception $e) {
-                    Log::warning('Failed to save batch no_invoice for order id ' . ($order->id ?? 'unknown') . ': ' . $e->getMessage());
+                    Log::warning('Failed to save batch no_invoice for batch id ' . ($batch->id ?? 'unknown') . ': ' . $e->getMessage());
                     $invoiceNumber = $candidate;
                 }
             } else {
-                $invoiceNumber = $order->no_invoice;
+                $invoiceNumber = $batch->no_invoice;
             }
         }
         $invoiceExcelRoute = $isGa
@@ -755,52 +735,107 @@ class SalesOrderInvoiceController extends Controller
             abort(403);
         }
 
-        $ro = \App\Models\Quotation::with(['order', 'order.items.barang'])->findOrFail($id);
-        $order = $ro->order;
+        $type = $request->query('type');
+        if ($type === 'batch_invoice') {
+            $batch = \App\Models\DeliveryBatch::with(['order.items.barang', 'order.requestOrder'])->findOrFail($id);
+            $order = $batch->order;
+            $ro = $order->requestOrder;
 
-        if (!$order) {
-            abort(404, 'Order not found for this quotation');
-        }
-
-        // Ensure invoice number exists for this order.
-        if (empty($order->no_invoice)) {
-            do {
-                $invoiceCandidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-            } while (\App\Models\Order::where('no_invoice', $invoiceCandidate)->exists());
-
-            $order->no_invoice = $invoiceCandidate;
-            try {
-                $order->save();
-            } catch (\Exception $e) {
-                Log::warning('Failed to save no_invoice for order id ' . $order->id . ': ' . $e->getMessage());
+            if (!$order) {
+                abort(404, 'Order not found for this batch');
             }
-        }
 
-        // Derive receipt number from invoice number.
-        $receiptCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $order->no_invoice);
-        if ($receiptCandidate === $order->no_invoice) {
-            $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-        }
-
-        if (empty($order->no_receipt) || $order->no_receipt !== $receiptCandidate) {
-            if (\App\Models\Order::where('no_receipt', $receiptCandidate)->where('id', '!=', $order->id)->exists()) {
+            // Ensure invoice number exists for this batch.
+            if (empty($batch->no_invoice)) {
                 do {
+                    $invoiceCandidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                } while (\App\Models\DeliveryBatch::where('no_invoice', $invoiceCandidate)->exists());
+
+                $batch->no_invoice = $invoiceCandidate;
+                try {
+                    $batch->save();
+                } catch (\Exception $e) {
+                    Log::warning('Failed to save no_invoice for batch id ' . $batch->id . ': ' . $e->getMessage());
+                }
+            }
+
+            // Derive receipt number from invoice number.
+            $receiptCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $batch->no_invoice);
+            if ($receiptCandidate === $batch->no_invoice) {
+                $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+            }
+
+            if (empty($batch->no_receipt) || $batch->no_receipt !== $receiptCandidate) {
+                if (\App\Models\DeliveryBatch::where('no_receipt', $receiptCandidate)->where('id', '!=', $batch->id)->exists()) {
+                    do {
+                        $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                    } while (\App\Models\DeliveryBatch::where('no_receipt', $receiptCandidate)->exists());
+                }
+
+                $batch->no_receipt = $receiptCandidate;
+                try {
+                    $batch->save();
+                } catch (\Exception $e) {
+                    Log::warning('Failed to save no_receipt for batch id ' . $batch->id . ': ' . $e->getMessage());
+                }
+            }
+
+            $noReceipt = $batch->no_receipt;
+            $items = $this->getInvoiceItemsForBatch($batch);
+            $totals = $this->calculateInvoiceTotals($items, $ro);
+        } else {
+            $ro = \App\Models\Quotation::with(['order', 'order.items.barang'])->findOrFail($id);
+            $order = $ro->order;
+
+            if (!$order) {
+                abort(404, 'Order not found for this quotation');
+            }
+
+            // Fallback for full/single order index receipt print
+            $firstBatch = $order->batches?->first();
+            if ($firstBatch) {
+                if (empty($firstBatch->no_invoice)) {
+                    do {
+                        $invoiceCandidate = 'IO-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                    } while (\App\Models\DeliveryBatch::where('no_invoice', $invoiceCandidate)->exists());
+
+                    $firstBatch->no_invoice = $invoiceCandidate;
+                    try {
+                        $firstBatch->save();
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to save no_invoice for batch id ' . $firstBatch->id . ': ' . $e->getMessage());
+                    }
+                }
+
+                $receiptCandidate = preg_replace('/^IO-IJB\//', 'KW-IJB/', $firstBatch->no_invoice);
+                if ($receiptCandidate === $firstBatch->no_invoice) {
                     $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
-                } while (\App\Models\Order::where('no_receipt', $receiptCandidate)->exists());
+                }
+
+                if (empty($firstBatch->no_receipt) || $firstBatch->no_receipt !== $receiptCandidate) {
+                    if (\App\Models\DeliveryBatch::where('no_receipt', $receiptCandidate)->where('id', '!=', $firstBatch->id)->exists()) {
+                        do {
+                            $receiptCandidate = 'KW-IJB/' . now()->format('my') . '/' . str_pad(random_int(1000, 9999), 4, '0', STR_PAD_LEFT);
+                        } while (\App\Models\DeliveryBatch::where('no_receipt', $receiptCandidate)->exists());
+                    }
+
+                    $firstBatch->no_receipt = $receiptCandidate;
+                    try {
+                        $firstBatch->save();
+                    } catch (\Exception $e) {
+                        Log::warning('Failed to save no_receipt for batch id ' . $firstBatch->id . ': ' . $e->getMessage());
+                    }
+                }
+
+                $noReceipt = $firstBatch->no_receipt;
+            } else {
+                $noReceipt = 'KW-IJB/' . now()->format('my') . '/XXXX';
             }
 
-            $order->no_receipt = $receiptCandidate;
-            try {
-                $order->save();
-            } catch (\Exception $e) {
-                Log::warning('Failed to save no_receipt for order id ' . $order->id . ': ' . $e->getMessage());
-            }
+            $isGa = true;
+            $items = $this->getInvoiceItems($ro, $isGa);
+            $totals = $this->calculateInvoiceTotals($items, $ro);
         }
-
-        // Prepare totals
-        $isGa = true;
-        $items = $this->getInvoiceItems($ro, $isGa);
-        $totals = $this->calculateInvoiceTotals($items, $ro);
 
         // Terbilang helper (simple)
         $terbilang = function ($number) use (&$terbilang) {
@@ -823,7 +858,7 @@ class SalesOrderInvoiceController extends Controller
             'order' => $order,
             'quotation' => $ro,
             'customerName' => $ro->customer_name ?? $order->customer_name ?? '-',
-            'no_receipt' => $order->no_receipt,
+            'no_receipt' => $noReceipt,
             'amount' => $amountNumber,
             'amount_words' => trim($terbilang($amountNumber)) . ' Rupiah',
             'no_po' => $ro->no_po ?? '-',

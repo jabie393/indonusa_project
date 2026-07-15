@@ -14,10 +14,6 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique();
-            $table->string('do_number')->nullable();
-            // Nomor invoice dan nomor receipt (ditambahkan sesuai permintaan)
-            $table->string('no_invoice')->nullable();
-            $table->string('no_receipt')->nullable();
             $table->unsignedBigInteger('sales_id');      // id user yang membuat order (Sales)
             $table->string('customer_name')->nullable();
             $table->unsignedBigInteger('customer_id')->nullable();
