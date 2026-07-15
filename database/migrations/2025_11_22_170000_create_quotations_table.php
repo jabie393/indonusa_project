@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->decimal('tax', 14, 2)->default(0);
             $table->decimal('grand_total', 14, 2)->default(0);
             $table->string('product_category')->nullable();
-            $table->string('no_po')->nullable();
+            $table->string('no_po')->nullable()->index();
             $table->string('image_po')->nullable();
             $table->string('sales_order_number')->nullable();
             $table->string('pdf_po')->nullable();

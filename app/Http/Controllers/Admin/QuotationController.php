@@ -959,4 +959,21 @@ class QuotationController extends Controller
             }
         });
     }
+
+    public function checkPo(Request $request)
+    {
+        $noPo = trim((string) $request->query('no_po'));
+        $excludeId = $request->query('exclude_id');
+
+        if (empty($noPo)) {
+            return response()->json(['exists' => false]);
+        }
+
+        $query = Quotation::where('no_po', $noPo);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return response()->json(['exists' => $query->exists()]);
+    }
 }

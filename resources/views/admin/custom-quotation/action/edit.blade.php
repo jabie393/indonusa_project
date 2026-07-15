@@ -665,10 +665,6 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-4 flex justify-end gap-4">
-                        <a href="{{ route('sales.custom-quotation.index') }}"
-                           class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                            Batal
-                        </a>
                         <button type="submit"
                                 class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
                             Simpan Perubahan

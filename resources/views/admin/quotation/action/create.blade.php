@@ -707,13 +707,6 @@
 
                     <!-- Action Buttons -->
                     <div class="flex justify-end gap-4 pt-4">
-                        <a href="{{ route('sales.quotation.index') }}" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x mr-2 h-4 w-4">
-                                <path d="M18 6 6 18"></path>
-                                <path d="m6 6 12 12"></path>
-                            </svg> Batal
-                        </a>
                         <button type="submit" class="btn rounded-lg bg-[#225A97] text-white hover:bg-[#1c4d81]" id="submitBtn" disabled>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save mr-2 h-4 w-4">
@@ -1173,9 +1166,57 @@
                 return !invalidRow && isPriceValid;
             }
 
+            let isPoDuplicate = false;
             // Update submit button state depending on complete item rows
             function updateSubmitState() {
-                submitBtn.disabled = !validateRequiredItemRows();
+                submitBtn.disabled = !validateRequiredItemRows() || isPoDuplicate;
+            }
+
+            const noPoInput = document.getElementById('no_po');
+            if (noPoInput) {
+                let poErrorDiv = document.getElementById('no-po-ajax-error');
+                if (!poErrorDiv) {
+                    poErrorDiv = document.createElement('div');
+                    poErrorDiv.id = 'no-po-ajax-error';
+                    poErrorDiv.className = 'text-xs text-red-600 dark:text-red-500 mt-1';
+                    noPoInput.parentNode.appendChild(poErrorDiv);
+                }
+
+                let debounceTimer;
+                noPoInput.addEventListener('input', function() {
+                    clearTimeout(debounceTimer);
+                    const val = this.value.trim();
+                    if (!val) {
+                        isPoDuplicate = false;
+                        poErrorDiv.textContent = '';
+                        noPoInput.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                        noPoInput.classList.remove('is-invalid');
+                        updateSubmitState();
+                        return;
+                    }
+
+                    debounceTimer = setTimeout(() => {
+                        fetch(`{{ route('sales.quotation.check-po') }}?no_po=${encodeURIComponent(val)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.exists) {
+                                    isPoDuplicate = true;
+                                    poErrorDiv.textContent = 'No. PO sudah digunakan pada quotation lain.';
+                                    noPoInput.classList.add('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                                    noPoInput.classList.add('is-invalid');
+                                } else {
+                                    isPoDuplicate = false;
+                                    poErrorDiv.textContent = '';
+                                    noPoInput.classList.remove('border-red-500', 'focus:border-red-500', 'focus:ring-red-500');
+                                    noPoInput.classList.remove('is-invalid');
+                                }
+                                updateSubmitState();
+                            })
+                            .catch(err => {
+                                console.error('Error checking PO:', err);
+                            });
+                    }, 300);
+                });
             }
 
             // Handle barang selection change

@@ -228,6 +228,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
 
     // Quotation Routes
     Route::get('/quotation', [QuotationController::class, 'index'])->name('sales.quotation.index');
+    Route::get('/quotation/check-po', [QuotationController::class, 'checkPo'])->name('sales.quotation.check-po');
     Route::get('/quotation/create', [QuotationController::class, 'create'])->name('sales.quotation.create');
     Route::post('/quotation', [QuotationController::class, 'store'])->name('sales.quotation.store');
 
