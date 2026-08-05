@@ -13,7 +13,9 @@ window.confirmDelete = function (callback) {
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         customClass: {
-            popup: "rounded-2xl!",
+            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+            title: "dark:text-white",
+            htmlContainer: "dark:text-gray-300",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -35,7 +37,9 @@ window.confirmForceComplete = function (callback) {
         confirmButtonText: "Ya, Paksa Selesai!",
         cancelButtonText: "Batal",
         customClass: {
-            popup: "rounded-2xl!",
+            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+            title: "dark:text-white",
+            htmlContainer: "dark:text-gray-300",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -52,12 +56,14 @@ window.confirmCancel = function (callback) {
         text: "Stok akan dikembalikan ke barang utama dan data pengajuan ini akan dihapus.",
         icon: "question",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
+        confirmButtonColor: "#225A97",
         cancelButtonColor: "#d33",
         confirmButtonText: "Ya, batalkan!",
         cancelButtonText: "Tidak",
         customClass: {
-            popup: "rounded-2xl!",
+            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+            title: "dark:text-white",
+            htmlContainer: "dark:text-gray-300",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -74,12 +80,14 @@ window.confirmApprove = function (callback, text = "Apakah Anda yakin ingin meny
         text: text,
         icon: "question",
         showCancelButton: true,
-        confirmButtonColor: "#15803d",
+        confirmButtonColor: "#225A97",
         cancelButtonColor: "#d33",
         confirmButtonText: confirmButtonText,
         cancelButtonText: "Batal",
         customClass: {
-            popup: "rounded-2xl!",
+            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+            title: "dark:text-white",
+            htmlContainer: "dark:text-gray-300",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -113,12 +121,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 title: window.sweetTitle || (isError ? "Gagal!" : "Berhasil!"),
                 text: window.sweetText || "",
                 icon: isError ? "error" : "success",
-                showConfirmButton: isError,
-                confirmButtonColor: isError ? "#d33" : undefined,
-                timer: isError ? undefined : 3500,
-                timerProgressBar: !isError,
+                showConfirmButton: isError || !!window.sweetShowConfirmButton,
+                confirmButtonColor: isError ? "#d33" : "#225A97",
+                confirmButtonText: "OK",
+                timer: (isError || !!window.sweetShowConfirmButton) ? undefined : 3500,
+                timerProgressBar: !(isError || !!window.sweetShowConfirmButton),
                 customClass: {
-                    popup: "rounded-2xl!",
+                    popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+                    title: "dark:text-white",
+                    htmlContainer: "dark:text-gray-300",
                 },
                 target: document.querySelector('dialog[open]') || 'body',
             }).then(() => {
@@ -129,6 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             window.sweetTitle = null;
             window.sweetText = null;
+            window.sweetShowConfirmButton = null;
         }
 
         // Error alert
@@ -144,7 +156,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     showConfirmButton: true,
                     confirmButtonColor: "#d33",
                     customClass: {
-                        popup: "rounded-2xl!",
+                        popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
+                        title: "dark:text-white",
+                        htmlContainer: "dark:text-gray-300",
                     },
                     target: document.querySelector('dialog[open]') || 'body',
                 });

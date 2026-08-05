@@ -39,16 +39,16 @@ class SupervisorDashboardController extends Controller
             $dateEnd = \Carbon\Carbon::parse($dateEndRaw)->endOfDay();
         }
 
+        // Ensure start is before end
+        if ($dateStart && $dateEnd && $dateStart->gt($dateEnd)) {
+            $temp = clone $dateStart;
+            $dateStart = clone $dateEnd->startOfDay();
+            $dateEnd = clone $temp->endOfDay();
+        }
+
         // 2. Calculate Stats Range
         $start = $dateStart ? (clone $dateStart) : \Carbon\Carbon::now()->startOfMonth();
         $end = $dateEnd ? (clone $dateEnd) : \Carbon\Carbon::now()->endOfMonth();
-
-        // Ensure start is before end
-        if ($dateStart && $dateEnd && $start->gt($end)) {
-            $temp = clone $start;
-            $start = clone $end->startOfDay();
-            $end = clone $temp->endOfDay();
-        }
 
         $applySelectedDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
             return $query

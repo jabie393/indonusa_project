@@ -127,6 +127,7 @@
     <script>
         window.sweetTitle = @json(session('title'));
         window.sweetText = @json(session('text'));
+        window.sweetShowConfirmButton = @json(session('showConfirmButton'));
         @if ($errors->any())
             window.errorTitle = "Gagal!";
             window.errorText = {!! json_encode(implode("\n", $errors->all())) !!};

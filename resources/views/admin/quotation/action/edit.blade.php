@@ -200,30 +200,45 @@
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="customer_telepon" class="form-label dark:text-gray-300">Telepon</label>
+                                @php
+                                    $teleponVal = is_array(old('customer_telepon', $requestOrder->customer_telepon ?? '')) ? old('customer_telepon', $requestOrder->customer_telepon ?? '')[0] ?? '' : old('customer_telepon', $requestOrder->customer_telepon ?? '');
+                                @endphp
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_telepon" name="customer_telepon"
-                                    value="{{ is_array(old('customer_telepon', $requestOrder->customer_telepon ?? '')) ? old('customer_telepon', $requestOrder->customer_telepon ?? '')[0] ?? '' : old('customer_telepon', $requestOrder->customer_telepon ?? '') }}"
-                                    placeholder="Masukkan nomor telepon" {{ $dariCustomQuotation ? '' : 'readonly' }}>
+                                    value="{{ $teleponVal }}"
+                                    placeholder="{{ $dariCustomQuotation && empty($teleponVal) ? 'From Custom Quotation' : 'Masukkan nomor telepon' }}" {{ $dariCustomQuotation ? (empty($teleponVal) ? 'disabled' : '') : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="customer_kota" class="form-label dark:text-gray-300">Kota</label>
+                                @php
+                                    $kotaVal = is_array(old('customer_kota', $requestOrder->customer_kota ?? '')) ? old('customer_kota', $requestOrder->customer_kota ?? '')[0] ?? '' : old('customer_kota', $requestOrder->customer_kota ?? '');
+                                @endphp
                                 <input type="text"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="customer_kota" name="customer_kota"
-                                    value="{{ is_array(old('customer_kota', $requestOrder->customer_kota ?? '')) ? old('customer_kota', $requestOrder->customer_kota ?? '')[0] ?? '' : old('customer_kota', $requestOrder->customer_kota ?? '') }}"
-                                    placeholder="Masukkan kota" {{ $dariCustomQuotation ? '' : 'readonly' }}>
+                                    value="{{ $kotaVal }}"
+                                    placeholder="{{ $dariCustomQuotation && empty($kotaVal) ? 'From Custom Quotation' : 'Masukkan kota' }}" {{ $dariCustomQuotation ? (empty($kotaVal) ? 'disabled' : '') : 'readonly' }}>
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
                                 <label for="pic_id" class="form-label dark:text-gray-300">PIC Customer <span
                                         class="text-danger">*</span></label>
-                                <select
-                                    class="@error('pic_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                                    id="pic_id" name="pic_id" required>
-                                    <option value="">-- Pilih PIC Customer --</option>
-                                </select>
+                                @if ($dariCustomQuotation)
+                                    <input type="text"
+                                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="pic_name" name="pic_name"
+                                        value="{{ old('pic_name', $requestOrder->pic_name ?? '') }}"
+                                        readonly>
+                                    <input type="hidden" id="pic_id" name="pic_id" value="">
+                                @else
+                                    <select
+                                        class="@error('pic_id') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                        id="pic_id" name="pic_id" required>
+                                        <option value="">-- Pilih PIC Customer --</option>
+                                    </select>
+                                @endif
                                 @error('pic_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -393,6 +408,16 @@
 
                                                 @if ($item->goods_id === null && $item->custom_product_name)
                                                     <input type="hidden" name="goods_id[]" value="">
+                                                    @if (!empty($item->images))
+                                                        @php
+                                                            $imgArr = is_array($item->images) ? $item->images : json_decode($item->images, true);
+                                                        @endphp
+                                                        @if (is_array($imgArr))
+                                                            @foreach ($imgArr as $img)
+                                                                <input type="hidden" name="item_images[{{ $loop->index }}][]" value="{{ $img }}">
+                                                            @endforeach
+                                                        @endif
+                                                    @endif
                                                 @else
                                                     <input type="hidden" name="custom_product_name[]" value="">
                                                 @endif
@@ -401,11 +426,23 @@
                                                         class="form-control kategori-barang-select block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                                         required>
                                                         <option value="">Pilih Kategori</option>
+                                                        @php
+                                                            $itemCat = $item->product_category ?? optional($item->barang)->category;
+                                                            $hasMatch = false;
+                                                        @endphp
                                                         @foreach ($categories as $cat)
-                                                            <option value="{{ $cat }}" @selected(($item->product_category ?? optional($item->barang)->category) === $cat)>
+                                                            @if ($itemCat === $cat)
+                                                                @php $hasMatch = true; @endphp
+                                                            @endif
+                                                            <option value="{{ $cat }}" @selected($itemCat === $cat)>
                                                                 {{ $cat }}
                                                             </option>
                                                         @endforeach
+                                                        @if ($itemCat && !$hasMatch)
+                                                            <option value="{{ $itemCat }}" selected>
+                                                                {{ $itemCat }}
+                                                            </option>
+                                                        @endif
                                                     </select>
 
                                                     @if ($item->goods_id === null && $item->custom_product_name)
@@ -622,6 +659,18 @@
                                                                 $imgUrl = $goodsImage;
                                                             } else {
                                                                 $imgUrl = asset('storage/' . ltrim($goodsImage, '/'));
+                                                            }
+                                                        } elseif (!empty($item->images)) {
+                                                            $imgArr = is_array($item->images) ? $item->images : json_decode($item->images, true);
+                                                            if (!empty($imgArr) && is_array($imgArr)) {
+                                                                $firstImg = $imgArr[0];
+                                                                if (str_starts_with($firstImg, 'http')) {
+                                                                    $imgUrl = $firstImg;
+                                                                } else {
+                                                                    $imgUrl = asset('storage/' . ltrim($firstImg, '/'));
+                                                                }
+                                                            } else {
+                                                                $imgUrl = null;
                                                             }
                                                         } else {
                                                             $imgUrl = null;
@@ -1190,6 +1239,7 @@
         @endphp
         window.customerPics = {!! json_encode($customerPics) !!};
         window.initialPicId = "{{ old('pic_id', $requestOrder->pic_id ?? '') }}";
+        window.dariCustomQuotation = @json($dariCustomQuotation);
 
         function loadCustomerPics(customerId, selectedPicId = null) {
             const picSelect = document.getElementById('pic_id');
@@ -1235,6 +1285,9 @@
             const customerRows = customerContainer ? customerContainer.querySelectorAll('.customer-option-row') : [];
 
             if (!customerId) {
+                if (window.dariCustomQuotation) {
+                    return;
+                }
                 document.getElementById('customer_name').value = '';
                 document.getElementById('customer_email').value = '';
                 document.getElementById('customer_telepon').value = '';

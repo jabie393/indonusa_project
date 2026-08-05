@@ -339,8 +339,13 @@
                             </div>
                         @endif
 
+                        @php
+                            $isCqProcessed = in_array($customQuotation->status, ['sent_to_warehouse', 'sent_to_quotation']) || 
+                                             ($customQuotation->order && in_array($customQuotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed']));
+                        @endphp
+
                         {{-- Edit Button (Sales Only) --}}
-                        @if (Auth::user()->role === 'Sales')
+                        @if (Auth::user()->role === 'Sales' && !$isCqProcessed)
                             <a href="{{ route('sales.custom-quotation.edit', $customQuotation->id) }}"
                                 class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-100/30 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -380,15 +385,17 @@
                         @endif
 
                         {{-- Sent to Warehouse (Primary Action) - Sales Only --}}
-                        @if ($customQuotation->status === 'ready_for_delivery' && Auth::user()->role === 'Sales')
-                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customQuotation->id) }}" method="POST" class="w-full">
+                        @if (!$customQuotation->order && Auth::user()->role === 'Sales' && $customQuotation->status === 'ready_for_delivery')
+                            <form action="{{ route('sales.custom-quotation.sent-to-warehouse', $customQuotation->id) }}" method="POST"
+                                class="w-full">
                                 @csrf
                                 <button type="submit"
-                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#225A97] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 transition-all hover:bg-[#1a4675] active:scale-[0.98] dark:shadow-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-[0.98] dark:shadow-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
                                         <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 01-1 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                                     </svg>
                                     <span>Send to Warehouse</span>
                                 </button>
@@ -396,7 +403,7 @@
                         @endif
 
                         {{-- Dangerous Actions: Delete (Sales Only) --}}
-                        @if (Auth::user()->role === 'Sales')
+                        @if (Auth::user()->role === 'Sales' && !$isCqProcessed)
                             <form id="deleteCustomQuotationForm" action="{{ route('sales.custom-quotation.destroy', $customQuotation->id) }}" method="POST" class="w-full">
                                 @csrf
                                 @method('DELETE')

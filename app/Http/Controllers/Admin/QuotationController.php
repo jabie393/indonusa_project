@@ -72,13 +72,14 @@ class QuotationController extends Controller
             ->orderBy('customer_name')
             ->get();
 
-        $categories = Goods::distinct()
+        $dbCategories = Goods::distinct()
             ->where('goods_status', 'approved')
             ->whereNotNull('category')
             ->where('category', '!=', '')
             ->pluck('category')
-            ->sort()
-            ->values();
+            ->toArray();
+        $categories = array_values(array_unique(array_merge(\App\Models\Goods::KATEGORI, $dbCategories, ['OTHER CATEGORIES'])));
+        sort($categories);
 
         return view('admin.quotation.action.create', compact('goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil dibuat!']);
@@ -369,6 +370,10 @@ class QuotationController extends Controller
 
     public function edit(Quotation $quotation)
     {
+        if ($quotation->order && in_array($quotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed'])) {
+            return redirect()->route('sales.quotation.index')->withErrors('Quotation ini sudah diproses ke warehouse/procurement dan tidak dapat diedit.');
+        }
+
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
@@ -396,7 +401,14 @@ class QuotationController extends Controller
             ->orderBy('customer_name')
             ->get();
 
-        $categories = Goods::distinct()->where('goods_status', 'approved')->whereNotNull('category')->where('category', '!=', '')->pluck('category')->sort()->values();
+        $dbCategories = Goods::distinct()
+            ->where('goods_status', 'approved')
+            ->whereNotNull('category')
+            ->where('category', '!=', '')
+            ->pluck('category')
+            ->toArray();
+        $categories = array_values(array_unique(array_merge(\App\Models\Goods::KATEGORI, $dbCategories, ['OTHER CATEGORIES'])));
+        sort($categories);
 
         return view('admin.quotation.action.edit', compact('requestOrder', 'goods', 'customers', 'categories'))
             ->with(['title' => 'Berhasil', 'text' => 'Quotation berhasil diupdate!']);
@@ -404,6 +416,10 @@ class QuotationController extends Controller
 
     public function update(Request $request, Quotation $quotation)
     {
+        if ($quotation->order && in_array($quotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed'])) {
+            return redirect()->route('sales.quotation.index')->withErrors('Quotation ini sudah diproses ke warehouse/procurement dan tidak dapat diubah.');
+        }
+
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);
@@ -414,10 +430,12 @@ class QuotationController extends Controller
             $request->merge(['no_po' => trim($request->input('no_po'))]);
         }
 
+        $isFromCustom = !empty($quotation->custom_quotation_id);
+
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'nullable|integer',
-            'pic_id' => 'required|integer|exists:pics,id',
+            'pic_id' => $isFromCustom ? 'nullable|integer' : 'required|integer|exists:pics,id',
             'subject' => 'required|string|max:255',
             'no_po' => 'nullable|string|max:255|unique:quotations,no_po,' . $requestOrder->id,
             'sales_order_number' => 'nullable|string|max:255',
@@ -459,8 +477,8 @@ class QuotationController extends Controller
         // AMBIL DATA PENTING SEBELUM ITEMS DIHAPUS
         // Query langsung ke DB agar nilai pasti fresh (bukan dari cache relasi)
         // =====================================================================
-        $maxDiskonLama = \App\Models\QuotationItem::where('quotation_id', $requestOrder->id)
-            ->max('discount_percent') ?? 0;
+        $oldQuotationItems = \App\Models\QuotationItem::where('quotation_id', $requestOrder->id)->get();
+        $maxDiskonLama = $oldQuotationItems->max('discount_percent') ?? 0;
 
         // Ambil order terkait beserta supervisor_id SEBELUM update
         $existingOrder = \App\Models\Order::where('quotation_id', $requestOrder->id)->first();
@@ -520,6 +538,7 @@ class QuotationController extends Controller
                 'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
                 'notes' => $validated['keterangan'][$i] ?? null,
+                'images' => $request->input('item_images.' . $i) ?? null,
             ];
         }
 
@@ -538,6 +557,72 @@ class QuotationController extends Controller
 
             $headerTax = round($headerSubtotal * (($validated['tax_rate'] ?? 0) / 100), 2);
             $headerGrandTotal = round($headerSubtotal + $headerTax, 2);
+
+            if ($isFromCustom) {
+                $customQuotation = \App\Models\CustomQuotation::findOrFail($quotation->custom_quotation_id);
+
+                // Update custom quotation fields
+                $customQuotation->update([
+                    'subject' => $validated['subject'],
+                    'date' => $validated['required_date'],
+                    'intro_text' => $validated['customer_notes'],
+                    'subtotal' => $headerSubtotal,
+                    'tax' => $headerTax,
+                    'grand_total' => $headerGrandTotal,
+                    'status' => 'pending_approval', // Reverts to SPV approval required
+                    'approved_by' => null,
+                    'approved_at' => null,
+                    'reason' => null,
+                ]);
+
+                // Delete old items and recreate
+                $customQuotation->items()->delete();
+
+                foreach ($items as $item) {
+                    $productName = $item['goods_id']
+                        ? \App\Models\Goods::find($item['goods_id'])->goods_name
+                        : $item['custom_product_name'];
+                    $unit = $item['goods_id']
+                        ? (\App\Models\Goods::find($item['goods_id'])->unit ?? 'PCS')
+                        : 'PCS';
+
+                    \App\Models\CustomQuotationItem::create([
+                        'custom_quotation_id' => $customQuotation->id,
+                        'goods_id' => $item['goods_id'],
+                        'product_name' => $productName,
+                        'category' => $item['product_category'],
+                        'qty' => $item['quantity'],
+                        'unit' => $unit,
+                        'price' => $item['price'],
+                        'subtotal' => $item['subtotal'],
+                        'discount' => $item['discount_percent'],
+                        'description' => $item['notes'] ?? null,
+                        'notes' => $item['notes'] ?? null,
+                        'images' => $item['images'],
+                    ]);
+                }
+
+                // Delete order
+                $existingOrder = \App\Models\Order::where('quotation_id', $requestOrder->id)->first();
+                if ($existingOrder) {
+                    $existingOrder->items()->delete();
+                    $existingOrder->delete();
+                }
+
+                // Delete standard quotation
+                $requestOrder->items()->delete();
+                $requestOrder->delete();
+
+                DB::commit();
+
+                return redirect()->route('sales.custom-quotation.index')
+                    ->with('success', 'Quotation berhasil diupdate. Karena Quotation ini berasal dari Custom Quotation, Quotation standard telah dihapus dan Custom Quotation asal telah diperbarui serta menunggu approval dari supervisor kembali.')
+                    ->with([
+                        'title' => 'Berhasil',
+                        'text' => 'Quotation berhasil diupdate! Karena berasal dari Custom Quotation, Quotation standard telah dihapus dan Custom Quotation asal telah diperbarui serta menunggu approval dari supervisor kembali.',
+                        'showConfirmButton' => true,
+                    ]);
+            }
 
             $salesOrderNumber = !empty($validated['no_po'])
                 ? ($requestOrder->sales_order_number ?: Quotation::generateSalesOrderNumber())
@@ -571,6 +656,7 @@ class QuotationController extends Controller
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
                     'notes' => $item['notes'] ?? null,
+                    'images' => $item['images'] ?? null,
                 ];
 
                 QuotationItem::create($itemData);
@@ -581,10 +667,47 @@ class QuotationController extends Controller
             // =====================================================================
             $diskonBaruMelampauiBatas = ($maxDiskonLama <= 20 && $maxDiskonBaru > 20);
 
+            // Cek apakah ada perubahan pada item dengan diskon > 20%
+            $diskonChanged = false;
+            if ($oldQuotationItems->count() !== count($items)) {
+                $hasHighDiscountOld = $oldQuotationItems->contains(function ($item) {
+                    return $item->discount_percent > 20;
+                });
+                $hasHighDiscountNew = collect($items)->contains(function ($item) {
+                    return $item['discount_percent'] > 20;
+                });
+                if ($hasHighDiscountOld || $hasHighDiscountNew) {
+                    $diskonChanged = true;
+                }
+            } else {
+                foreach ($items as $index => $newItem) {
+                    $oldItem = $oldQuotationItems[$index] ?? null;
+                    if ($oldItem) {
+                        $oldGoodsId = $oldItem->goods_id;
+                        $newGoodsId = $newItem['goods_id'];
+                        $oldCustomName = $oldItem->custom_product_name;
+                        $newCustomName = $newItem['custom_product_name'];
+                        $oldDisc = (float) $oldItem->discount_percent;
+                        $newDisc = (float) $newItem['discount_percent'];
+
+                        if (($oldGoodsId == $newGoodsId && $oldCustomName == $newCustomName) && ($oldDisc !== $newDisc) && ($oldDisc > 20 || $newDisc > 20)) {
+                            $diskonChanged = true;
+                            break;
+                        }
+                        if (($oldGoodsId != $newGoodsId || $oldCustomName != $newCustomName) && ($oldDisc > 20 || $newDisc > 20)) {
+                            $diskonChanged = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
             if ($statusSekarang === 'rejected_supervisor') {
                 $orderStatus = 'sent_to_supervisor';
             } elseif ($maxDiskonBaru <= 20) {
                 $orderStatus = 'open';
+            } elseif ($diskonChanged) {
+                $orderStatus = 'sent_to_supervisor';
             } elseif ($sudahApprove && !$diskonBaruMelampauiBatas) {
                 $orderStatus = $statusSekarang;
             } else {
@@ -662,6 +785,10 @@ class QuotationController extends Controller
 
     public function destroy(Quotation $quotation)
     {
+        if ($quotation->order && in_array($quotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed'])) {
+            return redirect()->route('sales.quotation.index')->withErrors('Quotation ini sudah diproses ke warehouse/procurement dan tidak dapat dihapus.');
+        }
+
         $requestOrder = $quotation;
         if ($requestOrder->sales_id !== Auth::id()) {
             abort(403);

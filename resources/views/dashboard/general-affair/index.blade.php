@@ -7,15 +7,6 @@
             <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
                 <form id="filters-form" action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
                     <div class="flex flex-col">
-                        <label class="text-nowrap py-2 text-sm text-gray-700 dark:text-gray-300">Threshold stok</label>
-                        <select name="threshold" class="rounded-xl border py-1 pr-9">
-                            <option value="10" {{ ($selectedThreshold ?? 20) == 10 ? 'selected' : '' }}>10</option>
-                            <option value="25" {{ ($selectedThreshold ?? 20) == 25 ? 'selected' : '' }}>25</option>
-                            <option value="50" {{ ($selectedThreshold ?? 20) == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ ($selectedThreshold ?? 20) == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Filter tanggal</label>
                         <div class="flex flex-row items-center">
                             <input type="date" name="date_start" class="rounded-xl border px-2 py-1" value="{{ $selectedDateStart ?? '' }}" />

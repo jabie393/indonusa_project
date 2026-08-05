@@ -277,48 +277,54 @@
                                                 <span
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Action</span>
                                             </button>
+                                            @php
+                                                $isCqProcessed = in_array($quotation->status, ['sent_to_warehouse', 'sent_to_quotation']) || 
+                                                                 ($quotation->order && in_array($quotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed']));
+                                            @endphp
                                             <ul class="dropdown dropdown-end menu rounded-box bg-base-100 w-52 shadow-sm"
                                                 popover id="popover-{{ $quotation->id }}"
                                                 style="position-anchor:--anchor-{{ $quotation->id }}">
-                                                <li>
-                                                    {{-- Edit --}}
-                                                    <a href="{{ route('sales.custom-quotation.edit', $quotation->id) }}"
-                                                        class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-pencil">
-                                                            <path
-                                                                d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
-                                                            </path>
-                                                            <path d="m15 5 4 4"></path>
-                                                        </svg>
-                                                        {{ $quotation->status === 'rejected_supervisor' ? 'Revise' : 'Edit' }}
-                                                    </a>
-                                                </li>
-                                                {{-- Tombol Delete --}}
-                                                <form action="{{ route('sales.custom-quotation.destroy', $quotation->id) }}"
-                                                    method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
+                                                @if (!$isCqProcessed)
                                                     <li>
-                                                        <button type="button"
-                                                            onclick="confirmDelete(() => this.closest('form').submit())"
-                                                            class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
+                                                        {{-- Edit --}}
+                                                        <a href="{{ route('sales.custom-quotation.edit', $quotation->id) }}"
+                                                            class="flex items-center gap-2 text-yellow-600 hover:bg-yellow-50">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round"
-                                                                stroke-linejoin="round" class="lucide lucide-trash2">
-                                                                <path d="M10 11v6"></path>
-                                                                <path d="M14 11v6"></path>
-                                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
-                                                                <path d="M3 6h18"></path>
-                                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-pencil">
+                                                                <path
+                                                                    d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z">
+                                                                </path>
+                                                                <path d="m15 5 4 4"></path>
                                                             </svg>
-                                                            Delete
-                                                        </button>
+                                                            {{ $quotation->status === 'rejected_supervisor' ? 'Revise' : 'Edit' }}
+                                                        </a>
                                                     </li>
-                                                </form>
+                                                    {{-- Tombol Delete --}}
+                                                    <form action="{{ route('sales.custom-quotation.destroy', $quotation->id) }}"
+                                                        method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <li>
+                                                            <button type="button"
+                                                                onclick="confirmDelete(() => this.closest('form').submit())"
+                                                                class="flex w-full items-center gap-2 text-red-600 hover:bg-red-50">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round" class="lucide lucide-trash2">
+                                                                    <path d="M10 11v6"></path>
+                                                                    <path d="M14 11v6"></path>
+                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                                    <path d="M3 6h18"></path>
+                                                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                </svg>
+                                                                Delete
+                                                            </button>
+                                                        </li>
+                                                    </form>
+                                                @endif
                                                 <li>
                                                     {{-- PDF --}}
                                                     @php

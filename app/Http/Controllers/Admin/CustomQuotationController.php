@@ -220,6 +220,11 @@ class CustomQuotationController extends Controller
      */
     public function edit(CustomQuotation $customQuotation)
     {
+        if (in_array($customQuotation->status, ['sent_to_warehouse', 'sent_to_quotation']) || 
+            ($customQuotation->order && in_array($customQuotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed']))) {
+            return redirect()->route('sales.custom-quotation.index')->withErrors('Custom Quotation ini sudah diproses dan tidak dapat diedit.');
+        }
+
         if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -234,6 +239,11 @@ class CustomQuotationController extends Controller
      */
     public function update(Request $request, CustomQuotation $customQuotation)
     {
+        if (in_array($customQuotation->status, ['sent_to_warehouse', 'sent_to_quotation']) || 
+            ($customQuotation->order && in_array($customQuotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed']))) {
+            return redirect()->route('sales.custom-quotation.index')->withErrors('Custom Quotation ini sudah diproses dan tidak dapat diubah.');
+        }
+
         if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }
@@ -331,16 +341,11 @@ class CustomQuotationController extends Controller
             $updateData = [
                 'subtotal' => $subtotal,
                 'grand_total' => $subtotal + ($validated['tax'] ?? 0),
+                'status' => 'pending_approval',
+                'approved_by' => null,
+                'approved_at' => null,
+                'reason' => null,
             ];
-
-            if (!in_array($customQuotation->status, ['approved', 'approved_supervisor'])) {
-                $updateData = array_merge($updateData, [
-                    'status' => 'pending_approval',
-                    'approved_by' => null,
-                    'approved_at' => null,
-                    'reason' => null,
-                ]);
-            }
 
             $customQuotation->update($updateData);
 
@@ -368,6 +373,11 @@ class CustomQuotationController extends Controller
      */
     public function destroy(CustomQuotation $customQuotation)
     {
+        if (in_array($customQuotation->status, ['sent_to_warehouse', 'sent_to_quotation']) || 
+            ($customQuotation->order && in_array($customQuotation->order->status, ['under_procurement', 'sent_to_warehouse', 'approved_warehouse', 'rejected_warehouse', 'completed', 'not_completed']))) {
+            return redirect()->route('sales.custom-quotation.index')->withErrors('Custom Quotation ini sudah diproses dan tidak dapat dihapus.');
+        }
+
         if ($customQuotation->sales_id !== Auth::id()) {
             abort(403);
         }

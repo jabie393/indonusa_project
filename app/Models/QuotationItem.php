@@ -21,6 +21,7 @@ class QuotationItem extends Model
         'discount_percent',
         'ppn_percent',
         'notes',
+        'images',
     ];
 
     protected $casts = [
@@ -30,6 +31,7 @@ class QuotationItem extends Model
         'discount_percent' => 'float',
         'ppn_percent' => 'decimal:2',
         'product_category' => 'string',
+        'images' => 'array',
     ];
 
     public function quotation()

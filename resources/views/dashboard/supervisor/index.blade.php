@@ -7,15 +7,6 @@
                 <form id="filters-form" action="{{ route('dashboard') }}" method="GET"
                     class="flex flex-wrap items-end gap-4">
                     <div class="flex flex-col">
-                        <label class="py-1 text-sm text-gray-700 dark:text-gray-300">Stok Min (Threshold)</label>
-                        <select name="threshold" class="rounded-xl border bg-white px-3 py-1">
-                            @foreach ([10, 25, 50, 100] as $val)
-                                <option value="{{ $val }}" {{ ($selectedThreshold ?? 20) == $val ? 'selected' : '' }}>
-                                    {{ $val }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex flex-col">
                         <label class="py-1 text-sm text-gray-700 dark:text-gray-300">Filter Tanggal</label>
                         <div class="flex flex-row items-center gap-2">
                             <input type="date" name="date_start" class="rounded-xl border px-2 py-1"
