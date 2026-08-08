@@ -7,23 +7,31 @@ use App\Models\Goods;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $goods = Goods::all();
-        return view('guest.order.product', compact('goods'));
+        $allCategories = Goods::select('category')->distinct()->whereNotNull('category')->orderBy('category')->pluck('category');
+
+        $query = Goods::query();
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        $goods = $query->get();
+        return view('guest.product.index', compact('goods', 'allCategories'));
     }
-    public function barang($id)
+    public function show($id)
     {
-        $barang = Goods::find($id);
+        $product = Goods::find($id);
 
         $relatedGoods = collect();
-        if ($barang && $barang->category) {
-            $relatedGoods = Goods::where('category', $barang->category)
-                ->where('id', '!=', $barang->id)
+        if ($product && $product->category) {
+            $relatedGoods = Goods::where('category', $product->category)
+                ->where('id', '!=', $product->id)
                 ->take(6)
                 ->get();
         }
 
-        return view('guest.order.product', compact('barang', 'relatedGoods'));
+        return view('guest.product.detail', compact('product', 'relatedGoods'));
     }
 }

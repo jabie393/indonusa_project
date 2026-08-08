@@ -39,7 +39,9 @@ class RealTimeNotification implements ShouldBroadcastNow, ShouldDispatchAfterCom
 
         // Hitung semua count badge yang relevan secara real-time
         $this->data = [
-            'pendingSentQuotation' => Order::where('status', 'sent_to_supervisor')->count(),
+            'pendingSentQuotation' => Quotation::whereHas('order', function ($query) {
+                $query->where('status', 'sent_to_supervisor');
+            })->count(),
             
             'pendingCustomQuotation' => CustomQuotation::where('status', 'pending_approval')->count(),
             

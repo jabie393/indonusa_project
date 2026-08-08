@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Login to PT Indonusa Jaya Bersama Warehouse Management System. Access your account to manage stock, orders, and more.">
+    <meta name="description"
+        content="Login to PT Indonusa Jaya Bersama Warehouse Management System. Access your account to manage stock, orders, and more.">
     <meta name="keywords" content="Indonusa Jaya Bersama, login, warehouse management, Surabaya">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="user-id" content="{{ auth()->id() }}">
@@ -15,7 +16,8 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap"
+        rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -35,14 +37,13 @@
             class="rounded-4xl relative bottom-0 m-5 flex flex-col items-start justify-between bg-black/30 backdrop-blur-sm">
             <svg class="max-w-25 m-5 h-full max-h-40 w-full" viewBox="0 0 151 74" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="39" cy="37" rx="39" ry="37" fill="#D9D9D9"
-                    fill-opacity="0.65" />
+                <ellipse cx="39" cy="37" rx="39" ry="37" fill="#D9D9D9" fill-opacity="0.65" />
                 <ellipse cx="112" cy="37" rx="39" ry="37" fill="black" />
                 <path
                     d="M118.707 37.7071C119.098 37.3166 119.098 36.6834 118.707 36.2929L112.343 29.9289C111.953 29.5384 111.319 29.5384 110.929 29.9289C110.538 30.3195 110.538 30.9526 110.929 31.3431L116.586 37L110.929 42.6569C110.538 43.0474 110.538 43.6805 110.929 44.0711C111.319 44.4616 111.953 44.4616 112.343 44.0711L118.707 37.7071ZM37 37V38H118V37V36H37V37Z"
                     fill="white" />
             </svg>
-            <p class="p-3 text-sm text-white lg:px-3 lg:text-xl">
+            <p class="p-3 text-justify text-sm text-white lg:px-3 lg:text-xl">
                 Menjadi penyedia solusi terpadu yang paling andal dan inovatif di Indonesia, selalu siap memenuhi setiap
                 kebutuhan pelanggan dengan layanan prima, kualitas terdepan, dan semangat
                 kebersamaan, demi kemajuan dan kesejahteraan bersama.

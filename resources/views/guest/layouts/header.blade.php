@@ -1,7 +1,4 @@
-@php
-    $keranjang = session('keranjang', []);
-    $jumlahKeranjang = collect($keranjang)->sum('qty');
-@endphp
+
 <header class="bg-linear-to-r sticky left-0 top-0 z-50 w-full bg-white">
     <nav class="px-4 py-2.5 lg:px-6">
         <div class="max-w-(--breakpoint-2xl) mx-auto flex flex-wrap items-center justify-between">
@@ -11,12 +8,7 @@
             </a>
             @if (Route::has('login'))
                 <div class="flex items-center lg:order-2">
-                    @if ($jumlahKeranjang > 0)
-                        <a href="{{ route('keranjang.index') }}" class="relative mr-3">
-                            <svg width="27px" height="27px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#225A96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-                            <span class="absolute -right-2 -top-2 rounded-full bg-red-600 px-1.5 py-0.5 text-xs text-white">{{ $jumlahKeranjang }}</span>
-                        </a>
-                    @endif
+
                     @auth
                         <a href="{{ url('/dashboard') }}"
                             class="hidden rounded-sm border border-white bg-[#225A96] px-5 py-1.5 text-sm leading-normal text-white hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A] lg:inline-block">
@@ -57,8 +49,8 @@
                                 Us</a>
                         </li>
                         <li>
-                            <a href="{{ route('order') }}"
-                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Order</a>
+                            <a href="{{ route('product.index') }}"
+                                class="block rounded-lg py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-300 lg:border-0 lg:p-0 lg:text-black lg:hover:bg-transparent lg:hover:text-primary-900 lg:dark:hover:bg-transparent lg:dark:hover:text-white">Product</a>
                         </li>
                         <li>
                             <a href="{{ route('catalogs') }}"

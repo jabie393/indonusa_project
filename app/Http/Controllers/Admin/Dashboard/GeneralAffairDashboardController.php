@@ -167,7 +167,37 @@ class GeneralAffairDashboardController extends Controller
             ->take(5)
             ->get();
 
+        // 9. GA Specific Task Counts
+        $procurementPendingCount = \App\Models\CustomQuotation::where('status', 'sent_to_quotation')
+            ->whereHas('order', function ($query) {
+                $query->where('status', 'under_procurement');
+            })
+            ->doesntHave('procurementOfGoods')
+            ->count();
+
+        $invoicePendingCount = \App\Models\DeliveryBatch::where(function ($q) {
+            $q->whereNull('no_invoice')->orWhereNull('no_receipt');
+        })->count();
+
+        $procurementRejectedCount = \App\Models\ProcurementArrivalRequest::where('status', 'rejected')->count();
+
+        $goodsInRevisionCount = \App\Models\Goods::where('goods_status', 'rejected')
+            ->where('status_listing', '!=', 'non_listing')
+            ->whereDoesntHave('procurementOfGoodsItems')
+            ->count();
+
+        \Illuminate\Support\Facades\Log::info("GA Dashboard Counts", [
+            'procurementPending' => $procurementPendingCount,
+            'invoicePending' => $invoicePendingCount,
+            'procurementRejected' => $procurementRejectedCount,
+            'goodsInRevision' => $goodsInRevisionCount
+        ]);
+
         return view('dashboard.general-affair.index', [
+            'procurementPendingCount' => $procurementPendingCount,
+            'invoicePendingCount' => $invoicePendingCount,
+            'procurementRejectedCount' => $procurementRejectedCount,
+            'goodsInRevisionCount' => $goodsInRevisionCount,
             'totalPending' => $totalPending,
             'totalApproved' => $totalApproved,
             'totalOrders' => $totalOrders,

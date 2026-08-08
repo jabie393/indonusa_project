@@ -639,7 +639,9 @@
             @if (in_array(auth()->user()->role, ['Supervisor']))
 
                 @php
-                    $pendingSentQuotation = \App\Models\Order::where('status', 'sent_to_supervisor')->count();
+                    $pendingSentQuotation = \App\Models\Quotation::whereHas('order', function ($query) {
+                        $query->where('status', 'sent_to_supervisor');
+                    })->count();
                     $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
                     $hasQuotationApprovalNotification = $pendingSentQuotation > 0 || $pendingCustomQuotation > 0;
                     $quotationApprovalItemActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('sales.quotation.show') || request()->routeIs('admin.quotation-approval.show');

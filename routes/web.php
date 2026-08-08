@@ -12,8 +12,6 @@ use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController;
 use App\Http\Controllers\Admin\SupplyOrdersController;
 use App\Http\Controllers\Admin\DeliveryOrdersController;
-use App\Http\Controllers\Guest\OrderController;
-use App\Http\Controllers\Guest\KeranjangController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Guest\ProductController;
@@ -39,7 +37,7 @@ Route::get('/quotation-preview-static', function () {
 });
 
 // Route user untuk lihat daftar barang
-Route::get('/order', [OrderController::class, 'index'])->name('order');
+Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 
 Route::get('files/{path}', function ($path) {
     $file = storage_path('app/public/' . $path);
@@ -51,14 +49,9 @@ Route::get('files/{path}', function ($path) {
     return response()->file($file);
 })->where('path', '.*');
 
-// Route::get('/product', [ProductController::class, 'index'])->name('product');
-Route::get('/product/{id}', [ProductController::class, 'barang'])->name('product.barang');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
 
-Route::post('/keranjang/tambah', [KeranjangController::class, 'tambah'])->name('keranjang.tambah');
-Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
-Route::post('/keranjang/kurangi/{id}', [KeranjangController::class, 'kurangi'])->name('keranjang.kurangi');
-Route::post('/keranjang/hapus/{id}', [KeranjangController::class, 'hapus'])->name('keranjang.hapus');
-Route::post('/keranjang/checkout', [KeranjangController::class, 'checkout'])->name('keranjang.checkout');
+
 
 Route::get('/catalogs', [GuestCatalogController::class, 'index'])->name('catalogs');
 
