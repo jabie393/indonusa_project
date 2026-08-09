@@ -1,3 +1,14 @@
+function isInvalidNumeric(val) {
+    if (val === null || val === undefined || val === "") return false;
+    let cleaned = val.toString().trim();
+    // 1. Remove optional "Rp" or "rp" prefix at the start (case-insensitive, optionally followed by spaces)
+    cleaned = cleaned.replace(/^(Rp|rp)\s*/i, "");
+    // 2. Remove standard formatting characters: spaces, dots, commas, and dollar signs
+    cleaned = cleaned.replace(/[\s\$,\.]/g, "");
+    // 3. Check if there are any non-digit characters left
+    return cleaned !== "" && /[^\d]/.test(cleaned);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector(
         'form[action*="import-excel.import"], form[enctype="multipart/form-data"]'
@@ -325,6 +336,9 @@ document.addEventListener("DOMContentLoaded", function () {
         window.allExcelRows = rows;
         window.excelMapping = mapping;
 
+        let hasInvalidExcelNumeric = false;
+        let hasUnknownItems = false;
+
         // clear existing using DataTable API
         dt.clear();
 
@@ -358,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Styling jika item tidak known
             if (!isKnown) {
                 newRow.classList.add("bg-red-50", "dark:bg-red-900/20");
+                hasUnknownItems = true;
             }
 
             const getVal = (field) => {
@@ -543,24 +558,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 const displayInput = tdStok.querySelector('input[type="text"]');
                 const hiddenInput = tdStok.querySelector('input[type="hidden"]');
                 
-                let v = getVal("stock") || "";
-                if (typeof v === "string") {
+                let rawV = getVal("stock") || "0";
+                let v = rawV;
+                let isInvalid = isInvalidNumeric(rawV);
+                if (isInvalid) {
+                    hasInvalidExcelNumeric = true;
+                } else if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
                 
                 if (displayInput) {
-                    displayInput.value = v && v !== "0" ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if (isInvalid) {
+                        displayInput.classList.add("border-red-500", "bg-red-50", "text-red-900");
+                        displayInput.setAttribute("data-invalid-numeric", "true");
+                        displayInput.title = `Nilai di Excel "${rawV}" mengandung karakter non-angka!`;
+                    }
                     displayInput.addEventListener('input', function(e) {
                         let rawValue = this.value.replace(/\D/g, "");
-                        this.value = rawValue && rawValue !== "0" ? rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
-                        if (hiddenInput) hiddenInput.value = rawValue && rawValue !== "0" ? rawValue : "";
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                        this.classList.remove("border-red-500", "bg-red-50", "text-red-900");
+                        this.removeAttribute("data-invalid-numeric");
+                        this.title = "";
                     });
                 }
                 
                 if (isKnown) {
                     if (hiddenInput) {
                         hiddenInput.name = `rows[${rowIndex}][stock]`;
-                        hiddenInput.value = v && v !== "0" ? v : "";
+                        hiddenInput.value = isInvalid ? "" : v;
                     } else {
                         // Fallback
                         let inp = tdStok.querySelector("input");
@@ -592,24 +619,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 const displayInput = tdHarga.querySelector('input[type="text"]');
                 const hiddenInput = tdHarga.querySelector('input[type="hidden"]');
                 
-                let v = getVal("selling_price") || "";
-                if (typeof v === "string") {
+                let rawV = getVal("selling_price") || "0";
+                let v = rawV;
+                let isInvalid = isInvalidNumeric(rawV);
+                if (isInvalid) {
+                    hasInvalidExcelNumeric = true;
+                } else if (typeof v === "string") {
                     v = v.replace(/[^\d]/g, ""); // Keep only digits
                 }
                 
                 if (displayInput) {
-                    displayInput.value = v && v !== "0" ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
+                    displayInput.value = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    if (isInvalid) {
+                        displayInput.classList.add("border-red-500", "bg-red-50", "text-red-900");
+                        displayInput.setAttribute("data-invalid-numeric", "true");
+                        displayInput.title = `Nilai di Excel "${rawV}" mengandung karakter non-angka!`;
+                    }
                     displayInput.addEventListener('input', function(e) {
                         let rawValue = this.value.replace(/\D/g, "");
-                        this.value = rawValue && rawValue !== "0" ? rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "";
-                        if (hiddenInput) hiddenInput.value = rawValue && rawValue !== "0" ? rawValue : "";
+                        this.value = rawValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        if (hiddenInput) hiddenInput.value = rawValue;
+                        this.classList.remove("border-red-500", "bg-red-50", "text-red-900");
+                        this.removeAttribute("data-invalid-numeric");
+                        this.title = "";
                     });
                 }
                 
                 if (isKnown) {
                     if (hiddenInput) {
                         hiddenInput.name = `rows[${rowIndex}][selling_price]`;
-                        hiddenInput.value = v && v !== "0" ? v : "";
+                        hiddenInput.value = isInvalid ? "" : v;
                     } else {
                         // Fallback
                         let inp = tdHarga.querySelector("input");
@@ -661,18 +700,44 @@ document.addEventListener("DOMContentLoaded", function () {
             $(nodes).addClass("new");
         }
 
-        // Add SweetAlert Toast for AJAX Success
+        // Show alert for invalid numeric format and unknown items
         if (window.Swal) {
-            window.Swal.fire({
-                icon: "success",
-                title: "File Berhasil Diproses",
-                text: `Ditemukan ${rows.length} baris data untuk di-preview.`,
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
+            if (hasUnknownItems && hasInvalidExcelNumeric) {
+                window.Swal.fire({
+                    icon: "warning",
+                    title: "Perhatian Diperlukan",
+                    html: `Ditemukan beberapa ketidaksesuaian pada data Excel:<br><br>
+                           1. <b>Barang Belum Terdaftar</b>: Baris ditandai dengan <span class='text-red-500'>latar merah</span> (tidak akan ikut terimpor).<br><br>
+                           2. <b>Format Angka Tidak Valid</b>: Kolom input ditandai dengan <span class='text-red-500'>border merah</span> (harap diperbaiki sebelum menyimpan).`,
+                    confirmButtonText: "Mengerti"
+                });
+            } else if (hasUnknownItems) {
+                window.Swal.fire({
+                    icon: "warning",
+                    title: "Barang Belum Terdaftar Terdeteksi",
+                    html: "Terdapat baris barang yang belum terdaftar di sistem.<br><br>Baris tersebut ditandai dengan <span class='text-red-500'>latar merah</span> dan secara otomatis tidak akan diimpor saat Anda menekan tombol Simpan.",
+                    confirmButtonText: "Mengerti"
+                });
+            } else if (hasInvalidExcelNumeric) {
+                window.Swal.fire({
+                    icon: "warning",
+                    title: "Format Angka Tidak Valid Terdeteksi",
+                    html: "Ditemukan kolom angka (Stok atau Harga Beli) yang mengandung karakter non-angka di Excel.<br><br>Kolom yang bermasalah ditandai dengan <span class='text-red-500'>warna merah</span>. Silakan perbaiki sebelum menyimpan.",
+                    confirmButtonText: "Mengerti"
+                });
+            } else {
+                // Add SweetAlert Toast for AJAX Success
+                window.Swal.fire({
+                    icon: "success",
+                    title: "File Berhasil Diproses",
+                    text: `Ditemukan ${rows.length} baris data untuk di-preview.`,
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                });
+            }
         }
     }
 
@@ -1127,6 +1192,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 return;
             }
+            
+            // Check for invalid numeric values
+            const invalidNumericInputs = document.querySelectorAll('input[data-invalid-numeric="true"]');
+            if (invalidNumericInputs.length > 0) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: "error",
+                    title: "Format Angka Tidak Valid",
+                    text: "Terdapat kolom angka (Stok atau Harga Beli) yang mengandung karakter non-angka. Silakan perbaiki sebelum menyimpan.",
+                });
+                return;
+            }
             // allow submit to proceed
         });
     }
@@ -1325,6 +1402,23 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault(); // Always prevent default first to handle asynchronously
 
             try {
+                // Check for invalid numeric values
+                const invalidNumericInputs = document.querySelectorAll('input[data-invalid-numeric="true"]');
+                if (invalidNumericInputs.length > 0) {
+                    if (window.Swal) {
+                        window.Swal.fire({
+                            icon: "error",
+                            title: "Format Angka Tidak Valid",
+                            text: "Terdapat kolom angka (Stok atau Harga Beli) yang mengandung karakter non-angka. Silakan perbaiki sebelum menyimpan.",
+                            confirmButtonText: "OK",
+                        });
+                    } else {
+                        alert("Terdapat format angka tidak valid. Harap perbaiki sebelum submit.");
+                    }
+                    if (submitButton) submitButton.disabled = false;
+                    return false;
+                }
+
                 if (uploadInProgress) {
                     Swal.fire({
                         icon: "info",

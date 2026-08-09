@@ -89,7 +89,10 @@ class ImportStockExcelController extends Controller
                 foreach ($rowsRaw as $r) {
                     // Asumsi urutan kolom: 0=Kode, 1=Nama, 2=Kategori, 3=Stok
                     // Perlu mapping dinamis atau asumsi. Sesuai JS: Hardcode map['kode_barang'] = 0
-                    $kode = isset($r[0]) ? trim((string)$r[0]) : '';
+                    $kode = isset($r[0]) ? (string)$r[0] : '';
+                    // Clean all whitespaces, including non-breaking spaces
+                    $kode = preg_replace('/[\s\xa0\xc2]/u', '', $kode);
+                    $kode = trim($kode);
                     $isKnown = false;
                     
                     if (!empty($kode)) {
