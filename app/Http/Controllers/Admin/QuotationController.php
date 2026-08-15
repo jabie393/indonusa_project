@@ -214,6 +214,10 @@ class QuotationController extends Controller
                 QuotationItem::create($itemData);
             }
 
+            if (!empty($validated['no_po'])) {
+                $this->syncQuotationStockForNoPo($requestOrder, $validated['no_po'], null);
+            }
+
             $requestOrder->refresh();
             $requestOrder->load('items');
             $maxDiskon = $requestOrder->items->max('discount_percent') ?? 0;
@@ -624,16 +628,20 @@ class QuotationController extends Controller
                     ]);
             }
 
-            $salesOrderNumber = !empty($validated['no_po'])
+            $previousNoPo = trim((string) ($requestOrder->no_po ?? ''));
+            $newNoPo = trim((string) ($validated['no_po'] ?? ''));
+            $salesOrderNumber = !empty($newNoPo)
                 ? ($requestOrder->sales_order_number ?: Quotation::generateSalesOrderNumber())
                 : null;
+
+            $this->syncQuotationStockForNoPo($requestOrder, $newNoPo, $previousNoPo);
 
             $requestOrder->update([
                 'pic_id' => $validated['pic_id'],
                 'customer_name' => $validated['customer_name'],
                 'customer_id' => $validated['customer_id'] ?? null,
                 'subject' => $validated['subject'],
-                'no_po' => $validated['no_po'] ?? null,
+                'no_po' => $newNoPo !== '' ? $newNoPo : null,
                 'sales_order_number' => $salesOrderNumber,
                 'product_category' => isset($validated['product_category'][0]) ? $validated['product_category'][0] : null,
                 'required_date' => $validated['required_date'] ?? null,
@@ -926,24 +934,31 @@ class QuotationController extends Controller
             'no_po' => 'nullable|string|max:255',
         ]);
 
+        $previousNoPo = trim((string) ($requestOrder->no_po ?? ''));
         $trimmedNoPo = trim((string) ($validated['no_po'] ?? ''));
-        $requestOrder->no_po = $trimmedNoPo !== '' ? $trimmedNoPo : null;
+        $newNoPo = $trimmedNoPo !== '' ? $trimmedNoPo : null;
 
-        if (empty($requestOrder->no_po)) {
-            $requestOrder->sales_order_number = null;
-        } else {
-            if (empty($requestOrder->sales_order_number)) {
-                $requestOrder->sales_order_number = Quotation::generateSalesOrderNumber();
+        DB::transaction(function () use ($requestOrder, $newNoPo, $previousNoPo) {
+            $this->syncQuotationStockForNoPo($requestOrder, $newNoPo, $previousNoPo);
+
+            $requestOrder->no_po = $newNoPo;
+
+            if (empty($requestOrder->no_po)) {
+                $requestOrder->sales_order_number = null;
+            } else {
+                if (empty($requestOrder->sales_order_number)) {
+                    $requestOrder->sales_order_number = Quotation::generateSalesOrderNumber();
+                }
             }
-        }
 
-        $requestOrder->save();
+            $requestOrder->save();
+        });
 
         return response()->json([
             'status' => 'success',
             'message' => 'No.PO berhasil disimpan',
-            'no_po' => $requestOrder->no_po,
-            'sales_order_number' => $requestOrder->sales_order_number,
+            'no_po' => $requestOrder->fresh()->no_po,
+            'sales_order_number' => $requestOrder->fresh()->sales_order_number,
         ]);
     }
 
@@ -957,6 +972,58 @@ class QuotationController extends Controller
         }
 
         return response()->json(['status' => 'success']);
+    }
+
+    protected function syncQuotationStockForNoPo(Quotation $quotation, ?string $newNoPo, ?string $previousNoPo = null): void
+    {
+        $oldNoPo = trim((string) ($previousNoPo ?? ($quotation->getOriginal('no_po') ?? $quotation->no_po ?? '')));
+        $nextNoPo = trim((string) ($newNoPo ?? ''));
+
+        if ($oldNoPo === '' && $nextNoPo !== '') {
+            $this->adjustStockForQuotationItems($quotation, -1, 'Stock berkurang karena No.PO ditambahkan untuk quotation ' . $quotation->quotation_number);
+            return;
+        }
+
+        if ($oldNoPo !== '' && $nextNoPo === '') {
+            $this->adjustStockForQuotationItems($quotation, 1, 'Stock kembali karena No.PO dihapus dari quotation ' . $quotation->quotation_number);
+        }
+    }
+
+    protected function adjustStockForQuotationItems(Quotation $quotation, int $direction, string $note): void
+    {
+        $quotation->loadMissing('items.barang');
+
+        foreach ($quotation->items as $item) {
+            if (!$item->goods_id || !$item->barang) {
+                continue;
+            }
+
+            $quantity = (int) ($item->quantity ?? 0);
+            if ($quantity <= 0) {
+                continue;
+            }
+
+            $barang = $item->barang;
+            $barang->stock = max(0, (int) $barang->stock + ($quantity * $direction));
+            $barang->save();
+
+            \App\Models\GoodsHistory::create([
+                'goods_id' => $barang->id,
+                'goods_code' => $barang->goods_code,
+                'goods_name' => $barang->goods_name,
+                'category' => $barang->category,
+                'stock' => $barang->stock,
+                'unit' => $barang->unit,
+                'location' => $barang->location,
+                'buy_price' => $barang->buy_price,
+                'selling_price' => $barang->selling_price,
+                'description' => $barang->description,
+                'old_status' => $barang->goods_status,
+                'new_status' => $barang->goods_status,
+                'changed_by' => Auth::id(),
+                'note' => $note,
+            ]);
+        }
     }
 
     protected function processSentToWarehouse(Quotation $ro)
