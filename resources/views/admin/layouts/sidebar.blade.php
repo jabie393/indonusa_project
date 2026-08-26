@@ -453,6 +453,15 @@
 
                     <ul
                         class="before:left-4.5 relative flex flex-col items-end space-y-2 pt-2 before:absolute before:bottom-[.75rem] before:start-0 before:top-[.75rem] before:w-1 before:bg-black before:opacity-10 before:content-[''] dark:before:bg-white">
+                        <details {{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') ? 'open' : '' }} class="w-[88%]">
+                            <summary
+                                class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex w-full cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <span class="{{ request()->routeIs('sales.quotation.*') || request()->routeIs('sales.custom-quotation.*') ? 'text-white' : 'text-black dark:text-white' }} group-hover:text-white">
+                                    Create Quotation
+                                </span>
+                            </summary>
+
+                            <ul class="space-y-2 pt-2">
                         {{-- Quotation --}}
                         <li class="w-[88%]">
                             <a href="{{ route('sales.quotation.index') }}"
@@ -566,6 +575,9 @@
                                 </ul>
                             @endif
                         </li>
+
+                            </ul>
+                        </details>
 
                         {{-- Sales Orders --}}
                         <li class="w-[88%]">
