@@ -15,8 +15,8 @@ use App\Http\Controllers\Admin\DeliveryOrdersController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Guest\ProductController;
-use App\Http\Controllers\Admin\QuotationController;
-use App\Http\Controllers\Admin\CustomQuotationController;
+use App\Http\Controllers\Admin\ListingController;
+use App\Http\Controllers\Admin\NonListingController;
 use App\Http\Controllers\Admin\QuotationApprovalController;
 use App\Http\Controllers\Admin\CustomQuotationApprovalController;
 use App\Http\Controllers\Admin\SalesOrderController;
@@ -190,7 +190,7 @@ Route::middleware(['auth'])->group(function () {
     // Supervisor approval route for Custom Quotation (allow Supervisor to POST approve/reject)
     Route::post('/custom-quotation-approval/{customQuotation}/approval', [CustomQuotationApprovalController::class, 'approve'])->name('admin.custom-quotation-approval.approval');
     // Supervisor view detail for custom quotation (so Supervisor can access without Sales role)
-    Route::get('/detail-custom-quotation-approval/{customQuotation}', [CustomQuotationController::class, 'show'])->name('admin.custom-quotation-approval.show');
+    Route::get('/detail-custom-quotation-approval/{customQuotation}', [NonListingController::class, 'show'])->name('admin.custom-quotation-approval.show');
     Route::get('/custom-quotation-approval', [CustomQuotationApprovalController::class, 'index'])->name('supervisor.custom-quotation-approval.index');
     Route::post('/custom-quotation-approval/bulk-approval', [CustomQuotationApprovalController::class, 'bulkApproval'])->name('supervisor.custom-quotation-approval.bulk-approval');
     Route::get('/orders/{id}', [QuotationApprovalController::class, 'incomingShow'])->name('orders.show');
@@ -201,7 +201,7 @@ Route::middleware(['auth'])->group(function () {
     // Supervisor approval for Quotations (from Sales)
     Route::post('/quotation/{quotation}/approve', [QuotationApprovalController::class, 'approve'])->name('supervisor.quotation.approve');
     Route::post('/quotation/{quotation}/reject', [QuotationApprovalController::class, 'reject'])->name('supervisor.quotation.reject');
-    Route::get('/custom-quotation-approval/{customQuotation}/pdf', [CustomQuotationController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
+    Route::get('/custom-quotation-approval/{customQuotation}/pdf', [NonListingController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
 
     // Supervisor Dashboard
     Route::get('/admin/dashboard/supervisor', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'dashboard'])
@@ -220,41 +220,41 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Customer Routes for Sales (Consolidated to global customer.store)
 
     // Quotation Routes
-    Route::get('/quotation', [QuotationController::class, 'index'])->name('sales.quotation.index');
-    Route::get('/quotation/check-po', [QuotationController::class, 'checkPo'])->name('sales.quotation.check-po');
-    Route::get('/quotation/create', [QuotationController::class, 'create'])->name('sales.quotation.create');
-    Route::post('/quotation', [QuotationController::class, 'store'])->name('sales.quotation.store');
+    Route::get('/quotation', [ListingController::class, 'index'])->name('sales.quotation.index');
+    Route::get('/quotation/check-po', [ListingController::class, 'checkPo'])->name('sales.quotation.check-po');
+    Route::get('/quotation/create', [ListingController::class, 'create'])->name('sales.quotation.create');
+    Route::post('/quotation', [ListingController::class, 'store'])->name('sales.quotation.store');
 
-    Route::get('/quotation/{quotation}/edit', [QuotationController::class, 'edit'])->name('sales.quotation.edit');
-    Route::put('/quotation/{quotation}', [QuotationController::class, 'update'])->name('sales.quotation.update');
-    Route::post('/quotation/{quotation}/status', [QuotationController::class, 'updateStatus'])->name('sales.quotation.status');
-    Route::delete('/quotation/{quotation}', [QuotationController::class, 'destroy'])->name('sales.quotation.destroy');
-    Route::post('/quotation/bulk/delete', [QuotationController::class, 'bulkDelete'])->name('sales.quotation.bulk-delete');
-    Route::post('/quotation/bulk/send-to-warehouse', [QuotationController::class, 'bulkSendToWarehouse'])->name('sales.quotation.bulk-send-to-warehouse');
-    Route::post('/quotation/{quotation}/sent-to-warehouse', [QuotationController::class, 'sentToWarehouse'])->name('sales.quotation.sent-to-warehouse');
-    Route::post('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
-    Route::delete('/quotation/{quotation}/upload-image-po', [QuotationController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
-    Route::post('/quotation/{quotation}/upload-pdf-po', [QuotationController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
-    Route::delete('/quotation/{quotation}/upload-pdf-po', [QuotationController::class, 'deletePdfPO'])->name('request-order.delete-pdf-po');
-    Route::post('/quotation/{quotation}/update-no-po', [QuotationController::class, 'updateNoPO'])->name('request-order.update-no-po');
+    Route::get('/quotation/{quotation}/edit', [ListingController::class, 'edit'])->name('sales.quotation.edit');
+    Route::put('/quotation/{quotation}', [ListingController::class, 'update'])->name('sales.quotation.update');
+    Route::post('/quotation/{quotation}/status', [ListingController::class, 'updateStatus'])->name('sales.quotation.status');
+    Route::delete('/quotation/{quotation}', [ListingController::class, 'destroy'])->name('sales.quotation.destroy');
+    Route::post('/quotation/bulk/delete', [ListingController::class, 'bulkDelete'])->name('sales.quotation.bulk-delete');
+    Route::post('/quotation/bulk/send-to-warehouse', [ListingController::class, 'bulkSendToWarehouse'])->name('sales.quotation.bulk-send-to-warehouse');
+    Route::post('/quotation/{quotation}/sent-to-warehouse', [ListingController::class, 'sentToWarehouse'])->name('sales.quotation.sent-to-warehouse');
+    Route::post('/quotation/{quotation}/upload-image-po', [ListingController::class, 'uploadImagePO'])->name('request-order.upload-image-po');
+    Route::delete('/quotation/{quotation}/upload-image-po', [ListingController::class, 'deleteImagePO'])->name('request-order.delete-image-po');
+    Route::post('/quotation/{quotation}/upload-pdf-po', [ListingController::class, 'uploadPdfPO'])->name('request-order.upload-pdf-po');
+    Route::delete('/quotation/{quotation}/upload-pdf-po', [ListingController::class, 'deletePdfPO'])->name('request-order.delete-pdf-po');
+    Route::post('/quotation/{quotation}/update-no-po', [ListingController::class, 'updateNoPO'])->name('request-order.update-no-po');
 
     // Custom Quotation Routes
-    Route::get('/custom-quotation', [CustomQuotationController::class, 'index'])->name('sales.custom-quotation.index');
-    Route::get('/custom-quotation/create', [CustomQuotationController::class, 'create'])->name('sales.custom-quotation.create');
-    Route::post('/custom-quotation', [CustomQuotationController::class, 'store'])->name('sales.custom-quotation.store');
-    Route::post('/custom-quotation/bulk/delete', [CustomQuotationController::class, 'bulkDelete'])->name('sales.custom-quotation.bulk-delete');
-    Route::post('/custom-quotation/bulk/send-to-warehouse', [CustomQuotationController::class, 'bulkSendToWarehouse'])->name('sales.custom-quotation.bulk-send-to-warehouse');
-    Route::get('/detail-custom-quotation/{customQuotation}', [CustomQuotationController::class, 'show'])->name('sales.custom-quotation.show');
-    Route::get('/custom-quotation/{customQuotation}/edit', [CustomQuotationController::class, 'edit'])->name('sales.custom-quotation.edit');
-    Route::put('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'update'])->name('sales.custom-quotation.update');
-    Route::delete('/custom-quotation/{customQuotation}', [CustomQuotationController::class, 'destroy'])->name('sales.custom-quotation.destroy');
-    Route::get('/custom-quotation/{customQuotation}/pdf', [CustomQuotationController::class, 'pdf'])->name('sales.custom-quotation.pdf');
-    Route::post('/custom-quotation/{customQuotation}/sent-to-warehouse', [CustomQuotationController::class, 'sentToWarehouse'])->name('sales.custom-quotation.sent-to-warehouse');
+    Route::get('/custom-quotation', [NonListingController::class, 'index'])->name('sales.custom-quotation.index');
+    Route::get('/custom-quotation/create', [NonListingController::class, 'create'])->name('sales.custom-quotation.create');
+    Route::post('/custom-quotation', [NonListingController::class, 'store'])->name('sales.custom-quotation.store');
+    Route::post('/custom-quotation/bulk/delete', [NonListingController::class, 'bulkDelete'])->name('sales.custom-quotation.bulk-delete');
+    Route::post('/custom-quotation/bulk/send-to-warehouse', [NonListingController::class, 'bulkSendToWarehouse'])->name('sales.custom-quotation.bulk-send-to-warehouse');
+    Route::get('/detail-custom-quotation/{customQuotation}', [NonListingController::class, 'show'])->name('sales.custom-quotation.show');
+    Route::get('/custom-quotation/{customQuotation}/edit', [NonListingController::class, 'edit'])->name('sales.custom-quotation.edit');
+    Route::put('/custom-quotation/{customQuotation}', [NonListingController::class, 'update'])->name('sales.custom-quotation.update');
+    Route::delete('/custom-quotation/{customQuotation}', [NonListingController::class, 'destroy'])->name('sales.custom-quotation.destroy');
+    Route::get('/custom-quotation/{customQuotation}/pdf', [NonListingController::class, 'pdf'])->name('sales.custom-quotation.pdf');
+    Route::post('/custom-quotation/{customQuotation}/sent-to-warehouse', [NonListingController::class, 'sentToWarehouse'])->name('sales.custom-quotation.sent-to-warehouse');
 
     // Sent to Quotation
     Route::post(
         '/custom-quotation/{customQuotation}/sent-to-quotation',
-        [CustomQuotationController::class, 'sentToQuotation']
+        [NonListingController::class, 'sentToQuotation']
     )
         ->name('sales.custom-quotation.sent-to-quotation');
 
@@ -298,9 +298,9 @@ Route::middleware(['auth', 'role:Sales,General Affair,Supervisor'])->group(funct
 
 // Shared Detail and PDF views for Quotation (registered below specific routes to avoid parameter clashes)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/detail-quotation/{quotation}', [QuotationController::class, 'show'])->name('sales.quotation.show');
-    Route::get('/detail-quotation-approval/{quotation}', [QuotationController::class, 'show'])->name('admin.quotation-approval.show');
-    Route::get('/quotation/{quotation}/pdf', [QuotationController::class, 'pdf'])->name('sales.quotation.pdf');
+    Route::get('/detail-quotation/{quotation}', [ListingController::class, 'show'])->name('sales.quotation.show');
+    Route::get('/detail-quotation-approval/{quotation}', [ListingController::class, 'show'])->name('admin.quotation-approval.show');
+    Route::get('/quotation/{quotation}/pdf', [ListingController::class, 'pdf'])->name('sales.quotation.pdf');
 
     // Fallback redirect routes for old URLs to prevent MethodNotAllowedHttpException on old bookmarks/refreshes
     Route::get('/quotation/{quotation}', function ($quotation) {
