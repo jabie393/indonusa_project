@@ -489,6 +489,7 @@
                                     {{ $rejectedQuotationCount }}
                                 </span>
                             </a>
+                            
                             @if (request()->routeIs('sales.quotation.show') || request()->routeIs('sales.quotation.create') || request()->routeIs('sales.quotation.store') || request()->routeIs('sales.quotation.edit') || request()->routeIs('sales.quotation.update'))
                                 <ul class="pt-2">
                                     <li class="flex items-center justify-end">
