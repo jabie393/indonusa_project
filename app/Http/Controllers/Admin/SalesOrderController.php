@@ -53,7 +53,11 @@ class SalesOrderController extends Controller
         }
 
         $warehouseStatuses = ['sent_to_warehouse', 'under_procurement', 'completed', 'not_completed'];
-        $isSentToWarehouse = $ro->order && in_array($ro->order->status, $warehouseStatuses, true);
+        if ($ro->custom_quotation_id) {
+            $isSentToWarehouse = $ro->order && in_array($ro->order->status, $warehouseStatuses, true);
+        } else {
+            $isSentToWarehouse = $ro->order && $ro->order->queue_at !== null;
+        }
 
         return [
             'id'             => $ro->id,
@@ -84,9 +88,15 @@ class SalesOrderController extends Controller
 
     public function sentRequestOrderToWarehouse(Request $request, \App\Models\Quotation $quotation)
     {
-        $alreadySent = Order::where('quotation_id', $quotation->id)
-            ->whereIn('status', ['sent_to_warehouse', 'under_procurement', 'completed', 'not_completed'])
-            ->exists();
+        if (is_null($quotation->custom_quotation_id)) {
+            $alreadySent = Order::where('quotation_id', $quotation->id)
+                ->whereNotNull('queue_at')
+                ->exists();
+        } else {
+            $alreadySent = Order::where('quotation_id', $quotation->id)
+                ->whereIn('status', ['sent_to_warehouse', 'under_procurement', 'completed', 'not_completed'])
+                ->exists();
+        }
 
         if ($alreadySent) {
             return redirect()->back()
@@ -155,10 +165,45 @@ class SalesOrderController extends Controller
             $existingOrder = Order::where('quotation_id', $quotation->id)->first();
 
             if ($existingOrder) {
-                $existingOrder->update([
-                    'status' => $targetStatus,
-                    'custom_quotation_id' => $quotation->custom_quotation_id ?? $existingOrder->custom_quotation_id,
-                ]);
+                if (is_null($quotation->custom_quotation_id)) {
+                    $existingOrder->update([
+                        'queue_at' => now(),
+                        'approved_at' => $existingOrder->approved_at ?? now(),
+                        'status' => 'open',
+                    ]);
+                    // Sync/Create OrderItems if they don't exist yet!
+                    if ($existingOrder->items()->count() === 0) {
+                        foreach ($quotation->items as $item) {
+                            $goodsId = $item->goods_id ?? ($goodsMap[$item->id] ?? null);
+                            OrderItem::create([
+                                'order_id'            => $existingOrder->id,
+                                'goods_id'            => $goodsId,
+                                'custom_product_name' => $item->custom_product_name,
+                                'category'            => $item->product_category ?? null,
+                                'quantity'            => $item->quantity ?? 1,
+                                'delivered_quantity'  => 0,
+                                'allocated_quantity'  => 0,
+                                'shortage_quantity'   => $item->quantity ?? 1,
+                                'item_status'         => 'pending',
+                                'price'               => $item->price ?? 0,
+                                'subtotal'            => $item->subtotal ?? 0,
+                            ]);
+                        }
+                        $existingOrder->load('items');
+                    }
+                    // Initialize shortage_quantity on existing items
+                    foreach ($existingOrder->items as $orderItem) {
+                        $orderItem->shortage_quantity = max(0, $orderItem->quantity - $orderItem->delivered_quantity - $orderItem->allocated_quantity);
+                        $orderItem->save();
+                    }
+                    $order = $existingOrder;
+                } else {
+                    $existingOrder->update([
+                        'status' => $targetStatus,
+                        'custom_quotation_id' => $quotation->custom_quotation_id ?? $existingOrder->custom_quotation_id,
+                    ]);
+                    $order = $existingOrder;
+                }
                 $orderNumber = $existingOrder->order_number;
 
                 // Sync goods_id to existing order items if they were null
@@ -186,9 +231,11 @@ class SalesOrderController extends Controller
                     'customer_id'         => $quotation->customer_id ?? null,
                     'quotation_id'        => $quotation->id,
                     'custom_quotation_id' => $quotation->custom_quotation_id ?? null,
-                    'status'              => $targetStatus,
+                    'status'              => is_null($quotation->custom_quotation_id) ? 'open' : $targetStatus,
                     'required_date'       => $quotation->required_date ?? now()->toDateString(),
                     'customer_notes'      => $quotation->customer_notes ?? null,
+                    'queue_at'            => is_null($quotation->custom_quotation_id) ? now() : null,
+                    'approved_at'         => is_null($quotation->custom_quotation_id) ? now() : null,
                 ]);
 
                 foreach ($quotation->items as $item) {
@@ -201,6 +248,8 @@ class SalesOrderController extends Controller
                         'category'            => $item->product_category ?? null,
                         'quantity'            => $item->quantity ?? 1,
                         'delivered_quantity'  => 0,
+                        'allocated_quantity'  => 0,
+                        'shortage_quantity'   => $item->quantity ?? 1,
                         'item_status'         => 'pending',
                         'price'               => $item->price ?? 0,
                         'subtotal'            => $item->subtotal ?? 0,
@@ -208,15 +257,111 @@ class SalesOrderController extends Controller
                 }
             }
 
-            // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
-            // if ($customQuotation) {
-            //     $customQuotation->update(['status' => $targetStatus]);
-            // }
+            // Trigger stock allocation for standard Listing
+            $hasShortageOnConfirmation = false;
+            if (is_null($quotation->custom_quotation_id)) {
+                \App\Services\StockAllocationService::allocateAvailableStock($order);
+
+                // Check for shortage items
+                $shortageItems = [];
+                $order->loadMissing('items.barang');
+                foreach ($order->items as $item) {
+                    $shortage = $item->quantity - $item->delivered_quantity - $item->allocated_quantity;
+                    if ($shortage > 0) {
+                        $shortageItems[] = [
+                            'item' => $item,
+                            'shortage' => $shortage,
+                        ];
+                    }
+                }
+
+                if (!empty($shortageItems)) {
+                    $hasShortageOnConfirmation = true;
+
+                    // Automatically find or create a consolidated procurement batch for Listing shortages
+                    $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
+                        ->whereNull('order_id')
+                        ->whereIn('status', ['pending', 'partial_received'])
+                        ->first();
+
+                    if (!$procurement) {
+                        $procurement = \App\Models\ProcurementOfGoods::create([
+                            'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
+                            'order_id' => null, // Consolidated batch across multiple SOs
+                            'custom_quotation_id' => null,
+                            'general_affair_id' => null,
+                            'status' => 'pending',
+                            'notes' => 'Pengadaan Terpadu Shortage Stok Listing',
+                        ]);
+                    }
+
+                    foreach ($shortageItems as $sItem) {
+                        $item = $sItem['item'];
+                        $shortage = $sItem['shortage'];
+
+                        // Check if this goods is already in the procurement batch
+                        $procItem = \App\Models\ProcurementOfGoodsItem::where('procurement_of_goods_id', $procurement->id)
+                            ->where('goods_id', $item->goods_id)
+                            ->whereNotIn('status', ['completed', 'canceled'])
+                            ->first();
+
+                        if ($procItem) {
+                            $procItem->qty_requested += $shortage;
+                            $procItem->qty_ordered += $shortage;
+                            $procItem->save();
+                        } else {
+                            $procItem = \App\Models\ProcurementOfGoodsItem::create([
+                                'procurement_of_goods_id' => $procurement->id,
+                                'goods_id' => $item->goods_id,
+                                'qty_requested' => $shortage,
+                                'qty_ordered' => $shortage,
+                                'qty_received' => 0,
+                                'unit' => $item->barang->unit ?? 'pcs',
+                                'buy_price' => $item->barang->buy_price ?? 0,
+                                'selling_price' => $item->barang->selling_price ?? 0,
+                                'status' => 'pending',
+                            ]);
+                        }
+
+                        // Link the shortage requirement to this specific OrderItem via pivot
+                        DB::table('procurement_order_items')->updateOrInsert(
+                            [
+                                'procurement_of_goods_item_id' => $procItem->id,
+                                'order_item_id' => $item->id,
+                            ],
+                            [
+                                'quantity' => $shortage,
+                                'allocated_quantity' => 0,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]
+                        );
+
+                        $item->shortage_quantity = $shortage;
+                        $item->save();
+                    }
+
+                    $order->status = 'under_procurement';
+                    $order->save();
+
+                    event(new \App\Events\RealTimeNotification(
+                        'General Affair',
+                        null,
+                        'procurement_arrival_submitted',
+                        'Pengadaan Baru!',
+                        'Ada pengadaan baru untuk shortage Listing yang perlu diproses.'
+                    ));
+                }
+            }
 
             DB::commit();
-            $successText = $quotation->custom_quotation_id
-                ? "Quotation berhasil diajukan untuk pengadaan (procurement) dengan No. {$orderNumber}."
-                : "Quotation berhasil dikirim ke Warehouse dengan No. {$orderNumber}.";
+            if ($quotation->custom_quotation_id) {
+                $successText = "Quotation berhasil diajukan untuk pengadaan (procurement) dengan No. {$orderNumber}.";
+            } elseif ($hasShortageOnConfirmation) {
+                $successText = "Sales Order berhasil diresmikan dan pengadaan otomatis untuk shortage barang telah diajukan ke GA dengan No. {$orderNumber}.";
+            } else {
+                $successText = "Sales Order berhasil diresmikan dan dikirim ke Warehouse dengan No. {$orderNumber}.";
+            }
 
             return redirect()->back()
                 ->with(['title' => 'Berhasil', 'text' => $successText]);
@@ -529,5 +674,182 @@ class SalesOrderController extends Controller
             });
 
         return response()->json(['success' => true, 'data' => $results]);
+    }
+
+    public function cancel(\App\Models\Order $salesOrder)
+    {
+        if ($salesOrder->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (in_array($salesOrder->status, ['completed', 'canceled'])) {
+            return redirect()->back()->withErrors('Order ini tidak dapat dibatalkan.');
+        }
+
+        DB::beginTransaction();
+        try {
+            $salesOrder->status = 'canceled';
+            $salesOrder->save();
+
+            // Cancel any individual procurements for this order
+            $activeProcurements = \App\Models\ProcurementOfGoods::where('order_id', $salesOrder->id)
+                ->whereIn('status', ['pending', 'partial_received'])
+                ->get();
+            foreach ($activeProcurements as $proc) {
+                $proc->update([
+                    'status' => 'canceled',
+                    'notes' => ($proc->notes ? $proc->notes . ' | ' : '') . 'Dibatalkan karena Sales Order dibatalkan.'
+                ]);
+                $proc->items()->update(['status' => 'canceled']);
+            }
+
+            // Clean up linked batch procurement items
+            $orderItemIds = $salesOrder->items->pluck('id')->toArray();
+            $poiRecords = DB::table('procurement_order_items')
+                ->whereIn('order_item_id', $orderItemIds)
+                ->get();
+
+            foreach ($poiRecords as $poi) {
+                $procItem = \App\Models\ProcurementOfGoodsItem::find($poi->procurement_of_goods_item_id);
+                if ($procItem && $procItem->status === 'pending') {
+                    $procItem->qty_requested = max(0, $procItem->qty_requested - $poi->quantity);
+                    $procItem->qty_ordered = max(0, $procItem->qty_ordered - $poi->quantity);
+                    if ($procItem->qty_ordered === 0) {
+                        $procItem->delete();
+                    } else {
+                        $procItem->save();
+                    }
+                }
+            }
+            DB::table('procurement_order_items')->whereIn('order_item_id', $orderItemIds)->delete();
+
+            \App\Services\StockAllocationService::releaseAllocation($salesOrder);
+
+            DB::commit();
+
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
+            return redirect()->back()->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil dibatalkan, alokasi stok telah dialihkan ke antrean berikutnya, dan pengadaan terkait telah dibatalkan.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Gagal membatalkan Sales Order: ' . $e->getMessage());
+        }
+    }
+
+    public function sendToProcurement(\App\Models\Order $salesOrder)
+    {
+        if ($salesOrder->sales_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($salesOrder->status !== 'open') {
+            return redirect()->back()->withErrors('Hanya order dengan status Open yang dapat dikirim ke Procurement.');
+        }
+
+        // Idempotency check
+        $exists = \App\Models\ProcurementOfGoods::where('order_id', $salesOrder->id)->exists();
+        if ($exists) {
+            return redirect()->back()->with(['title' => 'Perhatian', 'text' => 'Order ini sudah diajukan untuk procurement.']);
+        }
+
+        $salesOrder->loadMissing('items.barang');
+
+        $shortageItems = [];
+        foreach ($salesOrder->items as $item) {
+            $shortage = $item->quantity - $item->delivered_quantity - $item->allocated_quantity;
+            if ($shortage > 0) {
+                $shortageItems[] = [
+                    'item' => $item,
+                    'shortage' => $shortage,
+                ];
+            }
+        }
+
+        if (empty($shortageItems)) {
+            return redirect()->back()->withErrors('Tidak ada item yang shortage pada order ini.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // Automatically find or create a consolidated procurement batch for Listing shortages
+            $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
+                ->whereNull('order_id')
+                ->whereIn('status', ['pending', 'partial_received'])
+                ->first();
+
+            if (!$procurement) {
+                $procurement = \App\Models\ProcurementOfGoods::create([
+                    'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
+                    'order_id' => null,
+                    'custom_quotation_id' => null,
+                    'general_affair_id' => null,
+                    'status' => 'pending',
+                    'notes' => 'Pengadaan Terpadu Shortage Stok Listing',
+                ]);
+            }
+
+            foreach ($shortageItems as $sItem) {
+                $item = $sItem['item'];
+                $shortage = $sItem['shortage'];
+
+                $procItem = \App\Models\ProcurementOfGoodsItem::where('procurement_of_goods_id', $procurement->id)
+                    ->where('goods_id', $item->goods_id)
+                    ->whereNotIn('status', ['completed', 'canceled'])
+                    ->first();
+
+                if ($procItem) {
+                    $procItem->qty_requested += $shortage;
+                    $procItem->qty_ordered += $shortage;
+                    $procItem->save();
+                } else {
+                    $procItem = \App\Models\ProcurementOfGoodsItem::create([
+                        'procurement_of_goods_id' => $procurement->id,
+                        'goods_id' => $item->goods_id,
+                        'qty_requested' => $shortage,
+                        'qty_ordered' => $shortage,
+                        'qty_received' => 0,
+                        'unit' => $item->barang->unit ?? 'pcs',
+                        'buy_price' => $item->barang->buy_price ?? 0,
+                        'selling_price' => $item->barang->selling_price ?? 0,
+                        'status' => 'pending',
+                    ]);
+                }
+
+                DB::table('procurement_order_items')->updateOrInsert(
+                    [
+                        'procurement_of_goods_item_id' => $procItem->id,
+                        'order_item_id' => $item->id,
+                    ],
+                    [
+                        'quantity' => $shortage,
+                        'allocated_quantity' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+
+                // Update shortage quantity field on order item
+                $item->shortage_quantity = $shortage;
+                $item->save();
+            }
+
+            $salesOrder->status = 'under_procurement';
+            $salesOrder->save();
+
+            DB::commit();
+
+            event(new \App\Events\RealTimeNotification(
+                'General Affair',
+                null,
+                'procurement_arrival_submitted',
+                'Pengadaan Baru!',
+                'Ada pengadaan baru untuk shortage Listing yang perlu diproses.'
+            ));
+
+            return redirect()->back()->with(['title' => 'Berhasil', 'text' => 'Shortage Sales Order berhasil dikirim ke GA Procurement.']);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors('Gagal mengirim ke Procurement: ' . $e->getMessage());
+        }
     }
 }

@@ -16,6 +16,8 @@ class OrderItem extends Model
         'price',
         'subtotal',
         'delivered_quantity',
+        'allocated_quantity',
+        'shortage_quantity',
         'item_status',
     ];
 

@@ -25,8 +25,36 @@ class ProcurementController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $search = $request->input('search');
 
-        // 1. Daftar Procurement yang sudah dibuat
-        $procurementQuery = ProcurementOfGoods::with(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests'])
+        // 1. Daftar Pengadaan Listing (Shortage Stok Katalog)
+        $listingProcurementQuery = ProcurementOfGoods::where('status', '!=', 'canceled')
+            ->whereNull('custom_quotation_id')
+            ->where(function ($q) {
+                $q->whereNull('order_id')
+                  ->orWhereHas('order', function ($oq) {
+                      $oq->where('status', '!=', 'canceled');
+                  });
+            })
+            ->with(['order', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('procurement_number', 'like', "%{$search}%")
+                        ->orWhere('status', 'like', "%{$search}%")
+                        ->orWhere('notes', 'like', "%{$search}%")
+                        ->orWhereHas('order', function ($orderQuery) use ($search) {
+                            $orderQuery->where('order_number', 'like', "%{$search}%");
+                        })
+                        ->orWhereHas('generalAffair', function ($generalAffairQuery) use ($search) {
+                            $generalAffairQuery->where('name', 'like', "%{$search}%");
+                        });
+                });
+            })
+            ->orderBy('created_at', 'desc');
+        $listingItems = $listingProcurementQuery->paginate($perPage, ['*'], 'listing_page')->withQueryString();
+
+        // 2. Daftar Pengadaan Non-Listing (Custom Quotation)
+        $nonListingProcurementQuery = ProcurementOfGoods::where('status', '!=', 'canceled')
+            ->whereNotNull('custom_quotation_id')
+            ->with(['customQuotation', 'order', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('procurement_number', 'like', "%{$search}%")
@@ -41,9 +69,9 @@ class ProcurementController extends Controller
                         });
                 });
             });
-        $procurements = $procurementQuery->get();
+        $nonListingProcurements = $nonListingProcurementQuery->get();
 
-        // 2. Daftar Custom Quotation pending (belum diproses)
+        // 2b. Custom Quotation Pending (Belum Dibuat Procurement-nya)
         $pendingQuery = CustomQuotation::where('status', 'sent_to_quotation')
             ->whereHas('order', function ($q) {
                 $q->where('status', 'under_procurement');
@@ -63,27 +91,88 @@ class ProcurementController extends Controller
             });
         $pendingQuotations = $pendingQuery->get();
 
-        // Merge both collections
-        $merged = $procurements->concat($pendingQuotations);
-
-        // Sort by created_at desc
-        $merged = $merged->sortByDesc(function ($item) {
+        $mergedNonListing = $nonListingProcurements->concat($pendingQuotations)->sortByDesc(function ($item) {
             return $item->created_at;
         });
 
-        // Paginate manually
-        $currentPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = $merged->slice(($currentPage - 1) * $perPage, $perPage)->values();
-        
-        $items = new \Illuminate\Pagination\LengthAwarePaginator(
-            $currentItems,
-            $merged->count(),
+        $currentNonListingPage = \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPage('non_listing_page');
+        $nonListingSlice = $mergedNonListing->slice(($currentNonListingPage - 1) * $perPage, $perPage)->values();
+        $nonListingItems = new \Illuminate\Pagination\LengthAwarePaginator(
+            $nonListingSlice,
+            $mergedNonListing->count(),
             $perPage,
-            $currentPage,
-            ['path' => $request->url(), 'query' => $request->query()]
+            $currentNonListingPage,
+            ['path' => $request->url(), 'pageName' => 'non_listing_page', 'query' => $request->query()]
         );
 
-        return view('admin.procurement.index', compact('items'));
+        // 3. Combined Requirements for Tab 3
+        $combinedRequirements = ProcurementOfGoodsItem::where('status', '!=', 'completed')
+            ->where('status', '!=', 'canceled')
+            ->whereRaw('qty_ordered > qty_received')
+            ->whereHas('procurementOfGoods', function ($q) {
+                $q->whereIn('status', ['pending', 'partial_received'])
+                  ->where(function ($oq) {
+                      $oq->whereNull('order_id')
+                         ->orWhereHas('order', function ($orderQuery) {
+                             $orderQuery->where('status', '!=', 'canceled');
+                         });
+                  });
+            })
+            ->with(['goods', 'procurementOfGoods.order', 'procurementOfGoods.customQuotation'])
+            ->get()
+            ->groupBy('goods_id')
+            ->map(function ($items, $goodsId) {
+                $goods = $items->first()->goods;
+                $totalOrdered = $items->sum('qty_ordered');
+                $totalReceived = $items->sum('qty_received');
+                
+                $breakdown = $items->flatMap(function ($item) {
+                    // Check if there are linked order items via procurement_order_items
+                    $linkedOrders = \Illuminate\Support\Facades\DB::table('procurement_order_items')
+                        ->where('procurement_of_goods_item_id', $item->id)
+                        ->join('order_items', 'procurement_order_items.order_item_id', '=', 'order_items.id')
+                        ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                        ->where('orders.status', '!=', 'canceled')
+                        ->select('orders.id as order_id', 'orders.order_number', 'procurement_order_items.quantity as qty')
+                        ->get();
+
+                    if ($linkedOrders->isNotEmpty()) {
+                        return $linkedOrders->map(function ($lo) {
+                            return [
+                                'source' => 'Listing (SO: ' . $lo->order_number . ')',
+                                'url' => route('sales.sales-orders.show', $lo->order_id),
+                                'qty' => $lo->qty,
+                            ];
+                        });
+                    }
+
+                    $source = '-';
+                    $url = '#';
+                    if ($item->procurementOfGoods->order) {
+                        $source = 'Listing (SO: ' . $item->procurementOfGoods->order->order_number . ')';
+                        $url = route('sales.sales-orders.show', $item->procurementOfGoods->order->id);
+                    } elseif ($item->procurementOfGoods->customQuotation) {
+                        $source = 'Non-Listing (Quotation: ' . $item->procurementOfGoods->customQuotation->quotation_number . ')';
+                        $url = route('sales.custom-quotation.show', $item->procurementOfGoods->customQuotation->id);
+                    }
+                    return [[
+                        'source' => $source,
+                        'url' => $url,
+                        'qty' => $item->qty_ordered - $item->qty_received,
+                    ]];
+                });
+
+                return [
+                    'goods_name' => $goods->goods_name ?? 'Unknown',
+                    'goods_code' => $goods->goods_code ?? '-',
+                    'total_ordered' => $totalOrdered,
+                    'total_received' => $totalReceived,
+                    'total_remaining' => max(0, $totalOrdered - $totalReceived),
+                    'breakdown' => $breakdown,
+                ];
+            });
+
+        return view('admin.procurement.index', compact('listingItems', 'nonListingItems', 'combinedRequirements'));
     }
 
     /**
@@ -294,8 +383,46 @@ class ProcurementController extends Controller
      */
     public function detailHtml(ProcurementOfGoods $procurement)
     {
-        $procurement->load(['customQuotation', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests']);
+        $procurement->load(['customQuotation', 'order', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests']);
         return view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'));
+    }
+
+    /**
+     * Ambil rincian alokasi SO untuk procurement tertentu dalam bentuk HTML partial.
+     */
+    public function allocationsHtml(ProcurementOfGoods $procurement)
+    {
+        $procurement->load(['items.goods']);
+
+        $allLinkedSos = collect();
+        foreach ($procurement->items as $pItem) {
+            $sos = DB::table('procurement_order_items')
+                ->where('procurement_of_goods_item_id', $pItem->id)
+                ->join('order_items', 'procurement_order_items.order_item_id', '=', 'order_items.id')
+                ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->where('orders.status', '!=', 'canceled')
+                ->select(
+                    'orders.id as order_id',
+                    'orders.order_number',
+                    'orders.customer_name',
+                    'orders.status as order_status',
+                    'orders.queue_at',
+                    'orders.created_at',
+                    'procurement_order_items.quantity as qty_needed',
+                    'order_items.allocated_quantity',
+                    'order_items.shortage_quantity'
+                )
+                ->get()
+                ->map(function ($s) use ($pItem) {
+                    $s->goods_name = $pItem->goods->goods_name ?? 'Barang';
+                    $s->goods_code = $pItem->goods->goods_code ?? '-';
+                    $s->unit = $pItem->unit ?? 'pcs';
+                    return $s;
+                });
+            $allLinkedSos = $allLinkedSos->concat($sos);
+        }
+
+        return view('admin.procurement.partials.procurement-allocations-modal-body', compact('procurement', 'allLinkedSos'));
     }
 
     /**
@@ -345,6 +472,11 @@ class ProcurementController extends Controller
 
         DB::beginTransaction();
         try {
+            if (!$procurement->general_affair_id) {
+                $procurement->general_affair_id = Auth::id();
+                $procurement->save();
+            }
+
             foreach ($validated['items'] as $itemData) {
                 if ($itemData['qty_arriving'] > 0) {
                     $procItem = ProcurementOfGoodsItem::find($itemData['procurement_item_id']);
@@ -389,7 +521,11 @@ class ProcurementController extends Controller
     {
         DB::beginTransaction();
         try {
-            $procurement->update(['status' => 'completed']);
+            $updateData = ['status' => 'completed'];
+            if (!$procurement->general_affair_id) {
+                $updateData['general_affair_id'] = Auth::id();
+            }
+            $procurement->update($updateData);
 
             foreach ($procurement->items as $item) {
                 $item->update(['status' => 'completed']);

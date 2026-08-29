@@ -11,11 +11,17 @@ class ProcurementOfGoods extends Model
     protected $fillable = [
         'procurement_number',
         'custom_quotation_id',
+        'order_id',
         'general_affair_id',
         'warehouse_id',
         'status',
         'notes',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id');
+    }
 
     public function customQuotation()
     {

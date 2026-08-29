@@ -573,67 +573,100 @@
                                 </button>
                             @endif
 
-                            {{-- Sent to Warehouse / Request Procurement (Primary Action) - Sales Only --}}
+                            {{-- Action buttons for Sales --}}
                             @php
-                                $orderStatus = $requestOrder->order?->status;
-                                $sudahDikirim = $requestOrder->order && in_array($requestOrder->order->status, [
-                                    'sent_to_warehouse',
-                                    'under_procurement',
-                                    'approved_warehouse',
-                                    'completed',
-                                    'not_completed',
-                                ]);
-
-                                $canSendToWarehouse = !in_array(strtolower($orderStatus ?? ''), [
-                                    'sent_to_supervisor',
-                                    'waiting_for_supervisor_approval',
-                                    'rejected_by_supervisor',
-                                    'waiting for supervisor approval',
-                                    'rejected by supervisor',
-                                ], true);
-
-                                $sendToWarehouseRoute = route('sales.quotation.sent-to-warehouse-from-so', $requestOrder->id);
-
-                                if (!empty($requestOrder->custom_quotation_id)) {
-                                    $sendToWarehouseText = 'Send this Quotation for Procurement?';
-                                    $sendToWarehouseButtonText = 'Yes, Request';
-                                    $sendToWarehouseBtnLabel = 'Request Procurement';
-                                    $sendToWarehouseBtnClass = 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800';
-                                } else {
-                                    $sendToWarehouseText = 'Send this Quotation to Warehouse?';
-                                    $sendToWarehouseButtonText = 'Yes, Send';
-                                    $sendToWarehouseBtnLabel = 'Send to Warehouse';
-                                    $sendToWarehouseBtnClass = 'bg-indigo-700 hover:bg-indigo-800 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800';
-                                }
+                                $order = $requestOrder->order;
+                                $hasShortage = $order && $order->items->sum('shortage_quantity') > 0;
+                                $orderStatus = $order?->status;
                             @endphp
 
-                            @if (($requestOrder->customer->status ?? 'active') === 'active' && !$sudahDikirim && $canSendToWarehouse && Auth::user()->role === 'Sales')
-                                <form method="POST" action="{{ $sendToWarehouseRoute }}" class="w-full">
-                                    @csrf
-                                    <button type="button"
-                                        class="flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none {{ $sendToWarehouseBtnClass }}"
-                                        onclick="confirmApprove(() => this.closest('form').submit(), '{{ $sendToWarehouseText }}', '{{ $sendToWarehouseButtonText }}')">
-                                        @if (!empty($requestOrder->custom_quotation_id))
-                                            <!-- Shopping Cart Icon for Procurement -->
+                            @if (!empty($requestOrder->custom_quotation_id))
+                                {{-- Non-Listing (Custom Quotation) - Keep existing flow --}}
+                                @php
+                                    $sudahDikirim = $order && in_array($order->status, [
+                                        'sent_to_warehouse',
+                                        'under_procurement',
+                                        'approved_warehouse',
+                                        'completed',
+                                        'not_completed',
+                                    ]);
+                                    $canSendToWarehouse = !in_array(strtolower($orderStatus ?? ''), [
+                                        'sent_to_supervisor',
+                                        'waiting_for_supervisor_approval',
+                                        'rejected_by_supervisor',
+                                    ], true);
+                                    $sendToWarehouseRoute = route('sales.quotation.sent-to-warehouse-from-so', $requestOrder->id);
+                                @endphp
+
+                                @if (($requestOrder->customer->status ?? 'active') === 'active' && !$sudahDikirim && $canSendToWarehouse && Auth::user()->role === 'Sales')
+                                    <form method="POST" action="{{ $sendToWarehouseRoute }}" class="w-full">
+                                        @csrf
+                                        <button type="button"
+                                            class="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-600 hover:bg-amber-700 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none"
+                                            onclick="confirmApprove(() => this.closest('form').submit(), 'Send this Quotation for Procurement?', 'Yes, Request')">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                                 <circle cx="8" cy="21" r="1"/>
                                                 <circle cx="19" cy="21" r="1"/>
                                                 <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                                             </svg>
-                                        @else
-                                            <!-- Box Icon for Warehouse -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                                <path
-                                                    d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
-                                                <path d="m3.3 7 8.7 5 8.7-5" />
-                                                <path d="M12 22V12" />
-                                            </svg>
-                                        @endif
-                                        <span>{{ $sendToWarehouseBtnLabel }}</span>
-                                    </button>
-                                </form>
+                                            <span>Request Procurement</span>
+                                        </button>
+                                    </form>
+                                @endif
+                            @else
+                                {{-- Listing (Standard Quotation) - New WMS flow --}}
+                                @if ($order && Auth::user()->role === 'Sales')
+                                    {{-- Send to Warehouse / Send to Procurement Button (Active when queue_at is null and status is open) --}}
+                                    @if (is_null($order->queue_at) && $order->status === 'open')
+                                        @php
+                                            $sendToWarehouseRoute = route('sales.quotation.sent-to-warehouse-from-so', $requestOrder->id);
+                                            $hasShortageBeforeConfirm = \App\Services\StockAllocationService::hasShortageForQuotation($requestOrder);
+                                        @endphp
+                                        <form method="POST" action="{{ $sendToWarehouseRoute }}" class="w-full">
+                                            @csrf
+                                            @if ($hasShortageBeforeConfirm)
+                                                {{-- Stok kurang: Tampilkan Send to Procurement --}}
+                                                <button type="button"
+                                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-600 hover:bg-amber-700 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none"
+                                                    onclick="confirmApprove(() => this.closest('form').submit(), 'Stok barang kurang. Kirim penawaran ini ke GA Procurement?', 'Kirim ke Procurement')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                                    </svg>
+                                                    <span>Send to Procurement</span>
+                                                </button>
+                                            @else
+                                                {{-- Stok cukup: Tampilkan Send to Warehouse --}}
+                                                <button type="button"
+                                                    class="flex w-full items-center justify-center gap-2 rounded-2xl bg-indigo-700 hover:bg-indigo-800 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none"
+                                                    onclick="confirmApprove(() => this.closest('form').submit(), 'Stok barang cukup. Kirim penawaran ini ke Warehouse?', 'Kirim ke Warehouse')">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+                                                        <path d="m3.3 7 8.7 5 8.7-5" />
+                                                        <path d="M12 22V12" />
+                                                    </svg>
+                                                    <span>Send to Warehouse</span>
+                                                </button>
+                                            @endif
+                                        </form>
+                                    @endif
+
+                                    {{-- Cancel Order Button --}}
+                                    @if ($order->queue_at && in_array($order->status, ['open', 'under_procurement']))
+                                        <form method="POST" action="{{ route('sales.sales-orders.cancel', $order->id) }}" class="w-full mt-2">
+                                            @csrf
+                                            <button type="button"
+                                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-650 hover:bg-red-700 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none"
+                                                onclick="confirmApprove(() => this.closest('form').submit(), 'Apakah Anda yakin ingin membatalkan Sales Order ini? Seluruh alokasi stok akan dilepas.', 'Ya, Batalkan')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span>Cancel Sales Order</span>
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
                             @endif
 
                             {{-- Waiting Supervisor Approval status pill --}}
@@ -665,7 +698,9 @@
                                 <th class="px-6 py-4">Barang & Kategori</th>
                                 <th class="px-6 py-4">Deskripsi Barang</th>
                                 <th class="px-6 py-4 text-center">Diskon</th>
-                                <th class="px-6 py-4 text-center">Qty</th>
+                                <th class="px-6 py-4 text-center">Required Qty</th>
+                                <th class="px-6 py-4 text-center">Allocated Qty</th>
+                                <th class="px-6 py-4 text-center">Shortage Qty</th>
                                 <th class="px-6 py-4">Harga Satuan</th>
                                 <th class="px-6 py-4">Subtotal</th>
                                 <th class="px-6 py-4 text-center">Gambar</th>
@@ -717,12 +752,32 @@
                                             <span class="text-gray-300 dark:text-gray-600">-</span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-5 text-center">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="font-bold text-slate-800 dark:text-white">{{ $item->quantity ?? $item->qty }}
-                                                Unit</span>
-                                        </div>
+                                    @php
+                                        $orderItem = $requestOrder->order ? $requestOrder->order->items->firstWhere('goods_id', $item->goods_id) : null;
+                                        $allocated = $orderItem ? $orderItem->allocated_quantity : 0;
+                                        $shortage = $orderItem ? $orderItem->shortage_quantity : 0;
+                                    @endphp
+                                    <td class="px-6 py-5 text-center font-bold text-slate-800 dark:text-white">
+                                        {{ $item->quantity ?? $item->qty }} {{ $item->barang->unit ?? 'pcs' }}
+                                    </td>
+                                    <td class="px-6 py-5 text-center text-slate-700 dark:text-gray-300">
+                                        @if($requestOrder->custom_quotation_id)
+                                            <span class="text-gray-400">N/A</span>
+                                        @else
+                                            <span class="text-green-600 dark:text-green-400 font-bold">{{ $allocated }}</span> {{ $item->barang->unit ?? 'pcs' }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-5 text-center text-slate-700 dark:text-gray-300">
+                                        @if($requestOrder->custom_quotation_id)
+                                            <span class="text-gray-400">N/A</span>
+                                        @else
+                                            @if($shortage > 0)
+                                                <span class="text-rose-600 dark:text-rose-400 font-bold">{{ $shortage }}</span>
+                                            @else
+                                                <span class="text-slate-400">0</span>
+                                            @endif
+                                            {{ $item->barang->unit ?? 'pcs' }}
+                                        @endif
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-5 text-slate-600 dark:text-gray-400 text-sm">
                                         {{ number_format($displayHarga, 0, '.', ',') }}

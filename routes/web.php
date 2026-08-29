@@ -149,6 +149,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::post('/procurement/store-modal', [\App\Http\Controllers\Admin\ProcurementController::class, 'storeModal'])->name('general-affair.procurement.store-modal');
     Route::get('/procurement/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'show'])->name('general-affair.procurement.show');
     Route::get('/procurement/{procurement}/detail-html', [\App\Http\Controllers\Admin\ProcurementController::class, 'detailHtml'])->name('general-affair.procurement.detail-html');
+    Route::get('/procurement/{procurement}/allocations-html', [\App\Http\Controllers\Admin\ProcurementController::class, 'allocationsHtml'])->name('general-affair.procurement.allocations-html');
     Route::post('/procurement/arrival/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'recordArrival'])->name('general-affair.procurement.record-arrival');
     Route::post('/procurement/{procurement}/force-complete', [\App\Http\Controllers\Admin\ProcurementController::class, 'forceComplete'])->name('general-affair.procurement.force-complete');
     Route::post('/procurement/receipt/{receipt}/update', [\App\Http\Controllers\Admin\ProcurementController::class, 'updateReceipt'])->name('general-affair.procurement.update-receipt');
@@ -276,6 +277,12 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     // Sent to Warehouse dari Quotation (yang muncul di halaman SO)
     Route::post('/quotation-so/{quotation}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
         ->name('sales.quotation.sent-to-warehouse-from-so');
+
+    // Cancel and Send to Procurement from Sales Order
+    Route::post('/sales-orders/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])
+        ->name('sales.sales-orders.cancel');
+    Route::post('/sales-orders/{salesOrder}/send-to-procurement', [SalesOrderController::class, 'sendToProcurement'])
+        ->name('sales.sales-orders.send-to-procurement');
 
     // Dashboard Chart Data for Sales
     Route::get('/admin/dashboard/sales/data', [\App\Http\Controllers\Admin\Dashboard\SalesDashboardController::class, 'chartData'])

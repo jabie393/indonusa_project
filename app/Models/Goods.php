@@ -65,6 +65,15 @@ class Goods extends Model
         'form',
     ];
 
+    /**
+     * Get available stock for sales allocation.
+     * Available Stock = Physical Stock - Total Allocated Stock on active orders.
+     */
+    public function getAvailableStockAttribute(): int
+    {
+        return \App\Services\StockAllocationService::getAvailableStock($this->id);
+    }
+
     protected static function booted()
     {
         static::saving(function ($barang) {
@@ -72,6 +81,17 @@ class Goods extends Model
             if (!$barang->exists && $barang->request_type === 'primary') {
                 if (empty($barang->selling_price) || (float)$barang->selling_price === 0.0) {
                     $barang->selling_price = round($barang->buy_price * 1.15, 2);
+                }
+            }
+        });
+
+        static::saved(function ($barang) {
+            // Trigger FIFO allocation if stock has increased or approved item is created
+            if ($barang->goods_status === 'approved') {
+                $oldStock = (int) $barang->getOriginal('stock', 0);
+                $newStock = (int) $barang->stock;
+                if ($newStock > $oldStock || $barang->wasRecentlyCreated) {
+                    \App\Services\StockAllocationService::allocateFifo($barang->id);
                 }
             }
         });

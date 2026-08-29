@@ -139,6 +139,7 @@ class DeliveryOrdersController extends Controller
             $remainingQty = $sentQuantities[$item->id] ?? 0;
             if ($remainingQty > 0) {
                 $item->delivered_quantity = $item->quantity;
+                $item->allocated_quantity = max(0, $item->allocated_quantity - $remainingQty);
                 $item->item_status = 'delivered';
                 $item->save();
 
@@ -322,18 +323,8 @@ class DeliveryOrdersController extends Controller
             $message = 'Order berhasil direject.';
         }
 
-        // We do NOT update the custom quotation status anymore, it stops at 'sent_to_quotation'
-        // if ($order->custom_quotation_id) {
-        //     $customQuotation = \App\Models\CustomQuotation::find($order->custom_quotation_id);
-        //     if ($customQuotation) {
-        //         if ($order->status === 'completed') {
-        //             $customQuotation->status = 'completed';
-        //         } elseif ($order->status === 'rejected_warehouse') {
-        //             $customQuotation->status = 'ready_for_delivery';
-        //         }
-        //         $customQuotation->save();
-        //     }
-        // }
+        // Release remaining stock allocations
+        \App\Services\StockAllocationService::releaseAllocation($order);
 
         event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
 
@@ -398,6 +389,7 @@ class DeliveryOrdersController extends Controller
 
                     $newDeliveredQuantity = $item->delivered_quantity + $sentQuantity;
                     $item->delivered_quantity = $newDeliveredQuantity;
+                    $item->allocated_quantity = max(0, $item->allocated_quantity - $sentQuantity);
 
                     // Jika total terkirim sudah mencapai atau melebihi kuantitas pesanan
                     if ($newDeliveredQuantity >= $item->quantity) {

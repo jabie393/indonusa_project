@@ -22,9 +22,217 @@
 
         <!-- Main Card Container -->
         <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
-            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] p-4"></div>
-            <!-- Unified Table Content -->
-            <div id="procurementTableContent" class="flex flex-1 min-h-0 flex-col">
+            <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] px-4 py-2">
+                <div class="flex space-x-2">
+                    <button type="button" id="tab-listing-btn" class="px-4 py-2 text-sm font-extrabold text-white border-b-2 border-white focus:outline-none transition-all flex items-center gap-2">
+                        <span>Pengadaan Listing</span>
+                        <span class="inline-flex items-center justify-center rounded-full bg-white/20 px-2 py-0.5 text-xs text-white">{{ $listingItems->total() }}</span>
+                    </button>
+                    <button type="button" id="tab-non-listing-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
+                        <span>Pengadaan Non-Listing</span>
+                        <span class="inline-flex items-center justify-center rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{{ $nonListingItems->total() }}</span>
+                    </button>
+                    <button type="button" id="tab-combined-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
+                        <span>Ringkasan Kebutuhan Barang</span>
+                        <span class="inline-flex items-center justify-center rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{{ count($combinedRequirements) }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab 1: Pengadaan Listing (Shortage Stok Katalog) -->
+            <div id="tab-listing-content" class="flex flex-1 min-h-0 flex-col">
+                <div class="grow overflow-x-auto overflow-y-auto">
+                    <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="text-nowrap px-4 py-3">No. Pengadaan (Batch)</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Keterangan &amp; Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Alokasi Sales Order</th>
+                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Total Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
+                                <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($listingItems as $item)
+                                @php
+                                    $hasRejected = $item->items->pluck('procurementArrivalRequests')->flatten()->contains('status', 'rejected');
+                                    $statusLabel = [
+                                        'pending' => 'Pending',
+                                        'partial_received' => 'Partial Received',
+                                        'completed' => 'Completed',
+                                    ][$item->status] ?? $item->status;
+
+                                    $badgeClass = 'bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50';
+                                    if ($item->status === 'completed') {
+                                        $badgeClass = 'bg-green-50 dark:bg-green-950/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800/50';
+                                    } elseif ($item->status === 'partial_received') {
+                                        $badgeClass = 'bg-blue-50 dark:bg-blue-950/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50';
+                                    }
+
+                                    $procItemIds = $item->items->pluck('id');
+                                    $linkedSos = \Illuminate\Support\Facades\DB::table('procurement_order_items')
+                                        ->whereIn('procurement_of_goods_item_id', $procItemIds)
+                                        ->join('order_items', 'procurement_order_items.order_item_id', '=', 'order_items.id')
+                                        ->join('orders', 'order_items.order_id', '=', 'orders.id')
+                                        ->where('orders.status', '!=', 'canceled')
+                                        ->select('orders.id as order_id', 'orders.order_number', 'orders.status as order_status', 'order_items.shortage_quantity', 'order_items.allocated_quantity')
+                                        ->get();
+
+                                    $totalSos = $linkedSos->pluck('order_id')->unique()->count();
+                                    $fulfilledSos = $linkedSos->groupBy('order_id')->filter(function($items) {
+                                        return $items->every(fn($oi) => ($oi->shortage_quantity == 0) || ($oi->order_status === 'sent_to_warehouse'));
+                                    })->count();
+                                    $pendingSos = max(0, $totalSos - $fulfilledSos);
+                                @endphp
+                                <tr class="border-b transition-colors duration-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50">
+                                    <!-- No. Pengadaan -->
+                                    <td class="px-4 py-3">
+                                        <button type="button" class="js-show-procurement text-sm font-bold text-blue-600 hover:underline dark:text-blue-400 text-left focus:outline-none" data-id="{{ $item->id }}">
+                                            {{ $item->procurement_number }}
+                                        </button>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                                            @if($item->order)
+                                                SO: {{ $item->order->order_number }}
+                                            @else
+                                                Pengadaan Terpadu (Multi SO)
+                                            @endif
+                                        </div>
+                                        <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                                            {{ $item->created_at->format('Y-m-d H:i') }}
+                                        </div>
+                                    </td>
+
+                                    <!-- Keterangan & Item -->
+                                    <td class="px-4 py-3 align-middle">
+                                        <div class="text-sm font-medium text-slate-800 dark:text-white">
+                                            {{ $item->notes ?: 'Pengadaan Shortage Stok Listing' }}
+                                        </div>
+                                        <div class="flex flex-col gap-1.5 mt-2">
+                                            @foreach($item->items as $procItem)
+                                                <div class="inline-flex flex-col gap-0.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-xs dark:border-gray-700 dark:bg-gray-800/80 shadow-2xs max-w-fit">
+                                                    <div class="flex items-center gap-1.5">
+                                                        @if(!empty($procItem->goods?->goods_code))
+                                                            <span class="font-mono text-[11px] font-bold text-blue-600 dark:text-blue-400">[{{ $procItem->goods->goods_code }}]</span>
+                                                        @endif
+                                                        <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $procItem->goods->goods_name ?? 'Barang' }}</span>
+                                                    </div>
+                                                    <div class="text-[11px] text-slate-600 dark:text-slate-400">
+                                                        <span>Kuantitas: </span>
+                                                        <strong class="font-bold text-slate-900 dark:text-white">{{ $procItem->qty_ordered }} {{ $procItem->unit }}</strong>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </td>
+
+                                    <!-- Alokasi Sales Order -->
+                                    <td class="px-4 py-3 align-middle">
+                                        @if($totalSos > 0)
+                                            <div class="flex flex-col gap-1.5">
+                                                <div class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 max-w-fit shadow-2xs">
+                                                    <span class="font-bold text-slate-900 dark:text-white">{{ $totalSos }} SO:</span>
+                                                    @if($fulfilledSos > 0)
+                                                        <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ $fulfilledSos }} Terpenuhi</span>
+                                                    @endif
+                                                    @if($fulfilledSos > 0 && $pendingSos > 0)
+                                                        <span>•</span>
+                                                    @endif
+                                                    @if($pendingSos > 0)
+                                                        <span class="font-semibold text-amber-600 dark:text-amber-400">{{ $pendingSos }} Menunggu</span>
+                                                    @endif
+                                                </div>
+                                                <button type="button" 
+                                                    class="js-show-allocations inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400 focus:outline-none max-w-fit cursor-pointer"
+                                                    data-id="{{ $item->id }}">
+                                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                                    <span>Rincian Alokasi SO</span>
+                                                </button>
+                                            </div>
+                                        @else
+                                            <span class="text-xs text-gray-400">-</span>
+                                        @endif
+                                    </td>
+
+                                    <!-- Total Item -->
+                                    <td class="px-4 py-3 text-center align-middle">
+                                        <span class="inline-flex items-center justify-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
+                                            {{ $item->items->count() }} Item
+                                        </span>
+                                    </td>
+
+                                    <!-- Status -->
+                                    <td class="px-4 py-3 text-center align-middle">
+                                        <div class="flex flex-wrap items-center justify-center gap-1">
+                                            <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $badgeClass }}">
+                                                {{ $statusLabel }}
+                                            </span>
+                                            @if($hasRejected)
+                                                <span class="inline-flex items-center justify-center rounded-full px-2.5 py-1 text-xs font-semibold bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/50" title="Ada kedatangan barang yang ditolak oleh Warehouse">
+                                                    Revision Required
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </td>
+
+                                    <!-- Action -->
+                                    <td class="px-4 py-3 text-right align-middle">
+                                        <div class="flex justify-end">
+                                            <div class="inline-flex flex-row overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm transition-all duration-300 ease-in-out dark:border-gray-600 dark:bg-gray-700">
+                                                <button type="button"
+                                                    class="js-show-procurement group flex h-full cursor-pointer items-center justify-center bg-yellow-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800"
+                                                    data-id="{{ $item->id }}" title="Lihat Detail & Catat Kedatangan">
+                                                    <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
+                                                        width="14" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100 font-semibold">Detail</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        Tidak ada data pengadaan shortage listing saat ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Listing Pagination Footer -->
+                <nav class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Listing procurement table navigation">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                            Menampilkan
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $listingItems->firstItem() ?? 0 }}-{{ $listingItems->lastItem() ?? 0 }}</span>
+                            dari
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $listingItems->total() }}</span>
+                        </span>
+                        <form method="GET" action="{{ route('general-affair.procurement.index') }}">
+                            <input type="hidden" name="search" value="{{ request('search') }}">
+                            <select name="perPage" onchange="this.form.submit()"
+                                class="mx-2 rounded-xl border border-gray-300 bg-gray-50 p-1 pl-2 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                @foreach ([10, 25, 50, 100] as $size)
+                                    <option value="{{ $size }}" {{ request('perPage', 10) == $size ? 'selected' : '' }}>{{ $size }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                        <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
+                    </div>
+                    <div>
+                        {{ $listingItems->links() }}
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Tab 2: Pengadaan Non-Listing (Custom Quotation) -->
+            <div id="tab-non-listing-content" class="hidden flex flex-1 min-h-0 flex-col">
                 <div class="grow overflow-x-auto overflow-y-auto">
                     <table class="sortable hover w-full text-left text-sm text-gray-500 dark:text-gray-400">
                         <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
@@ -37,7 +245,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($items as $item)
+                            @forelse($nonListingItems as $item)
                                 @php
                                     $isProcurement = $item instanceof \App\Models\ProcurementOfGoods;
                                 @endphp
@@ -70,13 +278,18 @@
                                     <!-- Customer & Items -->
                                     <td class="px-4 py-3 align-middle">
                                         @php
-                                            $to = $isProcurement ? ($item->customQuotation->to ?? '-') : $item->to;
-                                            $up = $isProcurement ? ($item->customQuotation->up ?? null) : $item->up;
-                                            $email = $isProcurement ? ($item->customQuotation->email ?? null) : $item->email;
+                                            if ($isProcurement) {
+                                                $to = $item->customQuotation->to ?? '-';
+                                                $up = $item->customQuotation->up ?? null;
+                                                $email = $item->customQuotation->email ?? null;
+                                            } else {
+                                                $to = $item->to;
+                                                $up = $item->up;
+                                                $email = $item->email;
+                                            }
                                             $itemCount = $item->items->count();
                                         @endphp
                                         <div class="flex flex-col gap-2">
-                                            <!-- Recipient Details -->
                                             <div class="flex flex-col gap-0.5">
                                                 <span class="text-sm font-bold text-slate-900 dark:text-white">
                                                     {{ $to }}
@@ -95,11 +308,7 @@
                                                     </span>
                                                 @endif
                                             </div>
-
-                                            <!-- Divider -->
                                             <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
-
-                                            <!-- Items Summary -->
                                             <div class="flex flex-wrap items-center">
                                                 <span class="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600 dark:bg-gray-800 dark:text-gray-400">
                                                     {{ $itemCount }} item
@@ -110,8 +319,11 @@
 
                                     <!-- Subject -->
                                     <td class="px-4 py-3 align-middle">
-                                        <div class="text-sm font-medium text-gray-900 dark:text-white max-w-[240px] truncate" title="{{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}">
-                                            {{ $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject }}
+                                        @php
+                                            $subjectTitle = $isProcurement ? ($item->customQuotation->subject ?? '-') : $item->subject;
+                                        @endphp
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white max-w-[240px] truncate" title="{{ $subjectTitle }}">
+                                            {{ $subjectTitle }}
                                         </div>
                                     </td>
 
@@ -186,7 +398,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                        Tidak ada data pengadaan atau quotation barang kustom.
+                                        Tidak ada data pengadaan non-listing saat ini.
                                     </td>
                                 </tr>
                             @endforelse
@@ -194,16 +406,15 @@
                     </table>
                 </div>
 
-                <!-- Unified Pagination Footer -->
-                <nav id="procurement-pagination-nav"
-                    class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
-                    aria-label="Procurement table navigation">
+                <!-- Non-Listing Pagination Footer -->
+                <nav class="sticky bottom-0 z-20 flex shrink-0 flex-col items-start justify-between space-y-3 border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Non-Listing procurement table navigation">
                     <div class="flex items-center space-x-2">
                         <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
                             Menampilkan
-                            <span class="font-semibold text-gray-900 dark:text-white">{{ $items->firstItem() ?? 0 }}-{{ $items->lastItem() ?? 0 }}</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $nonListingItems->firstItem() ?? 0 }}-{{ $nonListingItems->lastItem() ?? 0 }}</span>
                             dari
-                            <span class="font-semibold text-gray-900 dark:text-white">{{ $items->total() }}</span>
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $nonListingItems->total() }}</span>
                         </span>
                         <form method="GET" action="{{ route('general-affair.procurement.index') }}">
                             <input type="hidden" name="search" value="{{ request('search') }}">
@@ -217,9 +428,66 @@
                         <span class="text-sm text-gray-500 dark:text-gray-400">per halaman</span>
                     </div>
                     <div>
-                        {{ $items->links() }}
+                        {{ $nonListingItems->links() }}
                     </div>
                 </nav>
+            </div>
+
+            <div id="tab-combined-content" class="hidden flex flex-1 min-h-0 flex-col bg-white dark:bg-gray-800">
+                <div class="grow overflow-x-auto overflow-y-auto">
+                    <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400">
+                        <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Nama & Kode Barang</th>
+                                <th scope="col" class="px-6 py-3 text-center">Total Kebutuhan</th>
+                                <th scope="col" class="px-6 py-3 text-center">Total Diterima</th>
+                                <th scope="col" class="px-6 py-3 text-center">Sisa Kebutuhan</th>
+                                <th scope="col" class="px-6 py-3">Breakdown per SO / Quotation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @forelse($combinedRequirements as $goodsId => $item)
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b dark:border-gray-700">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 dark:text-white">
+                                        <div class="font-bold text-slate-800 dark:text-white">
+                                            {{ $item['goods_name'] }}
+                                        </div>
+                                        <span class="block text-xs font-mono text-gray-400 mt-0.5">{{ $item['goods_code'] }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center font-semibold text-gray-900 dark:text-white">
+                                        {{ $item['total_ordered'] }} pcs
+                                    </td>
+                                    <td class="px-6 py-4 text-center font-semibold text-green-600 dark:text-green-400">
+                                        {{ $item['total_received'] }} pcs
+                                    </td>
+                                    <td class="px-6 py-4 text-center font-bold text-amber-600 dark:text-amber-400">
+                                        {{ $item['total_remaining'] }} pcs
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col gap-1.5">
+                                            @foreach($item['breakdown'] as $bd)
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs rounded bg-slate-100 dark:bg-gray-700 px-2 py-0.5 text-slate-600 dark:text-gray-300">
+                                                        {{ $bd['qty'] }} pcs
+                                                    </span>
+                                                    <a href="{{ $bd['url'] }}" target="_blank" class="text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400">
+                                                        {{ $bd['source'] }}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                        Tidak ada kebutuhan procurement barang saat ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -227,6 +495,7 @@
     <!-- Modals -->
     @include('admin.procurement.partials.procurement-process-modal')
     @include('admin.procurement.partials.procurement-revision-modal')
+    @include('admin.procurement.partials.procurement-allocations-modal')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -574,6 +843,82 @@
                     });
             });
 
+            // --- 3. SHOW ALLOCATIONS MODAL (FIFO BREAKDOWN & SEARCH) ---
+            const allocationsModal = document.getElementById('procurement-allocations-modal');
+            const allocationsView = document.getElementById('procurement-allocations-view');
+
+            function closeAllocationsModal() {
+                if (!allocationsModal) return;
+                try {
+                    if (typeof allocationsModal.close === 'function') allocationsModal.close();
+                    else allocationsModal.style.display = 'none';
+                } catch (e) {
+                    allocationsModal.style.display = 'none';
+                }
+            }
+
+            document.addEventListener('click', function(e) {
+                if (e.target && e.target.closest('.js-allocations-modal-close')) {
+                    closeAllocationsModal();
+                }
+            });
+
+            allocationsModal?.addEventListener('click', function(e) {
+                if (e.target === allocationsModal) {
+                    closeAllocationsModal();
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.js-show-allocations');
+                if (!btn) return;
+
+                e.preventDefault();
+                const id = btn.getAttribute('data-id');
+
+                allocationsView.innerHTML = `
+                    <div class="flex-1 flex items-center justify-center p-12 w-full min-h-[350px]">
+                        <div class="text-center">
+                            <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <p class="text-gray-500 mt-2 text-sm">Memuat rincian alokasi SO...</p>
+                        </div>
+                    </div>
+                `;
+
+                allocationsModal?.showModal();
+
+                fetch(`/procurement/${id}/allocations-html`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Failed to fetch allocations');
+                        return res.text();
+                    })
+                    .then(html => {
+                        allocationsView.innerHTML = html;
+                        // Execute script inside dynamically injected modal
+                        const scripts = allocationsView.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                            newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        closeAllocationsModal();
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: 'Gagal memuat rincian alokasi Sales Order.',
+                            icon: 'error',
+                            customClass: { popup: 'rounded-2xl!' },
+                            target: document.querySelector('dialog[open]') || 'body'
+                        });
+                    });
+            });
+
             // Intercept record arrival form submit to clean commas
             document.addEventListener('submit', function(e) {
                 if (e.target && e.target.id === 'recordArrivalForm') {
@@ -684,6 +1029,67 @@
                     const costInput = document.getElementById('revisionUnitCost');
                     costInput.value = costInput.value.replace(/,/g, '');
                 });
+            }
+        });
+
+        // Tab switching logic for 3 tabs
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabListingBtn = document.getElementById('tab-listing-btn');
+            const tabNonListingBtn = document.getElementById('tab-non-listing-btn');
+            const tabCombBtn = document.getElementById('tab-combined-btn');
+
+            const contentListing = document.getElementById('tab-listing-content');
+            const contentNonListing = document.getElementById('tab-non-listing-content');
+            const contentComb = document.getElementById('tab-combined-content');
+
+            function switchTab(activeBtn, activeContent) {
+                [tabListingBtn, tabNonListingBtn, tabCombBtn].forEach(btn => {
+                    if (btn) {
+                        btn.classList.remove('text-white', 'border-b-2', 'border-white', 'font-extrabold');
+                        btn.classList.add('text-slate-300', 'font-semibold');
+                        const badge = btn.querySelector('span:last-child');
+                        if (badge) {
+                            badge.classList.remove('bg-white/20', 'text-white');
+                            badge.classList.add('bg-white/10', 'text-slate-300');
+                        }
+                    }
+                });
+
+                [contentListing, contentNonListing, contentComb].forEach(content => {
+                    if (content) {
+                        content.classList.add('hidden');
+                    }
+                });
+
+                if (activeBtn) {
+                    activeBtn.classList.add('text-white', 'border-b-2', 'border-white', 'font-extrabold');
+                    activeBtn.classList.remove('text-slate-300', 'font-semibold');
+                    const badge = activeBtn.querySelector('span:last-child');
+                    if (badge) {
+                        badge.classList.add('bg-white/20', 'text-white');
+                        badge.classList.remove('bg-white/10', 'text-slate-300');
+                    }
+                }
+
+                if (activeContent) {
+                    activeContent.classList.remove('hidden');
+                }
+            }
+
+            if (tabListingBtn) {
+                tabListingBtn.addEventListener('click', () => switchTab(tabListingBtn, contentListing));
+            }
+            if (tabNonListingBtn) {
+                tabNonListingBtn.addEventListener('click', () => switchTab(tabNonListingBtn, contentNonListing));
+            }
+            if (tabCombBtn) {
+                tabCombBtn.addEventListener('click', () => switchTab(tabCombBtn, contentComb));
+            }
+
+            // Auto-switch tab based on page param if needed
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('non_listing_page')) {
+                switchTab(tabNonListingBtn, contentNonListing);
             }
         });
     </script>

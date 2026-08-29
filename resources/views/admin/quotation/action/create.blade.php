@@ -325,7 +325,7 @@
                                                         <option value="">Pilih Barang</option>
                                                         @foreach ($goods as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}" data-nama="{{ $b->goods_name }}"
-                                                                data-kategori="{{ $b->category }}" data-stok="{{ $b->stock }}" data-satuan="{{ $b->unit ?? '' }}"
+                                                                data-kategori="{{ $b->category }}" data-stok="{{ $b->available_stock }}" data-stok-fisik="{{ $b->stock }}" data-satuan="{{ $b->unit ?? '' }}"
                                                                 data-harga="{{ $b->selling_price ?? 0 }}" data-diskon="0"
                                                                 data-image="{{ $b->image ? asset('storage/' . ltrim($b->image, '/')) : '' }}">
                                                                 {{ $b->goods_code }}

@@ -226,8 +226,8 @@ class ListingController extends Controller
 
             $existingOrder = Order::where('quotation_id', $requestOrder->id)->first();
             if (!$existingOrder) {
-                Order::create([
-                    'order_number' => 'ORD-' . strtoupper(Str::random(8)),
+                $order = Order::create([
+                     'order_number' => 'ORD-' . strtoupper(Str::random(8)),
                     'sales_id' => $requestOrder->sales_id,
                     'customer_name' => $requestOrder->customer_name,
                     'customer_id' => $requestOrder->customer_id,
@@ -237,7 +237,10 @@ class ListingController extends Controller
                     'customer_notes' => $requestOrder->customer_notes,
                 ]);
             } else {
-                $existingOrder->update(['status' => $orderStatus]);
+                $existingOrder->update([
+                    'status' => $orderStatus,
+                ]);
+                $order = $existingOrder;
             }
 
             DB::commit();
@@ -976,17 +979,9 @@ class ListingController extends Controller
 
     protected function syncQuotationStockForNoPo(Quotation $quotation, ?string $newNoPo, ?string $previousNoPo = null): void
     {
-        $oldNoPo = trim((string) ($previousNoPo ?? ($quotation->getOriginal('no_po') ?? $quotation->no_po ?? '')));
-        $nextNoPo = trim((string) ($newNoPo ?? ''));
-
-        if ($oldNoPo === '' && $nextNoPo !== '') {
-            $this->adjustStockForQuotationItems($quotation, -1, 'Stock berkurang karena No.PO ditambahkan untuk quotation ' . $quotation->quotation_number);
-            return;
-        }
-
-        if ($oldNoPo !== '' && $nextNoPo === '') {
-            $this->adjustStockForQuotationItems($quotation, 1, 'Stock kembali karena No.PO dihapus dari quotation ' . $quotation->quotation_number);
-        }
+        // Removed legacy stock deduction on PO confirmation.
+        // Stock allocation is now managed via StockAllocationService when order is activated,
+        // and physical stock is only decremented on Delivery Order approval.
     }
 
     protected function adjustStockForQuotationItems(Quotation $quotation, int $direction, string $note): void

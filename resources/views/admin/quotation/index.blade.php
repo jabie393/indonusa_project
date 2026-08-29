@@ -142,6 +142,9 @@
                                         $stokCukupCount = 0;
                                         $totalItemsCount = $ro->items->count();
 
+                                        $order = $ro->order;
+                                        $orderItemsByGoods = $order ? $order->items->keyBy('goods_id') : collect();
+
                                         foreach ($ro->items as $roItem) {
                                             $barang = $roItem->barang;
                                             if (!$barang) {
@@ -150,23 +153,35 @@
                                                     $qtyDibutuhkan = (int) $roItem->quantity;
                                                     $satuan = $roItem->custom_product_unit ?? 'pcs';
                                                     $goodsName = $roItem->custom_product_name;
+                                                    $isShortage = true;
                                                 } else {
                                                     continue;
                                                 }
                                             } else {
-                                                $stokGudang = (int) $barang->stock;
                                                 $qtyDibutuhkan = (int) $roItem->quantity;
                                                 $satuan = $barang->unit ?? '';
                                                 $goodsName = $barang->goods_name;
+
+                                                // If order exists and is already allocated/processed
+                                                if ($order && $orderItemsByGoods->has($barang->id)) {
+                                                    $oi = $orderItemsByGoods->get($barang->id);
+                                                    $shortage = (int) ($oi->shortage_quantity ?? 0);
+                                                    $allocated = (int) ($oi->allocated_quantity ?? 0);
+                                                    $stokGudang = $allocated;
+                                                    $isShortage = $shortage > 0;
+                                                } else {
+                                                    $stokGudang = \App\Services\StockAllocationService::getAvailableStock($barang->id);
+                                                    $isShortage = $qtyDibutuhkan > $stokGudang;
+                                                }
                                             }
 
-                                            if ($qtyDibutuhkan > $stokGudang) {
+                                            if ($isShortage) {
                                                 $stokKurangItems[] = [
                                                     'nama' => $goodsName,
                                                     'stok' => $stokGudang,
                                                     'qty' => $qtyDibutuhkan,
                                                     'satuan' => $satuan,
-                                                    'kurang' => $qtyDibutuhkan - $stokGudang,
+                                                    'kurang' => max(1, $qtyDibutuhkan - $stokGudang),
                                                 ];
                                             } else {
                                                 $stokCukupCount++;

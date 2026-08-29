@@ -10,7 +10,7 @@
         </div>
         <div>
             <h3 class="text-lg font-semibold leading-tight">Detail Procurement: {{ $procurement->procurement_number }}</h3>
-            <p class="text-xs text-white/80">Dibuat oleh: {{ $procurement->generalAffair->name }} pada {{ $procurement->created_at->format('Y-m-d H:i') }}</p>
+            <p class="text-xs text-white/80">Dibuat oleh: {{ $procurement->generalAffair->name ?? 'Sales / Sistem' }} pada {{ $procurement->created_at->format('Y-m-d H:i') }}</p>
         </div>
     </div>
     <div class="flex items-center gap-2">
@@ -57,10 +57,20 @@
     <!-- Details Grid -->
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
-            <span class="block text-xs font-semibold uppercase text-slate-400">Asal Custom Quotation</span>
-            <a href="{{ route('sales.custom-quotation.show', $procurement->custom_quotation_id) }}" target="_blank" class="text-sm font-bold text-[#0067B1] hover:underline mt-1 block">
-                {{ $procurement->customQuotation->quotation_number ?? '-' }}
-            </a>
+            @if($procurement->custom_quotation_id)
+                <span class="block text-xs font-semibold uppercase text-slate-400">Asal Custom Quotation</span>
+                <a href="{{ route('sales.custom-quotation.show', $procurement->custom_quotation_id) }}" target="_blank" class="text-sm font-bold text-[#0067B1] hover:underline mt-1 block">
+                    {{ $procurement->customQuotation->quotation_number ?? '-' }}
+                </a>
+            @elseif($procurement->order_id && $procurement->order)
+                <span class="block text-xs font-semibold uppercase text-slate-400">Asal Sales Order (Listing)</span>
+                <span class="text-sm font-bold text-slate-800 dark:text-white mt-1 block">
+                    {{ $procurement->order->order_number ?? '-' }}
+                </span>
+            @else
+                <span class="block text-xs font-semibold uppercase text-slate-400">Asal Sumber</span>
+                <span class="text-sm font-bold text-[#0067B1] dark:text-blue-400 mt-1 block">Pengadaan Terpadu Listing (Multi SO)</span>
+            @endif
         </div>
         <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
             <span class="block text-xs font-semibold uppercase text-slate-400">Status Procurement</span>
@@ -108,7 +118,7 @@
                             <tr class="bg-gray-50 dark:bg-gray-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase">
                                 <th class="px-4 py-3">Nama Barang</th>
                                 <th class="px-4 py-3">Deskripsi</th>
-                                <th class="px-4 py-3 text-center">Qty Dipesan</th>
+                                <th class="px-4 py-3 text-center">Qty Dibutuhkan</th>
                                 <th class="px-4 py-3 text-center">Qty Diterima</th>
                                 <th class="px-4 py-3 text-center w-36">Qty Datang</th>
                                 <th class="px-4 py-3 text-right w-52">Harga Beli Final (Rp)</th>
@@ -128,7 +138,7 @@
                                     
                                     <!-- Deskripsi -->
                                     <td class="max-w-xs px-4 align-middle">
-                                        <div class="line-clamp-3 max-w-[250px] break-words text-xs text-gray-500 dark:text-gray-400">
+                                        <div class="line-clamp-2 max-w-[250px] break-words text-xs text-gray-500 dark:text-gray-400">
                                             {{ $item->goods->description ?: '-' }}
                                         </div>
                                     </td>
@@ -206,7 +216,7 @@
     <!-- List of Arrival Batches (GoodsReceipts) -->
     <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden shadow-sm">
         <div class="bg-gray-100 dark:bg-gray-700 px-4 py-3 text-gray-800 dark:text-white font-bold text-sm">
-            Riwayat Kedatangan &amp; Status Approval
+            Status Approval Kedatangan Barang (Pending &amp; Revisi)
         </div>
         
         <div class="p-4">
@@ -214,6 +224,7 @@
                 $allReceipts = collect();
                 foreach($procurement->items as $item) {
                     foreach($item->procurementArrivalRequests as $receipt) {
+                        if ($receipt->status === 'approved') continue;
                         $receipt->goods_name = $item->goods->goods_name;
                         $receipt->goods_code = $item->goods->goods_code;
                         $receipt->goods_description = $item->goods->description;
@@ -226,7 +237,7 @@
             
             @if($allReceipts->isEmpty())
                 <div class="flex flex-col items-center justify-center text-center p-6">
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">Belum ada riwayat kedatangan barang untuk procurement ini.</p>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm">Tidak ada riwayat kedatangan yang menunggu approval atau revisi saat ini.</p>
                 </div>
             @else
                 <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">

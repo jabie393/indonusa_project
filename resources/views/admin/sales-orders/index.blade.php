@@ -370,8 +370,19 @@
                                                         $sendToWarehouseBtnLabel = 'Request Procurement';
                                                         $sendToWarehouseBtnClass = 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800';
                                                     } else {
-                                                        $sendToWarehouseText = 'Send this Quotation to Warehouse?';
-                                                        $sendToWarehouseButtonText = 'Yes, Send';
+                                                        $quotModel = \App\Models\Quotation::find($row['id']);
+                                                        $hasShortage = $quotModel ? \App\Services\StockAllocationService::hasShortageForQuotation($quotModel) : false;
+                                                        if ($hasShortage) {
+                                                            $sendToWarehouseText = 'Stok barang kurang. Kirim penawaran ini ke GA Procurement?';
+                                                            $sendToWarehouseButtonText = 'Kirim ke Procurement';
+                                                            $sendToWarehouseBtnLabel = 'Send to Procurement';
+                                                            $sendToWarehouseBtnClass = 'bg-amber-600 hover:bg-amber-700 focus:ring-amber-300 dark:bg-amber-500 dark:hover:bg-amber-600 dark:focus:ring-amber-800';
+                                                        } else {
+                                                            $sendToWarehouseText = 'Stok barang cukup. Kirim penawaran ini ke Warehouse?';
+                                                            $sendToWarehouseButtonText = 'Kirim ke Warehouse';
+                                                            $sendToWarehouseBtnLabel = 'Send to Warehouse';
+                                                            $sendToWarehouseBtnClass = 'bg-indigo-700 hover:bg-indigo-800 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800';
+                                                        }
                                                     }
                                                 }
                                             @endphp
