@@ -172,117 +172,14 @@ it('scenario 3, 4 & 5: sends shortage to procurement and satisfies order via FIF
     expect($arrivalRequest)->not->toBeNull();
     expect($arrivalRequest->status)->toBe('pending');
 
-    // Warehouse approves arrival request (this updates physical stock of goods which triggers FIFO allocation via observer)
-    $goods->stock += 8;
-    $goods->save();
+    // Warehouse approves arrival request
+    $warehouse = User::factory()->create(['role' => 'Warehouse']);
+    actingAs($warehouse)->post(route('supply-orders.approve-procurement', $arrivalRequest->id));
 
-    // Trigger FIFO manually if needed, or let Goods Observer run it (observer should run automatically on save)
     expect($orderItem->fresh()->allocated_quantity)->toBe(10);
     expect($orderItem->fresh()->shortage_quantity)->toBe(0);
     expect($order->fresh()->status)->toBe('sent_to_warehouse');
-});
-
-it('scenario 6: releases allocation and reallocates to next order in FIFO queue on cancel', function () {
-    $sales = User::factory()->create(['role' => 'Sales']);
-
-    $goods = Goods::create([
-        'goods_code' => 'HT-ALLOC-003',
-        'goods_name' => 'Alloc Item 3',
-        'category' => 'HANDTOOLS',
-        'stock' => 5,
-        'goods_status' => 'approved',
-        'buy_price' => 10000,
-        'selling_price' => 12000,
-        'unit' => 'pcs',
-        'description' => 'Test',
-    ]);
-
-    // Order 1 (Earlier in queue)
-    $q1 = Quotation::create([
-        'request_number' => 'RQ-005A',
-        'quotation_number' => 'PNW-005A',
-        'sales_id' => $sales->id,
-        'customer_name' => 'Customer A',
-        'grand_total' => 60000,
-        'product_category' => 'HANDTOOLS',
-    ]);
-
-    $order1 = Order::create([
-        'order_number' => 'ORD-005A',
-        'sales_id' => $sales->id,
-        'customer_name' => 'Customer A',
-        'quotation_id' => $q1->id,
-        'status' => 'open',
-        'queue_at' => now()->subMinutes(10),
-    ]);
-
-    $item1 = OrderItem::create([
-        'order_id' => $order1->id,
-        'goods_id' => $goods->id,
-        'category' => 'HANDTOOLS',
-        'quantity' => 5,
-        'price' => 12000,
-        'subtotal' => 60000,
-    ]);
-
-    // Order 2 (Later in queue)
-    $q2 = Quotation::create([
-        'request_number' => 'RQ-005B',
-        'quotation_number' => 'PNW-005B',
-        'sales_id' => $sales->id,
-        'customer_name' => 'Customer B',
-        'grand_total' => 60000,
-        'product_category' => 'HANDTOOLS',
-    ]);
-
-    $order2 = Order::create([
-        'order_number' => 'ORD-005B',
-        'sales_id' => $sales->id,
-        'customer_name' => 'Customer B',
-        'quotation_id' => $q2->id,
-        'status' => 'open',
-        'queue_at' => now(),
-    ]);
-
-    $item2 = OrderItem::create([
-        'order_id' => $order2->id,
-        'goods_id' => $goods->id,
-        'category' => 'HANDTOOLS',
-        'quantity' => 5,
-        'price' => 12000,
-        'subtotal' => 60000,
-    ]);
-
-    // Create procurement for Order 1 and Order 2
-    $proc1 = ProcurementOfGoods::create([
-        'procurement_number' => 'PRC-005A',
-        'order_id' => $order1->id,
-        'status' => 'pending',
-    ]);
-    $proc2 = ProcurementOfGoods::create([
-        'procurement_number' => 'PRC-005B',
-        'order_id' => $order2->id,
-        'status' => 'pending',
-    ]);
-
-    // Allocate stock
-    StockAllocationService::allocateAvailableStock($order1);
-    StockAllocationService::allocateAvailableStock($order2);
-
-    expect($item1->fresh()->allocated_quantity)->toBe(5);
-    expect($item2->fresh()->allocated_quantity)->toBe(0);
-
-    // Cancel Order 1 - Should release stock to Order 2
-    actingAs($sales)->post(route('sales.sales-orders.cancel', $order1->id));
-
-    expect($order1->fresh()->status)->toBe('canceled');
-    expect($item1->fresh()->allocated_quantity)->toBe(0);
-    expect($proc1->fresh()->status)->toBe('canceled');
-
-    // Order 2 should now have the 5 items allocated and status changed to sent_to_warehouse
-    expect($item2->fresh()->allocated_quantity)->toBe(5);
-    expect($order2->fresh()->status)->toBe('sent_to_warehouse');
-    expect($proc2->fresh()->status)->toBe('completed');
+    expect($procItem->fresh()->qty_received)->toBe(8);
 });
 
 it('scenario 7: consolidates shortages of same goods across multiple SOs into 1 procurement item and fulfills via FIFO', function () {

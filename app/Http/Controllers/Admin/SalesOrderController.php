@@ -676,66 +676,6 @@ class SalesOrderController extends Controller
         return response()->json(['success' => true, 'data' => $results]);
     }
 
-    public function cancel(\App\Models\Order $salesOrder)
-    {
-        if ($salesOrder->sales_id !== Auth::id()) {
-            abort(403);
-        }
-
-        if (in_array($salesOrder->status, ['completed', 'canceled'])) {
-            return redirect()->back()->withErrors('Order ini tidak dapat dibatalkan.');
-        }
-
-        DB::beginTransaction();
-        try {
-            $salesOrder->status = 'canceled';
-            $salesOrder->save();
-
-            // Cancel any individual procurements for this order
-            $activeProcurements = \App\Models\ProcurementOfGoods::where('order_id', $salesOrder->id)
-                ->whereIn('status', ['pending', 'partial_received'])
-                ->get();
-            foreach ($activeProcurements as $proc) {
-                $proc->update([
-                    'status' => 'canceled',
-                    'notes' => ($proc->notes ? $proc->notes . ' | ' : '') . 'Dibatalkan karena Sales Order dibatalkan.'
-                ]);
-                $proc->items()->update(['status' => 'canceled']);
-            }
-
-            // Clean up linked batch procurement items
-            $orderItemIds = $salesOrder->items->pluck('id')->toArray();
-            $poiRecords = DB::table('procurement_order_items')
-                ->whereIn('order_item_id', $orderItemIds)
-                ->get();
-
-            foreach ($poiRecords as $poi) {
-                $procItem = \App\Models\ProcurementOfGoodsItem::find($poi->procurement_of_goods_item_id);
-                if ($procItem && $procItem->status === 'pending') {
-                    $procItem->qty_requested = max(0, $procItem->qty_requested - $poi->quantity);
-                    $procItem->qty_ordered = max(0, $procItem->qty_ordered - $poi->quantity);
-                    if ($procItem->qty_ordered === 0) {
-                        $procItem->delete();
-                    } else {
-                        $procItem->save();
-                    }
-                }
-            }
-            DB::table('procurement_order_items')->whereIn('order_item_id', $orderItemIds)->delete();
-
-            \App\Services\StockAllocationService::releaseAllocation($salesOrder);
-
-            DB::commit();
-
-            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
-
-            return redirect()->back()->with(['title' => 'Berhasil', 'text' => 'Sales Order berhasil dibatalkan, alokasi stok telah dialihkan ke antrean berikutnya, dan pengadaan terkait telah dibatalkan.']);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            return redirect()->back()->withErrors('Gagal membatalkan Sales Order: ' . $e->getMessage());
-        }
-    }
-
     public function sendToProcurement(\App\Models\Order $salesOrder)
     {
         if ($salesOrder->sales_id !== Auth::id()) {

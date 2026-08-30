@@ -278,9 +278,7 @@ Route::middleware(['auth', 'role:Sales'])->group(function () {
     Route::post('/quotation-so/{quotation}/sent-to-warehouse', [SalesOrderController::class, 'sentRequestOrderToWarehouse'])
         ->name('sales.quotation.sent-to-warehouse-from-so');
 
-    // Cancel and Send to Procurement from Sales Order
-    Route::post('/sales-orders/{salesOrder}/cancel', [SalesOrderController::class, 'cancel'])
-        ->name('sales.sales-orders.cancel');
+    // Send to Procurement from Sales Order
     Route::post('/sales-orders/{salesOrder}/send-to-procurement', [SalesOrderController::class, 'sendToProcurement'])
         ->name('sales.sales-orders.send-to-procurement');
 

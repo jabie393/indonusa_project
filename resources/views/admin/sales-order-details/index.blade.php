@@ -651,21 +651,6 @@
                                             @endif
                                         </form>
                                     @endif
-
-                                    {{-- Cancel Order Button --}}
-                                    @if ($order->queue_at && in_array($order->status, ['open', 'under_procurement']))
-                                        <form method="POST" action="{{ route('sales.sales-orders.cancel', $order->id) }}" class="w-full mt-2">
-                                            @csrf
-                                            <button type="button"
-                                                class="flex w-full items-center justify-center gap-2 rounded-2xl bg-red-650 hover:bg-red-700 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg transition-all active:scale-[0.98] dark:shadow-none"
-                                                onclick="confirmApprove(() => this.closest('form').submit(), 'Apakah Anda yakin ingin membatalkan Sales Order ini? Seluruh alokasi stok akan dilepas.', 'Ya, Batalkan')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span>Cancel Sales Order</span>
-                                            </button>
-                                        </form>
-                                    @endif
                                 @endif
                             @endif
 
