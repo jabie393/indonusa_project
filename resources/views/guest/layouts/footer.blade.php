@@ -100,5 +100,9 @@
         <div class="text-sm text-gray-500 dark:text-gray-400 sm:text-center">© 2026 <a href="#" class="hover:underline">
                 Indonusa Jaya Bersama™</a>. All Rights Reserved.
         </div>
+        <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 sm:text-center">
+            Created By <a href="https://ryu.dev" target="_blank" class="hover:underline">
+                Ryu.dev</a>
+        </div>
     </div>
 </footer>
