@@ -442,13 +442,14 @@ class ProcurementController extends Controller
             'items' => 'required|array|min:1',
             'items.*.goods_id' => 'required|exists:goods,id',
             'items.*.procurement_item_id' => 'required|exists:procurement_of_goods_items,id',
-            'items.*.qty_arriving' => 'required|integer|min:0',
+            'items.*.qty_arriving' => 'nullable|integer|min:0',
             'items.*.buy_price' => 'required|numeric|min:0',
         ]);
 
         $anyArriving = false;
         foreach ($validated['items'] as $itemData) {
-            if ($itemData['qty_arriving'] > 0) {
+            $qtyArriving = (int) ($itemData['qty_arriving'] ?? 0);
+            if ($qtyArriving > 0) {
                 $anyArriving = true;
 
                 $procItem = ProcurementOfGoodsItem::findOrFail($itemData['procurement_item_id']);
@@ -460,8 +461,8 @@ class ProcurementController extends Controller
                 
                 $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $alreadyPending);
 
-                if ($itemData['qty_arriving'] > $maxAllowed) {
-                    return back()->withErrors("Kuantitas datang untuk '{$procItem->goods->goods_name}' ({$itemData['qty_arriving']}) melebihi sisa batas yang dapat dicatat. Maksimal yang dapat dicatat saat ini adalah {$maxAllowed} (memperhitungkan kedatangan lain yang masih pending approval).");
+                if ($qtyArriving > $maxAllowed) {
+                    return back()->withErrors("Kuantitas datang untuk '{$procItem->goods->goods_name}' ({$qtyArriving}) melebihi sisa batas yang dapat dicatat. Maksimal yang dapat dicatat saat ini adalah {$maxAllowed} (memperhitungkan kedatangan lain yang masih pending approval).");
                 }
             }
         }
@@ -478,7 +479,8 @@ class ProcurementController extends Controller
             }
 
             foreach ($validated['items'] as $itemData) {
-                if ($itemData['qty_arriving'] > 0) {
+                $qtyArriving = (int) ($itemData['qty_arriving'] ?? 0);
+                if ($qtyArriving > 0) {
                     $procItem = ProcurementOfGoodsItem::find($itemData['procurement_item_id']);
                     if ($procItem) {
                         $procItem->update(['buy_price' => $itemData['buy_price']]);
@@ -488,7 +490,7 @@ class ProcurementController extends Controller
                         'good_id' => $itemData['goods_id'],
                         'procurement_of_goods_item_id' => $itemData['procurement_item_id'],
                         'received_at' => now(),
-                        'quantity' => $itemData['qty_arriving'],
+                        'quantity' => $qtyArriving,
                         'unit_cost' => $itemData['buy_price'],
                         'status' => 'pending',
                     ]);

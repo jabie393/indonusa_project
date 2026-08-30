@@ -118,8 +118,8 @@
                             <tr class="bg-gray-50 dark:bg-gray-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase">
                                 <th class="px-4 py-3">Nama Barang</th>
                                 <th class="px-4 py-3">Deskripsi</th>
-                                <th class="px-4 py-3 text-center">Qty Dibutuhkan</th>
-                                <th class="px-4 py-3 text-center">Qty Diterima</th>
+                                <th class="px-4 py-3 text-center">Status Pemenuhan</th>
+                                <th class="px-4 py-3 text-center">Sisa Belum Datang</th>
                                 <th class="px-4 py-3 text-center w-36">Qty Datang</th>
                                 <th class="px-4 py-3 text-right w-52">Harga Beli Final (Rp)</th>
                             </tr>
@@ -143,14 +143,36 @@
                                         </div>
                                     </td>
                                     
-                                    <!-- Qty Ordered -->
-                                    <td class="px-4 py-3 text-center text-gray-900 dark:text-white font-semibold whitespace-nowrap">
-                                        {{ $item->qty_ordered }} {{ $item->unit }}
+                                    <!-- Status Pemenuhan (Progress) -->
+                                    <td class="px-4 py-3 text-center align-middle whitespace-nowrap">
+                                        @php
+                                            $pct = $item->qty_ordered > 0 ? min(100, round(($item->qty_received / $item->qty_ordered) * 100)) : 0;
+                                        @endphp
+                                        <div class="flex flex-col items-center gap-1">
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100">
+                                                <span class="text-[#0067B1] dark:text-blue-400 font-extrabold">{{ $item->qty_received }}</span> / {{ $item->qty_ordered }} {{ $item->unit }}
+                                            </span>
+                                            <div class="w-24 bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 overflow-hidden">
+                                                <div class="bg-[#0067B1] dark:bg-blue-500 h-1.5 rounded-full transition-all duration-300" style="width: {{ $pct }}%"></div>
+                                            </div>
+                                        </div>
                                     </td>
                                     
-                                    <!-- Qty Received -->
-                                    <td class="px-4 py-3 text-center text-green-600 dark:text-green-400 font-semibold whitespace-nowrap">
-                                        {{ $item->qty_received }} {{ $item->unit }}
+                                    <!-- Sisa Belum Datang -->
+                                    <td class="px-4 py-3 text-center align-middle whitespace-nowrap">
+                                        @php
+                                            $remainingShortage = max(0, $item->qty_ordered - $item->qty_received);
+                                        @endphp
+                                        @if($remainingShortage > 0)
+                                            <span class="inline-flex items-center rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/50">
+                                                {{ $remainingShortage }} {{ $item->unit }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800/50">
+                                                <svg class="h-3.5 w-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                                Lengkap
+                                            </span>
+                                        @endif
                                     </td>
                                     
                                     <!-- Qty Arriving input -->
@@ -164,7 +186,7 @@
                                         @endphp
                                         @if($remainingAllowed > 0)
                                             <input type="number" name="items[{{ $index }}][qty_arriving]" 
-                                                value="0" min="0" max="{{ $remainingAllowed }}" required
+                                                value="{{ old('items.'.$index.'.qty_arriving') }}" placeholder="0" min="0" max="{{ $remainingAllowed }}"
                                                 class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-center text-sm font-semibold focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                             @if($alreadyPending > 0)
                                                 <span class="block text-center text-[10px] text-amber-600 font-semibold mt-1">Pending: {{ $alreadyPending }}</span>

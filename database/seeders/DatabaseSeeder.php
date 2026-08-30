@@ -314,6 +314,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
+        /*
         // 5. Create Custom Quotations
         $cq2 = CustomQuotation::create([
             'id' => 2,
@@ -698,6 +699,7 @@ class DatabaseSeeder extends Seeder
             'unit_cost' => 2000000,
             'status' => 'pending',
         ]);
+        */
 
         // 7. Seed Goods histories for stock movement log
         DB::table('goods_histories')->insert([
@@ -719,25 +721,6 @@ class DatabaseSeeder extends Seeder
                 'changed_at' => now()->subDays(5),
                 'created_at' => now()->subDays(5),
                 'updated_at' => now()->subDays(5),
-            ],
-            [
-                'goods_id' => 3,
-                'goods_code' => 'PKG-32543',
-                'goods_name' => 'Buble Wrap 1m x 50m',
-                'category' => 'PACKAGING',
-                'stock' => 0,
-                'unit' => 'Roll',
-                'location' => 'Rak C3',
-                'buy_price' => 50000,
-                'selling_price' => 65000,
-                'old_status' => 'approved',
-                'new_status' => 'out',
-                'changed_by' => 9,
-                'form' => 9,
-                'note' => 'Barang keluar untuk pengiriman ORD-20260805-0003.',
-                'changed_at' => now()->subDays(1),
-                'created_at' => now()->subDays(1),
-                'updated_at' => now()->subDays(1),
             ],
         ]);
 

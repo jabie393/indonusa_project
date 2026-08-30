@@ -64,7 +64,6 @@ class ListingController extends Controller
     {
         $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
-            ->where('stock', '>', 0)
             ->orderBy('goods_name')
             ->get();
 
@@ -400,7 +399,6 @@ class ListingController extends Controller
 
         $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
-            ->where('stock', '>', 0)
             ->orderBy('goods_name')
             ->get();
 
