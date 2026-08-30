@@ -40,10 +40,15 @@
                 <div class="flex h-full flex-col justify-center">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
-                            <h1 class="text-end text-4xl font-bold text-gray-900 dark:text-gray-100 lg:text-6xl">
+                            <h1 class="text-end text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-3xl">
                                 {{ $totalQuotation ?? 0 }}
                             </h1>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Quotations</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400"> Quotations</span>
+                        </div>
+                        <div class="mt-2 flex flex-row items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalFailedQuotation ?? 0 }}</strong> Failed</span>
+                            <span>•</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalGoalQuotation ?? 0 }}</strong> Goal</span>
                         </div>
                     </div>
                 </div>
@@ -51,66 +56,63 @@
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order Aktif</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Value Quotation</h1>
+                </div>
+                <div class="flex h-full flex-col justify-center p-4">
+                    <div class="flex w-full flex-col items-center justify-center">
+                        <div class="flex w-full flex-row items-end justify-center">
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-3xl">
+                                Rp{{ number_format($totalValueQuotation ?? 0, 0, ',', '.') }}
+                            </h2>
+                        </div>
+                        <div class="mt-2 flex flex-row items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span><strong class="text-gray-900 dark:text-gray-100">Rp{{ number_format($totalFailedValueQuotation ?? 0, 0, ',', '.') }}</strong> Failed</span>
+                            <span>•</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">Rp{{ number_format($totalGoalValueQuotation ?? 0, 0, ',', '.') }}</strong> Goal</span>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center p-4">
                     <div class="flex flex-col items-center">
                         <div class="flex w-full flex-row items-end justify-center">
-                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
-                                {{ $totalApproved ?? 0 }}
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-3xl">
+                                {{ $totalSalesOrder ?? $totalApproved ?? 0 }}
                             </h2>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Sales Order</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400"> Sales Order</span>
                         </div>
                         <div class="mt-2 flex flex-row items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalOpen ?? 0 }}</strong> Open</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalProcess ?? 0 }}</strong> Proses</span>
                             <span>•</span>
-                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalApprovedSupervisor ?? 0 }}</strong> Approved</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">{{ $totalFinish ?? 0 }}</strong> Finish</span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>            
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Total Penjualan</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Value Sales Order</h1>
                 </div>
                 <div class="flex h-full flex-col justify-center p-4">
                     <div class="flex w-full flex-col items-center justify-center">
                         <div class="flex w-full flex-row items-end justify-center">
-                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
-                                {{ $totalSales ?? 0 }}
-                            </h2>
-                            <span class="text-lg text-gray-500 dark:text-gray-400">Penjualan</span>
-                        </div>
-                        <div class="mt-2 flex w-full flex-row items-center justify-center gap-1">
-                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                {{ $lastMonthSales ?? 0 }}
-                            </p>
-                            <span class="text-[10px] text-gray-500 dark:text-gray-400">bulan lalu</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex w-full flex-col rounded-2xl shadow-md md:col-span-2">
-                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Total Nominal Terjual</h1>
-                </div>
-                <div class="flex h-full flex-col justify-center p-4">
-                    <div class="flex w-full flex-col items-center justify-center">
-                        <div class="flex w-full flex-row items-end justify-center">
-                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-2xl">
-                                Rp{{ number_format($totalProfit ?? 0, 0, ',', '.') }}
+                            <h2 class="text-center text-xl font-bold text-gray-900 dark:text-gray-100 lg:text-3xl">
+                                Rp{{ number_format($totalValueSalesOrder ?? 0, 0, ',', '.') }}
                             </h2>
                         </div>
-                        <div class="mt-2 flex w-full flex-row items-center justify-center gap-1">
-                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">
-                                Rp{{ number_format($lastMonthProfit ?? 0, 0, ',', '.') }}
-                            </p>
-                            <span class="text-[10px] text-gray-500 dark:text-gray-400">bulan lalu</span>
+                        <div class="mt-2 flex flex-row items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                            <span><strong class="text-gray-900 dark:text-gray-100">Rp{{ number_format($totalProcessValueSalesOrder ?? 0, 0, ',', '.') }}</strong> Proses</span>
+                            <span>•</span>
+                            <span><strong class="text-gray-900 dark:text-gray-100">Rp{{ number_format($totalFinishValueSalesOrder ?? 0, 0, ',', '.') }}</strong> Finish</span>
                         </div>
                     </div>
-                </div>
+                </div> 
             </div>
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
@@ -132,16 +134,89 @@
                 </div>
             </div>
 
+            <!-- Sales Order Tracking Donut Chart -->
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
                 <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm w-full rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
-                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Penjualan per Barang</h1>
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order Tracking</h1>
+                </div>
+                <div class="flex flex-1 flex-col justify-between p-4">
+                    <div class="relative flex h-52 w-full items-center justify-center">
+                        <canvas id="salesOrderTrackingChart" class="relative z-10 block h-full w-full hover:z-20"
+                            data-finish="{{ $totalFinish ?? 0 }}"
+                            data-process="{{ $totalProcess ?? 0 }}"
+                            data-total-orders="{{ $totalSalesOrder ?? 0 }}"
+                            data-total-value="{{ $totalValueSalesOrder ?? 0 }}"></canvas>
+                        
+                        <!-- Center Cutout Text -->
+                        <div class="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center text-center">
+                            <svg class="mb-0.5 h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Sales Order</span>
+                            <span id="tracking-center-count" class="text-base font-extrabold text-gray-900 dark:text-gray-100">{{ number_format($totalSalesOrder ?? 0) }} Orders</span>
+                            <span id="tracking-center-value" class="text-[11px] font-bold text-gray-600 dark:text-gray-300">Rp {{ number_format($totalValueSalesOrder ?? 0, 0, ',', '.') }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Legend Cards -->
+                    <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+                        <div class="rounded-xl border border-gray-100 bg-gray-50/80 p-2.5 shadow-xs dark:border-gray-700 dark:bg-gray-800">
+                            <div class="flex items-center gap-1.5">
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#225A97]"></span>
+                                <span class="font-medium text-gray-600 dark:text-gray-400">Finish Orders</span>
+                            </div>
+                            <div class="mt-1 font-bold text-[#225A97] dark:text-blue-400" id="tracking-finish-info">
+                                {{ number_format($totalFinish ?? 0) }} ({{ $totalSalesOrder > 0 ? round(($totalFinish / $totalSalesOrder) * 100) : 0 }}%)
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl border border-gray-100 bg-gray-50/80 p-2.5 shadow-xs dark:border-gray-700 dark:bg-gray-800">
+                            <div class="flex items-center gap-1.5">
+                                <span class="h-2.5 w-2.5 rounded-full bg-[#10B981]"></span>
+                                <span class="font-medium text-gray-600 dark:text-gray-400">Proses Orders</span>
+                            </div>
+                            <div class="mt-1 font-bold text-[#10B981] dark:text-emerald-400" id="tracking-process-info">
+                                {{ number_format($totalProcess ?? 0) }} ({{ $totalSalesOrder > 0 ? round(($totalProcess / $totalSalesOrder) * 100) : 0 }}%)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full items-center justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order Quarter</h1>
+                    <div class="m-3">
+                        <select id="so-status-select" class="rounded-full border-none bg-[#225A97] px-5 py-2 text-center text-white focus:ring-0">
+                            <option value="all" {{ ($selectedStatus ?? 'all') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="completed" {{ ($selectedStatus ?? '') == 'completed' ? 'selected' : '' }}>Completed (Selesai)</option>
+                            <option value="not_completed" {{ ($selectedStatus ?? '') == 'not_completed' ? 'selected' : '' }}>Partially Delivered (Sebagian Terkirim)</option>
+                            <option value="under_procurement" {{ ($selectedStatus ?? '') == 'under_procurement' ? 'selected' : '' }}>Under Procurement (Dalam Pengadaan)</option>
+                            <option value="sent_to_warehouse" {{ ($selectedStatus ?? '') == 'sent_to_warehouse' ? 'selected' : '' }}>Sent to Warehouse (Dikirim ke Gudang)</option>
+                            <option value="approved_warehouse" {{ ($selectedStatus ?? '') == 'approved_warehouse' ? 'selected' : '' }}>Approved Warehouse (Disetujui Gudang)</option>
+                            <option value="approved_supervisor" {{ ($selectedStatus ?? '') == 'approved_supervisor' ? 'selected' : '' }}>Approved Supervisor (Disetujui Supervisor)</option>
+                            <option value="rejected_supervisor" {{ ($selectedStatus ?? '') == 'rejected_supervisor' ? 'selected' : '' }}>Rejected Supervisor (Ditolak Supervisor)</option>
+                            <option value="rejected_warehouse" {{ ($selectedStatus ?? '') == 'rejected_warehouse' ? 'selected' : '' }}>Rejected Warehouse (Ditolak Gudang)</option>
+                            <option value="canceled" {{ ($selectedStatus ?? '') == 'canceled' ? 'selected' : '' }}>Canceled (Dibatalkan)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="min-h-0 flex-1 overflow-hidden">
                     <div class="h-64 w-full p-4">
-                        <canvas id="SVC" class="block h-full w-full" data-labels='@json($svc_labels)' data-values='@json($svc_data)'></canvas>
+                        <canvas id="targetQuarterChart" class="block h-full w-full" data-targets='@json($quarter_targets)'></canvas>
                     </div>
                 </div>
+            </div>
 
+            <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex min-h-0 w-full flex-col rounded-2xl shadow-md md:col-span-4">
+                <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm inline-flex w-full justify-between rounded-t-2xl bg-gradient-to-r from-[#225A97] to-[#0D223A]">
+                    <h1 id="monthly-target-title" class="text-md p-5 font-bold uppercase tracking-wider text-white opacity-90">Sales Order Bulanan (Jan - Mar)</h1>
+                </div>
+                <div class="min-h-0 flex-1 overflow-hidden">
+                    <div class="h-64 w-full p-4">
+                        <canvas id="monthlyTargetChart" class="block h-full w-full" data-monthly='@json($monthly_targets)'></canvas>
+                    </div>
+                </div>
             </div>
 
             <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm col-span-8 flex max-h-[500px] flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
