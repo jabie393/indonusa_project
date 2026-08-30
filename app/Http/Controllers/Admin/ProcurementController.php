@@ -517,36 +517,6 @@ class ProcurementController extends Controller
     }
 
     /**
-     * Paksa selesai procurement (Force Complete) jika sisa barang tidak datang.
-     */
-    public function forceComplete(ProcurementOfGoods $procurement)
-    {
-        DB::beginTransaction();
-        try {
-            $updateData = ['status' => 'completed'];
-            if (!$procurement->general_affair_id) {
-                $updateData['general_affair_id'] = Auth::id();
-            }
-            $procurement->update($updateData);
-
-            foreach ($procurement->items as $item) {
-                $item->update(['status' => 'completed']);
-            }
-
-            // Status Custom Quotation dipertahankan pada 'sent_to_quotation' sesuai dengan alur baru.
-
-            DB::commit();
-
-            return redirect()->route('general-affair.procurement.show', $procurement->id)
-                ->with(['title' => 'Berhasil', 'text' => 'Procurement berhasil dipaksa selesai (Force Completed).']);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            Log::error('Force Complete Procurement Error: ' . $e->getMessage());
-            return back()->withErrors('Gagal memproses Force Complete: ' . $e->getMessage());
-        }
-    }
-
-    /**
      * Revisi kedatangan barang kustom yang ditolak oleh Warehouse.
      */
     public function updateReceipt(Request $request, ProcurementArrivalRequest $receipt)
