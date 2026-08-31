@@ -54,7 +54,15 @@ class DeliveryOrdersController extends Controller
 
         // Baseline query: eager-load relations and filter by status
         $orders = Order::with(['supervisor', 'items.barang', 'customer.pics', 'requestOrder.sales', 'requestOrder.pic', 'customQuotation', 'requestOrder.customQuotation'])
-            ->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse', 'canceled', 'partial_canceled'])
+            ->where(function ($q) {
+                $q->whereIn('status', ['sent_to_warehouse', 'not_completed', 'completed', 'rejected_warehouse', 'canceled', 'partial_canceled'])
+                  ->orWhere(function ($sub) {
+                      $sub->where('status', 'under_procurement')
+                          ->whereHas('items', function ($iq) {
+                              $iq->where('allocated_quantity', '>', 0);
+                          });
+                  });
+            })
             ->orderBy('created_at', 'desc');
 
         if ($query) {
@@ -129,8 +137,8 @@ class DeliveryOrdersController extends Controller
             $sentQuantities[$item->id] = $remainingQty;
 
             if ($remainingQty > 0) {
-                if ($item->barang && $item->barang->stock < $remainingQty) {
-                    throw new \Exception("Stok tidak mencukupi untuk item '{$item->barang->goods_name}'. Stok saat ini: {$item->barang->stock}, sedangkan kuantitas yang dipesan: {$remainingQty}. Silakan gunakan opsi pengiriman parsial.");
+                if ($item->barang && $item->allocated_quantity < $remainingQty) {
+                    throw new \Exception("Stok yang dialokasikan untuk item '{$item->barang->goods_name}' tidak mencukupi (Alokasi: {$item->allocated_quantity}, Dibutuhkan: {$remainingQty}). Silakan gunakan opsi pengiriman parsial.");
                 }
             }
         }
@@ -379,17 +387,23 @@ class DeliveryOrdersController extends Controller
                 
                 if ($sentQuantity > 0) {
                     $remainingQty = $item->quantity - $item->delivered_quantity;
+
                     if ($sentQuantity > $remainingQty) {
                         return redirect()->back()->withInput()->withErrors("Kuantitas yang ingin dikirim ({$sentQuantity}) melebihi kuantitas sisa yang belum dikirim ({$remainingQty}) untuk item '" . ($item->barang?->goods_name ?? $item->custom_product_name ?? '-') . "'.");
                     }
 
+                    if ($item->barang && $sentQuantity > $item->allocated_quantity) {
+                        return redirect()->back()->withInput()->withErrors("Kuantitas yang ingin dikirim ({$sentQuantity}) melebihi stok yang dialokasikan untuk SO ini ({$item->allocated_quantity}) pada item '" . ($item->barang?->goods_name ?? $item->custom_product_name ?? '-') . "'.");
+                    }
+
                     if ($item->barang && $item->barang->stock < $sentQuantity) {
-                        return redirect()->back()->withInput()->withErrors("Stok tidak mencukupi untuk item '{$item->barang->goods_name}'. Stok saat ini: {$item->barang->stock}, sedangkan kuantitas yang ingin dikirim: {$sentQuantity}.");
+                        return redirect()->back()->withInput()->withErrors("Stok fisik gudang tidak mencukupi untuk item '{$item->barang->goods_name}'. Stok saat ini: {$item->barang->stock}, sedangkan kuantitas yang ingin dikirim: {$sentQuantity}.");
                     }
 
                     $newDeliveredQuantity = $item->delivered_quantity + $sentQuantity;
                     $item->delivered_quantity = $newDeliveredQuantity;
                     $item->allocated_quantity = max(0, $item->allocated_quantity - $sentQuantity);
+                    $item->shortage_quantity = max(0, $item->quantity - $item->delivered_quantity - $item->allocated_quantity);
 
                     // Jika total terkirim sudah mencapai atau melebihi kuantitas pesanan
                     if ($newDeliveredQuantity >= $item->quantity) {
@@ -504,7 +518,7 @@ class DeliveryOrdersController extends Controller
 
         // Jika order_items ada dan terisi, gunakan itu
         if ($order->items->count() > 0) {
-            $items = $order->items->map(function ($item) {
+            $items = $order->items->map(function ($item) use ($order) {
                 return [
                     'id'           => $item->id,
                     'goods_code'   => $item->barang->goods_code ?? '-',
@@ -514,9 +528,12 @@ class DeliveryOrdersController extends Controller
                     'quantity'     => $item->quantity, // for compatibility
                     'qty_terkirim' => $item->delivered_quantity ?? 0,
                     'delivered_quantity' => $item->delivered_quantity ?? 0, // for compatibility
+                    'allocated_quantity' => $item->allocated_quantity ?? 0,
+                    'shortage_quantity'  => $item->shortage_quantity ?? 0,
                     'stok_gudang'  => $item->barang ? ($item->barang->stock ?? 0) : 0,
                     'satuan'       => $item->barang->unit ?? '-',
                     'status'       => $item->item_status ?? 'pending',
+                    'order_status' => $order->status,
                 ];
             });
 

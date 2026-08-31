@@ -279,7 +279,15 @@
                     ->whereDoesntHave('procurementOfGoodsItems')
                     ->count()
                     + \App\Models\ProcurementArrivalRequest::where('status', 'pending')->count();
-                $sidebarDeliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                $sidebarDeliveryOrderCount = \App\Models\Order::where(function ($q) {
+                    $q->whereIn('status', ['sent_to_warehouse', 'not_completed'])
+                      ->orWhere(function ($sub) {
+                          $sub->where('status', 'under_procurement')
+                              ->whereHas('items', function ($iq) {
+                                  $iq->where('allocated_quantity', '>', 0);
+                              });
+                      });
+                })->count();
                 $hasWarehouseNotification = $sidebarSupplyOrderCount > 0 || $sidebarDeliveryOrderCount > 0;
             @endphp
             <li>

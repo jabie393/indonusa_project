@@ -61,7 +61,15 @@ class RealTimeNotification implements ShouldBroadcastNow, ShouldDispatchAfterCom
                 
             'procOrderCount' => ProcurementArrivalRequest::where('status', 'pending')->count(),
             
-            'deliveryOrderCount' => Order::where('status', 'sent_to_warehouse')->count(),
+            'deliveryOrderCount' => Order::where(function ($q) {
+                $q->whereIn('status', ['sent_to_warehouse', 'not_completed'])
+                  ->orWhere(function ($sub) {
+                      $sub->where('status', 'under_procurement')
+                          ->whereHas('items', function ($iq) {
+                              $iq->where('allocated_quantity', '>', 0);
+                          });
+                  });
+            })->count(),
         ];
 
         // Jika salesId disertakan, ambil jumlah spesifik untuk sales tersebut

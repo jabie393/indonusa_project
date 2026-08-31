@@ -282,14 +282,6 @@ class SupplyOrdersController extends Controller
             $procurement->warehouse_id = Auth::id();
             $procurement->save();
 
-            // Transition associated order to sent_to_warehouse if it is under_procurement
-            if ($procurement->customQuotation && $procurement->customQuotation->order) {
-                $order = $procurement->customQuotation->order;
-                if ($order->status === 'under_procurement') {
-                    $order->update(['status' => 'sent_to_warehouse']);
-                }
-            }
-
             // Status Custom Quotation dipertahankan pada 'sent_to_quotation' sesuai dengan alur baru.
 
             DB::commit();

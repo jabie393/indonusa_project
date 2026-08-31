@@ -119,7 +119,15 @@
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();
                     $procOrderCount = \App\Models\ProcurementArrivalRequest::where('status', 'pending')->count();
-                    $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                    $deliveryOrderCount = \App\Models\Order::where(function ($q) {
+                        $q->whereIn('status', ['sent_to_warehouse', 'not_completed'])
+                          ->orWhere(function ($sub) {
+                              $sub->where('status', 'under_procurement')
+                                  ->whereHas('items', function ($iq) {
+                                      $iq->where('allocated_quantity', '>', 0);
+                                  });
+                          });
+                    })->count();
                 @endphp
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('warehouse.index', ['status' => 'approved', 'search' => request('search')]) }}"

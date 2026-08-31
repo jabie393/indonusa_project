@@ -214,14 +214,18 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!partialItemsBody) return;
         partialItemsBody.innerHTML = "";
 
-        items.forEach((item) => {
-            const tr = document.createElement("tr");
-            tr.className = "dark:hover:bg-gray-700/50";
+        let totalAllocated = 0;
 
+        items.forEach((item) => {
             const qtySisa = Math.max(
                 0,
-                item.qty_pesanan - (item.qty_terkirim || 0),
+                item.qty_pesanan - (item.qty_teririm || item.qty_terkirim || 0),
             );
+            const allocated = item.allocated_quantity || 0;
+            totalAllocated += allocated;
+            const maxDeliverable = allocated;
+            const defaultValue = allocated;
+
             const isOutOfStock = qtySisa > item.stok_gudang;
             const stockColor = isOutOfStock
                 ? "text-red-600 font-bold"
@@ -229,6 +233,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Skip if already fully delivered
             if (qtySisa <= 0) return;
+
+            const tr = document.createElement("tr");
+            tr.className = "dark:hover:bg-gray-700/50";
 
             tr.innerHTML = `
                 <td class="px-4 py-3">
@@ -242,32 +249,90 @@ document.addEventListener("DOMContentLoaded", function () {
                 <td class="px-4 py-3 text-left text-sm text-gray-700 dark:text-gray-300">
                     ${item.goods_description || "-"}
                 </td>
-                <td class="px-4 py-3 text-center text-sm text-gray-700 dark:text-gray-300">
-                    <div>${item.qty_pesanan} ${item.satuan}</div>
-                    <div class="text-[10px] text-blue-500">Sisa: ${qtySisa} ${item.satuan}</div>
+                <td class="px-4 py-3 text-center align-middle">
+                    <div class="inline-flex items-baseline justify-center gap-1 text-gray-900 dark:text-white">
+                        <span class="text-sm font-bold font-mono">${item.qty_pesanan}</span>
+                        <span class="text-xs font-normal text-slate-500 dark:text-slate-400">${item.satuan}</span>
+                    </div>
                 </td>
-                <td class="px-4 py-3 text-center text-sm ${stockColor}">${
-                    item.stok_gudang
-                } ${item.satuan}</td>
-                <td class="px-4 py-3 text-center">
+                <td class="px-4 py-3 text-center align-middle">
+                    <div class="flex flex-col items-center justify-center gap-1">
+                        ${
+                            (item.qty_terkirim || 0) > 0
+                                ? `<span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium bg-blue-50 text-blue-700 border border-blue-200/60 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/40">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                                    Terkirim: <span class="font-bold">${item.qty_terkirim}</span>
+                                </span>`
+                                : ""
+                        }
+                        ${
+                            allocated > 0
+                                ? `<span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                    Siap Kirim: <span class="font-bold">${allocated}</span>
+                                </span>`
+                                : `<span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                    Siap Kirim: <span class="font-bold">0</span>
+                                </span>`
+                        }
+                        ${
+                            item.shortage_quantity > 0
+                                ? `<span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                                    Shortage: <span class="font-bold">${item.shortage_quantity}</span>
+                                </span>`
+                                : ""
+                        }
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-center align-middle text-sm ${stockColor}">
+                    ${item.stok_gudang} ${item.satuan}
+                </td>
+                <td class="px-4 py-3 text-center align-middle">
                     <input type="number" 
                         name="items[${item.id}]" 
-                        value="${Math.min(qtySisa, item.stok_gudang)}"
-                        max="${qtySisa}"
+                        value="${defaultValue}"
+                        max="${maxDeliverable}"
                         min="0"
                         class="qty-input bg-white text-black block w-full rounded-md border-gray-300 py-1 text-center text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                         data-stok="${item.stok_gudang}"
-                        required
+                        data-allocated="${allocated}"
+                        ${allocated === 0 ? 'disabled' : 'required'}
                     >
                     ${
-                        isOutOfStock && item.stok_gudang < qtySisa
-                            ? '<div class="mt-1 text-[10px] text-red-500 leading-tight">Stok Kurang!</div>'
+                        allocated === 0
+                            ? '<div class="mt-1 text-[10px] text-amber-500 font-medium leading-tight">0 Siap Kirim</div>'
                             : ""
                     }
                 </td>
             `;
             partialItemsBody.appendChild(tr);
         });
+
+        const warningNoStock = document.getElementById("partial-warning-no-stock");
+        const btnSubmit = document.getElementById("btn-submit-partial");
+        if (totalAllocated === 0) {
+            if (warningNoStock) {
+                warningNoStock.classList.remove("hidden");
+                warningNoStock.classList.add("flex");
+            }
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                btnSubmit.title = "Tidak ada stok yang dialokasikan untuk dikirim saat ini";
+            }
+        } else {
+            if (warningNoStock) {
+                warningNoStock.classList.add("hidden");
+                warningNoStock.classList.remove("flex");
+            }
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove("opacity-50", "cursor-not-allowed", "pointer-events-none");
+                btnSubmit.removeAttribute("title");
+            }
+        }
     }
 
     function closeApproveModal() {
@@ -286,6 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const orderNumber = btn.getAttribute("data-order-number");
             const approveUrl = btn.getAttribute("data-approve-url");
             const deliveryOptions = btn.getAttribute("data-delivery-options");
+            const status = btn.getAttribute("data-status");
             const hasEnoughStock = btn.getAttribute("data-has-enough-stock") !== 'false';
             const totalRemainingQty = parseInt(btn.getAttribute("data-total-remaining-qty") || "0");
             const remainingItemsCount = parseInt(btn.getAttribute("data-remaining-items-count") || "0");
@@ -302,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (fullDeliveryForm) {
                 fullDeliveryForm.setAttribute("action", approveUrl);
                 // Hide Full Delivery option if order is already partial or stock is insufficient
-                if (deliveryOptions === "partial" || !hasEnoughStock) {
+                if (deliveryOptions === "partial" || !hasEnoughStock || status === "not_completed" || status === "under_procurement") {
                     fullDeliveryForm.classList.add("hidden");
                 } else {
                     fullDeliveryForm.classList.remove("hidden");
@@ -326,9 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // Initial view
-            toggleView("selection");
-
+            // Open modal
             if (approveModal) {
                 try {
                     if (typeof approveModal.showModal === "function")
@@ -337,6 +401,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 } catch (e) {
                     approveModal.style.display = "block";
                 }
+            }
+
+            // If order cannot be fully delivered, go straight to partial view and fetch items
+            if (deliveryOptions === "partial" || !hasEnoughStock || status === "not_completed" || status === "under_procurement") {
+                toggleView("partial");
+                partialItemsBody.innerHTML =
+                    '<tr><td colspan="6" class="p-4 text-center">Loading items...</td></tr>';
+
+                fetch(`/delivery-orders/${currentOrderId}/items`)
+                    .then((res) => res.json())
+                    .then((items) => {
+                        renderPartialItems(items);
+                    })
+                    .catch((err) => {
+                        console.error("Failed to fetch items", err);
+                        partialItemsBody.innerHTML =
+                            '<tr><td colspan="6" class="p-4 text-center text-red-500">Gagal mengambil data.</td></tr>';
+                    });
+            } else {
+                toggleView("selection");
             }
         });
     });
@@ -377,16 +461,17 @@ document.addEventListener("DOMContentLoaded", function () {
             for (const input of inputs) {
                 const max = parseFloat(input.getAttribute("max"));
                 const stok = parseFloat(input.getAttribute("data-stok"));
+                const allocated = parseFloat(input.getAttribute("data-allocated") || "0");
                 const val = parseFloat(input.value);
 
-                if (val > max) {
+                if (val > allocated) {
                     input.setCustomValidity(
-                        `Jumlah kirim (${val}) tidak boleh melebihi sisa pesanan (${max})`,
+                        `Jumlah kirim (${val}) tidak boleh melebihi stok yang dialokasikan untuk SO ini (${allocated})`,
                     );
                     isValid = false;
                 } else if (val > stok) {
                     input.setCustomValidity(
-                        `Stok gudang tidak mencukupi (Tersedia: ${stok})`,
+                        `Stok fisik gudang tidak mencukupi (Tersedia: ${stok})`,
                     );
                     isValid = false;
                 } else if (val < 0) {

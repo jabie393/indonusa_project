@@ -26,15 +26,14 @@
                 <div class="flex space-x-2">
                     <button type="button" id="tab-listing-btn" class="px-4 py-2 text-sm font-extrabold text-white border-b-2 border-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Pengadaan Listing</span>
-                        <span id="tab-listing-badge" class="{{ $listingItems->total() > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $listingItems->total() }}</span>
+                        <span id="tab-listing-badge" class="{{ ($activeListingCount ?? 0) > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $activeListingCount ?? 0 }}</span>
                     </button>
                     <button type="button" id="tab-non-listing-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Pengadaan Non-Listing</span>
-                        <span id="tab-non-listing-badge" class="{{ $nonListingItems->total() > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $nonListingItems->total() }}</span>
+                        <span id="tab-non-listing-badge" class="{{ ($activeNonListingCount ?? 0) > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $activeNonListingCount ?? 0 }}</span>
                     </button>
                     <button type="button" id="tab-combined-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Ringkasan Kebutuhan Barang</span>
-                        <span id="tab-combined-badge" class="{{ count($combinedRequirements) > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ count($combinedRequirements) }}</span>
                     </button>
                 </div>
             </div>
@@ -47,7 +46,7 @@
                             <tr>
                                 <th scope="col" class="text-nowrap px-4 py-3">No. Pengadaan (Batch)</th>
                                 <th scope="col" class="text-nowrap px-4 py-3">Item Pengadaan</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Alokasi Sales Order</th>
+                                <th scope="col" class="text-nowrap px-4 py-3 text-center">Alokasi Sales Order</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Total Item</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
                                 <th scope="col" class="flex justify-end text-nowrap px-6 py-3 text-right no-sort">Action</th>
@@ -124,9 +123,9 @@
                                     </td>
 
                                     <!-- Alokasi Sales Order -->
-                                    <td class="px-4 py-3 align-middle">
+                                    <td class="px-4 py-3 align-middle text-center">
                                         @if($totalSos > 0)
-                                            <div class="flex flex-col gap-1.5">
+                                            <div class="flex flex-col items-center justify-center gap-1.5">
                                                 <div class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs text-slate-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 max-w-fit shadow-2xs">
                                                     <span class="font-bold text-slate-900 dark:text-white">{{ $totalSos }} SO:</span>
                                                     @if($fulfilledSos > 0)
@@ -1032,7 +1031,7 @@
         });
 
         // Tab switching logic for 3 tabs using event delegation (so it works after AJAX DOM swap)
-        function switchTab(activeBtn, activeContent) {
+        function switchTab(activeBtn, activeContent, tabKey = null) {
             const buttons = [
                 document.getElementById('tab-listing-btn'),
                 document.getElementById('tab-non-listing-btn'),
@@ -1065,6 +1064,15 @@
             if (activeContent) {
                 activeContent.classList.remove('hidden');
             }
+
+            if (tabKey) {
+                try {
+                    localStorage.setItem('procurement_active_tab', tabKey);
+                    sessionStorage.setItem('procurement_active_tab', tabKey);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
         }
         window.switchTab = switchTab;
 
@@ -1074,21 +1082,49 @@
                 if (!btn) return;
 
                 if (btn.id === 'tab-listing-btn') {
-                    switchTab(btn, document.getElementById('tab-listing-content'));
+                    switchTab(btn, document.getElementById('tab-listing-content'), 'listing');
                 } else if (btn.id === 'tab-non-listing-btn') {
-                    switchTab(btn, document.getElementById('tab-non-listing-content'));
+                    switchTab(btn, document.getElementById('tab-non-listing-content'), 'non-listing');
                 } else if (btn.id === 'tab-combined-btn') {
-                    switchTab(btn, document.getElementById('tab-combined-content'));
+                    switchTab(btn, document.getElementById('tab-combined-content'), 'combined');
                 }
             });
 
-            // Auto-switch tab based on page param if needed
+            // Clean up any remaining tab query param from URL if present
             const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('tab')) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('tab');
+                window.history.replaceState({}, '', url.toString());
+            }
+
+            // Restore active tab based purely on localStorage / sessionStorage
+            let activeTab = null;
             if (urlParams.has('non_listing_page')) {
+                activeTab = 'non-listing';
+            } else if (urlParams.has('listing_page')) {
+                activeTab = 'listing';
+            } else {
+                activeTab = localStorage.getItem('procurement_active_tab') || sessionStorage.getItem('procurement_active_tab');
+            }
+
+            if (activeTab === 'non-listing') {
                 const nonListBtn = document.getElementById('tab-non-listing-btn');
                 const nonListContent = document.getElementById('tab-non-listing-content');
                 if (nonListBtn && nonListContent) {
-                    switchTab(nonListBtn, nonListContent);
+                    switchTab(nonListBtn, nonListContent, 'non-listing');
+                }
+            } else if (activeTab === 'combined') {
+                const combBtn = document.getElementById('tab-combined-btn');
+                const combContent = document.getElementById('tab-combined-content');
+                if (combBtn && combContent) {
+                    switchTab(combBtn, combContent, 'combined');
+                }
+            } else {
+                const listBtn = document.getElementById('tab-listing-btn');
+                const listContent = document.getElementById('tab-listing-content');
+                if (listBtn && listContent) {
+                    switchTab(listBtn, listContent, 'listing');
                 }
             }
         });

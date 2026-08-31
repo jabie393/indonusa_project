@@ -171,8 +171,29 @@ class ProcurementController extends Controller
                     'breakdown' => $breakdown,
                 ];
             });
+        // 4. Calculate Pending/Active Counts for Tab Badges
+        $activeListingCount = ProcurementOfGoods::whereNull('custom_quotation_id')
+            ->whereNotIn('status', ['completed', 'canceled'])
+            ->count();
 
-        return view('admin.procurement.index', compact('listingItems', 'nonListingItems', 'combinedRequirements'));
+        $activeNonListingProcCount = ProcurementOfGoods::whereNotNull('custom_quotation_id')
+            ->whereNotIn('status', ['completed', 'canceled'])
+            ->count();
+        $activePendingQuotationsCount = CustomQuotation::where('status', 'sent_to_quotation')
+            ->whereHas('order', function ($q) {
+                $q->where('status', 'under_procurement');
+            })
+            ->doesntHave('procurementOfGoods')
+            ->count();
+        $activeNonListingCount = $activeNonListingProcCount + $activePendingQuotationsCount;
+
+        return view('admin.procurement.index', compact(
+            'listingItems',
+            'nonListingItems',
+            'combinedRequirements',
+            'activeListingCount',
+            'activeNonListingCount'
+        ));
     }
 
     /**

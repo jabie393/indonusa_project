@@ -283,3 +283,372 @@ it('scenario 7: consolidates shortages of same goods across multiple SOs into 1 
     expect($order2->fresh()->status)->toBe('sent_to_warehouse');
     expect($order2->fresh()->items->first()->allocated_quantity)->toBe(3);
 });
+
+it('allows partial delivery for under_procurement order with allocated stock without waiting for full procurement', function () {
+    $sales = User::factory()->create(['role' => 'Sales']);
+    $warehouse = User::factory()->create(['role' => 'Warehouse']);
+
+    $goods = Goods::create([
+        'goods_code' => 'HT-PARTIAL-001',
+        'goods_name' => 'Partial DO Item',
+        'category' => 'HANDTOOLS',
+        'stock' => 4,
+        'goods_status' => 'approved',
+        'buy_price' => 10000,
+        'selling_price' => 12000,
+        'unit' => 'pcs',
+        'description' => 'Test Partial DO',
+    ]);
+
+    // Order 10 items (4 in stock, 6 shortage)
+    $quotation = Quotation::create([
+        'request_number' => 'RQ-PARTIAL-01',
+        'quotation_number' => 'PNW-PARTIAL-01',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Partial Customer',
+        'grand_total' => 120000,
+        'product_category' => 'HANDTOOLS',
+    ]);
+
+    QuotationItem::create([
+        'quotation_id' => $quotation->id,
+        'goods_id' => $goods->id,
+        'product_category' => 'HANDTOOLS',
+        'quantity' => 10,
+        'price' => 12000,
+        'subtotal' => 120000,
+    ]);
+
+    $order = Order::create([
+        'order_number' => 'ORD-PARTIAL-01',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Partial Customer',
+        'quotation_id' => $quotation->id,
+        'status' => 'open',
+        'queue_at' => null,
+    ]);
+
+    $orderItem = OrderItem::create([
+        'order_id' => $order->id,
+        'goods_id' => $goods->id,
+        'category' => 'HANDTOOLS',
+        'quantity' => 10,
+        'price' => 12000,
+        'subtotal' => 120000,
+        'allocated_quantity' => 0,
+        'shortage_quantity' => 0,
+    ]);
+
+    // Confirm SO: 4 allocated, 6 shortage, status under_procurement
+    actingAs($sales)->post(route('sales.quotation.sent-to-warehouse-from-so', $quotation->id));
+
+    expect($orderItem->fresh()->allocated_quantity)->toBe(4);
+    expect($orderItem->fresh()->shortage_quantity)->toBe(6);
+    expect($order->fresh()->status)->toBe('under_procurement');
+
+    // 1. Check getItems API returns allocated_quantity & under_procurement
+    $resItems = actingAs($warehouse)->get(route('delivery-orders.items', $order->id));
+    $resItems->assertOk();
+    $itemsJson = $resItems->json();
+    expect($itemsJson[0]['allocated_quantity'])->toBe(4);
+    expect($itemsJson[0]['shortage_quantity'])->toBe(6);
+    expect($itemsJson[0]['order_status'])->toBe('under_procurement');
+
+    // 2. Perform partial delivery for the 4 allocated units
+    $resPartial = actingAs($warehouse)->post(route('delivery-orders.partial-approve', $order->id), [
+        'items' => [
+            $orderItem->id => 4,
+        ],
+    ]);
+    $resPartial->assertSessionHasNoErrors();
+
+    // Check delivery batch & stock deductions
+    expect($order->fresh()->batches)->toHaveCount(1);
+    expect($orderItem->fresh()->delivered_quantity)->toBe(4);
+    expect($orderItem->fresh()->allocated_quantity)->toBe(0);
+    expect($orderItem->fresh()->shortage_quantity)->toBe(6);
+    expect($goods->fresh()->stock)->toBe(0); // 4 units shipped
+    // Order status is not_completed (Partial Delivery)
+    expect($order->fresh()->status)->toBe('not_completed');
+    expect($order->fresh()->delivery_options)->toBe('partial');
+
+    // 3. When the remaining 6 units arrive via procurement:
+    $goods->stock += 6;
+    $goods->save();
+
+    // FIFO automatically allocates the 6 units and preserves not_completed (Partial Delivery) status
+    expect($orderItem->fresh()->allocated_quantity)->toBe(6);
+    expect($orderItem->fresh()->shortage_quantity)->toBe(0);
+    expect($order->fresh()->status)->toBe('not_completed');
+
+    // 4. Warehouse approves final delivery of remaining 6 units
+    $resFinal = actingAs($warehouse)->post(route('delivery-orders.approve', $order->id));
+    $resFinal->assertSessionHasNoErrors();
+
+    expect($orderItem->fresh()->delivered_quantity)->toBe(10);
+    expect($order->fresh()->status)->toBe('completed');
+});
+
+it('prevents SO2 from stealing stock allocated to SO1 when SO2 is partially delivered', function () {
+    $sales = User::factory()->create(['role' => 'Sales']);
+    $warehouse = User::factory()->create(['role' => 'Warehouse']);
+
+    // P1 Stock = 10
+    $goods = Goods::create([
+        'goods_code' => 'HT-STEAL-001',
+        'goods_name' => 'Steal Protection Item',
+        'category' => 'HANDTOOLS',
+        'stock' => 10,
+        'goods_status' => 'approved',
+        'buy_price' => 10000,
+        'selling_price' => 12000,
+        'unit' => 'pcs',
+        'description' => 'Protection Test',
+    ]);
+
+    // SO 1 orders 5 units
+    $q1 = Quotation::create([
+        'request_number' => 'RQ-S1',
+        'quotation_number' => 'PNW-S1',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Cust 1',
+        'grand_total' => 60000,
+        'product_category' => 'HANDTOOLS',
+    ]);
+    QuotationItem::create([
+        'quotation_id' => $q1->id,
+        'goods_id' => $goods->id,
+        'product_category' => 'HANDTOOLS',
+        'quantity' => 5,
+        'price' => 12000,
+        'subtotal' => 60000,
+    ]);
+    $order1 = Order::create([
+        'order_number' => 'ORD-S1',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Cust 1',
+        'quotation_id' => $q1->id,
+        'status' => 'open',
+    ]);
+    $orderItem1 = OrderItem::create([
+        'order_id' => $order1->id,
+        'goods_id' => $goods->id,
+        'category' => 'HANDTOOLS',
+        'quantity' => 5,
+        'price' => 12000,
+        'subtotal' => 60000,
+        'allocated_quantity' => 0,
+        'shortage_quantity' => 0,
+    ]);
+
+    // SO 2 orders 10 units
+    $q2 = Quotation::create([
+        'request_number' => 'RQ-S2',
+        'quotation_number' => 'PNW-S2',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Cust 2',
+        'grand_total' => 120000,
+        'product_category' => 'HANDTOOLS',
+    ]);
+    QuotationItem::create([
+        'quotation_id' => $q2->id,
+        'goods_id' => $goods->id,
+        'product_category' => 'HANDTOOLS',
+        'quantity' => 10,
+        'price' => 12000,
+        'subtotal' => 120000,
+    ]);
+    $order2 = Order::create([
+        'order_number' => 'ORD-S2',
+        'sales_id' => $sales->id,
+        'customer_name' => 'Cust 2',
+        'quotation_id' => $q2->id,
+        'status' => 'open',
+    ]);
+    $orderItem2 = OrderItem::create([
+        'order_id' => $order2->id,
+        'goods_id' => $goods->id,
+        'category' => 'HANDTOOLS',
+        'quantity' => 10,
+        'price' => 12000,
+        'subtotal' => 120000,
+        'allocated_quantity' => 0,
+        'shortage_quantity' => 0,
+    ]);
+
+    // Confirm SO 1 -> allocated 5, shortage 0, status sent_to_warehouse
+    actingAs($sales)->post(route('sales.quotation.sent-to-warehouse-from-so', $q1->id));
+    expect($orderItem1->fresh()->allocated_quantity)->toBe(5);
+    expect($orderItem1->fresh()->shortage_quantity)->toBe(0);
+    expect($order1->fresh()->status)->toBe('sent_to_warehouse');
+
+    // Confirm SO 2 -> allocated 5, shortage 5, status under_procurement
+    actingAs($sales)->post(route('sales.quotation.sent-to-warehouse-from-so', $q2->id));
+    expect($orderItem2->fresh()->allocated_quantity)->toBe(5);
+    expect($orderItem2->fresh()->shortage_quantity)->toBe(5);
+    expect($order2->fresh()->status)->toBe('under_procurement');
+
+    // Warehouse partially ships SO 2 (5 units)
+    $resPartial1 = actingAs($warehouse)->post(route('delivery-orders.partial-approve', $order2->id), [
+        'items' => [$orderItem2->id => 5],
+    ]);
+    $resPartial1->assertSessionHasNoErrors();
+
+    expect($orderItem2->fresh()->delivered_quantity)->toBe(5);
+    expect($orderItem2->fresh()->allocated_quantity)->toBe(0); // SO 2 now has 0 allocated!
+    expect($orderItem2->fresh()->shortage_quantity)->toBe(5);
+    expect($goods->fresh()->stock)->toBe(5); // Physical stock 5 left in warehouse (belongs to SO 1)
+    expect($orderItem1->fresh()->allocated_quantity)->toBe(5); // SO 1 still safely holds its 5 allocated units!
+
+    // Check SO 2 items API before procurement arrives
+    $resItems = actingAs($warehouse)->get(route('delivery-orders.items', $order2->id));
+    $resItems->assertOk();
+    $itemsJson = $resItems->json();
+    expect($itemsJson[0]['allocated_quantity'])->toBe(0);
+
+    // If SO 2 attempts to send another 5 units before procurement arrives:
+    $resPartialFail = actingAs($warehouse)->post(route('delivery-orders.partial-approve', $order2->id), [
+        'items' => [$orderItem2->id => 5],
+    ]);
+    // It MUST be rejected with error because allocated_quantity is 0!
+    $resPartialFail->assertSessionHasErrors();
+    expect($orderItem2->fresh()->delivered_quantity)->toBe(5);
+    expect($goods->fresh()->stock)->toBe(5); // SO 1's stock is protected!
+
+    // SO 1 can successfully ship its 5 units!
+    $resSO1 = actingAs($warehouse)->post(route('delivery-orders.approve', $order1->id));
+    $resSO1->assertSessionHasNoErrors();
+    expect($orderItem1->fresh()->delivered_quantity)->toBe(5);
+    expect($order1->fresh()->status)->toBe('completed');
+    expect($goods->fresh()->stock)->toBe(0);
+});
+
+it('allocates stock and allows partial delivery when non-listing custom quotation procurement arrives', function () {
+    $sales = User::factory()->create(['role' => 'Sales', 'name' => 'Sales CQ']);
+    $warehouse = User::factory()->create(['role' => 'Warehouse', 'name' => 'Warehouse CQ']);
+    $ga = User::factory()->create(['role' => 'General Affair', 'name' => 'GA CQ']);
+
+    // Create Custom Quotation
+    $cq = \App\Models\CustomQuotation::create([
+        'sales_id' => $sales->id,
+        'quotation_number' => 'CQ-TEST-001',
+        'to' => 'Customer Non-Listing',
+        'up' => $sales->name,
+        'subject' => 'Non Listing Test',
+        'email' => 'cq@test.com',
+        'our_ref' => 'REF-CQ-001',
+        'date' => now(),
+        'status' => 'sent_to_quotation',
+        'subtotal' => 120000,
+        'grand_total' => 120000,
+    ]);
+
+    $cqItem = \App\Models\CustomQuotationItem::create([
+        'custom_quotation_id' => $cq->id,
+        'product_name' => 'Paku Bumi Custom',
+        'qty' => 12,
+        'unit' => 'pcs',
+        'price' => 10000,
+        'subtotal' => 120000,
+        'description' => 'paku bumi',
+    ]);
+
+    // Create standard Quotation linked to CQ
+    $quotation = Quotation::create([
+        'sales_id' => $sales->id,
+        'custom_quotation_id' => $cq->id,
+        'request_number' => 'RO-CQ-001',
+        'quotation_number' => 'Q-CQ-001',
+        'sales_order_number' => 'SO-CQ-001',
+        'customer_name' => 'Customer Non-Listing',
+        'date' => now(),
+        'status' => 'approved',
+    ]);
+
+    $qItem = QuotationItem::create([
+        'quotation_id' => $quotation->id,
+        'custom_product_name' => 'Paku Bumi Custom',
+        'quantity' => 12,
+        'price' => 10000,
+        'subtotal' => 120000,
+    ]);
+
+    // Sales sends Quotation to Warehouse / Procurement
+    actingAs($sales)->post(route('sales.quotation.sent-to-warehouse-from-so', $quotation->id));
+
+    $order = Order::where('quotation_id', $quotation->id)->first();
+    expect($order)->not->toBeNull();
+    $orderItem = $order->items->first();
+    expect($orderItem)->not->toBeNull();
+    expect($orderItem->quantity)->toBe(12);
+    expect($orderItem->allocated_quantity)->toBe(0);
+    expect($orderItem->shortage_quantity)->toBe(12);
+
+    $goods = \App\Models\Goods::find($orderItem->goods_id);
+    expect($goods)->not->toBeNull();
+    expect($goods->stock)->toBe(0);
+
+    // General Affair creates procurement for this custom quotation
+    $procurement = \App\Models\ProcurementOfGoods::create([
+        'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
+        'order_id' => $order->id,
+        'custom_quotation_id' => $cq->id,
+        'general_affair_id' => $ga->id,
+        'status' => 'pending',
+    ]);
+
+    $procItem = \App\Models\ProcurementOfGoodsItem::create([
+        'procurement_of_goods_id' => $procurement->id,
+        'goods_id' => $goods->id,
+        'product_name' => 'Paku Bumi Custom',
+        'qty_requested' => 12,
+        'qty_ordered' => 12,
+        'qty_received' => 0,
+        'unit' => 'pcs',
+        'buy_price' => 8000,
+        'selling_price' => 10000,
+        'status' => 'pending',
+    ]);
+
+    // GA records receipt of 5 pcs (partial arrival)
+    $arrivalReq = \App\Models\ProcurementArrivalRequest::create([
+        'procurement_of_goods_item_id' => $procItem->id,
+        'good_id' => $goods->id,
+        'quantity' => 5,
+        'unit_cost' => 8000,
+        'received_at' => now(),
+        'status' => 'pending',
+    ]);
+
+    // Warehouse approves the arrival of 5 pcs
+    $resApproveSupply = actingAs($warehouse)->post(route('supply-orders.approve-procurement', $arrivalReq->id));
+    $resApproveSupply->assertSessionHasNoErrors();
+
+    // Verify stock & allocation:
+    expect($goods->fresh()->stock)->toBe(5);
+    expect($orderItem->fresh()->allocated_quantity)->toBe(5);
+    expect($orderItem->fresh()->shortage_quantity)->toBe(7);
+
+    // Verify items API for Delivery Order modal
+    $resItems = actingAs($warehouse)->get(route('delivery-orders.items', $order->id));
+    $resItems->assertOk();
+    $itemsJson = $resItems->json();
+    expect($itemsJson[0]['allocated_quantity'])->toBe(5);
+    expect($itemsJson[0]['shortage_quantity'])->toBe(7);
+    expect($itemsJson[0]['stok_gudang'])->toBe(5);
+
+    // Warehouse can now successfully process partial delivery for the 5 arrived pcs!
+    $resPartial = actingAs($warehouse)->post(route('delivery-orders.partial-approve', $order->id), [
+        'items' => [$orderItem->id => 5],
+    ]);
+    $resPartial->assertSessionHasNoErrors();
+
+    expect($orderItem->fresh()->delivered_quantity)->toBe(5);
+    expect($orderItem->fresh()->allocated_quantity)->toBe(0);
+    expect($orderItem->fresh()->shortage_quantity)->toBe(7);
+    expect($order->fresh()->status)->toBe('not_completed');
+});
+
+
+
+

@@ -37,7 +37,15 @@
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();
                     $procOrderCount = \App\Models\ProcurementArrivalRequest::where('status', 'pending')->count();
-                    $deliveryOrderCount = \App\Models\Order::where('status', 'sent_to_warehouse')->count();
+                    $deliveryOrderCount = \App\Models\Order::where(function ($q) {
+                        $q->whereIn('status', ['sent_to_warehouse', 'not_completed'])
+                          ->orWhere(function ($sub) {
+                              $sub->where('status', 'under_procurement')
+                                  ->whereHas('items', function ($iq) {
+                                      $iq->where('allocated_quantity', '>', 0);
+                                  });
+                          });
+                    })->count();
                 @endphp
                 <div class="flex items-center space-x-2">
                     <a href="{{ route('warehouse.index', ['status' => 'approved']) }}"
@@ -85,9 +93,9 @@
                                         <a href="javascript:void(0)"
                                             class="js-show-order text-[#225A97] dark:text-blue-400 font-bold hover:underline"
                                             data-order-id="{{ $order->id }}"
-                                            data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
+                                            data-order-number="{{ $order->order_number }}"
                                             data-reason="{{ $order->reason }}" data-items='@json($order->items)'>
-                                            {{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}
+                                            {{ $order->order_number }}
                                         </a>
                                     </div>
                                     <div
@@ -151,30 +159,70 @@
                                 <td class="whitespace-nowrap px-4 py-3 text-center align-middle">
                                     @php
                                         $status = $order->status;
+                                        $itemsToLoop = $order->items->count() > 0 ? $order->items : ($order->requestOrder?->items ?? collect());
+                                        $totalAllocatedQty = 0;
+                                        $totalRemainingQty = 0;
+                                        $remainingItemsCount = 0;
+                                        $hasEnoughStockForFull = true;
+
+                                        foreach ($itemsToLoop as $item) {
+                                            $qty = $item->quantity ?? 0;
+                                            $delivered = $item->delivered_quantity ?? 0;
+                                            $allocated = $item->allocated_quantity ?? 0;
+                                            $remQty = max(0, $qty - $delivered);
+
+                                            if ($remQty > 0) {
+                                                $remainingItemsCount++;
+                                                $totalRemainingQty += $remQty;
+                                                $totalAllocatedQty += $allocated;
+                                                if ($allocated < $remQty) {
+                                                    $hasEnoughStockForFull = false;
+                                                }
+                                            }
+                                        }
+
                                         $badgeBg = '';
                                         $badgeText = '';
                                         $badgeBorder = '';
                                         $badgeLabel = '';
                                         $iconSvg = '';
 
-                                        if (in_array($status, ['completed', 'approved_supervisor', 'approved_warehouse'])) {
+                                        if (in_array($status, ['completed', 'approved_supervisor', 'approved_warehouse']) || ($totalRemainingQty === 0 && $order->items->count() > 0)) {
                                             $badgeBg = 'bg-green-50 dark:bg-green-950/30';
                                             $badgeText = 'text-green-700 dark:text-green-300';
                                             $badgeBorder = 'border border-green-200 dark:border-green-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>';
                                             $badgeLabel = $status === 'completed' ? 'Completed' : ($status === 'approved_supervisor' ? 'Approved by Supervisor' : 'Approved by Warehouse');
-                                        } elseif (in_array($status, ['not_completed', 'open'])) {
-                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
-                                            $badgeText = 'text-amber-800 dark:text-amber-300';
-                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
-                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                            $badgeLabel = $status === 'not_completed' ? 'Partial Delivery' : 'Open';
-                                        } elseif (in_array($status, ['sent_to_warehouse', 'sent_to_supervisor', 'pending'])) {
+                                        } elseif ($status === 'sent_to_warehouse') {
                                             $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
                                             $badgeText = 'text-blue-700 dark:text-blue-300';
                                             $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
                                             $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-                                            $badgeLabel = $status === 'sent_to_warehouse' ? 'Sent to Warehouse' : ($status === 'sent_to_supervisor' ? 'Sent to Supervisor' : 'Pending');
+                                            $badgeLabel = 'Ready to Delivery';
+                                        } elseif ($status === 'under_procurement') {
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-800 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            $badgeLabel = 'Ready to Partial Delivery';
+                                        } elseif ($status === 'not_completed') {
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-800 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            $badgeLabel = 'Partial Delivery';
+                                        } elseif ($status === 'open') {
+                                            $badgeBg = 'bg-amber-50 dark:bg-amber-950/30';
+                                            $badgeText = 'text-amber-800 dark:text-amber-300';
+                                            $badgeBorder = 'border border-amber-200 dark:border-amber-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            $badgeLabel = 'Open';
+                                        } elseif (in_array($status, ['sent_to_supervisor', 'pending'])) {
+                                            $badgeBg = 'bg-blue-50 dark:bg-blue-950/30';
+                                            $badgeText = 'text-blue-700 dark:text-blue-300';
+                                            $badgeBorder = 'border border-blue-200 dark:border-blue-800/50';
+                                            $iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock mr-1.5 shrink-0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+                                            $badgeLabel = $status === 'sent_to_supervisor' ? 'Sent to Supervisor' : 'Pending';
                                         } else {
                                             $badgeBg = 'bg-red-50 dark:bg-red-950/30';
                                             $badgeText = 'text-red-700 dark:text-red-300';
@@ -208,7 +256,7 @@
                                             <button type="button"
                                                 class="js-show-order group flex h-full cursor-pointer items-center justify-center bg-blue-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                                 data-order-id="{{ $order->id }}"
-                                                data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
+                                                data-order-number="{{ $order->order_number }}"
                                                 data-reason="{{ $order->reason }}" data-items='@json($order->items)'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -223,36 +271,16 @@
                                                     class="max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-2 group-hover:opacity-100">Show</span>
                                             </button>
                                             @if (Auth::user() && Auth::user()->role === 'Warehouse')
-                                                @if (in_array($order->status, ['sent_to_warehouse', 'not_completed']))
-                                                    @php
-                                                        $hasEnoughStockForFull = true;
-                                                        $totalRemainingQty = 0;
-                                                        $remainingItemsCount = 0;
-                                                        $itemsToLoop = $order->items->count() > 0 ? $order->items : ($order->requestOrder?->items ?? collect());
-                                                        foreach ($itemsToLoop as $item) {
-                                                            $qty = $item->quantity ?? 0;
-                                                            $delivered = $item->delivered_quantity ?? 0;
-                                                            $remainingQty = $qty - $delivered;
-                                                            if ($remainingQty > 0) {
-                                                                $remainingItemsCount++;
-                                                                $totalRemainingQty += $remainingQty;
-                                                            }
-                                                            $goodsItem = $item->barang ?? null;
-                                                            if (!$goodsItem && isset($item->goods_id)) {
-                                                                $goodsItem = \App\Models\Goods::find($item->goods_id);
-                                                            }
-                                                            if ($goodsItem && $goodsItem->stock < $remainingQty) {
-                                                                $hasEnoughStockForFull = false;
-                                                            }
-                                                        }
-                                                    @endphp
+                                                @if (in_array($order->status, ['sent_to_warehouse', 'not_completed', 'under_procurement']))
                                                     <button type="button"
                                                         class="js-approve-order group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
+                                                        data-order-number="{{ $order->order_number }}"
                                                         data-approve-url="{{ route('delivery-orders.approve', $order->id) }}"
                                                         data-delivery-options="{{ $order->delivery_options }}"
+                                                        data-status="{{ $order->status }}"
                                                         data-has-enough-stock="{{ $hasEnoughStockForFull ? 'true' : 'false' }}"
+                                                        data-total-allocated-qty="{{ $totalAllocatedQty }}"
                                                         data-total-remaining-qty="{{ $totalRemainingQty }}"
                                                         data-remaining-items-count="{{ $remainingItemsCount }}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -269,7 +297,7 @@
                                                     @endphp
                                                     <button type="button"
                                                         class="reject-btn group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                                                        onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}", @json($order->items))'>
+                                                        onclick='openTolakModal("delivery_order", "{{ $order->id }}", "{{ $order->order_number }}", @json($order->items))'>
                                                         @if ($hasDeliveries)
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -291,7 +319,7 @@
                                                     <a href="{{ route('delivery-orders.pdf', $order->id) }}" target="_blank"
                                                         class="group flex h-full cursor-pointer items-center justify-center bg-green-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
+                                                        data-order-number="{{ $order->order_number }}"
                                                         data-items='@json($order->items)'>
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -312,7 +340,7 @@
                                                     <button type="button"
                                                         class="js-history-order group flex h-full cursor-pointer items-center justify-center bg-cyan-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
                                                         data-id="{{ $order->id }}"
-                                                        data-order-number="{{ $order->batches->pluck('do_number')->filter()->implode(', ') ?: $order->order_number }}"
+                                                        data-order-number="{{ $order->order_number }}"
                                                         data-history-url="{{ route('delivery-orders.history', $order->id) }}">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

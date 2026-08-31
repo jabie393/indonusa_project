@@ -73,6 +73,21 @@
         {{-- Partial View --}}
         <div id="partial-view" class="flex-1 flex hidden flex-col overflow-hidden min-h-0">
             <div class="flex-1 overflow-auto p-4">
+                <div id="partial-warning-no-stock"
+                    class="mb-4 hidden items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
+                    <svg class="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <div>
+                        <span class="font-semibold">Belum ada alokasi stok siap kirim.</span>
+                        <p class="mt-0.5 text-xs text-amber-700 dark:text-amber-300">Seluruh stok yang dialokasikan untuk
+                            pengiriman parsial sebelumnya sudah terkirim. Pengiriman batch berikutnya dapat diproses
+                            setelah sisa barang tiba dari pengadaan.</p>
+                    </div>
+                </div>
+
                 <div class="mb-4 flex items-center justify-between">
                     <h4 class="text-sm font-medium text-gray-700 dark:text-white">Sesuaikan Item Pengiriman</h4>
                     <span id="partial-order-number"
@@ -94,7 +109,10 @@
                                     Pesanan</th>
                                 <th
                                     class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                                    Stok</th>
+                                    Status Alokasi</th>
+                                <th
+                                    class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                                    Stok Gudang</th>
                                 <th
                                     class="w-32 px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
                                     Kirim</th>

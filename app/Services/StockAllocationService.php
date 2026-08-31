@@ -55,11 +55,6 @@ class StockAllocationService
      */
     public static function isOrderFullyFulfilled(Order $order): bool
     {
-        // For Non-Listing (Custom Quotation) orders, they are processed through procurement completion.
-        if ($order->custom_quotation_id) {
-            return false;
-        }
-
         $order->loadMissing('items');
         foreach ($order->items as $item) {
             if ($item->goods_id) {
@@ -127,9 +122,7 @@ class StockAllocationService
             $items = OrderItem::where('goods_id', $goodsId)
                 ->whereRaw('quantity > (allocated_quantity + delivered_quantity)')
                 ->whereHas('order', function ($query) {
-                    $query->whereIn('status', ['open', 'under_procurement'])
-                          ->whereNotNull('quotation_id')
-                          ->whereNull('custom_quotation_id');
+                    $query->whereIn('status', ['open', 'under_procurement', 'not_completed']);
                 })
                 ->join('orders', 'order_items.order_id', '=', 'orders.id')
                 ->orderBy('orders.queue_at', 'asc')
@@ -156,7 +149,12 @@ class StockAllocationService
                     // Check if the order is now fully fulfilled
                     $order = $item->order;
                     if (self::isOrderFullyFulfilled($order)) {
-                        $order->status = 'sent_to_warehouse';
+                        // Only transition to sent_to_warehouse if order hasn't been partially delivered yet
+                        if ($order->items->sum('delivered_quantity') == 0 && $order->batches()->count() == 0) {
+                            $order->status = 'sent_to_warehouse';
+                        } else {
+                            $order->status = 'not_completed';
+                        }
                         $order->save();
 
                         // Automatically resolve pending procurements for this order as it got fulfilled by FIFO reallocation
