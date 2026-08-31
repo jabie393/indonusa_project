@@ -38,8 +38,10 @@
         <!-- Stats Pill -->
         @php
             $totalCount = $allLinkedSos->count();
-            $fulfilledCount = $allLinkedSos->filter(fn($s) => ($s->shortage_quantity == 0) || ($s->order_status === 'sent_to_warehouse'))->count();
-            $pendingCount = $totalCount - $fulfilledCount;
+            $fulfilledCount = $allLinkedSos->filter(function($s) {
+                return ($s->order_shortage_qty == 0) || in_array($s->order_status, ['sent_to_warehouse', 'completed', 'not_completed']);
+            })->count();
+            $pendingCount = max(0, $totalCount - $fulfilledCount);
         @endphp
         <div class="flex items-center gap-2 text-xs">
             <span class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 text-slate-700 font-semibold dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
@@ -68,27 +70,42 @@
             <table id="allocationsDataTable" class="w-full border-collapse text-sm text-left">
                 <thead>
                     <tr class="bg-gray-50 dark:bg-gray-700/50 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase">
-                        <th class="px-4 py-3">No. Sales Order</th>
-                        <th class="px-4 py-3">Customer</th>
-                        <th class="px-4 py-3">Barang</th>
-                        <th class="px-4 py-3 text-center">Kebutuhan</th>
-                        <th class="px-4 py-3 text-center">Teralokasi</th>
-                        <th class="px-4 py-3 text-center">Status Pemenuhan</th>
+                        <th class="px-4 py-3 text-nowrap">No. Sales Order</th>
+                        <th class="px-4 py-3 text-nowrap">Customer</th>
+                        <th class="px-4 py-3 text-nowrap">Barang</th>
+                        <th class="px-4 py-3 text-center text-nowrap">Total Pesanan</th>
+                        <th class="px-4 py-3 text-center text-nowrap">Kebutuhan Pengadaan</th>
+                        <th class="px-4 py-3 text-center text-nowrap">Teralokasi</th>
+                        <th class="px-4 py-3 text-center text-nowrap">Status Pemenuhan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
                     @foreach($allLinkedSos as $soAlloc)
                         @php
-                            $isFulfilled = ($soAlloc->shortage_quantity == 0) || ($soAlloc->order_status === 'sent_to_warehouse');
-                            $isPartial = !$isFulfilled && ($soAlloc->allocated_quantity > 0);
+                            $soTotalQty = $soAlloc->so_total_qty ?? $soAlloc->qty_needed;
+                            $initialStockQty = max(0, $soTotalQty - $soAlloc->qty_needed);
+                            
+                            $fulfilledFromProc = min(
+                                $soAlloc->qty_needed, 
+                                max(
+                                    $soAlloc->pivot_allocated_qty ?? 0,
+                                    $soAlloc->qty_needed - ($soAlloc->order_shortage_qty ?? 0)
+                                )
+                            );
+                            
+                            $isDelivered = ($soAlloc->order_status === 'completed') || (($soAlloc->order_delivered_qty ?? 0) >= $soTotalQty);
+                            $isReadyForDelivery = !$isDelivered && (($soAlloc->order_shortage_qty == 0) || ($soAlloc->order_status === 'sent_to_warehouse'));
+                            $isPartial = !$isDelivered && !$isReadyForDelivery && ($fulfilledFromProc > 0);
                             $searchableText = strtolower($soAlloc->order_number . ' ' . ($soAlloc->customer_name ?? '') . ' ' . $soAlloc->goods_name . ' ' . $soAlloc->goods_code);
                         @endphp
                         <tr class="allocation-row hover:bg-gray-50/80 dark:hover:bg-gray-700/40 transition-colors" data-search="{{ $searchableText }}">
                             <!-- No. SO & Antrean -->
                             <td class="px-4 py-3">
-                                <span class="font-bold text-slate-800 dark:text-white font-mono text-xs">
-                                    {{ $soAlloc->order_number }}
-                                </span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-slate-800 dark:text-white font-mono text-xs">
+                                        {{ $soAlloc->order_number }}
+                                    </span>
+                                </div>
                                 <div class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 flex items-center gap-1">
                                     <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     <span>Antrean: {{ \Carbon\Carbon::parse($soAlloc->queue_at ?? $soAlloc->created_at)->format('Y-m-d H:i') }}</span>
@@ -106,29 +123,44 @@
                                 <span class="font-mono text-[11px] font-bold text-blue-600 dark:text-blue-400">[{{ $soAlloc->goods_code }}]</span>
                             </td>
 
-                            <!-- Kebutuhan -->
+                            <!-- Total Pesanan SO -->
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
+                                <span class="font-bold text-slate-900 dark:text-white">{{ $soTotalQty }} {{ $soAlloc->unit }}</span>
+                                @if($initialStockQty > 0)
+                                    <div class="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                                        (Stok Awal: {{ $initialStockQty }} {{ $soAlloc->unit }})
+                                    </div>
+                                @endif
+                            </td>
+
+                            <!-- Kebutuhan Pengadaan -->
                             <td class="px-4 py-3 text-center font-bold text-slate-900 dark:text-white whitespace-nowrap">
                                 {{ $soAlloc->qty_needed }} {{ $soAlloc->unit }}
                             </td>
 
                             <!-- Teralokasi -->
                             <td class="px-4 py-3 text-center font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
-                                {{ $soAlloc->allocated_quantity }} {{ $soAlloc->unit }}
+                                {{ $fulfilledFromProc }} {{ $soAlloc->unit }}
                             </td>
 
                             <!-- Status Pemenuhan -->
-                            <td class="px-4 py-3 text-center">
-                                @if($isFulfilled)
+                            <td class="px-4 py-3 text-center whitespace-nowrap">
+                                @if($isDelivered)
                                     <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-300 dark:border-emerald-800/50">
                                         <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                        Terpenuhi
+                                        Terkirim ke Customer
+                                    </span>
+                                @elseif($isReadyForDelivery)
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-800/50">
+                                        <svg class="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                        Siap Kirim (Gudang)
                                     </span>
                                 @elseif($isPartial)
                                     <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800 border border-amber-200 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800/50">
-                                        Sebagian (Sisa: {{ $soAlloc->shortage_quantity }} {{ $soAlloc->unit }})
+                                        Sebagian (Sisa: {{ $soAlloc->order_shortage_qty }} {{ $soAlloc->unit }})
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700 border border-blue-200 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-800/50">
+                                    <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600 border border-slate-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700">
                                         Menunggu Pengadaan
                                     </span>
                                 @endif
@@ -136,7 +168,7 @@
                         </tr>
                     @endforeach
                     <tr id="noAllocationSearchMatch" class="hidden">
-                        <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                        <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                             Tidak ditemukan Sales Order yang sesuai dengan pencarian.
                         </td>
                     </tr>

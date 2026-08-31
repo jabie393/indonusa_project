@@ -98,6 +98,8 @@ class StockAllocationService
                 }
                 $item->shortage_quantity = max(0, $item->quantity - $item->delivered_quantity - $item->allocated_quantity);
                 $item->save();
+
+                self::syncProcurementOrderItemPivot($item);
             }
 
             // Check if fully fulfilled
@@ -149,6 +151,8 @@ class StockAllocationService
                     $item->shortage_quantity = max(0, $item->quantity - $item->delivered_quantity - $item->allocated_quantity);
                     $item->save();
 
+                    self::syncProcurementOrderItemPivot($item);
+
                     // Check if the order is now fully fulfilled
                     $order = $item->order;
                     if (self::isOrderFullyFulfilled($order)) {
@@ -170,6 +174,26 @@ class StockAllocationService
                 }
             }
         });
+    }
+
+    /**
+     * Synchronize allocated_quantity in procurement_order_items pivot table.
+     */
+    private static function syncProcurementOrderItemPivot(OrderItem $item): void
+    {
+        $pois = DB::table('procurement_order_items')
+            ->where('order_item_id', $item->id)
+            ->get();
+
+        foreach ($pois as $poi) {
+            $fulfilledShortage = max(0, $poi->quantity - $item->shortage_quantity);
+            DB::table('procurement_order_items')
+                ->where('id', $poi->id)
+                ->update([
+                    'allocated_quantity' => min($poi->quantity, $fulfilledShortage),
+                    'updated_at' => now(),
+                ]);
+        }
     }
 
     /**

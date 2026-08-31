@@ -408,9 +408,12 @@ class ProcurementController extends Controller
                     'orders.status as order_status',
                     'orders.queue_at',
                     'orders.created_at',
+                    'order_items.quantity as so_total_qty',
+                    'order_items.allocated_quantity as order_allocated_qty',
+                    'order_items.delivered_quantity as order_delivered_qty',
+                    'order_items.shortage_quantity as order_shortage_qty',
                     'procurement_order_items.quantity as qty_needed',
-                    'order_items.allocated_quantity',
-                    'order_items.shortage_quantity'
+                    'procurement_order_items.allocated_quantity as pivot_allocated_qty'
                 )
                 ->get()
                 ->map(function ($s) use ($pItem) {
