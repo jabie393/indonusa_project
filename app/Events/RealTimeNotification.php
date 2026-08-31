@@ -52,9 +52,7 @@ class RealTimeNotification implements ShouldBroadcastNow, ShouldDispatchAfterCom
                 ->doesntHave('procurementOfGoods')
                 ->count(),
                 
-            'goodsInProcurementRevisionCount' => ProcurementOfGoods::whereHas('items.procurementArrivalRequests', function ($query) {
-                $query->where('status', 'rejected');
-            })->count(),
+            'goodsInProcurementRevisionCount' => ProcurementOfGoods::whereNotIn('status', ['completed', 'canceled'])->count(),
 
             'supplyOrderCount' => Goods::where('goods_status', 'pending')
                 ->where('status_listing', '!=', 'non_listing')
