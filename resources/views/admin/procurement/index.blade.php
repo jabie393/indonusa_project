@@ -21,20 +21,20 @@
         </div>
 
         <!-- Main Card Container -->
-        <div class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
+        <div id="procurement-main-card" class="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl bg-white shadow-md dark:bg-gray-800">
             <div class="flex shrink-0 items-center justify-between bg-gradient-to-r from-[#225A97] to-[#0D223A] px-4 py-2">
                 <div class="flex space-x-2">
                     <button type="button" id="tab-listing-btn" class="px-4 py-2 text-sm font-extrabold text-white border-b-2 border-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Pengadaan Listing</span>
-                        <span class="inline-flex items-center justify-center rounded-full bg-white/20 px-2 py-0.5 text-xs text-white">{{ $listingItems->total() }}</span>
+                        <span id="tab-listing-badge" class="{{ $listingItems->total() > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $listingItems->total() }}</span>
                     </button>
                     <button type="button" id="tab-non-listing-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Pengadaan Non-Listing</span>
-                        <span class="inline-flex items-center justify-center rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{{ $nonListingItems->total() }}</span>
+                        <span id="tab-non-listing-badge" class="{{ $nonListingItems->total() > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ $nonListingItems->total() }}</span>
                     </button>
                     <button type="button" id="tab-combined-btn" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white focus:outline-none transition-all flex items-center gap-2">
                         <span>Ringkasan Kebutuhan Barang</span>
-                        <span class="inline-flex items-center justify-center rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-300">{{ count($combinedRequirements) }}</span>
+                        <span id="tab-combined-badge" class="{{ count($combinedRequirements) > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">{{ count($combinedRequirements) }}</span>
                     </button>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                         <thead class="sticky top-0 z-30 text-nowrap bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="text-nowrap px-4 py-3">No. Pengadaan (Batch)</th>
-                                <th scope="col" class="text-nowrap px-4 py-3">Keterangan &amp; Item</th>
+                                <th scope="col" class="text-nowrap px-4 py-3">Item Pengadaan</th>
                                 <th scope="col" class="text-nowrap px-4 py-3">Alokasi Sales Order</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Total Item</th>
                                 <th scope="col" class="text-nowrap px-4 py-3 text-center">Status</th>
@@ -103,12 +103,9 @@
                                         </div>
                                     </td>
 
-                                    <!-- Keterangan & Item -->
+                                    <!-- Item Pengadaan -->
                                     <td class="px-4 py-3 align-middle">
-                                        <div class="text-sm font-medium text-slate-800 dark:text-white">
-                                            {{ $item->notes ?: 'Pengadaan Shortage Stok Listing' }}
-                                        </div>
-                                        <div class="flex flex-col gap-1.5 mt-2">
+                                        <div class="flex flex-col gap-1.5">
                                             @foreach($item->items as $procItem)
                                                 <div class="inline-flex flex-col gap-0.5 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 text-xs dark:border-gray-700 dark:bg-gray-800/80 shadow-2xs max-w-fit">
                                                     <div class="flex items-center gap-1.5">
@@ -1032,64 +1029,65 @@
             }
         });
 
-        // Tab switching logic for 3 tabs
+        // Tab switching logic for 3 tabs using event delegation (so it works after AJAX DOM swap)
+        function switchTab(activeBtn, activeContent) {
+            const buttons = [
+                document.getElementById('tab-listing-btn'),
+                document.getElementById('tab-non-listing-btn'),
+                document.getElementById('tab-combined-btn')
+            ];
+            const contents = [
+                document.getElementById('tab-listing-content'),
+                document.getElementById('tab-non-listing-content'),
+                document.getElementById('tab-combined-content')
+            ];
+
+            buttons.forEach(btn => {
+                if (btn) {
+                    btn.classList.remove('text-white', 'border-b-2', 'border-white', 'font-extrabold');
+                    btn.classList.add('text-slate-300', 'font-semibold');
+                }
+            });
+
+            contents.forEach(content => {
+                if (content) {
+                    content.classList.add('hidden');
+                }
+            });
+
+            if (activeBtn) {
+                activeBtn.classList.add('text-white', 'border-b-2', 'border-white', 'font-extrabold');
+                activeBtn.classList.remove('text-slate-300', 'font-semibold');
+            }
+
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+        }
+        window.switchTab = switchTab;
+
         document.addEventListener('DOMContentLoaded', function() {
-            const tabListingBtn = document.getElementById('tab-listing-btn');
-            const tabNonListingBtn = document.getElementById('tab-non-listing-btn');
-            const tabCombBtn = document.getElementById('tab-combined-btn');
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
 
-            const contentListing = document.getElementById('tab-listing-content');
-            const contentNonListing = document.getElementById('tab-non-listing-content');
-            const contentComb = document.getElementById('tab-combined-content');
-
-            function switchTab(activeBtn, activeContent) {
-                [tabListingBtn, tabNonListingBtn, tabCombBtn].forEach(btn => {
-                    if (btn) {
-                        btn.classList.remove('text-white', 'border-b-2', 'border-white', 'font-extrabold');
-                        btn.classList.add('text-slate-300', 'font-semibold');
-                        const badge = btn.querySelector('span:last-child');
-                        if (badge) {
-                            badge.classList.remove('bg-white/20', 'text-white');
-                            badge.classList.add('bg-white/10', 'text-slate-300');
-                        }
-                    }
-                });
-
-                [contentListing, contentNonListing, contentComb].forEach(content => {
-                    if (content) {
-                        content.classList.add('hidden');
-                    }
-                });
-
-                if (activeBtn) {
-                    activeBtn.classList.add('text-white', 'border-b-2', 'border-white', 'font-extrabold');
-                    activeBtn.classList.remove('text-slate-300', 'font-semibold');
-                    const badge = activeBtn.querySelector('span:last-child');
-                    if (badge) {
-                        badge.classList.add('bg-white/20', 'text-white');
-                        badge.classList.remove('bg-white/10', 'text-slate-300');
-                    }
+                if (btn.id === 'tab-listing-btn') {
+                    switchTab(btn, document.getElementById('tab-listing-content'));
+                } else if (btn.id === 'tab-non-listing-btn') {
+                    switchTab(btn, document.getElementById('tab-non-listing-content'));
+                } else if (btn.id === 'tab-combined-btn') {
+                    switchTab(btn, document.getElementById('tab-combined-content'));
                 }
-
-                if (activeContent) {
-                    activeContent.classList.remove('hidden');
-                }
-            }
-
-            if (tabListingBtn) {
-                tabListingBtn.addEventListener('click', () => switchTab(tabListingBtn, contentListing));
-            }
-            if (tabNonListingBtn) {
-                tabNonListingBtn.addEventListener('click', () => switchTab(tabNonListingBtn, contentNonListing));
-            }
-            if (tabCombBtn) {
-                tabCombBtn.addEventListener('click', () => switchTab(tabCombBtn, contentComb));
-            }
+            });
 
             // Auto-switch tab based on page param if needed
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('non_listing_page')) {
-                switchTab(tabNonListingBtn, contentNonListing);
+                const nonListBtn = document.getElementById('tab-non-listing-btn');
+                const nonListContent = document.getElementById('tab-non-listing-content');
+                if (nonListBtn && nonListContent) {
+                    switchTab(nonListBtn, nonListContent);
+                }
             }
         });
     </script>

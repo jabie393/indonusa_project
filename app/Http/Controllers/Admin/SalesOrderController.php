@@ -278,28 +278,31 @@ class SalesOrderController extends Controller
                 if (!empty($shortageItems)) {
                     $hasShortageOnConfirmation = true;
 
-                    // Automatically find or create a consolidated procurement batch for Listing shortages
-                    $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
-                        ->whereNull('order_id')
-                        ->whereIn('status', ['pending', 'partial_received'])
-                        ->first();
-
-                    if (!$procurement) {
-                        $procurement = \App\Models\ProcurementOfGoods::create([
-                            'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
-                            'order_id' => null, // Consolidated batch across multiple SOs
-                            'custom_quotation_id' => null,
-                            'general_affair_id' => null,
-                            'status' => 'pending',
-                            'notes' => 'Pengadaan Terpadu Shortage Stok Listing',
-                        ]);
-                    }
-
                     foreach ($shortageItems as $sItem) {
                         $item = $sItem['item'];
                         $shortage = $sItem['shortage'];
 
-                        // Check if this goods is already in the procurement batch
+                        // Find or create procurement specifically for this goods
+                        $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
+                            ->whereNull('order_id')
+                            ->whereIn('status', ['pending', 'partial_received'])
+                            ->whereHas('items', function ($q) use ($item) {
+                                $q->where('goods_id', $item->goods_id)
+                                  ->whereNotIn('status', ['completed', 'canceled']);
+                            })
+                            ->first();
+
+                        if (!$procurement) {
+                            $procurement = \App\Models\ProcurementOfGoods::create([
+                                'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
+                                'order_id' => null,
+                                'custom_quotation_id' => null,
+                                'general_affair_id' => null,
+                                'status' => 'pending',
+                                'notes' => 'Pengadaan Shortage: ' . ($item->barang->goods_name ?? 'Barang Listing'),
+                            ]);
+                        }
+
                         $procItem = \App\Models\ProcurementOfGoodsItem::where('procurement_of_goods_id', $procurement->id)
                             ->where('goods_id', $item->goods_id)
                             ->whereNotIn('status', ['completed', 'canceled'])
@@ -711,26 +714,30 @@ class SalesOrderController extends Controller
 
         DB::beginTransaction();
         try {
-            // Automatically find or create a consolidated procurement batch for Listing shortages
-            $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
-                ->whereNull('order_id')
-                ->whereIn('status', ['pending', 'partial_received'])
-                ->first();
-
-            if (!$procurement) {
-                $procurement = \App\Models\ProcurementOfGoods::create([
-                    'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
-                    'order_id' => null,
-                    'custom_quotation_id' => null,
-                    'general_affair_id' => null,
-                    'status' => 'pending',
-                    'notes' => 'Pengadaan Terpadu Shortage Stok Listing',
-                ]);
-            }
-
             foreach ($shortageItems as $sItem) {
                 $item = $sItem['item'];
                 $shortage = $sItem['shortage'];
+
+                // Automatically find or create a procurement specifically for this goods
+                $procurement = \App\Models\ProcurementOfGoods::whereNull('custom_quotation_id')
+                    ->whereNull('order_id')
+                    ->whereIn('status', ['pending', 'partial_received'])
+                    ->whereHas('items', function ($q) use ($item) {
+                        $q->where('goods_id', $item->goods_id)
+                          ->whereNotIn('status', ['completed', 'canceled']);
+                    })
+                    ->first();
+
+                if (!$procurement) {
+                    $procurement = \App\Models\ProcurementOfGoods::create([
+                        'procurement_number' => \App\Models\ProcurementOfGoods::generateProcurementNumber(),
+                        'order_id' => null,
+                        'custom_quotation_id' => null,
+                        'general_affair_id' => null,
+                        'status' => 'pending',
+                        'notes' => 'Pengadaan Shortage: ' . ($item->barang->goods_name ?? 'Barang Listing'),
+                    ]);
+                }
 
                 $procItem = \App\Models\ProcurementOfGoodsItem::where('procurement_of_goods_id', $procurement->id)
                     ->where('goods_id', $item->goods_id)

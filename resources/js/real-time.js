@@ -150,6 +150,39 @@ document.addEventListener("DOMContentLoaded", function () {
         // Selalu perbarui badge lokal di sidebar/tab untuk role pengguna saat ini
         updateBadges(userRole, userId, e.data);
 
+        // Jika berada di halaman procurement, segarkan badge tab dan isi tabel secara real-time
+        if (window.location.pathname.includes('procurement')) {
+            // Deteksi tab mana yang saat ini aktif sebelum data ditimpa
+            let activeTabId = 'tab-listing-btn';
+            if (document.getElementById('tab-non-listing-content') && !document.getElementById('tab-non-listing-content').classList.contains('hidden')) {
+                activeTabId = 'tab-non-listing-btn';
+            } else if (document.getElementById('tab-combined-content') && !document.getElementById('tab-combined-content').classList.contains('hidden')) {
+                activeTabId = 'tab-combined-btn';
+            }
+
+            fetch(window.location.href)
+                .then(res => res.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    const newCard = doc.getElementById('procurement-main-card');
+                    const currentCard = document.getElementById('procurement-main-card');
+                    
+                    if (newCard && currentCard) {
+                        currentCard.innerHTML = newCard.innerHTML;
+                        
+                        // Kembalikan tab yang sebelumnya aktif
+                        const activeBtn = document.getElementById(activeTabId);
+                        const activeContent = document.getElementById(activeTabId.replace('-btn', '-content'));
+                        if (activeBtn && activeContent && typeof window.switchTab === 'function') {
+                            window.switchTab(activeBtn, activeContent);
+                        }
+                    }
+                })
+                .catch(err => console.error('Failed to silent refresh procurement card:', err));
+        }
+
         // Cek apakah user saat ini adalah penerima notifikasi
         const isRecipient = 
             e.recipientRole === "All" ||

@@ -31,7 +31,7 @@
                 </svg>
             </div>
             <input type="text" id="allocationSearchInput" 
-                placeholder="Cari No SO, Customer, Barang..." 
+                placeholder="Cari No SO atau Customer" 
                 class="w-full rounded-xl border border-gray-300 bg-gray-50 py-2 pl-9 pr-4 text-xs font-medium text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
         </div>
 
