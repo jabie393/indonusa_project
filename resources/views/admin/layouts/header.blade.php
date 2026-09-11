@@ -1,166 +1,165 @@
 <nav
     class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative z-50 flex h-full flex-row items-center justify-between rounded-xl bg-gradient-to-r from-[#225A97] to-[#0D223A] shadow-sm dark:bg-gradient-to-r dark:from-[#0D223A] dark:to-[#225A97]">
-    <div class="ml-5 flex items-center">
+    <div class="ml-3 flex min-w-0 flex-1 items-center sm:ml-5">
         @hasSection('header_content')
             @yield('header_content')
         @else
             @if (request()->routeIs('dashboard'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-nowrap text-sm font-bold text-gray-100 md:text-xl">
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">
                         Halo, {{ Auth::user()->name }}
-                        <span class="hidden text-nowrap font-semibold text-gray-100 md:inline">
+                        <span class="hidden font-semibold text-gray-100 md:inline">
                             ({{ Auth::user()->role ?? 'User' }})
                         </span>
                     </h1>
-                    <p class="md:text-md hidden text-xs text-gray-300 md:mt-1 md:block">
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">
                         {{ __('Selamat datang di Dashboard!') }}
                     </p>
                 </div>
             @elseif (request()->routeIs('goods-in.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods In</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Manajemen Penerimaan Barang</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Goods In</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Manajemen Penerimaan Barang</p>
                 </div>
             @elseif (request()->routeIs('general-affair.procurement.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Procurement</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola pengadaan barang kustom dari Custom Quotation
-                        yang disetujui.</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Procurement</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola pengadaan barang kustom dari Custom Quotation yang disetujui.</p>
                 </div>
             @elseif (request()->routeIs('add-stock.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Add Stock</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Penambahan Stok Barang</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Add Stock</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Penambahan Stok Barang</p>
                 </div>
             @elseif (request()->routeIs('import-excel.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Import Excel</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Data Barang Via Excel</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Import Excel</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Import Data Barang Via Excel</p>
                 </div>
             @elseif (request()->routeIs('import-stock-excel.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Import Stock Excel</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Import Stok Barang Via Excel</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Import Stock Excel</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Import Stok Barang Via Excel</p>
                 </div>
             @elseif (request()->routeIs('goods-in-status.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods In Status</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Status Barang Masuk</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Goods In Status</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Status Barang Masuk</p>
                 </div>
             @elseif (request()->routeIs('sales-agents.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Agents Management</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Pengguna Sales</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Sales Agents Management</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola Pengguna Sales</p>
                 </div>
             @elseif (request()->routeIs('pics.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">PICs Management</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Penanggung Jawab Pelanggan</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">PICs Management</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola Penanggung Jawab Pelanggan</p>
                 </div>
             @elseif (request()->routeIs('customers.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Customers Management</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Data Pelanggan</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Customers Management</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola Data Pelanggan</p>
                 </div>
             @elseif (request()->routeIs('history.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">History</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Aktivitas</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">History</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Riwayat Aktivitas</p>
                 </div>
             @elseif (request()->routeIs('supply-orders.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Supply Orders</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Pesanan Masuk Dari Sales</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Supply Orders</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Pesanan Masuk Dari Sales</p>
                 </div>
             @elseif (request()->routeIs('delivery-orders.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Delivery Orders</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Pesanan Siap Dikirim</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Delivery Orders</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Pesanan Siap Dikirim</p>
                 </div>
             @elseif (request()->routeIs('warehouse.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Warehouse</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Manajemen Gudang</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Warehouse</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Manajemen Gudang</p>
                 </div>
             @elseif (request()->routeIs('goods-receipts.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Goods Receipt</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Harga Beli</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Goods Receipt</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Riwayat Harga Beli</p>
                 </div>
             @elseif (request()->routeIs('supervisor.custom-quotation-approval.*'))
-                <div class="hidden text-gray-100 md:block">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Non-listing Quotation Approval</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Menunggu Approval</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Non-listing Quotation Approval</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Menunggu Approval</p>
                 </div>
             @elseif (request()->routeIs('sales.quotation.*'))
                 @php
                     $ro = request()->route('quotation') ?? request()->route('requestOrder') ?? request()->route('request_order');
                     $requestNumber = optional($ro)->request_number ?? (optional($ro)->quotation_number ?? '');
                 @endphp
-                <div class="hidden text-gray-100 md:block">
+                <div class="min-w-0 text-gray-100">
                     @if (request()->routeIs('sales.quotation.show'))
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation Details</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
+                        <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Quotation Details</h1>
+                        <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">{{ $requestNumber }}</p>
                     @elseif (request()->routeIs('sales.quotation.edit'))
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Edit Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">{{ $requestNumber }}</p>
+                        <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Edit Quotation</h1>
+                        <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">{{ $requestNumber }}</p>
                     @elseif (request()->routeIs('sales.quotation.create'))
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Form Pembuatan Penawaran</p>
+                        <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Create New Quotation</h1>
+                        <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Form Pembuatan Penawaran</p>
                     @else
-                        <h1 class="text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
-                        <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat Penawaran (Listing)</p>
+                        <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Quotation</h1>
+                        <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Membuat Penawaran (Listing)</p>
                     @endif
                 </div>
             @elseif (request()->routeIs('sales.custom-quotation.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Membuat Penawaran Khusus (Non-Listing)</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Custom Quotation</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Membuat Penawaran Khusus (Non-Listing)</p>
                 </div>
             @elseif (request()->routeIs('admin.quotation_approval'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Listing Quotation Approval</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Menunggu Approval</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Listing Quotation Approval</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Menunggu Approval</p>
                 </div>
             @elseif (request()->routeIs('orders.history') || request()->routeIs('admin.orders.history'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">History Orders</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Pesanan Selesai</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">History Orders</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Riwayat Pesanan Selesai</p>
                 </div>
             @elseif (request()->routeIs('sales.sales-orders.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Orders</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Kelola Semua Sales Order Anda</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Sales Orders</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola Semua Sales Order Anda</p>
                 </div>
             @elseif (request()->routeIs('sales-order-invoices.*') || request()->routeIs('invoice.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Order Invoices</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Invoice Sales Order</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Sales Order Invoices</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Invoice Sales Order</p>
                 </div>
             @elseif (request()->routeIs('supervisor.defect-report.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Laporan Defect</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Laporan Barang Rusak</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Laporan Defect</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Laporan Barang Rusak</p>
                 </div>
             @elseif (request()->routeIs('supervisor.history'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Supervisor Approval History</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Riwayat Approval Supervisor</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Supervisor Approval History</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Riwayat Approval Supervisor</p>
                 </div>
             @elseif (request()->routeIs('catalog.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Catalog</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Daftar Katalog</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Catalog</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Daftar Katalog</p>
                 </div>
             @elseif (request()->routeIs('sales-report.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">Sales Report</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Laporan Kinerja Sales</p>
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Sales Report</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Laporan Kinerja Sales</p>
                 </div>
             @elseif (request()->routeIs('wms-settings.*'))
-                <div class="text-gray-100">
-                    <h1 class="text-sm font-bold text-gray-100 md:text-xl">WMS Settings</h1>
-                    <p class="md:text-md text-xs text-gray-300 md:mt-1">Konfigurasi Nama Pimpinan, Jabatan, Dan Informasi
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">WMS Settings</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Konfigurasi Nama Pimpinan, Jabatan, Dan Informasi
                         Perusahaan Untuk Dokumen Resmi (Laporan, PDF, & Excel).</p>
                 </div>
             @endif
@@ -168,9 +167,9 @@
     </div>
 
 
-    <div class="mr-5 flex items-center lg:order-2">
+    <div class="mr-3 flex shrink-0 items-center sm:mr-5 lg:order-2">
         <button id="theme-toggle" type="button"
-            class="rounded-lg p-2.5 text-sm text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-700">
+            class="rounded-lg p-2 text-sm text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-700 sm:p-2.5">
             <svg id="theme-toggle-dark-icon" class="hidden h-5 w-5" fill="currentColor" viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
@@ -184,11 +183,12 @@
         </button>
         <!-- Dropdown menu -->
 
-        <button type="button" class="mx-3 flex rounded-full bg-[#225A97] text-sm hover:bg-[#1c4d81] md:mr-0"
+        <button type="button" class="mx-1.5 flex rounded-full bg-[#225A97] text-sm hover:bg-[#1c4d81] sm:mx-3 md:mr-0"
             id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
             <span class="sr-only">Open user menu</span>
-            <p class="inline-flex items-center px-4 py-2 text-white">
-                {{ Auth::user()->name }} ({{ Auth::user()->role }})
+            <p class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs text-white sm:px-4 sm:py-2 sm:text-sm">
+                <span class="max-w-[80px] truncate sm:max-w-none">{{ Auth::user()->name }}</span>
+                <span class="hidden font-medium sm:inline">({{ Auth::user()->role }})</span>
                 <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

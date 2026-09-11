@@ -3,12 +3,13 @@
         <div class="flex flex-col items-center justify-between space-y-3 p-6 md:flex-row md:space-x-4 md:space-y-0">
             <!-- FILTER FORM -->
             <div class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
-                <form action="{{ route('dashboard') }}"
+                <form id="filters-form"
+                      action="{{ route('dashboard') }}"
                       method="GET"
-                      class="flex items-center gap-2">
+                      class="flex flex-col items-center gap-2 md:flex-row">
                     <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Filter tanggal</label>
-                        <div class="flex flex-row items-center">
+                        <div class="flex flex-col items-center md:flex-row">
                             <input type="date"
                                    name="date_start"
                                    class="rounded-xl border px-2 py-1"
@@ -19,7 +20,7 @@
                                    class="rounded-xl border px-2 py-1"
                                    value="{{ $selectedDateEnd ?? '' }}" />
                             <button type="submit"
-                                    class="ml-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white">
+                                    class="mt-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white md:ml-3 md:mt-0">
                                 <svg class="pr-2"
                                      xmlns="http://www.w3.org/2000/svg"
                                      width="24"
@@ -34,7 +35,7 @@
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                 </svg> Filter</button>
                             <a href="{{ route('dashboard') }}"
-                               class="ml-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950">
+                               class="mt-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950 md:ml-3 md:mt-0">
                                 <svg class="pr-2"
                                      xmlns="http://www.w3.org/2000/svg"
                                      width="24"
@@ -49,7 +50,7 @@
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
                                     <path d="M3 3v5h5"></path>
                                 </svg>
-                                Reset
+                                Atur Ulang
                             </a>
                         </div>
                     </div>

@@ -5,33 +5,33 @@
             <div
                 class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
                 <form id="filters-form" action="{{ route('dashboard') }}" method="GET"
-                    class="flex flex-wrap items-end gap-4">
+                    class="flex flex-col items-center gap-2 md:flex-row">
                     <input type="hidden" name="tab" id="filters-tab" :value="activeTab" />
                     <input type="hidden" name="sales_id" id="filters-sales-id" value="{{ request()->query('sales_id', 'all') }}" />
                     <div class="flex flex-col">
-                        <label class="py-1 text-sm text-gray-700 dark:text-gray-300">Filter Tanggal</label>
-                        <div class="flex flex-row items-center gap-2">
+                        <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Filter tanggal</label>
+                        <div class="flex flex-col items-center md:flex-row">
                             <input type="date" name="date_start" class="rounded-xl border px-2 py-1"
                                 value="{{ $selectedDateStart ?? '' }}" />
                             <span class="text-sm text-gray-700 dark:text-gray-300">-</span>
                             <input type="date" name="date_end" class="rounded-xl border px-2 py-1"
                                 value="{{ $selectedDateEnd ?? '' }}" />
                             <button type="submit"
-                                class="flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white">
-                                <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                class="mt-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white md:ml-3 md:mt-0">
+                                <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter h-4 w-4">
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                 </svg> Filter
                             </button>
                             <a href="{{ route('dashboard') }}"
-                                class="flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950">
-                                <svg class="mr-2" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                class="mt-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950 md:ml-3 md:mt-0">
+                                <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
+                                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw h-4 w-4">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
                                     <path d="M3 3v5h5"></path>
-                                </svg> Reset
+                                </svg> Atur Ulang
                             </a>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
         </div>
 
         <!-- MAIN DASHBOARD TAB NAVIGATION BAR -->
-        <div class="mx-6 mb-6 flex flex-row items-center gap-2 border-b border-gray-200 dark:border-gray-700">
+        <div class="mx-6 mb-6 flex flex-row items-center gap-2 overflow-x-auto border-b border-gray-200 dark:border-gray-700">
             <button type="button"
                 @click="activeTab = 'supervisor'; if(document.getElementById('filters-tab')) document.getElementById('filters-tab').value = 'supervisor'; $nextTick(() => window.dispatchEvent(new Event('resize')))"
                 :class="activeTab === 'supervisor' 

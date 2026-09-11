@@ -6,25 +6,25 @@
             <!-- FILTER FORM -->
             <div
                 class="flex-end inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm rounded-2xl p-5 shadow-md">
-                <form id="filters-form" action="{{ route('dashboard') }}" method="GET" class="flex items-center gap-2">
+                <form id="filters-form" action="{{ route('dashboard') }}" method="GET" class="flex flex-col items-center gap-2 md:flex-row">
                     <input type="hidden" name="tab" id="filters-tab" :value="activeTab" />
                     <div class="flex flex-col">
                         <label class="py-2 text-sm text-gray-700 dark:text-gray-300">Filter tanggal</label>
-                        <div class="flex flex-row items-center">
+                        <div class="flex flex-col items-center md:flex-row">
                             <input type="date" name="date_start" class="rounded-xl border px-2 py-1"
                                 value="{{ $selectedDateStart ?? '' }}" />
                             <span class="text-sm text-gray-700 dark:text-gray-300">-</span>
                             <input type="date" name="date_end" class="rounded-xl border px-2 py-1"
                                 value="{{ $selectedDateEnd ?? '' }}" />
                             <button type="submit"
-                                class="ml-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white">
+                                class="mt-3 flex cursor-pointer flex-row items-center rounded-xl bg-[#225A97] px-4 py-1 text-white md:ml-3 md:mt-0">
                                 <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-filter h-4 w-4">
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                                 </svg> Filter</button>
                             <a href="{{ route('dashboard') }}"
-                                class="ml-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950">
+                                class="mt-3 flex flex-row items-center rounded-xl px-4 py-1 text-blue-950 hover:bg-blue-100 dark:text-gray-300 dark:hover:text-blue-950 md:ml-3 md:mt-0">
                                 <svg class="pr-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round"
@@ -41,7 +41,7 @@
         </div>
 
         <!-- MAIN DASHBOARD TAB NAVIGATION BAR -->
-        <div class="mx-6 mb-6 flex flex-row items-center gap-2 border-b border-gray-200 dark:border-gray-700">
+        <div class="mx-6 mb-6 flex flex-row items-center gap-2 overflow-x-auto border-b border-gray-200 dark:border-gray-700">
             <button type="button"
                 @click="activeTab = 'ga'; if(document.getElementById('filters-tab')) document.getElementById('filters-tab').value = 'ga'; $nextTick(() => window.dispatchEvent(new Event('resize')))"
                 :class="activeTab === 'ga' 

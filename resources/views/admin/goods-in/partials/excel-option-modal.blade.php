@@ -17,7 +17,7 @@
                         </mask>
                         <path d="M58.07 55.81H52.85V61.15H47.99V55.81H42.77V51.22H47.99V45.85H52.85V51.22H58.07V55.81Z" fill="black" />
                         <path
-                            d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85V44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85V44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22V50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
+                            d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85H44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85H44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22H50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
                             fill="#E5E7EB" mask="url(#path-8-outside-1_1070_27)" />
                     </g>
                     <defs>
@@ -43,20 +43,20 @@
                 </form>
             </div>
         </div>
-        <div class="p-8">
-            <div class="flex flex-col items-center justify-center gap-6 sm:flex-row sm:gap-8">
+        <div class="p-4 sm:p-8">
+            <div class="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-8">
 
 
-                <a href="{{ route('import-excel.index') }}" class="group relative flex h-56 w-full max-w-[220px] flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                <a href="{{ route('import-excel.index') }}" class="group relative flex w-full max-w-sm flex-row items-center gap-4 rounded-2xl bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm sm:h-56 sm:max-w-[220px] sm:flex-col sm:justify-center sm:gap-4 sm:p-6 sm:shadow-lg">
                     <!-- Gradient overlay on hover -->
                     <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
                     <!-- Content -->
-                    <div class="relative z-10 flex flex-col items-center gap-4">
+                    <div class="relative z-10 flex w-full flex-row items-center gap-4 sm:flex-col sm:justify-center sm:gap-4">
                         <!-- Icon container -->
-                        <div class="flex h-20 w-20 items-center justify-center rounded-xl bg-gray-200 text-[#225A97] transition-all duration-300 group-hover:bg-white/20 group-hover:text-white dark:bg-gray-700 dark:text-blue-400">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-200 text-[#225A97] transition-all duration-300 group-hover:bg-white/20 group-hover:text-white dark:bg-gray-700 dark:text-blue-400 sm:h-20 sm:w-20">
                             <!-- Replace with your icon -->
-                            <svg width="40" height="40" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-7 w-7 sm:h-10 sm:w-10" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_1070_27)">
                                     <path d="M10.3334 19.3748V7.74984C10.3334 6.3231 11.49 5.1665 12.9167 5.1665H49.0834C50.5101 5.1665 51.6667 6.3231 51.6667 7.74984V54.2498C51.6667 55.6766 50.5101 56.8332 49.0834 56.8332H12.9167C11.49 56.8332 10.3334 55.6766 10.3334 54.2498V42.6248" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
                                     <path d="M40.0417 19.375H43.9167" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
@@ -71,7 +71,7 @@
                                     </mask>
                                     <path d="M58.07 55.81H52.85V61.15H47.99V55.81H42.77V51.22H47.99V45.85H52.85V51.22H58.07V55.81Z" fill="black" />
                                     <path
-                                        d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85V44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85V44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22V50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
+                                        d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85H44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85H44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22H50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
                                         fill="#E5E7EB" mask="url(#path-8-outside-1_1070_27)" />
                                 </g>
                                 <defs>
@@ -83,7 +83,7 @@
                         </div>
 
                         <!-- Text content -->
-                        <div class="flex flex-col items-center gap-1 text-center">
+                        <div class="flex flex-col items-start gap-0.5 text-left sm:items-center sm:gap-1 sm:text-center">
                             <span class="flex items-center gap-2 text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-white dark:text-white">
                                 <!-- Plus icon -->
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,21 +95,26 @@
                                 Import data barang baru
                             </span>
                         </div>
+                        <div class="ml-auto text-gray-400 transition-colors duration-300 group-hover:text-white sm:hidden">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
                     </div>
 
                     <!-- Decorative corner accent -->
                     <div class="absolute -right-1 -top-1 h-8 w-8 rounded-full bg-[#225A97]/20 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100"></div>
                 </a>
-                <a href="{{ route('import-stock-excel.index') }}" class="group relative flex h-56 w-full max-w-[220px] flex-col items-center justify-center gap-4 rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm">
+                <a href="{{ route('import-stock-excel.index') }}" class="group relative flex w-full max-w-sm flex-row items-center gap-4 rounded-2xl bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm sm:h-56 sm:max-w-[220px] sm:flex-col sm:justify-center sm:gap-4 sm:p-6 sm:shadow-lg">
                     <!-- Gradient overlay on hover -->
                     <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
                     <!-- Content -->
-                    <div class="relative z-10 flex flex-col items-center gap-4">
+                    <div class="relative z-10 flex w-full flex-row items-center gap-4 sm:flex-col sm:justify-center sm:gap-4">
                         <!-- Icon container -->
-                        <div class="flex h-20 w-20 items-center justify-center rounded-xl bg-gray-200 text-[#225A97] transition-all duration-300 group-hover:bg-white/20 group-hover:text-white dark:bg-gray-700 dark:text-blue-400">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gray-200 text-[#225A97] transition-all duration-300 group-hover:bg-white/20 group-hover:text-white dark:bg-gray-700 dark:text-blue-400 sm:h-20 sm:w-20">
                             <!-- Replace with your icon -->
-                            <svg width="40" height="40" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="h-7 w-7 sm:h-10 sm:w-10" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_1070_27)">
                                     <path d="M10.3334 19.3748V7.74984C10.3334 6.3231 11.49 5.1665 12.9167 5.1665H49.0834C50.5101 5.1665 51.6667 6.3231 51.6667 7.74984V54.2498C51.6667 55.6766 50.5101 56.8332 49.0834 56.8332H12.9167C11.49 56.8332 10.3334 55.6766 10.3334 54.2498V42.6248" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
                                     <path d="M40.0417 19.375H43.9167" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
@@ -124,7 +129,7 @@
                                     </mask>
                                     <path d="M58.07 55.81H52.85V61.15H47.99V55.81H42.77V51.22H47.99V45.85H52.85V51.22H58.07V55.81Z" fill="black" />
                                     <path
-                                        d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85V44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85V44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22V50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
+                                        d="M58.07 55.81V56.81H59.07V55.81H58.07ZM52.85 55.81V54.81H51.85V55.81H52.85ZM52.85 61.15V62.15H53.85V61.15H52.85ZM47.99 61.15H46.99V62.15H47.99V61.15ZM47.99 55.81H48.99V54.81H47.99V55.81ZM42.77 55.81H41.77V56.81H42.77V55.81ZM42.77 51.22V50.22H41.77V51.22H42.77ZM47.99 51.22V52.22H48.99V51.22H47.99ZM47.99 45.85H44.85H46.99V45.85H47.99ZM52.85 45.85H53.85V44.85H52.85V45.85ZM52.85 51.22H51.85V52.22H52.85V51.22ZM58.07 51.22H59.07V50.22H58.07V51.22ZM58.07 55.81V54.81H52.85V55.81V56.81H58.07V55.81ZM52.85 55.81H51.85V61.15H52.85H53.85V55.81H52.85ZM52.85 61.15V60.15H47.99V61.15V62.15H52.85V61.15ZM47.99 61.15H48.99V55.81H47.99H46.99V61.15H47.99ZM47.99 55.81V54.81H42.77V55.81V56.81H47.99V55.81ZM42.77 55.81H43.77V51.22H42.77H41.77V55.81H42.77ZM42.77 51.22V52.22H47.99V51.22V50.22H42.77V51.22ZM47.99 51.22H48.99V45.85H47.99H46.99V51.22H47.99ZM47.99 45.85V46.85H52.85V45.85H44.85H47.99V45.85ZM52.85 45.85H51.85V51.22H52.85H53.85V45.85H52.85ZM52.85 51.22V52.22H58.07V51.22H50.22H52.85V51.22ZM58.07 51.22H57.07V55.81H58.07H59.07V51.22H58.07Z"
                                         fill="#E5E7EB" mask="url(#path-8-outside-1_1070_27)" />
                                 </g>
                                 <defs>
@@ -136,7 +141,7 @@
                         </div>
 
                         <!-- Text content -->
-                        <div class="flex flex-col items-center gap-1 text-center">
+                        <div class="flex flex-col items-start gap-0.5 text-left sm:items-center sm:gap-1 sm:text-center">
                             <span class="flex items-center gap-2 text-sm font-semibold text-gray-900 transition-colors duration-300 group-hover:text-white dark:text-white">
                                 <!-- Plus icon -->
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,6 +153,11 @@
                                 Update stok barang yang ada
                             </span>
                         </div>
+                        <div class="ml-auto text-gray-400 transition-colors duration-300 group-hover:text-white sm:hidden">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
                     </div>
 
                     <!-- Decorative corner accent -->
@@ -155,7 +165,7 @@
                 </a>
 
             </div>
-            <p class="text-gray-600 dark:text-gray-400 mt-8 text-center text-xs">File yang didukung: .xlsx, .xls, .csv</p>
+            <p class="text-gray-600 dark:text-gray-400 mt-6 sm:mt-8 text-center text-xs">File yang didukung: .xlsx, .xls, .csv</p>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop">
