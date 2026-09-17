@@ -1,11 +1,7 @@
 import Chart from 'chart.js/auto';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const imcCanvas = document.getElementById('IMC');
-    const svcCanvas = document.getElementById('SVC');
-
-    if (!imcCanvas) return;
-    const endpoint = imcCanvas.dataset.endpoint || '/admin/dashboard/supervisor/data';
+    const endpoint = '/admin/dashboard/supervisor/data';
 
     function formatRupiahShort(value) {
         const number = Number(value) || 0;
@@ -62,64 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 1. Create Supervisor IMC chart
-    const imcLabels = JSON.parse(imcCanvas.dataset.labels || '[]');
-    const imcMasuk = JSON.parse(imcCanvas.dataset.masuk || '[]');
-    const imcKeluar = JSON.parse(imcCanvas.dataset.keluar || '[]');
-
-    const imcCtx = imcCanvas.getContext('2d');
-    window.imcChart = new Chart(imcCtx, {
-        type: 'bar',
-        data: {
-            labels: imcLabels,
-            datasets: [
-                { label: 'Masuk', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
-                { label: 'Keluar', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            return label + formatRupiahShort(context.parsed.y);
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        callback: function(value) {
-                            return formatRupiahShort(value);
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    // 2. Create Supervisor SVC chart
-    if (svcCanvas) {
-        const svcLabels = JSON.parse(svcCanvas.dataset.labels || '[]');
-        const svcData = JSON.parse(svcCanvas.dataset.values || '[]');
-        const svcCtx = svcCanvas.getContext('2d');
-        window.svcChart = new Chart(svcCtx, {
-            type: 'bar',
-            data: { labels: svcLabels, datasets: [{ label: 'Stock', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-
-    // 3. Create Sales Performance Chart (#salesIMC)
+    // 1. Create Sales Performance Chart (#salesIMC)
     const salesImcCanvas = document.getElementById('salesIMC');
     if (salesImcCanvas) {
         const salesImcLabels = JSON.parse(salesImcCanvas.dataset.labels || '[]');
@@ -166,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Create Sales Order Tracking Donut Chart (#salesOrderTrackingChart)
+    // 2. Create Sales Order Tracking Donut Chart (#salesOrderTrackingChart)
     const trackingCanvas = document.getElementById('salesOrderTrackingChart');
     if (trackingCanvas) {
         const finishCount = Number(trackingCanvas.dataset.finish || 0);
@@ -206,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Create Target Quarter & Monthly Target Charts
+    // 3. Create Target Quarter & Monthly Target Charts
     const tqCanvas = document.getElementById('salesTargetQuarterChart');
     const mtCanvas = document.getElementById('salesMonthlyTargetChart');
 
@@ -356,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 3. Sales Year Select
-        const salesYearSelect = document.getElementById('sales-imc-year-select') || document.getElementById('imc-year-select');
+        const salesYearSelect = document.getElementById('sales-imc-year-select');
         if (salesYearSelect && salesYearSelect.value) {
             params.set('year', salesYearSelect.value);
         }
@@ -377,49 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
             if (!res.ok) throw new Error('Network error');
             const json = await res.json();
-
-            // Update Supervisor Charts
-            if (window.imcChart && json.imc_labels) {
-                window.imcChart.data.labels = json.imc_labels;
-                window.imcChart.data.datasets[0].data = json.imc_masuk;
-                window.imcChart.data.datasets[1].data = json.imc_keluar;
-                window.imcChart.update();
-            }
-            if (window.svcChart && json.svc_labels) {
-                window.svcChart.data.labels = json.svc_labels;
-                window.svcChart.data.datasets[0].data = json.svc_data;
-                window.svcChart.update();
-            }
-
-            // Update Supervisor Stat Cards DOM Elements
-            if (json.totalPending !== undefined) {
-                const el = document.getElementById('sup-total-pending');
-                if (el) el.textContent = formatNumber(json.totalPending);
-            }
-            if (json.totalApproved !== undefined) {
-                const el = document.getElementById('sup-total-approved');
-                if (el) el.textContent = formatNumber(json.totalApproved);
-            }
-            if (json.lastMonthApproved !== undefined) {
-                const el = document.getElementById('sup-last-month-approved');
-                if (el) el.textContent = formatNumber(json.lastMonthApproved);
-            }
-            if (json.totalRevenue !== undefined) {
-                const el = document.getElementById('sup-total-revenue');
-                if (el) el.textContent = formatNumber(json.totalRevenue);
-            }
-            if (json.lastMonthRevenue !== undefined) {
-                const el = document.getElementById('sup-last-month-revenue');
-                if (el) el.textContent = formatRupiahFull(json.lastMonthRevenue);
-            }
-            if (json.salesPerformance !== undefined) {
-                const el = document.getElementById('sup-sales-perf');
-                if (el) el.textContent = formatNumber(json.salesPerformance);
-            }
-            if (json.lastMonthPerf !== undefined) {
-                const el = document.getElementById('sup-last-month-perf');
-                if (el) el.textContent = formatNumber(json.lastMonthPerf);
-            }
 
             // Update Sales Stat Cards DOM Elements
             if (json.totalQuotation !== undefined) {
@@ -587,3 +483,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+

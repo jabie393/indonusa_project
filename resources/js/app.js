@@ -12,25 +12,59 @@ import Swal from "sweetalert2";
 
 window.Swal = Swal;
 
-// Decorate Swal.fire globally to apply consistent styling (confirm button color and dark mode classes)
+// Decorate Swal.fire globally to apply consistent styling (confirm button color, dark mode, rounded styles, and toast defaults)
 const originalFire = Swal.fire;
 Swal.fire = function(options) {
     if (options && typeof options === 'object') {
-        if (!options.confirmButtonColor) {
-            const isError = options.icon === "error" || 
-                            (typeof options.title === "string" && (options.title.toLowerCase().includes("gagal") || options.title.toLowerCase().includes("error")));
-            options.confirmButtonColor = isError ? "#d33" : "#225A97";
-        }
-        if (!options.customClass) {
+        const isToast = options.toast || (this && this.params && this.params.toast);
+        const userCustomClass = options.customClass || {};
+
+        if (isToast) {
+            options.toast = true;
+            if (!options.position) options.position = "top-end";
+            
             options.customClass = {
-                popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-                title: "dark:text-white",
-                htmlContainer: "dark:text-gray-300",
+                popup: ("rounded-2xl! shadow-lg! border! border-gray-200! dark:border-gray-700! dark:bg-gray-800! dark:text-white! " + (userCustomClass.popup || "")).trim(),
+                title: ("text-sm! font-bold! dark:text-white! " + (userCustomClass.title || "")).trim(),
+                htmlContainer: ("text-xs! dark:text-gray-300! " + (userCustomClass.htmlContainer || "")).trim(),
+                ...userCustomClass
+            };
+        } else {
+            if (!options.confirmButtonColor) {
+                const isError = options.icon === "error" || 
+                                (typeof options.title === "string" && (options.title.toLowerCase().includes("gagal") || options.title.toLowerCase().includes("error")));
+                options.confirmButtonColor = isError ? "#d33" : "#225A97";
+            }
+            if (!options.target) {
+                const openDialog = document.querySelector('dialog[open]');
+                if (openDialog) options.target = openDialog;
+            }
+            options.customClass = {
+                popup: ("rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700! " + (userCustomClass.popup || "")).trim(),
+                title: ("text-base! font-bold! dark:text-white! " + (userCustomClass.title || "")).trim(),
+                htmlContainer: ("text-sm! dark:text-gray-300! " + (userCustomClass.htmlContainer || "")).trim(),
+                ...userCustomClass
             };
         }
     }
-    return originalFire.call(Swal, options);
+    return originalFire.apply(this, arguments);
 };
+
+// Global helper for toast notifications
+Swal.toast = function(options) {
+    if (typeof options === "string") {
+        options = { title: options };
+    }
+    return Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        ...options,
+    });
+};
+
 // Add global reference
 window.Swal = Swal;
 

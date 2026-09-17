@@ -13,9 +13,9 @@ window.confirmDelete = function (callback) {
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         customClass: {
-            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-            title: "dark:text-white",
-            htmlContainer: "dark:text-gray-300",
+            popup: "rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!",
+            title: "dark:text-white!",
+            htmlContainer: "dark:text-gray-300!",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -37,9 +37,9 @@ window.confirmCancel = function (callback) {
         confirmButtonText: "Ya, batalkan!",
         cancelButtonText: "Tidak",
         customClass: {
-            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-            title: "dark:text-white",
-            htmlContainer: "dark:text-gray-300",
+            popup: "rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!",
+            title: "dark:text-white!",
+            htmlContainer: "dark:text-gray-300!",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -61,9 +61,9 @@ window.confirmApprove = function (callback, text = "Apakah Anda yakin ingin meny
         confirmButtonText: confirmButtonText,
         cancelButtonText: "Batal",
         customClass: {
-            popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-            title: "dark:text-white",
-            htmlContainer: "dark:text-gray-300",
+            popup: "rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!",
+            title: "dark:text-white!",
+            htmlContainer: "dark:text-gray-300!",
         },
         target: document.querySelector('dialog[open]') || 'body',
     }).then((result) => {
@@ -103,9 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 timer: (isError || !!window.sweetShowConfirmButton) ? undefined : 3500,
                 timerProgressBar: !(isError || !!window.sweetShowConfirmButton),
                 customClass: {
-                    popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-                    title: "dark:text-white",
-                    htmlContainer: "dark:text-gray-300",
+                    popup: "rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!",
+                    title: "dark:text-white!",
+                    htmlContainer: "dark:text-gray-300!",
                 },
                 target: document.querySelector('dialog[open]') || 'body',
             }).then(() => {
@@ -132,9 +132,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     showConfirmButton: true,
                     confirmButtonColor: "#d33",
                     customClass: {
-                        popup: "rounded-2xl dark:bg-gray-800 dark:text-white dark:border dark:border-gray-700",
-                        title: "dark:text-white",
-                        htmlContainer: "dark:text-gray-300",
+                        popup: "rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!",
+                        title: "dark:text-white!",
+                        htmlContainer: "dark:text-gray-300!",
                     },
                     target: document.querySelector('dialog[open]') || 'body',
                 });

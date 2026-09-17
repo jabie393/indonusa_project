@@ -6,16 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Goods;
-use App\Models\Order;
-use App\Models\Quotation;
-use App\Models\QuotationItem;
-use App\Models\User;
+use App\Models\ProcurementOfGoods;
+use App\Models\ProcurementOfGoodsItem;
+use App\Models\ProcurementArrivalRequest;
 use Carbon\Carbon;
 
 class GeneralAffairDashboardController extends Controller
 {
     /**
-     * Display the General Affair dashboard.
+     * Display the General Affair dashboard (Purchasing only).
      */
     public function dashboard(?Request $request = null)
     {
@@ -25,7 +24,6 @@ class GeneralAffairDashboardController extends Controller
         }
 
         // 1. Handle filters
-        $threshold = (int) ($request ? $request->query('threshold', 20) : 20);
         $dateStartRaw = $request ? $request->query('date_start') : null;
         $dateEndRaw = $request ? $request->query('date_end') : null;
 
@@ -39,161 +37,9 @@ class GeneralAffairDashboardController extends Controller
             $dateEnd = null;
         }
 
-        $applyDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
-            return $query
-                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
-                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
-        };
-
-        // 2. Calculate Stats (Driven by Quotation)
-        // Pending: No order yet, or still in approval stages
-        $totalPending = $applyDateFilter(
-            Quotation::where(function ($query) {
-                $query->whereDoesntHave('order')
-                    ->orWhereHas('order', function($q) {
-                        $q->whereIn('status', ['pending_approval', 'sent_to_supervisor', 'sent_to_warehouse']);
-                    });
-            })
-        )->count();
-
-        // Approved: Supervisor approved it, or moving through warehouse/completion
-        $totalApproved = $applyDateFilter(Quotation::whereHas('order', function($q) {
-            $q->whereIn('status', ['open', 'sent_to_warehouse', 'approved_warehouse']);
-        }))->count();
-
-        // Total Orders (All Quotations/Requests)
-        $totalOrders = $applyDateFilter(Order::whereIn('status', ['completed']))->count();
-
-        // Total Revenue (Sum of all Quotation grand totals where order is completed)
-        $totalRevenue = $applyDateFilter(Quotation::whereHas('order', function($q) {
-            $q->where('status', 'completed');
-        }))->sum('grand_total');
-
-        // Customers (Only from completed orders)
-        $totalCustomers = $applyDateFilter(Quotation::whereHas('order', function($q) {
-            $q->where('status', 'completed');
-        }))->distinct('customer_id')->count('customer_id');
-
-        // 3. Top Performers (Strategic Insights)
-
-        // Top 5 Sales Users by Revenue (Status: Completed)
-        $topSales = User::where('role', 'Sales')
-            ->join('quotations', 'users.id', '=', 'quotations.sales_id')
-            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
-            ->where('orders.status', 'completed')
-            ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
-            ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
-            ->select('users.name', DB::raw('SUM(quotations.grand_total) as revenue'))
-            ->groupBy('users.id', 'users.name')
-            ->orderByDesc('revenue')
-            ->take(5)
-            ->get();
-
-        // Top 5 Customers by Revenue (Completed)
-        $topCustomers = $applyDateFilter(Quotation::whereHas('order', function($q) {
-                $q->where('status', 'completed');
-            }))
-            ->select('customer_name', DB::raw('SUM(grand_total) as revenue'))
-            ->groupBy('customer_name')
-            ->orderByDesc('revenue')
-            ->take(5)
-            ->get();
-
-        $statusBreakdown = $applyDateFilter(Order::select('status', DB::raw('count(*) as count')))
-            ->groupBy('status')
-            ->get()
-            ->pluck('count', 'status')
-            ->toArray();
-
-        // 4. Chart Data (IMC - Volume Trend from Orders + History)
         $selectedYear = (int) ($request ? $request->query('year', now()->year) : now()->year);
-        $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        $imcMasuk = []; 
-        $imcKeluar = [];
-        for ($m = 1; $m <= 12; $m++) {
-            // Potensi Pendapatan (Total Grand Total all Quotations)
-            $imcMasuk[] = (float) $applyDateFilter(Quotation::whereYear('created_at', $selectedYear)
-                ->whereMonth('created_at', $m)
-            )->sum('grand_total');
 
-            // Pendapatan Selesai (Total Grand Total where order is completed)
-            $imcKeluar[] = (float) $applyDateFilter(Quotation::whereHas('order', function($q) {
-                    $q->where('status', 'completed');
-                })
-                ->whereYear('created_at', $selectedYear)
-                ->whereMonth('created_at', $m)
-            )->sum('grand_total');
-        }
-
-        $imcYears = Quotation::whereHas('order', function($q) {
-                $q->where('status', 'completed');
-            })
-            ->selectRaw('YEAR(created_at) as year')
-            ->distinct()
-            ->orderByDesc('year')
-            ->pluck('year')
-            ->map(fn($y) => (int)$y)
-            ->toArray();
-        if (empty($imcYears)) $imcYears = [now()->year];
-
-        // 5. Chart Data (SVC - Best Sellers from Completed Orders)
-        $topItems = QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
-            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
-            ->where('orders.status', 'completed')
-            ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
-            ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
-            ->leftJoin('goods', 'quotation_items.goods_id', '=', 'goods.id')
-            ->select(
-                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
-                DB::raw('SUM(quotation_items.quantity) as total_qty')
-            )
-            ->groupBy('item_name')
-            ->orderByDesc('total_qty')
-            ->take(8)
-            ->get();
-        $svcLabels = $topItems->pluck('item_name')->toArray();
-        $svcData = $topItems->pluck('total_qty')->toArray();
-
-        // 6. Recent History Logs
-        $recentHistory = $applyDateFilter(\App\Models\GoodsHistory::with('user'), 'changed_at')
-            ->latest('changed_at')
-            ->take(10)
-            ->get();
-
-
-        // 8. Low Stock
-        $lowStockItems = Goods::where('stock', '<=', $threshold)
-            ->orderBy('stock')
-            ->take(5)
-            ->get();
-
-        // 9. GA Specific Task Counts
-        $procurementPendingCount = \App\Models\CustomQuotation::where('status', 'sent_to_quotation')
-            ->whereHas('order', function ($query) {
-                $query->where('status', 'under_procurement');
-            })
-            ->doesntHave('procurementOfGoods')
-            ->count();
-
-        $invoicePendingCount = \App\Models\DeliveryBatch::where(function ($q) {
-            $q->whereNull('no_invoice')->orWhereNull('no_receipt');
-        })->count();
-
-        $procurementRejectedCount = \App\Models\ProcurementArrivalRequest::where('status', 'rejected')->count();
-
-        $goodsInRevisionCount = \App\Models\Goods::where('goods_status', 'rejected')
-            ->where('status_listing', '!=', 'non_listing')
-            ->whereDoesntHave('procurementOfGoodsItems')
-            ->count();
-
-        \Illuminate\Support\Facades\Log::info("GA Dashboard Counts", [
-            'procurementPending' => $procurementPendingCount,
-            'invoicePending' => $invoicePendingCount,
-            'procurementRejected' => $procurementRejectedCount,
-            'goodsInRevision' => $goodsInRevisionCount
-        ]);
-
-        // 10. Purchasing / Procurement Metrics
+        // 2. Purchasing / Procurement Metrics
         $validProcurementItems = \App\Models\ProcurementOfGoodsItem::whereHas('procurementOfGoods', function ($q) use ($dateStart, $dateEnd) {
             $q->where('status', '!=', 'canceled')
                 ->when($dateStart, fn($sq) => $sq->where('created_at', '>=', $dateStart))
@@ -213,7 +59,7 @@ class GeneralAffairDashboardController extends Controller
         // Total: Pending + Finish
         $totalValueProcurement = $totalFinishValueProcurement + $totalPendingValueProcurement;
 
-        // 11. Purchasing Trend Chart Data (Monthly spending: buy_price * qty_received)
+        // 3. Purchasing Trend Chart Data (Monthly spending: buy_price * qty_received)
         $purchasingYears = \App\Models\ProcurementOfGoods::selectRaw('YEAR(created_at) as year')
             ->whereNotNull('created_at')
             ->distinct()
@@ -234,29 +80,10 @@ class GeneralAffairDashboardController extends Controller
             })->selectRaw('SUM(buy_price * qty_received) as total')->value('total') ?? 0);
         }
 
+        $topCategoriesData = $this->calculateTopPurchasingCategories($dateStart, $dateEnd);
+
         return view('dashboard.general-affair.index', [
-            'procurementPendingCount' => $procurementPendingCount,
-            'invoicePendingCount' => $invoicePendingCount,
-            'procurementRejectedCount' => $procurementRejectedCount,
-            'goodsInRevisionCount' => $goodsInRevisionCount,
-            'totalPending' => $totalPending,
-            'totalApproved' => $totalApproved,
-            'totalOrders' => $totalOrders,
-            'totalRevenue' => $totalRevenue,
-            'totalCustomers' => $totalCustomers,
-            'topSales' => $topSales,
-            'topCustomers' => $topCustomers,
-            'statusBreakdown' => $statusBreakdown,
-            'imc_labels' => $months,
-            'imc_masuk' => $imcMasuk,
-            'imc_keluar' => $imcKeluar,
-            'svc_labels' => $svcLabels,
-            'svc_data' => $svcData,
-            'imc_years' => $imcYears,
             'selectedYear' => $selectedYear,
-            'recentHistory' => $recentHistory,
-            'lowStockItems' => $lowStockItems,
-            'selectedThreshold' => $threshold,
             'selectedDateStart' => $dateStartRaw,
             'selectedDateEnd' => $dateEndRaw,
             'totalValueProcurement' => $totalValueProcurement,
@@ -266,11 +93,11 @@ class GeneralAffairDashboardController extends Controller
             'purchasing_months' => $purchasingMonths,
             'monthly_purchasing_spending' => $monthlyPurchasingSpending,
             'timeline_values' => $this->calculateAverageTimeline($dateStart, $dateEnd),
-            'purchasing_categories' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd)['categories'],
-            'purchasing_category_labels' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd)['labels'],
-            'purchasing_category_values' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd)['values'],
-            'purchasing_category_colors' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd)['colors'],
-            'purchasing_category_has_data' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd)['has_data'],
+            'purchasing_categories' => $topCategoriesData['categories'],
+            'purchasing_category_labels' => $topCategoriesData['labels'],
+            'purchasing_category_values' => $topCategoriesData['values'],
+            'purchasing_category_colors' => $topCategoriesData['colors'],
+            'purchasing_category_has_data' => $topCategoriesData['has_data'],
         ]);
     }
 
@@ -291,45 +118,6 @@ class GeneralAffairDashboardController extends Controller
             $dateStart = null;
             $dateEnd = null;
         }
-
-        $applyDateFilter = function ($query, string $column = 'created_at') use ($dateStart, $dateEnd) {
-            return $query
-                ->when($dateStart, fn($q) => $q->where($column, '>=', $dateStart))
-                ->when($dateEnd, fn($q) => $q->where($column, '<=', $dateEnd));
-        };
-
-        $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-        
-        $imcMasuk = [];
-        $imcKeluar = [];
-        for ($m = 1; $m <= 12; $m++) {
-            $imcMasuk[] = (float) $applyDateFilter(Quotation::whereYear('created_at', $selectedYear)
-                ->whereMonth('created_at', $m)
-            )->sum('grand_total');
-            $imcKeluar[] = (float) $applyDateFilter(Quotation::whereHas('order', function($q) {
-                    $q->where('status', 'completed');
-                })
-                ->whereYear('created_at', $selectedYear)
-                ->whereMonth('created_at', $m)
-            )->sum('grand_total');
-        }
-
-        $topItems = QuotationItem::join('quotations', 'quotation_items.quotation_id', '=', 'quotations.id')
-            ->join('orders', 'quotations.id', '=', 'orders.quotation_id')
-            ->where('orders.status', 'completed')
-            ->when($dateStart, fn($q) => $q->where('quotations.created_at', '>=', $dateStart))
-            ->when($dateEnd, fn($q) => $q->where('quotations.created_at', '<=', $dateEnd))
-            ->leftJoin('goods', 'quotation_items.goods_id', '=', 'goods.id')
-            ->select(
-                DB::raw('COALESCE(goods.goods_name, quotation_items.custom_product_name) as item_name'), 
-                DB::raw('SUM(quotation_items.quantity) as total_qty')
-            )
-            ->groupBy('item_name')
-            ->orderByDesc('total_qty')
-            ->take(8)
-            ->get();
-        $svcLabels = $topItems->pluck('item_name')->toArray();
-        $svcData = $topItems->pluck('total_qty')->toArray();
 
         $purchasingYears = \App\Models\ProcurementOfGoods::selectRaw('YEAR(created_at) as year')
             ->whereNotNull('created_at')
@@ -352,11 +140,6 @@ class GeneralAffairDashboardController extends Controller
         }
 
         return response()->json([
-            'imc_labels' => $months,
-            'imc_masuk'  => $imcMasuk,
-            'imc_keluar' => $imcKeluar,
-            'svc_labels' => $svcLabels,
-            'svc_data'   => $svcData,
             'selectedYear' => $selectedYear,
             'purchasing_years' => $purchasingYears,
             'purchasing_months' => $purchasingMonths,

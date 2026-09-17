@@ -191,27 +191,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Jika user adalah penerima dan notifikasi memiliki isi (bukan silent refresh)
         if (isRecipient && e.title && e.message) {
-            const Toast = Swal.mixin({
+            Swal.fire({
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 5000,
                 timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            });
-
-            Toast.fire({
                 icon: "info",
                 title: e.title,
                 text: e.message,
-                width: "600px",
                 customClass: {
-                    popup: "rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700",
+                    popup: "rounded-2xl! shadow-lg! border! border-gray-200! dark:border-gray-700! dark:bg-gray-800! dark:text-white!",
+                    title: "text-sm! font-bold! dark:text-white!",
+                    htmlContainer: "text-xs! dark:text-gray-300!",
                 },
-                didOpen: function () {
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
                     var audplay = new Audio(soundfile);
                     audplay.play().catch(error => console.log("Audio play error:", error));
                 },
@@ -240,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 text: `Ada order baru yang perlu ditinjau. Total orders: ${e.orderCount}`,
                 width: "600px",
                 customClass: {
-                    popup: "rounded-2xl!",
+                    popup: "rounded-2xl! shadow-lg! border! border-gray-200! dark:border-gray-700!",
                 },
                 didOpen: function () {
                     var audplay = new Audio(soundfile);

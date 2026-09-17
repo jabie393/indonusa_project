@@ -1076,16 +1076,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 confirmButtonText: "Mengerti"
             });
         } else if (window.Swal) {
-            // Add SweetAlert Toast for AJAX Success
-            window.Swal.fire({
+            // SweetAlert Toast for AJAX Success
+            window.Swal.toast({
                 icon: "success",
                 title: "File Berhasil Diproses",
-                text: `Ditemukan ${rows.length} baris data untuk di-preview.`,
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
+                text: `Ditemukan ${rows.length} baris data untuk di-preview.`
             });
         }
     }

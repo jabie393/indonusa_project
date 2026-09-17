@@ -1,16 +1,7 @@
 import Chart from 'chart.js/auto';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const imcCanvas = document.getElementById('IMC');
-    const svcCanvas = document.getElementById('SVC');
-
-    if (!imcCanvas) return;
-    const endpoint = imcCanvas.dataset.endpoint || '/admin/dashboard/warehouse/data';
-
-    // helper parse initial data from blade
-    const imcLabels = JSON.parse(imcCanvas.dataset.labels || '[]');
-    const imcMasuk = JSON.parse(imcCanvas.dataset.masuk || '[]');
-    const imcKeluar = JSON.parse(imcCanvas.dataset.keluar || '[]');
+    const endpoint = '/admin/dashboard/general-affair/data';
 
     function formatRupiahShort(value) {
         const number = Number(value) || 0;
@@ -36,65 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).format(number);
     }
 
-    // create IMC chart
-    const imcCtx = imcCanvas.getContext('2d');
-    window.imcChart = new Chart(imcCtx, {
-        type: 'bar',
-        data: {
-            labels: imcLabels,
-            datasets: [
-                { label: 'Potensi Pendapatan', data: imcMasuk, backgroundColor: 'rgba(34,90,151,0.8)' },
-                { label: 'Pendapatan Selesai', data: imcKeluar, backgroundColor: 'rgba(13,34,58,0.8)' }
-            ]
-        },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) label += ': ';
-                            if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(context.parsed.y);
-                            }
-                            return label;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    ticks: {
-                        callback: function(value) {
-                            return formatRupiahShort(value);
-                        }
-                    }
-                }
-            }
-        }
-    });
-
-    // SVC initial
-    let svcLabels = [];
-    let svcData = [];
-    if (svcCanvas) {
-        svcLabels = JSON.parse(svcCanvas.dataset.labels || '[]');
-        svcData = JSON.parse(svcCanvas.dataset.values || '[]');
-        const svcCtx = svcCanvas.getContext('2d');
-        window.svcChart = new Chart(svcCtx, {
-            type: 'bar',
-            data: { labels: svcLabels, datasets: [{ label: 'Total Qty', data: svcData, backgroundColor: 'rgba(34,90,151,0.8)' }] },
-            options: {
-                indexAxis: 'y', // <-- makes the bar chart horizontal
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    }
-
-    // Purchasing Trend Chart (Bar + Line Overlay)
+    // 1. Purchasing Trend Chart (Bar + Line Overlay)
     const purchasingTrendCanvas = document.getElementById('purchasingTrendChart');
     if (purchasingTrendCanvas) {
         const labels = JSON.parse(purchasingTrendCanvas.dataset.labels || '["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"]');
@@ -164,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Purchasing Category Donut Chart
+    // 2. Purchasing Category Donut Chart
     const purchasingCategoryCanvas = document.getElementById('purchasingCategoryChart');
     if (purchasingCategoryCanvas) {
         const catLabels = JSON.parse(purchasingCategoryCanvas.dataset.labels || '["Belum Ada Data"]');
@@ -210,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Vendor Database Donut Chart
+    // 3. Vendor Database Donut Chart
     const vendorDatabaseCanvas = document.getElementById('vendorDatabaseChart');
     if (vendorDatabaseCanvas) {
         const vLabels = JSON.parse(vendorDatabaseCanvas.dataset.labels || '["PKP (850 Vendors)", "Non PKP (650 Vendors)"]');
@@ -256,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Average Timeline SO - GR Chart
+    // 4. Average Timeline SO - GR Chart
     const averageTimelineCanvas = document.getElementById('averageTimelineChart');
     if (averageTimelineCanvas) {
         const atLabels = JSON.parse(averageTimelineCanvas.dataset.labels || '["Sales Order ke Purchasing", "Purchase Order ke Vendor", "Barang Tiba dari Vendor"]');
@@ -322,17 +255,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // gather filters and build query string
+    // Helper: gather filters and build query string
     function buildQuery() {
         const form = document.getElementById('filters-form');
         if (!form) return '';
         const formData = new FormData(form);
         const params = new URLSearchParams();
-        for (const [k,v] of formData.entries()) {
+        for (const [k, v] of formData.entries()) {
             if (v !== null && v !== '') params.set(k, v);
         }
-        // include selected year
-        const yearSelect = document.getElementById('imc-year-select');
+        const yearSelect = document.getElementById('purchasing-trend-year-select');
         if (yearSelect && yearSelect.value) params.set('year', yearSelect.value);
         return params.toString();
     }
@@ -341,25 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const qs = buildQuery();
         const url = endpoint + (qs ? ('?' + qs) : '');
         try {
-            const res = await fetch(url, { headers: { 'Accept': 'application/json' }});
+            const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
             if (!res.ok) throw new Error('Network error');
             const json = await res.json();
 
-            // update IMC
-            if (window.imcChart) {
-                window.imcChart.data.labels = json.imc_labels;
-                window.imcChart.data.datasets[0].data = json.imc_masuk;
-                window.imcChart.data.datasets[1].data = json.imc_keluar;
-                window.imcChart.update();
-            }
-            // update SVC
-            if (window.svcChart) {
-                window.svcChart.data.labels = json.svc_labels;
-                window.svcChart.data.datasets[0].data = json.svc_data;
-                window.svcChart.update();
-            }
-
-            // update purchasing trend chart
+            // Update purchasing trend chart
             if (window.purchasingTrendChart && json.purchasing_spending) {
                 if (json.purchasing_months) {
                     window.purchasingTrendChart.data.labels = json.purchasing_months;
@@ -369,22 +287,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.purchasingTrendChart.update();
             }
 
-            // update average timeline chart
+            // Update average timeline chart
             if (window.averageTimelineChart && json.timeline_values) {
                 window.averageTimelineChart.data.datasets[0].data = json.timeline_values;
                 window.averageTimelineChart.update();
             }
 
-            // update purchasing category donut chart
+            // Update purchasing category donut chart
             if (window.purchasingCategoryChart && json.purchasing_categories) {
                 const pcData = json.purchasing_categories;
-                hasData = pcData.has_data;
                 window.purchasingCategoryChart.data.labels = pcData.labels;
                 window.purchasingCategoryChart.data.datasets[0].data = pcData.values;
                 window.purchasingCategoryChart.data.datasets[0].backgroundColor = pcData.colors;
                 window.purchasingCategoryChart.update();
 
-                // update legend cards
+                // Update legend cards
                 const legendContainer = document.getElementById('purchasing-category-legends');
                 if (legendContainer) {
                     if (pcData.categories && pcData.categories.length > 0) {
@@ -407,24 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // update year select options if server returns different available years
-            if (json.imc_years && Array.isArray(json.imc_years)) {
-                const sel = document.getElementById('imc-year-select');
-                if (sel) {
-                    const current = sel.value;
-                    sel.innerHTML = '';
-                    json.imc_years.forEach(y => {
-                        const opt = document.createElement('option');
-                        opt.value = y;
-                        opt.text = y;
-                        if (String(y) === String(json.selectedYear)) opt.selected = true;
-                        sel.appendChild(opt);
-                    });
-                    // keep current selection if still present
-                    if (current && Array.from(sel.options).some(o => o.value === current)) sel.value = current;
-                }
-            }
-
+            // Update purchasing years select dropdown if updated
             if (json.purchasing_years && Array.isArray(json.purchasing_years)) {
                 const pSel = document.getElementById('purchasing-trend-year-select');
                 if (pSel) {
@@ -446,59 +346,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // DO NOT prevent full form submit (ke butuh update low-stock / tabel di server)
-    // instead: listen to changes on filter inputs and update charts via AJAX,
-    // but keep submit button to perform a full page refresh when user explicitly submits.
+    // Listen to filter date changes
     const form = document.getElementById('filters-form');
     if (form) {
-        const threshold = form.querySelector('select[name="threshold"]');
         const dateStart = form.querySelector('input[name="date_start"]');
         const dateEnd = form.querySelector('input[name="date_end"]');
-        [threshold, dateStart, dateEnd].forEach(el => {
+        [dateStart, dateEnd].forEach(el => {
             if (!el) return;
             el.addEventListener('change', () => {
                 fetchAndUpdate();
-                // update URL so filters are bookmarkable without reloading page
                 const qs = buildQuery();
                 const newUrl = window.location.pathname + (qs ? ('?' + qs) : '');
                 history.replaceState(null, '', newUrl);
             });
         });
-        // keep default submit behavior (full page refresh) so low-stock/tables update on server
     }
 
-    // year select change for IMC
-    const yearSelect = document.getElementById('imc-year-select');
-    if (yearSelect) {
-        yearSelect.addEventListener('change', () => {
-            fetchAndUpdate();
-            const qs = buildQuery();
-            const newUrl = window.location.pathname + (qs ? ('?' + qs) : '');
-            history.replaceState(null, '', newUrl);
-        });
-    }
-
-    // year select change for Purchasing Trend
+    // Year select change for Purchasing Trend
     const purchasingYearSelect = document.getElementById('purchasing-trend-year-select');
     if (purchasingYearSelect) {
-        purchasingYearSelect.addEventListener('change', async () => {
-            const year = purchasingYearSelect.value;
-            const url = endpoint + '?year=' + encodeURIComponent(year);
-            try {
-                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                if (!res.ok) throw new Error('Network error');
-                const json = await res.json();
-                if (window.purchasingTrendChart && json.purchasing_spending) {
-                    if (json.purchasing_months) {
-                        window.purchasingTrendChart.data.labels = json.purchasing_months;
-                    }
-                    window.purchasingTrendChart.data.datasets[0].data = json.purchasing_spending;
-                    window.purchasingTrendChart.data.datasets[1].data = json.purchasing_spending;
-                    window.purchasingTrendChart.update();
-                }
-            } catch (e) {
-                console.error('Failed to update purchasing trend chart', e);
-            }
+        purchasingYearSelect.addEventListener('change', () => {
+            fetchAndUpdate();
         });
     }
 });
+
