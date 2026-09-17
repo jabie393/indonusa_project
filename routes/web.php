@@ -147,6 +147,7 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::get('/procurement/create/{customQuotation}', [\App\Http\Controllers\Admin\ProcurementController::class, 'create'])->name('general-affair.procurement.create');
     Route::post('/procurement', [\App\Http\Controllers\Admin\ProcurementController::class, 'store'])->name('general-affair.procurement.store');
     Route::post('/procurement/store-modal', [\App\Http\Controllers\Admin\ProcurementController::class, 'storeModal'])->name('general-affair.procurement.store-modal');
+    Route::post('/procurement/store-stock', [\App\Http\Controllers\Admin\ProcurementController::class, 'storeStock'])->name('general-affair.procurement.store-stock');
     Route::get('/procurement/{procurement}', [\App\Http\Controllers\Admin\ProcurementController::class, 'show'])->name('general-affair.procurement.show');
     Route::get('/procurement/{procurement}/detail-html', [\App\Http\Controllers\Admin\ProcurementController::class, 'detailHtml'])->name('general-affair.procurement.detail-html');
     Route::get('/procurement/{procurement}/allocations-html', [\App\Http\Controllers\Admin\ProcurementController::class, 'allocationsHtml'])->name('general-affair.procurement.allocations-html');
@@ -202,6 +203,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/quotation/{quotation}/approve', [QuotationApprovalController::class, 'approve'])->name('supervisor.quotation.approve');
     Route::post('/quotation/{quotation}/reject', [QuotationApprovalController::class, 'reject'])->name('supervisor.quotation.reject');
     Route::get('/custom-quotation-approval/{customQuotation}/pdf', [NonListingController::class, 'pdf'])->name('admin.custom-quotation-approval.pdf');
+
+    // Supervisor approval for Procurement Arrivals (from GA)
+    Route::get('/procurement-approval', [\App\Http\Controllers\Admin\ProcurementApprovalController::class, 'index'])->name('supervisor.procurement-approval.index');
+    Route::post('/procurement-approval/{receipt}/approve', [\App\Http\Controllers\Admin\ProcurementApprovalController::class, 'approve'])->name('supervisor.procurement-approval.approve');
+    Route::post('/procurement-approval/{receipt}/reject', [\App\Http\Controllers\Admin\ProcurementApprovalController::class, 'reject'])->name('supervisor.procurement-approval.reject');
 
     // Supervisor Dashboard
     Route::get('/admin/dashboard/supervisor', [\App\Http\Controllers\Admin\Dashboard\SupervisorDashboardController::class, 'dashboard'])

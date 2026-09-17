@@ -19,8 +19,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-semibold leading-tight">Tambah Barang</h1>
-                    <p class="text-xs text-white/80">Lengkapi detail produk untuk inventaris baru</p>
+                    <h1 class="text-lg font-semibold leading-tight">Tambah Master Barang</h1>
+                    <p class="text-xs text-white/80">Lengkapi data induk produk untuk katalog inventaris</p>
                 </div>
             </div>
             <form method="dialog">
@@ -80,21 +80,22 @@
                     </div>
                 </div>
 
-                <!-- Status Listing Dropdown -->
-                <div class="space-y-2">
-                    <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500" for="status_listing">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 8H16M8 12H16M10 16H14M3.5 12C3.5 5.5 5.5 3.5 12 3.5C18.5 3.5 20.5 5.5 20.5 12C20.5 18.5 18.5 20.5 12 20.5C5.5 20.5 3.5 18.5 3.5 12Z" />
+                <!-- Info Box -->
+                <div class="rounded-2xl border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20">
+                    <div class="flex items-start gap-3">
+                        <div class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
                             </svg>
-                            Status Listing
-                        </label>
-                    <div class="relative">
-                        <select
-                            class="w-full appearance-none border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="status_listing" name="status_listing" required>
-                            <option value="listing">🟢 Listing</option>
-                            <option value="non listing">🔴 Non Listing</option>
-                        </select>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-semibold text-blue-900 dark:text-blue-300">Master Data Katalog</h4>
+                            <p class="mt-1 text-[11px] leading-relaxed text-blue-700/80 dark:text-blue-400/80">
+                                Barang yang didaftarkan akan berstatus <strong>Listing</strong> dengan stok awal 0. Penambahan stok fisik dilakukan melalui menu pengadaan / penerimaan barang.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -206,28 +207,6 @@
                         <div id="kode-barang-warning-container"></div>
                     </div>
 
-                    <!-- Stok -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="stock">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z">
-                                </path>
-                                <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12">
-                                </path>
-                                <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17">
-                                </path>
-                            </svg>
-                            Stok
-                        </label>
-                        <input
-                            class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                            id="stock" name="stock" placeholder="0" type="number" required />
-                    </div>
-
                     <!-- Satuan -->
                     <div class="space-y-2">
                         <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
@@ -251,7 +230,7 @@
                     </div>
 
                     <!-- Lokasi -->
-                    <div class="space-y-2">
+                    <div class="space-y-2 sm:col-span-2">
                         <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
                             for="location">
                             <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
@@ -262,59 +241,11 @@
                                 </path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
-                            Lokasi (Opsional)
+                            Lokasi
                         </label>
                         <input
                             class="w-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                             id="location" name="location" placeholder="Gudang A — Rak 3" type="text" />
-                    </div>
-
-
-
-                    <!-- Harga Beli -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="buy_price_display">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-                                <circle cx="12" cy="12" r="2"></circle>
-                                <path d="M6 12h.01M18 12h.01"></path>
-                            </svg>
-                            Harga Beli
-                        </label>
-                        <div class="relative">
-                            <span
-                                class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
-                            <input
-                                class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                id="buy_price_display" placeholder="0" type="text" required />
-                            <input type="hidden" name="buy_price" id="buy_price" />
-                        </div>
-                    </div>
-
-                    <!-- Harga Jual -->
-                    <div class="space-y-2">
-                        <label class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500"
-                            for="selling_price_display">
-                            <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round"
-                                stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <rect width="20" height="12" x="2" y="6" rx="2"></rect>
-                                <circle cx="12" cy="12" r="2"></circle>
-                                <path d="M6 12h.01M18 12h.01"></path>
-                            </svg>
-                            Harga Jual (Opsional)
-                        </label>
-                        <div class="relative">
-                            <span
-                                class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400">Rp</span>
-                            <input
-                                class="w-full border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition rounded-2xl dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                id="selling_price_display" placeholder="Otomatis +15%" type="text" />
-                            <input type="hidden" name="selling_price" id="selling_price" />
-                        </div>
                     </div>
                 </div>
             </div>
@@ -323,8 +254,7 @@
         <!-- Footer -->
         <footer
             class="flex items-center justify-between gap-3 border-t border-slate-100 bg-slate-50 px-7 py-5 dark:bg-gray-800 dark:border-gray-700">
-            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data sudah benar sebelum
-                menyimpan.</p>
+            <p class="hidden text-xs text-slate-500 sm:block dark:text-gray-400">Pastikan data induk produk sudah benar sebelum menyimpan.</p>
             <div class="flex flex-1 justify-end gap-3 sm:flex-none">
                 <form method="dialog">
                     <button
@@ -336,7 +266,7 @@
                 <button
                     class="px-8 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:opacity-90 active:scale-95 rounded-xl"
                     form="add-item-form" style="background-image: var(--gradient-brand)" type="submit">
-                    Tambah Barang
+                    Simpan Master Barang
                 </button>
             </div>
         </footer>
@@ -366,48 +296,6 @@
                     uploadPlaceholder.classList.add('hidden');
                 }
                 reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    // Harga Beli formatting logic
-    const hargaDisplay = document.getElementById('buy_price_display');
-    const hargaHidden = document.getElementById('buy_price');
-
-    if (hargaDisplay && hargaHidden) {
-        hargaDisplay.addEventListener('input', function (e) {
-            // Remove all non-digits
-            let value = this.value.replace(/\D/g, '');
-
-            // Update hidden input
-            hargaHidden.value = value;
-
-            // Format for display
-            if (value !== '') {
-                this.value = parseInt(value).toLocaleString('en-US');
-            } else {
-                this.value = '';
-            }
-        });
-    }
-
-    // Harga Jual formatting logic
-    const hargaJualDisplay = document.getElementById('selling_price_display');
-    const hargaJualHidden = document.getElementById('selling_price');
-
-    if (hargaJualDisplay && hargaJualHidden) {
-        hargaJualDisplay.addEventListener('input', function (e) {
-            // Remove all non-digits
-            let value = this.value.replace(/\D/g, '');
-
-            // Update hidden input
-            hargaJualHidden.value = value;
-
-            // Format for display
-            if (value !== '') {
-                this.value = parseInt(value).toLocaleString('en-US');
-            } else {
-                this.value = '';
             }
         });
     }

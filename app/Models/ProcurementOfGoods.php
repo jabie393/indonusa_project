@@ -16,6 +16,7 @@ class ProcurementOfGoods extends Model
         'warehouse_id',
         'status',
         'notes',
+        'vendor_name',
     ];
 
     public function order()

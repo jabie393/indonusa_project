@@ -36,7 +36,7 @@ class SupplyOrdersController extends Controller
         $goodsItems = $regulerQuery->get();
 
         // 2. Custom Procurement receipts (pending approval)
-        $procurementQuery = ProcurementArrivalRequest::where('status', 'pending')
+        $procurementQuery = ProcurementArrivalRequest::whereIn('status', ['pending_warehouse', 'pending'])
             ->with(['good', 'procurementOfGoodsItem.procurementOfGoods.customQuotation.order']);
 
         if ($query) {
@@ -309,6 +309,9 @@ class SupplyOrdersController extends Controller
         try {
             $arrivalRequest = ProcurementArrivalRequest::findOrFail($requestId);
             $arrivalRequest->status = 'rejected';
+            $arrivalRequest->rejected_by = Auth::id();
+            $arrivalRequest->rejected_by_role = 'Warehouse';
+            $arrivalRequest->rejected_at = now();
             $arrivalRequest->reject_reason = $request->input('reason');
             $arrivalRequest->save();
 

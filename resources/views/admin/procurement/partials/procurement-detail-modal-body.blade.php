@@ -43,7 +43,7 @@
     @endif
 
     <!-- Details Grid -->
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
             @if($procurement->custom_quotation_id)
                 <span class="block text-xs font-semibold uppercase text-slate-400">Asal Custom Quotation</span>
@@ -57,8 +57,16 @@
                 </span>
             @else
                 <span class="block text-xs font-semibold uppercase text-slate-400">Asal Sumber</span>
-                <span class="text-sm font-bold text-[#0067B1] dark:text-blue-400 mt-1 block">Pengadaan Terpadu Listing (Multi SO)</span>
+                <span class="text-sm font-bold text-[#0067B1] dark:text-blue-400 mt-1 block">
+                    {{ $procurement->vendor_name ? 'Pengadaan Stok Gudang' : 'Pengadaan Terpadu Listing (Multi SO)' }}
+                </span>
             @endif
+        </div>
+        <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
+            <span class="block text-xs font-semibold uppercase text-slate-400">Vendor / Supplier</span>
+            <span class="text-sm font-bold text-slate-800 dark:text-white mt-1 block">
+                {{ $procurement->vendor_name ?: 'Tidak Disebutkan' }}
+            </span>
         </div>
         <div class="rounded-xl border border-gray-100 p-4 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30">
             <span class="block text-xs font-semibold uppercase text-slate-400">Status Procurement</span>
@@ -275,7 +283,7 @@
                                         <span class="block text-xs font-mono text-gray-400 mt-0.5">{{ $receipt->goods_code }}</span>
                                         @if($receipt->status === 'rejected')
                                             <div class="mt-2 text-xs text-red-600 dark:text-red-400 font-normal">
-                                                <strong>Rejection Reason:</strong> {{ $receipt->reject_reason }}
+                                                <strong>Alasan Penolakan:</strong> {{ $receipt->reject_reason ?: '-' }}
                                             </div>
                                         @endif
                                     </td>
@@ -310,13 +318,17 @@
                                                 if ($procItem) {
                                                     $otherPending = \App\Models\ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                                                         ->where('id', '!=', $receipt->id)
-                                                        ->where('status', 'pending')
+                                                        ->whereIn('status', ['pending', 'pending_spv', 'pending_warehouse'])
                                                         ->sum('quantity');
                                                 }
                                                 $maxAllowed = $procItem ? max(0, $procItem->qty_ordered - $procItem->qty_received - $otherPending) : 999999;
+                                                $badgeRole = $receipt->rejected_by_role ?: ($receipt->spv_approved_at ? 'Warehouse' : 'Supervisor');
                                             @endphp
-                                            <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-800 dark:bg-red-950/30 dark:text-red-300">
-                                                Rejected
+                                            <span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-800 dark:bg-red-950/30 dark:text-red-300">
+                                                <svg class="h-3 w-3 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                                Ditolak {{ $badgeRole }}
                                             </span>
                                             <div class="mt-2 flex items-center justify-center gap-1.5">
                                                 <button type="button" 
@@ -327,6 +339,42 @@
                                                     </svg>
                                                     <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Revise</span>
                                                 </button>
+                                                <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @elseif($receipt->status === 'pending_spv')
+                                            <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800 dark:bg-amber-950/30 dark:text-amber-300">
+                                                Menunggu Persetujuan SPV
+                                            </span>
+                                            <div class="mt-2">
+                                                <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" 
+                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                        </svg>
+                                                        <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Delete</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        @elseif($receipt->status === 'pending_warehouse')
+                                            <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-blue-800 dark:bg-blue-950/30 dark:text-blue-300">
+                                                Menunggu Fisik Warehouse
+                                            </span>
+                                            <div class="mt-2">
                                                 <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')

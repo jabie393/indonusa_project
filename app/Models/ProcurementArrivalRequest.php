@@ -16,11 +16,18 @@ class ProcurementArrivalRequest extends Model
         'quantity',
         'unit_cost',
         'status',
+        'spv_id',
+        'spv_approved_at',
+        'rejected_by',
+        'rejected_by_role',
+        'rejected_at',
         'reject_reason',
     ];
 
     protected $casts = [
         'received_at' => 'datetime',
+        'spv_approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
         'unit_cost' => 'decimal:2',
     ];
 
@@ -38,5 +45,21 @@ class ProcurementArrivalRequest extends Model
     public function procurementOfGoodsItem(): BelongsTo
     {
         return $this->belongsTo(ProcurementOfGoodsItem::class, 'procurement_of_goods_item_id');
+    }
+
+    /**
+     * Get the supervisor who reviewed this arrival.
+     */
+    public function supervisor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'spv_id');
+    }
+
+    /**
+     * Get the user who rejected this arrival (SPV or Warehouse).
+     */
+    public function rejectedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 }

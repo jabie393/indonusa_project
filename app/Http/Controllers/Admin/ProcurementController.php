@@ -187,13 +187,78 @@ class ProcurementController extends Controller
             ->count();
         $activeNonListingCount = $activeNonListingProcCount + $activePendingQuotationsCount;
 
+        $availableListingGoods = Goods::where('status_listing', 'listing')
+            ->where('goods_status', 'approved')
+            ->orderBy('goods_name')
+            ->get();
+
         return view('admin.procurement.index', compact(
             'listingItems',
             'nonListingItems',
             'combinedRequirements',
             'activeListingCount',
-            'activeNonListingCount'
+            'activeNonListingCount',
+            'availableListingGoods'
         ));
+    }
+
+    /**
+     * Simpan pengadaan stok baru (General Affair).
+     */
+    public function storeStock(Request $request)
+    {
+        $validated = $request->validate([
+            'vendor_name' => 'required|string|max:255',
+            'notes' => 'nullable|string|max:500',
+            'items' => 'required|array|min:1',
+            'items.*.goods_id' => 'required|exists:goods,id',
+            'items.*.qty_ordered' => 'required|integer|min:1',
+            'items.*.buy_price' => 'required|numeric|min:0',
+        ], [
+            'vendor_name.required' => 'Nama vendor / supplier wajib diisi.',
+            'items.required' => 'Minimal pilih 1 barang untuk pengadaan.',
+            'items.*.qty_ordered.min' => 'Kuantitas pesanan minimal 1.',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $procurement = ProcurementOfGoods::create([
+                'procurement_number' => ProcurementOfGoods::generateProcurementNumber(),
+                'custom_quotation_id' => null,
+                'order_id' => null,
+                'general_affair_id' => Auth::id(),
+                'vendor_name' => $validated['vendor_name'],
+                'status' => 'pending',
+                'notes' => $validated['notes'] ?? 'Pengadaan Stok Gudang',
+            ]);
+
+            foreach ($validated['items'] as $itemData) {
+                $barang = Goods::findOrFail($itemData['goods_id']);
+
+                ProcurementOfGoodsItem::create([
+                    'procurement_of_goods_id' => $procurement->id,
+                    'goods_id' => $barang->id,
+                    'qty_requested' => $itemData['qty_ordered'],
+                    'qty_ordered' => $itemData['qty_ordered'],
+                    'qty_received' => 0,
+                    'unit' => $barang->unit ?? 'PCS',
+                    'buy_price' => $itemData['buy_price'],
+                    'selling_price' => 0.00,
+                    'status' => 'pending',
+                ]);
+            }
+
+            DB::commit();
+
+            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+
+            return redirect()->route('general-affair.procurement.index')
+                ->with(['title' => 'Berhasil', 'text' => "Pengadaan Stok {$procurement->procurement_number} berhasil dibuat."]);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Stock Procurement Store Error: ' . $e->getMessage());
+            return back()->withErrors('Gagal membuat pengadaan stok: ' . $e->getMessage())->withInput();
+        }
     }
 
     /**
@@ -404,7 +469,14 @@ class ProcurementController extends Controller
      */
     public function detailHtml(ProcurementOfGoods $procurement)
     {
-        $procurement->load(['customQuotation', 'order', 'items.goods', 'generalAffair', 'items.procurementArrivalRequests']);
+        $procurement->load([
+            'customQuotation', 
+            'order', 
+            'items.goods', 
+            'generalAffair', 
+            'items.procurementArrivalRequests.rejectedBy',
+            'items.procurementArrivalRequests.supervisor'
+        ]);
         return view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'));
     }
 
@@ -480,7 +552,7 @@ class ProcurementController extends Controller
                 
                 // Hitung kuantitas pending yang sudah diajukan sebelumnya
                 $alreadyPending = ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
-                    ->where('status', 'pending')
+                    ->whereIn('status', ['pending', 'pending_spv', 'pending_warehouse'])
                     ->sum('quantity');
                 
                 $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $alreadyPending);
@@ -516,7 +588,7 @@ class ProcurementController extends Controller
                         'received_at' => now(),
                         'quantity' => $qtyArriving,
                         'unit_cost' => $itemData['buy_price'],
-                        'status' => 'pending',
+                        'status' => 'pending_spv',
                     ]);
                 }
             }
@@ -524,15 +596,15 @@ class ProcurementController extends Controller
             DB::commit();
 
             event(new \App\Events\RealTimeNotification(
-                'Warehouse',
+                'Supervisor',
                 null,
                 'procurement_arrival_submitted',
-                'Barang Masuk Baru!',
-                'Ada barang masuk dari procurement yang perlu ditinjau.'
+                'Persetujuan Kedatangan Pengadaan!',
+                'Ada kedatangan barang dari pengadaan yang memerlukan persetujuan Supervisor.'
             ));
 
             return redirect()->route('general-affair.procurement.show', $procurement->id)
-                ->with(['title' => 'Berhasil', 'text' => 'Kedatangan barang berhasil dicatat. Menunggu approval Warehouse.']);
+                ->with(['title' => 'Berhasil', 'text' => 'Kedatangan barang berhasil dicatat. Menunggu persetujuan Supervisor.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Record Arrival Error: ' . $e->getMessage());

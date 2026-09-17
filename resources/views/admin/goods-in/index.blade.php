@@ -42,7 +42,8 @@
                     </div>
                 </button>
 
-                <!-- Tambah Stok (Link) -->
+                {{-- Sembunyikan untuk kebutuhan testing: Tambah Stok Barang (Link) --}}
+                {{-- 
                 <a href="{{ route('add-stock.index') }}"
                     class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm group relative flex w-full max-w-sm flex-row items-center gap-4 rounded-2xl bg-white p-4 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-gray-800 dark:ring-offset-gray-900 sm:h-56 sm:max-w-[220px] sm:flex-col sm:justify-center sm:gap-4 sm:p-6 sm:shadow-lg">
                     <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#225A97] to-[#0D223A] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
@@ -78,6 +79,7 @@
                     <div class="absolute -right-1 -top-1 h-8 w-8 rounded-full bg-[#225A97]/20 opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100">
                     </div>
                 </a>
+                --}}
 
                 <!-- Import Excel (Modal) -->
                 <button onclick="ExcelImportOptionModal.showModal()"

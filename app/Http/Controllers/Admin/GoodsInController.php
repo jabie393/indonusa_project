@@ -37,29 +37,30 @@ class GoodsInController extends Controller
         }
 
         $validated = $request->validate([
-            'status_listing' => 'required|in:listing,non listing',
-            'goods_code' => 'required|string|max:255',
+            'goods_code' => 'required|string|max:255|unique:goods,goods_code',
             'goods_name' => 'required|string|max:255',
-            'category' => 'required|in:' . implode(',', Goods::KATEGORI), // Validasi kategori
-            'stock' => 'required|integer',
+            'category' => 'required|in:' . implode(',', Goods::KATEGORI),
             'unit' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
-            'buy_price' => 'required|numeric',
-            'selling_price' => 'nullable|numeric',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
         ]);
 
+        // Default value untuk master barang baru (kosongan)
+        $validated['status_listing'] = 'listing';
+        $validated['stock'] = 0;
+        $validated['buy_price'] = 0.00;
+        $validated['selling_price'] = 0.00;
+
         // Set default deskripsi jika tidak diisi
         if (empty($validated['description'])) {
-            $validated['description'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+            $validated['description'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
         }
 
         // Simpan id user yang submit ke kolom 'form'
         $validated['form'] = Auth::id();
-
-        $validated['goods_status'] = 'pending';
-        $validated['request_type'] = 'primary'; // Set tipe_request primary
+        $validated['goods_status'] = 'approved';
+        $validated['request_type'] = 'primary';
 
         $barang = Goods::create($validated);
 

@@ -1,7 +1,19 @@
 <x-app-layout>
     <div class="flex flex-col lg:h-[calc(100vh-112px)] overflow-hidden">
         <!-- Top Search Bar -->
-        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-end overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
+        <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
+            <div class="flex items-center gap-2 md:gap-3">
+                <button type="button" onclick="stockProcurementModal.showModal()"
+                    class="flex flex-row items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-semibold text-white shadow transition-all duration-200 hover:bg-[#19426d] focus:outline-none focus:ring-2 focus:ring-[#225A97]/50 cursor-pointer">
+                    <svg class="mr-2 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path clip-rule="evenodd" fill-rule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
+                    </svg>
+                    Buat Pengadaan Stok
+                </button>
+            </div>
+
             <form id="procurementSearchForm" action="{{ route('general-affair.procurement.index') }}" method="GET" class="block pl-2" data-realtime-table-search
                 data-search-input="#topbar-search" data-search-target="#procurementTableContent" data-extra-fields="#procurementTableContent select[name='perPage']">
                 <label for="topbar-search" class="sr-only">Search</label>
@@ -93,11 +105,22 @@
                                         <div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                                             @if($item->order)
                                                 SO: {{ $item->order->order_number }}
-                                            @else
+                                            @elseif($totalSos > 0)
                                                 Pengadaan Terpadu (Multi SO)
+                                            @else
+                                                <span class="inline-flex items-center gap-1 font-semibold text-[#225A97] dark:text-blue-400">
+                                                    Pengadaan Stok Gudang
+                                                </span>
                                             @endif
                                         </div>
-                                        <div class="text-[10px] text-gray-400 dark:text-gray-500">
+                                        @if(!empty($item->vendor_name))
+                                            <div class="mt-1">
+                                                <span class="inline-flex items-center gap-1 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
+                                                    Vendor: {{ $item->vendor_name }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                        <div class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">
                                             {{ $item->created_at->format('Y-m-d H:i') }}
                                         </div>
                                     </td>
@@ -494,6 +517,7 @@
     @include('admin.procurement.partials.procurement-process-modal')
     @include('admin.procurement.partials.procurement-revision-modal')
     @include('admin.procurement.partials.procurement-allocations-modal')
+    @include('admin.procurement.partials.stock-procurement-modal')
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

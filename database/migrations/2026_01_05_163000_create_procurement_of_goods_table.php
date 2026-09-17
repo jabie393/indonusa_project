@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->string('status')->default('pending');
             $table->text('notes')->nullable();
+            $table->string('vendor_name')->nullable();
             $table->timestamps();
 
             $table->foreign('custom_quotation_id')->references('id')->on('custom_quotations')->onDelete('set null');

@@ -17,13 +17,20 @@ return new class extends Migration {
             $table->timestamp('received_at');
             $table->integer('quantity');
             $table->decimal('unit_cost', 15, 2);
-            $table->string('status')->default('pending'); // pending, approved, rejected
+            $table->string('status')->default('pending_spv'); // pending_spv, pending_warehouse, approved, rejected
+            $table->unsignedBigInteger('spv_id')->nullable();
+            $table->timestamp('spv_approved_at')->nullable();
+            $table->unsignedBigInteger('rejected_by')->nullable();
+            $table->string('rejected_by_role')->nullable();
+            $table->timestamp('rejected_at')->nullable();
             $table->text('reject_reason')->nullable();
             $table->timestamps();
 
             // Foreign keys
             $table->foreign('procurement_of_goods_item_id', 'par_pog_item_foreign')->references('id')->on('procurement_of_goods_items')->onDelete('cascade');
             $table->foreign('good_id')->references('id')->on('goods')->onDelete('cascade');
+            $table->foreign('spv_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('rejected_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

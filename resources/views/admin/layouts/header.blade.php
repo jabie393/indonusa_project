@@ -26,6 +26,11 @@
                     <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Procurement</h1>
                     <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Kelola pengadaan barang kustom dari Custom Quotation yang disetujui.</p>
                 </div>
+            @elseif (request()->routeIs('supervisor.procurement-approval.*'))
+                <div class="min-w-0 text-gray-100">
+                    <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Persetujuan Kedatangan Pengadaan</h1>
+                    <p class="hidden text-xs text-gray-300 md:mt-1 md:block md:text-sm">Verifikasi harga beli & vendor sebelum diteruskan ke Warehouse</p>
+                </div>
             @elseif (request()->routeIs('add-stock.*'))
                 <div class="min-w-0 text-gray-100">
                     <h1 class="truncate text-sm font-bold text-gray-100 md:text-xl">Add Stock</h1>

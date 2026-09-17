@@ -650,6 +650,7 @@
                         $query->where('status', 'sent_to_supervisor');
                     })->count();
                     $pendingCustomQuotation = \App\Models\CustomQuotation::where('status', 'pending_approval')->count();
+                    $pendingProcurementArrivalCount = \App\Models\ProcurementArrivalRequest::where('status', 'pending_spv')->count();
                     $hasQuotationApprovalNotification = $pendingSentQuotation > 0 || $pendingCustomQuotation > 0;
                     $quotationApprovalItemActive = request()->routeIs('admin.quotation_approval') || request()->routeIs('sales.quotation.show') || request()->routeIs('admin.quotation-approval.show');
                     $customQuotationApprovalItemActive =
@@ -930,6 +931,23 @@
 
                     </ul>
                 </details>
+
+                {{-- Persetujuan Pengadaan (Kedatangan Barang GA) --}}
+                <li>
+                    <a href="{{ route('supervisor.procurement-approval.index') }}"
+                        class="{{ request()->routeIs('supervisor.procurement-approval.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center justify-between rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="{{ request()->routeIs('supervisor.procurement-approval.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            <span class="{{ request()->routeIs('supervisor.procurement-approval.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Persetujuan Pengadaan</span>
+                        </div>
+                        <span id="pending-proc-arrival-badge"
+                            class="{{ $pendingProcurementArrivalCount > 0 ? '' : 'hidden' }} flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                            {{ $pendingProcurementArrivalCount }}
+                        </span>
+                    </a>
+                </li>
 
                 {{-- Sales Report --}}
                 <li>
