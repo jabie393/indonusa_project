@@ -288,6 +288,33 @@
             if (grandTotalLabelEl) grandTotalLabelEl.textContent = formatRupiah(grandTotal);
         }
 
+        function positionDropdownMenu(toggleBtn, menu) {
+            const modalBox = toggleBtn.closest('.modal-box') || toggleBtn.closest('dialog') || document.body;
+            const modalRect = modalBox.getBoundingClientRect();
+            const btnRect = toggleBtn.getBoundingClientRect();
+
+            // Calculate width bounded by modalBox
+            const maxAllowedWidth = Math.min(560, modalBox.clientWidth - 24);
+            const menuWidth = Math.max(280, Math.min(maxAllowedWidth, modalRect.width - 24));
+            menu.style.width = menuWidth + 'px';
+
+            // Calculate left relative to modalBox containing block
+            let left = btnRect.left - modalRect.left;
+            left = Math.max(12, Math.min(left, modalBox.clientWidth - menuWidth - 12));
+            menu.style.left = left + 'px';
+
+            // Calculate top relative to modalBox containing block
+            const spaceBelow = modalRect.bottom - btnRect.bottom;
+            const menuHeight = 300;
+            if (spaceBelow < 260 && (btnRect.top - modalRect.top) > spaceBelow) {
+                // Open upward if tight space below
+                menu.style.top = Math.max(12, (btnRect.top - modalRect.top - menuHeight - 4)) + 'px';
+            } else {
+                // Open downward
+                menu.style.top = (btnRect.bottom - modalRect.top + 4) + 'px';
+            }
+        }
+
         function attachCustomDropdownEvents(row) {
             const container = row.querySelector('.barang-dropdown-container');
             if (!container) return;
@@ -311,15 +338,10 @@
 
                 menu.classList.toggle('hidden');
                 if (!menu.classList.contains('hidden')) {
-                    const rect = toggleBtn.getBoundingClientRect();
-                    const menuWidth = Math.max(280, Math.min(560, window.innerWidth - 24));
-                    const left = Math.min(rect.left, window.innerWidth - menuWidth - 12);
-                    menu.style.width = menuWidth + 'px';
-                    menu.style.top = (rect.bottom + 4) + 'px';
-                    menu.style.left = Math.max(12, left) + 'px';
+                    positionDropdownMenu(toggleBtn, menu);
                     searchInput.value = '';
                     searchInput.dispatchEvent(new Event('input'));
-                    setTimeout(() => searchInput.focus(), 50);
+                    setTimeout(() => searchInput.focus({ preventScroll: true }), 50);
                 }
             });
 
@@ -460,7 +482,18 @@
             }
         });
 
-        // Close dropdowns when scrolling outside menu
+        // Reposition or close dropdowns on window resize
+        window.addEventListener('resize', function() {
+            document.querySelectorAll('.dropdown-menu-container:not(.hidden)').forEach(menu => {
+                const container = menu.closest('.barang-dropdown-container');
+                const toggleBtn = container?.querySelector('.dropdown-toggle-btn');
+                if (toggleBtn && menu) {
+                    positionDropdownMenu(toggleBtn, menu);
+                }
+            });
+        });
+
+        // Reposition dropdowns when scrolling modal container
         document.addEventListener('scroll', function(e) {
             const target = e.target;
             const isInsideDropdown =
@@ -468,8 +501,14 @@
                 (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container'));
 
             if (!isInsideDropdown) {
-                document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
-                    menu.classList.add('hidden');
+                document.querySelectorAll('.dropdown-menu-container:not(.hidden)').forEach(menu => {
+                    const container = menu.closest('.barang-dropdown-container');
+                    const toggleBtn = container?.querySelector('.dropdown-toggle-btn');
+                    if (toggleBtn && menu) {
+                        positionDropdownMenu(toggleBtn, menu);
+                    } else {
+                        menu.classList.add('hidden');
+                    }
                 });
             }
         }, true);
