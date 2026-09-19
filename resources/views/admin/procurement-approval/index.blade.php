@@ -147,7 +147,7 @@
                                             </button>
 
                                             <!-- Form Approve -->
-                                            <form action="{{ route('supervisor.procurement-approval.approve', $item->id) }}" method="POST" class="inline-flex" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui kedatangan barang ini?')">
+                                            <form action="{{ route('supervisor.procurement-approval.approve', $item->id) }}" method="POST" class="inline-flex approve-form" data-confirm-text="Apakah Anda yakin ingin menyetujui kedatangan {{ addslashes($item->good->goods_name ?? 'Barang') }} ({{ $item->quantity }} {{ $item->good->unit ?? 'PCS' }}) untuk pengadaan {{ $procurement->procurement_number ?? '' }}?" data-confirm-button-text="Ya, Setujui">
                                                 @csrf
                                                 <button type="submit" 
                                                     class="group flex h-full cursor-pointer items-center justify-center border-r border-green-700 bg-green-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:border-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -200,36 +200,70 @@
 
     <!-- Modal Reject Supervisor -->
     <dialog id="spvRejectModal" class="modal">
-        <div class="modal-box relative max-w-md rounded-2xl bg-white p-0 shadow-xl dark:bg-gray-800">
-            <header class="flex items-center justify-between bg-red-600 px-6 py-4 text-white">
-                <h3 class="text-base font-bold">Tolak Kedatangan Pengadaan</h3>
-                <button type="button" onclick="spvRejectModal.close()" class="text-white hover:opacity-75">✕</button>
-            </header>
+        <div class="modal-box w-full max-w-md overflow-hidden rounded-2xl bg-white p-0 shadow-2xl ring-1 ring-black/5 dark:bg-gray-800">
+            {{-- Header --}}
+            <div class="relative bg-gradient-to-r from-[#225A97] to-[#0D223A] px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h5 class="text-lg font-bold tracking-tight text-white">
+                            Penolakan Kedatangan Barang
+                        </h5>
+                        <p class="mt-1 text-xs font-medium text-blue-100/80">Number: <span id="rejectProcNumber"></span></p>
+                    </div>
+                    <form method="dialog">
+                        <button class="rounded-lg bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M18 6 6 18M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Body --}}
             <form id="spvRejectForm" method="POST" action="">
                 @csrf
-                <div class="p-6 space-y-4">
-                    <p class="text-xs text-gray-600 dark:text-gray-300">
-                        Anda akan menolak kedatangan barang <strong id="rejectGoodsName" class="text-gray-900 dark:text-white"></strong> untuk pengadaan <span id="rejectProcNumber" class="font-mono font-bold text-blue-600"></span>.
-                    </p>
-                    <div>
-                        <label for="rejectReason" class="block text-xs font-bold uppercase text-gray-600 dark:text-gray-400 mb-1">
-                            Alasan Penolakan <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="rejectReason" name="reason" rows="3" required
-                            class="w-full rounded-xl border border-gray-300 bg-gray-50 p-3 text-sm focus:border-red-500 focus:ring-red-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            placeholder="Contoh: Harga beli tidak sesuai kesepakatan, vendor salah kirim spesifikasi..."></textarea>
+                <div class="px-7 py-6">
+                    <div class="mb-5 rounded-lg border border-amber-100 bg-amber-50 p-3">
+                        <div class="flex space-x-2">
+                            <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            </svg>
+                            <p class="text-[11px] font-medium leading-relaxed text-amber-800">
+                                Harap sertakan alasan yang jelas dan konstruktif untuk <strong id="rejectGoodsName" class="font-bold text-amber-900"></strong> agar tim dapat merevisi atau menindaklanjuti dengan tepat.
+                            </p>
+                        </div>
+                    </div>
+
+                    <label class="mb-2 block text-xs font-bold uppercase tracking-widest text-gray-400">
+                        REJECTION REASON <span class="text-rose-500">*</span>
+                    </label>
+                    <textarea id="rejectReason" name="reason" rows="4" required minlength="5" placeholder="Contoh: Harga beli tidak sesuai kesepakatan, vendor salah kirim spesifikasi..." class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm transition-all focus:border-rose-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-rose-500/10 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-rose-500"></textarea>
+
+                    <div id="rejectReasonError" class="mt-2 hidden items-center text-xs font-semibold text-rose-600">
+                        <svg class="mr-1 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        Alasan penolakan minimal 5 karakter.
                     </div>
                 </div>
-                <footer class="flex items-center justify-end gap-2 border-t border-gray-200 bg-gray-50 px-6 py-3 dark:border-gray-700 dark:bg-gray-900/50">
-                    <button type="button" onclick="spvRejectModal.close()" class="rounded-xl px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200 dark:text-gray-300">
-                        Batal
+
+                <div class="flex items-center justify-end gap-3 bg-gray-50 px-7 py-5 dark:bg-gray-900/50">
+                    <button type="button" onclick="closeSpvRejectModal()" class="rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-bold text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-700 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                        Cancel
                     </button>
-                    <button type="submit" class="rounded-xl bg-red-600 px-5 py-2 text-sm font-bold text-white shadow hover:bg-red-700">
-                        Konfirmasi Tolak
+                    <button type="button" onclick="submitSpvRejectModal()" class="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-rose-600/20 transition-all hover:bg-rose-700 hover:shadow-rose-600/30 active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Confirm Reject
                     </button>
-                </footer>
+                </div>
             </form>
         </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
     </dialog>
 
     <!-- Modal Detail Barang -->
@@ -242,7 +276,29 @@
             document.getElementById('rejectGoodsName').textContent = goodsName;
             document.getElementById('rejectProcNumber').textContent = procNumber;
             document.getElementById('rejectReason').value = '';
-            document.getElementById('spvRejectModal').showModal();
+            document.getElementById('rejectReasonError')?.classList.add('hidden');
+            
+            const modal = document.getElementById('spvRejectModal');
+            if (modal) {
+                modal.showModal();
+                document.getElementById('rejectReason').focus();
+            }
+        }
+
+        function closeSpvRejectModal() {
+            const modal = document.getElementById('spvRejectModal');
+            if (modal) modal.close();
+        }
+
+        function submitSpvRejectModal() {
+            const reason = document.getElementById('rejectReason').value.trim();
+            if (reason.length < 5) {
+                document.getElementById('rejectReasonError')?.classList.remove('hidden');
+                document.getElementById('rejectReason').focus();
+                return;
+            }
+            document.getElementById('rejectReasonError')?.classList.add('hidden');
+            document.getElementById('spvRejectForm').submit();
         }
     </script>
 </x-app-layout>
