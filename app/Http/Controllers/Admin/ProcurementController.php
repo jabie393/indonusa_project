@@ -192,13 +192,18 @@ class ProcurementController extends Controller
             ->orderBy('goods_name')
             ->get();
 
+        $vendors = \App\Models\Vendor::where('status', 'active')
+            ->orderBy('vendor_name')
+            ->get();
+
         return view('admin.procurement.index', compact(
             'listingItems',
             'nonListingItems',
             'combinedRequirements',
             'activeListingCount',
             'activeNonListingCount',
-            'availableListingGoods'
+            'availableListingGoods',
+            'vendors'
         ));
     }
 
@@ -207,18 +212,37 @@ class ProcurementController extends Controller
      */
     public function storeStock(Request $request)
     {
+        // Filter row yang memiliki barang yang dipilih dan bersihkan format harga jika ada
+        if ($request->has('items') && is_array($request->items)) {
+            $filteredItems = [];
+            foreach ($request->items as $item) {
+                if (!empty($item['goods_id'])) {
+                    if (isset($item['buy_price'])) {
+                        $cleanPrice = str_replace(['.', ',', ' '], '', (string) $item['buy_price']);
+                        $item['buy_price'] = is_numeric($cleanPrice) ? (float) $cleanPrice : 0;
+                    }
+                    $filteredItems[] = $item;
+                }
+            }
+            $request->merge(['items' => $filteredItems]);
+        }
+
         $validated = $request->validate([
-            'vendor_name' => 'required|string|max:255',
+            'vendor_id' => 'required|exists:vendors,id',
             'notes' => 'nullable|string|max:500',
             'items' => 'required|array|min:1',
             'items.*.goods_id' => 'required|exists:goods,id',
             'items.*.qty_ordered' => 'required|integer|min:1',
             'items.*.buy_price' => 'required|numeric|min:0',
         ], [
-            'vendor_name.required' => 'Nama vendor / supplier wajib diisi.',
+            'vendor_id.required' => 'Pilih vendor / supplier yang terdaftar di master data.',
+            'vendor_id.exists' => 'Vendor yang dipilih tidak valid atau tidak ditemukan.',
             'items.required' => 'Minimal pilih 1 barang untuk pengadaan.',
+            'items.*.goods_id.required' => 'Pilih barang katalog untuk setiap baris pengadaan.',
             'items.*.qty_ordered.min' => 'Kuantitas pesanan minimal 1.',
         ]);
+
+        $vendor = \App\Models\Vendor::findOrFail($validated['vendor_id']);
 
         DB::beginTransaction();
         try {
@@ -227,7 +251,8 @@ class ProcurementController extends Controller
                 'custom_quotation_id' => null,
                 'order_id' => null,
                 'general_affair_id' => Auth::id(),
-                'vendor_name' => $validated['vendor_name'],
+                'vendor_id' => $vendor->id,
+                'vendor_name' => $vendor->vendor_name,
                 'status' => 'pending',
                 'notes' => $validated['notes'] ?? 'Pengadaan Stok Gudang',
             ]);
@@ -248,6 +273,8 @@ class ProcurementController extends Controller
                 ]);
             }
 
+            DB::commit();
+
             try {
                 event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
             } catch (\Throwable $broadCastEx) {
@@ -255,7 +282,7 @@ class ProcurementController extends Controller
             }
 
             return redirect()->route('general-affair.procurement.index')
-                ->with(['title' => 'Berhasil', 'text' => "Pengadaan Stok {$procurement->procurement_number} berhasil dibuat."]);
+                ->with(['title' => 'Berhasil', 'text' => "Pengadaan Stok {$procurement->procurement_number} berhasil dibuat.", 'success' => "Pengadaan Stok {$procurement->procurement_number} berhasil dibuat."]);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Stock Procurement Store Error: ' . $e->getMessage());

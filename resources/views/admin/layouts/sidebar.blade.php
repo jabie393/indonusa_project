@@ -173,13 +173,13 @@
                     </a>
                 </li>
                 {{-- Entity Management (collapsible) --}}
-                <details {{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'open' : '' }} class="">
+                <details {{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') || request()->routeIs('vendors.*') ? 'open' : '' }} class="">
                     <summary
-                        class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                        class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') || request()->routeIs('vendors.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex cursor-pointer items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
 
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round"
-                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
+                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') || request()->routeIs('vendors.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white">
                             <rect x="16" y="16" width="6" height="6" rx="1.5" />
                             <rect x="2" y="16" width="6" height="6" rx="1.5" />
                             <rect x="9" y="2" width="6" height="6" rx="1.5" />
@@ -188,7 +188,7 @@
                             <path d="M12 12h7v4" />
                         </svg>
                         <span
-                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Entity
+                            class="{{ request()->routeIs('sales-agents.*') || request()->routeIs('customers.*') || request()->routeIs('pics.*') || request()->routeIs('vendors.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Entity
                             Management</span>
                     </summary>
 
@@ -256,6 +256,18 @@
                                 </svg>
                                 <span
                                     class="{{ request()->routeIs('pics.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">PICs</span>
+                            </a>
+                        </li>
+
+                        {{-- Vendors --}}
+                        <li class="w-[88%]">
+                            <a href="{{ route('vendors.index') }}"
+                                class="{{ request()->routeIs('vendors.*') ? 'bg-gradient-to-r from-[#225A97] to-[#0D223A] text-white inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm' : 'bg-white text-black hover:bg-gradient-to-r hover:from-[#225A97] hover:to-[#0D223A] hover:text-white dark:bg-[#0D223A] dark:text-white dark:hover:bg-gradient-to-r dark:hover:from-[#225A97] dark:hover:to-[#0D223A]' }} group flex items-center rounded-lg p-2 text-base font-medium transition-all duration-200">
+                                <svg class="{{ request()->routeIs('vendors.*') ? 'text-white' : 'text-black dark:text-white' }} h-6 w-6 shrink-0 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                                <span
+                                    class="{{ request()->routeIs('vendors.*') ? 'text-white' : 'text-black dark:text-white' }} ml-2 group-hover:text-white">Vendors</span>
                             </a>
                         </li>
                     </ul>

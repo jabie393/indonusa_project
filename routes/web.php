@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\GoodsInStatusController;
 use App\Http\Controllers\Admin\SalesAgentsController;
 use App\Http\Controllers\Admin\CustomersController;
 use App\Http\Controllers\Admin\PicsController;
+use App\Http\Controllers\Admin\VendorsController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\Dashboard\WarehouseDashboardController;
@@ -128,6 +129,8 @@ Route::middleware(['auth', 'role:General Affair'])->group(function () {
     Route::resource('/goods-in-status', GoodsInStatusController::class);
     Route::resource('/sales-agents', SalesAgentsController::class);
     Route::resource('/pics', PicsController::class);
+    Route::resource('/vendors', VendorsController::class);
+    Route::patch('/vendors/{id}/status', [VendorsController::class, 'updateStatus'])->name('vendors.status.update');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
     // Dashboard Chart Data for GA

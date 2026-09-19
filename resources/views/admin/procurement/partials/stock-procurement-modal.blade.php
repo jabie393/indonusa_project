@@ -31,18 +31,29 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl border border-gray-200 p-4 bg-gray-50/70 dark:border-gray-700 dark:bg-gray-900/40">
                     <!-- Vendor -->
                     <div>
-                        <label for="stock_vendor_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300 mb-1.5">
-                            Nama Vendor / Supplier <span class="text-red-500">*</span>
-                        </label>
-                        <div class="relative">
-                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="stock_vendor_id" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-gray-300">
+                                Pilih Vendor / Supplier <span class="text-red-500">*</span>
+                            </label>
+                            <a href="{{ route('vendors.index') }}" target="_blank" class="text-[11px] font-semibold text-blue-600 hover:underline dark:text-blue-400 flex items-center gap-1">
+                                <span>+ Kelola Vendor</span>
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                                 </svg>
-                            </div>
-                            <input type="text" id="stock_vendor_name" name="vendor_name" required
-                                class="w-full rounded-xl border border-gray-300 bg-white p-2.5 pl-9 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                placeholder="Masukkan nama PT / CV / Toko vendor..." />
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <select id="stock_vendor_id" name="vendor_id" required
+                                class="w-full rounded-xl border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="" disabled selected>-- Pilih Vendor Terdaftar --</option>
+                                @forelse($vendors ?? [] as $vnd)
+                                    <option value="{{ $vnd->id }}">
+                                        {{ $vnd->vendor_name }} ({{ $vnd->vendor_code ?: 'Vendor' }}){{ $vnd->city ? ' - ' . $vnd->city : '' }}
+                                    </option>
+                                @empty
+                                    <option value="" disabled>Belum ada vendor terdaftar (Tambahkan di Entity Management > Vendors)</option>
+                                @endforelse
+                            </select>
                         </div>
                     </div>
 
@@ -195,7 +206,7 @@
 
                                     <!-- Harga Beli -->
                                     <td class="p-3 text-right">
-                                        <input type="number" name="items[0][buy_price]" min="0" step="any" value="0" required
+                                        <input type="text" inputmode="numeric" name="items[0][buy_price]" value="0" required
                                             class="js-stock-price-input w-full rounded-lg border border-gray-300 bg-white p-2 text-right text-xs font-semibold text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
                                     </td>
 
@@ -256,13 +267,41 @@
             return 'Rp ' + Number(amount).toLocaleString('id-ID');
         }
 
+        function formatNumberString(val) {
+            let clean = String(val || '').replace(/\D/g, '');
+            if (!clean) return '';
+            return parseInt(clean, 10).toLocaleString('id-ID');
+        }
+
+        function formatRupiahInput(input) {
+            let cursorPosition = input.selectionStart;
+            let oldLength = input.value.length;
+            let raw = input.value.replace(/\D/g, '');
+
+            if (!raw) {
+                input.value = '';
+                return 0;
+            }
+
+            let formatted = parseInt(raw, 10).toLocaleString('id-ID');
+            input.value = formatted;
+
+            let newLength = formatted.length;
+            let newCursorPosition = cursorPosition + (newLength - oldLength);
+            if (newCursorPosition < 0) newCursorPosition = 0;
+            input.setSelectionRange(newCursorPosition, newCursorPosition);
+
+            return parseInt(raw, 10);
+        }
+
         function recalculateRow(row) {
             const qtyInput = row.querySelector('.js-stock-qty-input');
             const priceInput = row.querySelector('.js-stock-price-input');
             const subtotalLabel = row.querySelector('.js-stock-subtotal-label');
 
             const qty = parseFloat(qtyInput ? qtyInput.value : 0) || 0;
-            const price = parseFloat(priceInput ? priceInput.value : 0) || 0;
+            const rawPrice = (priceInput ? priceInput.value : '').replace(/\D/g, '');
+            const price = parseFloat(rawPrice) || 0;
             const subtotal = qty * price;
 
             if (subtotalLabel) {
@@ -408,8 +447,9 @@
 
                     // Update price if 0 or empty
                     const priceInput = row.querySelector('.js-stock-price-input');
-                    if (priceInput && (!priceInput.value || parseFloat(priceInput.value) === 0) && price > 0) {
-                        priceInput.value = price;
+                    const currentRaw = (priceInput ? priceInput.value : '').replace(/\D/g, '');
+                    if (priceInput && (!currentRaw || parseFloat(currentRaw) === 0) && price > 0) {
+                        priceInput.value = formatNumberString(price);
                     }
 
                     // Update active styles
@@ -439,7 +479,10 @@
             }
 
             if (priceInput) {
-                priceInput.addEventListener('input', recalculateAll);
+                priceInput.addEventListener('input', function() {
+                    formatRupiahInput(this);
+                    recalculateAll();
+                });
             }
 
             if (removeBtn) {
@@ -641,6 +684,11 @@
                         alert('Harap pilih barang katalog untuk setiap baris.');
                         return false;
                     }
+
+                    // Bersihkan format titik pemisah ribuan sebelum dikirim ke backend
+                    form.querySelectorAll('.js-stock-price-input').forEach(input => {
+                        input.value = input.value.replace(/\D/g, '') || '0';
+                    });
                 });
             }
         });

@@ -17,7 +17,13 @@ class ProcurementOfGoods extends Model
         'status',
         'notes',
         'vendor_name',
+        'vendor_id',
     ];
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class, 'vendor_id');
+    }
 
     public function order()
     {
