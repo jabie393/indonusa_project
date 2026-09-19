@@ -61,15 +61,19 @@ class ProcurementApprovalController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'Warehouse',
-                null,
-                'procurement_arrival_submitted',
-                'Barang Masuk Siap Diverifikasi!',
-                'Ada kedatangan barang pengadaan yang telah disetujui Supervisor dan siap diverifikasi fisik oleh Warehouse.'
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'Warehouse',
+                    null,
+                    'procurement_arrival_submitted',
+                    'Barang Masuk Siap Diverifikasi!',
+                    'Ada kedatangan barang pengadaan yang telah disetujui Supervisor dan siap diverifikasi fisik oleh Warehouse.'
+                ));
 
-            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in Supervisor approve procurement: ' . $broadCastEx->getMessage());
+            }
 
             return redirect()->back()->with([
                 'title' => 'Berhasil Disetujui!',
@@ -110,15 +114,19 @@ class ProcurementApprovalController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'General Affair',
-                null,
-                'procurement_arrival_rejected',
-                'Kedatangan Ditolak Supervisor!',
-                'Kedatangan barang pengadaan ditolak oleh Supervisor: ' . $request->input('reason')
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'General Affair',
+                    null,
+                    'procurement_arrival_rejected',
+                    'Kedatangan Ditolak Supervisor!',
+                    'Kedatangan barang pengadaan ditolak oleh Supervisor: ' . $request->input('reason')
+                ));
 
-            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in Supervisor reject procurement: ' . $broadCastEx->getMessage());
+            }
 
             return redirect()->back()->with([
                 'title' => 'Berhasil Ditolak!',

@@ -248,9 +248,11 @@ class ProcurementController extends Controller
                 ]);
             }
 
-            DB::commit();
-
-            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            try {
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in storeStock: ' . $broadCastEx->getMessage());
+            }
 
             return redirect()->route('general-affair.procurement.index')
                 ->with(['title' => 'Berhasil', 'text' => "Pengadaan Stok {$procurement->procurement_number} berhasil dibuat."]);
@@ -343,13 +345,17 @@ class ProcurementController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'Warehouse',
-                null,
-                'procurement_arrival_submitted',
-                'Barang Masuk Baru!',
-                'Ada barang masuk dari procurement yang perlu ditinjau.'
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'Warehouse',
+                    null,
+                    'procurement_arrival_submitted',
+                    'Barang Masuk Baru!',
+                    'Ada barang masuk dari procurement yang perlu ditinjau.'
+                ));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in store: ' . $broadCastEx->getMessage());
+            }
 
             return redirect()->route('general-affair.procurement.show', $procurement->id)
                 ->with(['title' => 'Berhasil', 'text' => "Procurement {$procurement->procurement_number} berhasil dibuat."]);
@@ -431,13 +437,17 @@ class ProcurementController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'Warehouse',
-                null,
-                'procurement_arrival_submitted',
-                'Barang Masuk Baru!',
-                'Ada barang masuk dari procurement yang perlu ditinjau.'
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'Warehouse',
+                    null,
+                    'procurement_arrival_submitted',
+                    'Barang Masuk Baru!',
+                    'Ada barang masuk dari procurement yang perlu ditinjau.'
+                ));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in storeModal: ' . $broadCastEx->getMessage());
+            }
 
             if ($validated['type'] === 'full') {
                 return response()->json([
@@ -558,13 +568,21 @@ class ProcurementController extends Controller
                 $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $alreadyPending);
 
                 if ($qtyArriving > $maxAllowed) {
-                    return back()->withErrors("Kuantitas datang untuk '{$procItem->goods->goods_name}' ({$qtyArriving}) melebihi sisa batas yang dapat dicatat. Maksimal yang dapat dicatat saat ini adalah {$maxAllowed} (memperhitungkan kedatangan lain yang masih pending approval).");
+                    $msg = "Kuantitas datang untuk '{$procItem->goods->goods_name}' ({$qtyArriving}) melebihi sisa batas yang dapat dicatat. Maksimal yang dapat dicatat saat ini adalah {$maxAllowed} (memperhitungkan kedatangan lain yang masih pending approval).";
+                    if ($request->wantsJson() || $request->ajax()) {
+                        return response()->json(['success' => false, 'message' => $msg], 422);
+                    }
+                    return back()->withErrors($msg);
                 }
             }
         }
 
         if (!$anyArriving) {
-            return back()->withErrors('Kuantitas datang untuk minimal satu item harus lebih besar dari 0.');
+            $msg = 'Kuantitas datang untuk minimal satu item harus lebih besar dari 0.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors($msg);
         }
 
         DB::beginTransaction();
@@ -595,19 +613,48 @@ class ProcurementController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'Supervisor',
-                null,
-                'procurement_arrival_submitted',
-                'Persetujuan Kedatangan Pengadaan!',
-                'Ada kedatangan barang dari pengadaan yang memerlukan persetujuan Supervisor.'
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'Supervisor',
+                    null,
+                    'procurement_arrival_submitted',
+                    'Persetujuan Kedatangan Pengadaan!',
+                    'Ada kedatangan barang dari pengadaan yang memerlukan persetujuan Supervisor.'
+                ));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in recordArrival: ' . $broadCastEx->getMessage());
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                $procurement->load([
+                    'customQuotation', 
+                    'order', 
+                    'items.goods', 
+                    'generalAffair', 
+                    'items.procurementArrivalRequests.rejectedBy',
+                    'items.procurementArrivalRequests.supervisor'
+                ]);
+                $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Kedatangan barang berhasil dicatat. Menunggu persetujuan Supervisor.',
+                    'html' => $html,
+                ]);
+            }
 
             return redirect()->route('general-affair.procurement.show', $procurement->id)
                 ->with(['title' => 'Berhasil', 'text' => 'Kedatangan barang berhasil dicatat. Menunggu persetujuan Supervisor.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Record Arrival Error: ' . $e->getMessage());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mencatat kedatangan: ' . $e->getMessage()
+                ], 500);
+            }
+
             return back()->withErrors('Gagal mencatat kedatangan: ' . $e->getMessage());
         }
     }
@@ -618,7 +665,11 @@ class ProcurementController extends Controller
     public function updateReceipt(Request $request, ProcurementArrivalRequest $receipt)
     {
         if ($receipt->status !== 'rejected') {
-            return back()->withErrors('Hanya kedatangan barang yang ditolak yang dapat direvisi.');
+            $msg = 'Hanya kedatangan barang yang ditolak yang dapat direvisi.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors($msg);
         }
 
         $validated = $request->validate([
@@ -635,7 +686,11 @@ class ProcurementController extends Controller
             $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $otherPendingQty);
 
             if ($validated['quantity'] > $maxAllowed) {
-                return back()->withErrors("Kuantitas revisi ({$validated['quantity']}) melebihi batas yang diperbolehkan. Maksimal kuantitas yang dapat diterima adalah {$maxAllowed}.");
+                $msg = "Kuantitas revisi ({$validated['quantity']}) melebihi batas yang diperbolehkan. Maksimal kuantitas yang dapat diterima adalah {$maxAllowed}.";
+                if ($request->wantsJson() || $request->ajax()) {
+                    return response()->json(['success' => false, 'message' => $msg], 422);
+                }
+                return back()->withErrors($msg);
             }
         }
 
@@ -656,19 +711,49 @@ class ProcurementController extends Controller
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification(
-                'Warehouse',
-                null,
-                'procurement_arrival_submitted',
-                'Barang Masuk Baru!',
-                'Ada barang masuk dari procurement yang perlu ditinjau.'
-            ));
+            try {
+                event(new \App\Events\RealTimeNotification(
+                    'Warehouse',
+                    null,
+                    'procurement_arrival_submitted',
+                    'Barang Masuk Baru!',
+                    'Ada barang masuk dari procurement yang perlu ditinjau.'
+                ));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in updateReceipt: ' . $broadCastEx->getMessage());
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                $procurement = $procItem->procurementOfGoods;
+                $procurement->load([
+                    'customQuotation', 
+                    'order', 
+                    'items.goods', 
+                    'generalAffair', 
+                    'items.procurementArrivalRequests.rejectedBy',
+                    'items.procurementArrivalRequests.supervisor'
+                ]);
+                $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Penerimaan barang berhasil direvisi dan dikirim kembali untuk review.',
+                    'html' => $html,
+                ]);
+            }
 
             return redirect()->route('general-affair.procurement.show', $procItem->procurement_of_goods_id)
                 ->with(['title' => 'Berhasil', 'text' => 'Penerimaan barang kustom berhasil direvisi dan dikirim kembali untuk review.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Update Receipt Error: ' . $e->getMessage());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal merevisi kedatangan: ' . $e->getMessage()
+                ], 500);
+            }
+
             return back()->withErrors('Gagal merevisi kedatangan: ' . $e->getMessage());
         }
     }
@@ -676,27 +761,61 @@ class ProcurementController extends Controller
     /**
      * Hapus kedatangan barang (ProcurementArrivalRequest) yang belum approved.
      */
-    public function destroyReceipt(ProcurementArrivalRequest $receipt)
+    public function destroyReceipt(Request $request, ProcurementArrivalRequest $receipt)
     {
         if ($receipt->status === 'approved') {
-            return back()->withErrors('Kedatangan barang yang sudah disetujui (Approved) tidak dapat dihapus.');
+            $msg = 'Kedatangan barang yang sudah disetujui (Approved) tidak dapat dihapus.';
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withErrors($msg);
         }
 
         DB::beginTransaction();
         try {
-            $procurementId = $receipt->procurementOfGoodsItem->procurement_of_goods_id;
+            $procurement = $receipt->procurementOfGoodsItem->procurementOfGoods;
+            $procurementId = $procurement->id;
 
             $receipt->delete();
 
             DB::commit();
 
-            event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            try {
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+            } catch (\Throwable $broadCastEx) {
+                Log::warning('Broadcast failed in destroyReceipt: ' . $broadCastEx->getMessage());
+            }
+
+            if ($request->wantsJson() || $request->ajax()) {
+                $procurement->load([
+                    'customQuotation', 
+                    'order', 
+                    'items.goods', 
+                    'generalAffair', 
+                    'items.procurementArrivalRequests.rejectedBy',
+                    'items.procurementArrivalRequests.supervisor'
+                ]);
+                $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Catatan kedatangan barang berhasil dihapus.',
+                    'html' => $html,
+                ]);
+            }
 
             return redirect()->route('general-affair.procurement.show', $procurementId)
                 ->with(['title' => 'Berhasil', 'text' => 'Catatan kedatangan barang kustom berhasil dihapus.']);
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error('Destroy Receipt Error: ' . $e->getMessage());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menghapus kedatangan barang: ' . $e->getMessage()
+                ], 500);
+            }
+
             return back()->withErrors('Gagal menghapus kedatangan barang: ' . $e->getMessage());
         }
     }

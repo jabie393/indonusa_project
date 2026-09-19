@@ -339,11 +339,11 @@
                                                     </svg>
                                                     <span class="max-w-0 overflow-hidden text-nowrap opacity-0 transition-all duration-300 ease-in-out group-hover:max-w-xs group-hover:pl-1.5 group-hover:opacity-100">Revise</span>
                                                 </button>
-                                                <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
+                                                 <form action="{{ route('general-affair.procurement.destroy-receipt', $receipt->id) }}" method="POST" class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" 
-                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        onclick="confirmDelete(() => deleteReceiptAjax(this.closest('form')))"
                                                         class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -361,7 +361,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" 
-                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        onclick="confirmDelete(() => deleteReceiptAjax(this.closest('form')))"
                                                         class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -379,7 +379,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" 
-                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        onclick="confirmDelete(() => deleteReceiptAjax(this.closest('form')))"
                                                         class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -397,7 +397,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" 
-                                                        onclick="confirmDelete(() => this.closest('form').submit())"
+                                                        onclick="confirmDelete(() => deleteReceiptAjax(this.closest('form')))"
                                                         class="group inline-flex items-center justify-center rounded bg-red-700 p-1.5 text-xs font-semibold text-white hover:bg-red-800 transition-all duration-300 ease-in-out dark:bg-red-600 dark:hover:bg-red-700">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

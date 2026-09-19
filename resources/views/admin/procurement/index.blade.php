@@ -561,14 +561,16 @@
             });
 
             // Helper functions for price formatting
-            function formatNumberWithCommas(value) {
+            window.formatNumberWithCommas = function(value) {
                 if (!value) return '';
                 // Discard decimal places and keep digits only
                 let cleanValue = value.toString().split('.')[0].replace(/[^0-9]/g, '');
                 return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
+            };
+            const formatNumberWithCommas = window.formatNumberWithCommas;
 
-            function formatInputPrice(input) {
+            window.formatInputPrice = function(input) {
+                if (!input) return;
                 let selectionStart = input.selectionStart;
                 let oldLength = input.value.length;
                 let value = input.value;
@@ -582,10 +584,12 @@
                 let newLength = formattedValue.length;
                 let newStart = selectionStart + (newLength - oldLength);
                 input.setSelectionRange(newStart, newStart);
-            }
+            };
+            const formatInputPrice = window.formatInputPrice;
 
             // Initialize formatting on dynamically loaded container
-            function initializeBuyPriceInputs(container) {
+            window.initializeBuyPriceInputs = function(container) {
+                if (!container) return;
                 container.querySelectorAll('.buy-price-input').forEach(input => {
                     if (input.value) {
                         input.value = formatNumberWithCommas(input.value);
@@ -594,7 +598,8 @@
                         formatInputPrice(this);
                     });
                 });
-            }
+            };
+            const initializeBuyPriceInputs = window.initializeBuyPriceInputs;
 
             // --- 1. PROCESS PROCUREMENT FLOW (Creation) ---
             document.addEventListener('click', function(e) {
@@ -941,13 +946,121 @@
                     });
             });
 
-            // Intercept record arrival form submit to clean commas
+            // Intercept record arrival form submit to clean commas and submit via AJAX
             document.addEventListener('submit', function(e) {
-                if (e.target && e.target.id === 'recordArrivalForm') {
-                    e.target.querySelectorAll('.buy-price-input').forEach(input => {
-                        input.value = input.value.replace(/,/g, '');
-                    });
+                const form = e.target;
+                if (!form || form.id !== 'recordArrivalForm') return;
+
+                e.preventDefault();
+
+                // Clean commas from inputs
+                form.querySelectorAll('.buy-price-input').forEach(input => {
+                    input.value = input.value.replace(/,/g, '');
+                });
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `
+                        <span class="inline-flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Menyimpan...</span>
+                        </span>
+                    `;
                 }
+
+                const formData = new FormData(form);
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(async res => {
+                    const data = await res.json().catch(() => ({}));
+                    return { ok: res.ok, status: res.status, data };
+                })
+                .then(({ ok, data }) => {
+                    if (ok && data.success) {
+                        // Re-render modal content seamlessly
+                        if (data.html && detailView) {
+                            detailView.innerHTML = data.html;
+                            initializeBuyPriceInputs(detailView);
+                        }
+
+                        // Success SweetAlert2 popup
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: data.message || 'Kedatangan barang berhasil dicatat. Menunggu persetujuan Supervisor.',
+                            icon: 'success',
+                            showConfirmButton: true,
+                            confirmButtonColor: '#225A97',
+                            confirmButtonText: 'OK',
+                            timer: 3500,
+                            timerProgressBar: true,
+                            customClass: {
+                                popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                                title: 'dark:text-white!',
+                                htmlContainer: 'dark:text-gray-300!',
+                            },
+                            target: document.querySelector('dialog[open]') || 'body'
+                        });
+                    } else {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = origBtnHtml;
+                        }
+
+                        let errMsg = data.message || 'Terjadi kesalahan saat mencatat kedatangan barang.';
+                        if (data.errors) {
+                            errMsg = Object.values(data.errors).flat().join('\n');
+                        }
+
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: errMsg,
+                            icon: 'error',
+                            showConfirmButton: true,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                                title: 'dark:text-white!',
+                                htmlContainer: 'dark:text-gray-300!',
+                            },
+                            target: document.querySelector('dialog[open]') || 'body'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Record arrival submit error:', err);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origBtnHtml;
+                    }
+
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan jaringan atau server saat menyimpan data.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                            title: 'dark:text-white!',
+                            htmlContainer: 'dark:text-gray-300!',
+                        },
+                        target: document.querySelector('dialog[open]') || 'body'
+                    });
+                });
             });
 
             // Check if there is a sessionStorage success notification from reload
@@ -1001,6 +1114,105 @@
             }
         });
 
+        // Delete receipt batch via AJAX
+        window.deleteReceiptAjax = function(form) {
+            if (!form) return;
+            const submitBtn = form.querySelector('button');
+            const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                `;
+            }
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(async res => {
+                const data = await res.json().catch(() => ({}));
+                return { ok: res.ok, status: res.status, data };
+            })
+            .then(({ ok, data }) => {
+                if (ok && data.success) {
+                    const detailView = document.getElementById('procurement-detail-view');
+                    if (data.html && detailView) {
+                        detailView.innerHTML = data.html;
+                        initializeBuyPriceInputs(detailView);
+                    }
+
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: data.message || 'Catatan kedatangan barang berhasil dihapus.',
+                        icon: 'success',
+                        showConfirmButton: true,
+                        confirmButtonColor: '#225A97',
+                        confirmButtonText: 'OK',
+                        timer: 3500,
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                            title: 'dark:text-white!',
+                            htmlContainer: 'dark:text-gray-300!',
+                        },
+                        target: document.querySelector('dialog[open]') || 'body'
+                    });
+                } else {
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = origBtnHtml;
+                    }
+
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal menghapus kedatangan barang.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK',
+                        customClass: {
+                            popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                            title: 'dark:text-white!',
+                            htmlContainer: 'dark:text-gray-300!',
+                        },
+                        target: document.querySelector('dialog[open]') || 'body'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Delete receipt error:', err);
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = origBtnHtml;
+                }
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat menghapus data.',
+                    icon: 'error',
+                    showConfirmButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                        title: 'dark:text-white!',
+                        htmlContainer: 'dark:text-gray-300!',
+                    },
+                    target: document.querySelector('dialog[open]') || 'body'
+                });
+            });
+        };
+
         // Standalone revision modal functions
         function openRevisionModal(receiptId, qty, unitCost, goodsName, maxAllowed) {
             const modal = document.getElementById('modalRevisiReceipt');
@@ -1041,15 +1253,124 @@
             }
         }
 
-        // Add pricing format formatting inside revision form
+        // Add pricing format formatting and AJAX submission inside revision form
         document.addEventListener('DOMContentLoaded', function() {
             const revisionForm = document.getElementById('formRevisiReceipt');
             if (revisionForm) {
                 // Initialize input formatting logic for the revision modal price input
                 initializeBuyPriceInputs(revisionForm);
                 revisionForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
                     const costInput = document.getElementById('revisionUnitCost');
-                    costInput.value = costInput.value.replace(/,/g, '');
+                    if (costInput) {
+                        costInput.value = costInput.value.replace(/,/g, '');
+                    }
+
+                    const submitBtn = revisionForm.querySelector('button[type="submit"]');
+                    const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = `
+                            <span class="inline-flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Menyimpan...</span>
+                            </span>
+                        `;
+                    }
+
+                    const formData = new FormData(revisionForm);
+
+                    fetch(revisionForm.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(async res => {
+                        const data = await res.json().catch(() => ({}));
+                        return { ok: res.ok, status: res.status, data };
+                    })
+                    .then(({ ok, data }) => {
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = origBtnHtml;
+                        }
+
+                        if (ok && data.success) {
+                            closeRevisionModal();
+
+                            const detailView = document.getElementById('procurement-detail-view');
+                            if (data.html && detailView) {
+                                detailView.innerHTML = data.html;
+                                initializeBuyPriceInputs(detailView);
+                            }
+
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: data.message || 'Penerimaan barang berhasil direvisi dan dikirim kembali untuk review.',
+                                icon: 'success',
+                                showConfirmButton: true,
+                                confirmButtonColor: '#225A97',
+                                confirmButtonText: 'OK',
+                                timer: 3500,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                                    title: 'dark:text-white!',
+                                    htmlContainer: 'dark:text-gray-300!',
+                                },
+                                target: document.querySelector('dialog[open]') || 'body'
+                            });
+                        } else {
+                            let errMsg = data.message || 'Terjadi kesalahan saat merevisi kedatangan.';
+                            if (data.errors) {
+                                errMsg = Object.values(data.errors).flat().join('\n');
+                            }
+
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: errMsg,
+                                icon: 'error',
+                                showConfirmButton: true,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                                    title: 'dark:text-white!',
+                                    htmlContainer: 'dark:text-gray-300!',
+                                },
+                                target: document.querySelector('dialog[open]') || 'body'
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Revision submit error:', err);
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = origBtnHtml;
+                        }
+
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan jaringan atau server saat menyimpan data.',
+                            icon: 'error',
+                            showConfirmButton: true,
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'OK',
+                            customClass: {
+                                popup: 'rounded-2xl! dark:bg-gray-800! dark:text-white! dark:border! dark:border-gray-700!',
+                                title: 'dark:text-white!',
+                                htmlContainer: 'dark:text-gray-300!',
+                            },
+                            target: document.querySelector('dialog[open]') || 'body'
+                        });
+                    });
                 });
             }
         });
