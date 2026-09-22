@@ -450,14 +450,14 @@ class ProcurementController extends Controller
                 ]);
 
                 if ($validated['type'] === 'full') {
-                    // Buat ProcurementArrivalRequest penuh otomatis
+                    // Buat ProcurementArrivalRequest penuh otomatis (menunggu verifikasi SPV)
                     ProcurementArrivalRequest::create([
                         'good_id' => $barang->id,
                         'procurement_of_goods_item_id' => $procItem->id,
                         'received_at' => now(),
                         'quantity' => $itemData['qty_ordered'],
                         'unit_cost' => $itemData['buy_price'],
-                        'status' => 'pending',
+                        'status' => 'pending_spv',
                     ]);
                 }
             }
@@ -465,13 +465,16 @@ class ProcurementController extends Controller
             DB::commit();
 
             try {
-                event(new \App\Events\RealTimeNotification(
-                    'Warehouse',
-                    null,
-                    'procurement_arrival_submitted',
-                    'Barang Masuk Baru!',
-                    'Ada barang masuk dari procurement yang perlu ditinjau.'
-                ));
+                if ($validated['type'] === 'full') {
+                    event(new \App\Events\RealTimeNotification(
+                        'Supervisor',
+                        null,
+                        'procurement_arrival_submitted',
+                        'Persetujuan Kedatangan Pengadaan!',
+                        'Ada kedatangan barang dari pengadaan yang memerlukan persetujuan Supervisor.'
+                    ));
+                    event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
+                }
             } catch (\Throwable $broadCastEx) {
                 Log::warning('Broadcast failed in storeModal: ' . $broadCastEx->getMessage());
             }
@@ -480,7 +483,7 @@ class ProcurementController extends Controller
                 return response()->json([
                     'success' => true,
                     'type' => 'full',
-                    'message' => "Procurement {$procurement->procurement_number} berhasil dibuat secara full. Menunggu approval Warehouse.",
+                    'message' => "Procurement {$procurement->procurement_number} berhasil dibuat secara full. Menunggu approval Supervisor.",
                 ]);
             } else {
                 // Partial - load detail HTML to be rendered in modal
@@ -708,7 +711,7 @@ class ProcurementController extends Controller
         if ($procItem) {
             $otherPendingQty = ProcurementArrivalRequest::where('procurement_of_goods_item_id', $procItem->id)
                 ->where('id', '!=', $receipt->id)
-                ->where('status', 'pending')
+                ->whereIn('status', ['pending', 'pending_spv', 'pending_warehouse'])
                 ->sum('quantity');
             $maxAllowed = max(0, $procItem->qty_ordered - $procItem->qty_received - $otherPendingQty);
 
@@ -726,8 +729,13 @@ class ProcurementController extends Controller
             $receipt->update([
                 'quantity' => $validated['quantity'],
                 'unit_cost' => $validated['unit_cost'],
-                'status' => 'pending',
+                'status' => 'pending_spv',
+                'spv_id' => null,
+                'spv_approved_at' => null,
                 'reject_reason' => null,
+                'rejected_by' => null,
+                'rejected_by_role' => null,
+                'rejected_at' => null,
             ]);
 
             // Perbarui buy_price pada item pengadaan jika harga beli diubah
@@ -740,12 +748,13 @@ class ProcurementController extends Controller
 
             try {
                 event(new \App\Events\RealTimeNotification(
-                    'Warehouse',
+                    'Supervisor',
                     null,
                     'procurement_arrival_submitted',
-                    'Barang Masuk Baru!',
-                    'Ada barang masuk dari procurement yang perlu ditinjau.'
+                    'Revisi Kedatangan Pengadaan!',
+                    'Ada kedatangan barang dari pengadaan yang telah direvisi GA dan memerlukan persetujuan Supervisor.'
                 ));
+                event(new \App\Events\RealTimeNotification('All', null, 'refresh_counts'));
             } catch (\Throwable $broadCastEx) {
                 Log::warning('Broadcast failed in updateReceipt: ' . $broadCastEx->getMessage());
             }
@@ -763,7 +772,7 @@ class ProcurementController extends Controller
                 $html = view('admin.procurement.partials.procurement-detail-modal-body', compact('procurement'))->render();
                 return response()->json([
                     'success' => true,
-                    'message' => 'Penerimaan barang berhasil direvisi dan dikirim kembali untuk review.',
+                    'message' => 'Penerimaan barang berhasil direvisi dan diteruskan ke Supervisor untuk persetujuan.',
                     'html' => $html,
                 ]);
             }
