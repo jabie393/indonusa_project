@@ -147,7 +147,7 @@
                                             </button>
 
                                             <!-- Form Approve -->
-                                            <form action="{{ route('supervisor.procurement-approval.approve', $item->id) }}" method="POST" class="inline-flex approve-form" data-confirm-text="Apakah Anda yakin ingin menyetujui kedatangan {{ addslashes($item->good->goods_name ?? 'Barang') }} ({{ $item->quantity }} {{ $item->good->unit ?? 'PCS' }}) untuk pengadaan {{ $procurement->procurement_number ?? '' }}?" data-confirm-button-text="Ya, Setujui">
+                                            <form action="{{ route('supervisor.procurement-approval.approve', $item->id) }}" method="POST" class="inline-flex approve-form" data-confirm-text="{{ 'Apakah Anda yakin ingin menyetujui kedatangan ' . ($item->good->goods_name ?? 'Barang') . ' (' . $item->quantity . ' ' . ($item->good->unit ?? 'PCS') . ') untuk pengadaan ' . ($procurement->procurement_number ?? '') . '?' }}" data-confirm-button-text="Ya, Setujui">
                                                 @csrf
                                                 <button type="submit" 
                                                     class="group flex h-full cursor-pointer items-center justify-center border-r border-green-700 bg-green-600 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-300 dark:border-green-500 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -161,7 +161,7 @@
 
                                             <!-- Tombol Tolak (Open Modal) -->
                                             <button type="button" 
-                                                onclick="openSpvRejectModal({{ $item->id }}, '{{ addslashes($item->good->goods_name ?? 'Barang') }}', '{{ $procurement->procurement_number ?? '' }}')"
+                                                onclick="openSpvRejectModal({{ $item->id }}, {{ json_encode($item->good->goods_name ?? 'Barang') }}, {{ json_encode($procurement->procurement_number ?? '') }})"
                                                 class="group flex h-full cursor-pointer items-center justify-center bg-red-700 p-2 text-sm font-medium text-white transition-all duration-300 ease-in-out hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                                                 title="Tolak Kedatangan">
                                                 <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
@@ -270,9 +270,11 @@
     @include('admin.procurement-approval.partials.procurement-approval-modal-detail')
 
     <script>
+        const spvRejectRouteTemplate = "{{ route('supervisor.procurement-approval.reject', ':id') }}";
+
         function openSpvRejectModal(receiptId, goodsName, procNumber) {
             const form = document.getElementById('spvRejectForm');
-            form.action = `/procurement-approval/${receiptId}/reject`;
+            form.action = spvRejectRouteTemplate.replace(':id', receiptId);
             document.getElementById('rejectGoodsName').textContent = goodsName;
             document.getElementById('rejectProcNumber').textContent = procNumber;
             document.getElementById('rejectReason').value = '';
@@ -301,4 +303,5 @@
             document.getElementById('spvRejectForm').submit();
         }
     </script>
+    @vite(['resources/js/realtime-table-search.js', 'resources/js/table-sort.js'])
 </x-app-layout>
