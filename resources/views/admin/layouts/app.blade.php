@@ -125,8 +125,8 @@
     {{-- SweetAlert --}}
     @vite(['resources/js/sweetalert.js', 'resources/js/dataTable.js'])
     <script>
-        window.sweetTitle = @json(session('title'));
-        window.sweetText = @json(session('text'));
+        window.sweetTitle = @json(session('title') ?? (session('success') ? 'Berhasil!' : (session('status') ? 'Informasi' : null)));
+        window.sweetText = @json(session('text') ?? session('success') ?? session('status'));
         window.sweetShowConfirmButton = @json(session('showConfirmButton'));
         @if ($errors->any())
             window.errorTitle = "Gagal!";

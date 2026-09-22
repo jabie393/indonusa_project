@@ -42,18 +42,98 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="relative">
-                            <select id="stock_vendor_id" name="vendor_id" required
-                                class="w-full rounded-xl border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                        <div class="vendor-dropdown-container relative">
+                            <!-- Trigger Button -->
+                            <button type="button" id="vendorDropdownToggleBtn"
+                                class="vendor-dropdown-toggle-btn flex w-full items-center justify-between rounded-xl border border-gray-300 bg-white p-2.5 text-sm text-gray-700 hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 transition">
+                                <span class="selected-vendor-label truncate font-medium text-gray-400">-- Pilih Vendor Terdaftar --</span>
+                                <span class="shrink-0 ml-2 text-gray-400">
+                                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <!-- Hidden Select for Form Submission -->
+                            <select id="stock_vendor_id" name="vendor_id" required class="hidden">
                                 <option value="" disabled selected>-- Pilih Vendor Terdaftar --</option>
-                                @forelse($vendors ?? [] as $vnd)
-                                    <option value="{{ $vnd->id }}">
-                                        {{ $vnd->vendor_name }} ({{ $vnd->vendor_code ?: 'Vendor' }}){{ $vnd->city ? ' - ' . $vnd->city : '' }}
+                                @foreach($vendors ?? [] as $vnd)
+                                    <option value="{{ $vnd->id }}"
+                                        data-kode="{{ $vnd->vendor_code ?: 'VND' }}"
+                                        data-nama="{{ $vnd->vendor_name }}">
+                                        {{ $vnd->vendor_name }} [{{ $vnd->vendor_code ?: 'VND' }}]
                                     </option>
-                                @empty
-                                    <option value="" disabled>Belum ada vendor terdaftar (Tambahkan di Entity Management > Vendors)</option>
-                                @endforelse
+                                @endforeach
                             </select>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu-container vendor-dropdown-menu fixed z-[9999] hidden w-[480px] max-w-[90vw] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800">
+                                <!-- Search Header -->
+                                <div class="border-b border-gray-100 bg-gray-50/90 p-2.5 dark:border-gray-700 dark:bg-gray-900/60">
+                                    <div class="relative">
+                                        <span class="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            </svg>
+                                        </span>
+                                        <input
+                                            class="search-vendor-input w-full rounded-lg border border-gray-300 bg-white py-1.5 pl-9 pr-4 text-xs text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Cari nama atau kode vendor..." type="text">
+                                    </div>
+                                </div>
+                                <!-- Dropdown Table -->
+                                <div class="max-h-[240px] overflow-y-auto">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="sticky top-0 border-b border-gray-200 bg-gray-50 text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                                            <tr>
+                                                <th class="px-3 py-2">Nama Vendor</th>
+                                                <th class="px-3 py-2 whitespace-nowrap">Kode Vendor</th>
+                                                <th class="w-8"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="vendor-options-body divide-y divide-gray-100 dark:divide-gray-700">
+                                            @forelse($vendors ?? [] as $vnd)
+                                                <tr class="vendor-option-row hover:bg-blue-50/70 dark:hover:bg-gray-700/60 cursor-pointer transition"
+                                                    data-id="{{ $vnd->id }}"
+                                                    data-kode="{{ $vnd->vendor_code ?: 'VND' }}"
+                                                    data-nama="{{ $vnd->vendor_name }}">
+                                                    <td class="px-3 py-2 font-medium text-gray-900 dark:text-gray-100">{{ $vnd->vendor_name }}</td>
+                                                    <td class="px-3 py-2 font-mono font-bold text-[#225A97] dark:text-blue-400 whitespace-nowrap">{{ $vnd->vendor_code ?: '-' }}</td>
+                                                    <td class="pr-3 text-right">
+                                                        <span class="checked-icon hidden text-blue-600 dark:text-blue-400">
+                                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="3" class="py-6 text-center text-xs text-gray-400 dark:text-gray-500">
+                                                        Belum ada vendor terdaftar
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                            <tr class="no-vendor-found-row hidden">
+                                                <td colspan="3" class="py-6 text-center text-xs text-gray-400 dark:text-gray-500">
+                                                    Vendor tidak ditemukan
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- Dropdown Footer with Quick Link -->
+                                <div class="border-t border-gray-100 bg-gray-50/80 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/60 flex justify-between items-center text-[11px]">
+                                    <span class="text-gray-400">Total: {{ count($vendors ?? []) }} Vendor</span>
+                                    <a href="{{ route('vendors.index') }}" target="_blank" class="font-semibold text-blue-600 hover:underline dark:text-blue-400 flex items-center gap-1">
+                                        <span>+ Kelola / Tambah Vendor</span>
+                                        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -333,7 +413,9 @@
             const btnRect = toggleBtn.getBoundingClientRect();
 
             // Calculate width bounded by modalBox
-            const maxAllowedWidth = Math.min(560, modalBox.clientWidth - 24);
+            const isVendor = menu.classList.contains('vendor-dropdown-menu');
+            const defaultMaxWidth = isVendor ? Math.max(btnRect.width, 480) : 560;
+            const maxAllowedWidth = Math.min(defaultMaxWidth, modalBox.clientWidth - 24);
             const menuWidth = Math.max(280, Math.min(maxAllowedWidth, modalRect.width - 24));
             menu.style.width = menuWidth + 'px';
 
@@ -344,7 +426,7 @@
 
             // Calculate top relative to modalBox containing block
             const spaceBelow = modalRect.bottom - btnRect.bottom;
-            const menuHeight = 300;
+            const menuHeight = isVendor ? 280 : 300;
             if (spaceBelow < 260 && (btnRect.top - modalRect.top) > spaceBelow) {
                 // Open upward if tight space below
                 menu.style.top = Math.max(12, (btnRect.top - modalRect.top - menuHeight - 4)) + 'px';
@@ -352,6 +434,112 @@
                 // Open downward
                 menu.style.top = (btnRect.bottom - modalRect.top + 4) + 'px';
             }
+        }
+
+        function attachVendorDropdownEvents() {
+            const container = document.querySelector('.vendor-dropdown-container');
+            if (!container) return;
+
+            const toggleBtn = container.querySelector('.vendor-dropdown-toggle-btn');
+            const menu = container.querySelector('.vendor-dropdown-menu');
+            const searchInput = container.querySelector('.search-vendor-input');
+            const optionRows = container.querySelectorAll('.vendor-option-row');
+            const noFoundRow = container.querySelector('.no-vendor-found-row');
+            const backingSelect = document.getElementById('stock_vendor_id');
+
+            if (!toggleBtn || !menu) return;
+
+            // Open/close menu on button click
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Close all other dropdown menus
+                document.querySelectorAll('.dropdown-menu-container').forEach(m => {
+                    if (m !== menu) {
+                        m.classList.add('hidden');
+                    }
+                });
+
+                menu.classList.toggle('hidden');
+                if (!menu.classList.contains('hidden')) {
+                    positionDropdownMenu(toggleBtn, menu);
+                    if (searchInput) {
+                        searchInput.value = '';
+                        searchInput.dispatchEvent(new Event('input'));
+                        setTimeout(() => searchInput.focus({ preventScroll: true }), 50);
+                    }
+                }
+            });
+
+            // Handle search input filtering
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.toLowerCase().trim();
+                    let matchCount = 0;
+
+                    optionRows.forEach(optRow => {
+                        const kode = (optRow.getAttribute('data-kode') || '').toLowerCase();
+                        const nama = (optRow.getAttribute('data-nama') || '').toLowerCase();
+                        const matches = !query || kode.includes(query) || nama.includes(query);
+
+                        if (matches) {
+                            optRow.style.display = '';
+                            matchCount++;
+                        } else {
+                            optRow.style.display = 'none';
+                        }
+                    });
+
+                    if (noFoundRow) {
+                        noFoundRow.classList.toggle('hidden', matchCount > 0);
+                    }
+                });
+
+                searchInput.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+
+            menu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Option row selection click handler
+            optionRows.forEach(optRow => {
+                optRow.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = this.getAttribute('data-id');
+                    const kode = this.getAttribute('data-kode');
+                    const nama = this.getAttribute('data-nama');
+
+                    // Set backing select value
+                    if (backingSelect) {
+                        backingSelect.value = id;
+                        backingSelect.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+
+                    // Update toggle button text/label: Nama Vendor [Kode Vendor]
+                    const labelSpan = container.querySelector('.selected-vendor-label');
+                    if (labelSpan) {
+                        labelSpan.textContent = `${nama} [${kode}]`;
+                        labelSpan.classList.remove('text-gray-400');
+                        labelSpan.classList.add('text-gray-900', 'dark:text-white', 'font-semibold');
+                    }
+                    toggleBtn.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
+
+                    // Update active styles
+                    optionRows.forEach(r => {
+                        r.classList.remove('bg-blue-50', 'dark:bg-gray-700/80');
+                        const icon = r.querySelector('.checked-icon');
+                        if (icon) icon.classList.add('hidden');
+                    });
+                    this.classList.add('bg-blue-50', 'dark:bg-gray-700/80');
+                    const checkIcon = this.querySelector('.checked-icon');
+                    if (checkIcon) checkIcon.classList.remove('hidden');
+
+                    // Hide dropdown menu
+                    menu.classList.add('hidden');
+                });
+            });
         }
 
         function attachCustomDropdownEvents(row) {
@@ -518,7 +706,7 @@
 
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(e) {
-            if (!e.target.closest('.barang-dropdown-container') && !e.target.closest('.dropdown-menu-container')) {
+            if (!e.target.closest('.barang-dropdown-container') && !e.target.closest('.vendor-dropdown-container') && !e.target.closest('.dropdown-menu-container')) {
                 document.querySelectorAll('.dropdown-menu-container').forEach(menu => {
                     menu.classList.add('hidden');
                 });
@@ -528,8 +716,8 @@
         // Reposition or close dropdowns on window resize
         window.addEventListener('resize', function() {
             document.querySelectorAll('.dropdown-menu-container:not(.hidden)').forEach(menu => {
-                const container = menu.closest('.barang-dropdown-container');
-                const toggleBtn = container?.querySelector('.dropdown-toggle-btn');
+                const container = menu.closest('.barang-dropdown-container') || menu.closest('.vendor-dropdown-container');
+                const toggleBtn = container?.querySelector('.dropdown-toggle-btn') || container?.querySelector('.vendor-dropdown-toggle-btn');
                 if (toggleBtn && menu) {
                     positionDropdownMenu(toggleBtn, menu);
                 }
@@ -541,12 +729,12 @@
             const target = e.target;
             const isInsideDropdown =
                 target instanceof Element &&
-                (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container'));
+                (target.closest('.dropdown-menu-container') || target.closest('.barang-dropdown-container') || target.closest('.vendor-dropdown-container'));
 
             if (!isInsideDropdown) {
                 document.querySelectorAll('.dropdown-menu-container:not(.hidden)').forEach(menu => {
-                    const container = menu.closest('.barang-dropdown-container');
-                    const toggleBtn = container?.querySelector('.dropdown-toggle-btn');
+                    const container = menu.closest('.barang-dropdown-container') || menu.closest('.vendor-dropdown-container');
+                    const toggleBtn = container?.querySelector('.dropdown-toggle-btn') || container?.querySelector('.vendor-dropdown-toggle-btn');
                     if (toggleBtn && menu) {
                         positionDropdownMenu(toggleBtn, menu);
                     } else {
@@ -558,6 +746,8 @@
 
         // Bind initial setup
         document.addEventListener('DOMContentLoaded', function() {
+            attachVendorDropdownEvents();
+
             const firstRow = document.querySelector('#stockItemsTableBody .stock-item-row');
             if (firstRow) {
                 bindRowEvents(firstRow);
@@ -656,6 +846,20 @@
             const form = document.getElementById('createStockProcurementForm');
             if (form) {
                 form.addEventListener('submit', function(e) {
+                    const vendorSelect = document.getElementById('stock_vendor_id');
+                    const vendorToggleBtn = document.getElementById('vendorDropdownToggleBtn');
+                    if (!vendorSelect || !vendorSelect.value) {
+                        if (vendorToggleBtn) {
+                            vendorToggleBtn.classList.add('border-red-500', 'ring-1', 'ring-red-500');
+                            vendorToggleBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        alert('Harap pilih vendor terlebih dahulu.');
+                        e.preventDefault();
+                        return false;
+                    } else if (vendorToggleBtn) {
+                        vendorToggleBtn.classList.remove('border-red-500', 'ring-1', 'ring-red-500');
+                    }
+
                     let hasError = false;
                     const rows = document.querySelectorAll('#stockItemsTableBody .stock-item-row');
                     if (rows.length === 0) {

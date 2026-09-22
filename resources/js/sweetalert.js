@@ -86,8 +86,8 @@ document.addEventListener("submit", function (e) {
     }
 });
 
-// Success alert
-document.addEventListener("DOMContentLoaded", function () {
+// Success and Error alerts
+function initSweetAlerts() {
     setTimeout(() => {
         if (window.sweetTitle || window.sweetText) {
             const titleLower = (window.sweetTitle || "").toLowerCase();
@@ -143,4 +143,10 @@ document.addEventListener("DOMContentLoaded", function () {
             window.errorText = null;
         }
     }, 100);
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initSweetAlerts);
+} else {
+    initSweetAlerts();
+}

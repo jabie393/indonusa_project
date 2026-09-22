@@ -75,7 +75,7 @@ class ProcurementApprovalController extends Controller
                 Log::warning('Broadcast failed in Supervisor approve procurement: ' . $broadCastEx->getMessage());
             }
 
-            return redirect()->back()->with([
+            return redirect()->to(url()->previous() ?: route('supervisor.procurement-approval.index'))->with([
                 'title' => 'Berhasil Disetujui!',
                 'text' => 'Kedatangan barang telah disetujui dan diteruskan ke Warehouse untuk verifikasi fisik.',
             ]);
@@ -128,7 +128,7 @@ class ProcurementApprovalController extends Controller
                 Log::warning('Broadcast failed in Supervisor reject procurement: ' . $broadCastEx->getMessage());
             }
 
-            return redirect()->back()->with([
+            return redirect()->to(url()->previous() ?: route('supervisor.procurement-approval.index'))->with([
                 'title' => 'Berhasil Ditolak!',
                 'text' => 'Kedatangan barang pengadaan berhasil ditolak.',
             ]);
