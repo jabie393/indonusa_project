@@ -48,9 +48,9 @@
 
                         <div>
                             <label for="edit_company_type" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Bentuk Entitas
+                                Bentuk Entitas <span class="text-red-500">*</span>
                             </label>
-                            <select id="edit_company_type" name="company_type"
+                            <select id="edit_company_type" name="company_type" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
                                 <option value="PT">PT (Perseroan Terbatas)</option>
                                 <option value="CV">CV (Commanditaire Vennootschap)</option>
@@ -69,12 +69,24 @@
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm font-mono text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
                         </div>
 
-                        <div class="md:col-span-2">
+                        <div id="edit_tax_status_col" class="md:col-span-2 transition-all duration-200">
+                            <label for="edit_tax_status" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
+                                Status Pajak <span class="text-red-500">*</span>
+                            </label>
+                            <select id="edit_tax_status" name="tax_status" required onchange="toggleNpwpVisibility('edit')"
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="PKP">PKP (Pengusaha Kena Pajak)</option>
+                                <option value="Non PKP">Non PKP</option>
+                            </select>
+                        </div>
+
+                        <div id="edit_npwp_container" class="hidden transition-all duration-200">
                             <label for="edit_npwp" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                No. NPWP
+                                No. NPWP <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="edit_npwp" name="npwp"
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                            <p class="mt-1 text-[11px] text-blue-600 dark:text-blue-400 font-medium">Wajib diisi karena vendor berstatus PKP.</p>
                         </div>
                     </div>
                 </div>
@@ -91,9 +103,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="edit_phone" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                No. Telepon / WhatsApp
+                                No. Telepon / WhatsApp <span class="text-red-500">*</span>
                             </label>
-                            <input type="tel" id="edit_phone" name="phone"
+                            <input type="tel" id="edit_phone" name="phone" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
                         </div>
 
@@ -107,26 +119,32 @@
 
                         <div class="md:col-span-2">
                             <label for="edit_address" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Alamat Kantor / Gudang
+                                Alamat Kantor / Gudang <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="edit_address" name="address" rows="2"
+                            <textarea id="edit_address" name="address" rows="2" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"></textarea>
                         </div>
 
                         <div>
-                            <label for="edit_city" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Kota / Kabupaten
+                            <label for="edit_province" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                                <span>Provinsi</span>
+                                <span id="edit_province_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat...</span>
                             </label>
-                            <input type="text" id="edit_city" name="city"
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                            <select id="edit_province" name="province"
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="">-- Pilih Provinsi --</option>
+                            </select>
                         </div>
 
                         <div>
-                            <label for="edit_province" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Provinsi
+                            <label for="edit_city" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                                <span>Kota / Kabupaten</span>
+                                <span id="edit_city_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat kota...</span>
                             </label>
-                            <input type="text" id="edit_province" name="province"
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white" />
+                            <select id="edit_city" name="city" disabled
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white disabled:opacity-60 disabled:cursor-not-allowed">
+                                <option value="">-- Pilih Provinsi Dahulu --</option>
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -66,12 +66,13 @@ class VendorsController extends Controller
 
         $validated = $request->validate([
             'vendor_name' => 'required|string|max:255',
-            'company_type' => 'nullable|string|max:50',
+            'company_type' => 'required|string|max:50',
+            'tax_status' => 'required|string|in:PKP,Non PKP',
             'vendor_code' => 'nullable|string|max:50|unique:vendors,vendor_code',
-            'npwp' => 'nullable|string|max:50',
+            'npwp' => [$request->input('tax_status') === 'PKP' ? 'required' : 'nullable', 'string', 'max:50'],
             'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:500',
+            'phone' => 'required|string|max:50',
+            'address' => 'required|string|max:500',
             'city' => 'nullable|string|max:100',
             'province' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
@@ -85,7 +86,13 @@ class VendorsController extends Controller
             'status' => 'nullable|in:active,inactive',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'vendor_name.required' => 'Nama vendor wajib diisi.',
+            'vendor_name.required' => 'Nama vendor / perusahaan wajib diisi.',
+            'company_type.required' => 'Bentuk entitas wajib dipilih.',
+            'tax_status.required' => 'Status pajak (PKP / Non PKP) wajib dipilih.',
+            'tax_status.in' => 'Status pajak harus berupa PKP atau Non PKP.',
+            'npwp.required' => 'Nomor NPWP wajib diisi jika vendor berstatus PKP.',
+            'phone.required' => 'Nomor telepon / WhatsApp wajib diisi.',
+            'address.required' => 'Alamat kantor / gudang wajib diisi.',
             'vendor_code.unique' => 'Kode vendor ini sudah digunakan.',
             'email.email' => 'Format email vendor tidak valid.',
             'pic_email.email' => 'Format email PIC tidak valid.',
@@ -94,6 +101,9 @@ class VendorsController extends Controller
         DB::beginTransaction();
         try {
             $validated['status'] = $request->input('status', 'active') ?: 'active';
+            if ($validated['tax_status'] === 'Non PKP') {
+                $validated['npwp'] = null;
+            }
             $vendor = Vendor::create($validated);
 
             DB::commit();
@@ -120,12 +130,13 @@ class VendorsController extends Controller
 
         $validated = $request->validate([
             'vendor_name' => 'required|string|max:255',
-            'company_type' => 'nullable|string|max:50',
+            'company_type' => 'required|string|max:50',
+            'tax_status' => 'required|string|in:PKP,Non PKP',
             'vendor_code' => 'nullable|string|max:50|unique:vendors,vendor_code,' . $vendor->id,
-            'npwp' => 'nullable|string|max:50',
+            'npwp' => [$request->input('tax_status') === 'PKP' ? 'required' : 'nullable', 'string', 'max:50'],
             'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:50',
-            'address' => 'nullable|string|max:500',
+            'phone' => 'required|string|max:50',
+            'address' => 'required|string|max:500',
             'city' => 'nullable|string|max:100',
             'province' => 'nullable|string|max:100',
             'postal_code' => 'nullable|string|max:20',
@@ -139,13 +150,24 @@ class VendorsController extends Controller
             'status' => 'nullable|in:active,inactive',
             'notes' => 'nullable|string|max:1000',
         ], [
-            'vendor_name.required' => 'Nama vendor wajib diisi.',
+            'vendor_name.required' => 'Nama vendor / perusahaan wajib diisi.',
+            'company_type.required' => 'Bentuk entitas wajib dipilih.',
+            'tax_status.required' => 'Status pajak (PKP / Non PKP) wajib dipilih.',
+            'tax_status.in' => 'Status pajak harus berupa PKP atau Non PKP.',
+            'npwp.required' => 'Nomor NPWP wajib diisi jika vendor berstatus PKP.',
+            'phone.required' => 'Nomor telepon / WhatsApp wajib diisi.',
+            'address.required' => 'Alamat kantor / gudang wajib diisi.',
             'vendor_code.unique' => 'Kode vendor ini sudah digunakan.',
+            'email.email' => 'Format email vendor tidak valid.',
+            'pic_email.email' => 'Format email PIC tidak valid.',
         ]);
 
         DB::beginTransaction();
         try {
             $validated['status'] = $request->input('status', $vendor->status) ?: 'active';
+            if ($validated['tax_status'] === 'Non PKP') {
+                $validated['npwp'] = null;
+            }
             $vendor->update($validated);
 
             DB::commit();

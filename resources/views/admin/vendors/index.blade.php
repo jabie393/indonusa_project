@@ -3,7 +3,7 @@
         <!-- Top Action Bar -->
         <div class="inset-shadow-none dark:inset-shadow-gray-500 dark:inset-shadow-sm relative mb-5 flex h-16 items-center justify-between overflow-hidden rounded-2xl bg-white px-4 shadow-md dark:bg-gray-800 shrink-0">
             <div>
-                <button type="button" onclick="createVendorModal.showModal()"
+                <button type="button" onclick="openCreateVendorModal()"
                     class="flex items-center justify-center rounded-lg bg-[#225A97] px-4 py-2 text-sm font-medium text-white hover:bg-[#19426d] focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-[#225A97] dark:focus:ring-primary-800 transition shadow">
                     <svg class="mr-2 h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path clip-rule="evenodd" fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
@@ -68,13 +68,24 @@
                                                 {{ $vendor->company_type }}
                                             </span>
                                         @endif
+                                        @if(($vendor->tax_status ?? '') === 'PKP')
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-sky-50 px-2 py-0.5 text-[10px] font-bold text-sky-800 border border-sky-300 dark:bg-sky-950/40 dark:text-sky-300 dark:border-sky-800" title="Pengusaha Kena Pajak">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-sky-600"></span>
+                                                PKP
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-800 border border-amber-300 dark:bg-amber-950/30 dark:text-amber-300 dark:border-amber-800" title="Non Pengusaha Kena Pajak">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                                                Non PKP
+                                            </span>
+                                        @endif
                                     </div>
                                     <div class="text-xs font-mono text-blue-600 dark:text-blue-400 mt-0.5">
                                         {{ $vendor->vendor_code ?: '-' }}
                                     </div>
-                                    @if(!empty($vendor->npwp))
-                                        <div class="text-[11px] text-gray-400 mt-0.5">
-                                            NPWP: {{ $vendor->npwp }}
+                                    @if(($vendor->tax_status ?? '') === 'PKP' && !empty($vendor->npwp))
+                                        <div class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 flex items-center gap-1 font-mono">
+                                            <span class="font-sans text-[10px] uppercase font-bold text-gray-400">NPWP:</span> {{ $vendor->npwp }}
                                         </div>
                                     @endif
                                     @if(!empty($vendor->notes))
@@ -257,6 +268,273 @@
     @include('admin.vendors.partials.vendors-modal-edit')
 
     <script>
+        const DEFAULT_PROVINCES = [
+            { id: "11", name: "Aceh" },
+            { id: "12", name: "Sumatera Utara" },
+            { id: "13", name: "Sumatera Barat" },
+            { id: "14", name: "Riau" },
+            { id: "15", name: "Jambi" },
+            { id: "16", name: "Sumatera Selatan" },
+            { id: "17", name: "Bengkulu" },
+            { id: "18", name: "Lampung" },
+            { id: "19", name: "Kepulauan Bangka Belitung" },
+            { id: "21", name: "Kepulauan Riau" },
+            { id: "31", name: "DKI Jakarta" },
+            { id: "32", name: "Jawa Barat" },
+            { id: "33", name: "Jawa Tengah" },
+            { id: "34", name: "DI Yogyakarta" },
+            { id: "35", name: "Jawa Timur" },
+            { id: "36", name: "Banten" },
+            { id: "51", name: "Bali" },
+            { id: "52", name: "Nusa Tenggara Barat" },
+            { id: "53", name: "Nusa Tenggara Timur" },
+            { id: "61", name: "Kalimantan Barat" },
+            { id: "62", name: "Kalimantan Tengah" },
+            { id: "63", name: "Kalimantan Selatan" },
+            { id: "64", name: "Kalimantan Timur" },
+            { id: "65", name: "Kalimantan Utara" },
+            { id: "71", name: "Sulawesi Utara" },
+            { id: "72", name: "Sulawesi Tengah" },
+            { id: "73", name: "Sulawesi Selatan" },
+            { id: "74", name: "Sulawesi Tenggara" },
+            { id: "75", name: "Gorontalo" },
+            { id: "76", name: "Sulawesi Barat" },
+            { id: "81", name: "Maluku" },
+            { id: "82", name: "Maluku Utara" },
+            { id: "91", name: "Papua Barat" },
+            { id: "94", name: "Papua" }
+        ];
+
+        const WilayahAPI = {
+            dataCache: null,
+
+            toTitleCase(str) {
+                if (!str) return '';
+                return str.toLowerCase().replace(/(?:^|\s|-|\/)\S/g, function(m) {
+                    return m.toUpperCase();
+                }).replace(/\bDki\b/g, 'DKI').replace(/\bDi\b/g, 'DI');
+            },
+
+            async getWilayahData() {
+                if (this.dataCache) return this.dataCache;
+                try {
+                    // 1. Ambil data lokal project (cepat, tanpa CORS, offline-ready)
+                    const res = await fetch("{{ asset('data/indonesia-wilayah.json') }}");
+                    if (res.ok) {
+                        const json = await res.json();
+                        if (Array.isArray(json) && json.length > 0) {
+                            this.dataCache = json;
+                            return json;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Gagal memuat local wilayah JSON, mencoba fallback API:', e);
+                }
+
+                // 2. Fallback jika ada akses API external
+                try {
+                    const res = await fetch('https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json');
+                    if (res.ok) {
+                        const provinces = await res.json();
+                        this.dataCache = provinces.map(p => ({
+                            id: p.id,
+                            name: p.name,
+                            cities: []
+                        }));
+                        return this.dataCache;
+                    }
+                } catch (err) {
+                    console.warn('Fallback external API gagal:', err);
+                }
+
+                // 3. Fallback terakhir ke list internal
+                this.dataCache = DEFAULT_PROVINCES.map(p => ({
+                    id: p.id,
+                    name: p.name.toUpperCase(),
+                    cities: []
+                }));
+                return this.dataCache;
+            },
+
+            async getRegencies(provinceId) {
+                if (!provinceId) return [];
+                const data = await this.getWilayahData();
+                const prov = data.find(p => String(p.id) === String(provinceId));
+                if (prov && Array.isArray(prov.cities) && prov.cities.length > 0) {
+                    return prov.cities;
+                }
+                try {
+                    const res = await fetch(`https://emsifa.github.io/api-wilayah-indonesia/api/regencies/${provinceId}.json`);
+                    if (res.ok) {
+                        const cities = await res.json();
+                        if (prov) prov.cities = cities;
+                        return cities;
+                    }
+                } catch (e) {
+                    console.warn(`Gagal memuat regencies ${provinceId}:`, e);
+                }
+                return [];
+            },
+
+            async initDropdowns(provinceSelectId, citySelectId, provinceLoadingId, cityLoadingId, initialProvince = '', initialCity = '') {
+                const provSelect = document.getElementById(provinceSelectId);
+                const citySelect = document.getElementById(citySelectId);
+                const provLoading = document.getElementById(provinceLoadingId);
+                const cityLoading = document.getElementById(cityLoadingId);
+
+                if (!provSelect || !citySelect) return;
+
+                // Langsung isi secara instan dari DEFAULT_PROVINCES agar tidak pernah kosong sedetik pun
+                if (provSelect.options.length <= 1) {
+                    provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
+                    DEFAULT_PROVINCES.forEach(p => {
+                        const opt = document.createElement('option');
+                        opt.value = p.name;
+                        opt.dataset.id = p.id;
+                        opt.textContent = p.name;
+                        if (initialProvince && (p.name.toLowerCase() === initialProvince.toLowerCase())) {
+                            opt.selected = true;
+                        }
+                        provSelect.appendChild(opt);
+                    });
+                }
+
+                if (provLoading) provLoading.classList.remove('hidden');
+                const fullWilayah = await this.getWilayahData();
+                if (provLoading) provLoading.classList.add('hidden');
+
+                // Re-populate dengan data lengkap jika ada
+                const currentSelectedVal = provSelect.value || initialProvince;
+                provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
+
+                let selectedProvId = '';
+                fullWilayah.forEach(p => {
+                    const formattedName = this.toTitleCase(p.name);
+                    const opt = document.createElement('option');
+                    opt.value = formattedName;
+                    opt.dataset.id = p.id;
+                    opt.textContent = formattedName;
+
+                    if (currentSelectedVal && (
+                        p.name.toLowerCase() === currentSelectedVal.toLowerCase() ||
+                        formattedName.toLowerCase() === currentSelectedVal.toLowerCase()
+                    )) {
+                        opt.selected = true;
+                        selectedProvId = p.id;
+                    }
+
+                    provSelect.appendChild(opt);
+                });
+
+                if (currentSelectedVal && !selectedProvId) {
+                    const customOpt = document.createElement('option');
+                    customOpt.value = currentSelectedVal;
+                    customOpt.textContent = currentSelectedVal;
+                    customOpt.selected = true;
+                    provSelect.appendChild(customOpt);
+                }
+
+                const loadRegenciesForProvince = async (provId, selectedCityName = '') => {
+                    if (!provId) {
+                        citySelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
+                        citySelect.disabled = true;
+                        return;
+                    }
+
+                    citySelect.disabled = true;
+                    if (cityLoading) cityLoading.classList.remove('hidden');
+                    citySelect.innerHTML = '<option value="">-- Memuat Kota / Kabupaten... --</option>';
+
+                    const regencies = await this.getRegencies(provId);
+                    if (cityLoading) cityLoading.classList.add('hidden');
+
+                    citySelect.disabled = false;
+                    citySelect.innerHTML = '<option value="">-- Pilih Kota / Kabupaten --</option>';
+
+                    let cityFound = false;
+                    regencies.forEach(r => {
+                        const formattedCity = this.toTitleCase(r.name);
+                        const opt = document.createElement('option');
+                        opt.value = formattedCity;
+                        opt.dataset.id = r.id;
+                        opt.textContent = formattedCity;
+
+                        if (selectedCityName && (
+                            r.name.toLowerCase() === selectedCityName.toLowerCase() ||
+                            formattedCity.toLowerCase() === selectedCityName.toLowerCase()
+                        )) {
+                            opt.selected = true;
+                            cityFound = true;
+                        }
+
+                        citySelect.appendChild(opt);
+                    });
+
+                    if (selectedCityName && !cityFound) {
+                        const customCityOpt = document.createElement('option');
+                        customCityOpt.value = selectedCityName;
+                        customCityOpt.textContent = selectedCityName;
+                        customCityOpt.selected = true;
+                        citySelect.appendChild(customCityOpt);
+                    }
+                };
+
+                provSelect.onchange = function() {
+                    const selectedOpt = provSelect.options[provSelect.selectedIndex];
+                    const provId = selectedOpt ? selectedOpt.dataset.id : '';
+                    loadRegenciesForProvince(provId);
+                };
+
+                if (selectedProvId) {
+                    await loadRegenciesForProvince(selectedProvId, initialCity);
+                } else if (initialCity) {
+                    citySelect.disabled = false;
+                    citySelect.innerHTML = `<option value="${initialCity}" selected>${initialCity}</option>`;
+                } else {
+                    citySelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
+                    citySelect.disabled = true;
+                }
+            }
+        };
+
+        function toggleNpwpVisibility(prefix) {
+            const statusSelect = document.getElementById(prefix + '_tax_status');
+            const npwpContainer = document.getElementById(prefix + '_npwp_container');
+            const npwpInput = document.getElementById(prefix + '_npwp');
+            const taxCol = document.getElementById(prefix + '_tax_status_col');
+
+            if (!statusSelect || !npwpContainer || !npwpInput) return;
+
+            if (statusSelect.value === 'PKP') {
+                npwpContainer.classList.remove('hidden');
+                npwpInput.required = true;
+                if (taxCol) {
+                    taxCol.classList.remove('md:col-span-2');
+                }
+            } else {
+                npwpContainer.classList.add('hidden');
+                npwpInput.required = false;
+                npwpInput.value = '';
+                if (taxCol) {
+                    taxCol.classList.add('md:col-span-2');
+                }
+            }
+        }
+
+        function openCreateVendorModal() {
+            WilayahAPI.initDropdowns('create_province', 'create_city', 'create_province_loading', 'create_city_loading');
+            const taxStatusSelect = document.getElementById('create_tax_status');
+            if (taxStatusSelect) taxStatusSelect.value = '';
+            toggleNpwpVisibility('create');
+            const modal = document.getElementById('createVendorModal');
+            if (modal) modal.showModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            WilayahAPI.initDropdowns('create_province', 'create_city', 'create_province_loading', 'create_city_loading');
+            toggleNpwpVisibility('create');
+        });
+
         function openEditVendorModal(vendor) {
             const form = document.getElementById('editVendorForm');
             form.action = `/vendors/${vendor.id}`;
@@ -267,12 +545,19 @@
             document.getElementById('edit_vendor_name').value = vendor.vendor_name || '';
             document.getElementById('edit_company_type').value = vendor.company_type || 'PT';
             document.getElementById('edit_vendor_code').value = vendor.vendor_code || '';
-            document.getElementById('edit_npwp').value = vendor.npwp || '';
+            
+            const taxStatus = vendor.tax_status || (vendor.npwp ? 'PKP' : 'Non PKP');
+            document.getElementById('edit_tax_status').value = taxStatus;
+            toggleNpwpVisibility('edit');
+            if (taxStatus === 'PKP') {
+                document.getElementById('edit_npwp').value = vendor.npwp || '';
+            } else {
+                document.getElementById('edit_npwp').value = '';
+            }
+
             document.getElementById('edit_phone').value = vendor.phone || '';
             document.getElementById('edit_email').value = vendor.email || '';
             document.getElementById('edit_address').value = vendor.address || '';
-            document.getElementById('edit_city').value = vendor.city || '';
-            document.getElementById('edit_province').value = vendor.province || '';
             document.getElementById('edit_pic_name').value = vendor.pic_name || '';
             document.getElementById('edit_pic_phone').value = vendor.pic_phone || '';
             document.getElementById('edit_pic_email').value = vendor.pic_email || '';
@@ -282,6 +567,8 @@
             document.getElementById('edit_term_of_payment').value = vendor.term_of_payment !== null ? vendor.term_of_payment : '';
             document.getElementById('edit_status').value = vendor.status || 'active';
             document.getElementById('edit_notes').value = vendor.notes || '';
+
+            WilayahAPI.initDropdowns('edit_province', 'edit_city', 'edit_province_loading', 'edit_city_loading', vendor.province || '', vendor.city || '');
 
             document.getElementById('editVendorModal').showModal();
         }

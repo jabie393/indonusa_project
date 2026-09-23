@@ -18,6 +18,7 @@ class Vendor extends Model
         'vendor_code',
         'vendor_name',
         'company_type',
+        'tax_status',
         'npwp',
         'email',
         'phone',

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('vendor_code')->unique()->nullable();
             $table->string('vendor_name');
             $table->string('company_type')->nullable(); // PT, CV, UD, Perorangan, dll
+            $table->string('tax_status')->default('Non PKP'); // PKP, Non PKP
             $table->string('npwp')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();

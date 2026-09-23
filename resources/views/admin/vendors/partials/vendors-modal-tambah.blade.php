@@ -45,10 +45,11 @@
 
                         <div>
                             <label for="create_company_type" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Bentuk Entitas
+                                Bentuk Entitas <span class="text-red-500">*</span>
                             </label>
-                            <select id="create_company_type" name="company_type"
+                            <select id="create_company_type" name="company_type" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="" disabled selected>-- Pilih Bentuk Entitas --</option>
                                 <option value="PT">PT (Perseroan Terbatas)</option>
                                 <option value="CV">CV (Commanditaire Vennootschap)</option>
                                 <option value="UD">UD (Usaha Dagang)</option>
@@ -67,13 +68,26 @@
                                 placeholder="Contoh: VND-0001" />
                         </div>
 
-                        <div class="md:col-span-2">
+                        <div id="create_tax_status_col" class="md:col-span-2 transition-all duration-200">
+                            <label for="create_tax_status" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
+                                Status Pajak <span class="text-red-500">*</span>
+                            </label>
+                            <select id="create_tax_status" name="tax_status" required onchange="toggleNpwpVisibility('create')"
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="" disabled selected>-- Pilih Status Pajak --</option>
+                                <option value="PKP">PKP (Pengusaha Kena Pajak)</option>
+                                <option value="Non PKP">Non PKP</option>
+                            </select>
+                        </div>
+
+                        <div id="create_npwp_container" class="hidden transition-all duration-200">
                             <label for="create_npwp" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                No. NPWP
+                                No. NPWP <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="create_npwp" name="npwp"
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                 placeholder="Nomor Pokok Wajib Pajak vendor..." />
+                            <p class="mt-1 text-[11px] text-blue-600 dark:text-blue-400 font-medium">Wajib diisi karena vendor berstatus PKP.</p>
                         </div>
                     </div>
                 </div>
@@ -90,9 +104,9 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="create_phone" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                No. Telepon / WhatsApp
+                                No. Telepon / WhatsApp <span class="text-red-500">*</span>
                             </label>
-                            <input type="tel" id="create_phone" name="phone"
+                            <input type="tel" id="create_phone" name="phone" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                 placeholder="021-xxxxxxx atau 08xxxxxxxxxx" />
                         </div>
@@ -108,29 +122,33 @@
 
                         <div class="md:col-span-2">
                             <label for="create_address" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Alamat Kantor / Gudang
+                                Alamat Kantor / Gudang <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="create_address" name="address" rows="2"
+                            <textarea id="create_address" name="address" rows="2" required
                                 class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                                 placeholder="Jalan, nomor gedung, kelurahan, kecamatan..."></textarea>
                         </div>
 
                         <div>
-                            <label for="create_city" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Kota / Kabupaten
+                            <label for="create_province" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                                <span>Provinsi</span>
+                                <span id="create_province_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat...</span>
                             </label>
-                            <input type="text" id="create_city" name="city"
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                placeholder="Contoh: Surabaya" />
+                            <select id="create_province" name="province"
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+                                <option value="">-- Pilih Provinsi --</option>
+                            </select>
                         </div>
 
                         <div>
-                            <label for="create_province" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1">
-                                Provinsi
+                            <label for="create_city" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                                <span>Kota / Kabupaten</span>
+                                <span id="create_city_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat kota...</span>
                             </label>
-                            <input type="text" id="create_province" name="province"
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                placeholder="Contoh: Jawa Timur" />
+                            <select id="create_city" name="city" disabled
+                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white disabled:opacity-60 disabled:cursor-not-allowed">
+                                <option value="">-- Pilih Provinsi Dahulu --</option>
+                            </select>
                         </div>
                     </div>
                 </div>
