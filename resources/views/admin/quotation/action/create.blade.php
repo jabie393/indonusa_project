@@ -258,7 +258,7 @@
                                     <path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"></path>
                                     <path d="m7.5 4.27 9 5.15"></path>
                                 </svg>
-                                Detail Barang
+                                Detail Barang (Barang Listing)
                             </h3>
                         </div>
 
@@ -304,7 +304,7 @@
                                                     <button type="button"
                                                         class="border-subtle bg-surface text-body-sm text-on-surface-variant hover:border-primary dropdown-toggle-btn flex w-full items-center justify-between rounded-lg border px-3 py-2 transition-all">
                                                         <span class="flex gap-2">
-                                                            <span class="selected-barang-label text-nowrap">Pilih Barang</span>
+                                                            <span class="selected-barang-label text-nowrap">Pilih Barang Listing</span>
                                                         </span>
                                                         <span class="h-[16px] w-[16px] text-[4px]">
                                                             <svg class="text-gray-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -321,8 +321,8 @@
 
                                                     <!-- Hidden Select (maintains compatibility with existing JS / validations) -->
                                                     <select name="goods_id[]" class="form-control barang-select @error('barang_id.*') is-invalid @enderror hidden"
-                                                        onchange="updateKategoriBarang(this)">
-                                                        <option value="">Pilih Barang</option>
+                                                        onchange="updateKategoriBarang(this)" required>
+                                                        <option value="">Pilih Barang Listing</option>
                                                         @foreach ($goods as $b)
                                                             <option value="{{ $b->id }}" data-kode="{{ $b->goods_code }}" data-nama="{{ $b->goods_name }}"
                                                                 data-kategori="{{ $b->category }}" data-stok="{{ $b->available_stock }}" data-stok-fisik="{{ $b->stock }}" data-satuan="{{ $b->unit ?? '' }}"
@@ -350,7 +350,7 @@
                                                                     </svg></span>
                                                                 <input
                                                                     class="border-subtle text-body-sm focus:ring-primary focus:border-primary search-barang-input w-full rounded-lg border bg-white py-2 pl-10 pr-4 outline-none focus:ring-1"
-                                                                    placeholder="Cari kode atau nama barang..." type="text">
+                                                                    placeholder="Cari kode atau nama barang listing..." type="text">
                                                             </div>
                                                         </div>
                                                         <!-- Dropdown Table -->
@@ -1464,7 +1464,7 @@
 
                 // Reset custom dropdown state for the cloned row
                 const selectedLabel = newRow.querySelector('.selected-barang-label');
-                if (selectedLabel) selectedLabel.textContent = 'Pilih Barang';
+                if (selectedLabel) selectedLabel.textContent = 'Pilih Barang Listing';
 
                 const dropdownMenu = newRow.querySelector('.dropdown-menu-container');
                 if (dropdownMenu) dropdownMenu.classList.add('hidden');
