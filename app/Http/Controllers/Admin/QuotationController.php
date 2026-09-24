@@ -64,6 +64,12 @@ class ListingController extends Controller
     {
         $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
+            ->where(function ($q) {
+                $q->where('status_listing', 'listing')
+                  ->orWhereNull('status_listing');
+            })
+            ->where('status_listing', '!=', 'non_listing')
+            ->where('status_listing', '!=', 'non listing')
             ->orderBy('goods_name')
             ->get();
 
@@ -73,6 +79,12 @@ class ListingController extends Controller
 
         $dbCategories = Goods::distinct()
             ->where('goods_status', 'approved')
+            ->where(function ($q) {
+                $q->where('status_listing', 'listing')
+                  ->orWhereNull('status_listing');
+            })
+            ->where('status_listing', '!=', 'non_listing')
+            ->where('status_listing', '!=', 'non listing')
             ->whereNotNull('category')
             ->where('category', '!=', '')
             ->pluck('category')
@@ -102,7 +114,7 @@ class ListingController extends Controller
             'required_date' => 'nullable|date',
             'customer_notes' => 'nullable|string',
             'goods_id' => 'required|array|min:1',
-            'goods_id.*' => 'nullable',
+            'goods_id.*' => 'required|integer|exists:goods,id',
             'product_category' => 'required|array|min:1',
             'product_category.*' => 'required|string|max:100',
             'quantity' => 'required|array|min:1',
@@ -117,6 +129,8 @@ class ListingController extends Controller
             'keterangan' => 'nullable|array',
             'keterangan.*' => 'nullable|string|max:255',
         ], [
+            'goods_id.*.required' => 'Barang pada setiap baris wajib dipilih dari katalog barang listing.',
+            'goods_id.*.exists' => 'Barang yang dipilih tidak valid atau tidak ditemukan.',
             'no_po.unique' => 'No. PO sudah digunakan pada quotation lain.',
         ]);
 
@@ -128,12 +142,21 @@ class ListingController extends Controller
                 continue;
             }
 
-            $baseHarga = $productId ? (optional(Goods::where('goods_status', 'approved')->find($productId))->selling_price ?? 0) : 0;
+            // Validasi: Quotation Listing hanya boleh menambahkan barang listing
+            $goodItem = Goods::where('goods_status', 'approved')->find($productId);
+            if (!$goodItem || in_array($goodItem->status_listing, ['non_listing', 'non listing'])) {
+                return back()
+                    ->withErrors('Barang pada baris ke-' . ($i + 1) . ' bukan merupakan barang listing. Quotation listing hanya dapat menambahkan barang listing.')
+                    ->withInput()
+                    ->with(['title' => 'Gagal', 'text' => 'Quotation listing hanya dapat menambahkan barang listing!']);
+            }
+
+            $baseHarga = (float)($goodItem->selling_price ?? 0);
             $diskon = isset($validated['discount_percent'][$i]) && $validated['discount_percent'][$i] !== '' ? (float) $validated['discount_percent'][$i] : 0;
             $computedHargaSatuan = round($baseHarga * 1.3, 2);
             $hargaSatuan = isset($validated['price'][$i]) && $validated['price'][$i] !== '' ? (float) $validated['price'][$i] : $computedHargaSatuan;
 
-            if ($productId && $hargaSatuan < $baseHarga) {
+            if ($hargaSatuan < $baseHarga) {
                 return back()
                     ->withErrors('Harga barang pada baris ke-' . ($i + 1) . ' tidak boleh di bawah harga jual PT (Rp ' . number_format($baseHarga, 2, ',', '.') . ').')
                     ->withInput()
@@ -145,7 +168,7 @@ class ListingController extends Controller
             $items[] = [
                 'original_index' => $i,
                 'goods_id' => $productId,
-                'custom_product_name' => empty($productId) ? ($validated['custom_product_name'][$i] ?? null) : null,
+                'custom_product_name' => null, // Barang non-listing / custom tidak dapat dibuat dari quotation listing
                 'product_category' => $validated['product_category'][$i] ?? null,
                 'quantity' => $qty,
                 'price' => $hargaSatuan,
@@ -396,6 +419,12 @@ class ListingController extends Controller
 
         $goods = Goods::where('request_type', 'primary')
             ->where('goods_status', 'approved')
+            ->where(function ($q) {
+                $q->where('status_listing', 'listing')
+                  ->orWhereNull('status_listing');
+            })
+            ->where('status_listing', '!=', 'non_listing')
+            ->where('status_listing', '!=', 'non listing')
             ->orderBy('goods_name')
             ->get();
 
@@ -405,6 +434,12 @@ class ListingController extends Controller
 
         $dbCategories = Goods::distinct()
             ->where('goods_status', 'approved')
+            ->where(function ($q) {
+                $q->where('status_listing', 'listing')
+                  ->orWhereNull('status_listing');
+            })
+            ->where('status_listing', '!=', 'non_listing')
+            ->where('status_listing', '!=', 'non listing')
             ->whereNotNull('category')
             ->where('category', '!=', '')
             ->pluck('category')
@@ -465,6 +500,23 @@ class ListingController extends Controller
         foreach ($validated['goods_id'] as $i => $productId) {
             $isCustom = empty($productId) && (!empty($validated['custom_product_name'][$i] ?? null));
             $isRegular = !empty($productId);
+
+            if (!$isFromCustom) {
+                // Untuk Quotation Listing murni, barang non-listing / custom dilarang
+                if ($isCustom || empty($productId)) {
+                    return back()->withErrors(["goods_id.$i" => 'Quotation listing hanya dapat menambahkan barang listing. Barang non listing tidak dapat ditambahkan.'])
+                        ->withInput()
+                        ->with(['title' => 'Gagal', 'text' => 'Quotation listing hanya dapat menambahkan barang listing!']);
+                }
+
+                $goodItem = Goods::where('goods_status', 'approved')->find($productId);
+                if (!$goodItem || in_array($goodItem->status_listing, ['non_listing', 'non listing'])) {
+                    return back()->withErrors(["goods_id.$i" => 'Barang pada baris ke-' . ($i + 1) . ' bukan merupakan barang listing.'])
+                        ->withInput()
+                        ->with(['title' => 'Gagal', 'text' => 'Quotation listing hanya dapat menambahkan barang listing!']);
+                }
+            }
+
             if (!$isCustom && !$isRegular) {
                 return back()->withErrors(["goods_id.$i" => 'Pilih barang atau isi nama barang custom pada baris ke-' . ($i + 1)])
                     ->withInput();
