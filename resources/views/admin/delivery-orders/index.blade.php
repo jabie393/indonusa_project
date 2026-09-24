@@ -36,7 +36,7 @@
                         ->where('status_listing', '!=', 'non_listing')
                         ->whereDoesntHave('procurementOfGoodsItems')
                         ->count();
-                    $procOrderCount = \App\Models\ProcurementArrivalRequest::where('status', 'pending')->count();
+                    $procOrderCount = \App\Models\ProcurementArrivalRequest::whereIn('status', ['pending_warehouse', 'pending'])->count();
                     $deliveryOrderCount = \App\Models\Order::where(function ($q) {
                         $q->whereIn('status', ['sent_to_warehouse', 'not_completed'])
                           ->orWhere(function ($sub) {

@@ -376,126 +376,311 @@
                 return [];
             },
 
-            async initDropdowns(provinceSelectId, citySelectId, provinceLoadingId, cityLoadingId, initialProvince = '', initialCity = '') {
-                const provSelect = document.getElementById(provinceSelectId);
-                const citySelect = document.getElementById(citySelectId);
+            positionDropdownMenu(btn, menu) {
+                const btnRect = btn.getBoundingClientRect();
+                const modalBox = btn.closest('.modal-box') || document.body;
+                const modalRect = modalBox.getBoundingClientRect();
+
+                const defaultMaxWidth = Math.max(btnRect.width, 340);
+                const maxAllowedWidth = Math.min(defaultMaxWidth, modalBox.clientWidth - 24);
+                const menuWidth = Math.max(260, Math.min(maxAllowedWidth, modalRect.width - 24));
+                menu.style.width = menuWidth + 'px';
+
+                let left = btnRect.left - modalRect.left;
+                left = Math.max(12, Math.min(left, modalBox.clientWidth - menuWidth - 12));
+                menu.style.left = left + 'px';
+
+                const spaceBelow = modalRect.bottom - btnRect.bottom;
+                const menuHeight = 260;
+                if (spaceBelow < 260 && (btnRect.top - modalRect.top) > spaceBelow) {
+                    menu.style.top = Math.max(12, (btnRect.top - modalRect.top - menuHeight - 4)) + 'px';
+                } else {
+                    menu.style.top = (btnRect.bottom - modalRect.top + 4) + 'px';
+                }
+            },
+
+            async initDropdowns(provinceInputId, cityInputId, provinceLoadingId, cityLoadingId, initialProvince = '', initialCity = '') {
+                const provInput = document.getElementById(provinceInputId);
+                const cityInput = document.getElementById(cityInputId);
                 const provLoading = document.getElementById(provinceLoadingId);
                 const cityLoading = document.getElementById(cityLoadingId);
 
-                if (!provSelect || !citySelect) return;
+                if (!provInput || !cityInput) return;
 
-                // Langsung isi secara instan dari DEFAULT_PROVINCES agar tidak pernah kosong sedetik pun
-                if (provSelect.options.length <= 1) {
-                    provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
-                    DEFAULT_PROVINCES.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p.name;
-                        opt.dataset.id = p.id;
-                        opt.textContent = p.name;
-                        if (initialProvince && (p.name.toLowerCase() === initialProvince.toLowerCase())) {
-                            opt.selected = true;
-                        }
-                        provSelect.appendChild(opt);
+                const provContainer = provInput.closest('.province-dropdown-container');
+                const cityContainer = cityInput.closest('.city-dropdown-container');
+                if (!provContainer || !cityContainer) return;
+
+                const provBtn = provContainer.querySelector('.custom-dropdown-toggle-btn');
+                const provMenu = provContainer.querySelector('.wilayah-dropdown-menu');
+                const provSearch = provContainer.querySelector('.search-wilayah-input');
+                const provList = provContainer.querySelector('.wilayah-options-list');
+                const provLabel = provBtn.querySelector('.selected-label');
+
+                const cityBtn = cityContainer.querySelector('.custom-dropdown-toggle-btn');
+                const cityMenu = cityContainer.querySelector('.wilayah-dropdown-menu');
+                const citySearch = cityContainer.querySelector('.search-wilayah-input');
+                const cityList = cityContainer.querySelector('.wilayah-options-list');
+                const cityLabel = cityBtn.querySelector('.selected-label');
+
+                // Initial setup for Province
+                provInput.value = initialProvince || '';
+                if (initialProvince) {
+                    provLabel.textContent = initialProvince;
+                    provLabel.classList.remove('text-gray-400');
+                    provLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
+                } else {
+                    provLabel.textContent = '-- Pilih Provinsi --';
+                    provLabel.classList.add('text-gray-400');
+                    provLabel.classList.remove('text-gray-900', 'dark:text-white', 'font-medium');
+                }
+
+                // Initial setup for City
+                cityInput.value = initialCity || '';
+                if (initialCity) {
+                    cityBtn.disabled = false;
+                    cityLabel.textContent = initialCity;
+                    cityLabel.classList.remove('text-gray-400');
+                    cityLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
+                } else if (initialProvince) {
+                    cityBtn.disabled = false;
+                    cityLabel.textContent = '-- Pilih Kota / Kabupaten --';
+                    cityLabel.classList.add('text-gray-400');
+                    cityLabel.classList.remove('text-gray-900', 'dark:text-white', 'font-medium');
+                } else {
+                    cityBtn.disabled = true;
+                    cityLabel.textContent = '-- Pilih Provinsi Dahulu --';
+                    cityLabel.classList.add('text-gray-400');
+                    cityLabel.classList.remove('text-gray-900', 'dark:text-white', 'font-medium');
+                }
+
+                // Toggle logic
+                provBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.wilayah-dropdown-menu').forEach(m => {
+                        if (m !== provMenu) m.classList.add('hidden');
                     });
-                }
-
-                if (provLoading) provLoading.classList.remove('hidden');
-                const fullWilayah = await this.getWilayahData();
-                if (provLoading) provLoading.classList.add('hidden');
-
-                // Re-populate dengan data lengkap jika ada
-                const currentSelectedVal = provSelect.value || initialProvince;
-                provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
-
-                let selectedProvId = '';
-                fullWilayah.forEach(p => {
-                    const formattedName = this.toTitleCase(p.name);
-                    const opt = document.createElement('option');
-                    opt.value = formattedName;
-                    opt.dataset.id = p.id;
-                    opt.textContent = formattedName;
-
-                    if (currentSelectedVal && (
-                        p.name.toLowerCase() === currentSelectedVal.toLowerCase() ||
-                        formattedName.toLowerCase() === currentSelectedVal.toLowerCase()
-                    )) {
-                        opt.selected = true;
-                        selectedProvId = p.id;
+                    provMenu.classList.toggle('hidden');
+                    if (!provMenu.classList.contains('hidden')) {
+                        this.positionDropdownMenu(provBtn, provMenu);
+                        if (provSearch) {
+                            provSearch.value = '';
+                            provSearch.dispatchEvent(new Event('input'));
+                            setTimeout(() => provSearch.focus({ preventScroll: true }), 50);
+                        }
                     }
+                };
 
-                    provSelect.appendChild(opt);
-                });
+                cityBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (cityBtn.disabled) return;
+                    document.querySelectorAll('.wilayah-dropdown-menu').forEach(m => {
+                        if (m !== cityMenu) m.classList.add('hidden');
+                    });
+                    cityMenu.classList.toggle('hidden');
+                    if (!cityMenu.classList.contains('hidden')) {
+                        this.positionDropdownMenu(cityBtn, cityMenu);
+                        if (citySearch) {
+                            citySearch.value = '';
+                            citySearch.dispatchEvent(new Event('input'));
+                            setTimeout(() => citySearch.focus({ preventScroll: true }), 50);
+                        }
+                    }
+                };
 
-                if (currentSelectedVal && !selectedProvId) {
-                    const customOpt = document.createElement('option');
-                    customOpt.value = currentSelectedVal;
-                    customOpt.textContent = currentSelectedVal;
-                    customOpt.selected = true;
-                    provSelect.appendChild(customOpt);
-                }
+                // Search filtering helper
+                const setupSearch = (container) => {
+                    const searchInput = container.querySelector('.search-wilayah-input');
+                    const noFound = container.querySelector('.no-options-found');
+                    if (!searchInput) return;
 
-                const loadRegenciesForProvince = async (provId, selectedCityName = '') => {
+                    searchInput.oninput = function() {
+                        const query = this.value.toLowerCase().trim();
+                        const rows = container.querySelectorAll('.wilayah-option-row');
+                        let matches = 0;
+                        rows.forEach(r => {
+                            const name = (r.dataset.name || '').toLowerCase();
+                            if (!query || name.includes(query)) {
+                                r.style.display = '';
+                                matches++;
+                            } else {
+                                r.style.display = 'none';
+                            }
+                        });
+                        if (noFound) {
+                            noFound.classList.toggle('hidden', matches > 0);
+                        }
+                    };
+
+                    searchInput.onclick = (e) => e.stopPropagation();
+                };
+
+                setupSearch(provContainer);
+                setupSearch(cityContainer);
+
+                // Helper to populate City options
+                const loadCitiesForProvince = async (provId, selectedCity = '') => {
                     if (!provId) {
-                        citySelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
-                        citySelect.disabled = true;
+                        cityBtn.disabled = true;
+                        cityLabel.textContent = '-- Pilih Provinsi Dahulu --';
+                        cityLabel.classList.add('text-gray-400');
+                        cityLabel.classList.remove('text-gray-900', 'dark:text-white', 'font-medium');
+                        cityInput.value = '';
                         return;
                     }
 
-                    citySelect.disabled = true;
+                    cityBtn.disabled = true;
                     if (cityLoading) cityLoading.classList.remove('hidden');
-                    citySelect.innerHTML = '<option value="">-- Memuat Kota / Kabupaten... --</option>';
+                    cityLabel.textContent = 'Memuat kota...';
 
                     const regencies = await this.getRegencies(provId);
                     if (cityLoading) cityLoading.classList.add('hidden');
 
-                    citySelect.disabled = false;
-                    citySelect.innerHTML = '<option value="">-- Pilih Kota / Kabupaten --</option>';
+                    cityBtn.disabled = false;
+                    cityLabel.textContent = selectedCity || '-- Pilih Kota / Kabupaten --';
+                    if (selectedCity) {
+                        cityLabel.classList.remove('text-gray-400');
+                        cityLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
+                        cityInput.value = selectedCity;
+                    } else {
+                        cityLabel.classList.add('text-gray-400');
+                        cityLabel.classList.remove('text-gray-900', 'dark:text-white', 'font-medium');
+                        cityInput.value = '';
+                    }
 
-                    let cityFound = false;
+                    // Populate city rows
+                    Array.from(cityList.querySelectorAll('.wilayah-option-row')).forEach(r => r.remove());
+
                     regencies.forEach(r => {
-                        const formattedCity = this.toTitleCase(r.name);
-                        const opt = document.createElement('option');
-                        opt.value = formattedCity;
-                        opt.dataset.id = r.id;
-                        opt.textContent = formattedCity;
+                        const formatted = this.toTitleCase(r.name);
+                        const row = document.createElement('div');
+                        row.className = 'wilayah-option-row flex items-center px-3 py-2 text-xs cursor-pointer hover:bg-blue-50/80 dark:hover:bg-gray-700/60 transition';
+                        row.dataset.name = formatted;
+                        row.dataset.id = r.id;
 
-                        if (selectedCityName && (
-                            r.name.toLowerCase() === selectedCityName.toLowerCase() ||
-                            formattedCity.toLowerCase() === selectedCityName.toLowerCase()
-                        )) {
-                            opt.selected = true;
-                            cityFound = true;
+                        const isSelected = selectedCity && (
+                            selectedCity.toLowerCase() === formatted.toLowerCase() ||
+                            selectedCity.toLowerCase() === r.name.toLowerCase()
+                        );
+                        if (isSelected) {
+                            row.classList.add('bg-blue-50', 'dark:bg-gray-700/80');
                         }
 
-                        citySelect.appendChild(opt);
+                        row.innerHTML = `<span class="option-name font-medium ${isSelected ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-900 dark:text-gray-100'} truncate">${formatted}</span>`;
+
+                        row.onclick = (e) => {
+                            e.stopPropagation();
+                            cityInput.value = formatted;
+                            cityLabel.textContent = formatted;
+                            cityLabel.classList.remove('text-gray-400');
+                            cityLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
+                            cityMenu.classList.add('hidden');
+
+                            cityList.querySelectorAll('.wilayah-option-row').forEach(cr => {
+                                const active = cr.dataset.name === formatted;
+                                cr.classList.toggle('bg-blue-50', active);
+                                cr.classList.toggle('dark:bg-gray-700/80', active);
+                                const span = cr.querySelector('.option-name');
+                                if (span) {
+                                    span.classList.toggle('text-blue-600', active);
+                                    span.classList.toggle('dark:text-blue-400', active);
+                                    span.classList.toggle('font-semibold', active);
+                                    span.classList.toggle('text-gray-900', !active);
+                                    span.classList.toggle('dark:text-gray-100', !active);
+                                }
+                            });
+                        };
+
+                        cityList.appendChild(row);
                     });
+                };
 
-                    if (selectedCityName && !cityFound) {
-                        const customCityOpt = document.createElement('option');
-                        customCityOpt.value = selectedCityName;
-                        customCityOpt.textContent = selectedCityName;
-                        customCityOpt.selected = true;
-                        citySelect.appendChild(customCityOpt);
+                // Populate Province rows
+                if (provLoading) provLoading.classList.remove('hidden');
+                const fullWilayah = await this.getWilayahData();
+                if (provLoading) provLoading.classList.add('hidden');
+
+                Array.from(provList.querySelectorAll('.wilayah-option-row')).forEach(r => r.remove());
+
+                let selectedProvId = '';
+                fullWilayah.forEach(p => {
+                    const formatted = this.toTitleCase(p.name);
+                    const row = document.createElement('div');
+                    row.className = 'wilayah-option-row flex items-center px-3 py-2 text-xs cursor-pointer hover:bg-blue-50/80 dark:hover:bg-gray-700/60 transition';
+                    row.dataset.name = formatted;
+                    row.dataset.id = p.id;
+
+                    const isSelected = initialProvince && (
+                        initialProvince.toLowerCase() === formatted.toLowerCase() ||
+                        initialProvince.toLowerCase() === p.name.toLowerCase()
+                    );
+                    if (isSelected) {
+                        row.classList.add('bg-blue-50', 'dark:bg-gray-700/80');
+                        selectedProvId = p.id;
                     }
-                };
 
-                provSelect.onchange = function() {
-                    const selectedOpt = provSelect.options[provSelect.selectedIndex];
-                    const provId = selectedOpt ? selectedOpt.dataset.id : '';
-                    loadRegenciesForProvince(provId);
-                };
+                    row.innerHTML = `<span class="option-name font-medium ${isSelected ? 'text-blue-600 dark:text-blue-400 font-semibold' : 'text-gray-900 dark:text-gray-100'} truncate">${formatted}</span>`;
 
+                    row.onclick = (e) => {
+                        e.stopPropagation();
+                        provInput.value = formatted;
+                        provLabel.textContent = formatted;
+                        provLabel.classList.remove('text-gray-400');
+                        provLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
+                        provMenu.classList.add('hidden');
+
+                        provList.querySelectorAll('.wilayah-option-row').forEach(pr => {
+                            const active = pr.dataset.id == p.id;
+                            pr.classList.toggle('bg-blue-50', active);
+                            pr.classList.toggle('dark:bg-gray-700/80', active);
+                            const span = pr.querySelector('.option-name');
+                            if (span) {
+                                span.classList.toggle('text-blue-600', active);
+                                span.classList.toggle('dark:text-blue-400', active);
+                                span.classList.toggle('font-semibold', active);
+                                span.classList.toggle('text-gray-900', !active);
+                                span.classList.toggle('dark:text-gray-100', !active);
+                            }
+                        });
+
+                        // Cascade to city
+                        loadCitiesForProvince(p.id);
+                    };
+
+                    provList.appendChild(row);
+                });
+
+                // If already had a province selected, load cities
                 if (selectedProvId) {
-                    await loadRegenciesForProvince(selectedProvId, initialCity);
+                    await loadCitiesForProvince(selectedProvId, initialCity);
                 } else if (initialCity) {
-                    citySelect.disabled = false;
-                    citySelect.innerHTML = `<option value="${initialCity}" selected>${initialCity}</option>`;
-                } else {
-                    citySelect.innerHTML = '<option value="">-- Pilih Provinsi Dahulu --</option>';
-                    citySelect.disabled = true;
+                    cityBtn.disabled = false;
+                    cityLabel.textContent = initialCity;
+                    cityLabel.classList.remove('text-gray-400');
+                    cityLabel.classList.add('text-gray-900', 'dark:text-white', 'font-medium');
                 }
             }
         };
+
+        // Attach global outside-click listener for wilayah dropdown menus
+        if (!window._wilayahDropdownGlobalAttached) {
+            window._wilayahDropdownGlobalAttached = true;
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.wilayah-dropdown-menu').forEach(menu => {
+                    if (!menu.classList.contains('hidden') && !menu.contains(e.target) && !e.target.closest('.custom-dropdown-toggle-btn')) {
+                        menu.classList.add('hidden');
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.wilayah-dropdown-menu').forEach(menu => {
+                        menu.classList.add('hidden');
+                    });
+                }
+            });
+        }
 
         function toggleNpwpVisibility(prefix) {
             const statusSelect = document.getElementById(prefix + '_tax_status');

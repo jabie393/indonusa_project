@@ -146,8 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Vendor Database Donut Chart
     const vendorDatabaseCanvas = document.getElementById('vendorDatabaseChart');
     if (vendorDatabaseCanvas) {
-        const vLabels = JSON.parse(vendorDatabaseCanvas.dataset.labels || '["PKP (850 Vendors)", "Non PKP (650 Vendors)"]');
-        const vValues = JSON.parse(vendorDatabaseCanvas.dataset.values || '[850, 650]');
+        const vLabels = JSON.parse(vendorDatabaseCanvas.dataset.labels || '["Belum Ada Data"]');
+        const vValues = JSON.parse(vendorDatabaseCanvas.dataset.values || '[1]');
+        const vColors = JSON.parse(vendorDatabaseCanvas.dataset.colors || '["#e5e7eb"]');
+        const vHasData = vendorDatabaseCanvas.dataset.hasData === 'true';
 
         const vCtx = vendorDatabaseCanvas.getContext('2d');
         window.vendorDatabaseChart = new Chart(vCtx, {
@@ -156,10 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: vLabels,
                 datasets: [{
                     data: vValues,
-                    backgroundColor: [
-                        '#225A97', // PKP - Blue
-                        '#f97316'  // Non PKP - Orange
-                    ],
+                    backgroundColor: vColors,
                     borderWidth: 2,
                     borderColor: '#ffffff',
                     hoverOffset: 6
@@ -176,9 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
+                                if (!window.vendorDatabaseChart?.hasData) return ' Belum Ada Data Vendor';
                                 let label = context.label || '';
                                 if (label) label += ': ';
-                                const total = vValues.reduce((a, b) => a + b, 0);
+                                const total = (window.vendorDatabaseChart.data.datasets[0].data || []).reduce((a, b) => a + b, 0);
                                 const percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : 0;
                                 return `${label} (${percentage}%)`;
                             }
@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+        window.vendorDatabaseChart.hasData = vHasData;
     }
 
     // 4. Average Timeline SO - GR Chart
@@ -321,6 +322,31 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                         `;
                     }
+                }
+            }
+
+            // Update vendor database chart if updated
+            if (window.vendorDatabaseChart && json.vendor_stats) {
+                const vs = json.vendor_stats;
+                window.vendorDatabaseChart.hasData = vs.has_data;
+                window.vendorDatabaseChart.data.labels = vs.labels;
+                window.vendorDatabaseChart.data.datasets[0].data = vs.values;
+                window.vendorDatabaseChart.data.datasets[0].backgroundColor = vs.colors;
+                window.vendorDatabaseChart.update();
+
+                const totalText = document.getElementById('vendor-total-text');
+                if (totalText) {
+                    totalText.textContent = `Total: ${new Intl.NumberFormat('id-ID').format(vs.total)}`;
+                }
+
+                const pkpLegend = document.getElementById('vendor-pkp-legend');
+                if (pkpLegend) {
+                    pkpLegend.textContent = `1. PKP - ${new Intl.NumberFormat('id-ID').format(vs.pkp_count)} Vendors (${vs.pkp_percentage}%)`;
+                }
+
+                const nonPkpLegend = document.getElementById('vendor-nonpkp-legend');
+                if (nonPkpLegend) {
+                    nonPkpLegend.textContent = `2. Non PKP - ${new Intl.NumberFormat('id-ID').format(vs.non_pkp_count)} Vendors (${vs.non_pkp_percentage}%)`;
                 }
             }
 
