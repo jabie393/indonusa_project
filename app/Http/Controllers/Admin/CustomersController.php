@@ -66,9 +66,27 @@ class CustomersController extends Controller
     public function store(Request $request)
     {
         $this->checkRole();
+        $isPribadi = strtolower($request->input('tipe_customer')) === 'pribadi';
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'npwp' => 'nullable|string|max:50',
+            'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
+            'npwp' => [
+                $isPribadi ? 'nullable' : 'required',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) use ($isPribadi) {
+                    if (!$isPribadi && empty($value)) {
+                        $fail('Nomor NPWP wajib diisi untuk kategori selain Pribadi.');
+                    }
+                    if (!empty($value)) {
+                        $digits = preg_replace('/\D/', '', $value);
+                        if (strlen($digits) < 15 || strlen($digits) > 16) {
+                            $fail('NPWP harus 15 atau 16 digit angka.');
+                        }
+                    }
+                },
+            ],
             'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
@@ -83,8 +101,9 @@ class CustomersController extends Controller
             'pics.*.phone' => 'required|string', // Sesuai blade required
             'pics.*.email' => 'nullable|email',
             'pics.*.position' => 'nullable|string',
-            'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
             'status' => 'nullable|in:0,1',
+        ], [
+            'npwp.required' => 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.',
         ]);
 
         DB::beginTransaction();
@@ -180,10 +199,28 @@ class CustomersController extends Controller
     public function update(Request $request)
     {
         $this->checkRole();
+        $isPribadi = strtolower($request->input('tipe_customer')) === 'pribadi';
+
         $validatedData = $request->validate([
             'id' => 'required|exists:customers,id',
             'name' => 'required|string|max:255',
-            'npwp' => 'nullable|string|max:50',
+            'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
+            'npwp' => [
+                $isPribadi ? 'nullable' : 'required',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) use ($isPribadi) {
+                    if (!$isPribadi && empty($value)) {
+                        $fail('Nomor NPWP wajib diisi untuk kategori selain Pribadi.');
+                    }
+                    if (!empty($value)) {
+                        $digits = preg_replace('/\D/', '', $value);
+                        if (strlen($digits) < 15 || strlen($digits) > 16) {
+                            $fail('NPWP harus 15 atau 16 digit angka.');
+                        }
+                    }
+                },
+            ],
             'term_of_payments' => 'nullable|integer|min:0',
             'kredit_limit' => 'nullable|string|max:100',
             'email' => 'nullable|email|max:255',
@@ -199,8 +236,9 @@ class CustomersController extends Controller
             'pics.*.phone' => 'required|string',
             'pics.*.email' => 'nullable|email',
             'pics.*.position' => 'nullable|string',
-            'tipe_customer' => 'required|string|in:pribadi,gov,bumn,swasta',
             'status' => 'nullable|in:0,1',
+        ], [
+            'npwp.required' => 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.',
         ]);
 
         DB::beginTransaction();

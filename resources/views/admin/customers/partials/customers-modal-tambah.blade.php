@@ -27,12 +27,6 @@
                         <input type="text" id="createName" name="name" placeholder="Nama" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     </div>
                     <div class="col-span-1 mb-4">
-                        <label for="npwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
-                            NPWP</label>
-                        <input type="text" id="npwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                        <p id="npwpWarning" class="mt-1 hidden text-xs text-red-500">NPWP harus 15 atau 16 digit.</p>
-                    </div>
-                    <div class="col-span-1 mb-4">
                         <label for="tipe_customer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                         <select name="tipe_customer" id="tipe_customer" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                             <option value="pribadi">Pribadi</option>
@@ -40,6 +34,12 @@
                             <option value="bumn">BUMN</option>
                             <option value="swasta">Swasta</option>
                         </select>
+                    </div>
+                    <div class="col-span-1 mb-4">
+                        <label for="npwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
+                            NPWP <span id="npwpAsterisk" class="text-red-500 hidden">*</span></label>
+                        <input type="text" id="npwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <p id="npwpWarning" class="mt-1 hidden text-xs text-red-500">NPWP harus 15 atau 16 digit.</p>
                     </div>
                     <div class="col-span-1 mb-4">
                         <label for="term_of_payments" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of
@@ -152,6 +152,8 @@
         const addPicBtn = document.getElementById('add-pic-btn');
         const npwpInput = document.getElementById('npwp');
         const npwpWarning = document.getElementById('npwpWarning');
+        const npwpAsterisk = document.getElementById('npwpAsterisk');
+        const tipeCustomerSelect = document.getElementById('tipe_customer');
         const kreditLimitInput = document.getElementById('kredit_limit');
 
         function formatNumberString(val) {
@@ -164,9 +166,33 @@
             this.value = formatNumberString(this.value);
         });
 
+        function toggleNpwpRequirement() {
+            const isPribadi = tipeCustomerSelect ? tipeCustomerSelect.value === 'pribadi' : false;
+            if (isPribadi) {
+                npwpInput.required = false;
+                if (npwpAsterisk) npwpAsterisk.classList.add('hidden');
+                if (npwpInput.value.length === 0) {
+                    npwpWarning.classList.add('hidden');
+                }
+            } else {
+                npwpInput.required = true;
+                if (npwpAsterisk) npwpAsterisk.classList.remove('hidden');
+            }
+        }
+
+        if (tipeCustomerSelect) {
+            tipeCustomerSelect.addEventListener('change', toggleNpwpRequirement);
+            toggleNpwpRequirement();
+        }
+
         npwpInput.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
+            const isPribadi = tipeCustomerSelect ? tipeCustomerSelect.value === 'pribadi' : false;
             if (this.value.length > 0 && this.value.length < 15) {
+                npwpWarning.textContent = 'NPWP harus 15 atau 16 digit.';
+                npwpWarning.classList.remove('hidden');
+            } else if (!isPribadi && this.value.length === 0) {
+                npwpWarning.textContent = 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.';
                 npwpWarning.classList.remove('hidden');
             } else {
                 npwpWarning.classList.add('hidden');
@@ -213,12 +239,26 @@
             // Strip formatting from kredit_limit before sending
             kreditLimitInput.value = kreditLimitInput.value.replace(/\D/g, '');
 
-            if (npwpInput.value.length > 0 && npwpInput.value.length < 15) {
+            const isPribadi = tipeCustomerSelect ? tipeCustomerSelect.value === 'pribadi' : false;
+            const npwpVal = npwpInput.value.trim();
+
+            if (!isPribadi && npwpVal === '') {
                 e.preventDefault();
                 npwpInput.focus();
+                npwpWarning.textContent = 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.';
+                npwpWarning.classList.remove('hidden');
+                kreditLimitInput.value = formatNumberString(kreditLimitInput.value);
+                return;
+            }
+
+            if (npwpVal.length > 0 && npwpVal.length < 15) {
+                e.preventDefault();
+                npwpInput.focus();
+                npwpWarning.textContent = 'NPWP harus 15 atau 16 digit.';
                 npwpWarning.classList.remove('hidden');
                 // Reformat back
                 kreditLimitInput.value = formatNumberString(kreditLimitInput.value);
+                return;
             }
         });
     });

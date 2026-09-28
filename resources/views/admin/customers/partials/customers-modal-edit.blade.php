@@ -70,12 +70,6 @@
                 <input type="text" id="editName" name="name" placeholder="Nama" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
             </div>
             <div class="col-span-1 mb-4">
-                <label for="editNpwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
-                    NPWP</label>
-                <input type="text" id="editNpwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                <p id="editNpwpWarning" class="mt-1 hidden text-xs text-red-500">NPWP harus 15 atau 16 digit.</p>
-            </div>
-            <div class="col-span-1 mb-4">
                 <label for="editTipeCustomer" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Kategori</label>
                 <select name="tipe_customer" id="editTipeCustomer" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400" required>
                     <option value="pribadi">Pribadi</option>
@@ -83,6 +77,12 @@
                     <option value="bumn">BUMN</option>
                     <option value="swasta">Swasta</option>
                 </select>
+            </div>
+            <div class="col-span-1 mb-4">
+                <label for="editNpwp" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">No.
+                    NPWP <span id="editNpwpAsterisk" class="text-red-500 hidden">*</span></label>
+                <input type="text" id="editNpwp" name="npwp" minlength="15" maxlength="16" placeholder="No. NPWP" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                <p id="editNpwpWarning" class="mt-1 hidden text-xs text-red-500">NPWP harus 15 atau 16 digit.</p>
             </div>
             <div class="col-span-1 mb-4">
                 <label for="editTermOfPayments" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Term of
@@ -221,6 +221,25 @@
         });
     }
 
+    function toggleEditNpwpRequirement() {
+        const tipeCustomer = $('#editTipeCustomer').val();
+        const isPribadi = (tipeCustomer === 'pribadi');
+        const asterisk = document.getElementById('editNpwpAsterisk');
+        const warning = document.getElementById('editNpwpWarning');
+        const npwpInput = document.getElementById('editNpwp');
+
+        if (isPribadi) {
+            if (npwpInput) npwpInput.required = false;
+            if (asterisk) asterisk.classList.add('hidden');
+            if (npwpInput && npwpInput.value.length === 0 && warning) {
+                warning.classList.add('hidden');
+            }
+        } else {
+            if (npwpInput) npwpInput.required = true;
+            if (asterisk) asterisk.classList.remove('hidden');
+        }
+    }
+
     // Tunggu dokumen siap
     $(document).ready(function() {
         // Add listener for adding new PIC row in edit modal
@@ -234,11 +253,20 @@
             this.value = clean.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         });
 
+        $('#editTipeCustomer').on('change', function() {
+            toggleEditNpwpRequirement();
+        });
+
         // NPWP Validation
         $('#editNpwp').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
             const warning = document.getElementById('editNpwpWarning');
+            const isPribadi = ($('#editTipeCustomer').val() === 'pribadi');
             if (this.value.length > 0 && this.value.length < 15) {
+                warning.textContent = 'NPWP harus 15 atau 16 digit.';
+                warning.classList.remove('hidden');
+            } else if (!isPribadi && this.value.length === 0) {
+                warning.textContent = 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.';
                 warning.classList.remove('hidden');
             } else {
                 warning.classList.add('hidden');
@@ -250,13 +278,28 @@
             const editKreditLimitInput = document.getElementById('editKreditLimit');
             editKreditLimitInput.value = editKreditLimitInput.value.replace(/\D/g, '');
 
-            const npwp = $('#editNpwp').val();
+            const tipeCustomer = $('#editTipeCustomer').val();
+            const isPribadi = (tipeCustomer === 'pribadi');
+            const npwp = $('#editNpwp').val().trim();
+            const warning = document.getElementById('editNpwpWarning');
+
+            if (!isPribadi && npwp === '') {
+                e.preventDefault();
+                $('#editNpwp').focus();
+                warning.textContent = 'Nomor NPWP wajib diisi untuk kategori selain Pribadi.';
+                warning.classList.remove('hidden');
+                editKreditLimitInput.value = editKreditLimitInput.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return;
+            }
+
             if (npwp.length > 0 && npwp.length < 15) {
                 e.preventDefault();
                 $('#editNpwp').focus();
-                $('#editNpwpWarning').removeClass('hidden');
+                warning.textContent = 'NPWP harus 15 atau 16 digit.';
+                warning.classList.remove('hidden');
                 // Reformat back
                 editKreditLimitInput.value = editKreditLimitInput.value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                return;
             }
         });
     });
@@ -274,6 +317,7 @@
         document.getElementById('editNpwp').value = customer.npwp || '';
         document.getElementById('editTipeCustomer').value = (customer.customer_type || customer.tipe_customer) ? 
             (customer.customer_type || customer.tipe_customer).toLowerCase() : 'pribadi';
+        toggleEditNpwpRequirement();
         document.getElementById('editTermOfPayments').value = customer.term_of_payments || '';
         
         const rawLimit = customer.credit_limit || customer.kredit_limit || '';
