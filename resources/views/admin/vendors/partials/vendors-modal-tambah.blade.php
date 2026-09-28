@@ -129,26 +129,96 @@
                                 placeholder="Jalan, nomor gedung, kelurahan, kecamatan..."></textarea>
                         </div>
 
-                        <div>
-                            <label for="create_province" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                        <!-- Provinsi Searchable Custom Dropdown -->
+                        <div class="custom-wilayah-container province-dropdown-container relative">
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
                                 <span>Provinsi</span>
                                 <span id="create_province_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat...</span>
                             </label>
-                            <select id="create_province" name="province"
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-                                <option value="">-- Pilih Provinsi --</option>
-                            </select>
+                            
+                            <!-- Hidden input for form submission -->
+                            <input type="hidden" id="create_province" name="province" value="">
+
+                            <!-- Trigger Button -->
+                            <button type="button" id="create_province_btn"
+                                class="custom-dropdown-toggle-btn flex w-full items-center justify-between rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition">
+                                <span class="selected-label truncate font-normal text-gray-400">-- Pilih Provinsi --</span>
+                                <span class="shrink-0 ml-2 text-gray-400">
+                                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu-container wilayah-dropdown-menu fixed z-[9999] hidden w-[340px] max-w-[90vw] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800">
+                                <!-- Search Header -->
+                                <div class="border-b border-gray-100 bg-gray-50/90 p-2.5 dark:border-gray-700 dark:bg-gray-900/60">
+                                    <div class="relative">
+                                        <span class="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            </svg>
+                                        </span>
+                                        <input
+                                            class="search-wilayah-input w-full rounded-lg border border-gray-300 bg-white py-1.5 pl-9 pr-4 text-xs text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Cari provinsi..." type="text">
+                                    </div>
+                                </div>
+                                <!-- Dropdown List -->
+                                <div class="max-h-[220px] overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/60 wilayah-options-list">
+                                    <div class="no-options-found hidden py-6 text-center text-xs text-gray-400 dark:text-gray-500">
+                                        Provinsi tidak ditemukan
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label for="create_city" class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
+                        <!-- Kota / Kabupaten Searchable Custom Dropdown -->
+                        <div class="custom-wilayah-container city-dropdown-container relative">
+                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase mb-1 flex items-center justify-between">
                                 <span>Kota / Kabupaten</span>
                                 <span id="create_city_loading" class="hidden text-[11px] text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Memuat kota...</span>
                             </label>
-                            <select id="create_city" name="city" disabled
-                                class="w-full rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white disabled:opacity-60 disabled:cursor-not-allowed">
-                                <option value="">-- Pilih Provinsi Dahulu --</option>
-                            </select>
+                            
+                            <!-- Hidden input for form submission -->
+                            <input type="hidden" id="create_city" name="city" value="">
+
+                            <!-- Trigger Button (Starts Disabled) -->
+                            <button type="button" id="create_city_btn" disabled
+                                class="custom-dropdown-toggle-btn flex w-full items-center justify-between rounded-xl border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white transition disabled:opacity-60 disabled:cursor-not-allowed">
+                                <span class="selected-label truncate font-normal text-gray-400">-- Pilih Provinsi Dahulu --</span>
+                                <span class="shrink-0 ml-2 text-gray-400">
+                                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu-container wilayah-dropdown-menu fixed z-[9999] hidden w-[340px] max-w-[90vw] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800">
+                                <!-- Search Header -->
+                                <div class="border-b border-gray-100 bg-gray-50/90 p-2.5 dark:border-gray-700 dark:bg-gray-900/60">
+                                    <div class="relative">
+                                        <span class="text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">
+                                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="11" cy="11" r="8"></circle>
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            </svg>
+                                        </span>
+                                        <input
+                                            class="search-wilayah-input w-full rounded-lg border border-gray-300 bg-white py-1.5 pl-9 pr-4 text-xs text-gray-900 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                                            placeholder="Cari kota atau kabupaten..." type="text">
+                                    </div>
+                                </div>
+                                <!-- Dropdown List -->
+                                <div class="max-h-[220px] overflow-y-auto divide-y divide-gray-100 dark:divide-gray-700/60 wilayah-options-list">
+                                    <div class="no-options-found hidden py-6 text-center text-xs text-gray-400 dark:text-gray-500">
+                                        Kota / Kabupaten tidak ditemukan
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

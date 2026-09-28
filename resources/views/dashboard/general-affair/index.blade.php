@@ -144,15 +144,17 @@
                 <div class="flex flex-1 flex-col justify-between rounded-b-2xl bg-white p-5 dark:bg-gray-800">
                     <div class="relative flex h-56 w-full items-center justify-center">
                         <canvas id="vendorDatabaseChart" class="relative z-10 block h-full w-full"
-                            data-labels='["PKP (850 Vendors)", "Non PKP (650 Vendors)"]'
-                            data-values='[850, 650]'></canvas>
+                            data-labels='@json($vendor_stats["labels"])'
+                            data-values='@json($vendor_stats["values"])'
+                            data-colors='@json($vendor_stats["colors"])'
+                            data-has-data="{{ $vendor_stats['has_data'] ? 'true' : 'false' }}"></canvas>
                         
                         <!-- Center Cutout Text with Icon -->
                         <div class="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center text-center">
                             <svg class="mb-1 h-6 w-6 text-[#225A97] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                             </svg>
-                            <span class="text-sm font-extrabold text-gray-900 dark:text-gray-100">Total: 1,500</span>
+                            <span id="vendor-total-text" class="text-sm font-extrabold text-gray-900 dark:text-gray-100">Total: {{ number_format($vendor_stats['total']) }}</span>
                         </div>
                     </div>
 
@@ -161,7 +163,7 @@
                         <div class="flex items-start gap-2 rounded-xl border border-gray-100 bg-gray-50/80 p-2.5 dark:border-gray-700 dark:bg-gray-800">
                             <span class="mt-0.5 h-3 w-3 shrink-0 rounded bg-[#225A97]"></span>
                             <div class="flex flex-col">
-                                <span class="font-bold text-gray-900 dark:text-gray-100">1. PKP (56.7%)</span>
+                                <span id="vendor-pkp-legend" class="font-bold text-gray-900 dark:text-gray-100">1. PKP - {{ number_format($vendor_stats['pkp_count']) }} Vendors ({{ $vendor_stats['pkp_percentage'] }}%)</span>
                                 <span class="text-[10px] text-gray-500 dark:text-gray-400">Pengusaha Kena Pajak - Includes all registered PKP vendors.</span>
                             </div>
                         </div>
@@ -169,7 +171,7 @@
                         <div class="flex items-start gap-2 rounded-xl border border-gray-100 bg-gray-50/80 p-2.5 dark:border-gray-700 dark:bg-gray-800">
                             <span class="mt-0.5 h-3 w-3 shrink-0 rounded bg-[#f97316]"></span>
                             <div class="flex flex-col">
-                                <span class="font-bold text-gray-900 dark:text-gray-100">2. Non PKP (43.3%)</span>
+                                <span id="vendor-nonpkp-legend" class="font-bold text-gray-900 dark:text-gray-100">2. Non PKP - {{ number_format($vendor_stats['non_pkp_count']) }} Vendors ({{ $vendor_stats['non_pkp_percentage'] }}%)</span>
                                 <span class="text-[10px] text-gray-500 dark:text-gray-400">Includes all non-registered and micro-vendors.</span>
                             </div>
                         </div>

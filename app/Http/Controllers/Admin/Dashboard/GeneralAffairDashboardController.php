@@ -9,6 +9,7 @@ use App\Models\Goods;
 use App\Models\ProcurementOfGoods;
 use App\Models\ProcurementOfGoodsItem;
 use App\Models\ProcurementArrivalRequest;
+use App\Models\Vendor;
 use Carbon\Carbon;
 
 class GeneralAffairDashboardController extends Controller
@@ -98,6 +99,7 @@ class GeneralAffairDashboardController extends Controller
             'purchasing_category_values' => $topCategoriesData['values'],
             'purchasing_category_colors' => $topCategoriesData['colors'],
             'purchasing_category_has_data' => $topCategoriesData['has_data'],
+            'vendor_stats' => $this->calculateVendorStats(),
         ]);
     }
 
@@ -146,6 +148,7 @@ class GeneralAffairDashboardController extends Controller
             'purchasing_spending' => $monthlyPurchasingSpending,
             'timeline_values' => $this->calculateAverageTimeline($dateStart, $dateEnd),
             'purchasing_categories' => $this->calculateTopPurchasingCategories($dateStart, $dateEnd),
+            'vendor_stats' => $this->calculateVendorStats(),
         ]);
     }
 
@@ -273,5 +276,38 @@ class GeneralAffairDashboardController extends Controller
         $avgSoToArrival = !empty($soToArrivalDiffs) ? round(array_sum($soToArrivalDiffs) / count($soToArrivalDiffs), 1) : 0;
 
         return [0, $avgSoToPo, $avgSoToArrival];
+    }
+
+    /**
+     * Calculate Vendor Database metrics (PKP vs Non PKP).
+     */
+    private function calculateVendorStats(): array
+    {
+        $totalVendors = (int) Vendor::count();
+        $pkpCount = (int) Vendor::where('tax_status', 'PKP')->count();
+        $nonPkpCount = max(0, $totalVendors - $pkpCount);
+
+        $pkpPercent = $totalVendors > 0 ? round(($pkpCount / $totalVendors) * 100, 1) : 0;
+        $nonPkpPercent = $totalVendors > 0 ? round(($nonPkpCount / $totalVendors) * 100, 1) : 0;
+
+        $hasData = $totalVendors > 0;
+
+        return [
+            'total' => $totalVendors,
+            'pkp_count' => $pkpCount,
+            'non_pkp_count' => $nonPkpCount,
+            'pkp_percentage' => $pkpPercent,
+            'non_pkp_percentage' => $nonPkpPercent,
+            'labels' => $hasData
+                ? ["PKP (" . number_format($pkpCount) . " Vendors)", "Non PKP (" . number_format($nonPkpCount) . " Vendors)"]
+                : ['Belum Ada Data'],
+            'values' => $hasData
+                ? [$pkpCount, $nonPkpCount]
+                : [1],
+            'colors' => $hasData
+                ? ['#225A97', '#f97316']
+                : ['#e5e7eb'],
+            'has_data' => $hasData,
+        ];
     }
 }
