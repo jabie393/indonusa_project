@@ -164,32 +164,47 @@
                 </p>
 
                 <!-- INFO TABLE -->
-                <div class="mt-5 text-[9pt]">
-                    <table class="w-full border-collapse">
-                        <tbody>
-                            <tr>
-                                <td class="w-[60pt] px-3 py-1 align-top text-black">To</td>
-                                <td class="w-[200pt] px-3 py-1 align-top text-black">: {{ $customQuotation->to }}</td>
-                                <td class="px-3 py-1 align-top text-black">Email</td>
-                                <td class="px-3 py-1 align-top text-black">: <a href="mailto:{{ $customQuotation->email }}"
-                                        class="text-black hover:underline">{{ $customQuotation->email }}</a></td>
-                            </tr>
-                            <tr>
-                                <td class="px-3 py-1 align-top text-black">Up</td>
-                                <td class="px-3 py-1 align-top text-black">:
-                                    {{ $customQuotation->up ?? '-' }}
-                                </td>
-                                <td class="px-3 py-1 align-top text-black">Our Ref</td>
-                                <td class="px-3 py-1 align-top text-black">: {{ $customQuotation->our_ref }}</td>
-                            </tr>
-                            <tr>
-                                <td class="px-3 py-1 align-top text-black">Subject</td>
-                                <td class="px-3 py-1 align-top text-black">: {{ $customQuotation->subject }}</td>
-                                <td class="w-[60pt] px-3 py-1 align-top text-black">Date</td>
-                                <td class="w-[180pt] px-3 py-1 align-top text-black">: {{ \Carbon\Carbon::parse($customQuotation->date)->format('d/m/Y') }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="mt-5 grid grid-cols-2 gap-8 text-[9pt]">
+                    <div>
+                        <table class="w-full border-collapse">
+                            <tbody>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">To</td>
+                                    <td class="py-1 align-top text-black">: {{ $customQuotation->to }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Up</td>
+                                    <td class="py-1 align-top text-black">:
+                                        {{ $customQuotation->up ?? '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Subject</td>
+                                    <td class="py-1 align-top text-black">: {{ $customQuotation->subject ?? 'Quotation - ' . $customQuotation->our_ref }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pl-25">
+                        <table class="w-full border-collapse">
+                            <tbody>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Email</td>
+                                    <td class="py-1 align-top text-black">: <a href="mailto:{{ $customQuotation->email ?? optional($customQuotation->sales)->email ?? '-' }}"
+                                            class="text-black hover:underline">{{ $customQuotation->email ?? optional($customQuotation->sales)->email ?? '-' }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">{{ request('from') === 'sales_order' ? 'No. SO' : 'Our Ref' }}</td>
+                                    <td class="py-1 align-top text-black">: {{ request('from') === 'sales_order' ? ($customQuotation->order->order_number ?? $customQuotation->our_ref) : $customQuotation->our_ref }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="w-[60pt] py-1 align-top text-black">Date</td>
+                                    <td class="py-1 align-top text-black">: {{ $customQuotation->date ? \Carbon\Carbon::parse($customQuotation->date)->format('d/m/Y') : ($customQuotation->created_at ? $customQuotation->created_at->format('d/m/Y') : '-') }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 
