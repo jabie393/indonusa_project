@@ -125,12 +125,12 @@
                             <!-- Intro Text -->
                             <div class="lg:col-span-2">
                                 <label for="intro_text"
-                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Teks Pembuka</label>
+                                       class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Catatan</label>
                                 <textarea id="intro_text"
                                           name="intro_text"
                                           rows="4"
                                           class="@error('intro_text') border-red-500 @else border-gray-300 dark:border-gray-500 @enderror w-full rounded-lg border bg-gray-50 px-4 py-2 text-black focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:bg-gray-600 dark:text-white"
-                                          placeholder="Masukkan teks pembuka quotation...">{{ old('intro_text', '') }}</textarea>
+                                          placeholder="Masukkan catatan...">{{ old('intro_text', "Syarat dan Ketentuan:\n1. Harga Franco On Site\n2. Harga Sudah Include PPN 11%\n3. Quotation berlaku 2 Minggu") }}</textarea>
                                 @error('intro_text')
                                     <span class="mt-1 text-sm text-red-500">{{ $message }}</span>
                                 @enderror

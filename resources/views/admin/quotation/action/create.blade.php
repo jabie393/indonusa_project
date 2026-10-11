@@ -201,8 +201,7 @@
                             </div>
 
                             <div class="col-span-2 flex flex-col md:col-span-1">
-                                <label for="required_date" class="form-label text-gray-700 dark:text-gray-300">Tanggal
-                                    Kebutuhan</label>
+                                <label for="required_date" class="form-label text-gray-700 dark:text-gray-300">Tanggal</label>
                                 <input type="date"
                                     class="@error('required_date') is-invalid @enderror block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     id="required_date" name="required_date" value="{{ old('required_date') }}">
