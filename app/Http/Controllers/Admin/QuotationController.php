@@ -362,7 +362,21 @@ class ListingController extends Controller
 
         $pdfNote = request()->query('pdf_note', $requestOrder->customer_notes ?? null);
 
-        $html = view('admin.pdf.quotation', compact('requestOrder', 'pdfNote'))->render();
+        $isSalesOrder = request('from') === 'sales_order';
+        $docType = $isSalesOrder ? 'SO' : 'QUO';
+
+        $noUrut = (int) $requestOrder->id;
+
+        $customerName = strtoupper(trim($requestOrder->customer_name ?: ($requestOrder->customer->name ?? '')));
+        $subject = trim($requestOrder->subject ?? '');
+
+        $filenameParts = array_filter([$noUrut, $docType, $customerName, $subject], fn($val) => $val !== '' && $val !== null);
+        $downloadFilename = implode(' ', $filenameParts);
+        $downloadFilename = preg_replace('[/\\\\:*?"<>|]', '', $downloadFilename);
+        $downloadFilename = trim(preg_replace('/\s+/', ' ', $downloadFilename));
+        $fullFilename = $downloadFilename . '.pdf';
+
+        $html = view('admin.pdf.quotation', compact('requestOrder', 'pdfNote', 'downloadFilename'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
@@ -387,11 +401,9 @@ class ListingController extends Controller
             ->writeOptionsToFile()
             ->pdf();
 
-        $filenamePrefix = request('from') === 'sales_order' ? 'SalesOrder' : 'Quotation';
-
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="' . $filenamePrefix . '-' . $requestOrder->request_number . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="' . $fullFilename . '"');
     }
 
     public function edit(Quotation $quotation)

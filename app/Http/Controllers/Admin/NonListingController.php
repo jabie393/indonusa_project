@@ -432,7 +432,19 @@ class NonListingController extends Controller
             }
         }
 
-        $html = view('admin.pdf.custom-quotation-pdf', compact('customQuotation'))->render();
+        $docType = 'QUO';
+        $noUrut = (int) $customQuotation->id;
+
+        $customerName = strtoupper(trim($customQuotation->to ?? ''));
+        $subject = trim($customQuotation->subject ?? '');
+
+        $filenameParts = array_filter([$noUrut, $docType, $customerName, $subject], fn($val) => $val !== '' && $val !== null);
+        $downloadFilename = implode(' ', $filenameParts);
+        $downloadFilename = preg_replace('[/\\\\:*?"<>|]', '', $downloadFilename);
+        $downloadFilename = trim(preg_replace('/\s+/', ' ', $downloadFilename));
+        $fullFilename = $downloadFilename . '.pdf';
+
+        $html = view('admin.pdf.custom-quotation-pdf', compact('customQuotation', 'downloadFilename'))->render();
 
         $footerLogoPath = public_path('images/footer_logo.png');
         $footerLogoBase64 = '';
@@ -459,7 +471,7 @@ class NonListingController extends Controller
 
         return response($pdf)
             ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="Custom-Quotation-' . $customQuotation->quotation_number . '.pdf"');
+            ->header('Content-Disposition', 'inline; filename="' . $fullFilename . '"');
     }
 
     /**

@@ -3,7 +3,21 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Quotation - Indonusa Jaya Bersama</title>
+        @php
+            if (!isset($downloadFilename)) {
+                $docType = 'QUO';
+                $noUrut = (int) ($customQuotation->id ?? 1);
+
+                $customerName = strtoupper(trim($customQuotation->to ?? ''));
+                $subject = trim($customQuotation->subject ?? '');
+
+                $filenameParts = array_filter([$noUrut, $docType, $customerName, $subject], fn($val) => $val !== '' && $val !== null);
+                $downloadFilename = implode(' ', $filenameParts);
+                $downloadFilename = preg_replace('[/\\\\:*?"<>|]', '', $downloadFilename);
+                $downloadFilename = trim(preg_replace('/\s+/', ' ', $downloadFilename));
+            }
+        @endphp
+        <title>{{ $downloadFilename ?? 'Quotation - Indonusa Jaya Bersama' }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Tailwind CDN -->

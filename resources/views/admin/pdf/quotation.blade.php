@@ -3,7 +3,22 @@
 
     <head>
         <meta charset="utf-8">
-        <title>{{ request('from') === 'sales_order' ? 'Sales Order' : 'Quotation' }} - Indonusa Jaya Bersama</title>
+        @php
+            if (!isset($downloadFilename)) {
+                $isSalesOrder = request('from') === 'sales_order';
+                $docType = $isSalesOrder ? 'SO' : 'QUO';
+                $noUrut = (int) ($requestOrder->id ?? 1);
+
+                $customerName = strtoupper(trim($requestOrder->customer_name ?: ($requestOrder->customer->name ?? '')));
+                $subject = trim($requestOrder->subject ?? '');
+
+                $filenameParts = array_filter([$noUrut, $docType, $customerName, $subject], fn($val) => $val !== '' && $val !== null);
+                $downloadFilename = implode(' ', $filenameParts);
+                $downloadFilename = preg_replace('[/\\\\:*?"<>|]', '', $downloadFilename);
+                $downloadFilename = trim(preg_replace('/\s+/', ' ', $downloadFilename));
+            }
+        @endphp
+        <title>{{ $downloadFilename ?? (request('from') === 'sales_order' ? 'Sales Order' : 'Quotation') }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <!-- Tailwind CDN -->
