@@ -99,6 +99,7 @@ class NonListingController extends Controller
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|string|max:50',
+            'items.*.operational' => 'nullable|string|max:50',
             'items.*.diskon' => 'required|integer|min:0|max:100',
             'items.*.keterangan' => 'nullable|string|max:255',
             'items.*.images' => 'nullable|array',
@@ -141,6 +142,9 @@ class NonListingController extends Controller
                 $rawHarga = str_replace(',', '', $itemData['harga']);
                 $hargaFloat = (float) $rawHarga;
 
+                $rawOperational = isset($itemData['operational']) && $itemData['operational'] !== '' ? str_replace(',', '', $itemData['operational']) : 0;
+                $operationalFloat = (float) $rawOperational;
+
                 $itemSubtotal = $itemData['qty'] * $hargaFloat * (1 - ($itemData['diskon'] ?? 0) / 100);
                 $subtotal += $itemSubtotal;
 
@@ -150,6 +154,7 @@ class NonListingController extends Controller
                     'qty' => $itemData['qty'],
                     'unit' => $itemData['satuan'],
                     'price' => $hargaFloat,
+                    'operational' => $operationalFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
                     'description' => $itemData['description'] ?? null,
@@ -263,6 +268,7 @@ class NonListingController extends Controller
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:50',
             'items.*.harga' => 'required|string|max:50',
+            'items.*.operational' => 'nullable|string|max:50',
             'items.*.diskon' => 'required|integer|min:0|max:100',
             'items.*.keterangan' => 'nullable|string|max:255',
             'items.*.images' => 'nullable|array',
@@ -318,6 +324,9 @@ class NonListingController extends Controller
                 $rawHarga = str_replace(',', '', $itemData['harga']);
                 $hargaFloat = (float) $rawHarga;
 
+                $rawOperational = isset($itemData['operational']) && $itemData['operational'] !== '' ? str_replace(',', '', $itemData['operational']) : 0;
+                $operationalFloat = (float) $rawOperational;
+
                 $itemSubtotal = $itemData['qty'] * $hargaFloat * (1 - ($itemData['diskon'] ?? 0) / 100);
                 $subtotal += $itemSubtotal;
 
@@ -327,6 +336,7 @@ class NonListingController extends Controller
                     'qty' => $itemData['qty'],
                     'unit' => $itemData['satuan'],
                     'price' => $hargaFloat,
+                    'operational' => $operationalFloat,
                     'subtotal' => $itemSubtotal,
                     'discount' => $itemData['diskon'] ?? 0,
                     'description' => $itemData['description'] ?? null,

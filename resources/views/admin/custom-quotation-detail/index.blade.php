@@ -487,7 +487,13 @@
                                         </div>
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-600 dark:text-gray-400">
-                                        {{ number_format($item->price, 0, '.', ',') }}
+                                        <div>{{ number_format($item->price, 0, '.', ',') }}</div>
+                                        @if ($item->operational && $item->operational > 0)
+                                            <div class="mt-1 flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
+                                                <span class="rounded bg-amber-50 px-1 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">OPR</span>
+                                                {{ number_format($item->operational, 0, '.', ',') }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-5 text-sm font-bold text-[#225A97] dark:text-[#818CF8]">
                                         @php

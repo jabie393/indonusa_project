@@ -155,6 +155,7 @@
                                     'qty' => $item->qty,
                                     'satuan' => $item->unit,
                                     'harga' => $item->price,
+                                    'operational' => $item->operational,
                                     'diskon' => $item->discount,
                                     'keterangan' => $item->notes,
                                     'subtotal' => $item->subtotal,
@@ -188,7 +189,7 @@
                                 <thead>
                                     <tr class="bg-gray-200 dark:bg-gray-700">
                                         <th class="sticky top-0 z-10 min-w-[250px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Nama, Kategori, & Deskripsi</th>
-                                        <th class="sticky top-0 z-10 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty, Satuan, & Harga</th>
+                                        <th class="sticky top-0 z-10 min-w-[200px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Qty, Sat, Harga, & OPR</th>
                                         <th class="sticky top-0 z-10 min-w-[180px] border border-gray-300 bg-gray-200 px-4 py-2 text-left text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Diskon & Ket.</th>
                                         <th class="sticky top-0 z-10 min-w-[100px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Gambar</th>
                                         <th class="sticky top-0 z-10 min-w-[150px] border border-gray-300 bg-gray-200 px-4 py-2 text-center text-sm font-semibold text-black dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100">Total</th>
@@ -280,6 +281,19 @@
                                                                required>
                                                     </div>
                                                     @error('items.'.$index.'.harga')
+                                                        <span class="text-xs text-red-500 block">{{ $message }}</span>
+                                                    @enderror
+
+                                                    <!-- Estimasi OPR Field -->
+                                                    <div class="flex items-center gap-2 w-full">
+                                                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">OPR</span>
+                                                        <input type="text"
+                                                               name="items[{{ $index }}][operational]"
+                                                               class="item-operational form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                                               placeholder="0"
+                                                               value="{{ old('items.'.$index.'.operational', $isOldItem ? ($item['operational'] ?? '') : ($item->operational ?? '')) }}">
+                                                    </div>
+                                                    @error('items.'.$index.'.operational')
                                                         <span class="text-xs text-red-500 block">{{ $message }}</span>
                                                     @enderror
                                                 </div>
@@ -890,6 +904,11 @@
                         <input type="text" name="items[${itemCount}][harga]" class="item-harga form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                             placeholder="0" required>
                     </div>
+                    <div class="flex items-center gap-2 w-full">
+                        <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 min-w-[24px]">OPR</span>
+                        <input type="text" name="items[${itemCount}][operational]" class="item-operational form-control block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                            placeholder="0">
+                    </div>
                 </div>
             </td>
             <td class="border border-gray-300 px-4 py-2 dark:border-gray-600">
@@ -943,6 +962,12 @@
                     formatInputPrice(this);
                     calculateTotals();
                 });
+                const oprInput = newRow.querySelector('.item-operational');
+                if (oprInput) {
+                    oprInput.addEventListener('input', function() {
+                        formatInputPrice(this);
+                    });
+                }
                 diskonInput.addEventListener('input', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
                     if (diskonVal > 20) {
@@ -1010,12 +1035,21 @@
                 if (hargaInput.value) {
                     hargaInput.value = formatNumberWithCommas(hargaInput.value);
                 }
+                const oprInput = row.querySelector('.item-operational');
+                if (oprInput && oprInput.value) {
+                    oprInput.value = formatNumberWithCommas(oprInput.value);
+                }
 
                 qtyInput.addEventListener('input', calculateTotals);
                 hargaInput.addEventListener('input', function() {
                     formatInputPrice(this);
                     calculateTotals();
                 });
+                if (oprInput) {
+                    oprInput.addEventListener('input', function() {
+                        formatInputPrice(this);
+                    });
+                }
                 diskonInput.addEventListener('input', function() {
                     const diskonVal = parseFloat(diskonInput.value) || 0;
                     if (diskonVal > 20) {
@@ -1047,7 +1081,7 @@
             document.addEventListener('submit', function(e) {
                 const form = e.target;
                 if (form) {
-                    form.querySelectorAll('.item-harga').forEach(input => {
+                    form.querySelectorAll('.item-harga, .item-operational').forEach(input => {
                         input.value = input.value.replace(/,/g, '');
                     });
                 }

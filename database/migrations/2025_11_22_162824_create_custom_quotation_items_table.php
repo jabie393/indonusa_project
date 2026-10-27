@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('qty');
             $table->string('unit');
             $table->decimal('price', 15, 2);
+            $table->decimal('operational', 15, 2)->nullable()->default(0);
             $table->decimal('subtotal', 15, 2);
             $table->unsignedTinyInteger('discount')->default(0); // diskon dalam persen
             $table->string('description')->nullable();

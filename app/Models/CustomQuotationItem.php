@@ -16,6 +16,7 @@ class CustomQuotationItem extends Model
         'qty',
         'unit',
         'price',
+        'operational',
         'subtotal',
         'discount',
         'description',
@@ -26,6 +27,7 @@ class CustomQuotationItem extends Model
     protected $casts = [
         'qty' => 'integer',
         'price' => 'decimal:2',
+        'operational' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'discount' => 'integer',
         'images' => 'array',
