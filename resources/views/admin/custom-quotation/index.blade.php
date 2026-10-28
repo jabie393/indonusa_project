@@ -60,7 +60,7 @@
                     <tbody class="text-nowrap">
                         @foreach ($customQuotations as $quotation)
                             @php
-                                $discounts = $quotation->items->pluck('diskon')->map(fn($d) => (float) ($d ?? 0));
+                                $discounts = $quotation->items->map(fn($i) => (float) ($i->discount ?? $i->diskon ?? 0));
                                 $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
                                 $hasAbove = $discounts->contains(fn($d) => $d > 20);
                                 $expiredAt = $quotation->expired_at ?: $quotation->created_at->copy()->addDays(14);
@@ -83,25 +83,15 @@
                                 <td class="p-4 align-middle">
                                     <div class="flex flex-col gap-2.5">
                                         <!-- Recipient Details -->
-                                        <div class="flex flex-col gap-1">
-                                            <span class="text-base font-bold text-slate-900 dark:text-white">
+                                        <div class="flex flex-col gap-0.5">
+                                            <span class="text-sm font-bold text-slate-900 dark:text-white">
                                                 {{ $quotation->to ?? '-' }}
                                             </span>
                                             <span
                                                 class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                                                <svg xmlns="http://www.w3.org/2000/svg"
-                                                    class="h-3.5 w-3.5 text-slate-400 dark:text-slate-500"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                                    <circle cx="12" cy="7" r="4"></circle>
-                                                </svg>
-                                                <span class="font-medium">{{ $quotation->up ?? '-' }}</span>
-                                                @if ($quotation->email)
-                                                    <span class="text-slate-300 dark:text-slate-600">•</span>
-                                                    <span
-                                                        class="text-slate-400 dark:text-slate-500">{{ $quotation->email }}</span>
-                                                @endif
+                                                <span class="font-medium text-slate-700 dark:text-slate-300">{{ $quotation->up ?? '-' }}</span>
+                                                <span class="text-slate-300 dark:text-slate-600">•</span>
+                                                <span class="text-slate-500 dark:text-slate-400">PIC</span>
                                             </span>
                                         </div>
 
@@ -109,29 +99,65 @@
                                         <div class="border-t border-dashed border-gray-200 dark:border-gray-700/80"></div>
 
                                         <!-- Total & Items Summary -->
-                                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                            <span class="text-base font-bold text-[#0067B1] dark:text-[#2798e6]">
+                                        <div class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between gap-4">
+                                                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                                                    Total Transaksi
+                                                </span>
+                                                <span
+                                                    class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-600 shadow-2xs dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375Z" />
+                                                        <path fill-rule="evenodd" d="m3.087 9 .54 9.176A3 3 0 0 0 6.62 21h10.757a3 3 0 0 0 2.995-2.824L20.913 9H3.087Zm6.163 3.75A.75.75 0 0 1 10 12h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    {{ $quotation->items->count() }} item
+                                                </span>
+                                            </div>
+
+                                            <span class="font-mono text-lg font-bold tracking-tight text-blue-600 dark:text-blue-400">
                                                 Rp {{ number_format($quotation->grand_total, 0, '.', ',') }}
                                             </span>
-                                            <span
-                                                class="inline-flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-gray-800 dark:text-gray-400">
-                                                {{ $quotation->items->count() }} item
-                                            </span>
-                                            @if ($hasBelow && $hasAbove)
-                                                <span
-                                                    class="inline-flex items-center justify-center rounded border border-amber-200 bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
-                                                    &lt;20% &amp; &gt;20%
-                                                </span>
-                                            @elseif ($hasAbove)
-                                                <span
-                                                    class="inline-flex items-center justify-center rounded border border-red-200 bg-red-50 px-1.5 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
-                                                    &gt;20%
-                                                </span>
-                                            @elseif ($hasBelow)
-                                                <span
-                                                    class="inline-flex items-center justify-center rounded border border-green-200 bg-green-50 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-300">
-                                                    &lt;20%
-                                                </span>
+
+                                            @if ($hasBelow || $hasAbove || ($quotation->operational ?? 0) > 0)
+                                                <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                                                    @if ($hasBelow && $hasAbove)
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 rounded-md border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 .375.43.59.73.365l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515c.3.225.73.01.73-.365V3.375c0-1.036-.84-1.875-1.875-1.875H5.625ZM8.25 6.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            &lt; 20% &amp; &gt; 20%
+                                                        </span>
+                                                    @elseif ($hasAbove)
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-700 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-red-600 dark:text-red-400" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 .375.43.59.73.365l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515c.3.225.73.01.73-.365V3.375c0-1.036-.84-1.875-1.875-1.875H5.625ZM8.25 6.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            &gt; 20%
+                                                        </span>
+                                                    @elseif ($hasBelow)
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 rounded-md border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:border-emerald-800/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 .375.43.59.73.365l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515a.45.45 0 0 0 .54 0l2.02-1.515 2.02 1.515c.3.225.73.01.73-.365V3.375c0-1.036-.84-1.875-1.875-1.875H5.625ZM8.25 6.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Zm0 3.75a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            &lt; 20%
+                                                        </span>
+                                                    @endif
+
+                                                    @if (($quotation->operational ?? 0) > 0)
+                                                        <span
+                                                            class="inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50/80 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                                                                <ellipse cx="12" cy="5" rx="8" ry="3" />
+                                                                <path d="M4 8.5c0 1.657 3.582 3 8 3s8-1.343 8-3V11c0 1.657-3.582 3-8 3s-8-1.343-8-3V8.5Z" />
+                                                                <path d="M4 13.5c0 1.657 3.582 3 8 3s8-1.343 8-3V16c0 1.657-3.582 3-8 3s-8-1.343-8-3v-2.5Z" />
+                                                            </svg>
+                                                            Rp {{ number_format($quotation->operational, 0, '.', ',') }} OPR
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             @endif
                                         </div>
                                     </div>

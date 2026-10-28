@@ -155,7 +155,7 @@
 
                             <!-- PIC (SALES) -->
                             <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">PIC (Sales)</span>
+                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">PIC Customer</span>
                                 <div class="mt-1 flex items-center space-x-2">
                                     <div class="flex h-7 w-7 items-center justify-center text-slate-500 dark:text-gray-400">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,7 +163,7 @@
                                         </svg>
                                     </div>
                                     <p class="text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                        {{ $customQuotation->sales->name ?? '-' }}</p>
+                                        {{ $customQuotation->up ?? '-' }}</p>
                                 </div>
                             </div>
 
@@ -179,13 +179,6 @@
                                 <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Subject</span>
                                 <p class="mt-1 text-sm font-semibold italic text-slate-800 dark:text-gray-200">
                                     "{{ $customQuotation->subject ?? '-' }}"</p>
-                            </div>
-
-                            <!-- ATTENTION (UP) -->
-                            <div>
-                                <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Attention (Up)</span>
-                                <p class="mt-1 text-sm font-semibold text-slate-800 dark:text-gray-200">
-                                    {{ $customQuotation->up ?? '-' }}</p>
                             </div>
 
                             <!-- MASA BERLAKU -->
@@ -435,6 +428,7 @@
                                 <th class="px-6 py-4 text-center">Diskon</th>
                                 <th class="px-6 py-4 text-center">Qty</th>
                                 <th class="px-6 py-4">Harga Satuan</th>
+                                <th class="px-6 py-4">Operational</th>
                                 <th class="px-6 py-4">Subtotal</th>
                                 <th class="px-6 py-4 text-center">Gambar</th>
                             </tr>
@@ -488,11 +482,20 @@
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-5 text-sm text-slate-600 dark:text-gray-400">
                                         <div>{{ number_format($item->price, 0, '.', ',') }}</div>
-                                        @if ($item->operational && $item->operational > 0)
-                                            <div class="mt-1 flex items-center gap-1 text-[11px] font-medium text-amber-600 dark:text-amber-400">
-                                                <span class="rounded bg-amber-50 px-1 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">OPR</span>
-                                                {{ number_format($item->operational, 0, '.', ',') }}
-                                            </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-5 text-sm">
+                                        @if (($item->operational ?? 0) > 0)
+                                            <span
+                                                class="inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50/80 px-2.5 py-0.5 text-xs font-semibold text-amber-800 dark:border-amber-700/60 dark:bg-amber-950/40 dark:text-amber-300">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 shrink-0 text-amber-600 dark:text-amber-400" viewBox="0 0 24 24" fill="currentColor">
+                                                    <ellipse cx="12" cy="5" rx="8" ry="3" />
+                                                    <path d="M4 8.5c0 1.657 3.582 3 8 3s8-1.343 8-3V11c0 1.657-3.582 3-8 3s-8-1.343-8-3V8.5Z" />
+                                                    <path d="M4 13.5c0 1.657 3.582 3 8 3s8-1.343 8-3V16c0 1.657-3.582 3-8 3s-8-1.343-8-3v-2.5Z" />
+                                                </svg>
+                                                Rp {{ number_format($item->operational, 0, '.', ',') }} OPR
+                                            </span>
+                                        @else
+                                            <span class="text-gray-300 dark:text-gray-600">-</span>
                                         @endif
                                     </td>
                                     <td class="whitespace-nowrap px-6 py-5 text-sm font-bold text-[#225A97] dark:text-[#818CF8]">
@@ -542,7 +545,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-gray-400">
+                                    <td colspan="8" class="px-6 py-12 text-center text-gray-400">
                                         <p class="italic">Belum ada item barang yang ditambahkan.</p>
                                     </td>
                                 </tr>
@@ -550,7 +553,7 @@
                         </tbody>
                         <tfoot class="bg-[#F8FAFC] dark:bg-gray-750">
                             <tr class="border-t border-slate-100 dark:border-gray-700">
-                                <td colspan="5"
+                                <td colspan="6"
                                     class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400">
                                     Total Keseluruhan</td>
                                 <td

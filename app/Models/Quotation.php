@@ -196,6 +196,15 @@ class Quotation extends Model
         return $this->hasMany(QuotationItem::class, 'quotation_id');
     }
 
+    public function getOperationalAttribute()
+    {
+        $itemsOperational = $this->items ? (float) $this->items->sum('operational') : 0;
+        if ($itemsOperational > 0) {
+            return $itemsOperational;
+        }
+        return $this->customQuotation ? (float) $this->customQuotation->operational : 0;
+    }
+
     public function sales()
     {
         return $this->belongsTo(User::class, 'sales_id');

@@ -56,6 +56,11 @@ class CustomQuotation extends Model
         return $this->hasMany(CustomQuotationItem::class, 'custom_quotation_id');
     }
 
+    public function getOperationalAttribute()
+    {
+        return $this->items ? (float) $this->items->sum('operational') : 0;
+    }
+
     public function order()
     {
         return $this->hasOne(\App\Models\Order::class, 'custom_quotation_id');

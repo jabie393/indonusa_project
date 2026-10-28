@@ -30,6 +30,9 @@ class SalesOrderController extends Controller
     {
         $diskonPersen = ($ro->items && $ro->items->count() > 0)
             ? ($ro->items->first()->discount_percent ?? 0) : 0;
+        $discounts = $ro->items ? $ro->items->pluck('discount_percent')->map(fn($d) => (float) ($d ?? 0)) : collect();
+        $hasBelow = $discounts->contains(fn($d) => $d > 0 && $d <= 20);
+        $hasAbove = $discounts->contains(fn($d) => $d > 20);
 
         $berlakuSampai = '-';
         if ($ro->valid_date) {
@@ -74,6 +77,9 @@ class SalesOrderController extends Controller
             'jumlah_item'    => $ro->items->count(),
             'total'          => $ro->grand_total ?? 0,
             'diskon'         => $diskonPersen,
+            'has_below'      => $hasBelow,
+            'has_above'      => $hasAbove,
+            'operational'    => $ro->operational ?? 0,
             'status'         => $ro->status,
             'berlaku_sampai' => $berlakuSampai,
             'image_po'       => $ro->image_po,
