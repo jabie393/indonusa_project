@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('custom_product_unit')->nullable();
             $table->integer('quantity');
             $table->decimal('price', 15, 2)->nullable();
+            $table->decimal('operational', 15, 2)->nullable()->default(0);
             $table->decimal('subtotal', 14, 2)->nullable();
             $table->unsignedSmallInteger('discount_percent')->default(0);
             $table->string('product_category')->nullable();

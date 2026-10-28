@@ -228,6 +228,7 @@ class ListingController extends Controller
                     'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'operational' => $item['operational'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
                     'notes' => $item['notes'] ?? null,
@@ -595,6 +596,8 @@ class ListingController extends Controller
             }
             $subtotal = round($qty * $harga * (1 - ($diskon / 100)), 2);
 
+            $oldItem = $oldQuotationItems[$i] ?? null;
+
             $items[] = [
                 'original_index' => $i,
                 'goods_id' => empty($productId) ? null : (int) $productId,
@@ -604,6 +607,7 @@ class ListingController extends Controller
                 'product_category' => $validated['product_category'][$i] ?? null,
                 'quantity' => $qty,
                 'price' => $harga,
+                'operational' => $oldItem ? ($oldItem->operational ?? 0) : 0,
                 'discount_percent' => $diskon,
                 'subtotal' => $subtotal,
                 'notes' => $validated['keterangan'][$i] ?? null,
@@ -663,6 +667,7 @@ class ListingController extends Controller
                         'qty' => $item['quantity'],
                         'unit' => $unit,
                         'price' => $item['price'],
+                        'operational' => $item['operational'] ?? 0,
                         'subtotal' => $item['subtotal'],
                         'discount' => $item['discount_percent'],
                         'description' => $item['notes'] ?? null,
@@ -726,6 +731,7 @@ class ListingController extends Controller
                     'product_category' => $item['product_category'] ?? null,
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'operational' => $item['operational'] ?? 0,
                     'subtotal' => $item['subtotal'],
                     'discount_percent' => $item['discount_percent'] ?? 0,
                     'notes' => $item['notes'] ?? null,

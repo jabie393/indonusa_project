@@ -17,6 +17,7 @@ class QuotationItem extends Model
         'product_category',
         'quantity',
         'price',
+        'operational',
         'subtotal',
         'discount_percent',
         'ppn_percent',
@@ -27,6 +28,7 @@ class QuotationItem extends Model
     protected $casts = [
         'quantity' => 'integer',
         'price' => 'decimal:2',
+        'operational' => 'decimal:2',
         'subtotal' => 'decimal:2',
         'discount_percent' => 'float',
         'ppn_percent' => 'decimal:2',

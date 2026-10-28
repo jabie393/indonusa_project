@@ -714,6 +714,7 @@ class NonListingController extends Controller
                     'product_category' => $category,
                     'quantity' => $cpItem->qty,
                     'price' => $cpItem->price,
+                    'operational' => $cpItem->operational ?? 0,
                     'subtotal' => $cpItem->subtotal,
                     'discount_percent' => $cpItem->discount ?? 0,
                     'images' => $cpItem->images,
